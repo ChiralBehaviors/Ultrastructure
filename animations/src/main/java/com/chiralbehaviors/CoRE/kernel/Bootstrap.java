@@ -95,8 +95,8 @@ public class Bootstrap {
         em.getTransaction().begin();
         bootstrap.bootstrap();
         em.getTransaction().commit();
-        em.clear();
         bootstrap.serialize(argv[1]);
+        System.exit(0);
     }
 
     private final Connection    connection;
@@ -145,7 +145,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownAttribute wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, value_type) VALUES (?, ?, ?, ?, ?)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, value_type, version) VALUES (?, ?, ?, ?, ?, 1)",
                                                                         wko.tableName()));
         try {
             s.setString(1, wko.id());
@@ -160,7 +160,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownInterval wki) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, start_unit, duration_unit, description, updated_by) VALUES (?, ?, ?, ?, ?, ?)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, start_unit, duration_unit, description, updated_by, version) VALUES (?, ?, ?, ?, ?, ?, 1)",
                                                                         wki.tableName()));
         try {
             s.setString(1, wki.id());
@@ -176,7 +176,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownLocation wkl) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by) VALUES (?, ?, ?, ?)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, 1)",
                                                                         wkl.tableName()));
         try {
             s.setString(1, wkl.id());

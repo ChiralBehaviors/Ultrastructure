@@ -177,11 +177,11 @@ public class Job extends AbstractProtocol {
      * The parent of this job
      */
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "parent", updatable = false)
+    @JoinColumn(name = "parent")
     private Job                parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "protocol", updatable = false)
+    @JoinColumn(name = "protocol")
     private Protocol           protocol;
 
     @Column(name = "sequence_number")
@@ -267,7 +267,7 @@ public class Job extends AbstractProtocol {
             throw new IllegalArgumentException("Cannot set the parent to self");
         }
         parent = job;
-        depth = job.getDepth() + 1;
+        depth = job == null ? 0 : job.getDepth() + 1;
     }
 
     public void setProtocol(Protocol protocol) {

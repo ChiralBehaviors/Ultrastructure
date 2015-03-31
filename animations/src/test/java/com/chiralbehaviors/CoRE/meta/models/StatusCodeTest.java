@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -178,20 +179,19 @@ public class StatusCodeTest extends AbstractModelTest {
         em.persist(invalidSeq);
         Job parent = jobModel.newInitializedJob(service, kernel.getCore());
         Job child = jobModel.newInitializedJob(service2, kernel.getCore());
-        em.persist(child);
-        em.persist(parent);
         child.setParent(parent);
         em.getTransaction().commit();
         em.getTransaction().begin();
         em.refresh(parent);
+        em.refresh(child);
+        assertNotNull("Parent is null", child.getParent());
         assertTrue("Child is not considered active", jobModel.isActive(child));
         assertEquals(1, jobModel.getActiveSubJobsOf(parent).size());
-        parent = em.merge(parent);
         jobModel.changeStatus(parent, startState, kernel.getCore(),
                               "transition from test");
-        em.getTransaction().commit();
+        em.flush();
         List<JobChronology> chronology = jobModel.getChronologyForJob(child);
-        assertEquals(2, chronology.size());
+        assertEquals(chronology.toString(), 2, chronology.size());
         for (JobChronology crumb : chronology) {
             assertEquals(kernel.getUnset(), crumb.getStatus());
         }

@@ -1,8 +1,8 @@
 {
   "auths" : [ {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCTNcdbkEeS93YO9qnND+w",
-    "id" : "GCTNcdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWZVadeuEeSdcTGVxQYipQ",
+    "id" : "LWZVadeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : {
@@ -29,34 +29,12 @@
     "type" : "ProductNetwork",
     "ruleform" : {
       "type" : "productnetwork",
-      "@id" : "ProductNetwork-GCTNcNbkEeS93YO9qnND+w",
-      "id" : "GCTNcNbkEeS93YO9qnND+w",
+      "@id" : "ProductNetwork-LWZVaNeuEeSdcTGVxQYipQ",
+      "id" : "LWZVaNeuEeSdcTGVxQYipQ",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
-      "inference" : {
-        "type" : "networkinference",
-        "@id" : "NetworkInference-AAAAAAAAAAAAAAAAAAAAAA",
-        "id" : "AAAAAAAAAAAAAAAAAAAAAA",
-        "notes" : null,
-        "version" : 1,
-        "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
-        "inference" : {
-          "type" : "relationship",
-          "@id" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg",
-          "id" : "AAAAAAAAAAUAAAAAAAAAHg",
-          "notes" : null,
-          "version" : 1,
-          "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
-          "description" : "The abstract notion of a relationship. All existential entities defined in the Relationship ruleform are instances of 'Relationsihip'",
-          "name" : "Relationship",
-          "inverse" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg",
-          "operator" : null,
-          "preferred" : true
-        },
-        "premise1" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg",
-        "premise2" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg"
-      },
+      "inference" : null,
       "relationship" : {
         "type" : "relationship",
         "@id" : "Relationship-AAAAAAAAAAUAAAAAAAAAEQ",
@@ -93,35 +71,13 @@
         "name" : "Workspace"
       },
       "parent" : "Product-AAAAAAAAAAQAAAAAAAAACA",
-      "premise1" : {
-        "type" : "productnetwork",
-        "@id" : "ProductNetwork-AAAAAAAAAAAAAAAAAAAAAA",
-        "id" : "AAAAAAAAAAAAAAAAAAAAAA",
-        "notes" : null,
-        "version" : 1,
-        "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
-        "inference" : "NetworkInference-AAAAAAAAAAAAAAAAAAAAAA",
-        "relationship" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg",
-        "child" : {
-          "type" : "product",
-          "@id" : "Product-AAAAAAAAAAQAAAAAAAAABA",
-          "id" : "AAAAAAAAAAQAAAAAAAAABA",
-          "notes" : null,
-          "version" : 1,
-          "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
-          "description" : "The abstract notion of a product. All existential entities defined in the Product ruleform are instances of 'Product'",
-          "name" : "PRODUCT"
-        },
-        "parent" : "Product-AAAAAAAAAAQAAAAAAAAABA",
-        "premise1" : "ProductNetwork-AAAAAAAAAAAAAAAAAAAAAA",
-        "premise2" : "ProductNetwork-AAAAAAAAAAAAAAAAAAAAAA"
-      },
-      "premise2" : "ProductNetwork-AAAAAAAAAAAAAAAAAAAAAA"
+      "premise1" : null,
+      "premise2" : null
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCbwUtbkEeS93YO9qnND+w",
-    "id" : "GCbwUtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWifWteuEeSdcTGVxQYipQ",
+    "id" : "LWifWteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -131,8 +87,8 @@
     "ruleform" : "Product-AAAAAAAAAAQAAAAAAAAACA"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCdlhNbkEeS93YO9qnND+w",
-    "id" : "GCdlhNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWkUjNeuEeSdcTGVxQYipQ",
+    "id" : "LWkUjNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -144,7 +100,7 @@
       "@id" : "Attribute-AAAAAAAAAAEAAAAAAAAAAg",
       "id" : "AAAAAAAAAAEAAAAAAAAAAg",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "The abstract notion of an attribute. All existential entities defined in the Attribute ruleform are instances of 'Attribute'",
       "name" : "Attribute",
@@ -153,8 +109,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCfattbkEeS93YO9qnND+w",
-    "id" : "GCfattbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWmJvteuEeSdcTGVxQYipQ",
+    "id" : "LWmJvteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -166,7 +122,7 @@
       "@id" : "Attribute-AAAAAAAAAAEAAAAAAAAAAQ",
       "id" : "AAAAAAAAAAEAAAAAAAAAAQ",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Attribute that stands for any attribute",
       "name" : "(ANY)",
@@ -175,8 +131,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GChP6NbkEeS93YO9qnND+w",
-    "id" : "GChP6NbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWn+8NeuEeSdcTGVxQYipQ",
+    "id" : "LWn+8NeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -188,7 +144,7 @@
       "@id" : "Attribute-AAAAAAAAAAEAAAAAAAAABw",
       "id" : "AAAAAAAAAAEAAAAAAAAABw",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Attribute that stands for the copy attribute",
       "name" : "(COPY)",
@@ -197,8 +153,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCjsKtbkEeS93YO9qnND+w",
-    "id" : "GCjsKtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWp0IteuEeSdcTGVxQYipQ",
+    "id" : "LWp0IteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -210,7 +166,7 @@
       "@id" : "Attribute-AAAAAAAAAAEAAAAAAAAABA",
       "id" : "AAAAAAAAAAEAAAAAAAAABA",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Attribute that stands for 'not applicable'",
       "name" : "(N/A)",
@@ -219,8 +175,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GClhXNbkEeS93YO9qnND+w",
-    "id" : "GClhXNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWrpVNeuEeSdcTGVxQYipQ",
+    "id" : "LWrpVNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -232,7 +188,7 @@
       "@id" : "Attribute-AAAAAAAAAAEAAAAAAAAABQ",
       "id" : "AAAAAAAAAAEAAAAAAAAABQ",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Attribute that stands for the same attribute",
       "name" : "(SAME)",
@@ -241,8 +197,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCnWjtbkEeS93YO9qnND+w",
-    "id" : "GCnWjtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWs3dteuEeSdcTGVxQYipQ",
+    "id" : "LWs3dteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -254,7 +210,7 @@
       "@id" : "Attribute-AAAAAAAAAAEAAAAAAAAAAw",
       "id" : "AAAAAAAAAAEAAAAAAAAAAw",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "The Attribute that contains the CoRE login name of the agency",
       "name" : "login",
@@ -263,8 +219,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCpLwNbkEeS93YO9qnND+w",
-    "id" : "GCpLwNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWusqNeuEeSdcTGVxQYipQ",
+    "id" : "LWusqNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -276,7 +232,7 @@
       "@id" : "Attribute-AAAAAAAAAAEAAAAAAAAABg",
       "id" : "AAAAAAAAAAEAAAAAAAAABg",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "The Attribute that contains the password hash of the CoRE user",
       "name" : "password-hash",
@@ -285,8 +241,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCrA8tbkEeS93YO9qnND+w",
-    "id" : "GCrA8tbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWv6yteuEeSdcTGVxQYipQ",
+    "id" : "LWv6yteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -305,8 +261,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCsPFNbkEeS93YO9qnND+w",
-    "id" : "GCsPFNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWxI7NeuEeSdcTGVxQYipQ",
+    "id" : "LWxI7NeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -325,8 +281,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCuERtbkEeS93YO9qnND+w",
-    "id" : "GCuERtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWyXDteuEeSdcTGVxQYipQ",
+    "id" : "LWyXDteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -345,8 +301,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCvSaNbkEeS93YO9qnND+w",
-    "id" : "GCvSaNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LWzlMNeuEeSdcTGVxQYipQ",
+    "id" : "LWzlMNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -365,8 +321,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCxHmtbkEeS93YO9qnND+w",
-    "id" : "GCxHmtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW0zUteuEeSdcTGVxQYipQ",
+    "id" : "LW0zUteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -385,8 +341,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCxHm9bkEeS93YO9qnND+w",
-    "id" : "GCxHm9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW0zU9euEeSdcTGVxQYipQ",
+    "id" : "LW0zU9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -396,8 +352,8 @@
     "ruleform" : "Product-AAAAAAAAAAQAAAAAAAAABg"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCxurNbkEeS93YO9qnND+w",
-    "id" : "GCxurNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW0zVNeuEeSdcTGVxQYipQ",
+    "id" : "LW0zVNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -407,8 +363,8 @@
     "ruleform" : "Product-AAAAAAAAAAQAAAAAAAAACA"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GCzj3tbkEeS93YO9qnND+w",
-    "id" : "GCzj3tbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW2BdteuEeSdcTGVxQYipQ",
+    "id" : "LW2BdteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -420,15 +376,15 @@
       "@id" : "Location-AAAAAAAAAAMAAAAAAAAAAg",
       "id" : "AAAAAAAAAAMAAAAAAAAAAg",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "The abstract notion of a location. All existential entities defined in the Location ruleform are instances of 'Location'",
       "name" : "Location"
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC0yANbkEeS93YO9qnND+w",
-    "id" : "GC0yANbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW3PmNeuEeSdcTGVxQYipQ",
+    "id" : "LW3PmNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -440,15 +396,15 @@
       "@id" : "Location-AAAAAAAAAAMAAAAAAAAAAQ",
       "id" : "AAAAAAAAAAMAAAAAAAAAAQ",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "This is used in protocol rules to indicate that any Location will satisfy the conditions for that rule",
       "name" : "(ANY)"
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC2nMtbkEeS93YO9qnND+w",
-    "id" : "GC2nMtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW4duteuEeSdcTGVxQYipQ",
+    "id" : "LW4duteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -460,15 +416,15 @@
       "@id" : "Location-AAAAAAAAAAMAAAAAAAAABQ",
       "id" : "AAAAAAAAAAMAAAAAAAAABQ",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Location that stands for copy location",
       "name" : "(COPY)"
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC31VNbkEeS93YO9qnND+w",
-    "id" : "GC31VNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW6S7NeuEeSdcTGVxQYipQ",
+    "id" : "LW6S7NeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -480,15 +436,15 @@
       "@id" : "Location-AAAAAAAAAAMAAAAAAAAAAw",
       "id" : "AAAAAAAAAAMAAAAAAAAAAw",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Location that stands for 'not applicable'",
       "name" : "(N/A)"
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC5DdtbkEeS93YO9qnND+w",
-    "id" : "GC5DdtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW8IHteuEeSdcTGVxQYipQ",
+    "id" : "LW8IHteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -500,15 +456,15 @@
       "@id" : "Location-AAAAAAAAAAMAAAAAAAAABA",
       "id" : "AAAAAAAAAAMAAAAAAAAABA",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Location that stands for the same location",
       "name" : "(SAME)"
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC6RmNbkEeS93YO9qnND+w",
-    "id" : "GC6RmNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW9WQNeuEeSdcTGVxQYipQ",
+    "id" : "LW9WQNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -527,8 +483,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC7futbkEeS93YO9qnND+w",
-    "id" : "GC7futbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LW+kYteuEeSdcTGVxQYipQ",
+    "id" : "LW+kYteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -547,8 +503,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC8t3NbkEeS93YO9qnND+w",
-    "id" : "GC8t3NbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXAZlNeuEeSdcTGVxQYipQ",
+    "id" : "LXAZlNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -567,8 +523,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC9U7tbkEeS93YO9qnND+w",
-    "id" : "GC9U7tbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXBntteuEeSdcTGVxQYipQ",
+    "id" : "LXBntteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -587,8 +543,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC97/9bkEeS93YO9qnND+w",
-    "id" : "GC97/9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXBnt9euEeSdcTGVxQYipQ",
+    "id" : "LXBnt9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -598,8 +554,8 @@
     "ruleform" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC/KIdbkEeS93YO9qnND+w",
-    "id" : "GC/KIdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXDc6deuEeSdcTGVxQYipQ",
+    "id" : "LXDc6deuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -618,8 +574,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GC/xM9bkEeS93YO9qnND+w",
-    "id" : "GC/xM9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXED+9euEeSdcTGVxQYipQ",
+    "id" : "LXED+9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -638,8 +594,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDA/VdbkEeS93YO9qnND+w",
-    "id" : "GDA/VdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXF5LdeuEeSdcTGVxQYipQ",
+    "id" : "LXF5LdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -658,8 +614,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDBmZ9bkEeS93YO9qnND+w",
-    "id" : "GDBmZ9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXHHT9euEeSdcTGVxQYipQ",
+    "id" : "LXHHT9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -678,8 +634,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDC0idbkEeS93YO9qnND+w",
-    "id" : "GDC0idbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXIVcdeuEeSdcTGVxQYipQ",
+    "id" : "LXIVcdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -698,8 +654,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDECq9bkEeS93YO9qnND+w",
-    "id" : "GDECq9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXJjk9euEeSdcTGVxQYipQ",
+    "id" : "LXJjk9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -718,8 +674,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDEpvdbkEeS93YO9qnND+w",
-    "id" : "GDEpvdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXKxtdeuEeSdcTGVxQYipQ",
+    "id" : "LXKxtdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -738,8 +694,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDF339bkEeS93YO9qnND+w",
-    "id" : "GDF339bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXL/19euEeSdcTGVxQYipQ",
+    "id" : "LXL/19euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -758,8 +714,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDHGAdbkEeS93YO9qnND+w",
-    "id" : "GDHGAdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXN1CdeuEeSdcTGVxQYipQ",
+    "id" : "LXN1CdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -781,8 +737,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDI7M9bkEeS93YO9qnND+w",
-    "id" : "GDI7M9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXPqO9euEeSdcTGVxQYipQ",
+    "id" : "LXPqO9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -804,8 +760,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDKwZdbkEeS93YO9qnND+w",
-    "id" : "GDKwZdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXSGfdeuEeSdcTGVxQYipQ",
+    "id" : "LXSGfdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -827,8 +783,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDMlmNbkEeS93YO9qnND+w",
-    "id" : "GDMlmNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXUiwNeuEeSdcTGVxQYipQ",
+    "id" : "LXUiwNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -862,8 +818,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDMlmdbkEeS93YO9qnND+w",
-    "id" : "GDMlmdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXVJ0deuEeSdcTGVxQYipQ",
+    "id" : "LXVJ0deuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -873,8 +829,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAAg"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDNMqtbkEeS93YO9qnND+w",
-    "id" : "GDNMqtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXVJ0teuEeSdcTGVxQYipQ",
+    "id" : "LXVJ0teuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -884,8 +840,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAEQ"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDNMq9bkEeS93YO9qnND+w",
-    "id" : "GDNMq9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXVJ09euEeSdcTGVxQYipQ",
+    "id" : "LXVJ09euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -895,8 +851,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAEA"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDPo7tbkEeS93YO9qnND+w",
-    "id" : "GDPo7tbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXXmFteuEeSdcTGVxQYipQ",
+    "id" : "LXXmFteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -930,8 +886,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDPo79bkEeS93YO9qnND+w",
-    "id" : "GDPo79bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXXmF9euEeSdcTGVxQYipQ",
+    "id" : "LXXmF9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -941,8 +897,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAEw"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDSFMtbkEeS93YO9qnND+w",
-    "id" : "GDSFMtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXaCWteuEeSdcTGVxQYipQ",
+    "id" : "LXaCWteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -976,8 +932,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDSFM9bkEeS93YO9qnND+w",
-    "id" : "GDSFM9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXaCW9euEeSdcTGVxQYipQ",
+    "id" : "LXaCW9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -987,8 +943,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAFw"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDUhdtbkEeS93YO9qnND+w",
-    "id" : "GDUhdtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXcenteuEeSdcTGVxQYipQ",
+    "id" : "LXcenteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1022,8 +978,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDVIh9bkEeS93YO9qnND+w",
-    "id" : "GDVIh9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXcen9euEeSdcTGVxQYipQ",
+    "id" : "LXcen9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1033,8 +989,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAHQ"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDW9utbkEeS93YO9qnND+w",
-    "id" : "GDW9utbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXeT0teuEeSdcTGVxQYipQ",
+    "id" : "LXeT0teuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1068,8 +1024,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDXky9bkEeS93YO9qnND+w",
-    "id" : "GDXky9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXe649euEeSdcTGVxQYipQ",
+    "id" : "LXe649euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1079,8 +1035,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAFQ"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDZZ/dbkEeS93YO9qnND+w",
-    "id" : "GDZZ/dbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXgwFdeuEeSdcTGVxQYipQ",
+    "id" : "LXgwFdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1102,8 +1058,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDb2QNbkEeS93YO9qnND+w",
-    "id" : "GDb2QNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXilSNeuEeSdcTGVxQYipQ",
+    "id" : "LXilSNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1137,8 +1093,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDb2QdbkEeS93YO9qnND+w",
-    "id" : "GDb2QdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXjMWdeuEeSdcTGVxQYipQ",
+    "id" : "LXjMWdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1148,8 +1104,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAACA"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDdrdNbkEeS93YO9qnND+w",
-    "id" : "GDdrdNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXlonNeuEeSdcTGVxQYipQ",
+    "id" : "LXlonNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1183,8 +1139,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDeShdbkEeS93YO9qnND+w",
-    "id" : "GDeShdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXmPrdeuEeSdcTGVxQYipQ",
+    "id" : "LXmPrdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1194,8 +1150,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAABA"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDgHuNbkEeS93YO9qnND+w",
-    "id" : "GDgHuNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXor8NeuEeSdcTGVxQYipQ",
+    "id" : "LXor8NeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1229,8 +1185,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDgHudbkEeS93YO9qnND+w",
-    "id" : "GDgHudbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXor8deuEeSdcTGVxQYipQ",
+    "id" : "LXor8deuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1240,8 +1196,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAADQ"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDh87NbkEeS93YO9qnND+w",
-    "id" : "GDh87NbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXrINNeuEeSdcTGVxQYipQ",
+    "id" : "LXrINNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1275,8 +1231,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDh87dbkEeS93YO9qnND+w",
-    "id" : "GDh87dbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXrINdeuEeSdcTGVxQYipQ",
+    "id" : "LXrINdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1286,8 +1242,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAGA"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDkZMNbkEeS93YO9qnND+w",
-    "id" : "GDkZMNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXtkeNeuEeSdcTGVxQYipQ",
+    "id" : "LXtkeNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1321,8 +1277,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDkZMdbkEeS93YO9qnND+w",
-    "id" : "GDkZMdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXtkedeuEeSdcTGVxQYipQ",
+    "id" : "LXtkedeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1332,8 +1288,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAACw"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDm1dNbkEeS93YO9qnND+w",
-    "id" : "GDm1dNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXwAvNeuEeSdcTGVxQYipQ",
+    "id" : "LXwAvNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1367,8 +1323,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDm1ddbkEeS93YO9qnND+w",
-    "id" : "GDm1ddbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXwAvdeuEeSdcTGVxQYipQ",
+    "id" : "LXwAvdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1378,8 +1334,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAABg"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDoqp9bkEeS93YO9qnND+w",
-    "id" : "GDoqp9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXx179euEeSdcTGVxQYipQ",
+    "id" : "LXx179euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1401,8 +1357,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDrG6tbkEeS93YO9qnND+w",
-    "id" : "GDrG6tbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXzrIteuEeSdcTGVxQYipQ",
+    "id" : "LXzrIteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1436,8 +1392,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDrG69bkEeS93YO9qnND+w",
-    "id" : "GDrG69bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LXzrI9euEeSdcTGVxQYipQ",
+    "id" : "LXzrI9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1447,8 +1403,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAGw"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDtjLtbkEeS93YO9qnND+w",
-    "id" : "GDtjLtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LX1gVteuEeSdcTGVxQYipQ",
+    "id" : "LX1gVteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1482,8 +1438,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDtjL9bkEeS93YO9qnND+w",
-    "id" : "GDtjL9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LX2HZ9euEeSdcTGVxQYipQ",
+    "id" : "LX2HZ9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1493,8 +1449,8 @@
     "ruleform" : "Relationship-AAAAAAAAAAUAAAAAAAAAIQ"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDvXYdbkEeS93YO9qnND+w",
-    "id" : "GDvXYdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LX3VideuEeSdcTGVxQYipQ",
+    "id" : "LX3VideuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1515,8 +1471,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDxMk9bkEeS93YO9qnND+w",
-    "id" : "GDxMk9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LX4jq9euEeSdcTGVxQYipQ",
+    "id" : "LX4jq9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1537,8 +1493,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDyatdbkEeS93YO9qnND+w",
-    "id" : "GDyatdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LX5xzdeuEeSdcTGVxQYipQ",
+    "id" : "LX5xzdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1559,8 +1515,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GDzo19bkEeS93YO9qnND+w",
-    "id" : "GDzo19bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LX6/79euEeSdcTGVxQYipQ",
+    "id" : "LX6/79euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1581,8 +1537,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GD1eCdbkEeS93YO9qnND+w",
-    "id" : "GD1eCdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LX8OEdeuEeSdcTGVxQYipQ",
+    "id" : "LX8OEdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1603,8 +1559,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GD36S9bkEeS93YO9qnND+w",
-    "id" : "GD36S9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LX+qU9euEeSdcTGVxQYipQ",
+    "id" : "LX+qU9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1628,8 +1584,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GD5IbdbkEeS93YO9qnND+w",
-    "id" : "GD5IbdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LX/4ddeuEeSdcTGVxQYipQ",
+    "id" : "LX/4ddeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1653,8 +1609,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GD6Wj9bkEeS93YO9qnND+w",
-    "id" : "GD6Wj9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYBtp9euEeSdcTGVxQYipQ",
+    "id" : "LYBtp9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1678,8 +1634,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GD7ksdbkEeS93YO9qnND+w",
-    "id" : "GD7ksdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYDi2deuEeSdcTGVxQYipQ",
+    "id" : "LYDi2deuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1703,8 +1659,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GD8y09bkEeS93YO9qnND+w",
-    "id" : "GD8y09bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYFYC9euEeSdcTGVxQYipQ",
+    "id" : "LYFYC9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1728,8 +1684,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GD+A9dbkEeS93YO9qnND+w",
-    "id" : "GD+A9dbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYGmLdeuEeSdcTGVxQYipQ",
+    "id" : "LYGmLdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1753,8 +1709,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GD/2J9bkEeS93YO9qnND+w",
-    "id" : "GD/2J9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYIbX9euEeSdcTGVxQYipQ",
+    "id" : "LYIbX9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1778,8 +1734,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GEBESdbkEeS93YO9qnND+w",
-    "id" : "GEBESdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYJogdeuEeSdcTGVxQYipQ",
+    "id" : "LYJogdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1803,8 +1759,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GECSa9bkEeS93YO9qnND+w",
-    "id" : "GECSa9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYK2o9euEeSdcTGVxQYipQ",
+    "id" : "LYK2o9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1828,8 +1784,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GEDgjdbkEeS93YO9qnND+w",
-    "id" : "GEDgjdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYMr1deuEeSdcTGVxQYipQ",
+    "id" : "LYMr1deuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1853,8 +1809,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GEFVv9bkEeS93YO9qnND+w",
-    "id" : "GEFVv9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYN599euEeSdcTGVxQYipQ",
+    "id" : "LYN599euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1878,8 +1834,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GEHyAtbkEeS93YO9qnND+w",
-    "id" : "GEHyAtbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYQWOteuEeSdcTGVxQYipQ",
+    "id" : "LYQWOteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1891,7 +1847,7 @@
       "@id" : "Interval-AAAAAAAAAAIAAAAAAAAAAg",
       "id" : "AAAAAAAAAAIAAAAAAAAAAg",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Interval that stands for any interval",
       "name" : "(ANY)",
@@ -1916,8 +1872,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GEKORNbkEeS93YO9qnND+w",
-    "id" : "GEKORNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYTZjNeuEeSdcTGVxQYipQ",
+    "id" : "LYTZjNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1929,7 +1885,7 @@
       "@id" : "Interval-AAAAAAAAAAIAAAAAAAAABQ",
       "id" : "AAAAAAAAAAIAAAAAAAAABQ",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Interval that stands for copy interval",
       "name" : "(COPY)",
@@ -1940,8 +1896,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GENRltbkEeS93YO9qnND+w",
-    "id" : "GENRltbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYV1zteuEeSdcTGVxQYipQ",
+    "id" : "LYV1zteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1953,7 +1909,7 @@
       "@id" : "Interval-AAAAAAAAAAIAAAAAAAAAAw",
       "id" : "AAAAAAAAAAIAAAAAAAAAAw",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Interval that stands for the same interval",
       "name" : "(SAME)",
@@ -1964,8 +1920,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GEPGyNbkEeS93YO9qnND+w",
-    "id" : "GEPGyNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYY5INeuEeSdcTGVxQYipQ",
+    "id" : "LYY5INeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -1977,7 +1933,7 @@
       "@id" : "Interval-AAAAAAAAAAIAAAAAAAAABA",
       "id" : "AAAAAAAAAAIAAAAAAAAABA",
       "notes" : null,
-      "version" : null,
+      "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
       "description" : "A special Interval that stands for 'not applicable'",
       "name" : "(N/A)",
@@ -1988,8 +1944,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GEY3zNbkEeS93YO9qnND+w",
-    "id" : "GEY3zNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYjRNNeuEeSdcTGVxQYipQ",
+    "id" : "LYjRNNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2003,7 +1959,29 @@
       "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
-      "inference" : "NetworkInference-AAAAAAAAAAAAAAAAAAAAAA",
+      "inference" : {
+        "type" : "networkinference",
+        "@id" : "NetworkInference-AAAAAAAAAAAAAAAAAAAAAA",
+        "id" : "AAAAAAAAAAAAAAAAAAAAAA",
+        "notes" : null,
+        "version" : 1,
+        "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
+        "inference" : {
+          "type" : "relationship",
+          "@id" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg",
+          "id" : "AAAAAAAAAAUAAAAAAAAAHg",
+          "notes" : null,
+          "version" : 1,
+          "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
+          "description" : "The abstract notion of a relationship. All existential entities defined in the Relationship ruleform are instances of 'Relationsihip'",
+          "name" : "Relationship",
+          "inverse" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg",
+          "operator" : null,
+          "preferred" : true
+        },
+        "premise1" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg",
+        "premise2" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg"
+      },
       "relationship" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg",
       "child" : "Agency-AAAAAAAAAAAAAAAAAAAAAg",
       "parent" : "Agency-AAAAAAAAAAAAAAAAAAAAAg",
@@ -2012,8 +1990,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GEioztbkEeS93YO9qnND+w",
-    "id" : "GEioztbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LYsbJteuEeSdcTGVxQYipQ",
+    "id" : "LYsbJteuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2036,8 +2014,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GEsZ0dbkEeS93YO9qnND+w",
-    "id" : "GEsZ0dbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LY1lGdeuEeSdcTGVxQYipQ",
+    "id" : "LY1lGdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2058,7 +2036,7 @@
         "@id" : "Interval-AAAAAAAAAAIAAAAAAAAAAQ",
         "id" : "AAAAAAAAAAIAAAAAAAAAAQ",
         "notes" : null,
-        "version" : null,
+        "version" : 1,
         "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
         "description" : "The abstract notion of an interval. All existential entities defined in the Interval ruleform are instances of 'Interval'",
         "name" : "Interval",
@@ -2075,8 +2053,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GE0Vo9bkEeS93YO9qnND+w",
-    "id" : "GE0Vo9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LY+H+9euEeSdcTGVxQYipQ",
+    "id" : "LY+H+9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2099,19 +2077,41 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GE9fltbkEeS93YO9qnND+w",
-    "id" : "GE9fltbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LZH4/teuEeSdcTGVxQYipQ",
+    "id" : "LZH4/teuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
     "definingProduct" : "Product-AAAAAAAAAAQAAAAAAAAACA",
     "key" : "RootProductNetwork",
     "type" : "ProductNetwork",
-    "ruleform" : "ProductNetwork-AAAAAAAAAAAAAAAAAAAAAA"
+    "ruleform" : {
+      "type" : "productnetwork",
+      "@id" : "ProductNetwork-AAAAAAAAAAAAAAAAAAAAAA",
+      "id" : "AAAAAAAAAAAAAAAAAAAAAA",
+      "notes" : null,
+      "version" : 1,
+      "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
+      "inference" : "NetworkInference-AAAAAAAAAAAAAAAAAAAAAA",
+      "relationship" : "Relationship-AAAAAAAAAAUAAAAAAAAAHg",
+      "child" : {
+        "type" : "product",
+        "@id" : "Product-AAAAAAAAAAQAAAAAAAAABA",
+        "id" : "AAAAAAAAAAQAAAAAAAAABA",
+        "notes" : null,
+        "version" : 1,
+        "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
+        "description" : "The abstract notion of a product. All existential entities defined in the Product ruleform are instances of 'Product'",
+        "name" : "PRODUCT"
+      },
+      "parent" : "Product-AAAAAAAAAAQAAAAAAAAABA",
+      "premise1" : "ProductNetwork-AAAAAAAAAAAAAAAAAAAAAA",
+      "premise2" : "ProductNetwork-AAAAAAAAAAAAAAAAAAAAAA"
+    }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GFFbaNbkEeS93YO9qnND+w",
-    "id" : "GFFbaNbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LZPNwNeuEeSdcTGVxQYipQ",
+    "id" : "LZPNwNeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2134,8 +2134,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GFMwK9bkEeS93YO9qnND+w",
-    "id" : "GFMwK9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LZWig9euEeSdcTGVxQYipQ",
+    "id" : "LZWig9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2169,8 +2169,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GFWhLdbkEeS93YO9qnND+w",
-    "id" : "GFWhLdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LZeeVdeuEeSdcTGVxQYipQ",
+    "id" : "LZeeVdeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2193,8 +2193,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GFWhL9bkEeS93YO9qnND+w",
-    "id" : "GFWhL9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LZeeV9euEeSdcTGVxQYipQ",
+    "id" : "LZeeV9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2203,8 +2203,8 @@
     "type" : "AgencyAttributeAuthorization",
     "ruleform" : {
       "type" : "agencyattributeauthorization",
-      "@id" : "AgencyAttributeAuthorization-GFWhLtbkEeS93YO9qnND+w",
-      "id" : "GFWhLtbkEeS93YO9qnND+w",
+      "@id" : "AgencyAttributeAuthorization-LZeeVteuEeSdcTGVxQYipQ",
+      "id" : "LZeeVteuEeSdcTGVxQYipQ",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2222,8 +2222,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GFXIQdbkEeS93YO9qnND+w",
-    "id" : "GFXIQdbkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LZfFadeuEeSdcTGVxQYipQ",
+    "id" : "LZfFadeuEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2232,8 +2232,8 @@
     "type" : "AgencyAttributeAuthorization",
     "ruleform" : {
       "type" : "agencyattributeauthorization",
-      "@id" : "AgencyAttributeAuthorization-GFXIQNbkEeS93YO9qnND+w",
-      "id" : "GFXIQNbkEeS93YO9qnND+w",
+      "@id" : "AgencyAttributeAuthorization-LZfFaNeuEeSdcTGVxQYipQ",
+      "id" : "LZfFaNeuEeSdcTGVxQYipQ",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2251,8 +2251,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-GFXIQ9bkEeS93YO9qnND+w",
-    "id" : "GFXIQ9bkEeS93YO9qnND+w",
+    "@id" : "WorkspaceAuthorization-LZfFa9euEeSdcTGVxQYipQ",
+    "id" : "LZfFa9euEeSdcTGVxQYipQ",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
@@ -2261,17 +2261,17 @@
     "type" : "AgencyNetwork",
     "ruleform" : {
       "type" : "agencynetwork",
-      "@id" : "AgencyNetwork-GFXIQtbkEeS93YO9qnND+w",
-      "id" : "GFXIQtbkEeS93YO9qnND+w",
+      "@id" : "AgencyNetwork-LZfFateuEeSdcTGVxQYipQ",
+      "id" : "LZfFateuEeSdcTGVxQYipQ",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-AAAAAAAAAAAAAAAAAAAAAQ",
-      "inference" : "NetworkInference-AAAAAAAAAAAAAAAAAAAAAA",
+      "inference" : null,
       "relationship" : "Relationship-AAAAAAAAAAUAAAAAAAAAEQ",
       "child" : "Agency-AAAAAAAAAAAAAAAAAAAABg",
       "parent" : "Agency-AAAAAAAAAAAAAAAAAAAADA",
-      "premise1" : "AgencyNetwork-AAAAAAAAAAAAAAAAAAAAAA",
-      "premise2" : "AgencyNetwork-AAAAAAAAAAAAAAAAAAAAAA"
+      "premise1" : null,
+      "premise2" : null
     }
   } ]
 }

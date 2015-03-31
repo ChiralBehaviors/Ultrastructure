@@ -56,11 +56,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <classifier>site</classifier>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>provided</scope>
@@ -208,7 +203,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.3.2</version>
+                        <version>1.4.0</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -218,6 +213,7 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <stopUnresponsiveDaemonThreads>true</stopUnresponsiveDaemonThreads>
                             <classpathScope>test</classpathScope>
                             <mainClass>com.chiralbehaviors.CoRE.kernel.Bootstrap</mainClass>
                             <arguments>

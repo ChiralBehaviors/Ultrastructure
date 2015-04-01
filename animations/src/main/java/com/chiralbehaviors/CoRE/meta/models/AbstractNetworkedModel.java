@@ -67,7 +67,6 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Edge;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -164,8 +163,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     private void generateInverses() {
         long then = System.currentTimeMillis();
         int inverses = em.createNamedQuery(String.format("%s%s", networkPrefix,
-                                                         GENERATE_NETWORK_INVERSES_SUFFIX),
-                                           Edge.class).executeUpdate();
+                                                         GENERATE_NETWORK_INVERSES_SUFFIX)).executeUpdate();
         if (log.isTraceEnabled()) {
             log.trace(String.format("created %s inverse rules of %s in %s ms",
                                     inverses, networkPrefix,
@@ -640,8 +638,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     // Deduce the new rules
     private void deduce() {
         int deductions = em.createNamedQuery(networkPrefix
-                                                     + DEDUCE_NEW_NETWORK_RULES_SUFFIX,
-                                             Edge.class).executeUpdate();
+                                                     + DEDUCE_NEW_NETWORK_RULES_SUFFIX).executeUpdate();
         if (log.isTraceEnabled()) {
             log.trace(String.format("deduced %s rules", deductions));
 

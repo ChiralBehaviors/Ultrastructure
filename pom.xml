@@ -38,6 +38,7 @@
     <properties>
         <postgresql.driver.version>9.1-901.jdbc4</postgresql.driver.version>
         <jackson.version>2.5.1</jackson.version>
+        <hibernate.version>4.3.8.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <core.java.login>core_java</core.java.login>
         <core.java.password>password</core.java.password>
@@ -75,6 +76,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-hibernate4</artifactId>
                 <version>${jackson.version}</version>
@@ -82,7 +88,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-jpamodelgen</artifactId>
-                <version>4.3.8.Final</version>
+                <version>${hibernate.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.javassist</groupId>
@@ -93,11 +99,6 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections-maven</artifactId>
                 <version>0.9.8</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <version>4.3.8.Final</version>
             </dependency>
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
@@ -197,26 +198,6 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
-                <artifactId>test-framework</artifactId>
-                <version>${project.version}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>commons-lang</artifactId>
-                        <groupId>commons-lang</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>junit</artifactId>
-                        <groupId>junit</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>slf4j-api</artifactId>
-                        <groupId>org.slf4j</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>

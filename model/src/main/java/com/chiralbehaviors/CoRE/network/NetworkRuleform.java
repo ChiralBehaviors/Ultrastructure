@@ -24,14 +24,11 @@ import java.util.UUID;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
-import javax.persistence.ColumnResult;
-import javax.persistence.ConstructorResult;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.SqlResultSetMapping;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -48,13 +45,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Access(AccessType.FIELD)
-@SqlResultSetMapping(name = "Edge", classes = { @ConstructorResult(targetClass = Edge.class, columns = {
-                                                                                                        @ColumnResult(name = "parent"),
-                                                                                                        @ColumnResult(name = "relationship"),
-                                                                                                        @ColumnResult(name = "child"),
-                                                                                                        @ColumnResult(name = "inference"),
-                                                                                                        @ColumnResult(name = "premise1"),
-                                                                                                        @ColumnResult(name = "premise2") }) })
 abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         extends Ruleform {
     private static final long serialVersionUID = 1L;

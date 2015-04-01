@@ -67,7 +67,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                  WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
-        <named-native-query name="%queryPrefix%.deduceNewNetworkRules" result-set-mapping="Edge">
+        <named-native-query name="%queryPrefix%.deduceNewNetworkRules">
             <query><![CDATA[
                INSERT INTO current_pass_rules(id, 
                                               parent, 
@@ -114,7 +114,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                WHERE exist.id IS NULL
             ]]></query>
         </named-native-query>
-        <named-native-query name="%queryPrefix%.generateInverses" result-set-mapping="Edge">
+        <named-native-query name="%queryPrefix%.generateInverses">
             <query><![CDATA[
             INSERT INTO ruleform.%tableName%(id,
                                                 parent, 

@@ -9,26 +9,26 @@
         <createTable schemaName="ruleform" remarks="Defines the possible states that an Event can be in, as well as the path through those states"
             tableName="status_code_sequencing"
         >
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="status_code_sequencing_pkey" />
             </column>
-            <column name="service" remarks="The service whose states are being described" type="CHAR(22)">
+            <column name="service" remarks="The service whose states are being described" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="parent_code"
                 remarks="The &quot;from&quot; state to which one may transition to any state listed in the &quot;child_code&quot; column"
-                type="CHAR(22)"
+                type="uuid"
             >
                 <constraints nullable="false" />
             </column>
             <column name="child_code"
                 remarks="The &quot;to&quot; state to which one may transition from the state listed in the &quot;parent_code&quot; column"
-                type="CHAR(22)"
+                type="uuid"
             >
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

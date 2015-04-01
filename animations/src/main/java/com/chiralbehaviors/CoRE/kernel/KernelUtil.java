@@ -31,7 +31,6 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.internal.SessionImpl;
 
-import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.RehydratedWorkspace;
@@ -153,9 +152,7 @@ public class KernelUtil {
 
     public static final String SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    public static final String ZERO                      = UuidGenerator.toBase64(new UUID(
-                                                                                           0,
-                                                                                           0));
+    public static final UUID   ZERO                      = new UUID(0, 0);
 
     static final String        KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 }

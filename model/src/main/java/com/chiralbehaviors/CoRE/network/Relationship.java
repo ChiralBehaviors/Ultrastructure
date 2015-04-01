@@ -258,7 +258,7 @@ public class Relationship extends
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
      */
     @Override
-    public String getAnyId() {
+    public UUID getAnyId() {
         return WellKnownRelationship.ANY.id();
     }
 
@@ -278,7 +278,7 @@ public class Relationship extends
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
     @Override
-    public String getCopyId() {
+    public UUID getCopyId() {
         return WellKnownRelationship.COPY.id();
     }
 
@@ -349,7 +349,7 @@ public class Relationship extends
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
-    public String getNotApplicableId() {
+    public UUID getNotApplicableId() {
         return WellKnownRelationship.NOT_APPLICABLE.id();
     }
 
@@ -365,7 +365,7 @@ public class Relationship extends
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
      */
     @Override
-    public String getSameId() {
+    public UUID getSameId() {
         return WellKnownRelationship.SAME.id();
     }
 

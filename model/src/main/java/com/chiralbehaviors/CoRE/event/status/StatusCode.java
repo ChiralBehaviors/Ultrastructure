@@ -243,7 +243,7 @@ public class StatusCode extends
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
      */
     @Override
-    public String getAnyId() {
+    public UUID getAnyId() {
         return WellKnownStatusCode.ANY.id();
     }
 
@@ -263,7 +263,7 @@ public class StatusCode extends
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
     @Override
-    public String getCopyId() {
+    public UUID getCopyId() {
         return WellKnownStatusCode.COPY.id();
     }
 
@@ -333,7 +333,7 @@ public class StatusCode extends
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
-    public String getNotApplicableId() {
+    public UUID getNotApplicableId() {
         return WellKnownStatusCode.NOT_APPLICABLE.id();
     }
 
@@ -345,7 +345,7 @@ public class StatusCode extends
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
      */
     @Override
-    public String getSameId() {
+    public UUID getSameId() {
         return WellKnownStatusCode.SAME.id();
     }
 

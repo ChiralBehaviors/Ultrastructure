@@ -19,32 +19,32 @@
             initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
 
         <addColumn tableName="protocol" schemaName="ruleform">
-            <column name="child_assign_to" type="CHAR(22)">
+            <column name="child_assign_to" type="uuid">
                 <constraints nullable=" false " />
             </column>
-            <column name="child_deliver_to" type="CHAR(22)">
+            <column name="child_deliver_to" type="uuid">
                 <constraints nullable=" false " />
             </column>
-            <column name="child_deliver_from" type="CHAR(22)">
+            <column name="child_deliver_from" type="uuid">
                 <constraints nullable=" false " />
             </column>
-            <column name="child_service_attribute" type="CHAR(22)">
+            <column name="child_service_attribute" type="uuid">
                 <constraints nullable=" false " />
             </column>
-            <column name="child_product_attribute" type="CHAR(22)">
+            <column name="child_product_attribute" type="uuid">
                 <constraints nullable=" false " />
             </column>
-            <column name="child_assign_to_attribute" type="CHAR(22)">
+            <column name="child_assign_to_attribute" type="uuid">
                 <constraints nullable=" false " />
             </column>
-            <column name="child_deliver_to_attribute" type="CHAR(22)">
+            <column name="child_deliver_to_attribute" type="uuid">
                 <constraints nullable=" false " />
             </column>
-            <column name="child_deliver_from_attribute" type="CHAR(22)">
+            <column name="child_deliver_from_attribute" type="uuid">
                 <constraints nullable=" false " />
             </column>
             <column name="child_quantity" type="INT" />
-            <column name="child_quantity_unit" type="CHAR(22)">
+            <column name="child_quantity_unit" type="uuid">
                 <constraints nullable=" false " />
             </column>
         </addColumn>

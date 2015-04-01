@@ -17,80 +17,80 @@
         ]]>
         </createProcedure>
         <createTable schemaName="ruleform" remarks="A workspace authorization defines the entities in a workspace" tableName="workspace_authorization">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="workspace_authorization_pkey" />
             </column>
             <column name="notes" type="TEXT" />
-            <column name="defining_product" type="CHAR(22)">
+            <column name="defining_product" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="type" type="VARCHAR(256)">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
             <column name="key" type="VARCHAR(1024)" />
-            <column name="agency" type="CHAR(22)" />
-            <column name="agency_attribute" type="CHAR(22)" />
-            <column name="agency_attribute_authorization" type="CHAR(22)" />
-            <column name="agency_location" type="CHAR(22)" />
-            <column name="agency_location_attribute" type="CHAR(22)" />
-            <column name="agency_network" type="CHAR(22)" />
-            <column name="agency_network_attribute" type="CHAR(22)" />
-            <column name="agency_network_authorization" type="CHAR(22)" />
-            <column name="agency_product" type="CHAR(22)" />
-            <column name="agency_location_access_authorization" type="CHAR(22)" />
-            <column name="agency_product_access_authorization" type="CHAR(22)" />
-            <column name="attribute" type="CHAR(22)" />
-            <column name="attribute_meta_attribute" type="CHAR(22)" />
-            <column name="attr_meta_attr_auth" type="CHAR(22)" />
-            <column name="attribute_network" type="CHAR(22)" />
-            <column name="attribute_network_attribute" type="CHAR(22)" />
-            <column name="unit" type="CHAR(22)" />
-            <column name="unit_attribute" type="CHAR(22)" />
-            <column name="unit_attribute_authorization" type="CHAR(22)" />
-            <column name="unit_network" type="CHAR(22)" />
-            <column name="unit_network_attribute" type="CHAR(22)" />
-            <column name="unit_value" type="CHAR(22)" />
-            <column name="location" type="CHAR(22)" />
-            <column name="location_attribute" type="CHAR(22)" />
-            <column name="location_attribute_authorization" type="CHAR(22)" />
-            <column name="location_network" type="CHAR(22)" />
-            <column name="location_network_attribute" type="CHAR(22)" />
-            <column name="location_network_authorization" type="CHAR(22)" />
-            <column name="product" type="CHAR(22)" />
-            <column name="product_attribute" type="CHAR(22)" />
-            <column name="product_attribute_authorization" type="CHAR(22)" />
-            <column name="product_network" type="CHAR(22)" />
-            <column name="product_network_attribute" type="CHAR(22)" />
-            <column name="product_location" type="CHAR(22)" />
-            <column name="product_location_attribute" type="CHAR(22)" />
-            <column name="interval" type="CHAR(22)" />
-            <column name="interval_attribute" type="CHAR(22)" />
-            <column name="interval_attribute_authorization" type="CHAR(22)" />
-            <column name="interval_network" type="CHAR(22)" />
-            <column name="interval_network_attribute" type="CHAR(22)" />
-            <column name="status_code" type="CHAR(22)" />
-            <column name="status_code_attribute" type="CHAR(22)" />
-            <column name="status_code_attribute_authorization" type="CHAR(22)" />
-            <column name="status_code_network" type="CHAR(22)" />
-            <column name="status_code_network_attribute" type="CHAR(22)" />
-            <column name="status_code_sequencing" type="CHAR(22)" />
-            <column name="job" type="CHAR(22)" />
-            <column name="job_chronology" type="CHAR(22)" />
-            <column name="meta_protocol" type="CHAR(22)" />
-            <column name="network_inference" type="CHAR(22)" />
-            <column name="product_child_sequencing_authorization" type="CHAR(22)" />
-            <column name="product_parent_sequencing_authorization" type="CHAR(22)" />
-            <column name="product_self_sequencing_authorization" type="CHAR(22)" />
-            <column name="product_sibling_sequencing_authorization" type="CHAR(22)" />
-            <column name="protocol" type="CHAR(22)" />
-            <column name="relationship" type="CHAR(22)" />
-            <column name="relationship_attribute" type="CHAR(22)" />
-            <column name="relationship_attribute_authorization" type="CHAR(22)" />
-            <column name="relationship_network" type="CHAR(22)" />
+            <column name="agency" type="uuid" />
+            <column name="agency_attribute" type="uuid" />
+            <column name="agency_attribute_authorization" type="uuid" />
+            <column name="agency_location" type="uuid" />
+            <column name="agency_location_attribute" type="uuid" />
+            <column name="agency_network" type="uuid" />
+            <column name="agency_network_attribute" type="uuid" />
+            <column name="agency_network_authorization" type="uuid" />
+            <column name="agency_product" type="uuid" />
+            <column name="agency_location_access_authorization" type="uuid" />
+            <column name="agency_product_access_authorization" type="uuid" />
+            <column name="attribute" type="uuid" />
+            <column name="attribute_meta_attribute" type="uuid" />
+            <column name="attr_meta_attr_auth" type="uuid" />
+            <column name="attribute_network" type="uuid" />
+            <column name="attribute_network_attribute" type="uuid" />
+            <column name="unit" type="uuid" />
+            <column name="unit_attribute" type="uuid" />
+            <column name="unit_attribute_authorization" type="uuid" />
+            <column name="unit_network" type="uuid" />
+            <column name="unit_network_attribute" type="uuid" />
+            <column name="unit_value" type="uuid" />
+            <column name="location" type="uuid" />
+            <column name="location_attribute" type="uuid" />
+            <column name="location_attribute_authorization" type="uuid" />
+            <column name="location_network" type="uuid" />
+            <column name="location_network_attribute" type="uuid" />
+            <column name="location_network_authorization" type="uuid" />
+            <column name="product" type="uuid" />
+            <column name="product_attribute" type="uuid" />
+            <column name="product_attribute_authorization" type="uuid" />
+            <column name="product_network" type="uuid" />
+            <column name="product_network_attribute" type="uuid" />
+            <column name="product_location" type="uuid" />
+            <column name="product_location_attribute" type="uuid" />
+            <column name="interval" type="uuid" />
+            <column name="interval_attribute" type="uuid" />
+            <column name="interval_attribute_authorization" type="uuid" />
+            <column name="interval_network" type="uuid" />
+            <column name="interval_network_attribute" type="uuid" />
+            <column name="status_code" type="uuid" />
+            <column name="status_code_attribute" type="uuid" />
+            <column name="status_code_attribute_authorization" type="uuid" />
+            <column name="status_code_network" type="uuid" />
+            <column name="status_code_network_attribute" type="uuid" />
+            <column name="status_code_sequencing" type="uuid" />
+            <column name="job" type="uuid" />
+            <column name="job_chronology" type="uuid" />
+            <column name="meta_protocol" type="uuid" />
+            <column name="network_inference" type="uuid" />
+            <column name="product_child_sequencing_authorization" type="uuid" />
+            <column name="product_parent_sequencing_authorization" type="uuid" />
+            <column name="product_self_sequencing_authorization" type="uuid" />
+            <column name="product_sibling_sequencing_authorization" type="uuid" />
+            <column name="protocol" type="uuid" />
+            <column name="relationship" type="uuid" />
+            <column name="relationship_attribute" type="uuid" />
+            <column name="relationship_attribute_authorization" type="uuid" />
+            <column name="relationship_network" type="uuid" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_fkey"
@@ -460,7 +460,7 @@
         </createView>
 
         <addColumn tableName="protocol" schemaName="ruleform">
-            <column name="children_relationship" type="CHAR(22)">
+            <column name="children_relationship" type="uuid">
                 <constraints nullable=" false " />
             </column>
         </addColumn>

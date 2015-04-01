@@ -10,7 +10,7 @@
             remarks="Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes."
             tableName="attribute"
         >
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="attribute_pkey" />
             </column>
             <column name="name" type="TEXT">
@@ -18,7 +18,7 @@
             </column>
             <column name="description" type="TEXT" />
             <column name="notes" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

@@ -9,22 +9,22 @@
         <createTable schemaName="ruleform"
             remarks="Defines rules stating what attributes (and values thereof) are authorized for particular Entities" tableName="attr_meta_attr_auth"
         >
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="attr_meta_attr_auth_pkey" />
             </column>
             <column name="classification"
                 remarks="In conjunction with the 'classifier' column, determines the classification criteria for selecting meta attributes a certain Attribute must have"
-                type="CHAR(22)"
+                type="uuid"
             >
                 <constraints nullable="false" />
             </column>
             <column name="classifier"
                 remarks="In conjunction with the 'classification' column, determines the classification criteria for selecting metaattributes a certain Attribute must have"
-                type="CHAR(22)"
+                type="uuid"
             >
                 <constraints nullable="false" />
             </column>
-            <column name="authorized_attribute" remarks="A meta Attribute an Attribute is expected to have" type="CHAR(22)">
+            <column name="authorized_attribute" remarks="A meta Attribute an Attribute is expected to have" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="1" name="sequence_number"
@@ -33,7 +33,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="grouping_agency" remarks="If present, used to select an entire grouping of Attributes that can be acceptable values"
-                type="CHAR(22)" />
+                type="uuid" />
             <column name="boolean_value" type="SMALLINT" />
             <column name="binary_value" type="BYTEA" />
             <column name="text_value" remarks="Contains a single acceptable text-value if 'attribute' has a data type of 'text'"
@@ -44,7 +44,7 @@
                 type="numeric" />
             <column name="timestamp_value" type="TIMESTAMPTZ" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

@@ -7,20 +7,20 @@
 
     <changeSet author="hhildebrand" id="1390879803225-37">
         <createTable schemaName="ruleform" tableName="agency_location_attribute">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_location_attribute_pkey" />
             </column>
-            <column name="agency" type="CHAR(22)">
+            <column name="agency" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="agency_location" type="CHAR(22)">
+            <column name="agency_location" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" type="CHAR(22)">
+            <column name="attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="TEXT" />
-            <column name="product_value" type="CHAR(22)" />
+            <column name="product_value" type="uuid" />
             <column name="numeric_value" type="numeric" />
             <column name="integer_value" type="INT4" />
             <column name="boolean_value" type="SMALLINT" />
@@ -30,9 +30,9 @@
             <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
-            <column name="unit" type="CHAR(22)" />
+            <column name="unit" type="uuid" />
             <column name="notes" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

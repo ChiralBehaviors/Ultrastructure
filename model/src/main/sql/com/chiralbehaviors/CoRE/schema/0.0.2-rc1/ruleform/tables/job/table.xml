@@ -7,50 +7,50 @@
 
     <changeSet author="hhildebrand" id="1390879803225-21">
         <createTable schemaName="ruleform" remarks="An instantiation of an service; something actually done" tableName="job">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="job_pkey" />
             </column>
-            <column name="service" remarks="The service performed by this Job" type="CHAR(22)">
+            <column name="service" remarks="The service performed by this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="product" remarks="The product produced this Job" type="CHAR(22)">
+            <column name="product" remarks="The product produced this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="assign_to" remarks="The agency doing this Job" type="CHAR(22)">
+            <column name="assign_to" remarks="The agency doing this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="requester" type="CHAR(22)">
+            <column name="requester" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_to" type="CHAR(22)">
+            <column name="deliver_to" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_from" type="CHAR(22)">
+            <column name="deliver_from" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="service_attribute" remarks="The attribute service performed by this Job" type="CHAR(22)">
+            <column name="service_attribute" remarks="The attribute service performed by this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="product_attribute" remarks="The product produced this Job" type="CHAR(22)">
+            <column name="product_attribute" remarks="The product produced this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="assign_to_attribute" remarks="The agency doing this Job" type="CHAR(22)">
+            <column name="assign_to_attribute" remarks="The agency doing this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="requester_attribute" type="CHAR(22)">
+            <column name="requester_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_to_attribute" type="CHAR(22)">
+            <column name="deliver_to_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_from_attribute" type="CHAR(22)">
+            <column name="deliver_from_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="status" remarks="The current status of this Job" type="CHAR(22)">
+            <column name="status" remarks="The current status of this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="CHAR(22)" />
-            <column name="protocol" remarks="The protocol that generated this job" type="CHAR(22)" />
+            <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="uuid" />
+            <column name="protocol" remarks="The protocol that generated this job" type="uuid" />
             <column defaultValueNumeric="1" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
@@ -58,11 +58,11 @@
             <column name="current_log_sequence" type="int4">
                 <constraints nullable="false" />
             </column>
-            <column name="quantity_unit" type="CHAR(22)">
+            <column name="quantity_unit" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

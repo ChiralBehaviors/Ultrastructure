@@ -7,29 +7,29 @@
 
     <changeSet author="hhildebrand" id="1390879803225-40">
         <createTable schemaName="ruleform" tableName="product_network">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_network_pkey" />
             </column>
-            <column name="parent" type="CHAR(22)">
+            <column name="parent" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="relationship" type="CHAR(22)">
+            <column name="relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="child" type="CHAR(22)">
+            <column name="child" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="inference" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
+            <column name="inference" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000000'">
                 <constraints nullable="false" />
             </column>
-            <column name="premise1" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
+            <column name="premise1" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000000'">
                 <constraints nullable="false" />
             </column>
-            <column name="premise2" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAA">
+            <column name="premise2" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000000'">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

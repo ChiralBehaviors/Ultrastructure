@@ -230,7 +230,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
      */
     @Override
-    public String getAnyId() {
+    public UUID getAnyId() {
         return WellKnownInterval.ANY.id();
     }
 
@@ -255,7 +255,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
     @Override
-    public String getCopyId() {
+    public UUID getCopyId() {
         return WellKnownInterval.COPY.id();
     }
 
@@ -335,7 +335,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
-    public String getNotApplicableId() {
+    public UUID getNotApplicableId() {
         return WellKnownInterval.NOT_APPLICABLE.id();
     }
 
@@ -343,7 +343,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
      */
     @Override
-    public String getSameId() {
+    public UUID getSameId() {
         return WellKnownInterval.SAME.id();
     }
 

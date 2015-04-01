@@ -23,7 +23,6 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
 import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.GET_NETWORKS;
-import static com.chiralbehaviors.CoRE.attribute.AttributeNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
 import java.util.UUID;
 
@@ -53,10 +52,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 
 @NamedQueries({
-               @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "SELECT n FROM AttributeNetwork n "
-                                                                            + "WHERE n.parent = :attribute and n.inference.id = 'AAAAAAAAAAAAAAAAAAAAAA' "
-                                                                            + "AND n.relationship.preferred = 1 "
-                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AttributeNetwork n "
                                                         + "WHERE n.parent = :parent "
                                                         + "AND n.relationship = :relationship"),
@@ -67,13 +62,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "attribute_network", schema = "ruleform")
 public class AttributeNetwork extends NetworkRuleform<Attribute> {
-    public static final String GET_CHILDREN                     = "attributeNetwork"
-                                                                  + GET_CHILDREN_SUFFIX;
-    public static final String GET_NETWORKS                     = "attributeNetwork"
-                                                                  + GET_NETWORKS_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS           = "attributeNetwork.getUsedRelationships";
-    public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "attribute.immediateChildrenNetworkRules";
-    private static final long  serialVersionUID                 = 1L;
+    public static final String GET_CHILDREN           = "attributeNetwork"
+                                                        + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS           = "attributeNetwork"
+                                                        + GET_NETWORKS_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS = "attributeNetwork.getUsedRelationships";
+    private static final long  serialVersionUID       = 1L;
 
     // bi-directional many-to-one association to Attribute
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })

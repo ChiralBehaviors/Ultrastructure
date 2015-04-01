@@ -7,13 +7,13 @@
 
     <changeSet author="hhildebrand" id="1390879803225-33">
         <createTable schemaName="ruleform" tableName="product_attribute">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_attribute_pkey" />
             </column>
-            <column name="product" type="CHAR(22)">
+            <column name="product" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" type="CHAR(22)">
+            <column name="attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="TEXT" />
@@ -26,9 +26,9 @@
             <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
-            <column name="unit" type="CHAR(22)" />
+            <column name="unit" type="uuid" />
             <column name="notes" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

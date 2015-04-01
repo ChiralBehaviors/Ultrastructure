@@ -22,6 +22,9 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.TypedQuery;
 
 import org.junit.Test;
 
@@ -66,8 +69,10 @@ public class RelationshipModelTest extends AbstractModelTest {
 
         em.flush();
 
-        List<RelationshipNetwork> edges = em.createQuery("SELECT edge FROM RelationshipNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
-                                                         RelationshipNetwork.class).getResultList();
+        TypedQuery<RelationshipNetwork> query = em.createQuery("SELECT edge FROM RelationshipNetwork edge WHERE edge.inference.id <> :id",
+                                                               RelationshipNetwork.class);
+        query.setParameter("id", new UUID(0, 0));
+        List<RelationshipNetwork> edges = query.getResultList();
         assertEquals(2, edges.size());
     }
 }

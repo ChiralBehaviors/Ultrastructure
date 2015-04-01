@@ -91,7 +91,7 @@ import com.hellblazer.utils.Tuple;
  */
 public class JobModelImpl implements JobModel {
 
-    private static final Logger   log = LoggerFactory.getLogger(JobModelImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(JobModelImpl.class);
 
     /**
      * Iterate through all SCCs in the graph, testing each one to see if there
@@ -390,7 +390,7 @@ public class JobModelImpl implements JobModel {
     public List<Job> getActiveJobsFor(Agency agency) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ASSIGNED_TO,
                                                     Job.class);
-        query.setParameter("agency", agency.getPrimaryKey());
+        query.setParameter("agency", agency);
         List<Job> active = new ArrayList<>();
         for (Job j : query.getResultList()) {
             if (isActive(j)) {

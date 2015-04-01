@@ -118,13 +118,13 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     abstract public void addParentRelationship(Network relationship);
 
     @JsonIgnore
-    abstract public String getAnyId();
+    abstract public UUID getAnyId();
 
     @JsonIgnore
     abstract public <Value extends AttributeValue<RuleForm>> Class<Value> getAttributeValueClass();
 
     @JsonIgnore
-    abstract public String getCopyId();
+    abstract public UUID getCopyId();
 
     /**
      * @return the description
@@ -161,7 +161,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     abstract public SingularAttribute<WorkspaceAuthorization, Network> getNetworkWorkspaceAuthAttribute();
 
     @JsonIgnore
-    abstract public String getNotApplicableId();
+    abstract public UUID getNotApplicableId();
 
     @SuppressWarnings("unchecked")
     @JsonIgnore
@@ -170,7 +170,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     }
 
     @JsonIgnore
-    abstract public String getSameId();
+    abstract public UUID getSameId();
 
     @JsonIgnore
     public abstract boolean isAny();

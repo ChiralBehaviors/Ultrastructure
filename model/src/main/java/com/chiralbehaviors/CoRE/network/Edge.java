@@ -16,23 +16,24 @@
 
 package com.chiralbehaviors.CoRE.network;
 
+import java.util.UUID;
+
 public class Edge {
     public String parent;
-
     public String relationship;
     public String child;
     public String inference;
     public String premise1;
     public String premise2;
 
-    public Edge(String parent, String relationship, String child,
-                String inference, String premise1, String premise2) {
-        this.parent = parent;
-        this.relationship = relationship;
-        this.child = child;
-        this.inference = inference;
-        this.premise1 = premise1;
-        this.premise2 = premise2;
+    public Edge(UUID parent, UUID relationship, UUID child, UUID inference,
+                UUID premise1, UUID premise2) {
+        this.parent = parent.toString();
+        this.relationship = relationship.toString();
+        this.child = child.toString();
+        this.inference = inference.toString();
+        this.premise1 = premise1.toString();
+        this.premise2 = premise2.toString();
     }
 
     public String toString(String id) {

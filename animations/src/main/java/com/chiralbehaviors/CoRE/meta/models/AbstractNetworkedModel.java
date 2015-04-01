@@ -31,8 +31,6 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.GENERATE_NETWORK_INVE
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_DEDUCTIONS_SUFFIX;
-import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_INVERSES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 
@@ -61,7 +59,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.UuidGenerator;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -152,7 +149,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     @Override
     public RuleForm find(UUID id) {
-        RuleForm rf = em.find(entity, id.toString());
+        RuleForm rf = em.find(entity, id);
         return rf;
     }
 
@@ -164,29 +161,14 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         return em.createQuery(cq).getResultList();
     }
 
-    public void generateInverses() {
+    private void generateInverses() {
         long then = System.currentTimeMillis();
-        List<Edge> inverses = em.createNamedQuery(String.format("%s%s",
-                                                                networkPrefix,
-                                                                GENERATE_NETWORK_INVERSES_SUFFIX),
-                                                  Edge.class).getResultList();
-        Query insert = em.createNamedQuery(String.format("%s%s", networkPrefix,
-                                                         INSERT_INVERSES_SUFFIX));
-        for (Edge inverse : inverses) {
-            String id = UuidGenerator.nextId();
-            insert.setParameter(1, id);
-            insert.setParameter(2, inverse.parent);
-            insert.setParameter(3, inverse.relationship);
-            insert.setParameter(4, inverse.child);
-            insert.setParameter(5, inverse.inference);
-            insert.setParameter(6, inverse.premise1);
-            insert.setParameter(7, inverse.premise2);
-            insert.setParameter(8, kernel.getInverseSoftware().getId());
-            insert.executeUpdate();
-        }
+        int inverses = em.createNamedQuery(String.format("%s%s", networkPrefix,
+                                                         GENERATE_NETWORK_INVERSES_SUFFIX),
+                                           Edge.class).executeUpdate();
         if (log.isTraceEnabled()) {
             log.trace(String.format("created %s inverse rules of %s in %s ms",
-                                    inverses.size(), networkPrefix,
+                                    inverses, networkPrefix,
                                     System.currentTimeMillis() - then));
         }
     }
@@ -394,7 +376,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                         cb.equal(networkRoot.get("relationship"),
                                                  relationship),
                                         cb.equal(networkRoot.get("inference").get("id"),
-                                                 "AAAAAAAAAAAAAAAAAAAAAA")));
+                                                 new UUID(0, 0))));
         TypedQuery<RuleForm> q = em.createQuery(query);
         return q.getSingleResult();
     }
@@ -416,7 +398,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                         cb.equal(networkRoot.get("relationship"),
                                                  relationship),
                                         cb.equal(networkRoot.get("inference").get("id"),
-                                                 "AAAAAAAAAAAAAAAAAAAAAA")));
+                                                 new UUID(0, 0))));
         TypedQuery<RuleForm> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -616,13 +598,13 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     private void createCurrentPassRules() {
         em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_rules ("
-                                     + "id CHAR(22) NOT NULL,"
-                                     + "parent CHAR(22) NOT NULL,"
-                                     + "relationship CHAR(22) NOT NULL,"
-                                     + "child CHAR(22) NOT NULL,"
-                                     + "premise1 CHAR(22) NOT NULL,"
-                                     + "premise2 CHAR(22) NOT NULL,"
-                                     + "inference CHAR(22) NOT NULL )").executeUpdate();
+                                     + "id uuid NOT NULL,"
+                                     + "parent uuid NOT NULL,"
+                                     + "relationship uuid NOT NULL,"
+                                     + "child uuid NOT NULL,"
+                                     + "premise1 uuid NOT NULL,"
+                                     + "premise2 uuid NOT NULL,"
+                                     + "inference uuid NOT NULL )").executeUpdate();
     }
 
     private void createDeductionTemporaryTables() {
@@ -636,47 +618,33 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     private void createLastPassRules() {
         em.createNativeQuery("CREATE TEMPORARY TABLE last_pass_rules ("
-                                     + "id CHAR(22) NOT NULL,"
-                                     + "parent CHAR(22) NOT NULL,"
-                                     + "relationship CHAR(22) NOT NULL,"
-                                     + "child CHAR(22) NOT NULL,"
-                                     + "premise1 CHAR(22) NOT NULL,"
-                                     + "premise2 CHAR(22) NOT NULL,"
-                                     + "inference CHAR(22) NOT NULL )").executeUpdate();
+                                     + "id uuid NOT NULL,"
+                                     + "parent uuid NOT NULL,"
+                                     + "relationship uuid NOT NULL,"
+                                     + "child uuid NOT NULL,"
+                                     + "premise1 uuid NOT NULL,"
+                                     + "premise2 uuid NOT NULL,"
+                                     + "inference uuid NOT NULL )").executeUpdate();
     }
 
     private void createWorkingMemory() {
         em.createNativeQuery("CREATE TEMPORARY TABLE working_memory("
-                                     + "parent CHAR(22) NOT NULL,"
-                                     + "relationship CHAR(22) NOT NULL,"
-                                     + "child CHAR(22) NOT NULL,"
-                                     + "premise1 CHAR(22) NOT NULL,"
-                                     + "premise2 CHAR(22) NOT NULL,"
-                                     + "inference CHAR(22) NOT NULL )").executeUpdate();
+                                     + "parent uuid NOT NULL,"
+                                     + "relationship uuid NOT NULL,"
+                                     + "child uuid NOT NULL,"
+                                     + "premise1 uuid NOT NULL,"
+                                     + "premise2 uuid NOT NULL,"
+                                     + "inference uuid NOT NULL )").executeUpdate();
     }
 
     // Deduce the new rules
     private void deduce() {
-        List<Edge> deductions = em.createNamedQuery(networkPrefix
-                                                            + DEDUCE_NEW_NETWORK_RULES_SUFFIX,
-                                                    Edge.class).getResultList();
+        int deductions = em.createNamedQuery(networkPrefix
+                                                     + DEDUCE_NEW_NETWORK_RULES_SUFFIX,
+                                             Edge.class).executeUpdate();
         if (log.isTraceEnabled()) {
-            log.trace(String.format("deduced %s rules", deductions.size()));
+            log.trace(String.format("deduced %s rules", deductions));
 
-        }
-
-        Query insert = em.createNamedQuery(String.format("%s%s", networkPrefix,
-                                                         INSERT_DEDUCTIONS_SUFFIX));
-        for (Edge deduction : deductions) {
-            String id = UuidGenerator.nextId();
-            insert.setParameter(1, id);
-            insert.setParameter(2, deduction.parent);
-            insert.setParameter(3, deduction.relationship);
-            insert.setParameter(4, deduction.child);
-            insert.setParameter(5, deduction.inference);
-            insert.setParameter(6, deduction.premise1);
-            insert.setParameter(7, deduction.premise2);
-            insert.executeUpdate();
         }
     }
 
@@ -723,7 +691,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     private int insert() {// Insert the new rules
         Query insert = em.createNamedQuery(networkPrefix
                                            + INSERT_NEW_NETWORK_RULES_SUFFIX);
-        insert.setParameter(1, kernel.getPropagationSoftware().getPrimaryKey());
         int inserted = insert.executeUpdate();
         if (log.isTraceEnabled()) {
             log.trace(String.format("inserted %s new rules", inserted));

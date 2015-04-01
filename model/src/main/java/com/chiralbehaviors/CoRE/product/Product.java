@@ -284,7 +284,7 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
      */
     @Override
-    public String getAnyId() {
+    public UUID getAnyId() {
         return WellKnownProduct.ANY.id();
     }
 
@@ -304,7 +304,7 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
     @Override
-    public String getCopyId() {
+    public UUID getCopyId() {
         return WellKnownProduct.COPY.id();
     }
 
@@ -374,7 +374,7 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
-    public String getNotApplicableId() {
+    public UUID getNotApplicableId() {
         return WellKnownProduct.NOT_APPLICABLE.id();
     }
 
@@ -382,7 +382,7 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
      */
     @Override
-    public String getSameId() {
+    public UUID getSameId() {
         return WellKnownProduct.SAME.id();
     }
 

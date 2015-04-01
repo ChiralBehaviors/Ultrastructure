@@ -201,7 +201,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
      */
     @Override
-    public String getAnyId() {
+    public UUID getAnyId() {
         return WellKnownUnit.ANY.id();
     }
 
@@ -221,7 +221,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
     @Override
-    public String getCopyId() {
+    public UUID getCopyId() {
         return WellKnownUnit.COPY.id();
     }
 
@@ -303,7 +303,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
-    public String getNotApplicableId() {
+    public UUID getNotApplicableId() {
         return WellKnownUnit.NOT_APPLICABLE.id();
     }
 
@@ -311,7 +311,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
      */
     @Override
-    public String getSameId() {
+    public UUID getSameId() {
         return WellKnownUnit.SAME.id();
     }
 

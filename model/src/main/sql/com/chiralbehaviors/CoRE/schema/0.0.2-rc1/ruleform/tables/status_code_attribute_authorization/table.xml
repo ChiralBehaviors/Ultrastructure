@@ -9,22 +9,22 @@
         <createTable schemaName="ruleform"
             remarks="Defines rules stating what attributes (and values thereof) are authorized for particular status_codes" tableName="status_code_attribute_authorization"
         >
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="status_code_attribute_authorization_pkey" />
             </column>
             <column name="classification"
                 remarks="In conjunction with the 'status_code' column, determines the classification criteria for selecting attributes a certain status_code must have"
-                type="CHAR(22)"
+                type="uuid"
             >
                 <constraints nullable="false" />
             </column>
             <column name="classifier"
                 remarks="In conjunction with the 'classification' column, determines the classification criteria for selecting attributes a certain status_code must have"
-                type="CHAR(22)"
+                type="uuid"
             >
                 <constraints nullable="false" />
             </column>
-            <column name="authorized_attribute" remarks="An Attribute a status_code is expected to have" type="CHAR(22)">
+            <column name="authorized_attribute" remarks="An Attribute a status_code is expected to have" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="1" name="sequence_number"
@@ -39,9 +39,9 @@
             <column name="integer_value" type="INT4" />
             <column name="numeric_value" type="numeric" />
             <column name="timestamp_value" type="TIMESTAMPTZ" />
-            <column name="grouping_agency" type="CHAR(22)" />
+            <column name="grouping_agency" type="uuid" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The status_code that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The status_code that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

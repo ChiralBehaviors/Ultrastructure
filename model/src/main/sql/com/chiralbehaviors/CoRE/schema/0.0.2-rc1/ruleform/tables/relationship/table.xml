@@ -7,7 +7,7 @@
 
     <changeSet author="hhildebrand" id="1390879803225-48">
         <createTable schemaName="ruleform" tableName="relationship">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="relationship_pkey" />
             </column>
             <column name="name" type="TEXT">
@@ -17,9 +17,9 @@
             <column name="preferred" type="SMALLINT">
                 <constraints nullable="false" />
             </column>
-            <column name="inverse" type="CHAR(22)"/>
+            <column name="inverse" type="uuid"/>
             <column name="notes" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

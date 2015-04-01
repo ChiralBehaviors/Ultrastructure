@@ -239,7 +239,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
      */
     @Override
-    public String getAnyId() {
+    public UUID getAnyId() {
         return WellKnownAttribute.ANY.id();
     }
 
@@ -259,7 +259,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
     @Override
-    public String getCopyId() {
+    public UUID getCopyId() {
         return WellKnownAttribute.COPY.id();
     }
 
@@ -319,7 +319,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
-    public String getNotApplicableId() {
+    public UUID getNotApplicableId() {
         return WellKnownAttribute.NOT_APPLICABLE.id();
     }
 
@@ -327,7 +327,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
      */
     @Override
-    public String getSameId() {
+    public UUID getSameId() {
         return WellKnownAttribute.SAME.id();
     }
 

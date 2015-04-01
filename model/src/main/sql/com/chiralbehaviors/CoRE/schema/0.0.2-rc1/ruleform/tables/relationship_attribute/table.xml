@@ -7,13 +7,13 @@
 
     <changeSet author="hhildebrand" id="1390879803225-49">
         <createTable schemaName="ruleform" tableName="relationship_attribute">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="relationship_attribute_pkey" />
             </column>
-            <column name="relationship" type="CHAR(22)">
+            <column name="relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" type="CHAR(22)">
+            <column name="attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="TEXT" />
@@ -23,12 +23,12 @@
             <column name="text_value" type="TEXT" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
-            <column name="unit" type="CHAR(22)" />
+            <column name="unit" type="uuid" />
             <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

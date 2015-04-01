@@ -20,7 +20,7 @@
                 base_table.numeric_value, 
                 base_table.notes, 
                 up.name AS updated_by, 
-                base_table.update_date
+                base_table.version
              FROM ruleform.attr_meta_attr_auth base_table
              LEFT JOIN ruleform.agency res ON base_table.grouping_agency = res.id
              LEFT JOIN ruleform.relationship cls ON base_table.classification = cls.id

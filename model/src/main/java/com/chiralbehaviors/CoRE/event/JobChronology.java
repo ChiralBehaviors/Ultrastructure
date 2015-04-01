@@ -213,7 +213,6 @@ public class JobChronology extends AbstractProtocol {
     protected void initializeFrom(Job job) {
         setJob(job);
         setStatus(job.getStatus());
-        setUpdateDate(job.getUpdateDate());
         copyFrom(job);
     }
 }

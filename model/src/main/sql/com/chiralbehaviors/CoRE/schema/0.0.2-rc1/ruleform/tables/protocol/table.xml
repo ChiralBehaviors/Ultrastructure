@@ -7,7 +7,7 @@
 
     <changeSet author="hhildebrand" id="1390879803225-45">
         <createTable schemaName="ruleform" remarks="Defines protocol rules for carrying out tasks" tableName="protocol">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="protocol_pkey" />
             </column>
             <column name="sequence_number" remarks="Ordering and uniqueness, for when an service / key combination can have multiple protocol rules"
@@ -15,62 +15,58 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="requested_service" type="CHAR(22)">
+            <column name="requested_service" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="requested_product" type="CHAR(22)">
+            <column name="requested_product" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_to" type="CHAR(22)">
+            <column name="deliver_to" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_from" type="CHAR(22)">
+            <column name="deliver_from" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="service" remarks="The service whose steps are being specified" type="CHAR(22)">
+            <column name="service" remarks="The service whose steps are being specified" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="product" type="CHAR(22)">
+            <column name="product" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="assign_to" remarks="The agency that should perform the task" type="CHAR(22)">
+            <column name="assign_to" remarks="The agency that should perform the task" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="requester" type="CHAR(22)">
+            <column name="requester" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="service_attribute" remarks="The attribute service performed by this Job" type="CHAR(22)">
+            <column name="service_attribute" remarks="The attribute service performed by this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="product_attribute" remarks="The product produced this Job" type="CHAR(22)">
+            <column name="product_attribute" remarks="The product produced this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="assign_to_attribute" remarks="The agency doing this Job" type="CHAR(22)">
+            <column name="assign_to_attribute" remarks="The agency doing this Job" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="requester_attribute" type="CHAR(22)">
+            <column name="requester_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_to_attribute" type="CHAR(22)">
+            <column name="deliver_to_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_from_attribute" type="CHAR(22)">
+            <column name="deliver_from_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="quantity" type="numeric" />
-            <column name="quantity_unit" type="CHAR(22)">
+            <column name="quantity_unit" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="name" remarks="A text name for the protocol" type="TEXT" />
             <column name="notes" remarks="Additional notes regarding usage of the attribute" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
-                type="TIMESTAMPTZ"
-            >
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
         </createTable>
         <rollback>
             <dropTable tableName="protocol" />

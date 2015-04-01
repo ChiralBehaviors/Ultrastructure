@@ -7,7 +7,7 @@
 
     <changeSet author="hhildebrand" id="1390879803225-53">
         <createTable schemaName="ruleform" remarks="Existential ruleform for all status codes (event outcomes)" tableName="status_code">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="status_code_pkey" />
             </column>
             <column name="name" remarks="The unique name of a status code" type="TEXT">
@@ -25,14 +25,10 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
-                type="TIMESTAMPTZ"
-            >
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4"/>
         </createTable>
         <rollback>
             <dropTable tableName="status_code" />
@@ -45,7 +41,7 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-521">
         <createIndex schemaName="ruleform" indexName="status_code_updated_by_fkey_idx" tableName="status_code" unique="false">
-            <column name="updated_by"  />
+            <column name="updated_by" />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

@@ -36,7 +36,6 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.JobModel;
@@ -53,61 +52,64 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     @Test
     public void testHasNoSccs() throws Exception {
         em.getTransaction().begin();
-        Agency core = new Agency("CoRE");
-        core.setUpdatedBy(core);
-        em.persist(core);
         JobModel jobModel = model.getJobModel();
 
-        StatusCode startState = new StatusCode("top-level", core);
+        StatusCode startState = new StatusCode("top-level", kernel.getCore());
         em.persist(startState);
 
-        StatusCode state1 = new StatusCode("state-1", core);
+        StatusCode state1 = new StatusCode("state-1", kernel.getCore());
         em.persist(state1);
 
-        StatusCode state2 = new StatusCode("state-2", core);
+        StatusCode state2 = new StatusCode("state-2", kernel.getCore());
         em.persist(state2);
 
-        StatusCode terminalState = new StatusCode("terminal state", core);
+        StatusCode terminalState = new StatusCode("terminal state",
+                                                  kernel.getCore());
         em.persist(terminalState);
 
-        Product service = new Product("My Service", core);
+        Product service = new Product("My Service", kernel.getCore());
         em.persist(service);
         em.flush();
 
-        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
+        StatusCodeSequencing sequence1 = new StatusCodeSequencing(
+                                                                  service,
                                                                   startState,
-                                                                  state1, core);
+                                                                  state1,
+                                                                  kernel.getCore());
         em.persist(sequence1);
 
-        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
+        StatusCodeSequencing sequence2 = new StatusCodeSequencing(
+                                                                  service,
                                                                   state1,
-                                                                  state2, core);
+                                                                  state2,
+                                                                  kernel.getCore());
         em.persist(sequence2);
 
         StatusCodeSequencing sequence3 = new StatusCodeSequencing(
                                                                   service,
                                                                   state2,
                                                                   terminalState,
-                                                                  core);
+                                                                  kernel.getCore());
         em.persist(sequence3);
 
-        StatusCode loopState = new StatusCode("loop-state", core);
+        StatusCode loopState = new StatusCode("loop-state", kernel.getCore());
         em.persist(loopState);
 
         StatusCodeSequencing loop = new StatusCodeSequencing(service, state2,
-                                                             loopState, core);
+                                                             loopState,
+                                                             kernel.getCore());
         em.persist(loop);
 
         StatusCodeSequencing terminate = new StatusCodeSequencing(
                                                                   service,
                                                                   loopState,
                                                                   terminalState,
-                                                                  core);
+                                                                  kernel.getCore());
         em.persist(terminate);
 
         StatusCodeSequencing back = new StatusCodeSequencing(service,
                                                              loopState, state1,
-                                                             core);
+                                                             kernel.getCore());
         em.persist(back);
         em.persist(terminate);
         em.flush();
@@ -144,51 +146,53 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     @Test
     public void testHasSccs() throws SQLException {
         em.getTransaction().begin();
-        Agency core = new Agency("CoRE");
-        core.setUpdatedBy(core);
-        em.persist(core);
 
         JobModel jobModel = model.getJobModel();
 
-        StatusCode startState = new StatusCode("top-level", core);
+        StatusCode startState = new StatusCode("top-level", kernel.getCore());
         em.persist(startState);
 
-        StatusCode state1 = new StatusCode("state-1", core);
+        StatusCode state1 = new StatusCode("state-1", kernel.getCore());
         em.persist(state1);
 
-        StatusCode state2 = new StatusCode("state-2", core);
+        StatusCode state2 = new StatusCode("state-2", kernel.getCore());
         em.persist(state2);
 
-        StatusCode terminalState = new StatusCode("terminal state", core);
+        StatusCode terminalState = new StatusCode("terminal state",
+                                                  kernel.getCore());
         em.persist(terminalState);
 
-        Product service = new Product("My Service", core);
+        Product service = new Product("My Service", kernel.getCore());
         em.persist(service);
         em.flush();
 
-        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
+        StatusCodeSequencing sequence1 = new StatusCodeSequencing(
+                                                                  service,
                                                                   startState,
-                                                                  state1, core);
+                                                                  state1,
+                                                                  kernel.getCore());
         em.persist(sequence1);
 
-        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
+        StatusCodeSequencing sequence2 = new StatusCodeSequencing(
+                                                                  service,
                                                                   state1,
-                                                                  state2, core);
+                                                                  state2,
+                                                                  kernel.getCore());
         em.persist(sequence2);
 
         StatusCodeSequencing sequence3 = new StatusCodeSequencing(
                                                                   service,
                                                                   state2,
                                                                   terminalState,
-                                                                  core);
+                                                                  kernel.getCore());
         em.persist(sequence3);
 
         em.flush();
-        em.clear();
 
         StatusCodeSequencing loop = new StatusCodeSequencing(service,
                                                              terminalState,
-                                                             state1, core);
+                                                             state1,
+                                                             kernel.getCore());
         em.persist(loop);
 
         assertTrue(jobModel.hasNonTerminalSCCs(service));
@@ -251,51 +255,55 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     @Test
     public void testMultipleInitialStates() throws SQLException {
         em.getTransaction().begin();
-        Agency core = new Agency("CoRE");
-        core.setUpdatedBy(core);
-        em.persist(core);
 
         JobModel jobModel = model.getJobModel();
 
-        StatusCode startState = new StatusCode("top-level", core);
+        StatusCode startState = new StatusCode("top-level", kernel.getCore());
         em.persist(startState);
 
-        StatusCode startState2 = new StatusCode("top-level 2", core);
+        StatusCode startState2 = new StatusCode("top-level 2", kernel.getCore());
         em.persist(startState2);
 
-        StatusCode state1 = new StatusCode("state-1", core);
+        StatusCode state1 = new StatusCode("state-1", kernel.getCore());
         em.persist(state1);
 
-        StatusCode state2 = new StatusCode("state-2", core);
+        StatusCode state2 = new StatusCode("state-2", kernel.getCore());
         em.persist(state2);
 
-        StatusCode terminalState = new StatusCode("terminal state", core);
+        StatusCode terminalState = new StatusCode("terminal state",
+                                                  kernel.getCore());
         em.persist(terminalState);
 
-        Product service = new Product("My Service", core);
+        Product service = new Product("My Service", kernel.getCore());
         em.persist(service);
         em.flush();
 
-        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
+        StatusCodeSequencing sequence1 = new StatusCodeSequencing(
+                                                                  service,
                                                                   startState,
-                                                                  state1, core);
+                                                                  state1,
+                                                                  kernel.getCore());
         em.persist(sequence1);
 
-        StatusCodeSequencing sequence1a = new StatusCodeSequencing(service,
+        StatusCodeSequencing sequence1a = new StatusCodeSequencing(
+                                                                   service,
                                                                    startState2,
-                                                                   state1, core);
+                                                                   state1,
+                                                                   kernel.getCore());
         em.persist(sequence1a);
 
-        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
+        StatusCodeSequencing sequence2 = new StatusCodeSequencing(
+                                                                  service,
                                                                   state1,
-                                                                  state2, core);
+                                                                  state2,
+                                                                  kernel.getCore());
         em.persist(sequence2);
 
         StatusCodeSequencing sequence3 = new StatusCodeSequencing(
                                                                   service,
                                                                   state2,
                                                                   terminalState,
-                                                                  core);
+                                                                  kernel.getCore());
         em.persist(sequence3);
 
         List<StatusCode> initialStates = jobModel.getInitialStates(service);

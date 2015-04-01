@@ -9,30 +9,26 @@
         <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular agencys"
             tableName="sourcing_authorization"
         >
-            <column name="owner" type="CHAR(22)">
+            <column name="owner" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="product" type="CHAR(22)">
+            <column name="product" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="location" type="CHAR(22)">
+            <column name="location" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="quantity_on_hand" type="numeric" />
             <column name="quantity_committed" type="numeric" />
             <column name="reorder_threshold" type="numeric" />
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="sourcing_authorization_pkey" />
             </column>
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
-                type="TIMESTAMPTZ"
-            >
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
         </createTable>
         <rollback>
             <dropTable tableName="sourcing_authorization" />

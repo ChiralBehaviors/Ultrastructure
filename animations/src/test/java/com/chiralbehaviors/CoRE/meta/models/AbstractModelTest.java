@@ -34,6 +34,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 
+import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -72,19 +73,22 @@ public class AbstractModelTest {
             em.close();
         }
         em = getEntityManager();
-        kernel = KernelUtil.clearAndLoadKernel(em);
+        KernelUtil.clearAndLoadKernel(em);
         em.close();
         model = new ModelImpl(emf);
+        kernel = model.getKernel();
         em = model.getEntityManager();
     }
 
     private static EntityManager getEntityManager() throws IOException {
-        InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
-        assertNotNull("jpa properties missing", is);
-        Properties properties = new Properties();
-        properties.load(is);
-        emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                     properties);
+        if (emf == null) {
+            InputStream is = ModelTest.class.getResourceAsStream("/jpa.properties");
+            assertNotNull("jpa properties missing", is);
+            Properties properties = new Properties();
+            properties.load(is);
+            emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
+                                                         properties);
+        }
         EntityManager em = emf.createEntityManager();
         return em;
     }
@@ -122,7 +126,7 @@ public class AbstractModelTest {
     }
 
     protected void alterTriggers(boolean enable) throws SQLException {
-        Connection connection = em.unwrap(Connection.class);
+        Connection connection = em.unwrap(SessionImpl.class).connection();
         for (String table : new String[] { "ruleform.agency",
                 "ruleform.product", "ruleform.location" }) {
             String query = String.format("ALTER TABLE %s %s TRIGGER ALL",

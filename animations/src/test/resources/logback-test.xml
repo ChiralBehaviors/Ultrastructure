@@ -9,13 +9,13 @@
     <logger name="com.chiralbehaviors.CoRE">
         <level value="INFO" />
     </logger>
-    <logger name="org.apache.openjpa">
-        <level value="INFO" />
+    <logger name="org.hibernate">
+        <level value="ERROR" />
     </logger>
 
     <root>
         <level value="INFO" />
         <appender-ref ref="C" />
     </root>
-     
+
 </configuration>

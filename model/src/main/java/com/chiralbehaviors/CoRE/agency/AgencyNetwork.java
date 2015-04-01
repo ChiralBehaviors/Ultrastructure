@@ -24,7 +24,6 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_NETWORKS;
 import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.GET_USED_RELATIONSHIPS;
-import static com.chiralbehaviors.CoRE.agency.AgencyNetwork.IMMEDIATE_CHILDREN_NETWORK_RULES;
 
 import java.util.List;
 import java.util.UUID;
@@ -54,11 +53,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @NamedQueries({
-               @NamedQuery(name = IMMEDIATE_CHILDREN_NETWORK_RULES, query = "select n from AgencyNetwork AS n "
-                                                                            + "where n.parent = :agency "
-                                                                            + "and n.inference.id = 'AAAAAAAAAAAAAAAAAAAAAA' "
-                                                                            + "and n.relationship.preferred = 1 "
-                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name"),
                @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "
                                                         + "WHERE n.parent = :parent "
@@ -70,13 +64,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "agency_network", schema = "ruleform")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
-    public static final String GET_CHILDREN                     = "agencyNetwork"
-                                                                  + GET_CHILDREN_SUFFIX;
-    public static final String GET_NETWORKS                     = "agencyNetwork"
-                                                                  + GET_NETWORKS_SUFFIX;
-    public static final String GET_USED_RELATIONSHIPS           = "agencyNetwork.getUsedRelationships";
-    public static final String IMMEDIATE_CHILDREN_NETWORK_RULES = "agency.immediateChildrenNetworkRules";
-    private static final long  serialVersionUID                 = 1L;
+    public static final String GET_CHILDREN           = "agencyNetwork"
+                                                        + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS           = "agencyNetwork"
+                                                        + GET_NETWORKS_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS = "agencyNetwork.getUsedRelationships";
+    private static final long  serialVersionUID       = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })

@@ -7,10 +7,10 @@
 
     <changeSet author="hhildebrand" id="1390879803225-64">
         <createTable schemaName="ruleform" tableName="unit_values">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="unit_values_pkey" />
             </column>
-            <column name="unit" remarks="The unit whose values are being enumerated" type="CHAR(22)">
+            <column name="unit" remarks="The unit whose values are being enumerated" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="The ordering of this value in the set of values for the given unit" type="sequence_number">
@@ -18,17 +18,13 @@
             </column>
             <column name="integer_value" remarks="A permitted integer value for this unit" type="INT4" />
             <column name="numeric_value" remarks="A permitted numeric value for this unit" type="numeric" />
-            <column name="text_value" remarks="A permitted text value for this unit" type="CHAR(22)" />
+            <column name="text_value" remarks="A permitted text value for this unit" type="uuid" />
             <column name="boolean_value" remarks="A permitted boolean value for this unit" type="SMALLINT" />
             <column name="notes" remarks="Usage notes for this rule" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date"
-                remarks="The time at which this rule was last updated" type="TIMESTAMPTZ"
-            >
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
         </createTable>
         <rollback>
             <dropTable tableName="unit_values" />

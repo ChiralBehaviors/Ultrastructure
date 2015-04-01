@@ -23,56 +23,18 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.InputStream;
-import java.util.Properties;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.junit.After;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
-import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
  * @author hhildebrand
  *
  */
-public class KernelTest {
-
-    private EntityManager        em;
-    private EntityManagerFactory emf;
-
-    @After
-    public void cleanup() {
-        if (em != null) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            em.close();
-        }
-        if (emf != null) {
-            emf.close();
-        }
-    }
+public class KernelTest extends AbstractModelTest {
 
     @Test
     public void testKernel() throws Exception {
-        InputStream is = getClass().getResourceAsStream("/jpa.properties");
-        Properties properties = new Properties();
-        properties.load(is);
-        emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                     properties);
-        EntityManager loadEm = emf.createEntityManager();
-        KernelUtil.clearAndLoadKernel(loadEm);
-        loadEm.close();
-        Model model = new ModelImpl(emf);
-        Kernel kernel = model.getKernel();
         assertNotNull(kernel.getAnyAttribute());
         assertNotNull(kernel.getAnyProduct());
         assertNotNull(kernel.getAnyLocation());

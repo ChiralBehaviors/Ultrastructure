@@ -236,7 +236,7 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getAnyId()
      */
     @Override
-    public String getAnyId() {
+    public UUID getAnyId() {
         return WellKnownAgency.ANY.id();
     }
 
@@ -273,7 +273,7 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getCopyId()
      */
     @Override
-    public String getCopyId() {
+    public UUID getCopyId() {
         return WellKnownAgency.COPY.id();
     }
 
@@ -329,7 +329,7 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
-    public String getNotApplicableId() {
+    public UUID getNotApplicableId() {
         return WellKnownAgency.NOT_APPLICABLE.id();
     }
 
@@ -343,7 +343,7 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
      */
     @Override
-    public String getSameId() {
+    public UUID getSameId() {
         return WellKnownAgency.SAME.id();
     }
 

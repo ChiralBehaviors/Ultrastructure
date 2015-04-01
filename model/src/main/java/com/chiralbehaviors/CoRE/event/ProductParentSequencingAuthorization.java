@@ -99,15 +99,15 @@ public class ProductParentSequencingAuthorization extends Ruleform {
         super(updatedBy);
     }
 
-    public ProductParentSequencingAuthorization(Product parent,
+    public ProductParentSequencingAuthorization(Product service,
                                                 StatusCode statusCode,
-                                                Product myParent,
+                                                Product parent,
                                                 StatusCode parentStatusToSet,
                                                 Agency updatedBy) {
         super(updatedBy);
-        setService(parent);
+        setService(service);
         setStatusCode(statusCode);
-        setParent(myParent);
+        setParent(parent);
         setParentStatusToSet(parentStatusToSet);
     }
 

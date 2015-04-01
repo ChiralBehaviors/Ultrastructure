@@ -18,7 +18,7 @@
 			     b.enumerated,
 			     b.notes, 
 			     up.name AS updated_by,
-			     b.update_date
+			     b.version
 			   FROM unit b
 			   JOIN agency up ON b.updated_by = up.id;
 			

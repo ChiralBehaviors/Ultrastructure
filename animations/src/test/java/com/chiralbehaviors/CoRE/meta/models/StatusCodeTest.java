@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -31,6 +32,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
@@ -82,7 +84,7 @@ public class StatusCodeTest extends AbstractModelTest {
         model.getJobModel().createStatusCodeSequencings(service, sequences,
                                                         kernel.getCore());
 
-        em.getTransaction().commit();
+        em.flush();
 
         assertTrue(String.format("%s is not a terminal state", terminalState),
                    jobModel.isTerminalState(terminalState, service));
@@ -94,47 +96,44 @@ public class StatusCodeTest extends AbstractModelTest {
                     jobModel.isTerminalState(state2, service));
         assertEquals(4, jobModel.getStatusCodesFor(service).size());
 
-        em.getTransaction().begin();
-
         StatusCodeSequencing loop = new StatusCodeSequencing(service,
                                                              terminalState,
                                                              state1,
                                                              kernel.getCore());
         em.persist(loop);
         try {
-            em.getTransaction().commit();
+            em.flush();
             fail("Expected failure due to circularity");
         } catch (Exception e) {
-            // expected
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            em.getTransaction().begin();
+            em.remove(loop);
         }
-
+        em.refresh(terminalState);
+        em.refresh(service);
+        em.refresh(state1);
+        em.refresh(state2);
+        Agency core = kernel.getCore();
         assertTrue(String.format("%s is not a terminal state", terminalState),
                    jobModel.isTerminalState(terminalState, service));
 
-        StatusCode loopState = new StatusCode("loop-state", kernel.getCore());
+        StatusCode loopState = new StatusCode("loop-state", core);
         em.persist(loopState);
 
-        loop = new StatusCodeSequencing(service, state2, loopState,
-                                        kernel.getCore());
+        loop = new StatusCodeSequencing(service, state2, loopState, core);
         em.persist(loop);
 
         StatusCodeSequencing terminate = new StatusCodeSequencing(
                                                                   service,
                                                                   loopState,
                                                                   terminalState,
-                                                                  kernel.getCore());
+                                                                  core);
         em.persist(terminate);
 
         StatusCodeSequencing back = new StatusCodeSequencing(service,
                                                              loopState, state1,
-                                                             kernel.getCore());
+                                                             core);
         em.persist(back);
         em.persist(terminate);
-        em.getTransaction().commit();
+        em.flush();
     }
 
     @Test
@@ -178,20 +177,19 @@ public class StatusCodeTest extends AbstractModelTest {
         em.persist(invalidSeq);
         Job parent = jobModel.newInitializedJob(service, kernel.getCore());
         Job child = jobModel.newInitializedJob(service2, kernel.getCore());
-        em.persist(child);
-        em.persist(parent);
         child.setParent(parent);
         em.getTransaction().commit();
         em.getTransaction().begin();
         em.refresh(parent);
+        em.refresh(child);
+        assertNotNull("Parent is null", child.getParent());
         assertTrue("Child is not considered active", jobModel.isActive(child));
         assertEquals(1, jobModel.getActiveSubJobsOf(parent).size());
-        parent = em.merge(parent);
         jobModel.changeStatus(parent, startState, kernel.getCore(),
                               "transition from test");
-        em.getTransaction().commit();
+        em.flush();
         List<JobChronology> chronology = jobModel.getChronologyForJob(child);
-        assertEquals(2, chronology.size());
+        assertEquals(chronology.toString(), 2, chronology.size());
         for (JobChronology crumb : chronology) {
             assertEquals(kernel.getUnset(), crumb.getStatus());
         }

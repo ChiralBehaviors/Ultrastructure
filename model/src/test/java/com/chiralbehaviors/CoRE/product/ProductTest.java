@@ -134,7 +134,7 @@ public class ProductTest extends DatabaseTest {
         em.persist(attribute);
 
         Relationship isA = new Relationship(
-                                            "is-a",
+                                            "is a",
                                             "Taxonomic relationship indicating membership in a group or category.",
                                             core);
         em.persist(isA);

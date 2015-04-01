@@ -13,7 +13,7 @@
 			     r.description,
 			     r.notes,
 			     up.name AS updated_by, 
-			     r.update_date
+			     r.version
 			   FROM agency r
 			   JOIN agency up ON r.updated_by = up.id;
 			

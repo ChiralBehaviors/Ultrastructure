@@ -15,7 +15,7 @@
 			     a.inheritable, 
 			     a.value_type, 
 			     up.name AS updated_by, 
-			     a.update_date
+			     a.version
 			   FROM attribute a
 			   JOIN agency up ON a.updated_by = up.id;
 			

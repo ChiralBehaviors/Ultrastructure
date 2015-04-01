@@ -24,6 +24,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.TypedQuery;
 
 import org.junit.Test;
 
@@ -40,10 +43,10 @@ public class AgencyModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() throws SQLException {
-        Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
 
         em.getTransaction().begin();
+        Agency core = model.getKernel().getCore();
+        Relationship equals = model.getKernel().getEquals();
 
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);
@@ -64,10 +67,11 @@ public class AgencyModelTest extends AbstractModelTest {
         em.persist(edgeB);
 
         em.flush();
-        em.clear();
 
-        List<AgencyNetwork> edges = em.createQuery("SELECT edge FROM AgencyNetwork edge WHERE edge.inference.id <> 'AAAAAAAAAAAAAAAAAAAAAA'",
-                                                   AgencyNetwork.class).getResultList();
+        TypedQuery<AgencyNetwork> query = em.createQuery("SELECT edge FROM AgencyNetwork edge WHERE edge.inference.id <> :id",
+                                                         AgencyNetwork.class);
+        query.setParameter("id", new UUID(0, 0));
+        List<AgencyNetwork> edges = query.getResultList();
         assertEquals(2, edges.size());
     }
 

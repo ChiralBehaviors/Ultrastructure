@@ -7,13 +7,13 @@
 
     <changeSet author="hhildebrand" id="1390879803225-30">
         <createTable schemaName="ruleform" remarks="Rules for generating masks for the protocol ruleform" tableName="meta_protocol">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="meta_protocol_pkey" />
             </column>
-            <column name="service" remarks="The service we are creating a mask for" type="CHAR(22)">
+            <column name="service" remarks="The service we are creating a mask for" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="service_attribute" remarks="The attribute on the service we are creating a mask for" type="CHAR(22)">
+            <column name="service_attribute" remarks="The attribute on the service we are creating a mask for" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="Ordering and uniqueness, for when a service can have multiple meta-protocol rules"
@@ -21,52 +21,48 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="requesting_agency" type="CHAR(22)">
+            <column name="requesting_agency" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="requesting_agency_attribute" type="CHAR(22)">
+            <column name="requesting_agency_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="assign_to" type="CHAR(22)">
+            <column name="assign_to" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="assign_to_attribute" type="CHAR(22)">
+            <column name="assign_to_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="service_type" remarks="Used to select a mapped value from a Product" type="CHAR(22)">
+            <column name="service_type" remarks="Used to select a mapped value from a Product" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="product_ordered" remarks="Used to select a mapped value from a Product" type="CHAR(22)">
+            <column name="product_ordered" remarks="Used to select a mapped value from a Product" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="product_ordered_attribute" remarks="Used to select a mapped value from a Product" type="CHAR(22)">
+            <column name="product_ordered_attribute" remarks="Used to select a mapped value from a Product" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_to" type="CHAR(22)">
+            <column name="deliver_to" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_to_attribute" type="CHAR(22)">
+            <column name="deliver_to_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_from" type="CHAR(22)">
+            <column name="deliver_from" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="deliver_from_attribute" type="CHAR(22)">
+            <column name="deliver_from_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="quantity_unit" type="CHAR(22)">
+            <column name="quantity_unit" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
             <column name="notes" remarks="Additional notes regarding usage of the metaprotocol" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The date this rule was last changed"
-                type="TIMESTAMPTZ"
-            >
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
         </createTable>
         <rollback>
             <dropTable tableName="meta_protocol" />

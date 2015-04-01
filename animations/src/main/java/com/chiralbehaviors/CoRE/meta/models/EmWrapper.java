@@ -20,17 +20,22 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.metamodel.Metamodel;
 
 /**
@@ -38,21 +43,13 @@ import javax.persistence.metamodel.Metamodel;
  *
  */
 public class EmWrapper implements EntityManager {
-    public EmWrapper(Animations animpations, EntityManager em) {
-        this.animations = animpations;
-        this.em = em;
-    }
-
     private class EtWrapper implements EntityTransaction {
         private EntityTransaction txn;
-
-        private void setTxn(EntityTransaction txn) {
-            this.txn = txn;
-        }
 
         @Override
         public void begin() {
             txn.begin();
+            animations.refreshWorkspaces();
         }
 
         @Override
@@ -81,11 +78,21 @@ public class EmWrapper implements EntityManager {
         public void setRollbackOnly() {
             txn.setRollbackOnly();
         }
+
+        private void setTxn(EntityTransaction txn) {
+            this.txn = txn;
+        }
     }
 
     private final Animations    animations;
+
     private final EntityManager em;
     private final EtWrapper     etxn = new EtWrapper();
+
+    public EmWrapper(Animations animpations, EntityManager em) {
+        this.animations = animpations;
+        this.em = em;
+    }
 
     @Override
     public void clear() {
@@ -103,6 +110,16 @@ public class EmWrapper implements EntityManager {
     }
 
     @Override
+    public <T> EntityGraph<T> createEntityGraph(Class<T> arg0) {
+        return em.createEntityGraph(arg0);
+    }
+
+    @Override
+    public EntityGraph<?> createEntityGraph(String arg0) {
+        return em.createEntityGraph(arg0);
+    }
+
+    @Override
     public Query createNamedQuery(String paramString) {
         return em.createNamedQuery(paramString);
     }
@@ -111,6 +128,11 @@ public class EmWrapper implements EntityManager {
     public <T> TypedQuery<T> createNamedQuery(String paramString,
                                               Class<T> paramClass) {
         return em.createNamedQuery(paramString, paramClass);
+    }
+
+    @Override
+    public StoredProcedureQuery createNamedStoredProcedureQuery(String arg0) {
+        return em.createNamedStoredProcedureQuery(arg0);
     }
 
     @Override
@@ -130,8 +152,18 @@ public class EmWrapper implements EntityManager {
     }
 
     @Override
+    public Query createQuery(@SuppressWarnings("rawtypes") CriteriaDelete arg0) {
+        return em.createQuery(arg0);
+    }
+
+    @Override
     public <T> TypedQuery<T> createQuery(CriteriaQuery<T> paramCriteriaQuery) {
         return em.createQuery(paramCriteriaQuery);
+    }
+
+    @Override
+    public Query createQuery(@SuppressWarnings("rawtypes") CriteriaUpdate arg0) {
+        return em.createQuery(arg0);
     }
 
     @Override
@@ -142,6 +174,23 @@ public class EmWrapper implements EntityManager {
     @Override
     public <T> TypedQuery<T> createQuery(String paramString, Class<T> paramClass) {
         return em.createQuery(paramString, paramClass);
+    }
+
+    @Override
+    public StoredProcedureQuery createStoredProcedureQuery(String arg0) {
+        return em.createStoredProcedureQuery(arg0);
+    }
+
+    @Override
+    public StoredProcedureQuery createStoredProcedureQuery(String arg0,
+                                                           @SuppressWarnings("rawtypes") Class... arg1) {
+        return em.createStoredProcedureQuery(arg0, arg1);
+    }
+
+    @Override
+    public StoredProcedureQuery createStoredProcedureQuery(String arg0,
+                                                           String... arg1) {
+        return em.createStoredProcedureQuery(arg0, arg1);
     }
 
     @Override
@@ -189,6 +238,16 @@ public class EmWrapper implements EntityManager {
     }
 
     @Override
+    public EntityGraph<?> getEntityGraph(String arg0) {
+        return em.getEntityGraph(arg0);
+    }
+
+    @Override
+    public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> arg0) {
+        return em.getEntityGraphs(arg0);
+    }
+
+    @Override
     public EntityManagerFactory getEntityManagerFactory() {
         return em.getEntityManagerFactory();
     }
@@ -222,6 +281,11 @@ public class EmWrapper implements EntityManager {
     public EntityTransaction getTransaction() {
         etxn.setTxn(em.getTransaction());
         return etxn;
+    }
+
+    @Override
+    public boolean isJoinedToTransaction() {
+        return em.isJoinedToTransaction();
     }
 
     @Override

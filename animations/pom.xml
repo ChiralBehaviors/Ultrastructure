@@ -32,43 +32,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>test-framework</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-lang</artifactId>
-                    <groupId>commons-lang</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>junit</artifactId>
-                    <groupId>junit</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <classifier>site</classifier>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -78,6 +44,10 @@
         <dependency>
             <groupId>com.hellblazer</groupId>
             <artifactId>utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate4</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -214,7 +184,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.3.2</version>
+                        <version>1.4.0</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -224,6 +194,7 @@
                             </execution>
                         </executions>
                         <configuration>
+                            <stopUnresponsiveDaemonThreads>true</stopUnresponsiveDaemonThreads>
                             <classpathScope>test</classpathScope>
                             <mainClass>com.chiralbehaviors.CoRE.kernel.Bootstrap</mainClass>
                             <arguments>

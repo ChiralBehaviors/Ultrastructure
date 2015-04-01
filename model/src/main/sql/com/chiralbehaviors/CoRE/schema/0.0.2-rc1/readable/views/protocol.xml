@@ -29,7 +29,7 @@
 			        base_table.sequence_number, 
                     base_table.notes, 
 			        up.name AS updated_by,
-                    base_table.update_date
+                    base_table.version
 			   FROM protocol base_table
                JOIN product rs ON base_table.requested_service = rs.id
 			   JOIN product rp ON base_table.requested_product = rp.id

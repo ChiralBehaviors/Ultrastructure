@@ -9,31 +9,28 @@
         <createTable schemaName="ruleform"
             remarks="A interval is a time period or instant in the system.  It defines placement, ordering and scheduling of actions, agencies, locations and products in time"
             tableName="interval">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true"
                     primaryKeyName="interval_pkey" />
             </column>
             <column name="name" type="TEXT">
                 <constraints nullable="false" />
             </column>
-            <column name="start_unit" type="CHAR(22)">
+            <column name="start_unit" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="description" type="TEXT" />
             <column name="notes" type="TEXT" />
             <column name="start" type="numeric" />
             <column name="duration" type="numeric" />
-            <column name="duration_unit" type="CHAR(22)">
+            <column name="duration_unit" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ"
-                type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'"
+                type="uuid">
                 <constraints nullable="false" />
-            </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone"
-                name="update_date" type="TIMESTAMPTZ">
-                <constraints nullable="false" />
-            </column>
+            </column> 
+            <column name="version" type="INT4" />
         </createTable>
         <rollback>
             <dropTable tableName="interval" />

@@ -29,6 +29,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
  * The meta model for the CoRE
@@ -37,6 +38,13 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
  *
  */
 public interface Model {
+
+    /**
+     * Deregister the workspace with the model
+     *
+     * @param workspace
+     */
+    void deregister(Workspace workspace);
 
     /**
      * Find the ruleform instances that match the supplied attribute
@@ -148,5 +156,17 @@ public interface Model {
      * @return the UnitCode model
      */
     WorkspaceModel getWorkspaceModel();
+
+    /**
+     * Refresh the workspaces - i.e. retarget to the em
+     */
+    void refreshWorkspaces();
+
+    /**
+     * Register the workspace with the model to be refreshed on commmit
+     *
+     * @param workspace
+     */
+    void register(Workspace workspace);
 
 }

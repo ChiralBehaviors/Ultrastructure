@@ -25,7 +25,6 @@
     <include relativeToChangelogFile="true" file="views/location_network.xml" />
     <include relativeToChangelogFile="true" file="views/location_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/location_attribute.xml" />
-    <include relativeToChangelogFile="true" file="views/location_relationship.xml" />
     <include relativeToChangelogFile="true" file="views/meta_protocol.xml" />
     <include relativeToChangelogFile="true" file="views/protocol.xml" />
     <include relativeToChangelogFile="true" file="views/relationship.xml" />

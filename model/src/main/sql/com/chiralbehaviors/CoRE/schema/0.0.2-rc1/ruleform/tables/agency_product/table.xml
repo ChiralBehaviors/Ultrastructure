@@ -7,23 +7,23 @@
 
     <changeSet author="hhildebrand" id="1390879803225-7">
         <createTable schemaName="ruleform" tableName="agency_product">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_product_pkey" />
             </column>
-            <column name="agency" type="CHAR(22)">
+            <column name="agency" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="relationship" type="CHAR(22)">
+            <column name="relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="product" type="CHAR(22)">
+            <column name="product" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('NOW'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
+            <column defaultValueComputed="('NOW'::text)::timestamp(6) with time zone" name="version" type="TIMESTAMPTZ">
                 <constraints nullable="false" />
             </column>
         </createTable>

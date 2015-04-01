@@ -10,16 +10,16 @@
             remarks="Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves"
             tableName="product_network_attribute"
         >
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_network_attribute_pkey" />
             </column>
-            <column name="agency" remarks="The agency that the information in this rule comes from" type="CHAR(22)">
+            <column name="agency" remarks="The agency that the information in this rule comes from" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="network_rule" remarks="The Product Network rule whose attribute is being defined" type="CHAR(22)">
+            <column name="network_rule" remarks="The Product Network rule whose attribute is being defined" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" remarks="The Attribute of the Product Network rule being defined" type="CHAR(22)">
+            <column name="attribute" remarks="The Attribute of the Product Network rule being defined" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="TEXT" />
@@ -29,16 +29,12 @@
             <column name="boolean_value" remarks="If the Attribute has a boolean value, it is stored in this column" type="SMALLINT" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
-            <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="CHAR(22)" />
+            <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="uuid" />
             <column name="notes" remarks="Miscellaneous notes about this rule" type="TEXT" />
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" remarks="The agency that last updated this rule" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" remarks="The time of the last update to this rule"
-                type="TIMESTAMP WITH TIME ZONE"
-            >
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
             <column defaultValueNumeric="1" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>

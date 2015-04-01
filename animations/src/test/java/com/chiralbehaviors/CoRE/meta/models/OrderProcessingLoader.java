@@ -75,7 +75,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createAgencys() {
-        billingComputer = new Agency("Billing CPU", "The Billing Computer",
+        billingComputer = new Agency("BillingComputer", "The Billing Computer",
                                      core);
         em.persist(billingComputer);
 
@@ -92,13 +92,14 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                   core);
         em.persist(externalCust);
 
-        factory1Agency = new Agency("Factory1", "Factory #1", core);
+        factory1Agency = new Agency("Factory1Agency", "Factory #1", core);
         em.persist(factory1Agency);
 
-        georgeTownUniversity = new Agency("GU", "Georgetown University", core);
+        georgeTownUniversity = new Agency("GeorgetownUniversity",
+                                          "Georgetown University", core);
         em.persist(georgeTownUniversity);
 
-        cafleurBon = new Agency("carfleurBon", "Carfleur Bon", core);
+        cafleurBon = new Agency("CarfleurBon", "Carfleur Bon", core);
         em.persist(cafleurBon);
 
         manufacturer = new Agency("MNFR", "Manufacturer", core);
@@ -111,7 +112,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         orgA = new Agency("OrgA", "Organization A", core);
         em.persist(orgA);
 
-        orderFullfillment = new Agency("Order Fullfillment",
+        orderFullfillment = new Agency("OrderFullfillment",
                                        "Order Fullfillment", core);
         em.persist(orderFullfillment);
     }
@@ -133,9 +134,9 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     public void createLocationNetworks() {
         model.getLocationModel().link(bin1, area, factory1, core);
         model.getLocationModel().link(bin15, area, factory1, core);
-        model.getLocationModel().link(factory1, street, bht378, core);
+        model.getLocationModel().link(factory1, street, bht37, core);
         model.getLocationModel().link(rsb225, city, dc, core);
-        model.getLocationModel().link(bht378, city, dc, core);
+        model.getLocationModel().link(bht37, city, dc, core);
         model.getLocationModel().link(rc31, city, paris, core);
         model.getLocationModel().link(dc, region, east_coast, core);
         model.getLocationModel().link(east_coast, area, us, core);
@@ -144,12 +145,12 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createLocations() {
-        rsb225 = new Location("225RSB", "225 Reiss Science Bldg", core);
+        rsb225 = new Location("RSB225", "225 Reiss Science Bldg", core);
         em.persist(rsb225);
-        bht378 = new Location("37BHT", "37 Bret Harte Terrace", core);
-        em.persist(bht378);
+        bht37 = new Location("BHT37", "37 Bret Harte Terrace", core);
+        em.persist(bht37);
 
-        rc31 = new Location("31rc", "31 Rue Cambon", core);
+        rc31 = new Location("RC31", "31 Rue Cambon", core);
         em.persist(rc31);
 
         bin1 = new Location("BIN01", "Bin #1", core);
@@ -160,7 +161,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(dc);
         east_coast = new Location("EAST_COAST", "East Coast", core);
         em.persist(east_coast);
-        factory1 = new Location("FACTORY1", "Factory 1", core);
+        factory1 = new Location("Factory1", "Factory 1", core);
         em.persist(factory1);
         france = new Location("FRANCE", "France", core);
         em.persist(france);
@@ -282,6 +283,9 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(chemB);
         roomTemp = new Product("RoomTemp", "Room temperature products", core);
         em.persist(roomTemp);
+        orderEntryWorkspace = new Product("defining product for order entry",
+                                          core);
+        em.persist(orderEntryWorkspace);
     }
 
     public void createProductSequencingAuthorizations() {
@@ -663,7 +667,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(pickCompleted);
 
         waitingOnPurchaseOrder = new StatusCode(
-                                                "Waiting on purchase order",
+                                                "WaitingOnPurchaseOrder",
                                                 "Waiting for purchase order to be completed",
                                                 core);
         em.persist(waitingOnPurchaseOrder);

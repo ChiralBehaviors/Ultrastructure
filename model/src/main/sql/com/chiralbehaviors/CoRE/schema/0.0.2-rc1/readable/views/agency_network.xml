@@ -18,7 +18,7 @@
                     n.premise2, 
                     n.notes, 
                     u.name AS updated_by, 
-                    n.update_date
+                    n.version
 			   FROM agency_network n
 			   JOIN agency p ON n.parent = p.id
 			   JOIN relationship rel ON n.relationship = rel.id

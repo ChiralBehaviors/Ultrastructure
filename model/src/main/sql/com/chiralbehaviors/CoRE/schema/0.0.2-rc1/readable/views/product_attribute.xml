@@ -19,7 +19,7 @@
                     u.name AS unit, 
                     ba.notes, 
 			        up.name AS updated_by, 
-			        ba.update_date
+			        ba.version
 			   FROM product_attribute ba
 			   JOIN product b ON ba.product = b.id
 			   JOIN attribute a ON ba.attribute = a.id

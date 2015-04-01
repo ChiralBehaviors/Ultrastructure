@@ -7,27 +7,25 @@
 
     <changeSet author="hhildebrand" id="1390879803225-36">
         <createTable schemaName="ruleform" tableName="product_location">
-            <column name="id" type="CHAR(22)">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_location_pkey" />
             </column>
-            <column name="agency" type="CHAR(22)" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ">
+            <column name="agency" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000001'">
                 <constraints nullable="false" />
             </column>
-            <column name="product" type="CHAR(22)">
+            <column name="product" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="relationship" type="CHAR(22)">
+            <column name="relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="location" type="CHAR(22)">
+            <column name="location" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" defaultValue="AAAAAAAAAAAAAAAAAAAAAQ" type="CHAR(22)">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('now'::text)::timestamp(6) with time zone" name="update_date" type="TIMESTAMPTZ">
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4" />
             <column name="notes" type="TEXT" />
         </createTable>
         <rollback>

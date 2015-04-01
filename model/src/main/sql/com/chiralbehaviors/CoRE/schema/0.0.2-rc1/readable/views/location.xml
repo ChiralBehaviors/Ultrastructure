@@ -8,7 +8,7 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.location AS 
-			 SELECT l.id, l.name, l.description, l.notes, r.name AS updated_by, l.update_date
+			 SELECT l.id, l.name, l.description, l.notes, r.name AS updated_by, l.version
 			   FROM location l
 			   JOIN agency r ON l.updated_by = r.id;
 			

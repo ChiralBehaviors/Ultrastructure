@@ -8,7 +8,7 @@
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.product AS 
-			 SELECT b.id, b.name, b.description, b.notes, up.name AS updated_by, b.update_date
+			 SELECT b.id, b.name, b.description, b.notes, up.name AS updated_by, b.version
 			   FROM product b
 			   JOIN agency up ON b.updated_by = up.id;
 			

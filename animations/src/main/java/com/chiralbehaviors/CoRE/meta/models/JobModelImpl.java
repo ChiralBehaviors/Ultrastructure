@@ -91,6 +91,8 @@ import com.hellblazer.utils.Tuple;
  */
 public class JobModelImpl implements JobModel {
 
+    private static final Logger log = LoggerFactory.getLogger(JobModelImpl.class);
+
     /**
      * Iterate through all SCCs in the graph, testing each one to see if there
      * are any nodes reachable from the SCC that are not themselves part of the
@@ -125,8 +127,6 @@ public class JobModelImpl implements JobModel {
         }
         return false;
     }
-
-    private static final Logger   log = LoggerFactory.getLogger(JobModelImpl.class);
 
     protected final EntityManager em;
     protected final Kernel        kernel;
@@ -390,7 +390,7 @@ public class JobModelImpl implements JobModel {
     public List<Job> getActiveJobsFor(Agency agency) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_ASSIGNED_TO,
                                                     Job.class);
-        query.setParameter("agency", agency.getPrimaryKey());
+        query.setParameter("agency", agency);
         List<Job> active = new ArrayList<>();
         for (Job j : query.getResultList()) {
             if (isActive(j)) {
@@ -1028,6 +1028,10 @@ public class JobModelImpl implements JobModel {
         job.setQuantityUnit(kernel.getNotApplicableUnit());
         job.setStatus(kernel.getUnset());
         em.persist(job);
+
+        JobChronology entry = new JobChronology(job,
+                                                "Initial insertion of job", 1);
+        em.persist(entry);
         return job;
     }
 

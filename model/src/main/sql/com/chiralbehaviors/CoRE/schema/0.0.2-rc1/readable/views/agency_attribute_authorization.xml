@@ -19,7 +19,7 @@
 			    base_table.numeric_value, 
 			    base_table.notes, 
 			    up.name AS updated_by, 
-			    base_table.update_date
+			    base_table.version
 			 FROM agency_attribute_authorization base_table
 			 LEFT JOIN agency res ON base_table.grouping_agency = res.id
 			 LEFT JOIN relationship cls ON base_table.classification = cls.id

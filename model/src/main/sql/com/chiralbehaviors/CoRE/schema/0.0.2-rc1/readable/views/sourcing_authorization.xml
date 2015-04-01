@@ -10,7 +10,7 @@
             CREATE OR REPLACE VIEW readable.sourcing_authorization AS 
              SELECT sa.id, owner.name as owner, product.name as product, location.name as location,
                     sa.notes,
-                    up.name AS updated_by, sa.update_date
+                    up.name AS updated_by, sa.version
                FROM sourcing_authorization sa
                JOIN agency owner ON sa.owner = owner.id
                JOIN product product ON sa.product = product.id

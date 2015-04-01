@@ -67,7 +67,7 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
      * @see com.chiralbehaviors.CoRE.workspace.Workspace#getAccesor(java.lang.Class)
      */
     @Override
-    public <T> T getAccesor(Class<T> accessorInterface) {
+    public <T> T getAccessor(Class<T> accessorInterface) {
         return WorkspaceAccessHandler.getAccesor(accessorInterface, this);
     }
 
@@ -87,6 +87,16 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
         return this;
     }
 
+    @Override
+    public void refreshFrom(EntityManager em) {
+        for (WorkspaceAuthorization auth : auths) {
+            em.getEntityManagerFactory().getCache().evict(WorkspaceAuthorization.class,
+                                                          auth.getId());
+            em.refresh(auth);
+        }
+    }
+
+    @Override
     public void replaceFrom(EntityManager em) {
         List<WorkspaceAuthorization> oldAuths = new ArrayList<WorkspaceAuthorization>(
                                                                                       auths);
@@ -94,8 +104,6 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
         for (WorkspaceAuthorization auth : oldAuths) {
             auths.add(em.merge(auth));
         }
-        detach(em);
         cache();
     }
-
 }

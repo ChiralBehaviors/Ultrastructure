@@ -19,7 +19,7 @@
 			     u.name AS unit, 
 			     aa.notes, 
 			     up.name AS updated_by, 
-			     aa.update_date
+			     aa.version
 			   FROM attribute_meta_attribute aa
 			   JOIN attribute ba ON ba.id = aa.attribute
 			   JOIN attribute a ON aa.meta_attribute = a.id

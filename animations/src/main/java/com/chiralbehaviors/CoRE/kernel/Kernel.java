@@ -130,6 +130,8 @@ public interface Kernel {
 
     Relationship getIsLocationOf();
 
+    Product getKernelWorkspace();
+
     Relationship getLessThan();
 
     Relationship getLessThanOrEqual();

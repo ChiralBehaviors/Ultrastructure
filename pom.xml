@@ -187,7 +187,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>16.0.1</version>
-                <classifier>site</classifier>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>

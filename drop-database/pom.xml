@@ -12,7 +12,7 @@
     <description>Drop the database and attendant users and roles.</description>
     <dependencies>
         <dependency>
-            <groupId>postgresql</groupId>
+            <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
     </dependencies>
@@ -38,7 +38,7 @@
                         </configuration>
                         <dependencies>
                             <dependency>
-                                <groupId>postgresql</groupId>
+                                <groupId>org.postgresql</groupId>
                                 <artifactId>postgresql</artifactId>
                                 <version>${postgresql.driver.version}</version>
                             </dependency>

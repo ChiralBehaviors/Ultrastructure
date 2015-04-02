@@ -36,7 +36,7 @@
     </scm>
 
     <properties>
-        <postgresql.driver.version>9.1-901.jdbc4</postgresql.driver.version>
+        <postgresql.driver.version>9.4-1201-jdbc41</postgresql.driver.version>
         <jackson.version>2.5.1</jackson.version>
         <hibernate.version>4.3.8.Final</hibernate.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -205,7 +205,7 @@
                 <version>1.1.1</version>
             </dependency>
             <dependency>
-                <groupId>postgresql</groupId>
+                <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.driver.version}</version>
                 <scope>test</scope>
@@ -246,11 +246,6 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>1.9.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>9.2-1003-jdbc4</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -408,7 +403,7 @@
                     <version>1.5</version>
                     <dependencies>
                         <dependency>
-                            <groupId>postgresql</groupId>
+                            <groupId>org.postgresql</groupId>
                             <artifactId>postgresql</artifactId>
                             <version>${postgresql.driver.version}</version>
                         </dependency>
@@ -420,7 +415,7 @@
                     <version>3.1.1</version>
                     <dependencies>
                         <dependency>
-                            <groupId>postgresql</groupId>
+                            <groupId>org.postgresql</groupId>
                             <artifactId>postgresql</artifactId>
                             <version>${postgresql.driver.version}</version>
                         </dependency>

@@ -49,11 +49,13 @@ import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
@@ -303,6 +305,33 @@ public class ModelImpl implements Model {
     @Override
     public LocationModel getLocationModel() {
         return locationModel;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> NetworkedModel<RuleForm, Network, ?, ?> getNetworkedModel(ExistentialRuleform<RuleForm, Network> ruleform) {
+        switch (ruleform.getClass().getSimpleName()) {
+            case "Agency":
+                return (NetworkedModel<RuleForm, Network, ?, ?>) getAgencyModel();
+            case "Attribute":
+                return (NetworkedModel<RuleForm, Network, ?, ?>) getAttributeModel();
+            case "Interval":
+                return (NetworkedModel<RuleForm, Network, ?, ?>) getIntervalModel();
+            case "Location":
+                return (NetworkedModel<RuleForm, Network, ?, ?>) getLocationModel();
+            case "Product":
+                return (NetworkedModel<RuleForm, Network, ?, ?>) getProductModel();
+            case "Relationship":
+                return (NetworkedModel<RuleForm, Network, ?, ?>) getRelationshipModel();
+            case "StatusCode":
+                return (NetworkedModel<RuleForm, Network, ?, ?>) getStatusCodeModel();
+            case "Unit":
+                return (NetworkedModel<RuleForm, Network, ?, ?>) getUnitModel();
+            default:
+                throw new IllegalArgumentException(
+                                                   String.format("Not a known existential ruleform: %s",
+                                                                 ruleform.getClass()));
+        }
     }
 
     /*

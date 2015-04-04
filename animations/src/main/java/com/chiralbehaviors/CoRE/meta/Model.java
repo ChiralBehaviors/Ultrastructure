@@ -29,6 +29,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.workspace.Workspace;
 
 /**
@@ -131,6 +132,14 @@ public interface Model {
      * @return the Location model
      */
     LocationModel getLocationModel();
+
+    /**
+     * Answer the appropriate networked model for the existential ruleform
+     * 
+     * @param ruleform
+     * @return
+     */
+    <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> NetworkedModel<RuleForm, Network, ?, ?> getNetworkedModel(ExistentialRuleform<RuleForm, Network> ruleform);
 
     /**
      * @return the Product model

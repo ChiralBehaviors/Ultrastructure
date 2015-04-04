@@ -18,14 +18,15 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.phantasm.demo.functions;
+package com.chiralbehaviors.phantasm.demo;
+
 
 /**
  * @author hhildebrand
  *
  */
-public interface DeploymentDefinitionMethods {
+public interface Thing1Functions {
 
-    void deploySystem(String document);
+    void doSomething(String document);
 
 }

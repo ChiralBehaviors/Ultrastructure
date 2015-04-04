@@ -37,7 +37,7 @@ import com.chiralbehaviors.CoRE.network.Relationship;
  * @author hhildebrand
  *
  */
-public class Existential<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
+public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         implements InvocationHandler {
     @SafeVarargs
     public static <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void constrain(Model model,
@@ -72,14 +72,14 @@ public class Existential<RuleForm extends ExistentialRuleform<RuleForm, Network>
                                                                                        Model model) {
         return (T) Proxy.newProxyInstance(accessorInterface.getClassLoader(),
                                           new Class[] { accessorInterface },
-                                          new Existential(ruleform, model));
+                                          new StateImpl(ruleform, model));
     }
 
     private final RuleForm ruleform;
 
     protected final Model  model;
 
-    public Existential(RuleForm ruleform, Model model) {
+    public StateImpl(RuleForm ruleform, Model model) {
         this.ruleform = ruleform;
         this.model = model;
     }
@@ -102,6 +102,18 @@ public class Existential<RuleForm extends ExistentialRuleform<RuleForm, Network>
 
     public List<RuleForm> getChildren(Relationship r) {
         return model.getNetworkedModel(ruleform).getChildren(ruleform, r);
+    }
+
+    public String getDescription() {
+        return ruleform.getDescription();
+    }
+
+    public String getName() {
+        return ruleform.getName();
+    }
+
+    public String getNotes() {
+        return ruleform.getNotes();
     }
 
     public RuleForm getRuleform() {

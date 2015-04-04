@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.annotations;
 
-import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -28,15 +27,20 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+
 /**
  * @author hhildebrand
  *
  */
 @Documented
-@Target({ TYPE, FIELD })
+@Target(TYPE)
 @Retention(RUNTIME)
-public @interface Aspect {
-    String classification() default "isA";
+public @interface State {
 
-    String classifier();
+    Class<? extends ExistentialRuleform<?, ?>> type();
+
+    Aspect[] facets();
+
+    Import[] imports() default {};
 }

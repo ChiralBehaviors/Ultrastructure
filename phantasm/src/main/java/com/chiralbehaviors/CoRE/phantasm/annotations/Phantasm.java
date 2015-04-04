@@ -20,31 +20,10 @@
 
 package com.chiralbehaviors.CoRE.phantasm.annotations;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 /**
  * @author hhildebrand
  *
  */
-@Documented
-@Target(TYPE)
-@Retention(RUNTIME)
 public @interface Phantasm {
-    public static enum Existential {
-        AGENCY, ATTRIBUTE, INTERVAL, LOCATION, PRODUCT, RELATIONSHIP,
-        STATUS_CODE, UNIT, INHERIT;
-    }
-
-    Existential type() default Existential.INHERIT;
-
-    String classification() default "isA";
-
-    String classifier() default "";
-
-    Import[] imports() default {};
+    Class<?> mixIns();
 }

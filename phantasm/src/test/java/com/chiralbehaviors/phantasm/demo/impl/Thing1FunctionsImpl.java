@@ -18,23 +18,22 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.phantasm.demo;
+package com.chiralbehaviors.phantasm.demo.impl;
 
-import com.chiralbehaviors.CoRE.phantasm.annotations.Phantasm;
 import com.chiralbehaviors.janus.Facet;
-import com.chiralbehaviors.phantasm.demo.functions.DeploymentDefinitionMethods;
+import com.chiralbehaviors.phantasm.demo.Thing1Functions;
+import com.chiralbehaviors.phantasm.demo.Thing1;
 
 /**
  * @author hhildebrand
  *
  */
-@Phantasm()
-public class DeploymentDefinitionImpl implements DeploymentDefinitionMethods {
+public class Thing1FunctionsImpl implements Thing1Functions {
     @Facet
-    private DeploymentDefinition definition;
+    private Thing1 thing1;
 
     @Override
-    public void deploySystem(String document) {
-        System.out.println(definition.getSystem());
+    public void doSomething(String document) {
+        System.out.println(thing1.getThing2());
     }
 }

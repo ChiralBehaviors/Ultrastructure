@@ -18,16 +18,20 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.phantasm.demo;
+package com.chiralbehaviors.CoRE.phantasm;
 
-import com.chiralbehaviors.CoRE.phantasm.annotations.Phantasm;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Phantasm.Existential;
+import com.chiralbehaviors.CoRE.agency.Agency;
 
 /**
  * @author hhildebrand
  *
  */
-@Phantasm(type = Existential.PRODUCT, classifier = "isA", classification = "Definition")
-public interface Definition {
+public interface PhantasmBase {
+    String getDescription();
 
+    String getName();
+
+    String getNotes();
+
+    Agency getUpdatedBy();
 }

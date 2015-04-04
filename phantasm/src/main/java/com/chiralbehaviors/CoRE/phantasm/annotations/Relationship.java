@@ -35,7 +35,9 @@ import java.lang.annotation.Target;
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface Relationship {
+    Aspect[] intersect() default {};
+
     String name();
 
-    Aspect[] intersect() default {};
+    boolean singular() default false;
 }

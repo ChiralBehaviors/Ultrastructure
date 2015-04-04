@@ -18,26 +18,16 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.phantasm.demo;
+package com.chiralbehaviors.CoRE.phantasm.annotations;
 
-import java.util.List;
-
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Phantasm;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
+import com.chiralbehaviors.CoRE.attribute.ValueType;
 
 /**
  * @author hhildebrand
  *
  */
-@Phantasm()
-public interface SystemDefinition {
-    @Relationship(name = "inDeployment")
-    DeploymentDefinition getDeployment();
+public @interface Attribute {
+    String name();
 
-    @Relationship(name = "systemOf", intersect = { @Aspect(classifier = "isA", classification = "FunctionDefinition") })
-    List<FunctionDefinition> getFunctions();
-
-    @Relationship(name = "systemOf")
-    void addFunction(FunctionDefinition function);
+    ValueType type();
 }

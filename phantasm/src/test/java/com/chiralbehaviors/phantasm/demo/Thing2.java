@@ -20,15 +20,28 @@
 
 package com.chiralbehaviors.phantasm.demo;
 
-import com.chiralbehaviors.CoRE.phantasm.annotations.Phantasm;
+import java.util.List;
+
+import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.annotations.State;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand
  *
  */
-@Phantasm()
-public interface DeploymentDefinition extends Definition {
-    @Relationship(name = "deploymentDefinitionOf")
-    SystemDefinition getSystem();
+@State(type = Product.class, facets = { @Aspect(classifier = "Thing2") })
+public interface Thing2 extends PhantasmBase {
+    // 
+    @Relationship(name = "inThing1", singular = true)
+    Thing1 getThing1();
+
+    @Relationship(name = "thing2Of", intersect = { @Aspect(classifier = "Thing3") })
+    List<Thing3> getThing3s();
+
+    // 
+    @Relationship(name = "thing2Of")
+    void addFunction(Thing3 thing3);
 }

@@ -20,10 +20,16 @@
 
 package com.chiralbehaviors.phantasm.demo;
 
+import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.annotations.State;
+import com.chiralbehaviors.CoRE.product.Product;
+
 /**
  * @author hhildebrand
  *
  */
-public interface FunctionDefinition {
+@State(type = Product.class, facets = { @Aspect(classifier = "Thing3") })
+public interface Thing3 extends PhantasmBase {
 
 }

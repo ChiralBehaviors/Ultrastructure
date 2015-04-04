@@ -1,3 +1,4 @@
+package com.chiralbehaviors.CoRE.workspace.phantasm;
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
  * 
@@ -18,25 +19,10 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.annotations;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 /**
  * @author hhildebrand
  *
  */
-@Documented
-@Target({ TYPE, FIELD })
-@Retention(RUNTIME)
-public @interface Aspect {
-    String classification() default "isA";
+public class Workspace {
 
-    String classifier();
 }

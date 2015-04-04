@@ -108,4 +108,10 @@ public class PhantasmFactory {
 
         return instances;
     }
+
+    @SuppressWarnings("unused")
+    private List<Class<?>> getStates(Class<?> phantasm) {
+        List<Class<?>> states = new ArrayList<Class<?>>();
+        return states;
+    }
 }

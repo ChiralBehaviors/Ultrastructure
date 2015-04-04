@@ -21,15 +21,15 @@
 package com.chiralbehaviors.phantasm.demo;
 
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand
  *
  */
-@State(type = Product.class, facets = { @Aspect(classifier = "Thing3") })
-public interface Thing3 extends PhantasmBase {
+@State(facets = { @Aspect(classifier = "Thing3") })
+public interface Thing3 extends PhantasmBase<Product> {
 
 }

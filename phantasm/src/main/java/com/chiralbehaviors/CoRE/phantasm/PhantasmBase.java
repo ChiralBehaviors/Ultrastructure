@@ -20,18 +20,23 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 
 /**
  * @author hhildebrand
  *
  */
-public interface PhantasmBase {
+public interface PhantasmBase<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>> {
+
     String getDescription();
 
     String getName();
 
     String getNotes();
+
+    <T extends RuleForm> T getRuleform();
 
     Agency getUpdatedBy();
 }

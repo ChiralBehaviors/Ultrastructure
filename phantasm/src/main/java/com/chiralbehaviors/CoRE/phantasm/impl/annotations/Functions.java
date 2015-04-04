@@ -18,12 +18,12 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.annotations;
+package com.chiralbehaviors.CoRE.phantasm.impl.annotations;
 
 /**
  * @author hhildebrand
  *
  */
-public @interface Phantasm {
-    Class<?> mixIns();
+public @interface Functions {
+    Class<?> value();
 }

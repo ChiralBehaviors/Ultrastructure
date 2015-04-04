@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.phantasm;
+package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -32,13 +32,14 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 
 /**
  * @author hhildebrand
  *
  */
 public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
-        implements InvocationHandler {
+        implements InvocationHandler, PhantasmBase<RuleForm> {
     @SafeVarargs
     public static <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void constrain(Model model,
                                                                                                                                       RuleForm ruleform,
@@ -84,40 +85,35 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         this.model = model;
     }
 
-    public void addChild(Relationship r, RuleForm child, Agency updatedBy) {
-        model.getNetworkedModel(ruleform).link(ruleform, r, child, updatedBy);
-    }
-
-    public void addChildren(Relationship r, List<RuleForm> children,
-                            Agency updatedBy) {
-        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
-        for (RuleForm child : children) {
-            networkedModel.link(ruleform, r, child, updatedBy);
-        }
-    }
-
-    public RuleForm getChild(Relationship r) {
-        return model.getNetworkedModel(ruleform).getSingleChild(ruleform, r);
-    }
-
-    public List<RuleForm> getChildren(Relationship r) {
-        return model.getNetworkedModel(ruleform).getChildren(ruleform, r);
-    }
-
+    @Override
     public String getDescription() {
         return ruleform.getDescription();
     }
 
+    @Override
     public String getName() {
         return ruleform.getName();
     }
 
+    @Override
     public String getNotes() {
         return ruleform.getNotes();
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.phantasm.PhantasmBase#getRuleform()
+     */
+    @Override
     public RuleForm getRuleform() {
         return ruleform;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.phantasm.PhantasmBase#getUpdatedBy()
+     */
+    @Override
+    public Agency getUpdatedBy() {
+        return ruleform.getUpdatedBy();
     }
 
     /* (non-Javadoc)
@@ -128,5 +124,29 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                     throws Throwable {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @SuppressWarnings("unused")
+    private void addChild(Relationship r, RuleForm child, Agency updatedBy) {
+        model.getNetworkedModel(ruleform).link(ruleform, r, child, updatedBy);
+    }
+
+    @SuppressWarnings("unused")
+    private void addChildren(Relationship r, List<RuleForm> children,
+                             Agency updatedBy) {
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
+        for (RuleForm child : children) {
+            networkedModel.link(ruleform, r, child, updatedBy);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private RuleForm getChild(Relationship r) {
+        return model.getNetworkedModel(ruleform).getSingleChild(ruleform, r);
+    }
+
+    @SuppressWarnings("unused")
+    private List<RuleForm> getChildren(Relationship r) {
+        return model.getNetworkedModel(ruleform).getChildren(ruleform, r);
     }
 }

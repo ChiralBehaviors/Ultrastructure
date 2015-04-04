@@ -21,15 +21,16 @@
 package com.chiralbehaviors.phantasm.demo;
 
 import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.State;
 
 /**
  * @author hhildebrand
  *
  */
-@State(type = Location.class, facets = { @Aspect(classifier = "MavenArtifact") })
-public interface MavenArtifact {
+@State(facets = { @Aspect(classifier = "MavenArtifact") })
+public interface MavenArtifact extends PhantasmBase<Location> {
     String getArtifactId();
 
     String getClassifier();

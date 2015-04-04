@@ -25,11 +25,11 @@ import java.util.Map;
 
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Phantasm;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Attribute;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Functions;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.phantasm.demo.impl.Thing1FunctionsImpl;
 
@@ -37,9 +37,9 @@ import com.chiralbehaviors.phantasm.demo.impl.Thing1FunctionsImpl;
  * @author hhildebrand
  *
  */
-@Phantasm(mixIns = Thing1FunctionsImpl.class)
-@State(type = Product.class, facets = { @Aspect(classifier = "Thing1") })
-public interface Thing1 extends PhantasmBase, Thing1Functions {
+@Functions(Thing1FunctionsImpl.class)
+@State(facets = { @Aspect(classifier = "Thing1") })
+public interface Thing1 extends PhantasmBase<Product>, Thing1Functions {
 
     // array attributes of the ruleform
     String[] getAliases();

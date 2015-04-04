@@ -18,16 +18,25 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.annotations;
+package com.chiralbehaviors.CoRE.phantasm.impl.annotations;
 
-import com.chiralbehaviors.CoRE.attribute.ValueType;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * @author hhildebrand
  *
  */
-public @interface Attribute {
-    String name();
+@Documented
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface State {
 
-    ValueType type();
+    Aspect[] facets();
+
+    Import[] imports() default {};
 }

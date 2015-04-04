@@ -23,17 +23,17 @@ package com.chiralbehaviors.phantasm.demo;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.impl.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand
  *
  */
-@State(type = Product.class, facets = { @Aspect(classifier = "Thing2") })
-public interface Thing2 extends PhantasmBase {
+@State(facets = { @Aspect(classifier = "Thing2") })
+public interface Thing2 extends PhantasmBase<Product> {
     // 
     @Relationship(name = "inThing1", singular = true)
     Thing1 getThing1();

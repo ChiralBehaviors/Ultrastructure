@@ -18,22 +18,31 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.impl.annotations;
+package com.chiralbehaviors.CoRE.workspace;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.hellblazer.utils.collections.LookupScope;
 
 /**
  * @author hhildebrand
  *
  */
-@Documented
-@Target(TYPE)
-@Retention(RUNTIME)
-public @interface Intersect {
-    String[] relationships();
+public class WorkspaceScope extends LookupScope<String, Ruleform> {
+
+    private final Workspace workspace;
+
+    public WorkspaceScope(String name, LookupScope<String, Ruleform> parent,
+                          Workspace workspace) {
+        super(name, parent);
+        this.workspace = workspace;
+    }
+
+    /* (non-Javadoc)
+     * @see com.hellblazer.utils.collections.LookupScope#localLookup(java.lang.Object)
+     */
+    @Override
+    protected Ruleform localLookup(String key) {
+        return workspace.get(key);
+    }
+
 }

@@ -74,6 +74,10 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.hellblazer</groupId>
+            <artifactId>utils</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

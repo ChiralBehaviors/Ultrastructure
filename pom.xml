@@ -71,7 +71,6 @@
         <module>loader-plugin</module>
         <module>network-inference-generator</module>
         <module>dsl</module>
-        <module>phantasm</module>
     </modules>
 
     <dependencyManagement>
@@ -265,7 +264,7 @@
             <dependency>
                 <groupId>com.hellblazer</groupId>
                 <artifactId>utils</artifactId>
-                <version>0.0.4-SNAPSHOT</version>
+                <version>0.0.6-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.liquibase</groupId>

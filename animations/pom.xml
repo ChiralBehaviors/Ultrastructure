@@ -42,12 +42,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.hellblazer</groupId>
-            <artifactId>utils</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate4</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors</groupId>
+            <artifactId>janus</artifactId>
         </dependency>
     </dependencies>
     <build>

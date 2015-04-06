@@ -23,9 +23,9 @@ package com.chiralbehaviors.phantasm.demo;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**

@@ -21,8 +21,6 @@ package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -40,49 +38,16 @@ import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
  */
 public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         implements InvocationHandler, PhantasmBase<RuleForm> {
-    @SafeVarargs
-    public static <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void constrain(Model model,
-                                                                                                                                      RuleForm ruleform,
-                                                                                                                                      Aspect<RuleForm> aspect,
-                                                                                                                                      Aspect<RuleForm>... aspects) {
-        NetworkedModel<RuleForm, Network, ?, ?> networked = model.getNetworkedModel(ruleform);
-        List<Aspect<RuleForm>> failures = new ArrayList<>();
-        if (!networked.isAccessible(aspect.getClassifier(),
-                                    aspect.getClassification(), ruleform)) {
-            failures.add(aspect);
-        }
-        if (aspects != null) {
-            for (Aspect<RuleForm> constraint : aspects) {
-                if (!networked.isAccessible(constraint.getClassifier(),
-                                            constraint.getClassification(),
-                                            ruleform)) {
-                    failures.add(constraint);
-                }
-            }
-        }
-        if (failures.isEmpty()) {
-            throw new RuntimeException(
-                                       String.format("%s does not have required aspects: ",
-                                                     failures));
-        }
-    }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static <T, RuleForm extends ExistentialRuleform<RuleForm, ?>> T getAccessor(Class<T> accessorInterface,
-                                                                                       RuleForm ruleform,
-                                                                                       Model model) {
-        return (T) Proxy.newProxyInstance(accessorInterface.getClassLoader(),
-                                          new Class[] { accessorInterface },
-                                          new StateImpl(ruleform, model));
-    }
+    private final StateDefinition<RuleForm, Network> definition;
+    private final Model                              model;
+    private final RuleForm                           ruleform;
 
-    private final RuleForm ruleform;
-
-    protected final Model  model;
-
-    public StateImpl(RuleForm ruleform, Model model) {
+    public StateImpl(RuleForm ruleform, Model model,
+                     StateDefinition<RuleForm, Network> definition) {
         this.ruleform = ruleform;
         this.model = model;
+        this.definition = definition;
     }
 
     @Override
@@ -122,8 +87,9 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
                                                                     throws Throwable {
-        // TODO Auto-generated method stub
-        return null;
+        Object returnValue = definition.methods.get(method).invoke(args);
+        // always maintain proxy discipline ;)
+        return returnValue == this ? proxy : returnValue;
     }
 
     @SuppressWarnings("unused")
@@ -147,6 +113,12 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unused")
     private List<RuleForm> getChildren(Relationship r) {
+        return model.getNetworkedModel(ruleform).getChildren(ruleform, r);
+    }
+
+    @SuppressWarnings("unused")
+    private List<RuleForm> getChildren(Relationship r,
+                                       @SuppressWarnings("unchecked") Aspect<RuleForm>... constraints) {
         return model.getNetworkedModel(ruleform).getChildren(ruleform, r);
     }
 }

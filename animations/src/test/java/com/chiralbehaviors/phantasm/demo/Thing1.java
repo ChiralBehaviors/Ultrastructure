@@ -25,11 +25,11 @@ import java.util.Map;
 
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Functions;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Functions;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.phantasm.demo.impl.Thing1FunctionsImpl;
 

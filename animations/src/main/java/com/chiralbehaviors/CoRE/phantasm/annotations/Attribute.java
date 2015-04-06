@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.impl.annotations;
+package com.chiralbehaviors.CoRE.phantasm.annotations;
 
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 

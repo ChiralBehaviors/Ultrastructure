@@ -18,25 +18,12 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.impl.annotations;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+package com.chiralbehaviors.CoRE.phantasm.annotations;
 
 /**
  * @author hhildebrand
  *
  */
-@Documented
-@Target({ TYPE, FIELD })
-@Retention(RUNTIME)
-public @interface Aspect {
-    String classification() default "isA";
-
-    String classifier();
+public @interface Functions {
+    Class<?> value();
 }

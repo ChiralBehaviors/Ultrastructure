@@ -22,8 +22,8 @@ package com.chiralbehaviors.phantasm.demo;
 
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.impl.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 
 /**
  * @author hhildebrand

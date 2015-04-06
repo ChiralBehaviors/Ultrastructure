@@ -32,7 +32,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classifier = "Thing2") })
+@State(facets = { @Aspect(classifier = "Thing2") }, workspace = "00000000-0000-0004-0000-000000000008")
 public interface Thing2 extends PhantasmBase<Product> {
     // 
     @Relationship(name = "inThing1", singular = true)

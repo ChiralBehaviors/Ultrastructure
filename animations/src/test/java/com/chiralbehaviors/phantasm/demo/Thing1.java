@@ -37,7 +37,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  *
  */
 @Functions(Thing1FunctionsImpl.class)
-@State(facets = { @Aspect(classifier = "Thing1") })
+@State(facets = { @Aspect(classifier = "Thing1") }, workspace = "00000000-0000-0004-0000-000000000008")
 public interface Thing1 extends PhantasmBase<Product>, Thing1Functions {
 
     // array attributes of the ruleform

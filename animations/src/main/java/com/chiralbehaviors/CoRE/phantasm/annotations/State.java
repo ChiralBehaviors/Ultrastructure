@@ -39,4 +39,6 @@ public @interface State {
     Aspect[] facets();
 
     Import[] imports() default {};
+
+    String workspace();
 }

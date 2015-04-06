@@ -1,8 +1,8 @@
 {
   "auths" : [ {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fca7eee5-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fca7eee5-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cf0873ad-dc66-11e4-8010-1330b1404163",
+    "id" : "cf0873ad-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : {
@@ -17,8 +17,8 @@
     },
     "definingProduct" : {
       "type" : "product",
-      "@id" : "Product-00000000-0000-0004-0000-000000000008",
-      "id" : "00000000-0000-0004-0000-000000000008",
+      "@id" : "Product-00000000-0000-0004-0000-000000000007",
+      "id" : "00000000-0000-0004-0000-000000000007",
       "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
@@ -29,8 +29,8 @@
     "type" : "AgencyNetwork",
     "ruleform" : {
       "type" : "agencynetwork",
-      "@id" : "AgencyNetwork-fca7eee4-d7f9-11e4-8c1e-d389a5a7bf88",
-      "id" : "fca7eee4-d7f9-11e4-8c1e-d389a5a7bf88",
+      "@id" : "AgencyNetwork-cf0873ac-dc66-11e4-8010-1330b1404163",
+      "id" : "cf0873ac-dc66-11e4-8010-1330b1404163",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
@@ -85,18 +85,18 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fca7eee3-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fca7eee3-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cf084c9b-dc66-11e4-8010-1330b1404163",
+    "id" : "cf084c9b-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "PasswordHashAuth",
     "type" : "AgencyAttributeAuthorization",
     "ruleform" : {
       "type" : "agencyattributeauthorization",
-      "@id" : "AgencyAttributeAuthorization-fca7eee2-d7f9-11e4-8c1e-d389a5a7bf88",
-      "id" : "fca7eee2-d7f9-11e4-8c1e-d389a5a7bf88",
+      "@id" : "AgencyAttributeAuthorization-cf084c9a-dc66-11e4-8010-1330b1404163",
+      "id" : "cf084c9a-dc66-11e4-8010-1330b1404163",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
@@ -125,18 +125,18 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fca7eee1-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fca7eee1-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cf084c99-dc66-11e4-8010-1330b1404163",
+    "id" : "cf084c99-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "LoginAuth",
     "type" : "AgencyAttributeAuthorization",
     "ruleform" : {
       "type" : "agencyattributeauthorization",
-      "@id" : "AgencyAttributeAuthorization-fca7eee0-d7f9-11e4-8c1e-d389a5a7bf88",
-      "id" : "fca7eee0-d7f9-11e4-8c1e-d389a5a7bf88",
+      "@id" : "AgencyAttributeAuthorization-cf084c98-dc66-11e4-8010-1330b1404163",
+      "id" : "cf084c98-dc66-11e4-8010-1330b1404163",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
@@ -165,12 +165,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fca7c7cf-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fca7c7cf-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cf084c97-dc66-11e4-8010-1330b1404163",
+    "id" : "cf084c97-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "RootUnitNetwork",
     "type" : "UnitNetwork",
     "ruleform" : {
@@ -225,12 +225,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fca5f30d-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fca5f30d-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cf0629b5-dc66-11e4-8010-1330b1404163",
+    "id" : "cf0629b5-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "RootStatusCodeNetwork",
     "type" : "StatusCodeNetwork",
     "ruleform" : {
@@ -260,12 +260,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fca41e4a-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fca41e4a-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cf03dfc2-dc66-11e4-8010-1330b1404163",
+    "id" : "cf03dfc2-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "RootRelationshipNetwork",
     "type" : "RelationshipNetwork",
     "ruleform" : {
@@ -284,12 +284,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fca22278-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fca22278-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cf0195d0-dc66-11e4-8010-1330b1404163",
+    "id" : "cf0195d0-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "RootProductNetwork",
     "type" : "ProductNetwork",
     "ruleform" : {
@@ -303,26 +303,26 @@
       "relationship" : "Relationship-00000000-0000-0005-0000-00000000001e",
       "child" : {
         "type" : "product",
-        "@id" : "Product-00000000-0000-0004-0000-000000000004",
-        "id" : "00000000-0000-0004-0000-000000000004",
+        "@id" : "Product-00000000-0000-0004-0000-000000000003",
+        "id" : "00000000-0000-0004-0000-000000000003",
         "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
         "description" : "The abstract notion of a product. All existential entities defined in the Product ruleform are instances of 'Product'",
         "name" : "PRODUCT"
       },
-      "parent" : "Product-00000000-0000-0004-0000-000000000004",
+      "parent" : "Product-00000000-0000-0004-0000-000000000003",
       "premise1" : "ProductNetwork-00000000-0000-0000-0000-000000000000",
       "premise2" : "ProductNetwork-00000000-0000-0000-0000-000000000000"
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc9fb175-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc9fb175-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ced2215e-dc66-11e4-8010-1330b1404163",
+    "id" : "ced2215e-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "RootLocationNetwork",
     "type" : "LocationNetwork",
     "ruleform" : {
@@ -350,12 +350,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc9cf253-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc9cf253-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cecfd76c-dc66-11e4-8010-1330b1404163",
+    "id" : "cecfd76c-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "RootIntervalNetwork",
     "type" : "IntervalNetwork",
     "ruleform" : {
@@ -389,12 +389,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc9a5a40-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc9a5a40-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cecca319-dc66-11e4-8010-1330b1404163",
+    "id" : "cecca319-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "RootAttributeNetwork",
     "type" : "AttributeNetwork",
     "ruleform" : {
@@ -424,12 +424,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc97e93e-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc97e93e-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceca0b07-dc66-11e4-8010-1330b1404163",
+    "id" : "ceca0b07-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "RootAgencyNetwork",
     "type" : "AgencyNetwork",
     "ruleform" : {
@@ -457,12 +457,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc95783a-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc95783a-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec61363-dc66-11e4-8010-1330b1404163",
+    "id" : "cec61363-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "NotApplicableInterval",
     "type" : "Interval",
     "ruleform" : {
@@ -481,12 +481,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc950308-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc950308-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec55011-dc66-11e4-8010-1330b1404163",
+    "id" : "cec55011-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "SameInterval",
     "type" : "Interval",
     "ruleform" : {
@@ -505,12 +505,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc9466c6-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc9466c6-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec4b4cf-dc66-11e4-8010-1330b1404163",
+    "id" : "cec4b4cf-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CopyInterval",
     "type" : "Interval",
     "ruleform" : {
@@ -529,12 +529,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc93ca84-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc93ca84-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec3f17d-dc66-11e4-8010-1330b1404163",
+    "id" : "cec3f17d-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "AnyInterval",
     "type" : "Interval",
     "ruleform" : {
@@ -553,12 +553,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc935551-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc935551-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec3071a-dc66-11e4-8010-1330b1404163",
+    "id" : "cec3071a-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Days",
     "type" : "Unit",
     "ruleform" : {
@@ -578,12 +578,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc92e01f-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc92e01f-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec2b8f8-dc66-11e4-8010-1330b1404163",
+    "id" : "cec2b8f8-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Hours",
     "type" : "Unit",
     "ruleform" : {
@@ -603,12 +603,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc9291fd-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc9291fd-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec243c6-dc66-11e4-8010-1330b1404163",
+    "id" : "cec243c6-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Seconds",
     "type" : "Unit",
     "ruleform" : {
@@ -628,12 +628,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc921ccb-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc921ccb-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec1ce94-dc66-11e4-8010-1330b1404163",
+    "id" : "cec1ce94-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Milliseconds",
     "type" : "Unit",
     "ruleform" : {
@@ -653,12 +653,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc91a799-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc91a799-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec15962-dc66-11e4-8010-1330b1404163",
+    "id" : "cec15962-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Microseconds",
     "type" : "Unit",
     "ruleform" : {
@@ -678,12 +678,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc915977-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc915977-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec0e430-dc66-11e4-8010-1330b1404163",
+    "id" : "cec0e430-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Nanoseconds",
     "type" : "Unit",
     "ruleform" : {
@@ -703,12 +703,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc90e445-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc90e445-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec0960e-dc66-11e4-8010-1330b1404163",
+    "id" : "cec0960e-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "NotApplicableUnit",
     "type" : "Unit",
     "ruleform" : {
@@ -728,12 +728,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc909623-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc909623-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cec020dc-dc66-11e4-8010-1330b1404163",
+    "id" : "cec020dc-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "SameUnit",
     "type" : "Unit",
     "ruleform" : {
@@ -753,12 +753,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc9020f1-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc9020f1-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebfd2ba-dc66-11e4-8010-1330b1404163",
+    "id" : "cebfd2ba-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CopyUnit",
     "type" : "Unit",
     "ruleform" : {
@@ -778,12 +778,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8fd2cf-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8fd2cf-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebf8498-dc66-11e4-8010-1330b1404163",
+    "id" : "cebf8498-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "AnyUnit",
     "type" : "Unit",
     "ruleform" : {
@@ -803,12 +803,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8f5d9d-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8f5d9d-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebee856-dc66-11e4-8010-1330b1404163",
+    "id" : "cebee856-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "UnsetUnit",
     "type" : "Unit",
     "ruleform" : {
@@ -828,12 +828,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8ec15b-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8ec15b-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebe7324-dc66-11e4-8010-1330b1404163",
+    "id" : "cebe7324-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "NotApplicableStatusCode",
     "type" : "StatusCode",
     "ruleform" : {
@@ -850,12 +850,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8e7339-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8e7339-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebe4c12-dc66-11e4-8010-1330b1404163",
+    "id" : "cebe4c12-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "SameStatusCode",
     "type" : "StatusCode",
     "ruleform" : {
@@ -872,12 +872,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8dfe07-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8dfe07-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebdd6e0-dc66-11e4-8010-1330b1404163",
+    "id" : "cebdd6e0-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CopyStatusCode",
     "type" : "StatusCode",
     "ruleform" : {
@@ -894,12 +894,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8dafe5-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8dafe5-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebd88be-dc66-11e4-8010-1330b1404163",
+    "id" : "cebd88be-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "AnyStatusCode",
     "type" : "StatusCode",
     "ruleform" : {
@@ -916,12 +916,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8d61c3-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8d61c3-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebd3a9c-dc66-11e4-8010-1330b1404163",
+    "id" : "cebd3a9c-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Unset",
     "type" : "StatusCode",
     "ruleform" : {
@@ -938,12 +938,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8c7761-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8c7761-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebcec7a-dc66-11e4-8010-1330b1404163",
+    "id" : "cebcec7a-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "WorkspaceOf",
     "type" : "Relationship",
     "ruleform" : {
@@ -973,23 +973,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8c5050-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8c5050-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebcc569-dc66-11e4-8010-1330b1404163",
+    "id" : "cebcc569-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "InWorkspace",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000000f"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8bdb1d-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8bdb1d-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebc5036-dc66-11e4-8010-1330b1404163",
+    "id" : "cebc5036-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Owns",
     "type" : "Relationship",
     "ruleform" : {
@@ -1019,23 +1019,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8bb40c-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8bb40c-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebc5035-dc66-11e4-8010-1330b1404163",
+    "id" : "cebc5035-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "OwnedBy",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000001a"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8b3ed9-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8b3ed9-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebbdb02-dc66-11e4-8010-1330b1404163",
+    "id" : "cebbdb02-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "NotApplicableRelationship",
     "type" : "Relationship",
     "ruleform" : {
@@ -1053,12 +1053,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8ac9a7-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8ac9a7-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebb65d0-dc66-11e4-8010-1330b1404163",
+    "id" : "cebb65d0-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "FormerMemberOf",
     "type" : "Relationship",
     "ruleform" : {
@@ -1088,23 +1088,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8aa296-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8aa296-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebb3ebf-dc66-11e4-8010-1330b1404163",
+    "id" : "cebb3ebf-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "HadMember",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000009"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8a2d63-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8a2d63-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebac98c-dc66-11e4-8010-1330b1404163",
+    "id" : "cebac98c-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "HasHead",
     "type" : "Relationship",
     "ruleform" : {
@@ -1134,23 +1134,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8a0652-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8a0652-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cebac98b-dc66-11e4-8010-1330b1404163",
+    "id" : "cebac98b-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "HeadOf",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000000e"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc89911f-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc89911f-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceba5458-dc66-11e4-8010-1330b1404163",
+    "id" : "ceba5458-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "MemberOf",
     "type" : "Relationship",
     "ruleform" : {
@@ -1180,23 +1180,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc896a0e-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc896a0e-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceba2d47-dc66-11e4-8010-1330b1404163",
+    "id" : "ceba2d47-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "HasMember",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000000c"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc88f4db-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc88f4db-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb9b814-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb9b814-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "HasVersion",
     "type" : "Relationship",
     "ruleform" : {
@@ -1226,23 +1226,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc88f4da-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc88f4da-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb9b813-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb9b813-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "VersionOf",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000020"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc887fa7-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc887fa7-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb91bd0-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb91bd0-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "DevelopedBy",
     "type" : "Relationship",
     "ruleform" : {
@@ -1272,23 +1272,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc885896-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc885896-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb91bcf-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb91bcf-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Developed",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000003"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc87e363-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc87e363-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb8316c-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb8316c-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "GreaterThanOrEqual",
     "type" : "Relationship",
     "ruleform" : {
@@ -1318,23 +1318,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc87e362-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc87e362-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb8316b-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb8316b-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "LessThanOrEqual",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000016"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc876e2f-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc876e2f-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb76e18-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb76e18-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Equals",
     "type" : "Relationship",
     "ruleform" : {
@@ -1352,12 +1352,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc86d1ed-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc86d1ed-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb6f8e6-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb6f8e6-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "LessThan",
     "type" : "Relationship",
     "ruleform" : {
@@ -1387,23 +1387,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc86d1ec-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc86d1ec-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb6f8e5-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb6f8e5-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "GreaterThan",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000007"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8635a9-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8635a9-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb65ca2-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb65ca2-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "PrototypeOf",
     "type" : "Relationship",
     "ruleform" : {
@@ -1433,23 +1433,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8635a8-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8635a8-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb63591-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb63591-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Prototype",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000001c"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc85c075-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc85c075-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb5994e-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb5994e-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "MapsToLocation",
     "type" : "Relationship",
     "ruleform" : {
@@ -1479,23 +1479,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc85c074-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc85c074-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb5994d-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb5994d-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "IsLocationOf",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000014"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc854b41-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc854b41-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb4fd0a-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb4fd0a-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "IsExceptionTo",
     "type" : "Relationship",
     "ruleform" : {
@@ -1525,45 +1525,45 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc852430-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc852430-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb4fd09-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb4fd09-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "HasException",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000000a"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc84aefd-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc84aefd-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb460c6-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb460c6-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Includes",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000010"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8487ec-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8487ec-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb439b5-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb439b5-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "IsA",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000011"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8487eb-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8487eb-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb439b4-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb439b4-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Contains",
     "type" : "Relationship",
     "ruleform" : {
@@ -1593,23 +1593,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc8460da-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc8460da-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb412a3-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb412a3-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "IsContainedIn",
     "type" : "Relationship",
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000012"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc83eba7-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc83eba7-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb37660-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb37660-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "SameRelationship",
     "type" : "Relationship",
     "ruleform" : {
@@ -1627,12 +1627,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc834f65-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc834f65-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb2da1e-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb2da1e-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CopyRelationship",
     "type" : "Relationship",
     "ruleform" : {
@@ -1650,12 +1650,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc82da33-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc82da33-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb23ddc-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb23ddc-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "AnyRelationship",
     "type" : "Relationship",
     "ruleform" : {
@@ -1673,12 +1673,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc823df1-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc823df1-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb1c8aa-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb1c8aa-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "NotApplicableAgency",
     "type" : "Agency",
     "ruleform" : {
@@ -1693,12 +1693,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc81efcf-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc81efcf-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb15378-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb15378-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "SameAgency",
     "type" : "Agency",
     "ruleform" : {
@@ -1713,12 +1713,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc817a9d-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc817a9d-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb10556-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb10556-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "InverseSoftware",
     "type" : "Agency",
     "ruleform" : {
@@ -1733,23 +1733,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc812c7b-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc812c7b-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb0b734-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb0b734-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "SuperUser",
     "type" : "Agency",
     "ruleform" : "Agency-00000000-0000-0000-0000-00000000000c"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc80de59-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc80de59-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceb06912-dc66-11e4-8010-1330b1404163",
+    "id" : "ceb06912-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CoreModel",
     "type" : "Agency",
     "ruleform" : {
@@ -1764,12 +1764,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc809037-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc809037-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceaff3e0-dc66-11e4-8010-1330b1404163",
+    "id" : "ceaff3e0-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "SpecialSystemAgency",
     "type" : "Agency",
     "ruleform" : {
@@ -1784,12 +1784,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc801b05-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc801b05-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceafa5be-dc66-11e4-8010-1330b1404163",
+    "id" : "ceafa5be-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "PropagationSoftware",
     "type" : "Agency",
     "ruleform" : {
@@ -1804,12 +1804,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7fcce3-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7fcce3-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceaf579c-dc66-11e4-8010-1330b1404163",
+    "id" : "ceaf579c-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CoreAnimationSoftware",
     "type" : "Agency",
     "ruleform" : {
@@ -1824,23 +1824,23 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7f7ec1-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7f7ec1-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceaf097a-dc66-11e4-8010-1330b1404163",
+    "id" : "ceaf097a-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Core",
     "type" : "Agency",
     "ruleform" : "Agency-00000000-0000-0000-0000-000000000001"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7f7ec0-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7f7ec0-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceaee269-dc66-11e4-8010-1330b1404163",
+    "id" : "ceaee269-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CopyAgency",
     "type" : "Agency",
     "ruleform" : {
@@ -1855,12 +1855,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7f0a8e-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7f0a8e-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceae9447-dc66-11e4-8010-1330b1404163",
+    "id" : "ceae9447-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "AnyAgency",
     "type" : "Agency",
     "ruleform" : {
@@ -1875,34 +1875,34 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7ebc6c-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7ebc6c-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceae1f15-dc66-11e4-8010-1330b1404163",
+    "id" : "ceae1f15-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Agency",
     "type" : "Agency",
     "ruleform" : "Agency-00000000-0000-0000-0000-000000000002"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7e6e4a-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7e6e4a-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceadd0f3-dc66-11e4-8010-1330b1404163",
+    "id" : "ceadd0f3-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CoreUser",
     "type" : "Agency",
     "ruleform" : "Agency-00000000-0000-0000-0000-000000000006"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7df918-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7df918-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cead5bc1-dc66-11e4-8010-1330b1404163",
+    "id" : "cead5bc1-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "SameLocation",
     "type" : "Location",
     "ruleform" : {
@@ -1917,12 +1917,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7d83e6-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7d83e6-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cead0d9f-dc66-11e4-8010-1330b1404163",
+    "id" : "cead0d9f-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "NotApplicableLocation",
     "type" : "Location",
     "ruleform" : {
@@ -1937,12 +1937,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7d0eb4-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7d0eb4-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceac986d-dc66-11e4-8010-1330b1404163",
+    "id" : "ceac986d-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CopyLocation",
     "type" : "Location",
     "ruleform" : {
@@ -1957,12 +1957,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7c9982-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7c9982-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceac233b-dc66-11e4-8010-1330b1404163",
+    "id" : "ceac233b-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "AnyLocation",
     "type" : "Location",
     "ruleform" : {
@@ -1977,75 +1977,35 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7c2450-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7c2450-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceabae09-dc66-11e4-8010-1330b1404163",
+    "id" : "ceabae09-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Location",
     "type" : "Location",
     "ruleform" : "Location-00000000-0000-0003-0000-000000000002"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7baf1e-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7baf1e-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceab38d7-dc66-11e4-8010-1330b1404163",
+    "id" : "ceab38d7-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "KernelWorkspace",
     "type" : "Product",
-    "ruleform" : "Product-00000000-0000-0004-0000-000000000008"
+    "ruleform" : "Product-00000000-0000-0004-0000-000000000007"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7baf1d-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7baf1d-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceab38d6-dc66-11e4-8010-1330b1404163",
+    "id" : "ceab38d6-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Workspace",
-    "type" : "Product",
-    "ruleform" : {
-      "type" : "product",
-      "@id" : "Product-00000000-0000-0004-0000-000000000006",
-      "id" : "00000000-0000-0004-0000-000000000006",
-      "notes" : null,
-      "version" : 1,
-      "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-      "description" : "Special product that parents the network of objects that make a workspace",
-      "name" : "Workspace"
-    }
-  }, {
-    "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7b880c-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7b880c-d7f9-11e4-8c1e-d389a5a7bf88",
-    "notes" : null,
-    "version" : 0,
-    "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
-    "key" : "NotApplicableProduct",
-    "type" : "Product",
-    "ruleform" : {
-      "type" : "product",
-      "@id" : "Product-00000000-0000-0004-0000-000000000003",
-      "id" : "00000000-0000-0004-0000-000000000003",
-      "notes" : null,
-      "version" : 1,
-      "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-      "description" : "Special product that stands for 'not applicable'",
-      "name" : "(N/A)"
-    }
-  }, {
-    "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7b12da-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7b12da-d7f9-11e4-8c1e-d389a5a7bf88",
-    "notes" : null,
-    "version" : 0,
-    "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
-    "key" : "SameProduct",
     "type" : "Product",
     "ruleform" : {
       "type" : "product",
@@ -2054,23 +2014,63 @@
       "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
+      "description" : "Special product that parents the network of objects that make a workspace",
+      "name" : "Workspace"
+    }
+  }, {
+    "type" : "workspaceauthorization",
+    "@id" : "WorkspaceAuthorization-ceab11c5-dc66-11e4-8010-1330b1404163",
+    "id" : "ceab11c5-dc66-11e4-8010-1330b1404163",
+    "notes" : null,
+    "version" : 0,
+    "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
+    "key" : "NotApplicableProduct",
+    "type" : "Product",
+    "ruleform" : {
+      "type" : "product",
+      "@id" : "Product-00000000-0000-0004-0000-000000000002",
+      "id" : "00000000-0000-0004-0000-000000000002",
+      "notes" : null,
+      "version" : 1,
+      "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
+      "description" : "Special product that stands for 'not applicable'",
+      "name" : "(N/A)"
+    }
+  }, {
+    "type" : "workspaceauthorization",
+    "@id" : "WorkspaceAuthorization-ceaac3a3-dc66-11e4-8010-1330b1404163",
+    "id" : "ceaac3a3-dc66-11e4-8010-1330b1404163",
+    "notes" : null,
+    "version" : 0,
+    "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
+    "key" : "SameProduct",
+    "type" : "Product",
+    "ruleform" : {
+      "type" : "product",
+      "@id" : "Product-00000000-0000-0004-0000-000000000004",
+      "id" : "00000000-0000-0004-0000-000000000004",
+      "notes" : null,
+      "version" : 1,
+      "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
       "description" : "Special product that stands for the same product supplied",
       "name" : "(SAME)"
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7a7698-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7a7698-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-ceaa2761-dc66-11e4-8010-1330b1404163",
+    "id" : "ceaa2761-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CopyProduct",
     "type" : "Product",
     "ruleform" : {
       "type" : "product",
-      "@id" : "Product-00000000-0000-0004-0000-000000000007",
-      "id" : "00000000-0000-0004-0000-000000000007",
+      "@id" : "Product-00000000-0000-0004-0000-000000000006",
+      "id" : "00000000-0000-0004-0000-000000000006",
       "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
@@ -2079,12 +2079,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7a0166-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7a0166-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea98b1f-dc66-11e4-8010-1330b1404163",
+    "id" : "cea98b1f-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "AnyProduct",
     "type" : "Product",
     "ruleform" : {
@@ -2099,54 +2099,45 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc798c34-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc798c34-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea8eedd-dc66-11e4-8010-1330b1404163",
+    "id" : "cea8eedd-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Product",
     "type" : "Product",
-    "ruleform" : {
-      "type" : "product",
-      "@id" : "Product-00000000-0000-0004-0000-000000000002",
-      "id" : "00000000-0000-0004-0000-000000000002",
-      "notes" : null,
-      "version" : 1,
-      "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-      "description" : "A special Product that stands for the originally supplied product",
-      "name" : "Product"
-    }
+    "ruleform" : "Product-00000000-0000-0004-0000-000000000003"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc791702-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc791702-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea879ab-dc66-11e4-8010-1330b1404163",
+    "id" : "cea879ab-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "PasswordHashAttribute",
     "type" : "Attribute",
     "ruleform" : "Attribute-00000000-0000-0001-0000-000000000006"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc78a1d0-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc78a1d0-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea80479-dc66-11e4-8010-1330b1404163",
+    "id" : "cea80479-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "LoginAttribute",
     "type" : "Attribute",
     "ruleform" : "Attribute-00000000-0000-0001-0000-000000000003"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc78058e-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc78058e-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea76837-dc66-11e4-8010-1330b1404163",
+    "id" : "cea76837-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "SameAttribute",
     "type" : "Attribute",
     "ruleform" : {
@@ -2163,12 +2154,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc77905c-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc77905c-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea6f305-dc66-11e4-8010-1330b1404163",
+    "id" : "cea6f305-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "NotApplicableAttribute",
     "type" : "Attribute",
     "ruleform" : {
@@ -2185,12 +2176,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc771b2a-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc771b2a-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea656c3-dc66-11e4-8010-1330b1404163",
+    "id" : "cea656c3-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "CopyAttribute",
     "type" : "Attribute",
     "ruleform" : {
@@ -2207,12 +2198,12 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc767ee8-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc767ee8-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea5ba81-dc66-11e4-8010-1330b1404163",
+    "id" : "cea5ba81-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "AnyAttribute",
     "type" : "Attribute",
     "ruleform" : {
@@ -2229,36 +2220,36 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc7609b6-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc7609b6-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea5454f-dc66-11e4-8010-1330b1404163",
+    "id" : "cea5454f-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : "Attribute",
     "type" : "Attribute",
     "ruleform" : "Attribute-00000000-0000-0001-0000-000000000002"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-fc72ae54-d7f9-11e4-8c1e-d389a5a7bf88",
-    "id" : "fc72ae54-d7f9-11e4-8c1e-d389a5a7bf88",
+    "@id" : "WorkspaceAuthorization-cea19bcd-dc66-11e4-8010-1330b1404163",
+    "id" : "cea19bcd-dc66-11e4-8010-1330b1404163",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
-    "definingProduct" : "Product-00000000-0000-0004-0000-000000000008",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000007",
     "key" : null,
     "type" : "ProductNetwork",
     "ruleform" : {
       "type" : "productnetwork",
-      "@id" : "ProductNetwork-fc72ae53-d7f9-11e4-8c1e-d389a5a7bf88",
-      "id" : "fc72ae53-d7f9-11e4-8c1e-d389a5a7bf88",
+      "@id" : "ProductNetwork-cea19bcc-dc66-11e4-8010-1330b1404163",
+      "id" : "cea19bcc-dc66-11e4-8010-1330b1404163",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000001",
       "inference" : null,
       "relationship" : "Relationship-00000000-0000-0005-0000-000000000011",
-      "child" : "Product-00000000-0000-0004-0000-000000000006",
-      "parent" : "Product-00000000-0000-0004-0000-000000000008",
+      "child" : "Product-00000000-0000-0004-0000-000000000005",
+      "parent" : "Product-00000000-0000-0004-0000-000000000007",
       "premise1" : null,
       "premise2" : null
     }

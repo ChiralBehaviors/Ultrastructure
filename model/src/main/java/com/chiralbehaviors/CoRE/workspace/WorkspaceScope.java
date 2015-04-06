@@ -20,20 +20,24 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import java.util.List;
+
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.hellblazer.utils.collections.LookupScope;
+import com.hellblazer.utils.collections.OrderedLookupScope;
 
 /**
  * @author hhildebrand
  *
  */
-public class WorkspaceScope extends LookupScope<String, Ruleform> {
+public class WorkspaceScope extends OrderedLookupScope<String, Ruleform> {
 
     private final Workspace workspace;
 
-    public WorkspaceScope(String name, LookupScope<String, Ruleform> parent,
+    public WorkspaceScope(String name,
+                          List<LookupScope<String, Ruleform>> imports,
                           Workspace workspace) {
-        super(name, parent);
+        super(name, imports);
         this.workspace = workspace;
     }
 
@@ -44,5 +48,4 @@ public class WorkspaceScope extends LookupScope<String, Ruleform> {
     protected Ruleform localLookup(String key) {
         return workspace.get(key);
     }
-
 }

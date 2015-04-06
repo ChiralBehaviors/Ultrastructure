@@ -316,7 +316,7 @@ public class Bootstrap {
         populate("PasswordHashAttribute",
                  find(WellKnownAttribute.PASSWORD_HASH), core, kernelWorkspace);
 
-        populate("Product", find(WellKnownProduct.ENTITY), core,
+        populate("Product", find(WellKnownProduct.PRODUCT), core,
                  kernelWorkspace);
         populate("AnyProduct", find(WellKnownProduct.ANY), core,
                  kernelWorkspace);

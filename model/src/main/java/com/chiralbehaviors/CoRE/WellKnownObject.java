@@ -635,22 +635,6 @@ public interface WellKnownObject {
             }
 
         },
-        ENTITY() {
-
-            @Override
-            public String description() {
-                return "A special Product that stands for the originally supplied product";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.ENTITY;
-            }
-
-        },
         NOT_APPLICABLE() {
 
             @Override
@@ -2021,7 +2005,6 @@ public interface WellKnownObject {
     String CORE_USER                 = "CoRE User";
     String DEVELOPED                 = "developed";
     String DEVELOPED_BY              = "developed-by";
-    String ENTITY                    = "Product";
     String EQUALS                    = "=";
     String EVENT                     = "Event";
     String FORMER_MEMBER_OF          = "former-member-of";

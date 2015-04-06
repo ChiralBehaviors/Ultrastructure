@@ -82,11 +82,11 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
     private StatusCode         parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise1")
+    @JoinColumn(name = "premise1")
     private StatusCodeNetwork  premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise2")
+    @JoinColumn(name = "premise2")
     private StatusCodeNetwork  premise2;
 
     /**

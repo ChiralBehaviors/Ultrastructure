@@ -29,6 +29,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                  JOIN ruleform.%tableName% AS p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
+                    AND p2.inference IS NULL
                  JOIN ruleform.network_inference AS deduction
                     ON p1.relationship = deduction.premise1
                     AND p2.relationship = deduction.premise2
@@ -57,6 +58,7 @@ networkInference(entityName, entityPackage, tableName, queryPrefix) ::= <<
                 JOIN ruleform.%tableName% AS p2
                     ON p2.parent = p1.child
                     AND p2.child <> p1.parent
+                    AND p2.inference IS NULL
                 JOIN ruleform.network_inference AS deduction
                     ON p1.relationship = deduction.premise1
                     AND p2.relationship = deduction.premise2

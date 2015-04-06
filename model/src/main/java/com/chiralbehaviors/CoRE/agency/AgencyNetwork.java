@@ -82,11 +82,11 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     private Agency             parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise1")
+    @JoinColumn(name = "premise1")
     private AgencyNetwork      premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise2")
+    @JoinColumn(name = "premise2")
     private AgencyNetwork      premise2;
 
     public AgencyNetwork() {

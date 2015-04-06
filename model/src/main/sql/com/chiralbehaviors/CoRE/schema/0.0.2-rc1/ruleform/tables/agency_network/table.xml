@@ -19,15 +19,9 @@
             <column name="child" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="inference" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000000'">
-                <constraints nullable="false" />
-            </column>
-            <column name="premise1" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000000'">
-                <constraints nullable="false" />
-            </column>
-            <column name="premise2" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000000'">
-                <constraints nullable="false" />
-            </column>
+            <column name="inference" type="uuid" />
+            <column name="premise1" type="uuid" />
+            <column name="premise2" type="uuid" />
             <column name="notes" type="TEXT" />
             <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
                 <constraints nullable="false" />
@@ -80,7 +74,7 @@
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-431">
         <createIndex schemaName="ruleform" indexName="agency_network_updated_by_fkey_idx" tableName="agency_network" unique="false">
-            <column name="updated_by"  />
+            <column name="updated_by" />
         </createIndex>
     </changeSet>
     <changeSet author="hhildebrand" id="1390879803225-433">

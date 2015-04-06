@@ -85,11 +85,11 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     private Interval           parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise1")
+    @JoinColumn(name = "premise1")
     private IntervalNetwork    premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise2")
+    @JoinColumn(name = "premise2")
     private IntervalNetwork    premise2;
 
     @Column(insertable = false, name = "start_time")

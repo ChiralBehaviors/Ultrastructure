@@ -83,11 +83,11 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     private Location        parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise1")
+    @JoinColumn(name = "premise1")
     private LocationNetwork premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise2")
+    @JoinColumn(name = "premise2")
     private LocationNetwork premise2;
 
     public LocationNetwork() {

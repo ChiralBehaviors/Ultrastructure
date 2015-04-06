@@ -80,11 +80,11 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     private Attribute          parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise1")
+    @JoinColumn(name = "premise1")
     private AttributeNetwork   premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise2")
+    @JoinColumn(name = "premise2")
     private AttributeNetwork   premise2;
 
     public AttributeNetwork() {

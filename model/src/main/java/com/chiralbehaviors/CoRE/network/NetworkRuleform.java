@@ -50,7 +50,7 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "inference", insertable = false)
+    @JoinColumn(name = "inference")
     private NetworkInference  inference;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })

@@ -81,11 +81,11 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     private Unit               parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise1")
+    @JoinColumn(name = "premise1")
     private UnitNetwork        premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(insertable = false, name = "premise2")
+    @JoinColumn(name = "premise2")
     private UnitNetwork        premise2;
 
     /**

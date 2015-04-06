@@ -147,14 +147,14 @@ public class JobModelTest extends AbstractModelTest {
         job.setDeliverTo(kernel.getAnyLocation());
         job.setDeliverFrom(kernel.getAnyLocation());
         job.setRequester(kernel.getCore());
-        jobModel.changeStatus(job, kernel.getUnset(), kernel.getAgency(),
+        jobModel.changeStatus(job, kernel.getUnset(), kernel.getCore(),
                               "transition during test");
         em.persist(job);
 
         em.getTransaction().commit();
 
         em.getTransaction().begin();
-        jobModel.changeStatus(job, startState, kernel.getAgency(),
+        jobModel.changeStatus(job, startState, kernel.getCore(),
                               "transition during test");
         em.getTransaction().commit();
 
@@ -180,11 +180,11 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(order, scenario.getAvailable(),
-                              kernel.getAgency(), "transition during test");
+        jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
+                              "transition during test");
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(order, scenario.getActive(), kernel.getAgency(),
+        jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
@@ -276,11 +276,11 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(order, scenario.getAvailable(),
-                              kernel.getAgency(), "transition during test");
+        jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
+                              "transition during test");
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(order, scenario.getActive(), kernel.getAgency(),
+        jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         txn.commit();
 
@@ -552,11 +552,11 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(order, scenario.getAvailable(),
-                              kernel.getAgency(), "transition during test");
+        jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
+                              "transition during test");
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(order, scenario.getActive(), kernel.getAgency(),
+        jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
@@ -582,11 +582,11 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(order, scenario.getAvailable(),
-                              kernel.getAgency(), "transition during test");
+        jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
+                              "transition during test");
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(order, scenario.getActive(), kernel.getAgency(),
+        jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         txn.commit();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
@@ -603,23 +603,23 @@ public class JobModelTest extends AbstractModelTest {
         Job creditCheck = query.getSingleResult();
         assertEquals(scenario.getAvailable(), creditCheck.getStatus());
         jobModel.changeStatus(creditCheck, scenario.getActive(),
-                              kernel.getAgency(), "transition during test");
+                              kernel.getCore(), "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(creditCheck, scenario.getCompleted(),
-                              kernel.getAgency(), "transition during test");
+                              kernel.getCore(), "transition during test");
         txn.commit();
         em.clear();
         txn.begin();
         query.setParameter("service", scenario.getPick());
         Job pick = query.getSingleResult();
         assertEquals(scenario.getAvailable(), pick.getStatus());
-        jobModel.changeStatus(pick, scenario.getActive(), kernel.getAgency(),
+        jobModel.changeStatus(pick, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(pick, scenario.getCompleted(),
-                              kernel.getAgency(), "transition during test");
+        jobModel.changeStatus(pick, scenario.getCompleted(), kernel.getCore(),
+                              "transition during test");
         txn.commit();
         txn.begin();
         em.clear();
@@ -633,11 +633,11 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(scenario.getWaitingOnPurchaseOrder(), ship.getStatus());
         query.setParameter("service", scenario.getFee());
         Job fee = query.getSingleResult();
-        jobModel.changeStatus(fee, scenario.getActive(), kernel.getAgency(),
+        jobModel.changeStatus(fee, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(fee, scenario.getCompleted(), kernel.getAgency(),
+        jobModel.changeStatus(fee, scenario.getCompleted(), kernel.getCore(),
                               "transition during test");
         txn.commit();
         txn.begin();
@@ -645,24 +645,24 @@ public class JobModelTest extends AbstractModelTest {
         query.setParameter("service", scenario.getPrintPurchaseOrder());
         Job printPO = query.getSingleResult();
         assertEquals(scenario.getAvailable(), printPO.getStatus());
-        jobModel.changeStatus(printPO, scenario.getActive(),
-                              kernel.getAgency(), "transition during test");
+        jobModel.changeStatus(printPO, scenario.getActive(), kernel.getCore(),
+                              "transition during test");
         txn.commit();
         txn.begin();
         jobModel.changeStatus(printPO, scenario.getCompleted(),
-                              kernel.getAgency(), "transition during test");
+                              kernel.getCore(), "transition during test");
         txn.commit();
         txn.begin();
         em.clear();
         query.setParameter("service", scenario.getShip());
         ship = query.getSingleResult();
         assertEquals(scenario.getAvailable(), ship.getStatus());
-        jobModel.changeStatus(ship, scenario.getActive(), kernel.getAgency(),
+        jobModel.changeStatus(ship, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         txn.commit();
         txn.begin();
-        jobModel.changeStatus(ship, scenario.getCompleted(),
-                              kernel.getAgency(), "transition during test");
+        jobModel.changeStatus(ship, scenario.getCompleted(), kernel.getCore(),
+                              "transition during test");
         txn.commit();
         txn.begin();
         em.clear();

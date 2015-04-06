@@ -29,7 +29,7 @@ import com.chiralbehaviors.CoRE.phantasm.annotations.State;
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classifier = "MavenArtifact") }, workspace = "00000000-0000-0004-0000-000000000008")
+@State(facets = { @Aspect(classifier = "MavenArtifact") }, workspace = "00000000-0000-0004-0000-000000000006")
 public interface MavenArtifact extends PhantasmBase<Location> {
     String getArtifactId();
 

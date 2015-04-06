@@ -40,13 +40,11 @@ public class KernelTest extends AbstractModelTest {
         assertNotNull(kernel.getAnyLocation());
         assertNotNull(kernel.getAnyRelationship());
         assertNotNull(kernel.getAnyAgency());
-        assertNotNull(kernel.getAttribute());
         assertNotNull(kernel.getContains());
         assertNotNull(kernel.getCore());
         assertNotNull(kernel.getCoreAnimationSoftware());
         assertNotNull(kernel.getDeveloped());
         assertNotNull(kernel.getDevelopedBy());
-        assertNotNull(kernel.getProduct());
         assertNotNull(kernel.getEquals());
         assertNotNull(kernel.getFormerMemberOf());
         assertNotNull(kernel.getGreaterThan());
@@ -64,13 +62,11 @@ public class KernelTest extends AbstractModelTest {
         assertNotNull(kernel.getIsLocationOf());
         assertNotNull(kernel.getLessThan());
         assertNotNull(kernel.getLessThanOrEqual());
-        assertNotNull(kernel.getLocation());
         assertNotNull(kernel.getMapsToLocation());
         assertNotNull(kernel.getMemberOf());
         assertNotNull(kernel.getPropagationSoftware());
         assertNotNull(kernel.getPrototype());
         assertNotNull(kernel.getPrototypeOf());
-        assertNotNull(kernel.getAgency());
         assertNotNull(kernel.getSameAttribute());
         assertNotNull(kernel.getSameRelationship());
         assertNotNull(kernel.getSpecialSystemAgency());

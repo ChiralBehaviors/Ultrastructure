@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
-import static com.chiralbehaviors.CoRE.kernel.KernelUtil.ZERO;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,7 +28,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -52,20 +49,14 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.time.Interval;
-import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -133,8 +124,6 @@ public class Bootstrap {
         for (WellKnownUnit wko : WellKnownUnit.values()) {
             insert(wko);
         }
-        createNullInference();
-        createRootNetworks();
         KernelUtil.alterTriggers(connection, true);
         constructKernelWorkspace();
     }
@@ -235,47 +224,6 @@ public class Bootstrap {
         }
     }
 
-    public void insertNetwork(WellKnownObject wko) throws SQLException {
-        String tableName = wko.tableName() + "_network";
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, parent, relationship, child, updated_by, version) VALUES (?, ?, ?, ?, ?, 1)",
-                                                                        tableName));
-        try {
-            s.setObject(1, new UUID(0, 0));
-            s.setObject(2, wko.id());
-            s.setObject(3, WellKnownRelationship.RELATIONSHIP.id());
-            s.setObject(4, wko.id());
-            s.setObject(5, WellKnownAgency.CORE.id());
-            s.execute();
-        } catch (SQLException e) {
-            throw new SQLException(String.format("Unable to insert root %s",
-                                                 tableName), e);
-        }
-    }
-
-    private void createNullInference() throws SQLException {
-        PreparedStatement s = connection.prepareStatement("INSERT into ruleform.network_inference (id, premise1, premise2, inference, updated_by, version) VALUES (?, ?, ?, ?, ?, 1)");
-        try {
-            s.setObject(1, new UUID(0, 0));
-            s.setObject(2, WellKnownRelationship.RELATIONSHIP.id());
-            s.setObject(3, WellKnownRelationship.RELATIONSHIP.id());
-            s.setObject(4, WellKnownRelationship.RELATIONSHIP.id());
-            s.setObject(5, WellKnownAgency.CORE.id());
-            s.execute();
-        } catch (SQLException e) {
-            throw new SQLException("Unable to insert null inference", e);
-        }
-    }
-
-    private void createRootNetworks() throws SQLException {
-        for (WellKnownObject wko : new WellKnownObject[] {
-                WellKnownAgency.AGENCY, WellKnownAttribute.ATTRIBUTE,
-                WellKnownInterval.INTERVAL, WellKnownLocation.LOCATION,
-                WellKnownProduct.PRODUCT, WellKnownRelationship.RELATIONSHIP,
-                WellKnownStatusCode.STATUS_CODE, WellKnownUnit.UNIT }) {
-            insertNetwork(wko);
-        }
-    }
-
     private void serialize(String fileName) throws IOException {
         ObjectMapper objMapper = new ObjectMapper();
         objMapper.registerModule(new CoREModule());
@@ -301,8 +249,6 @@ public class Bootstrap {
                                                                     kernelWorkspace,
                                                                     core);
         em.persist(netAuth);
-        populate("Attribute", find(WellKnownAttribute.ATTRIBUTE), core,
-                 kernelWorkspace);
         populate("AnyAttribute", find(WellKnownAttribute.ANY), core,
                  kernelWorkspace);
         populate("CopyAttribute", find(WellKnownAttribute.COPY), core,
@@ -316,8 +262,6 @@ public class Bootstrap {
         populate("PasswordHashAttribute",
                  find(WellKnownAttribute.PASSWORD_HASH), core, kernelWorkspace);
 
-        populate("Product", find(WellKnownProduct.PRODUCT), core,
-                 kernelWorkspace);
         populate("AnyProduct", find(WellKnownProduct.ANY), core,
                  kernelWorkspace);
         populate("CopyProduct", find(WellKnownProduct.COPY), core,
@@ -331,8 +275,6 @@ public class Bootstrap {
         populate("KernelWorkspace", find(WellKnownProduct.KERNEL_WORKSPACE),
                  core, kernelWorkspace);
 
-        populate("Location", find(WellKnownLocation.LOCATION), core,
-                 kernelWorkspace);
         populate("AnyLocation", find(WellKnownLocation.ANY), core,
                  kernelWorkspace);
         populate("CopyLocation", find(WellKnownLocation.COPY), core,
@@ -344,7 +286,6 @@ public class Bootstrap {
 
         populate("CoreUser", find(WellKnownAgency.CORE_USER), core,
                  kernelWorkspace);
-        populate("Agency", find(WellKnownAgency.AGENCY), core, kernelWorkspace);
         populate("AnyAgency", find(WellKnownAgency.ANY), core, kernelWorkspace);
         populate("CopyAgency", find(WellKnownAgency.COPY), core,
                  kernelWorkspace);
@@ -476,24 +417,6 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("NotApplicableInterval",
                  find(WellKnownInterval.NOT_APPLICABLE), core, kernelWorkspace);
-
-        populate("RootAgencyNetwork", em.find(AgencyNetwork.class, ZERO), core,
-                 kernelWorkspace);
-        populate("RootAttributeNetwork", em.find(AttributeNetwork.class, ZERO),
-                 core, kernelWorkspace);
-        populate("RootIntervalNetwork", em.find(IntervalNetwork.class, ZERO),
-                 core, kernelWorkspace);
-        populate("RootLocationNetwork", em.find(LocationNetwork.class, ZERO),
-                 core, kernelWorkspace);
-        populate("RootProductNetwork", em.find(ProductNetwork.class, ZERO),
-                 core, kernelWorkspace);
-        populate("RootRelationshipNetwork",
-                 em.find(RelationshipNetwork.class, ZERO), core,
-                 kernelWorkspace);
-        populate("RootStatusCodeNetwork",
-                 em.find(StatusCodeNetwork.class, ZERO), core, kernelWorkspace);
-        populate("RootUnitNetwork", em.find(UnitNetwork.class, ZERO), core,
-                 kernelWorkspace);
         AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(
                                                                                   isA,
                                                                                   find(WellKnownAgency.CORE_USER),

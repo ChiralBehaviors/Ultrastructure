@@ -50,22 +50,6 @@ public interface WellKnownObject {
             }
 
         },
-        AGENCY() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of a agency. All existential entities defined in the Agency ruleform are instances of 'Agency'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.agency;
-            }
-
-        },
         ANY() {
 
             @Override
@@ -277,22 +261,6 @@ public interface WellKnownObject {
             }
 
         },
-        ATTRIBUTE() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of an attribute. All existential entities defined in the Attribute ruleform are instances of 'Attribute'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.ATTRIBUTE;
-            }
-
-        },
         LOGIN() {
 
             @Override
@@ -414,22 +382,6 @@ public interface WellKnownObject {
 
     public static enum WellKnownInterval implements WellKnownObject {
 
-        INTERVAL() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of an interval. All existential entities defined in the Interval ruleform are instances of 'Interval'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.INTERVAL;
-            }
-
-        },
         ANY() {
 
             @Override
@@ -495,7 +447,7 @@ public interface WellKnownObject {
         };
 
         public WellKnownUnit durationUnit() {
-            return WellKnownUnit.UNIT;
+            return WellKnownUnit.NOT_APPLICABLE;
         }
 
         @Override
@@ -507,7 +459,7 @@ public interface WellKnownObject {
          * @return
          */
         public WellKnownUnit startUnit() {
-            return WellKnownUnit.UNIT;
+            return WellKnownUnit.NOT_APPLICABLE;
         }
 
         /* (non-Javadoc)
@@ -533,22 +485,6 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.ANY;
-            }
-
-        },
-        LOCATION() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of a location. All existential entities defined in the Location ruleform are instances of 'Location'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.LOCATION;
             }
 
         },
@@ -648,22 +584,6 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.NOT_APPLICABLE;
-            }
-
-        },
-        PRODUCT() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of a product. All existential entities defined in the Product ruleform are instances of 'Product'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.PRODUCT;
             }
 
         },
@@ -1496,32 +1416,6 @@ public interface WellKnownObject {
             }
 
         },
-        RELATIONSHIP() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of a relationship. All existential entities defined in the Relationship ruleform are instances of 'Relationsihip'";
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.RELATIONSHIP;
-            }
-
-            @Override
-            public boolean preferred() {
-                return true;
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.RELATIONSHIP;
-            }
-
-        },
         SAME() {
 
             @Override
@@ -1650,22 +1544,6 @@ public interface WellKnownObject {
     }
 
     public static enum WellKnownStatusCode implements WellKnownObject {
-        STATUS_CODE() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of an status code. All existential entities defined in the StatusCode ruleform are instances of 'Status Code'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.STATUS_CODE;
-            }
-
-        },
         UNSET() {
 
             @Override
@@ -1767,22 +1645,6 @@ public interface WellKnownObject {
     }
 
     public static enum WellKnownUnit implements WellKnownObject {
-        UNIT() {
-
-            @Override
-            public String description() {
-                return "The abstract notion of an unit. All existential entities defined in the Unit ruleform are instances of 'Unit'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.UNIT;
-            }
-
-        },
         UNSET() {
 
             @Override
@@ -1990,12 +1852,8 @@ public interface WellKnownObject {
         }
     }
 
-    String STATUS_CODE               = "Status Code";
-
-    String agency                    = "Agency";
     String ANY                       = "(ANY)";
     String ANYTHING                  = "anything";
-    String ATTRIBUTE                 = "Attribute";
     String COPY                      = "(COPY)";
     String CONTAINS                  = "contains";
     String COORDINATE                = "Coordinate";
@@ -2019,7 +1877,6 @@ public interface WellKnownObject {
     String IN_WORKSPACE              = "in-workspace";
     String INCLUDES                  = "includes";
     String INVERSE_SOFTWARE          = "Inverse Software";
-    String INTERVAL                  = "Interval";
     String IS_A                      = "is-a";
     String IS_CONTAINED_IN           = "is-contained-in";
     String IS_EXCEPTION_TO           = "is-exception-to";
@@ -2027,7 +1884,6 @@ public interface WellKnownObject {
     String KERNEL_WORKSPACE          = "kernelWorkspace";
     String LESS_THAN                 = "<";
     String LESS_THAN_OR_EQUALS       = "<=";
-    String LOCATION                  = "Location";
     String LOCATION_CONTEXT          = "LocationContext";
     String LOCATION_PROTOTYPE_COPIER = "Location Protototype Copier";
     String LOGIN                     = "login";
@@ -2045,16 +1901,13 @@ public interface WellKnownObject {
     String OWNED_BY                  = "ownedBy";
     String OWNS                      = "owns";
     String PASSWORD_HASH             = "password-hash";
-    String PRODUCT                   = "PRODUCT";
     String PROPAGATION_SOFTWARE      = "Propagation Software";
     String PROTOTYPE                 = "prototype";
     String PROTOTYPE_OF              = "prototype-of";
-    String RELATIONSHIP              = "Relationship";
     String SAME                      = "(SAME)";
     String SPECIAL_SYSTEM_AGENCY     = "Special System Agency";
     String SPECIAL_SYSTEM_EVENT      = "Special System Event";
     String SUPER_USER                = "CoRE Super User";
-    String UNIT                      = "Unit";
     String UNSET                     = "(UNSET)";
     String VERSION_OF                = "version-of";
     String WORKSPACE                 = "Workspace";

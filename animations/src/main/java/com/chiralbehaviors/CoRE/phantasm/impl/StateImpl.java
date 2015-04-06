@@ -87,8 +87,16 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
                                                                     throws Throwable {
+        // Hard override (final) equals() and hashCode().  Becauase invariance.
+        if (method.getName().equals("equals") && args.length == 1
+            && method.getParameterTypes()[0].equals(Object.class)) {
+            return (args[0] instanceof PhantasmBase) ? ((PhantasmBase<?>) args[0]).getRuleform().equals(ruleform)
+                                                    : false;
+        } else if (method.getName().equals("hashCode") && args.length == 0) {
+            return ruleform.hashCode();
+        }
         Object returnValue = definition.methods.get(method).invoke(args);
-        // always maintain proxy discipline ;)
+        // always maintain proxy discipline.  Because identity.
         return returnValue == this ? proxy : returnValue;
     }
 

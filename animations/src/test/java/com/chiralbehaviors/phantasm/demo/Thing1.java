@@ -31,7 +31,6 @@ import com.chiralbehaviors.CoRE.phantasm.annotations.Functions;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.phantasm.demo.impl.Thing1FunctionsImpl;
 
 /**
  * @author hhildebrand

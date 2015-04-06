@@ -18,11 +18,9 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.phantasm.demo.impl;
+package com.chiralbehaviors.phantasm.demo;
 
 import com.chiralbehaviors.janus.Facet;
-import com.chiralbehaviors.phantasm.demo.Thing1Functions;
-import com.chiralbehaviors.phantasm.demo.Thing1;
 
 /**
  * @author hhildebrand

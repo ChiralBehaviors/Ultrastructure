@@ -373,8 +373,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                  parent),
                                         cb.equal(networkRoot.get("relationship"),
                                                  relationship),
-                                        cb.equal(networkRoot.get("inference").get("id"),
-                                                 new UUID(0, 0))));
+                                        cb.isNull(networkRoot.get("inference"))));
         TypedQuery<RuleForm> q = em.createQuery(query);
         return q.getSingleResult();
     }
@@ -395,8 +394,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                  parent),
                                         cb.equal(networkRoot.get("relationship"),
                                                  relationship),
-                                        cb.equal(networkRoot.get("inference").get("id"),
-                                                 new UUID(0, 0))));
+                                        cb.isNull(networkRoot.get("inference"))));
         TypedQuery<RuleForm> q = em.createQuery(query);
         return q.getResultList();
     }

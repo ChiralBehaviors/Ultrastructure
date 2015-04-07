@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.TypedQuery;
 
@@ -84,9 +83,8 @@ public class IntervalModelTest extends AbstractModelTest {
 
         em.flush();
 
-        TypedQuery<IntervalNetwork> query = em.createQuery("SELECT edge FROM IntervalNetwork edge WHERE edge.inference.id <> :id",
+        TypedQuery<IntervalNetwork> query = em.createQuery("SELECT edge FROM IntervalNetwork edge WHERE edge.inference IS NOT NULL",
                                                            IntervalNetwork.class);
-        query.setParameter("id", new UUID(0, 0));
         List<IntervalNetwork> edges = query.getResultList();
         assertEquals(2, edges.size());
     }

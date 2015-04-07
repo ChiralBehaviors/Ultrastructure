@@ -143,10 +143,7 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
 
     @JsonIgnore
     public boolean isInferred() {
-        if (inference == null) {
-            return false;
-        }
-        return !ZERO.equals(inference.getId());
+        return getInference() == null;
     }
 
     abstract public void setChild(E child);

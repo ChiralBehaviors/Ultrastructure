@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
@@ -55,15 +54,9 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
  */
 public class KernelUtil {
 
-    public static Workspace getKernelWorkspace(EntityManager em) {
-        try (InputStream is = KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)) {
-            RehydratedWorkspace kernelSnapshot = readKernel(is);
-            Kernel kernel = kernelSnapshot.getAccessor(Kernel.class);
-            return new DatabaseBackedWorkspace(kernel.getKernelWorkspace(), em);
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to rehydrate kernel", e);
-        }
-    }
+    public static final String KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
+
+    public static final String SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
     public static void clear(EntityManager em) throws SQLException {
         em.getTransaction().begin();
@@ -95,6 +88,16 @@ public class KernelUtil {
                                                            IOException {
         clear(em);
         loadKernel(em);
+    }
+
+    public static Workspace getKernelWorkspace(EntityManager em) {
+        try (InputStream is = KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)) {
+            RehydratedWorkspace kernelSnapshot = readKernel(is);
+            Kernel kernel = kernelSnapshot.getAccessor(Kernel.class);
+            return new DatabaseBackedWorkspace(kernel.getKernelWorkspace(), em);
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to rehydrate kernel", e);
+        }
     }
 
     public static void loadKernel(EntityManager em) throws IOException {
@@ -149,10 +152,4 @@ public class KernelUtil {
         }
         r.close();
     }
-
-    public static final String SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-
-    public static final UUID   ZERO                      = new UUID(0, 0);
-
-    static final String        KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 }

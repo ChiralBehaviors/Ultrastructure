@@ -23,7 +23,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.TypedQuery;
 
@@ -69,9 +68,8 @@ public class AttributeModelTest extends AbstractModelTest {
 
         em.flush();
 
-        TypedQuery<AttributeNetwork> query = em.createQuery("SELECT edge FROM AttributeNetwork edge WHERE edge.inference.id <> :id",
+        TypedQuery<AttributeNetwork> query = em.createQuery("SELECT edge FROM AttributeNetwork edge WHERE edge.inference IS NOT NULL",
                                                             AttributeNetwork.class);
-        query.setParameter("id", new UUID(0, 0));
         List<AttributeNetwork> edges = query.getResultList();
         assertEquals(2, edges.size());
     }

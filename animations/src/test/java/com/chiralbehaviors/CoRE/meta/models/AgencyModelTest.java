@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.TypedQuery;
 
@@ -68,9 +67,8 @@ public class AgencyModelTest extends AbstractModelTest {
 
         em.flush();
 
-        TypedQuery<AgencyNetwork> query = em.createQuery("SELECT edge FROM AgencyNetwork edge WHERE edge.inference.id <> :id",
+        TypedQuery<AgencyNetwork> query = em.createQuery("SELECT edge FROM AgencyNetwork edge WHERE edge.inference IS NOT NULL",
                                                          AgencyNetwork.class);
-        query.setParameter("id", new UUID(0, 0));
         List<AgencyNetwork> edges = query.getResultList();
         assertEquals(2, edges.size());
     }

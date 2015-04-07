@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -100,8 +99,7 @@ public class ModelBackedWorkspace extends DatabaseBackedWorkspace {
                                                       parent),
                                              cb.equal(networkRoot.get("relationship"),
                                                       relationship),
-                                             cb.equal(networkRoot.get("inference").get("id"),
-                                                      new UUID(0, 0))));
+                                             cb.isNull(networkRoot.get("inference"))));
         TypedQuery<RuleForm> q = model.getEntityManager().createQuery(query);
         return q.getResultList();
     }
@@ -124,8 +122,7 @@ public class ModelBackedWorkspace extends DatabaseBackedWorkspace {
                                                        child),
                                               cb.equal(networkRoot.get("relationship"),
                                                        relationship),
-                                              cb.equal(networkRoot.get("inference").get("id"),
-                                                       new UUID(0, 0))));
+                                              cb.isNull(networkRoot.get("inference"))));
         TypedQuery<RuleForm> q = model.getEntityManager().createQuery(query);
         return q.getResultList();
     }

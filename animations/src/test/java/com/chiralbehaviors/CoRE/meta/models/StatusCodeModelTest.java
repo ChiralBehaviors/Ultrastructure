@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.TypedQuery;
 
@@ -67,9 +66,8 @@ public class StatusCodeModelTest extends AbstractModelTest {
 
         em.flush();
 
-        TypedQuery<StatusCodeNetwork> query = em.createQuery("SELECT edge FROM StatusCodeNetwork edge WHERE edge.inference.id <> :id",
+        TypedQuery<StatusCodeNetwork> query = em.createQuery("SELECT edge FROM StatusCodeNetwork edge WHERE edge.inference IS NOT NULL",
                                                              StatusCodeNetwork.class);
-        query.setParameter("id", new UUID(0, 0));
         List<StatusCodeNetwork> edges = query.getResultList();
         assertEquals(2, edges.size());
     }

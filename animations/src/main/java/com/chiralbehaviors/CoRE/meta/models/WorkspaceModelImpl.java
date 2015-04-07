@@ -20,6 +20,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -28,6 +29,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 
 /**
  * @author hhildebrand
@@ -41,6 +43,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         em = model.getEntityManager();
     }
 
+    @Override
     public WorkspaceAuthorization get(Product definingProduct, String key) {
         TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATION,
                                                                        WorkspaceAuthorization.class);
@@ -49,6 +52,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return query.getSingleResult();
     }
 
+    @Override
     public List<WorkspaceAuthorization> getByType(Product definingProduct,
                                                   String type) {
         TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATIONS_BY_TYPE,
@@ -58,6 +62,16 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return query.getResultList();
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#getScoped(java.util.UUID)
+     */
+    @Override
+    public WorkspaceScope getScoped(UUID workspace) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public List<WorkspaceAuthorization> getWorkspace(Product definingProduct) {
         TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_WORKSPACE,
                                                                        WorkspaceAuthorization.class);

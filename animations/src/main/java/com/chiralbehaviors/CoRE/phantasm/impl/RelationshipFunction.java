@@ -20,11 +20,17 @@
 
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
+
 /**
  * @author hhildebrand
  *
  */
 @FunctionalInterface
-public interface QueryFunction {
-    Object invoke(Object[] arguments);
+public interface RelationshipFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
+    Object invoke(RuleForm ruleform, Model model, Relationship relationship,
+                  Object[] arguments);
 }

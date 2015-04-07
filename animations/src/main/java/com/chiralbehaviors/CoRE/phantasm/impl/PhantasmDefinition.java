@@ -34,8 +34,8 @@ import com.chiralbehaviors.janus.CompositeAssembler;
  *
  */
 public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    private final List<StateDefinition<RuleForm, NetworkRuleform<RuleForm>>> facets = new ArrayList<>();
-    private final Class<PhantasmBase<RuleForm>>                              phantasm;
+    private final List<StateDefinition<RuleForm>> facets = new ArrayList<>();
+    private final Class<PhantasmBase<RuleForm>>   phantasm;
 
     public PhantasmDefinition(Class<PhantasmBase<RuleForm>> phantasm) {
         this.phantasm = phantasm;
@@ -46,7 +46,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
                                                                                         phantasm);
         Object[] instances = new Object[facets.size()];
         int i = 0;
-        for (StateDefinition<RuleForm, NetworkRuleform<RuleForm>> facet : facets) {
+        for (StateDefinition<RuleForm> facet : facets) {
             instances[i++] = facet.construct(ruleform, model);
         }
         return assembler.construct(instances);

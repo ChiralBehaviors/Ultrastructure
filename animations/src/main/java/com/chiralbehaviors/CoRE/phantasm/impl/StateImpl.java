@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.impl;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -31,23 +32,27 @@ import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
 
 /**
  * @author hhildebrand
  *
  */
-public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
+public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
         implements InvocationHandler, PhantasmBase<RuleForm> {
 
-    private final StateDefinition<RuleForm, Network> definition;
-    private final Model                              model;
-    private final RuleForm                           ruleform;
+    private final Map<Method, RelationshipFunction<RuleForm>> relationships;
+    private final Map<Method, AttributeFunction<RuleForm>>    attributes;
+    private final Model                                       model;
+    private final RuleForm                                    ruleform;
 
     public StateImpl(RuleForm ruleform, Model model,
-                     StateDefinition<RuleForm, Network> definition) {
+                     Map<Method, RelationshipFunction<RuleForm>> relationships,
+                     Map<Method, AttributeFunction<RuleForm>> attributes) {
         this.ruleform = ruleform;
         this.model = model;
-        this.definition = definition;
+        this.relationships = relationships;
+        this.attributes = attributes;
     }
 
     @Override
@@ -95,7 +100,25 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
         }
-        Object returnValue = definition.methods.get(method).invoke(args);
+        Object returnValue;
+        RelationshipFunction<RuleForm> relationship = relationships.get(method);
+        if (relationship != null) {
+            returnValue = relationship.invoke(ruleform,
+                                              model,
+                                              method.getAnnotation(com.chiralbehaviors.CoRE.phantasm.annotations.Relationship.class),
+                                              args);
+        } else {
+            AttributeFunction<RuleForm> attribute = attributes.get(method);
+            if (attribute != null) {
+                returnValue = attribute.invoke(ruleform,
+                                               model,
+                                               method.getAnnotation(Attribute.class),
+                                               args);
+            } else {
+                returnValue = method.invoke(this, args);
+            }
+        }
+
         // always maintain proxy discipline.  Because identity.
         return returnValue == this ? proxy : returnValue;
     }
@@ -108,7 +131,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     @SuppressWarnings("unused")
     private void addChildren(Relationship r, List<RuleForm> children,
                              Agency updatedBy) {
-        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
         for (RuleForm child : children) {
             networkedModel.link(ruleform, r, child, updatedBy);
         }

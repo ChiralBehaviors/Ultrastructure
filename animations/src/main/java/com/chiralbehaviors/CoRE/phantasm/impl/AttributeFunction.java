@@ -1,6 +1,6 @@
 /**
- * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- *
+ * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+ * 
  
  * This file is part of Ultrastructure.
  *
@@ -17,27 +17,20 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.meta;
 
-import java.util.List;
-import java.util.UUID;
+package com.chiralbehaviors.CoRE.phantasm.impl;
 
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
 
 /**
  * @author hhildebrand
  *
  */
-public interface WorkspaceModel {
-
-    WorkspaceScope getScoped(UUID workspace);
-
-    List<WorkspaceAuthorization> getWorkspace(Product definingProduct);
-
-    List<WorkspaceAuthorization> getByType(Product definingProduct, String type);
-
-    WorkspaceAuthorization get(Product definingProduct, String key);
-
+@FunctionalInterface
+public interface AttributeFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
+    Object invoke(RuleForm ruleform, Model model, Attribute attribute,
+                  Object[] arguments);
 }

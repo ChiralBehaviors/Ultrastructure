@@ -20,6 +20,7 @@
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,9 @@ import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
 public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
         implements InvocationHandler, PhantasmBase<RuleForm> {
 
-    private final Map<Method, RelationshipFunction<RuleForm>> relationships;
     private final Map<Method, AttributeFunction<RuleForm>>    attributes;
     private final Model                                       model;
+    private final Map<Method, RelationshipFunction<RuleForm>> relationships;
     private final RuleForm                                    ruleform;
 
     public StateImpl(RuleForm ruleform, Model model,
@@ -101,23 +102,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
             return ruleform.hashCode();
         }
         Object returnValue;
-        RelationshipFunction<RuleForm> relationship = relationships.get(method);
-        if (relationship != null) {
-            returnValue = relationship.invoke(ruleform,
-                                              model,
-                                              method.getAnnotation(com.chiralbehaviors.CoRE.phantasm.annotations.Relationship.class),
-                                              args);
-        } else {
-            AttributeFunction<RuleForm> attribute = attributes.get(method);
-            if (attribute != null) {
-                returnValue = attribute.invoke(ruleform,
-                                               model,
-                                               method.getAnnotation(Attribute.class),
-                                               args);
-            } else {
-                returnValue = method.invoke(this, args);
-            }
-        }
+        returnValue = invoke(method, args);
 
         // always maintain proxy discipline.  Because identity.
         return returnValue == this ? proxy : returnValue;
@@ -151,5 +136,29 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     private List<RuleForm> getChildren(Relationship r,
                                        @SuppressWarnings("unchecked") Aspect<RuleForm>... constraints) {
         return model.getNetworkedModel(ruleform).getChildren(ruleform, r);
+    }
+
+    private Object invoke(Method method, Object[] args)
+                                                       throws IllegalAccessException,
+                                                       InvocationTargetException {
+        Object returnValue;
+        RelationshipFunction<RuleForm> relationship = relationships.get(method);
+        if (relationship != null) {
+            returnValue = relationship.invoke(ruleform,
+                                              model,
+                                              method.getAnnotation(com.chiralbehaviors.CoRE.phantasm.annotations.Relationship.class),
+                                              args);
+        } else {
+            AttributeFunction<RuleForm> attribute = attributes.get(method);
+            if (attribute != null) {
+                returnValue = attribute.invoke(ruleform,
+                                               model,
+                                               method.getAnnotation(Attribute.class),
+                                               args);
+            } else {
+                returnValue = method.invoke(this, args);
+            }
+        }
+        return returnValue;
     }
 }

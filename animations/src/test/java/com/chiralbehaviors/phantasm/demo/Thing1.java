@@ -27,7 +27,6 @@ import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Functions;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -36,9 +35,8 @@ import com.chiralbehaviors.CoRE.product.Product;
  * @author hhildebrand
  *
  */
-@Functions(Thing1FunctionsImpl.class)
 @State(facets = { @Aspect(classifier = "Thing1") }, workspace = "00000000-0000-0004-0000-000000000006")
-public interface Thing1 extends PhantasmBase<Product>, Thing1Functions {
+public interface Thing1 extends PhantasmBase<Product> {
 
     // array attributes of the ruleform
     String[] getAliases();
@@ -67,4 +65,8 @@ public interface Thing1 extends PhantasmBase<Product>, Thing1Functions {
 
     // String attribute using the defaulted workspace name derived from getter
     void setURI(String uri);
+
+    default void doSomething(String document) {
+        System.out.println(getThing2());
+    }
 }

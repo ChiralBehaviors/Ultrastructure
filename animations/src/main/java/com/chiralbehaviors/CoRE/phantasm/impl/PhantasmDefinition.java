@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +34,6 @@ import com.chiralbehaviors.janus.CompositeAssembler;
  *
  */
 public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    private final List<Class<?>>                                             mixins = new ArrayList<>();
     private final List<StateDefinition<RuleForm, NetworkRuleform<RuleForm>>> facets = new ArrayList<>();
     private final Class<PhantasmBase<RuleForm>>                              phantasm;
 
@@ -47,28 +44,11 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     public PhantasmBase<RuleForm> construct(RuleForm ruleform, Model model) {
         CompositeAssembler<PhantasmBase<RuleForm>> assembler = new CompositeAssembler<>(
                                                                                         phantasm);
-        Object[] instances = new Object[mixins.size() + facets.size()];
+        Object[] instances = new Object[facets.size()];
         int i = 0;
         for (StateDefinition<RuleForm, NetworkRuleform<RuleForm>> facet : facets) {
             instances[i++] = facet.construct(ruleform, model);
         }
-        for (Class<?> mixin : mixins) {
-            instances[i++] = constructInstanceOf(mixin);
-        }
         return assembler.construct(instances);
-    }
-
-    private Object constructInstanceOf(Class<?> mixin) {
-        Constructor<?> constructor;
-        try {
-            constructor = mixin.getConstructor();
-            return constructor.newInstance();
-        } catch (NoSuchMethodException | SecurityException
-                | InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException e) {
-            throw new IllegalStateException(
-                                            String.format("Cannot get no argument constructor for mixin %s of %s",
-                                                          mixin, phantasm), e);
-        }
     }
 }

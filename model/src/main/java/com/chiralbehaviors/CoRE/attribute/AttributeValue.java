@@ -48,36 +48,38 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AttributeValue<RuleForm extends Ruleform> extends
         Ruleform {
-    private static final long serialVersionUID = 1L;
+    public static final String GET_ATTRIBUTE_SUFFIX = ".getAttribute";
+
+    private static final long  serialVersionUID     = 1L;
 
     @Column(name = "binary_value")
-    private byte[]            binaryValue;
+    private byte[]             binaryValue;
 
     @Column(name = "boolean_value")
-    private Integer           booleanValue;
+    private Integer            booleanValue;
 
     @Column(name = "integer_value")
-    private Integer           integerValue;
+    private Integer            integerValue;
 
     @Column(name = "key")
-    private String            key;
+    private String             key;
 
     @Column(name = "numeric_value")
-    private BigDecimal        numericValue;
+    private BigDecimal         numericValue;
 
     @Column(name = "sequence_number")
-    private Integer           sequenceNumber   = 1;
+    private Integer            sequenceNumber       = 1;
 
     @Column(name = "text_value")
-    private String            textValue;
+    private String             textValue;
 
     @Column(name = "timestamp_value")
-    private Timestamp         timestampValue;
+    private Timestamp          timestampValue;
 
     // bi-directional many-to-one association to Unit
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit")
-    private Unit              unit;
+    private Unit               unit;
 
     /**
      *

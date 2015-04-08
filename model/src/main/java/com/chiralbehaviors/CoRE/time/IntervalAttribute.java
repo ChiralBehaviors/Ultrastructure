@@ -48,9 +48,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "interval_attribute", schema = "ruleform")
-@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from IntervalAttribute ra where ra.interval = :inteval and ra.attribute = :attribute") })
+@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "SELECT ra FROM IntervalAttribute ra WHERE ra.interval = :ruleform AND ra.attribute = :attribute ORDER BY ra.sequenceNumber") })
 public class IntervalAttribute extends AttributeValue<Interval> {
-    public static final String GET_ATTRIBUTE    = "intervalAttribute.intervalAttribute";
+    public static final String GET_ATTRIBUTE    = "intervalAttribute"
+                                                  + GET_ATTRIBUTE_SUFFIX;
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Attribute

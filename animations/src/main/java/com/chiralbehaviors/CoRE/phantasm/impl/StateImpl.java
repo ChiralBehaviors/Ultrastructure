@@ -27,13 +27,15 @@ import java.util.Map;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
+import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 
 /**
  * @author hhildebrand
@@ -46,14 +48,17 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     private final Model                                       model;
     private final Map<Method, RelationshipFunction<RuleForm>> relationships;
     private final RuleForm                                    ruleform;
+    private final WorkspaceScope                              scope;
 
     public StateImpl(RuleForm ruleform, Model model,
                      Map<Method, RelationshipFunction<RuleForm>> relationships,
-                     Map<Method, AttributeFunction<RuleForm>> attributes) {
+                     Map<Method, AttributeFunction<RuleForm>> attributes,
+                     WorkspaceScope scope) {
         this.ruleform = ruleform;
         this.model = model;
         this.relationships = relationships;
         this.attributes = attributes;
+        this.scope = scope;
     }
 
     @Override
@@ -96,21 +101,22 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         // Hard override (final) equals() and hashCode().  Becauase invariance.
         if (method.getName().equals("equals") && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
-            return (args[0] instanceof PhantasmBase) ? ((PhantasmBase<?>) args[0]).getRuleform().equals(ruleform)
+            return (args[0] instanceof PhantasmBase) ? ruleform.equals(((PhantasmBase<?>) args[0]).getRuleform())
                                                     : false;
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
         }
-        Object returnValue;
-        returnValue = invoke(method, args);
+        Object returnValue = invoke(method, args);
 
         // always maintain proxy discipline.  Because identity.
         return returnValue == this ? proxy : returnValue;
     }
 
     @SuppressWarnings("unused")
-    private void addChild(Relationship r, RuleForm child, Agency updatedBy) {
-        model.getNetworkedModel(ruleform).link(ruleform, r, child, updatedBy);
+    private void addChild(Relationship r, RuleForm child) {
+        model.getNetworkedModel(ruleform).link(ruleform, getRelationship(r),
+                                               child,
+                                               model.getKernel().getCore());
     }
 
     @SuppressWarnings("unused")
@@ -118,24 +124,41 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                              Agency updatedBy) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
         for (RuleForm child : children) {
-            networkedModel.link(ruleform, r, child, updatedBy);
+            networkedModel.link(ruleform, getRelationship(r), child, updatedBy);
         }
+    }
+
+    private com.chiralbehaviors.CoRE.attribute.Attribute getAttribute(Attribute attribute) {
+        return (com.chiralbehaviors.CoRE.attribute.Attribute) scope.lookup(attribute.name());
+    }
+
+    @SuppressWarnings({ "unused", "unchecked" })
+    private List<AttributeValue<RuleForm>> getAttributeValues(Attribute attribute) {
+        return (List<AttributeValue<RuleForm>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                     getAttribute(attribute));
     }
 
     @SuppressWarnings("unused")
     private RuleForm getChild(Relationship r) {
-        return model.getNetworkedModel(ruleform).getSingleChild(ruleform, r);
+        return model.getNetworkedModel(ruleform).getSingleChild(ruleform,
+                                                                getRelationship(r));
     }
 
     @SuppressWarnings("unused")
     private List<RuleForm> getChildren(Relationship r) {
-        return model.getNetworkedModel(ruleform).getChildren(ruleform, r);
+        return model.getNetworkedModel(ruleform).getChildren(ruleform,
+                                                             getRelationship(r));
     }
 
     @SuppressWarnings("unused")
     private List<RuleForm> getChildren(Relationship r,
                                        @SuppressWarnings("unchecked") Aspect<RuleForm>... constraints) {
-        return model.getNetworkedModel(ruleform).getChildren(ruleform, r);
+        return model.getNetworkedModel(ruleform).getChildren(ruleform,
+                                                             getRelationship(r));
+    }
+
+    private com.chiralbehaviors.CoRE.network.Relationship getRelationship(Relationship relationship) {
+        return (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(relationship.name());
     }
 
     private Object invoke(Method method, Object[] args)
@@ -144,14 +167,14 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         Object returnValue;
         RelationshipFunction<RuleForm> relationship = relationships.get(method);
         if (relationship != null) {
-            returnValue = relationship.invoke(ruleform,
+            returnValue = relationship.invoke(this,
                                               model,
                                               method.getAnnotation(com.chiralbehaviors.CoRE.phantasm.annotations.Relationship.class),
                                               args);
         } else {
             AttributeFunction<RuleForm> attribute = attributes.get(method);
             if (attribute != null) {
-                returnValue = attribute.invoke(ruleform,
+                returnValue = attribute.invoke(this,
                                                model,
                                                method.getAnnotation(Attribute.class),
                                                args);

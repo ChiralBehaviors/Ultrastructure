@@ -31,6 +31,6 @@ import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
  */
 @FunctionalInterface
 public interface RelationshipFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    Object invoke(RuleForm ruleform, Model model, Relationship relationship,
-                  Object[] arguments);
+    Object invoke(StateImpl<RuleForm> state, Model model,
+                  Relationship relationship, Object[] arguments);
 }

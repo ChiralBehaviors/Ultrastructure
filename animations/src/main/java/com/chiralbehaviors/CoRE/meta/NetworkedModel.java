@@ -77,6 +77,15 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                            Aspect<RuleForm> aspect,
                            @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
 
+    /**
+     * Answer the list of attribute values of the attribute on the ruleform
+     * 
+     * @param attribute
+     * @return
+     */
+    public List<AttributeType> getAttributeValues(RuleForm ruleform,
+                                                  Attribute attribute);
+
     public RuleForm getSingleChild(RuleForm parent, Relationship r);
 
     /**

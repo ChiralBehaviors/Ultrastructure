@@ -749,4 +749,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
         return allowedValues;
     }
+
+    @Override
+    public List<AttributeType> getAttributeValues(RuleForm ruleform,
+                                                  Attribute attribute) {
+        TypedQuery<AttributeType> q = em.createNamedQuery(prefix
+                                                                  + AttributeValue.GET_ATTRIBUTE_SUFFIX,
+                                                          this.attribute);
+        q.setParameter("ruleform", ruleform);
+        q.setParameter("attribute", attribute);
+        return q.getResultList();
+    }
 }

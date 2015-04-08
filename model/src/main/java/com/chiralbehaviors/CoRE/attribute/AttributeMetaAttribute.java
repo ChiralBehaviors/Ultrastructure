@@ -19,6 +19,8 @@
  */
 package com.chiralbehaviors.CoRE.attribute;
 
+import static com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute.GET_ATTRIBUTE;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -26,6 +28,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -40,20 +44,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * An attribute value on an attribute
  *
  */
+@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "SELECT ra FROM AttributeMetaAttribute ra WHERE ra.attribute = :ruleform AND ra.metaAttribute = :attribute ORDER BY ra.sequenceNumber") })
 @Entity
 @Table(name = "attribute_meta_attribute", schema = "ruleform")
 public class AttributeMetaAttribute extends AttributeValue<Attribute> {
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
+    public static final String GET_ATTRIBUTE    = "attributeMetaAttribute"
+                                                  + GET_ATTRIBUTE_SUFFIX;
 
     // bi-directional many-to-one association to Attribute
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attribute")
-    private Attribute         attribute;
+    private Attribute          attribute;
 
     // bi-directional many-to-one association to Attribute
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "meta_attribute")
-    private Attribute         metaAttribute;
+    private Attribute          metaAttribute;
 
     public AttributeMetaAttribute() {
     }

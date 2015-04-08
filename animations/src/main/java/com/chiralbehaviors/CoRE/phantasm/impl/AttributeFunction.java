@@ -31,6 +31,6 @@ import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
  */
 @FunctionalInterface
 public interface AttributeFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    Object invoke(RuleForm ruleform, Model model, Attribute attribute,
+    Object invoke(StateImpl<RuleForm> state, Model model, Attribute attribute,
                   Object[] arguments);
 }

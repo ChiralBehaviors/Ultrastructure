@@ -48,9 +48,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "status_code_attribute", schema = "ruleform")
-@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from StatusCodeAttribute ra where ra.statusCode = :inteval and ra.attribute = :attribute") })
+@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "SELECT ra FROM StatusCodeAttribute ra WHERE ra.statusCode = :ruleform AND ra.attribute = :attribute ORDER BY ra.sequenceNumber") })
 public class StatusCodeAttribute extends AttributeValue<StatusCode> {
-    public static final String GET_ATTRIBUTE    = "statusCodeAttribute.intervalAttribute";
+    public static final String GET_ATTRIBUTE    = "statusCodeAttribute"
+                                                  + GET_ATTRIBUTE_SUFFIX;
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Attribute

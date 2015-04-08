@@ -19,6 +19,8 @@
  */
 package com.chiralbehaviors.CoRE.location;
 
+import static com.chiralbehaviors.CoRE.location.LocationAttribute.GET_ATTRIBUTE;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -26,6 +28,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -42,20 +46,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * The persistent class for the location_attribute database table.
  *
  */
+@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "SELECT ra FROM LocationAttribute ra WHERE ra.location = :ruleform AND ra.attribute = :attribute ORDER BY ra.sequenceNumber") })
 @Entity
 @Table(name = "location_attribute", schema = "ruleform")
 public class LocationAttribute extends AttributeValue<Location> {
-    private static final long serialVersionUID = 1L;
+    public static final String GET_ATTRIBUTE    = "locationAttribute"
+                                                  + GET_ATTRIBUTE_SUFFIX;
+    private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Attribute
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attribute")
-    private Attribute         attribute;
+    private Attribute          attribute;
 
     // bi-directional many-to-one association to Location
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location")
-    private Location          location;
+    private Location           location;
 
     public LocationAttribute() {
     }

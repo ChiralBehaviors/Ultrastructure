@@ -49,9 +49,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "agency_attribute", schema = "ruleform")
-@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "select ra from AgencyAttribute ra where ra.agency = :agency and ra.attribute = :attribute") })
+@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "SELECT ra FROM AgencyAttribute ra WHERE ra.agency = :ruleform AND ra.attribute = :attribute ORDER BY ra.sequenceNumber") })
 public class AgencyAttribute extends AttributeValue<Agency> {
-    public static final String GET_ATTRIBUTE    = "agencyAttribute.getAttribute";
+    public static final String GET_ATTRIBUTE    = "agencyAttribute"
+                                                  + GET_ATTRIBUTE_SUFFIX;
     private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency

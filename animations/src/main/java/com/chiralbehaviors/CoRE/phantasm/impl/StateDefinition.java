@@ -48,8 +48,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     private final Class<PhantasmBase<RuleForm>>                 accessorInterface;
     private final List<Aspect>                                  aspects       = new ArrayList<Aspect>();
     private final UUID                                          workspace;
-    protected final Map<Method, RelationshipFunction<RuleForm>> relationships = new HashMap<>();
     protected final Map<Method, AttributeFunction<RuleForm>>    attributes    = new HashMap<>();
+    protected final Map<Method, RelationshipFunction<RuleForm>> relationships = new HashMap<>();
 
     public StateDefinition(Class<PhantasmBase<RuleForm>> accessorInterface) {
         this.accessorInterface = accessorInterface;
@@ -82,8 +82,12 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         constrain(model, ruleform);
         return Proxy.newProxyInstance(accessorInterface.getClassLoader(),
                                       new Class[] { accessorInterface },
-                                      new StateImpl(ruleform, model,
-                                                    relationships, attributes));
+                                      new StateImpl(
+                                                    ruleform,
+                                                    model,
+                                                    relationships,
+                                                    attributes,
+                                                    model.getWorkspaceModel().getScoped(workspace)));
 
     }
 
@@ -115,10 +119,20 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             process(method.getAnnotation(Relationship.class), method);
         } else if (method.getAnnotation(Attribute.class) != null) {
             process(method.getAnnotation(Attribute.class), method);
+        } else {
+            processUnknown(method);
         }
     }
 
     private void process(Relationship annotation, Method method) {
         // TODO Auto-generated method stub
+    }
+
+    /**
+     * @param method
+     */
+    private void processUnknown(Method method) {
+        // TODO Auto-generated method stub
+
     }
 }

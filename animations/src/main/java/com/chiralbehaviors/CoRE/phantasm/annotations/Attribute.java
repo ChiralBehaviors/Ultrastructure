@@ -20,14 +20,12 @@
 
 package com.chiralbehaviors.CoRE.phantasm.annotations;
 
-import com.chiralbehaviors.CoRE.attribute.ValueType;
-
 /**
  * @author hhildebrand
  *
  */
 public @interface Attribute {
-    String name();
+    String scope() default "";
 
-    ValueType type();
+    String name();
 }

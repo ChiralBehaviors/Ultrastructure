@@ -20,21 +20,20 @@
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
-import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 
 /**
@@ -44,26 +43,31 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
         implements InvocationHandler, PhantasmBase<RuleForm> {
 
-    private final Map<Method, AttributeFunction<RuleForm>>    attributes;
-    private final Model                                       model;
-    private final Map<Method, RelationshipFunction<RuleForm>> relationships;
-    private final RuleForm                                    ruleform;
-    private final WorkspaceScope                              scope;
+    private final Map<Method, StateFunction<RuleForm>> methods;
+    private final Model                                model;
+    private final RuleForm                             ruleform;
+    private final WorkspaceScope                       scope;
 
     public StateImpl(RuleForm ruleform, Model model,
-                     Map<Method, RelationshipFunction<RuleForm>> relationships,
-                     Map<Method, AttributeFunction<RuleForm>> attributes,
+                     Map<Method, StateFunction<RuleForm>> methods,
                      WorkspaceScope scope) {
         this.ruleform = ruleform;
         this.model = model;
-        this.relationships = relationships;
-        this.attributes = attributes;
+        this.methods = methods;
         this.scope = scope;
     }
 
     @Override
     public String getDescription() {
         return ruleform.getDescription();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.phantasm.PhantasmBase#getModel()
+     */
+    @Override
+    public Model getModel() {
+        return model;
     }
 
     @Override
@@ -82,6 +86,14 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     @Override
     public RuleForm getRuleform() {
         return ruleform;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.phantasm.PhantasmBase#getScope()
+     */
+    @Override
+    public WorkspaceScope getScope() {
+        return scope;
     }
 
     /* (non-Javadoc)
@@ -106,82 +118,79 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
         }
-        Object returnValue = invoke(method, args);
+        StateFunction<RuleForm> function = methods.get(method);
+        Object returnValue = (function != null) ? function.invoke(this, args)
+                                               : method.invoke(this, args);
 
         // always maintain proxy discipline.  Because identity.
         return returnValue == this ? proxy : returnValue;
     }
 
-    @SuppressWarnings("unused")
-    private void addChild(Relationship r, RuleForm child) {
-        model.getNetworkedModel(ruleform).link(ruleform, getRelationship(r),
+    protected void addChild(String scope, String key, boolean singular,
+                            RuleForm child) {
+        model.getNetworkedModel(ruleform).link(ruleform,
+                                               getRelationship(scope, key),
                                                child,
                                                model.getKernel().getCore());
     }
 
-    @SuppressWarnings("unused")
-    private void addChildren(Relationship r, List<RuleForm> children,
-                             Agency updatedBy) {
+    protected void addChildren(String scope, String key, boolean singular,
+                               List<RuleForm> children, Agency updatedBy) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
         for (RuleForm child : children) {
-            networkedModel.link(ruleform, getRelationship(r), child, updatedBy);
+            networkedModel.link(ruleform, getRelationship(scope, key), child,
+                                updatedBy);
         }
     }
 
-    private com.chiralbehaviors.CoRE.attribute.Attribute getAttribute(Attribute attribute) {
-        return (com.chiralbehaviors.CoRE.attribute.Attribute) scope.lookup(attribute.name());
+    protected Attribute getAttribute(String s, String key) {
+        return (Attribute) scope.lookup(s, key);
     }
 
-    @SuppressWarnings({ "unused", "unchecked" })
-    private List<AttributeValue<RuleForm>> getAttributeValues(Attribute attribute) {
-        return (List<AttributeValue<RuleForm>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                     getAttribute(attribute));
+    protected Object getAttributeValue(String scope, String key) {
+        List<Object> values = new ArrayList<>();
+        for (AttributeValue<RuleForm> value : model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                   getAttribute(scope,
+                                                                                                                key))) {
+            values.addAll(value.getValue());
+        }
+        return values;
     }
 
-    @SuppressWarnings("unused")
-    private RuleForm getChild(Relationship r) {
+    protected List<Object> getAttributeValues(String scope, String key) {
+        List<Object> values = new ArrayList<>();
+        for (AttributeValue<RuleForm> value : model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                   getAttribute(scope,
+                                                                                                                key))) {
+            values.addAll(value.getValue());
+        }
+        return values;
+    }
+
+    protected RuleForm getChild(String scope, String key, boolean singular) {
         return model.getNetworkedModel(ruleform).getSingleChild(ruleform,
-                                                                getRelationship(r));
+                                                                getRelationship(scope,
+                                                                                key));
     }
 
-    @SuppressWarnings("unused")
-    private List<RuleForm> getChildren(Relationship r) {
+    protected List<RuleForm> getChildren(String scope, String key,
+                                         boolean singular) {
         return model.getNetworkedModel(ruleform).getChildren(ruleform,
-                                                             getRelationship(r));
+                                                             getRelationship(scope,
+                                                                             key));
     }
 
-    @SuppressWarnings("unused")
-    private List<RuleForm> getChildren(Relationship r,
-                                       @SuppressWarnings("unchecked") Aspect<RuleForm>... constraints) {
-        return model.getNetworkedModel(ruleform).getChildren(ruleform,
-                                                             getRelationship(r));
+    protected Relationship getRelationship(String s, String key) {
+        return (Relationship) scope.lookup(s, key);
     }
 
-    private com.chiralbehaviors.CoRE.network.Relationship getRelationship(Relationship relationship) {
-        return (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(relationship.name());
+    protected Object setAttributeValue(Object object, String key, Object object2) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
-    private Object invoke(Method method, Object[] args)
-                                                       throws IllegalAccessException,
-                                                       InvocationTargetException {
-        Object returnValue;
-        RelationshipFunction<RuleForm> relationship = relationships.get(method);
-        if (relationship != null) {
-            returnValue = relationship.invoke(this,
-                                              model,
-                                              method.getAnnotation(com.chiralbehaviors.CoRE.phantasm.annotations.Relationship.class),
-                                              args);
-        } else {
-            AttributeFunction<RuleForm> attribute = attributes.get(method);
-            if (attribute != null) {
-                returnValue = attribute.invoke(this,
-                                               model,
-                                               method.getAnnotation(Attribute.class),
-                                               args);
-            } else {
-                returnValue = method.invoke(this, args);
-            }
-        }
-        return returnValue;
+    protected Object setAttributeValues(Object object, String key, List<?> list) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

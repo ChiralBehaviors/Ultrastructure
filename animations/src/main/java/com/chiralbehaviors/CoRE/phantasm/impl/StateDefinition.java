@@ -45,11 +45,12 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
  */
 public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
 
-    private final Class<PhantasmBase<RuleForm>>                 accessorInterface;
-    private final List<Aspect>                                  aspects       = new ArrayList<Aspect>();
-    private final UUID                                          workspace;
-    protected final Map<Method, AttributeFunction<RuleForm>>    attributes    = new HashMap<>();
-    protected final Map<Method, RelationshipFunction<RuleForm>> relationships = new HashMap<>();
+    private static final String                          GET     = "get";
+    private static final String                          SET     = "set";
+    private final Class<PhantasmBase<RuleForm>>          accessorInterface;
+    private final List<Aspect>                           aspects = new ArrayList<Aspect>();
+    private final UUID                                   workspace;
+    protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
 
     public StateDefinition(Class<PhantasmBase<RuleForm>> accessorInterface) {
         this.accessorInterface = accessorInterface;
@@ -85,8 +86,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                       new StateImpl(
                                                     ruleform,
                                                     model,
-                                                    relationships,
-                                                    attributes,
+                                                    methods,
                                                     model.getWorkspaceModel().getScoped(workspace)));
 
     }
@@ -102,8 +102,11 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Attribute annotation, Method method) {
-        // TODO Auto-generated method stub
-
+        if (method.getName().startsWith(GET)) {
+            processGetter(annotation, method);
+        } else if (method.getName().startsWith(SET)) {
+            processSetter(annotation, method);
+        }
     }
 
     private void process(Class<?> iFace) {
@@ -128,11 +131,87 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         // TODO Auto-generated method stub
     }
 
-    /**
-     * @param method
-     */
-    private void processUnknown(Method method) {
-        // TODO Auto-generated method stub
+    private void processGetter(Attribute attribute, Method method) {
+        if (method.getParameterCount() != 0) {
+            throw new IllegalStateException(
+                                            String.format("getter method has arguments %s",
+                                                          method.toGenericString()));
+        }
+        if (List.class.isAssignableFrom(method.getReturnType())) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(attribute.scope(),
+                                                                                                    attribute.name()));
+        } else {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(attribute.scope(),
+                                                                                                   attribute.name()));
+        }
+    }
 
+    private void processGetter(Method method) {
+        if (method.getParameterCount() != 0) {
+            throw new IllegalStateException(
+                                            String.format("getter method has arguments %s",
+                                                          method.toGenericString()));
+        }
+        String key = method.getName().substring(GET.length(),
+                                                method.getName().length());
+        if (method.getReturnType().isArray()) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(null,
+                                                                                                    key));
+        } else {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(null,
+                                                                                                   key));
+        }
+    }
+
+    private void processSetter(Attribute attribute, Method method) {
+        if (method.getParameterCount() != 1) {
+            throw new IllegalStateException(
+                                            String.format("setter method does not have a singular argument %s",
+                                                          method.toGenericString()));
+        }
+        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(attribute.scope(),
+                                                                                                    attribute.name(),
+                                                                                                    (List<?>) arguments[0]));
+        } else {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(attribute.scope(),
+                                                                                                   attribute.name(),
+                                                                                                   arguments[0]));
+        }
+    }
+
+    private void processSetter(Method method) {
+        if (method.getParameterCount() != 1) {
+            throw new IllegalStateException(
+                                            String.format("setter method does not have a singular argument %s",
+                                                          method.toGenericString()));
+        }
+        String key = method.getName().substring(SET.length(),
+                                                method.getName().length());
+        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(null,
+                                                                                                    key,
+                                                                                                    (List<?>) arguments[0]));
+        } else {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(null,
+                                                                                                   key,
+                                                                                                   arguments[0]));
+        }
+    }
+
+    private void processUnknown(Method method) {
+        if (method.getName().startsWith(GET)) {
+            processGetter(method);
+        } else if (method.getName().startsWith(SET)) {
+            processSetter(method);
+        }
     }
 }

@@ -23,7 +23,6 @@ package com.chiralbehaviors.phantasm.demo;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
@@ -38,6 +37,16 @@ import com.chiralbehaviors.CoRE.product.Product;
 @State(facets = { @Aspect(classifier = "Thing1") }, workspace = "00000000-0000-0004-0000-000000000006")
 public interface Thing1 extends PhantasmBase<Product> {
 
+    // Default methods are used to add functional behavior
+    default void doSomething(String document) {
+        System.out.println(getThing2());
+    }
+
+    // Even "this" works because Java 8 default methods
+    default Thing1 doSomethingElse() {
+        return this;
+    }
+
     // array attributes of the ruleform
     String[] getAliases();
 
@@ -45,8 +54,8 @@ public interface Thing1 extends PhantasmBase<Product> {
     @Relationship(name = "derivedFrom", singular = true)
     MavenArtifact getArtifact();
 
-    // product attribute that has a non defaulted workspace name, specifying the value type
-    @Attribute(name = "discount", type = ValueType.NUMERIC)
+    // product attribute that has a non defaulted workspace name
+    @Attribute(name = "discount")
     BigDecimal getPercentage();
 
     // mapped attributes of the ruleform
@@ -65,8 +74,4 @@ public interface Thing1 extends PhantasmBase<Product> {
 
     // String attribute using the defaulted workspace name derived from getter
     void setURI(String uri);
-
-    default void doSomething(String document) {
-        System.out.println(getThing2());
-    }
 }

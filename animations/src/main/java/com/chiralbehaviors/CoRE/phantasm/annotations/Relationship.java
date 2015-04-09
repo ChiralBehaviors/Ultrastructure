@@ -41,5 +41,7 @@ public @interface Relationship {
 
     String name();
 
+    String scope() default "";
+
     boolean singular() default false;
 }

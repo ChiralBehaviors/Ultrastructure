@@ -22,7 +22,9 @@ package com.chiralbehaviors.CoRE.phantasm;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 
 /**
  * @author hhildebrand
@@ -32,11 +34,15 @@ public interface PhantasmBase<RuleForm extends ExistentialRuleform<RuleForm, ? e
 
     String getDescription();
 
+    Model getModel();
+
     String getName();
 
     String getNotes();
 
     <T extends RuleForm> T getRuleform();
+
+    WorkspaceScope getScope();
 
     Agency getUpdatedBy();
 }

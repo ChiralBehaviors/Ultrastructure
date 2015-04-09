@@ -21,16 +21,13 @@
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
 
 /**
  * @author hhildebrand
  *
  */
 @FunctionalInterface
-public interface AttributeFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    Object invoke(StateImpl<RuleForm> state, Model model, Attribute attribute,
-                  Object[] arguments);
+public interface StateFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
+    Object invoke(StateImpl<RuleForm> state, Object[] arguments);
 }

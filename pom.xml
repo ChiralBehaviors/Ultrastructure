@@ -112,6 +112,11 @@
             </dependency>
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
+                <artifactId>dsl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>loader</artifactId>
                 <version>${project.version}</version>
             </dependency>

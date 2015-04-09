@@ -49,6 +49,10 @@
             <groupId>com.chiralbehaviors</groupId>
             <artifactId>janus</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>dsl</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

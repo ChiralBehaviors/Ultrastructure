@@ -26,17 +26,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>animations</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>animations</artifactId>
-            <scope>test</scope>
-            <type>test-jar</type>
-        </dependency>
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
@@ -75,7 +64,6 @@
                             </sources>
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
             <plugin>

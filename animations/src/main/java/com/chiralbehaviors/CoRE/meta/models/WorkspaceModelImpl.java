@@ -20,7 +20,6 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -28,6 +27,7 @@ import javax.persistence.TypedQuery;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 
@@ -66,9 +66,10 @@ public class WorkspaceModelImpl implements WorkspaceModel {
      * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#getScoped(java.util.UUID)
      */
     @Override
-    public WorkspaceScope getScoped(UUID workspace) {
-        // TODO Auto-generated method stub
-        return null;
+    public WorkspaceScope getScoped(Product definingProduct) {
+        return new WorkspaceScope(null, null,
+                                  new DatabaseBackedWorkspace(definingProduct,
+                                                              em));
     }
 
     @Override

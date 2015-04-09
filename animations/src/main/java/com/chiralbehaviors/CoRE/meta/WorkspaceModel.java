@@ -20,7 +20,6 @@
 package com.chiralbehaviors.CoRE.meta;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -32,7 +31,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
  */
 public interface WorkspaceModel {
 
-    WorkspaceScope getScoped(UUID workspace);
+    WorkspaceScope getScoped(Product definingProduct);
 
     List<WorkspaceAuthorization> getWorkspace(Product definingProduct);
 

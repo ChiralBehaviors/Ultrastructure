@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.annotations.State;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 
 /**
@@ -62,7 +63,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     @SuppressWarnings("unchecked")
     public void constrain(Model model, RuleForm ruleform) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
-        WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
+        WorkspaceScope scope = model.getWorkspaceModel().getScoped(model.getEntityManager().find(Product.class,
+                                                                                                 workspace));
         List<Aspect> failures = new ArrayList<>();
         for (Aspect constraint : aspects) {
             if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier()),
@@ -87,7 +89,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                     ruleform,
                                                     model,
                                                     methods,
-                                                    model.getWorkspaceModel().getScoped(workspace)));
+                                                    model.getWorkspaceModel().getScoped(model.getEntityManager().find(Product.class,
+                                                                                                                      workspace))));
 
     }
 

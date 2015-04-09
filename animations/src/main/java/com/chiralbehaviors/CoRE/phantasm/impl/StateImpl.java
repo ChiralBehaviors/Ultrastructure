@@ -126,6 +126,14 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return returnValue == this ? proxy : returnValue;
     }
 
+    private Attribute getAttribute(String s, String key) {
+        return (Attribute) scope.lookup(s, key);
+    }
+
+    private Relationship getRelationship(String s, String key) {
+        return (Relationship) scope.lookup(s, key);
+    }
+
     protected void addChild(String scope, String key, boolean singular,
                             RuleForm child) {
         model.getNetworkedModel(ruleform).link(ruleform,
@@ -134,7 +142,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                model.getKernel().getCore());
     }
 
-    protected void addChildren(String scope, String key, boolean singular,
+    protected void addChildren(String scope, String key,
                                List<RuleForm> children, Agency updatedBy) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
         for (RuleForm child : children) {
@@ -143,18 +151,25 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         }
     }
 
-    protected Attribute getAttribute(String s, String key) {
-        return (Attribute) scope.lookup(s, key);
-    }
-
     protected Object getAttributeValue(String scope, String key) {
-        List<Object> values = new ArrayList<>();
-        for (AttributeValue<RuleForm> value : model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                   getAttribute(scope,
-                                                                                                                key))) {
-            values.addAll(value.getValue());
+        @SuppressWarnings("unchecked")
+        List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                                        getAttribute(scope,
+                                                                                                                                     key));
+        if (values.size() == 0) {
+            throw new IllegalArgumentException(
+                                               String.format("No such attribute: %s:%s",
+                                                             scope == null ? ""
+                                                                          : scope,
+                                                             key));
+        } else if (values.size() > 1) {
+            throw new IllegalArgumentException(
+                                               String.format("Multiple values for attribute: %s:%s",
+                                                             scope == null ? ""
+                                                                          : scope,
+                                                             key));
         }
-        return values;
+        return values.get(0).getValue();
     }
 
     protected List<Object> getAttributeValues(String scope, String key) {
@@ -162,7 +177,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         for (AttributeValue<RuleForm> value : model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
                                                                                                    getAttribute(scope,
                                                                                                                 key))) {
-            values.addAll(value.getValue());
+            values.add(value.getValue());
         }
         return values;
     }
@@ -173,23 +188,18 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                                                 key));
     }
 
-    protected List<RuleForm> getChildren(String scope, String key,
-                                         boolean singular) {
+    protected List<RuleForm> getChildren(String scope, String key) {
         return model.getNetworkedModel(ruleform).getChildren(ruleform,
                                                              getRelationship(scope,
                                                                              key));
     }
 
-    protected Relationship getRelationship(String s, String key) {
-        return (Relationship) scope.lookup(s, key);
-    }
-
-    protected Object setAttributeValue(Object object, String key, Object object2) {
+    protected Object setAttributeValue(String scope, String key, Object value) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    protected Object setAttributeValues(Object object, String key, List<?> list) {
+    protected Object setAttributeValues(String scope, String key, List<?> values) {
         // TODO Auto-generated method stub
         return null;
     }

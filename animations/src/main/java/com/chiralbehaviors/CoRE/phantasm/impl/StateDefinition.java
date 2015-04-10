@@ -31,6 +31,7 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
@@ -38,7 +39,6 @@ import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
 import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 
 /**
  * @author hhildebrand

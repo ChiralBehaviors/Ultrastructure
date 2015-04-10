@@ -31,9 +31,9 @@ import javax.persistence.EntityManager;
 import org.hibernate.internal.SessionImpl;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
-import com.chiralbehaviors.CoRE.workspace.RehydratedWorkspace;
-import com.chiralbehaviors.CoRE.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.RehydratedWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

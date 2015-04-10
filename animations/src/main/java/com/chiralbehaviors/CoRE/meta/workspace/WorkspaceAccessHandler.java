@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.workspace;
+package com.chiralbehaviors.CoRE.meta.workspace;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

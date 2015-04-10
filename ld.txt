@@ -1,1 +1,0 @@
-/Library/PostgreSQL/9.1/bin/pg_restore -U postgres -d core --disable-triggers --verbose ultrastructure_dataset.pgdump

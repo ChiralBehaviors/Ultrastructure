@@ -18,7 +18,11 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.workspace;
+package com.chiralbehaviors.CoRE.meta.workspace;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 
@@ -26,9 +30,19 @@ import com.chiralbehaviors.CoRE.Ruleform;
  * @author hhildebrand
  *
  */
-public interface EditableWorkspace extends Workspace {
+public interface Workspace {
 
-    <T extends Ruleform> void add(T ruleform);
+    <T extends Ruleform> T get(String key);
 
-    <T extends Ruleform> void put(String key, T ruleform);
+    <T> T getAccessor(Class<T> accessorInterface);
+
+    <T extends Ruleform> List<T> getCollection(Class<T> ruleformClass);
+
+    WorkspaceSnapshot getSnapshot();
+
+    void refreshFrom(EntityManager em);
+
+    void replaceFrom(EntityManager em);
+
+    void retarget(EntityManager em);
 }

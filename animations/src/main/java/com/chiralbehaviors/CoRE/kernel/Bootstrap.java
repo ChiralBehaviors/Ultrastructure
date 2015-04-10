@@ -53,12 +53,12 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 
@@ -376,9 +376,9 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("Owns", find(WellKnownRelationship.OWNS), core,
                  kernelWorkspace);
-        populate("InWorkspace", find(WellKnownRelationship.IN_WORKSPACE), core,
+        populate("Imports", find(WellKnownRelationship.IMPORTS), core,
                  kernelWorkspace);
-        populate("WorkspaceOf", find(WellKnownRelationship.WORKSPACE_OF), core,
+        populate("ImportedBy", find(WellKnownRelationship.IMPORTED_BY), core,
                  kernelWorkspace);
 
         populate("Unset", find(WellKnownStatusCode.UNSET), core,

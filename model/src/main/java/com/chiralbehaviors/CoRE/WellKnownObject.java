@@ -555,6 +555,34 @@ public interface WellKnownObject {
     }
 
     public static enum WellKnownProduct implements WellKnownObject {
+        WORKSPACE() {
+            @Override
+            public String description() {
+                return "Special product that parents the network of objects that make a workspace";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.WORKSPACE;
+            }
+        },
+        KERNEL_WORKSPACE() {
+            @Override
+            public String description() {
+                return "The defining product of the Kernel workspace";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.KERNEL_WORKSPACE;
+            }
+        },
         ANY() {
 
             @Override
@@ -603,20 +631,6 @@ public interface WellKnownObject {
             }
 
         },
-        WORKSPACE() {
-            @Override
-            public String description() {
-                return "Special product that parents the network of objects that make a workspace";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.WORKSPACE;
-            }
-        },
         COPY() {
 
             @Override
@@ -632,20 +646,6 @@ public interface WellKnownObject {
                 return WellKnownObject.COPY;
             }
 
-        },
-        KERNEL_WORKSPACE() {
-            @Override
-            public String description() {
-                return "The defining product of the Kernel workspace";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.KERNEL_WORKSPACE;
-            }
         };
 
         /* (non-Javadoc)
@@ -1030,16 +1030,42 @@ public interface WellKnownObject {
             }
 
         },
-        IN_WORKSPACE() {
+        IMPORTS() {
 
             @Override
             public String description() {
-                return "A is in workspace B";
+                return "A imports B";
             }
 
             @Override
             public WellKnownRelationship inverse() {
-                return WellKnownRelationship.WORKSPACE_OF;
+                return WellKnownRelationship.IMPORTED_BY;
+            }
+
+            @Override
+            public boolean preferred() {
+                return true;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.IMPORTS;
+            }
+
+        },
+        IMPORTED_BY() {
+
+            @Override
+            public String description() {
+                return "A is imported by B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.IMPORTS;
             }
 
             @Override
@@ -1052,7 +1078,7 @@ public interface WellKnownObject {
              */
             @Override
             public String wkoName() {
-                return WellKnownObject.IN_WORKSPACE;
+                return WellKnownObject.IMPORTED_BY;
             }
 
         },
@@ -1468,32 +1494,6 @@ public interface WellKnownObject {
             }
 
         },
-        WORKSPACE_OF() {
-
-            @Override
-            public String description() {
-                return "A is a workspace containing B";
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.IN_WORKSPACE;
-            }
-
-            @Override
-            public boolean preferred() {
-                return true;
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.WORKSPACE_OF;
-            }
-
-        },
         COPY() {
 
             @Override
@@ -1874,6 +1874,8 @@ public interface WellKnownObject {
     String HAS_MEMBER                = "has-member";
     String HAS_VERSION               = "has-version";
     String HEAD_OF                   = "head-of";
+    String IMPORTS                   = "imports";
+    String IMPORTED_BY               = "imported by";
     String IN_WORKSPACE              = "in-workspace";
     String INCLUDES                  = "includes";
     String INVERSE_SOFTWARE          = "Inverse Software";

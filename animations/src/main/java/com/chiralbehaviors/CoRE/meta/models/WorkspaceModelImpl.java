@@ -26,10 +26,10 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
+import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 
 /**
  * @author hhildebrand

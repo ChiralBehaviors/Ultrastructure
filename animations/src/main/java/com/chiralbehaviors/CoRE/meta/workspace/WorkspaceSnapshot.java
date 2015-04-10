@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.workspace;
+package com.chiralbehaviors.CoRE.meta.workspace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
  * @author hhildebrand

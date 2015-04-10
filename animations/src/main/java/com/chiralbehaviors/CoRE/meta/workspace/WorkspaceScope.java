@@ -18,13 +18,14 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.workspace;
+package com.chiralbehaviors.CoRE.meta.workspace;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.hellblazer.utils.collections.LookupScope;
-import com.hellblazer.utils.collections.OrderedLookupScope;
+import com.hellblazer.utils.LookupScope;
+import com.hellblazer.utils.OrderedLookupScope;
 
 /**
  * @author hhildebrand
@@ -33,6 +34,11 @@ import com.hellblazer.utils.collections.OrderedLookupScope;
 public class WorkspaceScope extends OrderedLookupScope<String, Ruleform> {
 
     private final Workspace workspace;
+
+    public WorkspaceScope(Workspace workspace) {
+        super(null, Collections.emptyList());
+        this.workspace = workspace;
+    }
 
     public WorkspaceScope(String name,
                           List<LookupScope<String, Ruleform>> imports,

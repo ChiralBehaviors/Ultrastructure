@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.workspace;
+package com.chiralbehaviors.CoRE.meta.workspace;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,8 +30,10 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**

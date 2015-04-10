@@ -105,6 +105,10 @@ public interface Kernel {
 
     Unit getHours();
 
+    Relationship getImportedBy();
+
+    Relationship getImports();
+
     Relationship getIncludes();
 
     Agency getInverseSoftware();

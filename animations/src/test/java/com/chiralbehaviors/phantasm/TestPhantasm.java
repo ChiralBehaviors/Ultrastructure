@@ -22,11 +22,13 @@ package com.chiralbehaviors.phantasm;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+
 /**
  * @author hhildebrand
  *
  */
-public class TestPhantasm {
+public class TestPhantasm extends AbstractModelTest {
 
     @Test
     public void testMe() {

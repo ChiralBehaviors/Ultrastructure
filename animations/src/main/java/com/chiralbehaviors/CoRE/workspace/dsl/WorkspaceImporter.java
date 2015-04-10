@@ -20,6 +20,7 @@
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import javax.management.openmbean.InvalidKeyException;
 import javax.persistence.EntityManager;
@@ -45,6 +46,10 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
@@ -52,8 +57,6 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
-import com.chiralbehaviors.CoRE.workspace.DatabaseBackedWorkspace;
-import com.chiralbehaviors.CoRE.workspace.Workspace;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
@@ -78,19 +81,21 @@ public class WorkspaceImporter {
     private static final String         STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
     private final EntityManager         em;
     private final Model                 model;
-    private DatabaseBackedWorkspace     workspace;
     private final WorkspacePresentation wsp;
-    private final WorkspaceScope        scope;
+    private WorkspaceScope              scope;
+    private EditableWorkspace           workspace;
 
     public WorkspaceImporter(WorkspacePresentation wsp, Model model) {
         this.wsp = wsp;
         this.model = model;
         this.em = model.getEntityManager();
-        this.scope = new WorkspaceScope(model);
     }
 
     public Workspace loadWorkspace() {
         workspace = new DatabaseBackedWorkspace(createWorkspaceProduct(), em);
+        scope = new WorkspaceScope(null,
+                                   Arrays.asList(getKernelWorkspaceScope()),
+                                   workspace);
         loadRelationships();
         loadAgencies();
         loadAttributes();
@@ -106,6 +111,10 @@ public class WorkspaceImporter {
         loadProtocols();
         loadMetaprotocols();
         return workspace;
+    }
+
+    private WorkspaceScope getKernelWorkspaceScope() {
+        return model.getWorkspaceModel().getScoped(model.getKernel().getKernelWorkspace());
     }
 
     private void loadMetaprotocols() {
@@ -145,37 +154,6 @@ public class WorkspaceImporter {
 
     private void loadProtocols() {
         for (ProtocolContext pc : wsp.getProtocols()) {
-            //            matchJob: 
-            //                ('service:' service=qualifiedName)
-            //                ('attr:' serviceAttribute=qualifiedName)?
-            //                ('product:' product=qualifiedName)?
-            //                ('attr:' productAttribute=qualifiedName)?
-            //                ('from:' from=qualifiedName)?
-            //                ('attr:' (fromAttribute=qualifiedName))?
-            //                ('to:' to=qualifiedName)?
-            //                ('attr:' (toAttribute=qualifiedName))?
-            //                ('quantity:' quantity=Number)?
-            //                ('unit:' quantityUnit=qualifiedName)?
-            //                ('requester:' requester=qualifiedName)?
-            //                ('attr:' requesterAttribute=qualifiedName)?
-            //                ('assign:' assignTo=qualifiedName)?
-            //                ('attr:' assignToAttribute=qualifiedName)?
-            //                ('sequence:' Number)?
-            //                ;
-            //                
-            //            childJob: 
-            //                ('service:' service=qualifiedName)?
-            //                ('attr:' (serviceAttribute=qualifiedName))?
-            //                (('children:' childrenRelationship=qualifiedName) | ('product:' product=qualifiedName))?
-            //                ('attr:' (productAttribute=qualifiedName))?
-            //                ('from:' from=qualifiedName)?
-            //                ('attr:' (fromAttribute=qualifiedName))?
-            //                ('to:' to=qualifiedName)?
-            //                ('attr:' (toAttribute=qualifiedName))?
-            //                ('quantity:' quantity=Number)?
-            //                ('unit:' (quantityUnit=qualifiedName))?
-            //                ('assign:' assignTo=qualifiedName)?
-            //                ('attr:' (assignToAttribute=qualifiedName))?
             Protocol protocol = model.getJobModel().newInitializedProtocol(resolve(pc.matchJob().service),
                                                                            model.getKernel().getCore());
             if (pc.matchJob().serviceAttribute != null) {
@@ -559,10 +537,11 @@ public class WorkspaceImporter {
         }
     }
 
+    @SuppressWarnings("unchecked")
     <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
         if (qualifiedName.namespace != null) {
-            return scope.resolve(qualifiedName.namespace.getText(),
-                                 qualifiedName.member.getText());
+            return (T) scope.lookup(qualifiedName.namespace.getText(),
+                                    qualifiedName.member.getText());
         }
         T ruleform = workspace.get(qualifiedName.member.getText());
         if (ruleform == null) {

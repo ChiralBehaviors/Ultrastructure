@@ -21,9 +21,9 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.util.List;
 
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceScope;
 
 /**
  * @author hhildebrand

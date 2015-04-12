@@ -52,6 +52,11 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
 
     private static final long  serialVersionUID     = 1L;
 
+    // bi-directional many-to-one association to Attribute
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute")
+    private Attribute          attribute;
+
     @Column(name = "binary_value")
     private byte[]             binaryValue;
 
@@ -138,7 +143,9 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     }
 
     @JsonGetter
-    abstract public Attribute getAttribute();
+    public final Attribute getAttribute() {
+        return attribute;
+    }
 
     @JsonIgnore
     public byte[] getBinaryValue() {
@@ -248,7 +255,9 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         }
     }
 
-    abstract public void setAttribute(Attribute attribute);
+    public final void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
+    }
 
     public void setBinaryValue(byte[] binaryValue) {
         if (getAttribute().getValueType() != ValueType.BINARY) {

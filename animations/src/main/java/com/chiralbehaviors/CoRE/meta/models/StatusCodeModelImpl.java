@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +27,9 @@ import java.util.Set;
 
 import javax.persistence.TypedQuery;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
@@ -110,7 +111,8 @@ public class StatusCodeModelImpl
     @Override
     public Facet<StatusCode, StatusCodeAttribute> create(String name,
                                                          String description,
-                                                         Aspect<StatusCode> aspect) {
+                                                         Aspect<StatusCode> aspect,
+                                                         Agency updatedBy) {
         StatusCode statusCode = new StatusCode(name, description,
                                                kernel.getCoreModel());
         em.persist(statusCode);
@@ -118,7 +120,8 @@ public class StatusCodeModelImpl
                                                           aspect,
                                                           statusCode,
                                                           initialize(statusCode,
-                                                                     aspect)) {
+                                                                     aspect,
+                                                                     updatedBy)) {
         };
     }
 
@@ -132,15 +135,15 @@ public class StatusCodeModelImpl
     @SafeVarargs
     @Override
     public final StatusCode create(String name, String description,
-                                   Aspect<StatusCode> aspect,
+                                   Aspect<StatusCode> aspect, Agency updatedBy,
                                    Aspect<StatusCode>... aspects) {
         StatusCode agency = new StatusCode(name, description,
                                            kernel.getCoreModel());
         em.persist(agency);
-        initialize(agency, aspect);
+        initialize(agency, aspect, updatedBy);
         if (aspects != null) {
             for (Aspect<StatusCode> a : aspects) {
-                initialize(agency, a);
+                initialize(agency, a, updatedBy);
             }
         }
         return agency;
@@ -237,24 +240,12 @@ public class StatusCodeModelImpl
         return query.getResultList();
     }
 
-    /**
-     * @param agency
-     * @param aspect
-     */
-    protected List<StatusCodeAttribute> initialize(StatusCode agency,
-                                                   Aspect<StatusCode> aspect) {
-        agency.link(aspect.getClassification(), aspect.getClassifier(),
-                    kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        List<StatusCodeAttribute> attributes = new ArrayList<>();
-        for (StatusCodeAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            StatusCodeAttribute attribute = new StatusCodeAttribute(
-                                                                    authorization.getAuthorizedAttribute(),
-                                                                    kernel.getCoreModel());
-            attributes.add(attribute);
-            attribute.setStatusCode(agency);
-            defaultValue(attribute);
-            em.persist(attribute);
-        }
-        return attributes;
+    @Override
+    protected StatusCodeAttribute create(StatusCode ruleform,
+                                         ClassifiedAttributeAuthorization<StatusCode> authorization,
+                                         Agency updatedBy) {
+        return new StatusCodeAttribute(ruleform,
+                                       authorization.getAuthorizedAttribute(),
+                                       updatedBy);
     }
 }

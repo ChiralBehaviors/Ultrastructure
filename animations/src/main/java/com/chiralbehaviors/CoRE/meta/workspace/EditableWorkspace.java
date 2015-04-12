@@ -21,14 +21,19 @@
 package com.chiralbehaviors.CoRE.meta.workspace;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand
  *
  */
 public interface EditableWorkspace extends Workspace {
-
     <T extends Ruleform> void add(T ruleform);
 
+    void addImport(String namespace, Product workspace, Agency updatedBy);
+
     <T extends Ruleform> void put(String key, T ruleform);
+
+    void removeImport(Product workspace, Agency updatedBy);
 }

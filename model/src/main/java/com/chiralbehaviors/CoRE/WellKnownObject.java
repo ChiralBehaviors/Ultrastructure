@@ -34,22 +34,6 @@ import com.chiralbehaviors.CoRE.attribute.ValueType;
 public interface WellKnownObject {
 
     public static enum WellKnownAgency implements WellKnownObject {
-        CORE() {
-
-            @Override
-            public String description() {
-                return "The CoRE Ultra-Structure system";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.CORE;
-            }
-
-        },
         ANY() {
 
             @Override
@@ -63,6 +47,38 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.ANY;
+            }
+
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Agency that stands for copy agency";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
+        },
+        CORE() {
+
+            @Override
+            public String description() {
+                return "The CoRE Ultra-Structure system";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.CORE;
             }
 
         },
@@ -209,22 +225,6 @@ public interface WellKnownObject {
                 return WellKnownObject.SUPER_USER;
             }
 
-        },
-        COPY() {
-
-            @Override
-            public String description() {
-                return "A special Agency that stands for copy agency";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.COPY;
-            }
-
         };
 
         /* (non-Javadoc)
@@ -253,11 +253,43 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.TEXT;
+            }
+
+            /* (non-Javadoc)
              * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String wkoName() {
                 return WellKnownObject.ANY;
+            }
+
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Attribute that stands for the copy attribute";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.TEXT;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
             }
 
         },
@@ -285,6 +317,30 @@ public interface WellKnownObject {
             }
 
         },
+        NAMESPACE() {
+
+            @Override
+            public String description() {
+                return "A special Attribute that stands for the namespace attribute";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.TEXT;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NAMESPACE;
+            }
+
+        },
         NOT_APPLICABLE() {
 
             @Override
@@ -293,19 +349,11 @@ public interface WellKnownObject {
             }
 
             /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
              */
             @Override
-            public String wkoName() {
-                return WellKnownObject.NOT_APPLICABLE;
-            }
-
-        },
-        SAME() {
-
-            @Override
-            public String description() {
-                return "A special Attribute that stands for the same attribute";
+            public ValueType valueType() {
+                return ValueType.TEXT;
             }
 
             /* (non-Javadoc)
@@ -313,7 +361,7 @@ public interface WellKnownObject {
              */
             @Override
             public String wkoName() {
-                return WellKnownObject.SAME;
+                return WellKnownObject.NOT_APPLICABLE;
             }
 
         },
@@ -341,11 +389,19 @@ public interface WellKnownObject {
             }
 
         },
-        COPY() {
+        SAME() {
 
             @Override
             public String description() {
-                return "A special Attribute that stands for the copy attribute";
+                return "A special Attribute that stands for the same attribute";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.TEXT;
             }
 
             /* (non-Javadoc)
@@ -353,11 +409,10 @@ public interface WellKnownObject {
              */
             @Override
             public String wkoName() {
-                return WellKnownObject.COPY;
+                return WellKnownObject.SAME;
             }
 
-        },
-        ;
+        };
 
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
@@ -375,9 +430,7 @@ public interface WellKnownObject {
             return "ruleform.attribute";
         }
 
-        public ValueType valueType() {
-            return ValueType.BOOLEAN;
-        }
+        abstract public ValueType valueType();
     }
 
     public static enum WellKnownInterval implements WellKnownObject {
@@ -398,19 +451,19 @@ public interface WellKnownObject {
             }
 
         },
-        SAME() {
+        COPY() {
 
             @Override
             public String description() {
-                return "A special Interval that stands for the same interval";
+                return "A special Interval that stands for copy interval";
             }
 
             /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
              */
             @Override
             public String wkoName() {
-                return WellKnownObject.SAME;
+                return WellKnownObject.COPY;
             }
 
         },
@@ -429,19 +482,19 @@ public interface WellKnownObject {
                 return WellKnownObject.NOT_APPLICABLE;
             }
         },
-        COPY() {
+        SAME() {
 
             @Override
             public String description() {
-                return "A special Interval that stands for copy interval";
+                return "A special Interval that stands for the same interval";
             }
 
             /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
              */
             @Override
             public String wkoName() {
-                return WellKnownObject.COPY;
+                return WellKnownObject.SAME;
             }
 
         };
@@ -488,6 +541,22 @@ public interface WellKnownObject {
             }
 
         },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Location that stands for copy location";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
+        },
         NOT_APPLICABLE() {
 
             @Override
@@ -519,22 +588,6 @@ public interface WellKnownObject {
                 return WellKnownObject.SAME;
             }
 
-        },
-        COPY() {
-
-            @Override
-            public String description() {
-                return "A special Location that stands for copy location";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.COPY;
-            }
-
         };
 
         /* (non-Javadoc)
@@ -555,34 +608,6 @@ public interface WellKnownObject {
     }
 
     public static enum WellKnownProduct implements WellKnownObject {
-        WORKSPACE() {
-            @Override
-            public String description() {
-                return "Special product that parents the network of objects that make a workspace";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.WORKSPACE;
-            }
-        },
-        KERNEL_WORKSPACE() {
-            @Override
-            public String description() {
-                return "The defining product of the Kernel workspace";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.KERNEL_WORKSPACE;
-            }
-        },
         ANY() {
 
             @Override
@@ -598,6 +623,36 @@ public interface WellKnownObject {
                 return WellKnownObject.ANY;
             }
 
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special Product that stands for copy product";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+
+        },
+        KERNEL_WORKSPACE() {
+            @Override
+            public String description() {
+                return "The defining product of the Kernel workspace";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.KERNEL_WORKSPACE;
+            }
         },
         NOT_APPLICABLE() {
 
@@ -631,11 +686,10 @@ public interface WellKnownObject {
             }
 
         },
-        COPY() {
-
+        WORKSPACE() {
             @Override
             public String description() {
-                return "A special Product that stands for copy product";
+                return "Special product that parents the network of objects that make a workspace";
             }
 
             /* (non-Javadoc)
@@ -643,9 +697,8 @@ public interface WellKnownObject {
              */
             @Override
             public String wkoName() {
-                return WellKnownObject.COPY;
+                return WellKnownObject.WORKSPACE;
             }
-
         };
 
         /* (non-Javadoc)
@@ -715,6 +768,32 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.CONTAINS;
+            }
+
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "The well known Relationship copy that represents the copy relationship";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.COPY;
+            }
+
+            @Override
+            public boolean preferred() {
+                return true;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
             }
 
         },
@@ -1030,32 +1109,6 @@ public interface WellKnownObject {
             }
 
         },
-        IMPORTS() {
-
-            @Override
-            public String description() {
-                return "A imports B";
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.IMPORTED_BY;
-            }
-
-            @Override
-            public boolean preferred() {
-                return true;
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.IMPORTS;
-            }
-
-        },
         IMPORTED_BY() {
 
             @Override
@@ -1079,6 +1132,32 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.IMPORTED_BY;
+            }
+
+        },
+        IMPORTS() {
+
+            @Override
+            public String description() {
+                return "A imports B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.IMPORTED_BY;
+            }
+
+            @Override
+            public boolean preferred() {
+                return true;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.IMPORTS;
             }
 
         },
@@ -1493,32 +1572,6 @@ public interface WellKnownObject {
                 return WellKnownObject.VERSION_OF;
             }
 
-        },
-        COPY() {
-
-            @Override
-            public String description() {
-                return "The well known Relationship copy that represents the copy relationship";
-            }
-
-            @Override
-            public WellKnownRelationship inverse() {
-                return WellKnownRelationship.COPY;
-            }
-
-            @Override
-            public boolean preferred() {
-                return true;
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.COPY;
-            }
-
         };
 
         /* (non-Javadoc)
@@ -1544,22 +1597,6 @@ public interface WellKnownObject {
     }
 
     public static enum WellKnownStatusCode implements WellKnownObject {
-        UNSET() {
-
-            @Override
-            public String description() {
-                return "The status code which indicates the status code is not set";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.UNSET;
-            }
-
-        },
         ANY() {
 
             @Override
@@ -1573,6 +1610,37 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.ANY;
+            }
+
+        },
+        COPY() {
+
+            @Override
+            public String description() {
+                return "A special StatusCode that stands for copy status code";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.COPY;
+            }
+        },
+        NOT_APPLICABLE() {
+
+            @Override
+            public String description() {
+                return "A special StatusCode that stands for 'not applicable'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NOT_APPLICABLE;
             }
 
         },
@@ -1592,11 +1660,11 @@ public interface WellKnownObject {
             }
 
         },
-        NOT_APPLICABLE() {
+        UNSET() {
 
             @Override
             public String description() {
-                return "A special StatusCode that stands for 'not applicable'";
+                return "The status code which indicates the status code is not set";
             }
 
             /* (non-Javadoc)
@@ -1604,23 +1672,7 @@ public interface WellKnownObject {
              */
             @Override
             public String wkoName() {
-                return WellKnownObject.NOT_APPLICABLE;
-            }
-
-        },
-        COPY() {
-
-            @Override
-            public String description() {
-                return "A special StatusCode that stands for copy status code";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.COPY;
+                return WellKnownObject.UNSET;
             }
 
         };
@@ -1645,22 +1697,6 @@ public interface WellKnownObject {
     }
 
     public static enum WellKnownUnit implements WellKnownObject {
-        UNSET() {
-
-            @Override
-            public String description() {
-                return "The undefined unit";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.UNSET;
-            }
-
-        },
         ANY() {
 
             @Override
@@ -1677,38 +1713,6 @@ public interface WellKnownObject {
             }
 
         },
-        SAME() {
-
-            @Override
-            public String description() {
-                return "A special Unit that stands for the same unit";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.SAME;
-            }
-
-        },
-        NOT_APPLICABLE() {
-
-            @Override
-            public String description() {
-                return "A special Unit that stands for 'not applicable'";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.NOT_APPLICABLE;
-            }
-
-        },
         COPY() {
 
             @Override
@@ -1722,6 +1726,38 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.COPY;
+            }
+
+        },
+        DAYS() {
+
+            @Override
+            public String description() {
+                return "The time unit Minutes";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.DAYS;
+            }
+
+        },
+        HOURS() {
+
+            @Override
+            public String description() {
+                return "The time unit Hours";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.HOURS;
             }
 
         },
@@ -1757,6 +1793,22 @@ public interface WellKnownObject {
             }
 
         },
+        MINUTES() {
+
+            @Override
+            public String description() {
+                return "The time unit Minutes";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.MINUTES;
+            }
+
+        },
         NANOSECONDS() {
 
             @Override
@@ -1770,6 +1822,38 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.NANOSECONDS;
+            }
+
+        },
+        NOT_APPLICABLE() {
+
+            @Override
+            public String description() {
+                return "A special Unit that stands for 'not applicable'";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NOT_APPLICABLE;
+            }
+
+        },
+        SAME() {
+
+            @Override
+            public String description() {
+                return "A special Unit that stands for the same unit";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#wkoName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.SAME;
             }
 
         },
@@ -1789,11 +1873,11 @@ public interface WellKnownObject {
             }
 
         },
-        MINUTES() {
+        UNSET() {
 
             @Override
             public String description() {
-                return "The time unit Minutes";
+                return "The undefined unit";
             }
 
             /* (non-Javadoc)
@@ -1801,39 +1885,7 @@ public interface WellKnownObject {
              */
             @Override
             public String wkoName() {
-                return WellKnownObject.MINUTES;
-            }
-
-        },
-        HOURS() {
-
-            @Override
-            public String description() {
-                return "The time unit Hours";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.HOURS;
-            }
-
-        },
-        DAYS() {
-
-            @Override
-            public String description() {
-                return "The time unit Minutes";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.DAYS;
+                return WellKnownObject.UNSET;
             }
 
         };
@@ -1854,13 +1906,14 @@ public interface WellKnownObject {
 
     String ANY                       = "(ANY)";
     String ANYTHING                  = "anything";
-    String COPY                      = "(COPY)";
     String CONTAINS                  = "contains";
     String COORDINATE                = "Coordinate";
+    String COPY                      = "(COPY)";
     String CORE                      = "CoRE";
     String CORE_ANIMATION_SOFTWARE   = "CoRE Animation Software";
     String CORE_MODEL                = "CoRE Model";
     String CORE_USER                 = "CoRE User";
+    String DAYS                      = "days";
     String DEVELOPED                 = "developed";
     String DEVELOPED_BY              = "developed-by";
     String EQUALS                    = "=";
@@ -1874,8 +1927,9 @@ public interface WellKnownObject {
     String HAS_MEMBER                = "has-member";
     String HAS_VERSION               = "has-version";
     String HEAD_OF                   = "head-of";
-    String IMPORTS                   = "imports";
+    String HOURS                     = "Hours";
     String IMPORTED_BY               = "imported by";
+    String IMPORTS                   = "imports";
     String IN_WORKSPACE              = "in-workspace";
     String INCLUDES                  = "includes";
     String INVERSE_SOFTWARE          = "Inverse Software";
@@ -1892,13 +1946,11 @@ public interface WellKnownObject {
     String MAPS_TO_LOCATION          = "maps-to-location";
     String MEMBER                    = "member";
     String MEMBER_OF                 = "member-of";
-    String MILLISECONDS              = "Milliseonds";
     String MICROSECONDS              = "Microseconds";
-    String NANOSECONDS               = "Nanoseconds";
-    String SECONDS                   = "Seconds";
+    String MILLISECONDS              = "Milliseonds";
     String MINUTES                   = "Minutes";
-    String HOURS                     = "Hours";
-    String DAYS                      = "days";
+    String NAMESPACE                 = "namespace";
+    String NANOSECONDS               = "Nanoseconds";
     String NOT_APPLICABLE            = "(N/A)";
     String OWNED_BY                  = "ownedBy";
     String OWNS                      = "owns";
@@ -1907,6 +1959,7 @@ public interface WellKnownObject {
     String PROTOTYPE                 = "prototype";
     String PROTOTYPE_OF              = "prototype-of";
     String SAME                      = "(SAME)";
+    String SECONDS                   = "Seconds";
     String SPECIAL_SYSTEM_AGENCY     = "Special System Agency";
     String SPECIAL_SYSTEM_EVENT      = "Special System Event";
     String SUPER_USER                = "CoRE Super User";

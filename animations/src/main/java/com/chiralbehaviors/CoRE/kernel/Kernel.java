@@ -141,6 +141,8 @@ public interface Kernel {
 
     Unit getMinutes();
 
+    Attribute getNamespaceAttribute();
+
     Unit getNanoseconds();
 
     Agency getNotApplicableAgency();

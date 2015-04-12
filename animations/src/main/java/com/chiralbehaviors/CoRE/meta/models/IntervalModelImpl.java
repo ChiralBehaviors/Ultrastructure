@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -21,11 +21,12 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -107,9 +108,10 @@ public class IntervalModelImpl
     @Override
     public Facet<Interval, IntervalAttribute> create(String name,
                                                      String description,
-                                                     Aspect<Interval> aspect) {
+                                                     Aspect<Interval> aspect,
+                                                     Agency updatedBy) {
         return create(name, description, null, kernel.getNotApplicableUnit(),
-                      aspect);
+                      aspect, updatedBy);
     }
 
     /*
@@ -122,7 +124,7 @@ public class IntervalModelImpl
     @SafeVarargs
     @Override
     public final Interval create(String name, String description,
-                                 Aspect<Interval> aspect,
+                                 Aspect<Interval> aspect, Agency updatedBy,
                                  Aspect<Interval>... aspects) {
         Interval agency = new Interval(name, BigDecimal.valueOf(0),
                                        kernel.getNotApplicableUnit(),
@@ -130,10 +132,10 @@ public class IntervalModelImpl
                                        kernel.getNotApplicableUnit(),
                                        description, kernel.getCoreModel());
         em.persist(agency);
-        initialize(agency, aspect);
+        initialize(agency, aspect, updatedBy);
         if (aspects != null) {
             for (Aspect<Interval> a : aspects) {
-                initialize(agency, a);
+                initialize(agency, a, updatedBy);
             }
         }
         return agency;
@@ -148,9 +150,10 @@ public class IntervalModelImpl
                                                      BigDecimal start,
                                                      Unit startUnit,
                                                      Aspect<Interval> aspect,
+                                                     Agency updatedBy,
                                                      @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
         return create(name, description, start, startUnit, null,
-                      kernel.getNotApplicableUnit(), aspect, aspects);
+                      kernel.getNotApplicableUnit(), aspect, updatedBy, aspects);
     }
 
     /* (non-Javadoc)
@@ -164,14 +167,15 @@ public class IntervalModelImpl
                                                      BigDecimal duration,
                                                      Unit durationUnit,
                                                      Aspect<Interval> aspect,
+                                                     Agency updatedBy,
                                                      @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
         Interval interval = new Interval(name, start, startUnit, duration,
-                                         durationUnit, description,
-                                         kernel.getCoreModel());
+                                         durationUnit, description, updatedBy);
         em.persist(interval);
         return new Facet<Interval, IntervalAttribute>(aspect, interval,
                                                       initialize(interval,
-                                                                 aspect)) {
+                                                                 aspect,
+                                                                 updatedBy)) {
         };
     }
 
@@ -199,24 +203,15 @@ public class IntervalModelImpl
         return interval;
     }
 
-    /**
-     * @param agency
-     * @param aspect
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
      */
-    protected List<IntervalAttribute> initialize(Interval agency,
-                                                 Aspect<Interval> aspect) {
-        agency.link(aspect.getClassification(), aspect.getClassifier(),
-                    kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        List<IntervalAttribute> attributes = new ArrayList<>();
-        for (IntervalAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            IntervalAttribute attribute = new IntervalAttribute(
-                                                                authorization.getAuthorizedAttribute(),
-                                                                kernel.getCoreModel());
-            attributes.add(attribute);
-            attribute.setInterval(agency);
-            defaultValue(attribute);
-            em.persist(attribute);
-        }
-        return attributes;
+    @Override
+    protected IntervalAttribute create(Interval ruleform,
+                                       ClassifiedAttributeAuthorization<Interval> authorization,
+                                       Agency updatedBy) {
+        return new IntervalAttribute(ruleform,
+                                     authorization.getAuthorizedAttribute(),
+                                     updatedBy);
     }
 }

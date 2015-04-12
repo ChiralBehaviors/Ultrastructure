@@ -30,6 +30,7 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.internal.SessionImpl;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
@@ -286,6 +287,36 @@ public class Animations implements Triggers {
         return model;
     }
 
+    public void inferNetworks(ExistentialRuleform<?, ?> ruleform) {
+        switch (ruleform.getClass().getSimpleName()) {
+            case "Agency":
+                inferAgencyNetwork = true;
+                return;
+            case "Attribute":
+                inferAttributeNetwork = true;
+                return;
+            case "Interval":
+                inferIntervalNetwork = true;
+                return;
+            case "Location":
+                inferLocationNetwork = true;
+                return;
+            case "Relationship":
+                inferRelationshipNetwork = true;
+                return;
+            case "StatusCode":
+                inferStatusCodeNetwork = true;
+                return;
+            case "Unit":
+                inferUnitNetwork = true;
+                return;
+            default:
+                throw new IllegalArgumentException(
+                                                   String.format("Unknown Existential Entity type: %s",
+                                                                 ruleform));
+        }
+    }
+
     public void log(StatusCodeSequencing scs) {
         modifiedServices.add(scs.getService());
     }
@@ -400,10 +431,6 @@ public class Animations implements Triggers {
     @Override
     public void persist(UnitNetwork u) {
         inferUnitNetwork = true;
-    }
-
-    public void refreshWorkspaces() {
-        model.refreshWorkspaces();
     }
 
     public void rollback() {

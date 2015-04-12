@@ -373,8 +373,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public void link(Relationship r, Unit child, Agency updatedBy,
-                     Agency inverseSoftware, EntityManager em) {
+    public UnitNetwork link(Relationship r, Unit child, Agency updatedBy,
+                            Agency inverseSoftware, EntityManager em) {
         assert r != null : "Relationship cannot be null";
         assert child != null;
         assert updatedBy != null;
@@ -385,6 +385,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         UnitNetwork inverse = new UnitNetwork(child, r.getInverse(), this,
                                               inverseSoftware);
         em.persist(inverse);
+        return link;
     }
 
     public void setAbbreviation(String abbreviation) {

@@ -20,13 +20,14 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
@@ -77,11 +78,13 @@ public class UnitModelImpl
      */
     @Override
     public Facet<Unit, UnitAttribute> create(String name, String description,
-                                             Aspect<Unit> aspect) {
+                                             Aspect<Unit> aspect,
+                                             Agency updatedBy) {
         Unit unit = new Unit(name, description, kernel.getCoreModel());
         em.persist(unit);
-        return new Facet<Unit, UnitAttribute>(aspect, unit, initialize(unit,
-                                                                       aspect)) {
+        return new Facet<Unit, UnitAttribute>(aspect, unit,
+                                              initialize(unit, aspect,
+                                                         updatedBy)) {
         };
     }
 
@@ -95,13 +98,14 @@ public class UnitModelImpl
     @SafeVarargs
     @Override
     public final Unit create(String name, String description,
-                             Aspect<Unit> aspect, Aspect<Unit>... aspects) {
+                             Aspect<Unit> aspect, Agency updatedBy,
+                             Aspect<Unit>... aspects) {
         Unit agency = new Unit(name, description, kernel.getCoreModel());
         em.persist(agency);
-        initialize(agency, aspect);
+        initialize(agency, aspect, updatedBy);
         if (aspects != null) {
             for (Aspect<Unit> a : aspects) {
-                initialize(agency, a);
+                initialize(agency, a, updatedBy);
             }
         }
         return agency;
@@ -155,23 +159,12 @@ public class UnitModelImpl
         return query.getResultList();
     }
 
-    /**
-     * @param agency
-     * @param aspect
-     */
-    protected List<UnitAttribute> initialize(Unit agency, Aspect<Unit> aspect) {
-        agency.link(aspect.getClassification(), aspect.getClassifier(),
-                    kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        List<UnitAttribute> attributes = new ArrayList<>();
-        for (UnitAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            UnitAttribute attribute = new UnitAttribute(
-                                                        authorization.getAuthorizedAttribute(),
-                                                        kernel.getCoreModel());
-            attributes.add(attribute);
-            attribute.setUnit(agency);
-            defaultValue(attribute);
-            em.persist(attribute);
-        }
-        return attributes;
+    @Override
+    protected UnitAttribute create(Unit ruleform,
+                                   ClassifiedAttributeAuthorization<Unit> authorization,
+                                   Agency updatedBy) {
+        return new UnitAttribute(authorization.getAuthorizedAttribute(),
+                                 updatedBy);
     }
+
 }

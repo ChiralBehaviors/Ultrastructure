@@ -134,6 +134,12 @@ public class StatusCodeNetwork extends NetworkRuleform<StatusCode> {
         triggers.delete(this);
     }
 
+    @Override
+    @JsonIgnore
+    public Class<?> getAttributeClass() {
+        return StatusCodeNetworkAttribute.class;
+    }
+
     /*
      * (non-Javadoc)
      *

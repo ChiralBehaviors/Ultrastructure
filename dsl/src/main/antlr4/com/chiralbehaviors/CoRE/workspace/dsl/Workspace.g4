@@ -218,7 +218,7 @@ childJob:
     ;
 
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
-QuotedText: '"'(' ' | '!' |'#'.. '~')+ '"';
+QuotedText: '"' (' ' | '!' |'#'.. '~')+ '"'; 
 Boolean: ('true'|'false');
 Number: ('0'..'9')+;
  

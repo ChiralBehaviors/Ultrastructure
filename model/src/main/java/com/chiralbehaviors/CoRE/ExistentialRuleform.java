@@ -62,8 +62,8 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     public static final String INFERENCE_STEP_FROM_LAST_PASS_SUFFIX                          = ".inferenceStepFromLastPass";
     public static final String INFERENCE_STEP_SUFFIX                                         = ".inference";
     public static final String INSERT_DEDUCTIONS_SUFFIX                                      = ".insertDeductions";
-    public static final String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";
     public static final String INSERT_INVERSES_SUFFIX                                        = ".insertInverses";
+    public static final String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";
     public static final String USED_RELATIONSHIPS_SUFFIX                                     = ".getUsedRelationships";
 
     private static final long  serialVersionUID                                              = 1L;
@@ -187,8 +187,9 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     @JsonIgnore
     public abstract boolean isSame();
 
-    abstract public void link(Relationship r, RuleForm child, Agency updatedBy,
-                              Agency inverseSoftware, EntityManager em);
+    abstract public Network link(Relationship r, RuleForm child,
+                                 Agency updatedBy, Agency inverseSoftware,
+                                 EntityManager em);
 
     /**
      * @param description

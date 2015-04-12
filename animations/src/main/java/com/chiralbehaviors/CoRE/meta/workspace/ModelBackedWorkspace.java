@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.meta.models;
+package com.chiralbehaviors.CoRE.meta.workspace;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +34,6 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -55,7 +54,7 @@ public class ModelBackedWorkspace extends DatabaseBackedWorkspace {
     private final Model model;
 
     public ModelBackedWorkspace(Product definingProduct, Model model) {
-        super(definingProduct, model.getEntityManager());
+        super(definingProduct, model);
         this.model = model;
     }
 
@@ -76,7 +75,7 @@ public class ModelBackedWorkspace extends DatabaseBackedWorkspace {
                                                  cb.equal(workspaceAuthRoot.get(WorkspaceAuthorization.getWorkspaceAuthorizationColumnName(ruleform.getAttributeValueClass())),
                                                           attributeRoot),
                                                  cb.equal(workspaceAuthRoot.get(WorkspaceAuthorization_.definingProduct),
-                                                          definingProduct)));
+                                                          getDefiningProduct())));
         TypedQuery<Value> q = model.getEntityManager().createQuery(query);
         return q.getResultList();
     }
@@ -92,7 +91,7 @@ public class ModelBackedWorkspace extends DatabaseBackedWorkspace {
         Path<RuleForm> childPath = networkRoot.get("child");
         Path<Product> definingProductPath = workspaceAuthRoot.get(WorkspaceAuthorization_.definingProduct);
         query.select(childPath).where(cb.and(cb.equal(definingProductPath,
-                                                      definingProduct),
+                                                      getDefiningProduct()),
                                              cb.equal(workspaceAuthRoot.get(parent.getNetworkWorkspaceAuthAttribute()),
                                                       networkRoot),
                                              cb.equal(networkRoot.get("parent"),
@@ -115,7 +114,7 @@ public class ModelBackedWorkspace extends DatabaseBackedWorkspace {
         Path<RuleForm> parentPath = networkRoot.get("parent");
         Path<Product> definingProductPath = workspaceAuthRoot.get(WorkspaceAuthorization_.definingProduct);
         query.select(parentPath).where(cb.and(cb.equal(definingProductPath,
-                                                       definingProduct),
+                                                       getDefiningProduct()),
                                               cb.equal(workspaceAuthRoot.get(child.getNetworkWorkspaceAuthAttribute()),
                                                        networkRoot),
                                               cb.equal(networkRoot.get("child"),

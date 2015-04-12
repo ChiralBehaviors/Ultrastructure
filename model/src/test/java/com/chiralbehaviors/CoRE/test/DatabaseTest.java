@@ -40,10 +40,19 @@ import org.junit.BeforeClass;
  * 
  */
 abstract public class DatabaseTest {
+    private static final String           SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
     protected static Connection           connection;
     protected static EntityManager        em;
-    private static final String           SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
     protected static EntityManagerFactory emf;
+
+    @AfterClass
+    public static void afterClass() {
+        if (em != null && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+            em.clear();
+            em.close();
+        }
+    }
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -63,29 +72,6 @@ abstract public class DatabaseTest {
         r.close();
         alterAllTriggers(true);
         em.getTransaction().commit();
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        if (em != null && em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-            em.clear();
-            em.close();
-        }
-    }
-
-    @Before
-    public void before() {
-        beginTransaction();
-        em.clear();
-    }
-
-    @After
-    public void after() {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
-        }
-        em.clear();
     }
 
     protected static void alterAllTriggers(boolean enable) throws SQLException {
@@ -111,5 +97,19 @@ abstract public class DatabaseTest {
      */
     protected static final void commitTransaction() {
         em.getTransaction().commit();
+    }
+
+    @After
+    public void after() {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
+        }
+        em.clear();
+    }
+
+    @Before
+    public void before() {
+        beginTransaction();
+        em.clear();
     }
 }

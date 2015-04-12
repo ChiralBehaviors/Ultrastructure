@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -131,6 +131,12 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @Override
     public void delete(Triggers triggers) {
         triggers.delete(this);
+    }
+
+    @Override
+    @JsonIgnore
+    public Class<?> getAttributeClass() {
+        return UnitNetworkAttribute.class;
     }
 
     /*

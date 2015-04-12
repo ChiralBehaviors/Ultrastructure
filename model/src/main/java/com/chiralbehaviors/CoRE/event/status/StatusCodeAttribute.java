@@ -54,11 +54,6 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
                                                   + GET_ATTRIBUTE_SUFFIX;
     private static final long  serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute          attribute;
-
     // bi-directional many-to-one association to StatusCode
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
@@ -74,10 +69,6 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
 
     public StatusCodeAttribute(Attribute attribute) {
         super(attribute);
-    }
-
-    public StatusCodeAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
     }
 
     public StatusCodeAttribute(Attribute attribute, BigDecimal value,
@@ -103,13 +94,14 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         super(attribute, unit);
     }
 
-    public StatusCodeAttribute(UUID id) {
-        super(id);
+    public StatusCodeAttribute(StatusCode statusCode, Attribute attribute,
+                               Agency updatedBy) {
+        super(attribute, updatedBy);
+        setStatusCode(statusCode);
     }
 
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
+    public StatusCodeAttribute(UUID id) {
+        super(id);
     }
 
     /*
@@ -145,11 +137,6 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, StatusCodeAttribute> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.statusCodeAttribute;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
     }
 
     public void setStatusCode(StatusCode interval) {

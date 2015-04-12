@@ -23,7 +23,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -73,6 +72,7 @@ public class ModelImpl implements Model {
     }
 
     private final AgencyModel       agencyModel;
+    private final Animations        animations;
     private final AttributeModel    attributeModel;
     private final EntityManager     em;
     private final IntervalModel     intervalModel;
@@ -84,13 +84,12 @@ public class ModelImpl implements Model {
     private final StatusCodeModel   statusCodeModel;
     private final UnitModel         unitModel;
     private final WorkspaceModel    workspaceModel;
-    private final List<Workspace>   workspaces = new ArrayList<>();
 
     public ModelImpl(EntityManagerFactory emf) {
         EntityManager entityManager = emf.createEntityManager();
-        em = new EmWrapper(new Animations(this, entityManager), entityManager);
-        Workspace kernelWorkspace = KernelUtil.getKernelWorkspace(entityManager);
-        register(kernelWorkspace);
+        animations = new Animations(this, entityManager);
+        em = new EmWrapper(animations, entityManager);
+        Workspace kernelWorkspace = KernelUtil.getKernelWorkspace(this);
         kernelWorkspace.replaceFrom(em);
         kernel = kernelWorkspace.getAccessor(Kernel.class);
         attributeModel = new AttributeModelImpl(this);
@@ -103,14 +102,6 @@ public class ModelImpl implements Model {
         statusCodeModel = new StatusCodeModelImpl(this);
         unitModel = new UnitModelImpl(this);
         workspaceModel = new WorkspaceModelImpl(this);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#deregister(com.chiralbehaviors.CoRE.workspace.Workspace)
-     */
-    @Override
-    public void deregister(Workspace workspace) {
-        workspaces.remove(workspace);
     }
 
     /*
@@ -371,17 +362,7 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public void refreshWorkspaces() {
-        for (Workspace workspace : workspaces) {
-            workspace.refreshFrom(em);
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#register(com.chiralbehaviors.CoRE.workspace.Workspace)
-     */
-    @Override
-    public void register(Workspace workspace) {
-        workspaces.add(workspace);
+    public void inferNetworks(ExistentialRuleform<?, ?> ruleform) {
+        animations.inferNetworks(ruleform);
     }
 }

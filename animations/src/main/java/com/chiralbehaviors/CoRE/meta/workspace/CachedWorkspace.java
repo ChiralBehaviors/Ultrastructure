@@ -23,12 +23,12 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
@@ -45,8 +45,8 @@ public class CachedWorkspace extends DatabaseBackedWorkspace {
      * @param definingProduct
      * @param em
      */
-    public CachedWorkspace(Product definingProduct, EntityManager em) {
-        super(definingProduct, em);
+    public CachedWorkspace(Product definingProduct, Model model) {
+        super(definingProduct, model);
         cache();
     }
 
@@ -65,7 +65,7 @@ public class CachedWorkspace extends DatabaseBackedWorkspace {
         query.select(from).where(cb.and(cb.notEqual(from.get(WorkspaceAuthorization_.key),
                                                     null),
                                         cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
-                                                 definingProduct)));
+                                                 getDefiningProduct())));
         for (WorkspaceAuthorization auth : em.createQuery(query).getResultList()) {
             cache.put(auth.getKey(), auth.getRuleform());
         }

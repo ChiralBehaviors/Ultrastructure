@@ -426,8 +426,9 @@ public class Relationship extends
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public void link(Relationship r, Relationship child, Agency updatedBy,
-                     Agency inverseSoftware, EntityManager em) {
+    public RelationshipNetwork link(Relationship r, Relationship child,
+                                    Agency updatedBy, Agency inverseSoftware,
+                                    EntityManager em) {
         assert r != null : "Relationship cannot be null";
         assert child != null;
         assert updatedBy != null;
@@ -441,6 +442,7 @@ public class Relationship extends
                                                               this,
                                                               inverseSoftware);
         em.persist(inverse);
+        return link;
     }
 
     @SuppressWarnings("unchecked")

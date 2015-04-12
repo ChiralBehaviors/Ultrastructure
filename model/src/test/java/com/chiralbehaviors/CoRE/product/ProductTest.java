@@ -127,9 +127,9 @@ public class ProductTest extends DatabaseTest {
         aminoAcids.setAbbreviation("aa");
         em.persist(aminoAcids);
 
-        ProductAttribute attribute = new ProductAttribute(length, core);
+        ProductAttribute attribute = new ProductAttribute(peptideFoo, length,
+                                                          core);
         attribute.setUnit(aminoAcids);
-        attribute.setProduct(peptideFoo);
         attribute.setNumericValue(BigDecimal.valueOf(123));
         em.persist(attribute);
 

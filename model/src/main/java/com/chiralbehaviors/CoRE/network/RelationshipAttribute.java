@@ -54,13 +54,6 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
                                                   + GET_ATTRIBUTE_SUFFIX;
     private static final long  serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to Relationship
-
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute          attribute;
-
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship       relationship;
@@ -75,10 +68,6 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
 
     public RelationshipAttribute(Attribute attribute) {
         super(attribute);
-    }
-
-    public RelationshipAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
     }
 
     public RelationshipAttribute(Attribute attribute, BigDecimal value,
@@ -105,13 +94,14 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
         super(attribute, unit);
     }
 
-    public RelationshipAttribute(UUID id) {
-        super(id);
+    public RelationshipAttribute(Relationship relationship,
+                                 Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+        setRelationship(relationship);
     }
 
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
+    public RelationshipAttribute(UUID id) {
+        super(id);
     }
 
     @JsonGetter
@@ -147,11 +137,6 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, RelationshipAttribute> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.relationshipAttribute;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
     }
 
     public void setRelationship(Relationship interval) {

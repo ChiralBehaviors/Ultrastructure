@@ -31,11 +31,10 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -47,23 +46,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "unit_network_attribute", schema = "ruleform")
 public class StatusCodeNetworkAttribute extends
-        AttributeValue<StatusCodeNetwork> {
+        NetworkAttribute<StatusCodeNetwork> {
     private static final long serialVersionUID = 1L;
-
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency")
-    private Agency            agency;
-
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute         attribute;
 
     // bi-directional many-to-one association to StatusCodeNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private StatusCodeNetwork statusCodeNetwork;
+    private StatusCodeNetwork network;
 
     public StatusCodeNetworkAttribute() {
     }
@@ -145,14 +134,8 @@ public class StatusCodeNetworkAttribute extends
         super(id);
     }
 
-    @JsonGetter
-    public Agency getAgency() {
-        return agency;
-    }
-
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
+    public StatusCodeNetwork getNetwork() {
+        return network;
     }
 
     /*
@@ -163,7 +146,7 @@ public class StatusCodeNetworkAttribute extends
      */
     @Override
     public SingularAttribute<StatusCodeNetworkAttribute, StatusCodeNetwork> getRuleformAttribute() {
-        return StatusCodeNetworkAttribute_.statusCodeNetwork;
+        return StatusCodeNetworkAttribute_.network;
     }
 
     /*
@@ -176,11 +159,6 @@ public class StatusCodeNetworkAttribute extends
         return StatusCodeNetwork.class;
     }
 
-    @JsonGetter
-    public StatusCodeNetwork getStatusCodeNetwork() {
-        return statusCodeNetwork;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */
@@ -190,16 +168,7 @@ public class StatusCodeNetworkAttribute extends
         return WorkspaceAuthorization_.statusCodeNetworkAttribute;
     }
 
-    public void setAgency(Agency agency2) {
-        agency = agency2;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
-    }
-
-    public void setStatusCodeNetwork(StatusCodeNetwork StatusCodeNetwork) {
-        statusCodeNetwork = StatusCodeNetwork;
+    public void setNetwork(StatusCodeNetwork network) {
+        this.network = network;
     }
 }

@@ -65,20 +65,21 @@ import com.hellblazer.utils.Tuple;
  */
 public class JobModelTest extends AbstractModelTest {
 
+    private static JobModel        jobModel;
+
+    private static OrderProcessing scenario;
+
     @BeforeClass
     public static void before() throws Exception {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         OrderProcessingLoader loader = new OrderProcessingLoader(model);
         loader.load();
-        scenario = loader.createWorkspace(em).getAccessor(OrderProcessing.class);
+        scenario = loader.createWorkspace(model).getAccessor(OrderProcessing.class);
         txn.commit();
         jobModel = model.getJobModel();
         // model.setLogConfiguration(Utils.getDocument(JobModelTest.class.getResourceAsStream("/test-log-db.xml")));
     }
-
-    private static JobModel        jobModel;
-    private static OrderProcessing scenario;
 
     @Override
     @After

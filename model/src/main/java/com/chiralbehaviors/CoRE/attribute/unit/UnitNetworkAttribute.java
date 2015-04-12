@@ -31,10 +31,9 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -45,23 +44,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "unit_network_attribute", schema = "ruleform")
-public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
+public class UnitNetworkAttribute extends NetworkAttribute<UnitNetwork> {
     private static final long serialVersionUID = 1L;
-
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency")
-    private Agency            agency;
-
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute         attribute;
 
     // bi-directional many-to-one association to UnitNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private UnitNetwork       UnitNetwork;
+    private UnitNetwork       network;
 
     public UnitNetworkAttribute() {
     }
@@ -142,14 +131,8 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
         super(id);
     }
 
-    @JsonGetter
-    public Agency getAgency() {
-        return agency;
-    }
-
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
+    public UnitNetwork getNetwork() {
+        return network;
     }
 
     /*
@@ -160,7 +143,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
      */
     @Override
     public SingularAttribute<UnitNetworkAttribute, UnitNetwork> getRuleformAttribute() {
-        return UnitNetworkAttribute_.UnitNetwork;
+        return UnitNetworkAttribute_.network;
     }
 
     /*
@@ -173,11 +156,6 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
         return UnitNetwork.class;
     }
 
-    @JsonGetter
-    public UnitNetwork getUnitNetwork() {
-        return UnitNetwork;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */
@@ -187,16 +165,7 @@ public class UnitNetworkAttribute extends AttributeValue<UnitNetwork> {
         return WorkspaceAuthorization_.unitNetworkAttribute;
     }
 
-    public void setAgency(Agency agency2) {
-        agency = agency2;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
-    }
-
-    public void setUnitNetwork(UnitNetwork UnitNetwork) {
-        this.UnitNetwork = UnitNetwork;
+    public void setNetwork(UnitNetwork network) {
+        this.network = network;
     }
 }

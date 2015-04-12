@@ -54,11 +54,6 @@ public class IntervalAttribute extends AttributeValue<Interval> {
                                                   + GET_ATTRIBUTE_SUFFIX;
     private static final long  serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute          attribute;
-
     // bi-directional many-to-one association to Interval
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval")
@@ -74,10 +69,6 @@ public class IntervalAttribute extends AttributeValue<Interval> {
 
     public IntervalAttribute(Attribute attribute) {
         super(attribute);
-    }
-
-    public IntervalAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
     }
 
     public IntervalAttribute(Attribute attribute, BigDecimal value,
@@ -102,13 +93,14 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         super(attribute, unit);
     }
 
-    public IntervalAttribute(UUID id) {
-        super(id);
+    public IntervalAttribute(Interval interval, Attribute attribute,
+                             Agency updatedBy) {
+        super(attribute, updatedBy);
+        setInterval(interval);
     }
 
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
+    public IntervalAttribute(UUID id) {
+        super(id);
     }
 
     @JsonGetter
@@ -144,11 +136,6 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, IntervalAttribute> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.intervalAttribute;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
     }
 
     public void setInterval(Interval interval) {

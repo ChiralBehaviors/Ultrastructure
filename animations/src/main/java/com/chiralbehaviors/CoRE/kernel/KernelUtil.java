@@ -31,6 +31,7 @@ import javax.persistence.EntityManager;
 import org.hibernate.internal.SessionImpl;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.RehydratedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
@@ -90,11 +91,12 @@ public class KernelUtil {
         loadKernel(em);
     }
 
-    public static Workspace getKernelWorkspace(EntityManager em) {
+    public static Workspace getKernelWorkspace(Model model) {
         try (InputStream is = KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)) {
             RehydratedWorkspace kernelSnapshot = readKernel(is);
             Kernel kernel = kernelSnapshot.getAccessor(Kernel.class);
-            return new DatabaseBackedWorkspace(kernel.getKernelWorkspace(), em);
+            return new DatabaseBackedWorkspace(kernel.getKernelWorkspace(),
+                                               model);
         } catch (IOException e) {
             throw new IllegalStateException("Unable to rehydrate kernel", e);
         }

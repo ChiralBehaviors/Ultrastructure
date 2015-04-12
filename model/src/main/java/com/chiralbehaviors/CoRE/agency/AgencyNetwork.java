@@ -131,6 +131,12 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     }
 
     @Override
+    @JsonIgnore
+    public Class<?> getAttributeClass() {
+        return AgencyNetworkAttribute.class;
+    }
+
+    @Override
     @JsonGetter
     public Agency getChild() {
         return child;

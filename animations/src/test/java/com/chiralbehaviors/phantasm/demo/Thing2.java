@@ -35,13 +35,13 @@ import com.chiralbehaviors.CoRE.product.Product;
 @State(facets = { @Aspect(classifier = "Thing2") }, workspace = "00000000-0000-0004-0000-000000000006")
 public interface Thing2 extends PhantasmBase<Product> {
     // 
+    @Relationship(name = "thing2Of")
+    void addFunction(Thing3 thing3);
+
+    // 
     @Relationship(name = "inThing1", singular = true)
     Thing1 getThing1();
 
     @Relationship(name = "thing2Of", intersect = { @Aspect(classifier = "Thing3") })
     List<Thing3> getThing3s();
-
-    // 
-    @Relationship(name = "thing2Of")
-    void addFunction(Thing3 thing3);
 }

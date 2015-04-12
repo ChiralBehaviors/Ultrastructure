@@ -21,6 +21,7 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.math.BigDecimal;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
@@ -42,6 +43,7 @@ public interface IntervalModel
                                               BigDecimal start,
                                               Unit startUnit,
                                               Aspect<Interval> aspect,
+                                              Agency updatedBy,
                                               @SuppressWarnings("unchecked") Aspect<Interval>... aspects);
 
     Facet<Interval, IntervalAttribute> create(String name,
@@ -51,6 +53,7 @@ public interface IntervalModel
                                               BigDecimal duration,
                                               Unit durationUnit,
                                               Aspect<Interval> aspect,
+                                              Agency updatedBy,
                                               @SuppressWarnings("unchecked") Aspect<Interval>... aspects);
 
     Interval newDefaultInterval(String name, String description);

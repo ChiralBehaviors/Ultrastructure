@@ -25,7 +25,7 @@ package com.chiralbehaviors.CoRE.phantasm.annotations;
  *
  */
 public @interface Attribute {
-    String scope() default "";
-
     String name();
+
+    String scope() default "";
 }

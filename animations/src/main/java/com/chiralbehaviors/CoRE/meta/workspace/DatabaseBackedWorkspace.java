@@ -21,7 +21,10 @@
 package com.chiralbehaviors.CoRE.meta.workspace;
 
 import java.util.AbstractList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -30,7 +33,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.ProductModel;
+import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -65,13 +75,24 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         }
     }
 
-    protected final Product       definingProduct;
-    protected final EntityManager em;
+    private final UUID             definingProduct;
+    protected final EntityManager  em;
+    protected final Model          model;
+    protected final WorkspaceScope scope;
 
-    public DatabaseBackedWorkspace(Product definingProduct, EntityManager em) {
+    public DatabaseBackedWorkspace(Product definingProduct, Model model) {
         assert definingProduct != null;
-        this.definingProduct = definingProduct;
-        this.em = em;
+        this.definingProduct = definingProduct.getId();
+        this.model = model;
+        this.em = model.getEntityManager();
+        this.scope = new WorkspaceScope(this);
+        // We need the kernel workspace to lookup workspaces, so special case the kernel
+        if (!definingProduct.getId().equals(WellKnownProduct.KERNEL_WORKSPACE.id())) {
+            for (Map.Entry<String, Product> entry : getImports().entrySet()) {
+                scope.add(entry.getKey(),
+                          model.getWorkspaceModel().getScoped(entry.getValue()).getWorkspace());
+            }
+        }
     }
 
     /* (non-Javadoc)
@@ -81,9 +102,36 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public <T extends Ruleform> void add(T ruleform) {
         WorkspaceAuthorization authorization = new WorkspaceAuthorization();
         authorization.setEntity(ruleform);
-        authorization.setDefiningProduct(definingProduct);
+        authorization.setDefiningProduct(getDefiningProduct());
         authorization.setUpdatedBy(ruleform.getUpdatedBy());
         em.persist(authorization);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#addImport(com.chiralbehaviors.CoRE.product.Product)
+     */
+    @Override
+    public void addImport(String namespace, Product workspace, Agency updatedBy) {
+        ProductModel productModel = model.getProductModel();
+        if (!productModel.isAccessible(getDefiningProduct(),
+                                       model.getKernel().getIsA(),
+                                       model.getKernel().getWorkspace())) {
+            throw new IllegalArgumentException(
+                                               String.format("Import is not classified as a Workspace: %s",
+                                                             workspace));
+        }
+        scope.add(namespace,
+                  model.getWorkspaceModel().getScoped(workspace).getWorkspace());
+        ProductNetwork link = productModel.link(getDefiningProduct(),
+                                                model.getKernel().getImports(),
+                                                workspace, updatedBy);
+        ProductNetworkAttribute attribute = new ProductNetworkAttribute(
+                                                                        model.getKernel().getNamespaceAttribute(),
+                                                                        namespace,
+                                                                        updatedBy);
+        attribute.setNetwork(link);
+        add(link);
+        add(attribute);
     }
 
     /* (non-Javadoc)
@@ -100,7 +148,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         query.select(from).where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.key),
                                                  key),
                                         cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
-                                                 definingProduct)));
+                                                 getDefiningProduct())));
         try {
             WorkspaceAuthorization authorization = em.createQuery(query).getSingleResult();
             return authorization.getEntity();
@@ -128,13 +176,41 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         query.select(from).where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.type),
                                                  ruleformClass.getSimpleName()),
                                         cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
-                                                 definingProduct)));
+                                                 getDefiningProduct())));
         return new EntityList<T>(em.createQuery(query).getResultList());
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#getImports()
+     */
+    @Override
+    public Map<String, Product> getImports() {
+        Map<String, Product> imports = new HashMap<>();
+        for (ProductNetwork link : model.getProductModel().getImmediateChildrenLinks(getDefiningProduct(),
+                                                                                     model.getKernel().getImports())) {
+            NetworkAttribute<?> attribute = model.getProductModel().getAttribute(link,
+                                                                                 model.getKernel().getNamespaceAttribute());
+            if (attribute == null) {
+                throw new IllegalStateException(
+                                                String.format("Import has no namespace attribute defined: %s",
+                                                              link));
+            }
+            imports.put(attribute.getValue(), link.getChild());
+        }
+        return imports;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#getScope()
+     */
+    @Override
+    public WorkspaceScope getScope() {
+        return scope;
     }
 
     @Override
     public WorkspaceSnapshot getSnapshot() {
-        return new WorkspaceSnapshot(definingProduct, em);
+        return new WorkspaceSnapshot(getDefiningProduct(), em);
     }
 
     /* (non-Javadoc)
@@ -143,16 +219,29 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public <T extends Ruleform> void put(String key, T ruleform) {
         WorkspaceAuthorization authorization = new WorkspaceAuthorization();
-        authorization.setDefiningProduct(definingProduct);
+        authorization.setDefiningProduct(getDefiningProduct());
         authorization.setEntity(ruleform);
         authorization.setKey(key);
         authorization.setUpdatedBy(ruleform.getUpdatedBy());
         em.persist(authorization);
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#removeImport(com.chiralbehaviors.CoRE.product.Product)
+     */
     @Override
-    public void refreshFrom(EntityManager em) {
-        // nothing to do, as we're backed by the DB
+    public void removeImport(Product workspace, Agency updatedBy) {
+        ProductModel productModel = model.getProductModel();
+        if (!productModel.isAccessible(getDefiningProduct(),
+                                       model.getKernel().getIsA(),
+                                       model.getKernel().getWorkspace())) {
+            throw new IllegalArgumentException(
+                                               String.format("Import is not classified as a Workspace: %s",
+                                                             workspace));
+        }
+        scope.remove(model.getWorkspaceModel().getScoped(workspace).getWorkspace());
+        productModel.unlink(getDefiningProduct(),
+                            model.getKernel().getImports(), workspace);
     }
 
     @Override
@@ -163,5 +252,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void retarget(EntityManager em) {
         // nothing to do, as we're backed by the DB
+    }
+
+    protected Product getDefiningProduct() {
+        return em.find(Product.class, definingProduct);
     }
 }

@@ -20,13 +20,14 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -106,11 +107,13 @@ public class ProductModelImpl
     @Override
     public Facet<Product, ProductAttribute> create(String name,
                                                    String description,
-                                                   Aspect<Product> aspect) {
+                                                   Aspect<Product> aspect,
+                                                   Agency updatedBy) {
         Product product = new Product(name, description, kernel.getCoreModel());
         em.persist(product);
         return new Facet<Product, ProductAttribute>(aspect, product,
-                                                    initialize(product, aspect)) {
+                                                    initialize(product, aspect,
+                                                               updatedBy)) {
         };
     }
 
@@ -124,14 +127,14 @@ public class ProductModelImpl
     @SafeVarargs
     @Override
     final public Product create(String name, String description,
-                                Aspect<Product> aspect,
+                                Aspect<Product> aspect, Agency updatedBy,
                                 Aspect<Product>... aspects) {
         Product product = new Product(name, description, kernel.getCoreModel());
         em.persist(product);
-        initialize(product, aspect);
+        initialize(product, aspect, updatedBy);
         if (aspects != null) {
             for (Aspect<Product> a : aspects) {
-                initialize(product, a);
+                initialize(product, a, updatedBy);
             }
         }
         return product;
@@ -154,24 +157,12 @@ public class ProductModelImpl
         return query.getResultList();
     }
 
-    /**
-     * @param product
-     * @param aspect
-     */
-    protected List<ProductAttribute> initialize(Product product,
-                                                Aspect<Product> aspect) {
-        product.link(aspect.getClassification(), aspect.getClassifier(),
-                     kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        List<ProductAttribute> attributes = new ArrayList<>();
-        for (ProductAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            ProductAttribute attribute = new ProductAttribute(
-                                                              authorization.getAuthorizedAttribute(),
-                                                              kernel.getCoreModel());
-            attributes.add(attribute);
-            attribute.setProduct(product);
-            defaultValue(attribute);
-            em.persist(attribute);
-        }
-        return attributes;
+    @Override
+    protected ProductAttribute create(Product ruleform,
+                                      ClassifiedAttributeAuthorization<Product> authorization,
+                                      Agency updatedBy) {
+        return new ProductAttribute(ruleform,
+                                    authorization.getAuthorizedAttribute(),
+                                    updatedBy);
     }
 }

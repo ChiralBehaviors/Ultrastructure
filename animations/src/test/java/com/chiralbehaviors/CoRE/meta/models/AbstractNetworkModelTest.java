@@ -397,7 +397,8 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(classifier);
         Aspect<Agency> myAspect = new Aspect<Agency>(classification, classifier);
         Agency testAgency = model.getAgencyModel().create("test agency in group",
-                                                          "test", myAspect).asRuleform();
+                                                          "test", myAspect,
+                                                          kernel.getCore()).asRuleform();
         em.persist(testAgency);
         em.flush();
         List<Agency> inGroup = model.getAgencyModel().getInGroup(classifier,

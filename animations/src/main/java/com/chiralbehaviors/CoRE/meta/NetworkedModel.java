@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -32,6 +32,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
+import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 
@@ -53,12 +54,13 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            the description of the new instance
      * @param aspect
      *            - the initial aspect of the instance
-     *
+     * @param updatedBy
      * @return the new instance
      */
     public Facet<RuleForm, AttributeType> create(String name,
                                                  String description,
-                                                 Aspect<RuleForm> aspect);
+                                                 Aspect<RuleForm> aspect,
+                                                 Agency updatedBy);
 
     /**
      * Create a new instance with the supplied aspects
@@ -67,19 +69,20 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            The name of the new instance
      * @param description
      *            the description of the new instance
+     * @param updatedBy
      * @param aspects
      *            - the initial aspects of the instance
-     *
      * @return the new instance
      */
     public RuleForm create(String name,
                            String description,
                            Aspect<RuleForm> aspect,
+                           Agency updatedBy,
                            @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
 
     /**
      * Answer the list of attribute values of the attribute on the ruleform
-     * 
+     *
      * @param attribute
      * @return
      */
@@ -149,6 +152,11 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
                                                  Aspect<RuleForm> aspect);
+
+    NetworkAttribute<?> getAttribute(Network edge, Attribute attribute);
+
+    NetworkAttribute<?> getAttribute(RuleForm parent, Relationship r,
+                                     RuleForm child, Attribute attribute);
 
     /**
      * Answer the list of attribute authorizations that are classified by the
@@ -276,6 +284,16 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     RuleForm getImmediateChild(RuleForm parent, Relationship relationship);
 
     /**
+     * 
+     * @param parent
+     * @param relationship
+     * @param child
+     * @return
+     */
+    Network getImmediateChildLink(RuleForm parent, Relationship relationship,
+                                  RuleForm child);
+
+    /**
      *
      * @param parent
      * @param relationship
@@ -283,6 +301,15 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<RuleForm> getImmediateChildren(RuleForm parent,
                                         Relationship relationship);
+
+    /**
+     *
+     * @param parent
+     * @param relationship
+     * @return
+     */
+    List<Network> getImmediateChildrenLinks(RuleForm parent,
+                                            Relationship relationship);
 
     /**
      *
@@ -325,6 +352,17 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     Collection<Relationship> getTransitiveRelationships(RuleForm parent);
 
     /**
+     * Initialize the ruleform with the classified attributes for this aspect
+     * 
+     * @param ruleform
+     * @param aspect
+     * @param updatedBy
+     * @return
+     */
+    List<AttributeType> initialize(RuleForm ruleform, Aspect<RuleForm> aspect,
+                                   Agency updatedBy);
+
+    /**
      *
      * @param parent
      * @param relationship
@@ -341,7 +379,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param child
      * @param updatedBy
      */
-    void link(RuleForm parent, Relationship r, RuleForm child, Agency updatedBy);
+    Network link(RuleForm parent, Relationship r, RuleForm child,
+                 Agency updatedBy);
 
     /**
      * Propagate the network inferences based on the tracked additions,
@@ -350,4 +389,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @throws SQLException
      */
     void propagate();
+
+    /**
+     *
+     * @param parent
+     * @param r
+     * @param child
+     */
+    void unlink(RuleForm parent, Relationship r, RuleForm child);
 }

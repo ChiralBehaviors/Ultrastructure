@@ -22,13 +22,12 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.lang.reflect.Field;
 
-import javax.persistence.EntityManager;
-
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.Relationship;
@@ -39,95 +38,95 @@ import com.chiralbehaviors.CoRE.product.Product;
  *
  */
 public class OrderProcessingWorkspace {
+    protected StatusCode   abandoned;
+    protected Product      abc486;
+    protected StatusCode   active;
+    protected Agency       anyAgency;
+    protected Location     anyLocation;
+    protected Product      anyProduct;
+    protected Relationship anyRelationship;
     protected Relationship area;
     protected Relationship areaOf;
+    protected StatusCode   available;
+    protected Location     bht37;
+    protected Agency       billingComputer;
+    protected Location     bin1;
+    protected Location     bin15;
+    protected Agency       cafleurBon;
+    protected Product      checkCredit;
+    protected Product      checkLetterOfCredit;
+    protected Product      chemB;
     protected Relationship city;
     protected Relationship cityOf;
+    protected StatusCode   completed;
+    protected Agency       core;
+    protected Agency       cpu;
+    protected Agency       creditDept;
     protected Relationship customerType;
     protected Relationship customerTypeOf;
+    protected Location     dc;
+    protected Product      deliver;
+    protected Product      discount;
+    protected Attribute    discountAttribute;
+    protected Location     east_coast;
+    protected Location     euro;
+    protected Agency       exempt;
+    protected Agency       externalCust;
+    protected Location     factory1;
+    protected Agency       factory1Agency;
+    protected StatusCode   failure;
+    protected Product      fee;
+    protected Location     france;
+    protected Product      frozen;
+    protected Agency       georgeTownUniversity;
+    protected Agency       manufacturer;
+    protected Product      nonExempt;
+    protected Agency       nonExemptAgency;
+    protected Relationship notApplicableRelationship;
+    protected Product      orderEntryWorkspace;
+    protected Agency       orderFullfillment;
+    protected Agency       orgA;
+    protected Location     paris;
+    protected Product      pick;
+    protected StatusCode   pickCompleted;
+    protected Attribute    priceAttribute;
+    protected Product      printCustomsDeclaration;
+    protected Product      printPurchaseOrder;
+    protected Location     rc31;
     protected Relationship region;
     protected Relationship regionOf;
-    protected Relationship state;
-    protected Relationship stateOf;
+    protected Product      roomTemp;
+    protected Location     rsb225;
+    protected Product      salesTax;
     protected Relationship salesTaxStatus;
     protected Relationship salesTaxStatusOf;
+    protected Product      sameProduct;
+    protected Relationship sameRelationship;
+    protected Product      ship;
+    protected Relationship state;
+    protected Relationship stateOf;
     protected Relationship storageType;
     protected Relationship storageTypeOf;
     protected Relationship street;
     protected Relationship streetOf;
-    protected Relationship notApplicableRelationship;
-    protected Relationship sameRelationship;
-    protected Relationship anyRelationship;
+    protected Attribute    taxRateAttribute;
     protected StatusCode   unset;
-    protected StatusCode   abandoned;
-    protected StatusCode   completed;
-    protected StatusCode   failure;
-    protected StatusCode   active;
-    protected StatusCode   available;
-    protected StatusCode   pickCompleted;
+    protected Location     us;
+    protected StatusCode   waitingOnCreditCheck;
     protected StatusCode   waitingOnFee;
     protected StatusCode   waitingOnPricing;
     protected StatusCode   waitingOnPurchaseOrder;
-    protected StatusCode   waitingOnCreditCheck;
-    protected Product      orderEntryWorkspace;
-    protected Product      abc486;
-    protected Product      checkCredit;
-    protected Product      checkLetterOfCredit;
-    protected Product      chemB;
-    protected Product      deliver;
-    protected Product      discount;
-    protected Product      frozen;
-    protected Product      fee;
-    protected Product      printCustomsDeclaration;
-    protected Product      printPurchaseOrder;
-    protected Product      roomTemp;
-    protected Product      pick;
-    protected Product      salesTax;
-    protected Product      ship;
-    protected Product      nonExempt;
-    protected Product      anyProduct;
-    protected Product      sameProduct;
-    protected Location     bht37;
-    protected Location     bin1;
-    protected Location     bin15;
-    protected Location     dc;
-    protected Location     east_coast;
-    protected Location     euro;
-    protected Location     france;
-    protected Location     paris;
-    protected Location     rc31;
-    protected Location     rsb225;
-    protected Location     factory1;
-    protected Location     us;
-    protected Location     anyLocation;
-    protected Agency       billingComputer;
-    protected Agency       cafleurBon;
-    protected Agency       core;
-    protected Agency       cpu;
-    protected Agency       creditDept;
-    protected Agency       exempt;
-    protected Agency       externalCust;
-    protected Agency       factory1Agency;
-    protected Agency       georgeTownUniversity;
-    protected Agency       manufacturer;
-    protected Agency       nonExemptAgency;
-    protected Agency       orderFullfillment;
-    protected Agency       orgA;
-    protected Agency       anyAgency;
-    protected Attribute    priceAttribute;
-    protected Attribute    taxRateAttribute;
-    protected Attribute    discountAttribute;
 
     public OrderProcessingWorkspace() {
         super();
     }
 
-    public Workspace createWorkspace(EntityManager em)
-                                                      throws IllegalArgumentException,
-                                                      IllegalAccessException {
+    public Workspace createWorkspace(Model model)
+                                                 throws IllegalArgumentException,
+                                                 IllegalAccessException {
         DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(
                                                                         orderEntryWorkspace,
-                                                                        em);
+                                                                        model);
         for (Field field : OrderProcessingWorkspace.class.getDeclaredFields()) {
             ExistentialRuleform<?, ?> extRuleform = (ExistentialRuleform<?, ?>) field.get(this);
             workspace.put(extRuleform.getName(), extRuleform);

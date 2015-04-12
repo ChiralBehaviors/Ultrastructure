@@ -84,7 +84,7 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     }
 
     // bi-directional many-to-one association to ProductNetworkAttribute
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "productNetwork")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "network")
     @JsonIgnore
     private Set<ProductNetworkAttribute> attributes;
 
@@ -158,6 +158,12 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @Override
     public void delete(Triggers triggers) {
         triggers.delete(this);
+    }
+
+    @Override
+    @JsonIgnore
+    public Class<?> getAttributeClass() {
+        return ProductNetworkAttribute.class;
     }
 
     @Override

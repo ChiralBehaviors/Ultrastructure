@@ -56,11 +56,6 @@ public class ProductAttribute extends AttributeValue<Product> {
                                                   + GET_ATTRIBUTE_SUFFIX;
     private static final long  serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute          attribute;
-
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
@@ -81,14 +76,6 @@ public class ProductAttribute extends AttributeValue<Product> {
      */
     public ProductAttribute(Attribute attribute) {
         super(attribute);
-    }
-
-    /**
-     * @param attribute
-     * @param updatedBy
-     */
-    public ProductAttribute(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
     }
 
     /**
@@ -137,15 +124,20 @@ public class ProductAttribute extends AttributeValue<Product> {
     }
 
     /**
+     * @param attribute
+     * @param updatedBy
+     */
+    public ProductAttribute(Product product, Attribute attribute,
+                            Agency updatedBy) {
+        super(attribute, updatedBy);
+        setProduct(product);
+    }
+
+    /**
      * @param id
      */
     public ProductAttribute(UUID id) {
         super(id);
-    }
-
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
     }
 
     @JsonGetter
@@ -181,11 +173,6 @@ public class ProductAttribute extends AttributeValue<Product> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, ProductAttribute> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.productAttribute;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
     }
 
     public void setProduct(Product product2) {

@@ -48,14 +48,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "attribute_meta_attribute", schema = "ruleform")
 public class AttributeMetaAttribute extends AttributeValue<Attribute> {
-    private static final long  serialVersionUID = 1L;
     public static final String GET_ATTRIBUTE    = "attributeMetaAttribute"
                                                   + GET_ATTRIBUTE_SUFFIX;
-
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute          attribute;
+    private static final long  serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Attribute
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -77,10 +72,13 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     }
 
     /**
+     * @param attribute
+     *            TODO
      * @param updatedBy
      */
-    public AttributeMetaAttribute(Attribute attribute, Agency updatedBy) {
-        super(updatedBy);
+    public AttributeMetaAttribute(Attribute attribute, Attribute metaAttribute,
+                                  Agency updatedBy) {
+        super(metaAttribute, updatedBy);
         setAttribute(attribute);
     }
 
@@ -115,11 +113,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
         super(id);
     }
 
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
-    }
-
     @JsonGetter
     public Attribute getMetaAttribute() {
         return metaAttribute;
@@ -150,11 +143,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttribute> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.attributeMetaAttribute;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
     }
 
     public void setMetaAttribute(Attribute attribute3) {

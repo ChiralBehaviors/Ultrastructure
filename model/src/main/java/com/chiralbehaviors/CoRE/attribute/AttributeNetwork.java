@@ -129,6 +129,12 @@ public class AttributeNetwork extends NetworkRuleform<Attribute> {
     }
 
     @Override
+    @JsonIgnore
+    public Class<?> getAttributeClass() {
+        return AttributeNetworkAttribute.class;
+    }
+
+    @Override
     @JsonGetter
     public Attribute getChild() {
         return child;

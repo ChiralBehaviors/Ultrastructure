@@ -434,13 +434,14 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     }
 
     @Override
-    public void link(Relationship r, Product child, Agency updatedBy,
-                     Agency inverseSoftware, EntityManager em) {
+    public ProductNetwork link(Relationship r, Product child, Agency updatedBy,
+                               Agency inverseSoftware, EntityManager em) {
         ProductNetwork link = new ProductNetwork(this, r, child, updatedBy);
         em.persist(link);
         ProductNetwork inverse = new ProductNetwork(child, r.getInverse(),
                                                     this, inverseSoftware);
         em.persist(inverse);
+        return link;
     }
 
     @SuppressWarnings("unchecked")

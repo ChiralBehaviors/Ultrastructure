@@ -21,6 +21,7 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.util.List;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -31,12 +32,21 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
  */
 public interface WorkspaceModel {
 
-    WorkspaceScope getScoped(Product definingProduct);
-
-    List<WorkspaceAuthorization> getWorkspace(Product definingProduct);
-
-    List<WorkspaceAuthorization> getByType(Product definingProduct, String type);
+    /**
+     * Create the workspace and return the Workspace scope defined by that
+     * workspace
+     * 
+     * @param definingProduct
+     * @param updatedBy
+     * @return
+     */
+    WorkspaceScope createWorkspace(Product definingProduct, Agency updatedBy);
 
     WorkspaceAuthorization get(Product definingProduct, String key);
 
+    List<WorkspaceAuthorization> getByType(Product definingProduct, String type);
+
+    WorkspaceScope getScoped(Product definingProduct);
+
+    List<WorkspaceAuthorization> getWorkspace(Product definingProduct);
 }

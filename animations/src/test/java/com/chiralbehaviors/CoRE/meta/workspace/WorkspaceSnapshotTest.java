@@ -30,9 +30,8 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
+import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.test.DatabaseTest;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -40,10 +39,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author hhildebrand
  *
  */
-public class WorkspaceSnapshotTest extends DatabaseTest {
+public class WorkspaceSnapshotTest extends AbstractModelTest {
 
     @Test
     public void testSerializeWorkspaceSnapshot() throws Exception {
+        em.getTransaction().begin();
         Agency pseudoScientist = new Agency("Behold the Pseudo Scientist!");
         pseudoScientist.setUpdatedBy(pseudoScientist);
         Product definingProduct = new Product("zee product", pseudoScientist);
@@ -69,6 +69,7 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
 
     @Test
     public void testWorkspaceSnapshot() {
+        em.getTransaction().begin();
         Agency pseudoScientist = new Agency("Behold the Pseudo Scientist!");
         pseudoScientist.setUpdatedBy(pseudoScientist);
         Product definingProduct = new Product("zee product", pseudoScientist);

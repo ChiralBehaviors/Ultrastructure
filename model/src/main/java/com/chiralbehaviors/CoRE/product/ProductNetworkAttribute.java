@@ -31,11 +31,10 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -46,23 +45,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "product_network_attribute", schema = "ruleform")
-public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
+public class ProductNetworkAttribute extends NetworkAttribute<ProductNetwork> {
     private static final long serialVersionUID = 1L;
-
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency")
-    private Agency            agency;
-
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute         attribute;
 
     // bi-directional many-to-one association to ProductNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private ProductNetwork    productNetwork;
+    private ProductNetwork    network;
 
     public ProductNetworkAttribute() {
     }
@@ -144,19 +133,8 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         super(id);
     }
 
-    @JsonGetter
-    public Agency getAgency() {
-        return agency;
-    }
-
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
-    }
-
-    @JsonGetter
-    public ProductNetwork getProductNetwork() {
-        return productNetwork;
+    public ProductNetwork getNetwork() {
+        return network;
     }
 
     /*
@@ -167,7 +145,7 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
      */
     @Override
     public SingularAttribute<ProductNetworkAttribute, ProductNetwork> getRuleformAttribute() {
-        return ProductNetworkAttribute_.productNetwork;
+        return ProductNetworkAttribute_.network;
     }
 
     /*
@@ -189,16 +167,7 @@ public class ProductNetworkAttribute extends AttributeValue<ProductNetwork> {
         return WorkspaceAuthorization_.productNetworkAttribute;
     }
 
-    public void setAgency(Agency agency2) {
-        agency = agency2;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
-    }
-
-    public void setProductNetwork(ProductNetwork productNetwork) {
-        this.productNetwork = productNetwork;
+    public void setNetwork(ProductNetwork network) {
+        this.network = network;
     }
 }

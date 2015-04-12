@@ -20,13 +20,14 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -105,7 +106,8 @@ public class RelationshipModelImpl
     @Override
     public Facet<Relationship, RelationshipAttribute> create(String name,
                                                              String description,
-                                                             Aspect<Relationship> aspect) {
+                                                             Aspect<Relationship> aspect,
+                                                             Agency updatedBy) {
         Relationship relationship = new Relationship(name, description,
                                                      kernel.getCoreModel());
         em.persist(relationship);
@@ -113,7 +115,8 @@ public class RelationshipModelImpl
                                                               aspect,
                                                               relationship,
                                                               initialize(relationship,
-                                                                         aspect)) {
+                                                                         aspect,
+                                                                         updatedBy)) {
         };
     }
 
@@ -128,14 +131,15 @@ public class RelationshipModelImpl
     @Override
     public final Relationship create(String name, String description,
                                      Aspect<Relationship> aspect,
+                                     Agency updatedBy,
                                      Aspect<Relationship>... aspects) {
         Relationship relationship = new Relationship(name, description,
                                                      kernel.getCoreModel());
         em.persist(relationship);
-        initialize(relationship, aspect);
+        initialize(relationship, aspect, updatedBy);
         if (aspects != null) {
             for (Aspect<Relationship> a : aspects) {
-                initialize(relationship, a);
+                initialize(relationship, a, updatedBy);
             }
         }
         return relationship;
@@ -179,24 +183,13 @@ public class RelationshipModelImpl
         return query.getResultList();
     }
 
-    /**
-     * @param agency
-     * @param aspect
-     */
-    protected List<RelationshipAttribute> initialize(Relationship agency,
-                                                     Aspect<Relationship> aspect) {
-        agency.link(aspect.getClassification(), aspect.getClassifier(),
-                    kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        List<RelationshipAttribute> attributes = new ArrayList<>();
-        for (RelationshipAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            RelationshipAttribute attribute = new RelationshipAttribute(
-                                                                        authorization.getAuthorizedAttribute(),
-                                                                        kernel.getCoreModel());
-            attributes.add(attribute);
-            attribute.setRelationship(agency);
-            defaultValue(attribute);
-            em.persist(attribute);
-        }
-        return attributes;
+    @Override
+    protected RelationshipAttribute create(Relationship ruleform,
+                                           ClassifiedAttributeAuthorization<Relationship> authorization,
+                                           Agency updatedBy) {
+        return new RelationshipAttribute(
+                                         ruleform,
+                                         authorization.getAuthorizedAttribute(),
+                                         updatedBy);
     }
 }

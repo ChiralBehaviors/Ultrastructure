@@ -31,11 +31,10 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -46,23 +45,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "location_network_attribute", schema = "ruleform")
-public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
+public class LocationNetworkAttribute extends NetworkAttribute<LocationNetwork> {
     private static final long serialVersionUID = 1L;
-
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency")
-    private Agency            agency;
-
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute         attribute;
 
     // bi-directional many-to-one association to LocationNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private LocationNetwork   LocationNetwork;
+    private LocationNetwork   network;
 
     public LocationNetworkAttribute() {
     }
@@ -144,19 +133,8 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
         super(id);
     }
 
-    @JsonGetter
-    public Agency getAgency() {
-        return agency;
-    }
-
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
-    }
-
-    @JsonGetter
-    public LocationNetwork getLocationNetwork() {
-        return LocationNetwork;
+    public LocationNetwork getNetwork() {
+        return network;
     }
 
     /*
@@ -167,7 +145,7 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
      */
     @Override
     public SingularAttribute<LocationNetworkAttribute, LocationNetwork> getRuleformAttribute() {
-        return LocationNetworkAttribute_.LocationNetwork;
+        return LocationNetworkAttribute_.network;
     }
 
     /*
@@ -189,16 +167,7 @@ public class LocationNetworkAttribute extends AttributeValue<LocationNetwork> {
         return WorkspaceAuthorization_.locationNetworkAttribute;
     }
 
-    public void setAgency(Agency agency2) {
-        agency = agency2;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
-    }
-
-    public void setLocationNetwork(LocationNetwork LocationNetwork) {
-        this.LocationNetwork = LocationNetwork;
+    public void setNetwork(LocationNetwork network) {
+        this.network = network;
     }
 }

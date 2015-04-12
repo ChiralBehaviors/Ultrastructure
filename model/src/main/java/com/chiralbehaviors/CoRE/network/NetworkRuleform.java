@@ -102,6 +102,9 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
                && getChild().equals(other.getChild());
     }
 
+    @JsonIgnore
+    abstract public Class<?> getAttributeClass();
+
     abstract public E getChild();
 
     /**

@@ -405,8 +405,9 @@ public class StatusCode extends
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public void link(Relationship r, StatusCode child, Agency updatedBy,
-                     Agency inverseSoftware, EntityManager em) {
+    public StatusCodeNetwork link(Relationship r, StatusCode child,
+                                  Agency updatedBy, Agency inverseSoftware,
+                                  EntityManager em) {
         assert r != null : "Relationship cannot be null";
         assert child != null;
         assert updatedBy != null;
@@ -419,6 +420,7 @@ public class StatusCode extends
                                                           r.getInverse(), this,
                                                           inverseSoftware);
         em.persist(inverse);
+        return link;
     }
 
     @SuppressWarnings("unchecked")

@@ -56,11 +56,6 @@ public class UnitAttribute extends AttributeValue<Unit> {
                                                   + GET_ATTRIBUTE_SUFFIX;
     private static final long  serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute          attribute;
-
     // bi-directional many-to-one association to Unit
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_rf")
@@ -106,11 +101,6 @@ public class UnitAttribute extends AttributeValue<Unit> {
         super(id);
     }
 
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -144,11 +134,6 @@ public class UnitAttribute extends AttributeValue<Unit> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, UnitAttribute> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.unitAttribute;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
     }
 
     public void setUnitRf(Unit unit) {

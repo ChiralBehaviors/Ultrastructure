@@ -52,6 +52,16 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class AbstractModelTest {
+    private static final String           SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+
+    protected static EntityManager        em;
+
+    protected static EntityManagerFactory emf;
+
+    protected static Kernel               kernel;
+
+    protected static Model                model;
+
     @AfterClass
     public static void afterClass() {
         if (em != null && em.getTransaction().isActive()) {
@@ -92,15 +102,6 @@ public class AbstractModelTest {
         EntityManager em = emf.createEntityManager();
         return em;
     }
-
-    private static final String           SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-
-    protected static Model                model;
-
-    protected static Kernel               kernel;
-    protected static EntityManager        em;
-
-    protected static EntityManagerFactory emf;
 
     public AbstractModelTest() {
         super();

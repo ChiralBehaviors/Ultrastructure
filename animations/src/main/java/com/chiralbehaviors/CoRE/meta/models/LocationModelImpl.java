@@ -20,13 +20,14 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
@@ -106,13 +107,15 @@ public class LocationModelImpl
     @Override
     public Facet<Location, LocationAttribute> create(String name,
                                                      String description,
-                                                     Aspect<Location> aspect) {
+                                                     Aspect<Location> aspect,
+                                                     Agency updatedBy) {
         Location location = new Location(name, description,
                                          kernel.getCoreModel());
         em.persist(location);
         return new Facet<Location, LocationAttribute>(aspect, location,
                                                       initialize(location,
-                                                                 aspect)) {
+                                                                 aspect,
+                                                                 updatedBy)) {
         };
     }
 
@@ -126,15 +129,15 @@ public class LocationModelImpl
     @SafeVarargs
     @Override
     public final Location create(String name, String description,
-                                 Aspect<Location> aspect,
+                                 Aspect<Location> aspect, Agency updatedBy,
                                  Aspect<Location>... aspects) {
         Location location = new Location(name, description,
                                          kernel.getCoreModel());
         em.persist(location);
-        initialize(location, aspect);
+        initialize(location, aspect, updatedBy);
         if (aspects != null) {
             for (Aspect<Location> a : aspects) {
-                initialize(location, a);
+                initialize(location, a, updatedBy);
             }
         }
         return location;
@@ -152,24 +155,15 @@ public class LocationModelImpl
         return query.getResultList();
     }
 
-    /**
-     * @param location
-     * @param aspect
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
      */
-    protected List<LocationAttribute> initialize(Location location,
-                                                 Aspect<Location> aspect) {
-        location.link(aspect.getClassification(), aspect.getClassifier(),
-                      kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        List<LocationAttribute> attributes = new ArrayList<>();
-        for (LocationAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            LocationAttribute attribute = new LocationAttribute(
-                                                                authorization.getAuthorizedAttribute(),
-                                                                kernel.getCoreModel());
-            attributes.add(attribute);
-            attribute.setLocation(location);
-            defaultValue(attribute);
-            em.persist(attribute);
-        }
-        return attributes;
+    @Override
+    protected LocationAttribute create(Location ruleform,
+                                       ClassifiedAttributeAuthorization<Location> authorization,
+                                       Agency updatedBy) {
+        return new LocationAttribute(ruleform,
+                                     authorization.getAuthorizedAttribute(),
+                                     updatedBy);
     }
 }

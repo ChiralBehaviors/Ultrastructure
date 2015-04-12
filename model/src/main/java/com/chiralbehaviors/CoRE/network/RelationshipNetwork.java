@@ -128,6 +128,12 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
         triggers.delete(this);
     }
 
+    @Override
+    @JsonIgnore
+    public Class<?> getAttributeClass() {
+        return RelationshipNetworkAttribute.class;
+    }
+
     /*
      * (non-Javadoc)
      *

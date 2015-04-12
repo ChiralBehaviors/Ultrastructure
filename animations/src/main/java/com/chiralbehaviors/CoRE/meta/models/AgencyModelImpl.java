@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,6 +31,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -107,11 +107,13 @@ public class AgencyModelImpl
     @Override
     public Facet<Agency, AgencyAttribute> create(String name,
                                                  String description,
-                                                 Aspect<Agency> aspect) {
+                                                 Aspect<Agency> aspect,
+                                                 Agency updatedBy) {
         Agency agency = new Agency(name, description, kernel.getCoreModel());
         em.persist(agency);
         return new Facet<Agency, AgencyAttribute>(aspect, agency,
-                                                  initialize(agency, aspect)) {
+                                                  initialize(agency, aspect,
+                                                             updatedBy)) {
         };
     }
 
@@ -125,13 +127,14 @@ public class AgencyModelImpl
     @SafeVarargs
     @Override
     public final Agency create(String name, String description,
-                               Aspect<Agency> aspect, Aspect<Agency>... aspects) {
+                               Aspect<Agency> aspect, Agency updatedBy,
+                               Aspect<Agency>... aspects) {
         Agency agency = new Agency(name, description, kernel.getCoreModel());
         em.persist(agency);
-        initialize(agency, aspect);
+        initialize(agency, aspect, updatedBy);
         if (aspects != null) {
             for (Aspect<Agency> a : aspects) {
-                initialize(agency, a);
+                initialize(agency, a, updatedBy);
             }
         }
         return agency;
@@ -154,24 +157,12 @@ public class AgencyModelImpl
         return query.getResultList();
     }
 
-    /**
-     * @param agency
-     * @param aspect
-     */
-    protected List<AgencyAttribute> initialize(Agency agency,
-                                               Aspect<Agency> aspect) {
-        List<AgencyAttribute> attributes = new ArrayList<>();
-        agency.link(aspect.getClassification(), aspect.getClassifier(),
-                    kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        for (AgencyAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            AgencyAttribute attribute = new AgencyAttribute(
-                                                            authorization.getAuthorizedAttribute(),
-                                                            kernel.getCoreModel());
-            attributes.add(attribute);
-            attribute.setAgency(agency);
-            defaultValue(attribute);
-            em.persist(attribute);
-        }
-        return attributes;
+    @Override
+    protected AgencyAttribute create(Agency ruleform,
+                                     ClassifiedAttributeAuthorization<Agency> authorization,
+                                     Agency updateBy) {
+        return new AgencyAttribute(ruleform,
+                                   authorization.getAuthorizedAttribute(),
+                                   updateBy);
     }
 }

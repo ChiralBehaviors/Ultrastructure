@@ -58,6 +58,6 @@ public class TestImport extends AbstractModelTest {
                                                            model);
         em.getTransaction().begin();
         importer.loadWorkspace();
-        em.getTransaction().commit();
+        em.flush();
     }
 }

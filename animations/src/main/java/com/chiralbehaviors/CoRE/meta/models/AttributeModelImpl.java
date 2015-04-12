@@ -20,16 +20,17 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -105,7 +106,8 @@ public class AttributeModelImpl
     @Override
     public Facet<Attribute, AttributeMetaAttribute> create(String name,
                                                            String description,
-                                                           Aspect<Attribute> aspect) {
+                                                           Aspect<Attribute> aspect,
+                                                           Agency updatedBy) {
 
         Attribute attribute = new Attribute(name, description,
                                             kernel.getCoreModel());
@@ -114,22 +116,23 @@ public class AttributeModelImpl
                                                             aspect,
                                                             attribute,
                                                             initialize(attribute,
-                                                                       aspect)) {
+                                                                       aspect,
+                                                                       updatedBy)) {
         };
     }
 
     @SafeVarargs
     @Override
     public final Attribute create(String name, String description,
-                                  Aspect<Attribute> aspect,
+                                  Aspect<Attribute> aspect, Agency updatedBy,
                                   Aspect<Attribute>... aspects) {
         Attribute attribute = new Attribute(name, description,
                                             kernel.getCoreModel());
         em.persist(attribute);
-        initialize(attribute, aspect);
+        initialize(attribute, aspect, updatedBy);
         if (aspects != null) {
             for (Aspect<Attribute> a : aspects) {
-                initialize(attribute, a);
+                initialize(attribute, a, updatedBy);
             }
         }
         return attribute;
@@ -152,24 +155,17 @@ public class AttributeModelImpl
         return query.getResultList();
     }
 
-    /**
-     * @param attribute
-     * @param aspect
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
      */
-    protected List<AttributeMetaAttribute> initialize(Attribute attribute,
-                                                      Aspect<Attribute> aspect) {
-        List<AttributeMetaAttribute> attrs = new ArrayList<>();
-        attribute.link(aspect.getClassification(), aspect.getClassifier(),
-                       kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        for (AttributeMetaAttributeAuthorization authorization : getAttributeAuthorizations(aspect)) {
-            AttributeMetaAttribute attr = new AttributeMetaAttribute(
-                                                                     authorization.getAuthorizedAttribute(),
-                                                                     kernel.getCoreModel());
-            attrs.add(attr);
-            attr.setAttribute(attribute);
-            defaultValue(attr);
-            em.persist(attr);
-        }
-        return attrs;
+
+    @Override
+    protected AttributeMetaAttribute create(Attribute ruleform,
+                                            ClassifiedAttributeAuthorization<Attribute> authorization,
+                                            Agency updatedBy) {
+        return new AttributeMetaAttribute(
+                                          ruleform,
+                                          authorization.getAuthorizedAttribute(),
+                                          updatedBy);
     }
 }

@@ -385,13 +385,15 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public void link(Relationship r, Location child, Agency updatedBy,
-                     Agency inverseSoftware, EntityManager em) {
+    public LocationNetwork link(Relationship r, Location child,
+                                Agency updatedBy, Agency inverseSoftware,
+                                EntityManager em) {
         LocationNetwork link = new LocationNetwork(this, r, child, updatedBy);
         em.persist(link);
         LocationNetwork inverse = new LocationNetwork(child, r.getInverse(),
                                                       this, inverseSoftware);
         em.persist(inverse);
+        return link;
     }
 
     @SuppressWarnings("unchecked")

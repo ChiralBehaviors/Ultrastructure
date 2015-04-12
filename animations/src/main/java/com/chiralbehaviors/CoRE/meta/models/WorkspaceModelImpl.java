@@ -19,16 +19,22 @@
  */
 package com.chiralbehaviors.CoRE.meta.models;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
@@ -37,10 +43,36 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
  */
 public class WorkspaceModelImpl implements WorkspaceModel {
 
-    private final EntityManager em;
+    private final EntityManager             em;
+    private final Model                     model;
+    private final Map<UUID, WorkspaceScope> scopes = new HashMap<>();
 
     public WorkspaceModelImpl(Model model) {
+        this.model = model;
         em = model.getEntityManager();
+    }
+
+    @Override
+    public WorkspaceScope createWorkspace(Product definingProduct,
+                                          Agency updatedBy) {
+        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(
+                                                                        definingProduct,
+                                                                        model);
+        workspace.add(definingProduct);
+        workspace.add(model.getProductModel().link(definingProduct,
+                                                   model.getKernel().getIsA(),
+                                                   model.getKernel().getWorkspace(),
+                                                   updatedBy));
+        for (ProductAttribute attribute : model.getProductModel().initialize(definingProduct,
+                                                                             new Aspect<Product>(
+                                                                                                 model.getKernel().getIsA(),
+                                                                                                 model.getKernel().getWorkspace()),
+                                                                             updatedBy)) {
+            workspace.add(attribute);
+        }
+        WorkspaceScope scope = workspace.getScope();
+        scopes.put(definingProduct.getId(), scope);
+        return scope;
     }
 
     @Override
@@ -67,9 +99,21 @@ public class WorkspaceModelImpl implements WorkspaceModel {
      */
     @Override
     public WorkspaceScope getScoped(Product definingProduct) {
-        return new WorkspaceScope(null, null,
-                                  new DatabaseBackedWorkspace(definingProduct,
-                                                              em));
+        WorkspaceScope cached = scopes.get(definingProduct.getId());
+        if (cached != null) {
+            return cached;
+        }
+        WorkspaceScope scope = new WorkspaceScope(
+                                                  null,
+                                                  new DatabaseBackedWorkspace(
+                                                                              definingProduct,
+                                                                              model));
+        scopes.put(definingProduct.getId(), scope);
+        for (Product workspace : model.getProductModel().getChildren(definingProduct,
+                                                                     model.getKernel().getImports())) {
+            scope.add("", getScoped(workspace).getWorkspace());
+        }
+        return scope;
     }
 
     @Override

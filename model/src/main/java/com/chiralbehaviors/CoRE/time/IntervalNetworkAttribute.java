@@ -31,11 +31,10 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -46,23 +45,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "interval_network_attribute", schema = "ruleform")
-public class IntervalNetworkAttribute extends AttributeValue<IntervalNetwork> {
+public class IntervalNetworkAttribute extends NetworkAttribute<IntervalNetwork> {
     private static final long serialVersionUID = 1L;
-
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency")
-    private Agency            agency;
-
-    // bi-directional many-to-one association to Attribute
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "attribute")
-    private Attribute         attribute;
 
     // bi-directional many-to-one association to IntervalNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private IntervalNetwork   IntervalNetwork;
+    private IntervalNetwork   network;
 
     public IntervalNetworkAttribute() {
     }
@@ -144,19 +133,8 @@ public class IntervalNetworkAttribute extends AttributeValue<IntervalNetwork> {
         super(id);
     }
 
-    @JsonGetter
-    public Agency getAgency() {
-        return agency;
-    }
-
-    @Override
-    public Attribute getAttribute() {
-        return attribute;
-    }
-
-    @JsonGetter
-    public IntervalNetwork getIntervalNetwork() {
-        return IntervalNetwork;
+    public IntervalNetwork getNetwork() {
+        return network;
     }
 
     /*
@@ -167,7 +145,7 @@ public class IntervalNetworkAttribute extends AttributeValue<IntervalNetwork> {
      */
     @Override
     public SingularAttribute<IntervalNetworkAttribute, IntervalNetwork> getRuleformAttribute() {
-        return IntervalNetworkAttribute_.IntervalNetwork;
+        return IntervalNetworkAttribute_.network;
     }
 
     /*
@@ -189,16 +167,7 @@ public class IntervalNetworkAttribute extends AttributeValue<IntervalNetwork> {
         return WorkspaceAuthorization_.intervalNetworkAttribute;
     }
 
-    public void setAgency(Agency agency2) {
-        agency = agency2;
-    }
-
-    @Override
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
-    }
-
-    public void setIntervalNetwork(IntervalNetwork IntervalNetwork) {
-        this.IntervalNetwork = IntervalNetwork;
+    public void setNetwork(IntervalNetwork network) {
+        this.network = network;
     }
 }

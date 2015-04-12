@@ -91,6 +91,7 @@
             <column name="relationship_attribute" type="uuid" />
             <column name="relationship_attribute_authorization" type="uuid" />
             <column name="relationship_network" type="uuid" />
+            <column name="relationship_network_attribute" type="uuid" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_fkey"
@@ -318,6 +319,10 @@
             baseColumnNames="relationship_network" baseTableName="workspace_authorization" constraintName="workspace_authorization_relationship_network_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship_network" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship_network_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_relationship_network_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship_network_attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="workspace_authorization" constraintName="workspace_authorization_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"

@@ -29,7 +29,6 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 
 /**
@@ -39,13 +38,6 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
  *
  */
 public interface Model {
-
-    /**
-     * Deregister the workspace with the model
-     *
-     * @param workspace
-     */
-    void deregister(Workspace workspace);
 
     /**
      * Find the ruleform instances that match the supplied attribute
@@ -167,15 +159,10 @@ public interface Model {
     WorkspaceModel getWorkspaceModel();
 
     /**
-     * Refresh the workspaces - i.e. retarget to the em
+     * Infer networks for the existential ruleform
+     * 
+     * @param ruleform
      */
-    void refreshWorkspaces();
-
-    /**
-     * Register the workspace with the model to be refreshed on commmit
-     *
-     * @param workspace
-     */
-    void register(Workspace workspace);
+    void inferNetworks(ExistentialRuleform<?, ?> ruleform);
 
 }

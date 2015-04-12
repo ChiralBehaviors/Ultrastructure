@@ -132,6 +132,12 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     }
 
     @Override
+    @JsonIgnore
+    public Class<?> getAttributeClass() {
+        return LocationNetworkAttribute.class;
+    }
+
+    @Override
     @JsonGetter
     public Location getChild() {
         return child;

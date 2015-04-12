@@ -261,6 +261,8 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("PasswordHashAttribute",
                  find(WellKnownAttribute.PASSWORD_HASH), core, kernelWorkspace);
+        populate("NamespaceAttribute", find(WellKnownAttribute.NAMESPACE),
+                 core, kernelWorkspace);
 
         populate("AnyProduct", find(WellKnownProduct.ANY), core,
                  kernelWorkspace);

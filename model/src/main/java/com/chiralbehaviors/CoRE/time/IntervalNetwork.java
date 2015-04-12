@@ -127,6 +127,12 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         triggers.delete(this);
     }
 
+    @Override
+    @JsonIgnore
+    public Class<?> getAttributeClass() {
+        return IntervalNetworkAttribute.class;
+    }
+
     /*
      * (non-Javadoc)
      *

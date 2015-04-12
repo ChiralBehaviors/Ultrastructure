@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
@@ -81,20 +82,29 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#getImports()
+     */
+    @Override
+    public Map<String, Product> getImports() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#getScope()
+     */
+    @Override
+    public WorkspaceScope getScope() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.workspace.Workspace#getSnapshot()
      */
     @Override
     public WorkspaceSnapshot getSnapshot() {
         return this;
-    }
-
-    @Override
-    public void refreshFrom(EntityManager em) {
-        for (WorkspaceAuthorization auth : auths) {
-            em.getEntityManagerFactory().getCache().evict(WorkspaceAuthorization.class,
-                                                          auth.getId());
-            em.refresh(auth);
-        }
     }
 
     @Override

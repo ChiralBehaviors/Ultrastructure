@@ -391,13 +391,15 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public void link(Relationship r, Attribute child, Agency updatedBy,
-                     Agency inverseSoftware, EntityManager em) {
+    public AttributeNetwork link(Relationship r, Attribute child,
+                                 Agency updatedBy, Agency inverseSoftware,
+                                 EntityManager em) {
         AttributeNetwork link = new AttributeNetwork(this, r, child, updatedBy);
         em.persist(link);
         AttributeNetwork inverse = new AttributeNetwork(child, r.getInverse(),
                                                         this, inverseSoftware);
         em.persist(inverse);
+        return link;
     }
 
     @SuppressWarnings("unchecked")

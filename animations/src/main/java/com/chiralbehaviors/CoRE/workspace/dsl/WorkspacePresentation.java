@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +40,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencings
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
-import com.hellblazer.utils.Tuple;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceDefinitionContext;
 
 /**
  * @author hhildebrand
@@ -100,16 +99,11 @@ public class WorkspacePresentation {
                                : children.childSequencing();
     }
 
-    public List<Tuple<String, String>> getImports() {
+    public List<ImportedWorkspaceContext> getImports() {
         if (context.imports == null) {
             return Collections.emptyList();
         }
-        List<Tuple<String, String>> imports = new ArrayList<>();
-        for (ImportedWorkspaceContext wsp : context.imports.importedWorkspace()) {
-            imports.add(new Tuple<String, String>(wsp.uri.getText(),
-                                                  wsp.namespace.getText()));
-        }
-        return imports;
+        return context.imports.importedWorkspace();
     }
 
     public List<EdgeContext> getInferences() {
@@ -275,9 +269,7 @@ public class WorkspacePresentation {
         return context.units.unit();
     }
 
-    public Tuple<String, String> getWorkspaceDefinition() {
-        return new Tuple<String, String>(
-                                         context.definition.name.getText(),
-                                         context.definition.description.getText());
+    public WorkspaceDefinitionContext getWorkspaceDefinition() {
+        return context.definition;
     }
 }

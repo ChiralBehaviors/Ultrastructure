@@ -1,5 +1,7 @@
 workspace: "Order Entry" "Pricing example for CACM 1995 Ultrastructure article"
-
+imports {
+    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+}
 relationships {
     derivedFrom = "Derived From" "A is derived from B" | derivativeOf = "Derivative Of" "A is a derivative of B";
     inThing1 = "In Thing 1" "A is part of a thing1" | thing1Of = "Thing 1 Of" "A is the thing 1 of B";

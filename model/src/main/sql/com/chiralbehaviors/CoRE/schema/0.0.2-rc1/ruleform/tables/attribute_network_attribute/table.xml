@@ -13,9 +13,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="attribute_network_attribute_pkey" />
             </column>
-            <column name="agency" remarks="The agency that the information in this rule comes from" type="uuid">
-                <constraints nullable="false" />
-            </column>
+            <column name="agency" remarks="The agency that the information in this rule comes from" type="uuid" />
             <column name="network_rule" remarks="The agency Network rule whose attribute is being defined" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -31,7 +29,9 @@
             <column name="binary_value" type="BYTEA" />
             <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="uuid" />
             <column name="notes" remarks="Miscellaneous notes about this rule" type="TEXT" />
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule"
+                type="uuid"
+            >
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

@@ -544,17 +544,18 @@ public class WorkspaceImporter {
     }
 
     private void processImports() {
-        for (ImportedWorkspaceContext workspace : wsp.getImports()) {
-            String uri = stripQuotes(workspace.uri.getText());
+        for (ImportedWorkspaceContext w : wsp.getImports()) {
+            String uri = stripQuotes(w.uri.getText());
             if (!uri.startsWith(URN_UUID)) {
                 throw new IllegalStateException(
                                                 String.format("Only support import URIs of form urn:uuid:<uuid>: %s",
                                                               uri));
             }
             UUID uuid = UUID.fromString(uri.substring(URN_UUID.length()));
-            scope.add(workspace.namespace.getText(),
-                      model.getWorkspaceModel().getScoped(model.getEntityManager().find(Product.class,
-                                                                                        uuid)).getWorkspace());
+            workspace.addImport(w.namespace.getText(),
+                                model.getEntityManager().find(Product.class,
+                                                              uuid),
+                                model.getKernel().getCore());
         }
     }
 

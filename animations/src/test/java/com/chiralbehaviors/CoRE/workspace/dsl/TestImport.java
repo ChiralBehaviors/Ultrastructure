@@ -61,7 +61,7 @@ public class TestImport extends AbstractModelTest {
                                                            model);
         em.getTransaction().begin();
         importer.loadWorkspace();
-        em.flush();
+        em.getTransaction().commit();
         DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(
                                                                         importer.getWorkspace().getDefiningProduct(),
                                                                         model);

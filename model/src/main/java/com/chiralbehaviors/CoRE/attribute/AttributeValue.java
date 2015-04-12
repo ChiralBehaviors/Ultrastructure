@@ -334,4 +334,10 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s]: %s", getClass().getSimpleName(),
+                             getAttribute().getName(), getValue());
+    }
 }

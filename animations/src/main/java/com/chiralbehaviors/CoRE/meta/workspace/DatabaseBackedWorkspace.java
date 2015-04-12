@@ -49,7 +49,6 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
  *
  */
 public class DatabaseBackedWorkspace implements EditableWorkspace {
-
     public class EntityList<T extends Ruleform> extends AbstractList<T> {
         private final List<WorkspaceAuthorization> backingList;
 
@@ -76,6 +75,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     }
 
     private final UUID             definingProduct;
+
     protected final EntityManager  em;
     protected final Model          model;
     protected final WorkspaceScope scope;
@@ -130,6 +130,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                                         namespace,
                                                                         updatedBy);
         attribute.setNetwork(link);
+        em.persist(attribute);
         add(link);
         add(attribute);
     }
@@ -257,5 +258,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void retarget(EntityManager em) {
         // nothing to do, as we're backed by the DB
+    }
+
+    @Override
+    public String toString() {
+        return String.format("DatabaseBackedWorkspace[%s]",
+                             getDefiningProduct().getName());
     }
 }

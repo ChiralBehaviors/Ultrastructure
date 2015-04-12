@@ -22,17 +22,26 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.StringArgGenerator;
+import com.fasterxml.uuid.impl.NameBasedGenerator;
 
 /**
  * @author hhildebrand
  *
  */
 public interface Workspace {
+    final StringArgGenerator URL_UUID_GENERATOR = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL);
+
+    static UUID uuidOf(String url) {
+        return URL_UUID_GENERATOR.generate(url);
+    }
 
     <T extends Ruleform> T get(String key);
 

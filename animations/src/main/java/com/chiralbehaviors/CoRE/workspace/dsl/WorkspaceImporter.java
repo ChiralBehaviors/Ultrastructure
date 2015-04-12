@@ -123,10 +123,18 @@ public class WorkspaceImporter {
     }
 
     private Product createWorkspaceProduct() {
+        String uri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
+        UUID uuid;
+        if (uri.startsWith(URN_UUID)) {
+            uuid = UUID.fromString(uri.substring(URN_UUID.length()));
+        } else {
+            uuid = Workspace.uuidOf(uri);
+        }
         Product workspaceProduct = new Product(
                                                stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
                                                stripQuotes(wsp.getWorkspaceDefinition().description.getText()),
                                                model.getKernel().getCore());
+        workspaceProduct.setId(uuid);
         em.persist(workspaceProduct);
         return workspaceProduct;
     }

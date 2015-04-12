@@ -24,7 +24,7 @@
              FROM ruleform.attr_meta_attr_auth base_table
              LEFT JOIN ruleform.agency res ON base_table.grouping_agency = res.id
              LEFT JOIN ruleform.relationship cls ON base_table.classification = cls.id
-             LEFT JOIN ruleform.attribute_meta_attribute b ON base_table.classifier = b.id
+             LEFT JOIN ruleform.attribute b ON base_table.classifier = b.id
              LEFT JOIN ruleform.attribute att ON base_table.authorized_attribute = att.id
              LEFT JOIN ruleform.agency up ON base_table.updated_by = up.id;
 			

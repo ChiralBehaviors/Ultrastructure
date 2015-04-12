@@ -204,5 +204,9 @@ public interface Kernel {
     Product getWorkspace();
 
     Relationship getWorkspaceOf();
+    
+    Relationship getValidates();
+    
+    Relationship getIsValidatedBy();
 
 }

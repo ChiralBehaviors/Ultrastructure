@@ -117,4 +117,10 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
         }
         cache();
     }
+
+    @Override
+    public Product getDefiningProduct() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

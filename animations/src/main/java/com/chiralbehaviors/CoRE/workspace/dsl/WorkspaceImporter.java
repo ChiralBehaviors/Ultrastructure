@@ -92,6 +92,10 @@ public class WorkspaceImporter {
         this.em = model.getEntityManager();
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
     public Workspace loadWorkspace() {
         scope = model.getWorkspaceModel().createWorkspace(createWorkspaceProduct(),
                                                           model.getKernel().getCoreAnimationSoftware());
@@ -112,6 +116,10 @@ public class WorkspaceImporter {
         loadProtocols();
         loadMetaprotocols();
         return workspace;
+    }
+
+    public void setScope(WorkspaceScope scope) {
+        this.scope = scope;
     }
 
     private Product createWorkspaceProduct() {

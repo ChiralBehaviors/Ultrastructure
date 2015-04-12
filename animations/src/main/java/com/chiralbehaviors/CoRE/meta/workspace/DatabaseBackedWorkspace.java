@@ -180,6 +180,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         return new EntityList<T>(em.createQuery(query).getResultList());
     }
 
+    @Override
+    public Product getDefiningProduct() {
+        return em.find(Product.class, definingProduct);
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#getImports()
      */
@@ -252,9 +257,5 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void retarget(EntityManager em) {
         // nothing to do, as we're backed by the DB
-    }
-
-    protected Product getDefiningProduct() {
-        return em.find(Product.class, definingProduct);
     }
 }

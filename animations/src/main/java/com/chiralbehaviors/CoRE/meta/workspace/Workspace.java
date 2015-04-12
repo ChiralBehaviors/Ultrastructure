@@ -40,6 +40,8 @@ public interface Workspace {
 
     <T extends Ruleform> List<T> getCollection(Class<T> ruleformClass);
 
+    Product getDefiningProduct();
+
     Map<String, Product> getImports();
 
     WorkspaceScope getScope();

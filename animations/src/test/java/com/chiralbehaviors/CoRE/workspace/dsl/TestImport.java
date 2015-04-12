@@ -19,6 +19,8 @@
  */
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -27,6 +29,7 @@ import org.antlr.v4.runtime.Recognizer;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 
 /**
@@ -59,5 +62,10 @@ public class TestImport extends AbstractModelTest {
         em.getTransaction().begin();
         importer.loadWorkspace();
         em.flush();
+        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(
+                                                                        importer.getWorkspace().getDefiningProduct(),
+                                                                        model);
+        assertNotNull(workspace);
+        assertNotNull(workspace.getScope().lookup("kernel", "IsA"));
     }
 }

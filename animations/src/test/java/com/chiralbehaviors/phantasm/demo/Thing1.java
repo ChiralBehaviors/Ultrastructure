@@ -42,7 +42,7 @@ public interface Thing1 extends PhantasmBase<Product> {
         System.out.println(getThing2());
     }
 
-    // Even "this" works because Java 8 default methods
+    // Even "this" works because Java 8 default method magic
     default Thing1 doSomethingElse() {
         return this;
     }

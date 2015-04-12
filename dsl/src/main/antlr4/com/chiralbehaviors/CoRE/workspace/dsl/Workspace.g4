@@ -60,7 +60,8 @@ edges: 'edges' LB (edge)+ RB;
 workspaceDefinition: 
     'workspace:'
     name=QuotedText
-    (description=QuotedText)?;
+    (description=QuotedText)?
+    uri=QuotedText;
 
     
 imported:

@@ -124,8 +124,8 @@ public class WorkspaceImporter {
 
     private Product createWorkspaceProduct() {
         Product workspaceProduct = new Product(
-                                               wsp.getWorkspaceDefinition().name.getText(),
-                                               wsp.getWorkspaceDefinition().description.getText(),
+                                               stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
+                                               stripQuotes(wsp.getWorkspaceDefinition().description.getText()),
                                                model.getKernel().getCore());
         em.persist(workspaceProduct);
         return workspaceProduct;
@@ -134,9 +134,9 @@ public class WorkspaceImporter {
     private void loadAgencies() {
         for (ExistentialRuleformContext ruleform : wsp.getAgencies()) {
             Agency agency = new Agency(
-                                       ruleform.name.getText(),
+                                       stripQuotes(ruleform.name.getText()),
                                        ruleform.description == null ? null
-                                                                   : ruleform.description.getText(),
+                                                                   : stripQuotes(ruleform.description.getText()),
                                        model.getKernel().getCore());
             em.persist(agency);
             workspace.put(ruleform.workspaceName.getText(), agency);
@@ -171,9 +171,9 @@ public class WorkspaceImporter {
     private void loadAttributes() {
         for (ExistentialRuleformContext ruleform : wsp.getAttributes()) {
             Attribute attr = new Attribute(
-                                           ruleform.name.getText(),
+                                           stripQuotes(ruleform.name.getText()),
                                            ruleform.description == null ? null
-                                                                       : ruleform.description.getText(),
+                                                                       : stripQuotes(ruleform.description.getText()),
                                            model.getKernel().getCore());
             em.persist(attr);
             workspace.put(ruleform.workspaceName.getText(), attr);
@@ -231,7 +231,7 @@ public class WorkspaceImporter {
     private void loadIntervals() {
         for (IntervalContext ivl : wsp.getIntervals()) {
             Interval interval = new Interval(
-                                             ivl.existentialRuleform().name.getText(),
+                                             stripQuotes(ivl.existentialRuleform().name.getText()),
                                              ivl.start == null ? BigDecimal.valueOf(0)
                                                               : BigDecimal.valueOf(Long.valueOf(ivl.start.getText())),
                                              ivl.startUnit == null ? model.getKernel().getNotApplicableUnit()
@@ -240,7 +240,7 @@ public class WorkspaceImporter {
                                                                  : BigDecimal.valueOf(Long.valueOf(ivl.duration.getText())),
                                              ivl.durationUnit == null ? model.getKernel().getNotApplicableUnit()
                                                                      : workspace.get(ivl.durationUnit.getText()),
-                                             ivl.existentialRuleform().description.getText(),
+                                             stripQuotes(ivl.existentialRuleform().description.getText()),
                                              model.getKernel().getCore());
             em.persist(interval);
             workspace.put(ivl.existentialRuleform().workspaceName.getText(),
@@ -263,9 +263,9 @@ public class WorkspaceImporter {
     private void loadLocations() {
         for (ExistentialRuleformContext rf : wsp.getLocations()) {
             Location ruleform = new Location(
-                                             rf.name.getText(),
+                                             stripQuotes(rf.name.getText()),
                                              rf.description == null ? null
-                                                                   : rf.description.getText(),
+                                                                   : stripQuotes(rf.description.getText()),
                                              model.getKernel().getCore());
             em.persist(ruleform);
             workspace.put(rf.workspaceName.getText(), ruleform);
@@ -335,9 +335,9 @@ public class WorkspaceImporter {
     private void loadProducts() {
         for (ExistentialRuleformContext rf : wsp.getProducts()) {
             Product ruleform = new Product(
-                                           rf.name.getText(),
+                                           stripQuotes(rf.name.getText()),
                                            rf.description == null ? null
-                                                                 : rf.description.getText(),
+                                                                 : stripQuotes(rf.description.getText()),
                                            model.getKernel().getCore());
             em.persist(ruleform);
             workspace.put(rf.workspaceName.getText(), ruleform);
@@ -421,12 +421,13 @@ public class WorkspaceImporter {
 
     private void loadRelationships() {
         for (RelationshipPairContext ctx : wsp.getRelationships()) {
-            Relationship relA = model.getRelationshipModel().create(ctx.primary.name.getText(),
+            Relationship relA = model.getRelationshipModel().create(stripQuotes(ctx.primary.name.getText()),
                                                                     ctx.primary.description == null ? null
-                                                                                                   : ctx.primary.description.getText(),
-                                                                    ctx.inverse.name.getText(),
+                                                                                                   : stripQuotes(ctx.primary.description.getText()),
+
+                                                                    stripQuotes(ctx.inverse.name.getText()),
                                                                     ctx.inverse.description == null ? null
-                                                                                                   : ctx.primary.description.getText());
+                                                                                                   : stripQuotes(ctx.inverse.description.getText()));
             workspace.put(ctx.primary.workspaceName.getText(), relA);
             workspace.put(ctx.inverse.workspaceName.getText(),
                           relA.getInverse());
@@ -481,9 +482,9 @@ public class WorkspaceImporter {
     private void loadStatusCodes() {
         for (ExistentialRuleformContext rf : wsp.getStatusCodes()) {
             StatusCode ruleform = new StatusCode(
-                                                 rf.name.getText(),
+                                                 stripQuotes(rf.name.getText()),
                                                  rf.description == null ? null
-                                                                       : rf.description.getText(),
+                                                                       : stripQuotes(rf.description.getText()),
                                                  model.getKernel().getCore());
             em.persist(ruleform);
             workspace.put(rf.workspaceName.getText(), ruleform);
@@ -526,9 +527,9 @@ public class WorkspaceImporter {
         for (UnitContext unit : wsp.getUnits()) {
             Token description = unit.existentialRuleform().description;
             Unit ruleform = new Unit(
-                                     unit.existentialRuleform().name.getText(),
+                                     stripQuotes(unit.existentialRuleform().name.getText()),
                                      description == null ? null
-                                                        : description.getText(),
+                                                        : stripQuotes(description.getText()),
                                      model.getKernel().getCore());
             ruleform.setEnumerated(unit.enumerated == null ? null
                                                           : Boolean.valueOf(unit.enumerated.getText()));

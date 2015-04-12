@@ -31,6 +31,7 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
@@ -56,7 +57,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     public StateDefinition(Class<PhantasmBase<RuleForm>> accessorInterface) {
         this.accessorInterface = accessorInterface;
         State state = accessorInterface.getAnnotation(State.class);
-        workspace = UUID.fromString(state.workspace());
+        workspace = Workspace.uuidOf(state.uri());
         construct();
     }
 

@@ -79,7 +79,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 public class WorkspaceImporter {
 
     private static final String         STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
-    private static final String         URN_UUID                      = "urn:uuid:";
     private final EntityManager         em;
     private final Model                 model;
     private WorkspaceScope              scope;
@@ -124,17 +123,11 @@ public class WorkspaceImporter {
 
     private Product createWorkspaceProduct() {
         String uri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
-        UUID uuid;
-        if (uri.startsWith(URN_UUID)) {
-            uuid = UUID.fromString(uri.substring(URN_UUID.length()));
-        } else {
-            uuid = Workspace.uuidOf(uri);
-        }
         Product workspaceProduct = new Product(
                                                stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
                                                stripQuotes(wsp.getWorkspaceDefinition().description.getText()),
                                                model.getKernel().getCore());
-        workspaceProduct.setId(uuid);
+        workspaceProduct.setId(Workspace.uuidOf(uri));
         em.persist(workspaceProduct);
         return workspaceProduct;
     }
@@ -555,12 +548,12 @@ public class WorkspaceImporter {
     private void processImports() {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = stripQuotes(w.uri.getText());
-            if (!uri.startsWith(URN_UUID)) {
+            if (!uri.startsWith(Workspace.URN_UUID)) {
                 throw new IllegalStateException(
                                                 String.format("Only support import URIs of form urn:uuid:<uuid>: %s",
                                                               uri));
             }
-            UUID uuid = UUID.fromString(uri.substring(URN_UUID.length()));
+            UUID uuid = UUID.fromString(uri.substring(Workspace.URN_UUID.length()));
             workspace.addImport(w.namespace.getText(),
                                 model.getEntityManager().find(Product.class,
                                                               uuid),

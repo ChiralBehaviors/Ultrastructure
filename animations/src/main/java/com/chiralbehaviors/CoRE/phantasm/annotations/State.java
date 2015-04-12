@@ -40,5 +40,5 @@ public @interface State {
 
     Import[] imports() default {};
 
-    String workspace();
+    String uri();
 }

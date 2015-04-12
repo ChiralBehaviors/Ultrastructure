@@ -37,9 +37,13 @@ import com.fasterxml.uuid.impl.NameBasedGenerator;
  *
  */
 public interface Workspace {
-    final StringArgGenerator URL_UUID_GENERATOR = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL);
+    final StringArgGenerator   URL_UUID_GENERATOR = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL);
+    public static final String URN_UUID           = "urn:uuid:";
 
     static UUID uuidOf(String url) {
+        if (url.startsWith(URN_UUID)) {
+            return UUID.fromString(url.substring(URN_UUID.length()));
+        }
         return URL_UUID_GENERATOR.generate(url);
     }
 

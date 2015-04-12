@@ -29,7 +29,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classifier = "Thing3") }, workspace = "00000000-0000-0004-0000-000000000006")
+@State(facets = { @Aspect(classifier = "Thing3") }, uri = "http://ultrastructure.me/com/ChiralBehaviors/Ultrastructure/demo/thing.wsp")
 public interface Thing3 extends PhantasmBase<Product> {
 
 }

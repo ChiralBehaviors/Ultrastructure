@@ -389,6 +389,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @throws SQLException
      */
     void propagate();
+    
+    /**
+     * Sets a value for an attribute after validating it first
+     * @param value
+     */
+    void setAttributeValue(AttributeType value);
 
     /**
      *

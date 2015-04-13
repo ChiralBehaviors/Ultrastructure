@@ -85,6 +85,7 @@
                                         </versionRange>
                                         <goals>
                                             <goal>helpmojo</goal>
+                                            <goal>descriptor</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>

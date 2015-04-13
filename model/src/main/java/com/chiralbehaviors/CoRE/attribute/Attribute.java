@@ -77,8 +77,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
                                                      + "FROM AttributeNetwork rn "
-                                                     + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship"),
+                                                     + "WHERE rn.parent = :p "
+                                                     + "AND rn.relationship = :r"),
                @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM AttributeNetwork n "
                                                                            + "WHERE n.parent = :attribute "
                                                                            + "AND n.relationship IN :relationships "

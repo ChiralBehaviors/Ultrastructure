@@ -419,6 +419,10 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("NotApplicableInterval",
                  find(WellKnownInterval.NOT_APPLICABLE), core, kernelWorkspace);
+        populate("IsValidatedBy", find(WellKnownRelationship.IS_VALIDATED_BY),
+                 core, kernelWorkspace);
+        populate("Validates", find(WellKnownRelationship.VALIDATES), core,
+                 kernelWorkspace);
         AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(
                                                                                   isA,
                                                                                   find(WellKnownAgency.CORE_USER),

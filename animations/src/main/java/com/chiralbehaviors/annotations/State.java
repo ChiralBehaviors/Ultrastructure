@@ -18,9 +18,9 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.annotations;
+package com.chiralbehaviors.annotations;
 
-import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -32,16 +32,11 @@ import java.lang.annotation.Target;
  *
  */
 @Documented
-@Target(METHOD)
+@Target(TYPE)
 @Retention(RUNTIME)
-public @interface Relationship {
-    boolean immediate() default true;
+public @interface State {
 
-    Aspect[] intersect() default {};
+    Aspect[] facets();
 
-    String name();
-
-    String scope() default "";
-
-    boolean singular() default false;
+    String workspace();
 }

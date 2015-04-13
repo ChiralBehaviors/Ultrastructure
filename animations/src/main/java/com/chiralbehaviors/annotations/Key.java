@@ -1,6 +1,6 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
+ * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
+ *
  
  * This file is part of Ultrastructure.
  *
@@ -18,19 +18,21 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.phantasm.demo;
+package com.chiralbehaviors.annotations;
 
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.annotations.Aspect;
-import com.chiralbehaviors.annotations.Key;
-import com.chiralbehaviors.annotations.State;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classification = @Key(name = "IsA"), classifier = @Key(name = "Thing3")) }, workspace = "00000000-0000-0004-0000-000000000006")
-public interface Thing3 extends PhantasmBase<Product> {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Key {
+    String namespace() default "";
 
+    String name();
 }

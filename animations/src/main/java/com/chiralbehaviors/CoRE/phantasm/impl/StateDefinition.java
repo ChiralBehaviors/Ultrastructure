@@ -34,11 +34,11 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.annotations.Aspect;
+import com.chiralbehaviors.annotations.Attribute;
+import com.chiralbehaviors.annotations.Relationship;
+import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
@@ -67,8 +67,10 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                                                  workspace));
         List<Aspect> failures = new ArrayList<>();
         for (Aspect constraint : aspects) {
-            if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier()),
-                                        (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(constraint.classification()),
+            if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier().namespace(),
+                                                                constraint.classifier().name()),
+                                        (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(constraint.classification().namespace(),
+                                                                                                     constraint.classification().name()),
                                         ruleform)) {
                 failures.add(constraint);
             }
@@ -142,12 +144,12 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
         if (List.class.isAssignableFrom(method.getReturnType())) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(attribute.scope(),
-                                                                                                    attribute.name()));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(attribute.value().namespace(),
+                                                                                                    attribute.value().name()));
         } else {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(attribute.scope(),
-                                                                                                   attribute.name()));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(attribute.value().namespace(),
+                                                                                                   attribute.value().name()));
         }
     }
 
@@ -178,13 +180,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
         if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(attribute.scope(),
-                                                                                                    attribute.name(),
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(attribute.value().namespace(),
+                                                                                                    attribute.value().name(),
                                                                                                     (List<?>) arguments[0]));
         } else {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(attribute.scope(),
-                                                                                                   attribute.name(),
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(attribute.value().namespace(),
+                                                                                                   attribute.value().name(),
                                                                                                    arguments[0]));
         }
     }

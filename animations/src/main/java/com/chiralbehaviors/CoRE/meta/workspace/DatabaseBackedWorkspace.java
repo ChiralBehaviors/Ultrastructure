@@ -162,7 +162,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public <T> T getAccessor(Class<T> accessorInterface) {
-        return WorkspaceAccessHandler.getAccesor(accessorInterface, this);
+        return WorkspaceAccessHandler.getAccesor(accessorInterface, getScope());
     }
 
     /* (non-Javadoc)

@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.annotations.Key;
 
 /**
  * @author hparry
@@ -33,15 +34,15 @@ import com.chiralbehaviors.CoRE.Ruleform;
 public class WorkspaceAccessHandler implements InvocationHandler {
     @SuppressWarnings("unchecked")
     public static <T> T getAccesor(Class<T> accessorInterface,
-                                   Workspace workspace) {
+                                   WorkspaceScope workspace) {
         return (T) Proxy.newProxyInstance(accessorInterface.getClassLoader(),
                                           new Class[] { accessorInterface },
                                           new WorkspaceAccessHandler(workspace));
     }
 
-    private final Workspace workspace;
+    private final WorkspaceScope workspace;
 
-    public WorkspaceAccessHandler(Workspace workspace) {
+    public WorkspaceAccessHandler(WorkspaceScope workspace) {
         this.workspace = workspace;
     }
 
@@ -53,12 +54,7 @@ public class WorkspaceAccessHandler implements InvocationHandler {
                                                                     throws Throwable {
         Key key = method.getAnnotation(Key.class);
         if (key != null) {
-            Ruleform ruleform = workspace.get(key.value());
-            if (ruleform == null) {
-                throw new NullPointerException(
-                                               String.format("The value for %s is null",
-                                                             key.value()));
-            }
+            return workspace.lookup(key.namespace(), key.name());
         }
         return getAsBeanAccessor(method);
     }
@@ -71,12 +67,7 @@ public class WorkspaceAccessHandler implements InvocationHandler {
                                                                   method));
         }
         name = name.substring("get".length());
-        Ruleform ruleform = workspace.get(name);
-        if (ruleform == null) {
-            throw new NullPointerException(
-                                           String.format("The value for %s is null",
-                                                         name));
-        }
+        Ruleform ruleform = workspace.lookup(name);
         return ruleform;
     }
 }

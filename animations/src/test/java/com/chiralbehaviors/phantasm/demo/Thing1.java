@@ -24,17 +24,19 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.annotations.Aspect;
+import com.chiralbehaviors.annotations.Attribute;
+import com.chiralbehaviors.annotations.Key;
+import com.chiralbehaviors.annotations.Relationship;
+import com.chiralbehaviors.annotations.Singular;
+import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classifier = "Thing1") }, workspace = "00000000-0000-0004-0000-000000000006")
+@State(facets = { @Aspect(classification = @Key(name = "IsA"), classifier = @Key(name = "Thing1")) }, workspace = "00000000-0000-0004-0000-000000000006")
 public interface Thing1 extends PhantasmBase<Product> {
 
     // Default methods are used to add functional behavior
@@ -51,25 +53,28 @@ public interface Thing1 extends PhantasmBase<Product> {
     String[] getAliases();
 
     // Singular product-location authorization
-    @Relationship(name = "derivedFrom", singular = true)
+    @Singular
+    @Relationship(@Key(name = "derivedFrom"))
     MavenArtifact getArtifact();
 
     // product attribute that has a non defaulted workspace name
-    @Attribute(name = "discount")
+    @Attribute(@Key(name = "discount"))
     BigDecimal getPercentage();
 
     // mapped attributes of the ruleform
     Map<String, String> getProperties();
 
     // Singular child product
-    @Relationship(name = "thing1Of", singular = true)
+    @Singular
+    @Relationship(@Key(name = "thing1Of"))
     Thing2 getThing2();
 
     // String attribute using the defaulted workspace name derived from getter
     String getURI();
 
     // Singular product-location authorization
-    @Relationship(name = "derivedFrom", singular = true)
+    @Singular
+    @Relationship(@Key(name = "derivedFrom"))
     void setArtifact(MavenArtifact artifact);
 
     // String attribute using the defaulted workspace name derived from getter

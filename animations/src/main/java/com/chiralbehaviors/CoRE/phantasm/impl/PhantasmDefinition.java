@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -34,20 +36,33 @@ import com.chiralbehaviors.janus.CompositeAssembler;
  *
  */
 public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    private final List<StateDefinition<RuleForm>> facets = new ArrayList<>();
-    private final Class<PhantasmBase<RuleForm>>   phantasm;
+    private static final ConcurrentMap<Class<PhantasmBase<?>>, PhantasmDefinition<?>> cache  = new ConcurrentHashMap<>();
+    private final List<StateDefinition<RuleForm>>                                     facets = new ArrayList<>();
+    private final Class<PhantasmBase<RuleForm>>                                       phantasm;
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> construct(Class<PhantasmBase<?>> phantasm,
+                                                                                  T ruleform,
+                                                                                  Model model) {
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cache.computeIfAbsent(phantasm,
+                                                                                                (Class<PhantasmBase<?>> p) -> new PhantasmDefinition(
+                                                                                                                                                     p));
+        return (PhantasmBase<T>) definition.construct(ruleform, model);
+    }
 
     public PhantasmDefinition(Class<PhantasmBase<RuleForm>> phantasm) {
         this.phantasm = phantasm;
     }
 
-    public PhantasmBase<RuleForm> construct(RuleForm ruleform, Model model) {
+    @SuppressWarnings("unchecked")
+    public <T extends RuleForm> PhantasmBase<RuleForm> construct(ExistentialRuleform<?, ?> ruleform,
+                                                                 Model model) {
         CompositeAssembler<PhantasmBase<RuleForm>> assembler = new CompositeAssembler<>(
                                                                                         phantasm);
         Object[] instances = new Object[facets.size()];
         int i = 0;
         for (StateDefinition<RuleForm> facet : facets) {
-            instances[i++] = facet.construct(ruleform, model);
+            instances[i++] = facet.construct((RuleForm) ruleform, model);
         }
         return assembler.construct(instances);
     }

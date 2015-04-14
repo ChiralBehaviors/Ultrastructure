@@ -61,8 +61,7 @@ workspaceDefinition:
     'workspace:'
     uri =  QuotedText
     name=QuotedText
-    (description=QuotedText)?
-    uri=QuotedText;
+    (description=QuotedText)?;
 
     
 imported:

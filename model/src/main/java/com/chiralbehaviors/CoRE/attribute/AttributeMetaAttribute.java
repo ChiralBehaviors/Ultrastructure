@@ -44,7 +44,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * An attribute value on an attribute
  *
  */
-@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "SELECT ra FROM AttributeMetaAttribute ra WHERE ra.attribute = :ruleform AND ra.metaAttribute = :attribute ORDER BY ra.sequenceNumber") })
+@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "SELECT ra FROM AttributeMetaAttribute ra "
+                                                          + "WHERE ra.attribute = :attr "
+                                                          + "AND ra.metaAttribute = :meta "
+                                                          + "ORDER BY ra.sequenceNumber") })
 @Entity
 @Table(name = "attribute_meta_attribute", schema = "ruleform")
 public class AttributeMetaAttribute extends AttributeValue<Attribute> {

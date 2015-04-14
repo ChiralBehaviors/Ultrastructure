@@ -1291,6 +1291,32 @@ public interface WellKnownObject {
             }
 
         },
+        IS_VALIDATED_BY() {
+
+            @Override
+            public String description() {
+                return "A is validated by B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.VALIDATES;
+            }
+
+            @Override
+            public boolean preferred() {
+                return true;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.IS_VALIDATED_BY;
+            }
+
+        },
         LESS_THAN() {
 
             @Override
@@ -1544,6 +1570,32 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.SAME;
+            }
+
+        },
+        VALIDATES() {
+
+            @Override
+            public String description() {
+                return "A is the location of B";
+            }
+
+            @Override
+            public WellKnownRelationship inverse() {
+                return WellKnownRelationship.IS_VALIDATED_BY;
+            }
+
+            @Override
+            public boolean preferred() {
+                return true;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.VALIDATES;
             }
 
         },
@@ -1937,6 +1989,7 @@ public interface WellKnownObject {
     String IS_CONTAINED_IN           = "is-contained-in";
     String IS_EXCEPTION_TO           = "is-exception-to";
     String IS_LOCATION_OF            = "is-location-of";
+    String IS_VALIDATED_BY           = "is-validated-by";
     String KERNEL_WORKSPACE          = "kernelWorkspace";
     String LESS_THAN                 = "<";
     String LESS_THAN_OR_EQUALS       = "<=";
@@ -1964,6 +2017,7 @@ public interface WellKnownObject {
     String SPECIAL_SYSTEM_EVENT      = "Special System Event";
     String SUPER_USER                = "CoRE Super User";
     String UNSET                     = "(UNSET)";
+    String VALIDATES                 = "validates";
     String VERSION_OF                = "version-of";
     String WORKSPACE                 = "Workspace";
     String WORKSPACE_OF              = "workspace-of";

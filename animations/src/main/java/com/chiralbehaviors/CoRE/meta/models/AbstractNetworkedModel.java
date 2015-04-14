@@ -62,6 +62,7 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -860,4 +861,39 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
         return allowedValues;
     }
+
+    @Override
+    public void setAttributeValue(AttributeType value) {
+        Attribute attribute = value.getAttribute();
+        Attribute validatingAttribute = model.getAttributeModel().getSingleChild(attribute,
+                                                                                 model.getKernel().getIsValidatedBy());
+        if (validatingAttribute != null) {
+            TypedQuery<AttributeMetaAttribute> query = em.createNamedQuery(AttributeMetaAttribute.GET_ATTRIBUTE,
+                                                                           AttributeMetaAttribute.class);
+            query.setParameter("attr", validatingAttribute);
+            query.setParameter("meta", attribute);
+            List<AttributeMetaAttribute> attrs = query.getResultList();
+            if (attrs == null || attrs.size() == 0) {
+                throw new IllegalArgumentException(
+                                                   "No valid values for attribute "
+                                                           + attribute.getName());
+            }
+            boolean valid = false;
+            for (AttributeMetaAttribute ama : attrs) {
+                if (ama.getTextValue() != null
+                    && ama.getTextValue().equals(value.getTextValue())) {
+                    valid = true;
+                    em.persist(value);
+                }
+            }
+            if (!valid) {
+                throw new IllegalArgumentException(
+                                                   String.format("%s is not a valid value for attribute %s",
+                                                                 value.getTextValue(),
+                                                                 attribute));
+            }
+        }
+
+    }
+
 }

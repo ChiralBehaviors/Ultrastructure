@@ -16,9 +16,6 @@
             <column name="meta_attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="name" type="TEXT">
-                <constraints nullable="false" />
-            </column>
             <column name="key" type="TEXT" />
             <column name="numeric_value" type="numeric" />
             <column name="boolean_value" type="SMALLINT" />

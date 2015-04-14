@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -30,10 +31,13 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductAttribute;
 
 /**
  * @author hhildebrand
@@ -74,4 +78,67 @@ public class AttributeModelTest extends AbstractModelTest {
         assertEquals(2, edges.size());
     }
 
+    @Test
+    public void testEnumValues() {
+        Agency core = model.getKernel().getCore();
+        em.getTransaction().begin();
+        Attribute attr = new Attribute("Attribute", "A", ValueType.TEXT, core);
+        em.persist(attr);
+
+        Attribute validValues = new Attribute(
+                                              "ValidValues",
+                                              "Valid enumeration values for this attribute",
+                                              ValueType.TEXT, core);
+        em.persist(validValues);
+
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        AttributeMetaAttribute a = new AttributeMetaAttribute(validValues, "a",
+                                                              core);
+        a.setMetaAttribute(attr);
+        em.persist(a);
+        AttributeMetaAttribute b = new AttributeMetaAttribute(validValues, "b",
+                                                              core);
+        b.setMetaAttribute(attr);
+        b.setSequenceNumber(10);
+        em.persist(b);
+        AttributeMetaAttribute c = new AttributeMetaAttribute(validValues, "c",
+                                                              core);
+        c.setSequenceNumber(100);
+        c.setMetaAttribute(attr);
+        em.persist(c);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        model.getAttributeModel().link(attr,
+                                       model.getKernel().getIsValidatedBy(),
+                                       validValues, core);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        Product validatedProduct = new Product(
+                                               "ValidatedProduct",
+                                               "A product supertype with validation",
+                                               core);
+        em.persist(validatedProduct);
+
+        Product myProduct = new Product("MyProduct", "my product", core);
+        em.persist(myProduct);
+
+        em.getTransaction().commit();
+        // set value
+        ProductAttribute attributeValue = new ProductAttribute(
+                                                               attr,
+                                                               "a",
+                                                               model.getKernel().getCore());
+        attributeValue.setProduct(myProduct);
+
+        model.getProductModel().setAttributeValue(attributeValue);
+        attributeValue.setTextValue("aaa");
+        try {
+            model.getProductModel().setAttributeValue(attributeValue);
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+
+    }
 }

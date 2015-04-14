@@ -21,9 +21,11 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
-import static com.chiralbehaviors.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -56,12 +58,16 @@ import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.impl.PhantasmDefinition;
 
 /**
  * @author hhildebrand
  *
  */
 public class ModelImpl implements Model {
+
+    private final static ConcurrentMap<Class<PhantasmBase<?>>, PhantasmDefinition<?>> cache = new ConcurrentHashMap<>();
 
     public static String prefixFor(Class<?> ruleform) {
         String simpleName = ruleform.getSimpleName();
@@ -102,6 +108,16 @@ public class ModelImpl implements Model {
         statusCodeModel = new StatusCodeModelImpl(this);
         unitModel = new UnitModelImpl(this);
         workspaceModel = new WorkspaceModelImpl(this);
+    }
+
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> construct(Class<PhantasmBase<?>> phantasm,
+                                                                           T ruleform) {
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cache.computeIfAbsent(phantasm,
+                                                                                                (Class<PhantasmBase<?>> p) -> new PhantasmDefinition(
+                                                                                                                                                     p));
+        return (PhantasmBase<T>) definition.construct(ruleform, this);
     }
 
     /*
@@ -183,7 +199,7 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#find(java.lang.Long, java.lang.Class)
      */
     @Override
-    public <RuleForm extends Ruleform> RuleForm find(Long id,
+    public <RuleForm extends Ruleform> RuleForm find(UUID id,
                                                      Class<RuleForm> clazz) {
         return em.find(clazz, id);
     }
@@ -205,17 +221,6 @@ public class ModelImpl implements Model {
         } catch (NoResultException e) {
             return null;
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#findFlagged(java.lang.Class)
-     */
-    @Override
-    public <RuleForm extends Ruleform> List<RuleForm> findFlagged(Class<RuleForm> ruleform) {
-        return em.createNamedQuery(prefixFor(ruleform) + FIND_FLAGGED_SUFFIX,
-                                   ruleform).getResultList();
     }
 
     /*

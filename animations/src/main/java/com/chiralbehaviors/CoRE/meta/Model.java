@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.meta;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
@@ -30,6 +31,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 
 /**
  * The meta model for the CoRE
@@ -38,6 +40,16 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
  *
  */
 public interface Model {
+
+    /**
+     * Construct an instance of a phantasm using the ruleform and model
+     * 
+     * @param phantasm
+     * @param ruleform
+     * @return
+     */
+    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> construct(Class<PhantasmBase<?>> phantasm,
+                                                                           T ruleform);
 
     /**
      * Find the ruleform instances that match the supplied attribute
@@ -55,7 +67,7 @@ public interface Model {
      * @return the instance corresponding to the supplied id, or null if the
      *         instance does not exist
      */
-    <RuleForm extends Ruleform> RuleForm find(Long id, Class<RuleForm> ruleform);
+    <RuleForm extends Ruleform> RuleForm find(UUID id, Class<RuleForm> ruleform);
 
     /**
      * Find an instance of the ExistentialRuleform using the name
@@ -66,14 +78,6 @@ public interface Model {
      */
     <RuleForm extends ExistentialRuleform<?, ?>> RuleForm find(String name,
                                                                Class<RuleForm> ruleform);
-
-    /**
-     * Find the instances of the ruleform that are flagged for research
-     *
-     * @param name
-     * @return the instances that have non null research values
-     */
-    <RuleForm extends Ruleform> List<RuleForm> findFlagged(Class<RuleForm> ruleform);
 
     /**
      * Find all the instances of the RuleForm that have been updated by the

@@ -23,25 +23,29 @@ package com.chiralbehaviors.phantasm.demo;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.annotations.Aspect;
+import com.chiralbehaviors.annotations.Intersect;
+import com.chiralbehaviors.annotations.Key;
+import com.chiralbehaviors.annotations.Relationship;
+import com.chiralbehaviors.annotations.Singular;
+import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classifier = "Thing2") }, uri = "http://ultrastructure.me/com/ChiralBehaviors/Ultrastructure/demo/thing.wsp")
+@State(facets = { @Aspect(classification = @Key(name = "IsA"), classifier = @Key(name = "Thing2")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing2 extends PhantasmBase<Product> {
     // 
-    @Relationship(name = "thing2Of")
+    @Relationship(@Key(name = "thing2Of"))
     void addFunction(Thing3 thing3);
 
-    // 
-    @Relationship(name = "inThing1", singular = true)
+    @Singular
+    @Relationship(@Key(name = "inThing1"))
     Thing1 getThing1();
 
-    @Relationship(name = "thing2Of", intersect = { @Aspect(classifier = "Thing3") })
+    @Intersect({ @Aspect(classification = @Key(name = "IsA"), classifier = @Key(name = "Thing3")) })
+    @Relationship(@Key(name = "thing2Of"))
     List<Thing3> getThing3s();
 }

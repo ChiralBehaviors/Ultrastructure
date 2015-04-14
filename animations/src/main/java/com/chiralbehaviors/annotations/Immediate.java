@@ -18,19 +18,22 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.phantasm.demo;
+package com.chiralbehaviors.annotations;
 
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.annotations.Aspect;
-import com.chiralbehaviors.annotations.Key;
-import com.chiralbehaviors.annotations.State;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classification = @Key(name = "IsA"), classifier = @Key(name = "Thing3")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
-public interface Thing3 extends PhantasmBase<Product> {
+@Documented
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface Immediate {
 
 }

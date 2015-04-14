@@ -21,9 +21,14 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
-import static com.chiralbehaviors.CoRE.Ruleform.FIND_FLAGGED_SUFFIX;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -56,12 +61,16 @@ import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.impl.PhantasmDefinition;
 
 /**
  * @author hhildebrand
  *
  */
 public class ModelImpl implements Model {
+
+    private final static ConcurrentMap<Class<PhantasmBase<?>>, PhantasmDefinition<?>> cache = new ConcurrentHashMap<>();
 
     public static String prefixFor(Class<?> ruleform) {
         String simpleName = ruleform.getSimpleName();
@@ -102,6 +111,66 @@ public class ModelImpl implements Model {
         statusCodeModel = new StatusCodeModelImpl(this);
         unitModel = new UnitModelImpl(this);
         workspaceModel = new WorkspaceModelImpl(this);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#construct(java.lang.Class, java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.agency.Agency)
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Override
+    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> construct(Class<PhantasmBase<?>> phantasm,
+                                                                           String name,
+                                                                           String description,
+                                                                           Agency updatedBy)
+                                                                                            throws InstantiationException {
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cache.computeIfAbsent(phantasm,
+                                                                                                (Class<PhantasmBase<?>> p) -> new PhantasmDefinition(
+                                                                                                                                                     p));
+        ExistentialRuleform ruleform;
+        try {
+            ruleform = getExistentialRuleformConstructor(phantasm).newInstance(name,
+                                                                               description,
+                                                                               updatedBy);
+        } catch (IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            InstantiationException ex = new InstantiationException(
+                                                                   "Cannot construct instance of existential ruleform");
+            ex.initCause(e);
+            throw ex;
+        }
+        return (PhantasmBase<T>) definition.construct(ruleform, this, updatedBy);
+    }
+
+    /**
+     * @param phantasm
+     * @return
+     */
+    private Constructor<? extends ExistentialRuleform<?, ?>> getExistentialRuleformConstructor(Class<PhantasmBase<?>> phantasm) {
+        try {
+            return getExistentialRuleform(phantasm).getConstructor(String.class,
+                                                                   String.class,
+                                                                   Agency.class);
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException(
+                                            "Cannot access or find constructor for ruleform",
+                                            e);
+        }
+    }
+
+    /**
+     * @param phantasm
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private Class<ExistentialRuleform<?, ?>> getExistentialRuleform(Class<PhantasmBase<?>> phantasm) {
+        for (Class<?> mixin : phantasm.getInterfaces()) {
+            if (PhantasmBase.class.equals(mixin)) {
+                return (Class<ExistentialRuleform<?, ?>>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+            }
+        }
+        throw new IllegalArgumentException(
+                                           String.format("Does not extend the PhantasmBase interface: %s",
+                                                         phantasm));
     }
 
     /*
@@ -180,17 +249,6 @@ public class ModelImpl implements Model {
     /*
      * (non-Javadoc)
      *
-     * @see com.chiralbehaviors.CoRE.meta.Model#find(java.lang.Long, java.lang.Class)
-     */
-    @Override
-    public <RuleForm extends Ruleform> RuleForm find(Long id,
-                                                     Class<RuleForm> clazz) {
-        return em.find(clazz, id);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
      * @see com.chiralbehaviors.CoRE.meta.Model#find(java.lang.String,
      * java.lang.Class)
      */
@@ -210,12 +268,12 @@ public class ModelImpl implements Model {
     /*
      * (non-Javadoc)
      *
-     * @see com.chiralbehaviors.CoRE.meta.Model#findFlagged(java.lang.Class)
+     * @see com.chiralbehaviors.CoRE.meta.Model#find(java.lang.Long, java.lang.Class)
      */
     @Override
-    public <RuleForm extends Ruleform> List<RuleForm> findFlagged(Class<RuleForm> ruleform) {
-        return em.createNamedQuery(prefixFor(ruleform) + FIND_FLAGGED_SUFFIX,
-                                   ruleform).getResultList();
+    public <RuleForm extends Ruleform> RuleForm find(UUID id,
+                                                     Class<RuleForm> clazz) {
+        return em.find(clazz, id);
     }
 
     /*
@@ -364,5 +422,15 @@ public class ModelImpl implements Model {
     @Override
     public void inferNetworks(ExistentialRuleform<?, ?> ruleform) {
         animations.inferNetworks(ruleform);
+    }
+
+    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> wrap(Class<PhantasmBase<?>> phantasm,
+                                                                      T ruleform) {
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cache.computeIfAbsent(phantasm,
+                                                                                                (Class<PhantasmBase<?>> p) -> new PhantasmDefinition(
+                                                                                                                                                     p));
+        return (PhantasmBase<T>) definition.wrap(ruleform, this);
     }
 }

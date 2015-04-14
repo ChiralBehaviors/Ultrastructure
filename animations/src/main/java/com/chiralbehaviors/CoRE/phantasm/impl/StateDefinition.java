@@ -35,11 +35,12 @@ import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.annotations.Aspect;
+import com.chiralbehaviors.annotations.Attribute;
+import com.chiralbehaviors.annotations.Key;
+import com.chiralbehaviors.annotations.Relationship;
+import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
@@ -57,15 +58,14 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     public StateDefinition(Class<PhantasmBase<RuleForm>> accessorInterface) {
         this.accessorInterface = accessorInterface;
         State state = accessorInterface.getAnnotation(State.class);
-        workspace = Workspace.uuidOf(state.uri());
+        workspace = Workspace.uuidOf(state.workspace());
         construct();
     }
 
     @SuppressWarnings("unchecked")
     public void constrain(Model model, RuleForm ruleform) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
-        WorkspaceScope scope = model.getWorkspaceModel().getScoped(model.getEntityManager().find(Product.class,
-                                                                                                 workspace));
+        WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
         List<Aspect> failures = new ArrayList<>();
         for (Aspect constraint : aspects) {
             if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier()),
@@ -141,14 +141,15 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                             String.format("getter method has arguments %s",
                                                           method.toGenericString()));
         }
+        Key value = attribute.value();
         if (List.class.isAssignableFrom(method.getReturnType())) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(attribute.scope(),
-                                                                                                    attribute.name()));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(value.namespace(),
+                                                                                                    value.name()));
         } else {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(attribute.scope(),
-                                                                                                   attribute.name()));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(value.namespace(),
+                                                                                                   value.name()));
         }
     }
 
@@ -177,15 +178,16 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                             String.format("setter method does not have a singular argument %s",
                                                           method.toGenericString()));
         }
+        Key value = attribute.value();
         if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(attribute.scope(),
-                                                                                                    attribute.name(),
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(value.namespace(),
+                                                                                                    value.name(),
                                                                                                     (List<?>) arguments[0]));
         } else {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(attribute.scope(),
-                                                                                                   attribute.name(),
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(value.namespace(),
+                                                                                                   value.name(),
                                                                                                    arguments[0]));
         }
     }
@@ -217,5 +219,22 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         } else if (method.getName().startsWith(SET)) {
             processSetter(method);
         }
+    }
+
+    /**
+     * @param model
+     *            TODO
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> getAspects(Model model) {
+        WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
+        List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> specs = new ArrayList<>();
+        for (Aspect aspect : aspects) {
+            specs.add(new com.chiralbehaviors.CoRE.network.Aspect<RuleForm>(
+                                                                            (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(aspect.classification()),
+                                                                            (RuleForm) scope.lookup(aspect.classifier())));
+        }
+        return specs;
     }
 }

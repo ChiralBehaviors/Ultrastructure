@@ -142,19 +142,19 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                model.getKernel().getCore());
     }
 
-    protected void addChildren(String scope, String key,
-                               List<RuleForm> children, Agency updatedBy) {
+    protected void addChildren(String s, String key, List<RuleForm> children,
+                               Agency updatedBy) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
         for (RuleForm child : children) {
-            networkedModel.link(ruleform, getRelationship(scope, key), child,
+            networkedModel.link(ruleform, getRelationship(s, key), child,
                                 updatedBy);
         }
     }
 
-    protected Object getAttributeValue(String scope, String key) {
+    protected Object getAttributeValue(String s, String key) {
         @SuppressWarnings("unchecked")
         List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                                        getAttribute(scope,
+                                                                                                                        getAttribute(s,
                                                                                                                                      key));
         if (values.size() == 0) {
             throw new IllegalArgumentException(

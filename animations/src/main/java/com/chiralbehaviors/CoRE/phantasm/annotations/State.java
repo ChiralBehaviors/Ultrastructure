@@ -27,6 +27,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.chiralbehaviors.annotations.Aspect;
+
 /**
  * @author hhildebrand
  *
@@ -37,8 +39,6 @@ import java.lang.annotation.Target;
 public @interface State {
 
     Aspect[] facets();
-
-    Import[] imports() default {};
 
     String uri();
 }

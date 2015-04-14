@@ -1,5 +1,6 @@
-workspace: "Order Entry" "Pricing example for CACM 1995 Ultrastructure article"
-           "http://ultrastructure.me/com/ChiralBehaviors/Ultrastructure/demo/order-entry.wsp"
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/order-entry/v1" 
+           "Order Entry" 
+           "Pricing example for CACM 1995 Ultrastructure article"
 imports {
     "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
 }

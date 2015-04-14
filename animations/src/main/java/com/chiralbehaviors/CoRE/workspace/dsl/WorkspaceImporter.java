@@ -123,9 +123,11 @@ public class WorkspaceImporter {
 
     private Product createWorkspaceProduct() {
         String uri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
+        Token description = wsp.getWorkspaceDefinition().description;
         Product workspaceProduct = new Product(
                                                stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
-                                               stripQuotes(wsp.getWorkspaceDefinition().description.getText()),
+                                               description == null ? null
+                                                                  : stripQuotes(description.getText()),
                                                model.getKernel().getCore());
         workspaceProduct.setId(Workspace.uuidOf(uri));
         em.persist(workspaceProduct);

@@ -54,7 +54,7 @@ public class WorkspaceAccessHandler implements InvocationHandler {
                                                                     throws Throwable {
         Key key = method.getAnnotation(Key.class);
         if (key != null) {
-            return workspace.lookup(key.namespace(), key.name());
+            return workspace.lookup(key);
         }
         return getAsBeanAccessor(method);
     }

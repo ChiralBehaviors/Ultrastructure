@@ -30,7 +30,7 @@ import com.chiralbehaviors.annotations.State;
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classifier = @Key(name = "MavenArtifact"), classification = @Key(namespace = "kernel", name = "IsA")) }, workspace = "00000000-0000-0004-0000-000000000006")
+@State(facets = { @Aspect(classifier = @Key(name = "MavenArtifact"), classification = @Key(namespace = "kernel", name = "IsA")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface MavenArtifact extends PhantasmBase<Location> {
     String getArtifactId();
 

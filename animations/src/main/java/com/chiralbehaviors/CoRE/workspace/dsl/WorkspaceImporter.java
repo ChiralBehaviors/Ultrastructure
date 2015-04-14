@@ -20,7 +20,6 @@
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import javax.management.openmbean.InvalidKeyException;
 import javax.persistence.EntityManager;
@@ -52,6 +51,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.time.Interval;
@@ -79,7 +79,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 public class WorkspaceImporter {
 
     private static final String         STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
-    private static final String         URN_UUID                      = "urn:uuid:";
     private final EntityManager         em;
     private final Model                 model;
     private WorkspaceScope              scope;
@@ -119,6 +118,7 @@ public class WorkspaceImporter {
                                                wsp.getWorkspaceDefinition().name.getText(),
                                                wsp.getWorkspaceDefinition().description.getText(),
                                                model.getKernel().getCore());
+        workspaceProduct.setId(PhantasmBase.getUUID(wsp.getWorkspaceDefinition().uri.getText()));
         em.persist(workspaceProduct);
         return workspaceProduct;
     }
@@ -538,15 +538,16 @@ public class WorkspaceImporter {
     private void processImports() {
         for (ImportedWorkspaceContext workspace : wsp.getImports()) {
             String uri = stripQuotes(workspace.uri.getText());
-            if (!uri.startsWith(URN_UUID)) {
-                throw new IllegalStateException(
-                                                String.format("Only support import URIs of form urn:uuid:<uuid>: %s",
-                                                              uri));
+
+            Product definingProduct = model.getEntityManager().find(Product.class,
+                                                                    PhantasmBase.getUUID(uri));
+            if (definingProduct == null) {
+                throw new IllegalArgumentException(
+                                                   String.format("Import URI does not exist: %s",
+                                                                 uri));
             }
-            UUID uuid = UUID.fromString(uri.substring(URN_UUID.length()));
             scope.add(workspace.namespace.getText(),
-                      model.getWorkspaceModel().getScoped(model.getEntityManager().find(Product.class,
-                                                                                        uuid)).getWorkspace());
+                      model.getWorkspaceModel().getScoped(definingProduct).getWorkspace());
         }
     }
 

@@ -42,14 +42,29 @@ import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 public interface Model {
 
     /**
-     * Construct an instance of a phantasm using the ruleform and model
+     * Create a new instance of the phantasm's existential ruleform type using
+     * the model
+     * 
+     * @param phantasm
+     * @param ruleform
+     * @return
+     * @throws InstantiationException
+     */
+    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> construct(Class<PhantasmBase<?>> phantasm,
+                                                                           String name,
+                                                                           String description,
+                                                                           Agency updatedBy)
+                                                                                            throws InstantiationException;
+
+    /**
+     * Wrap the ruleform with an instance of a phantasm using the model
      * 
      * @param phantasm
      * @param ruleform
      * @return
      */
-    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> construct(Class<PhantasmBase<?>> phantasm,
-                                                                           T ruleform);
+    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> wrap(Class<PhantasmBase<?>> phantasm,
+                                                                      T ruleform);
 
     /**
      * Find the ruleform instances that match the supplied attribute
@@ -61,15 +76,6 @@ public interface Model {
     <AttributeType extends AttributeValue<RuleForm>, RuleForm extends Ruleform> List<RuleForm> find(AttributeType attributeValue);
 
     /**
-     * Find an instance using the id
-     *
-     * @param id
-     * @return the instance corresponding to the supplied id, or null if the
-     *         instance does not exist
-     */
-    <RuleForm extends Ruleform> RuleForm find(UUID id, Class<RuleForm> ruleform);
-
-    /**
      * Find an instance of the ExistentialRuleform using the name
      *
      * @param name
@@ -78,6 +84,15 @@ public interface Model {
      */
     <RuleForm extends ExistentialRuleform<?, ?>> RuleForm find(String name,
                                                                Class<RuleForm> ruleform);
+
+    /**
+     * Find an instance using the id
+     *
+     * @param id
+     * @return the instance corresponding to the supplied id, or null if the
+     *         instance does not exist
+     */
+    <RuleForm extends Ruleform> RuleForm find(UUID id, Class<RuleForm> ruleform);
 
     /**
      * Find all the instances of the RuleForm that have been updated by the

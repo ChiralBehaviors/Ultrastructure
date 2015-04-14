@@ -25,12 +25,16 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.StringArgGenerator;
 
 /**
  * @author hhildebrand
  *
  */
 public interface PhantasmBase<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>> {
+    final StringArgGenerator   generator = Generators.nameBasedGenerator();
+    public static final String URN_UUID  = "urn:uuid:";
 
     String getDescription();
 

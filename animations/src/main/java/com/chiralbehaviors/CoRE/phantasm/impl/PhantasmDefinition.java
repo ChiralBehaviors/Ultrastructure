@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 import com.chiralbehaviors.janus.CompositeAssembler;
@@ -41,9 +44,28 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         this.phantasm = phantasm;
     }
 
+    /**
+     * @param ruleform
+     * @param modelImpl
+     * @param updatedBy
+     * @return
+     */
+    public PhantasmBase<RuleForm> construct(ExistentialRuleform<?, ?> ruleform,
+                                            Model model, Agency updatedBy) {
+        @SuppressWarnings("unchecked")
+        RuleForm form = (RuleForm) ruleform;
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(form);
+        for (StateDefinition<RuleForm> facet : facets) {
+            for (Aspect<RuleForm> aspect : facet.getAspects(model)) {
+                networkedModel.initialize(form, aspect, updatedBy);
+            }
+        }
+        return wrap(ruleform, model);
+    }
+
     @SuppressWarnings("unchecked")
-    public <T extends RuleForm> PhantasmBase<RuleForm> construct(ExistentialRuleform<?, ?> ruleform,
-                                                                 Model model) {
+    public PhantasmBase<RuleForm> wrap(ExistentialRuleform<?, ?> ruleform,
+                                       Model model) {
         CompositeAssembler<PhantasmBase<RuleForm>> assembler = new CompositeAssembler<>(
                                                                                         phantasm);
         Object[] instances = new Object[facets.size()];

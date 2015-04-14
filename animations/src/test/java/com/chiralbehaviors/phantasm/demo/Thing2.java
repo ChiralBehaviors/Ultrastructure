@@ -35,7 +35,7 @@ import com.chiralbehaviors.annotations.State;
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classification = @Key(name = "IsA"), classifier = @Key(name = "Thing2")) }, workspace = "00000000-0000-0004-0000-000000000006")
+@State(facets = { @Aspect(classification = @Key(name = "IsA"), classifier = @Key(name = "Thing2")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing2 extends PhantasmBase<Product> {
     // 
     @Relationship(@Key(name = "thing2Of"))

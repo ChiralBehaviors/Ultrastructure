@@ -59,6 +59,7 @@ edges: 'edges' LB (edge)+ RB;
 
 workspaceDefinition: 
     'workspace:'
+    uri =  QuotedText
     name=QuotedText
     (description=QuotedText)?;
 

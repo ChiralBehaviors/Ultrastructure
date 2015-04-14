@@ -1,4 +1,7 @@
-workspace: "Order Entry" "Pricing example for CACM 1995 Ultrastructure article"
+workspace: "urn:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/order-entry/v1" 
+           "Order Entry"
+           "Pricing example for CACM 1995 Ultrastructure article"
+            
 
 relationships {
     area = "Area" "A is a member of the economic community B" | areaOf = "Area Of" "A is economic community of B";

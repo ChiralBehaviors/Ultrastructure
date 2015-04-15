@@ -4,6 +4,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.Job;
@@ -110,6 +111,8 @@ public interface Triggers {
     void persist(StatusCodeSequencing scs);
 
     void persist(UnitNetwork u);
+
+    <T extends AttributeValue<?>> void persist(T value);
 
     void update(Job j);
 }

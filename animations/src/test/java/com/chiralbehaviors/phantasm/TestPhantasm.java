@@ -22,6 +22,7 @@ package com.chiralbehaviors.phantasm;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -74,8 +75,9 @@ public class TestPhantasm extends AbstractModelTest {
                                         kernel.getCore());
         assertNotNull(thing1);
         assertEquals(thing1, thing1.doSomethingElse());
+        thing1.doSomething("hello");
         assertNotNull(thing1.getRuleform());
         assertEquals(thing1.getRuleform().getName(), thing1.getName());
+        assertNull(thing1.getThing2());
     }
-
 }

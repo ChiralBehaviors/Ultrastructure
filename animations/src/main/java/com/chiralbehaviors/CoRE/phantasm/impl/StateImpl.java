@@ -19,6 +19,8 @@
  */
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -117,6 +119,15 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                     : false;
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
+        }
+        if (method.isDefault()) {
+            final Class<?> declaringClass = method.getDeclaringClass();
+            Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class,
+                                                                                                              int.class);
+            constructor.setAccessible(true);
+            return constructor.newInstance(declaringClass,
+                                           MethodHandles.Lookup.PRIVATE).unreflectSpecial(method,
+                                                                                          declaringClass).bindTo(proxy).invokeWithArguments(args);
         }
         StateFunction<RuleForm> function = methods.get(method);
         Object returnValue = (function != null) ? function.invoke(this, args)

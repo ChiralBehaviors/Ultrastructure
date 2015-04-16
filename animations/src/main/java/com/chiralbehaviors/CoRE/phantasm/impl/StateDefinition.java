@@ -51,14 +51,14 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private static final String                          GET     = "get";
     private static final String                          SET     = "set";
-    private final Class<PhantasmBase<RuleForm>>          accessorInterface;
+    private final Class<PhantasmBase<RuleForm>>          stateInterface;
     private final List<Aspect>                           aspects = new ArrayList<Aspect>();
     private final UUID                                   workspace;
     protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
 
-    public StateDefinition(Class<PhantasmBase<RuleForm>> accessorInterface) {
-        this.accessorInterface = accessorInterface;
-        State state = accessorInterface.getAnnotation(State.class);
+    public StateDefinition(Class<PhantasmBase<RuleForm>> stateInterface) {
+        this.stateInterface = stateInterface;
+        State state = stateInterface.getAnnotation(State.class);
         workspace = Workspace.uuidOf(state.workspace());
         construct();
     }
@@ -85,8 +85,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Object construct(RuleForm ruleform, Model model) {
         constrain(model, ruleform);
-        return Proxy.newProxyInstance(accessorInterface.getClassLoader(),
-                                      new Class[] { accessorInterface },
+        return Proxy.newProxyInstance(stateInterface.getClassLoader(),
+                                      new Class[] { stateInterface },
                                       new StateImpl(
                                                     ruleform,
                                                     model,
@@ -97,11 +97,11 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void construct() {
-        State state = accessorInterface.getAnnotation(State.class);
+        State state = stateInterface.getAnnotation(State.class);
         for (Aspect aspect : state.facets()) {
             aspects.add(aspect);
         }
-        for (Class<?> iFace : accessorInterface.getInterfaces()) {
+        for (Class<?> iFace : stateInterface.getInterfaces()) {
             process(iFace);
         }
     }
@@ -252,5 +252,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                             (RuleForm) scope.lookup(aspect.classifier())));
         }
         return specs;
+    }
+
+    public Class<PhantasmBase<RuleForm>> getStateInterface() {
+        return stateInterface;
     }
 }

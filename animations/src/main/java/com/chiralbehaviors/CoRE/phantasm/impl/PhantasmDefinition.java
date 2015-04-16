@@ -20,8 +20,11 @@
 
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -31,7 +34,6 @@ import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 import com.chiralbehaviors.annotations.State;
-import com.chiralbehaviors.janus.CompositeAssembler;
 
 /**
  * @author hhildebrand
@@ -45,7 +47,9 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     public PhantasmDefinition(Class<PhantasmBase<RuleForm>> phantasm) {
         this.phantasm = phantasm;
         if (phantasm.getAnnotation(State.class) != null) {
-            facets.add(new StateDefinition<RuleForm>(phantasm));
+            StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(
+                                                                            phantasm);
+            facets.add(facet);
         }
         for (Class<?> iFace : phantasm.getInterfaces()) {
             if (iFace.getAnnotation(State.class) != null) {
@@ -77,13 +81,18 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     @SuppressWarnings("unchecked")
     public PhantasmBase<RuleForm> wrap(ExistentialRuleform<?, ?> ruleform,
                                        Model model) {
-        CompositeAssembler<PhantasmBase<RuleForm>> assembler = new CompositeAssembler<>(
-                                                                                        phantasm);
+        Map<Class<?>, Object> stateMap = new HashMap<>();
         Object[] instances = new Object[facets.size()];
         int i = 0;
         for (StateDefinition<RuleForm> facet : facets) {
-            instances[i++] = facet.construct((RuleForm) ruleform, model);
+            Object state = facet.construct((RuleForm) ruleform, model);
+            instances[i++] = state;
+            stateMap.put(facet.getStateInterface(), state);
         }
-        return assembler.construct(instances);
+        return (PhantasmBase<RuleForm>) Proxy.newProxyInstance(phantasm.getClassLoader(),
+                                                               new Class[] { phantasm },
+                                                               new Phantasm(
+                                                                            stateMap, ruleform));
+
     }
 }

@@ -50,11 +50,11 @@ public interface Model {
      * @return
      * @throws InstantiationException
      */
-    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> construct(Class<PhantasmBase<?>> phantasm,
-                                                                           String name,
-                                                                           String description,
-                                                                           Agency updatedBy)
-                                                                                            throws InstantiationException;
+    public <T extends ExistentialRuleform<T, ?>, X extends PhantasmBase<T>> X construct(Class<? extends X> phantasm,
+                                                                                        String name,
+                                                                                        String description,
+                                                                                        Agency updatedBy)
+                                                                                                         throws InstantiationException;
 
     /**
      * Wrap the ruleform with an instance of a phantasm using the model
@@ -63,8 +63,8 @@ public interface Model {
      * @param ruleform
      * @return
      */
-    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> wrap(Class<PhantasmBase<?>> phantasm,
-                                                                      T ruleform);
+    public <T extends ExistentialRuleform<T, ?>, X extends PhantasmBase<T>> X wrap(Class<X> phantasm,
+                                                                                   T ruleform);
 
     /**
      * Find the ruleform instances that match the supplied attribute

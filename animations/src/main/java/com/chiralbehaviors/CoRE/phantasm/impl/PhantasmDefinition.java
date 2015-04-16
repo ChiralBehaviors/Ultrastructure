@@ -30,6 +30,7 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.annotations.State;
 import com.chiralbehaviors.janus.CompositeAssembler;
 
 /**
@@ -40,8 +41,18 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     private final List<StateDefinition<RuleForm>> facets = new ArrayList<>();
     private final Class<PhantasmBase<RuleForm>>   phantasm;
 
+    @SuppressWarnings("unchecked")
     public PhantasmDefinition(Class<PhantasmBase<RuleForm>> phantasm) {
         this.phantasm = phantasm;
+        if (phantasm.getAnnotation(State.class) != null) {
+            facets.add(new StateDefinition<RuleForm>(phantasm));
+        }
+        for (Class<?> iFace : phantasm.getInterfaces()) {
+            if (iFace.getAnnotation(State.class) != null) {
+                facets.add(new StateDefinition<RuleForm>(
+                                                         (Class<PhantasmBase<RuleForm>>) iFace));
+            }
+        }
     }
 
     /**

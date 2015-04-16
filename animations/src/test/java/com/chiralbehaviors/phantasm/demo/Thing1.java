@@ -29,14 +29,13 @@ import com.chiralbehaviors.annotations.Aspect;
 import com.chiralbehaviors.annotations.Attribute;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.Relationship;
-import com.chiralbehaviors.annotations.Singular;
 import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classification = @Key(name = "IsA"), classifier = @Key(name = "Thing1")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
+@State(facets = { @Aspect(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing1")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing1 extends PhantasmBase<Product> {
 
     // Default methods are used to add functional behavior
@@ -52,8 +51,7 @@ public interface Thing1 extends PhantasmBase<Product> {
     // array attributes of the ruleform
     String[] getAliases();
 
-    // Singular product-location authorization
-    @Singular
+    // Singular product-location authorization 
     @Relationship(@Key(name = "derivedFrom"))
     MavenArtifact getArtifact();
 
@@ -64,16 +62,14 @@ public interface Thing1 extends PhantasmBase<Product> {
     // mapped attributes of the ruleform
     Map<String, String> getProperties();
 
-    // Singular child product
-    @Singular
+    // Singular child product 
     @Relationship(@Key(name = "thing1Of"))
     Thing2 getThing2();
 
     // String attribute using the defaulted workspace name derived from getter
     String getURI();
 
-    // Singular product-location authorization
-    @Singular
+    // Singular product-location authorization 
     @Relationship(@Key(name = "derivedFrom"))
     void setArtifact(MavenArtifact artifact);
 

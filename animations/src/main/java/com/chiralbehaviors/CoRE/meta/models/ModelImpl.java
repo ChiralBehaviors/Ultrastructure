@@ -70,7 +70,7 @@ import com.chiralbehaviors.CoRE.phantasm.impl.PhantasmDefinition;
  */
 public class ModelImpl implements Model {
 
-    private final static ConcurrentMap<Class<PhantasmBase<?>>, PhantasmDefinition<?>> cache = new ConcurrentHashMap<>();
+    private final static ConcurrentMap<Class<?>, PhantasmDefinition<?>> cache = new ConcurrentHashMap<>();
 
     public static String prefixFor(Class<?> ruleform) {
         String simpleName = ruleform.getSimpleName();
@@ -116,16 +116,16 @@ public class ModelImpl implements Model {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.Model#construct(java.lang.Class, java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.agency.Agency)
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> construct(Class<PhantasmBase<?>> phantasm,
-                                                                           String name,
-                                                                           String description,
-                                                                           Agency updatedBy)
-                                                                                            throws InstantiationException {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public <T extends ExistentialRuleform<T, ?>, X extends PhantasmBase<T>> X construct(Class<? extends X> phantasm,
+                                                                                        String name,
+                                                                                        String description,
+                                                                                        Agency updatedBy)
+                                                                                                         throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cache.computeIfAbsent(phantasm,
-                                                                                                (Class<PhantasmBase<?>> p) -> new PhantasmDefinition(
-                                                                                                                                                     p));
+                                                                                                (Class<?> p) -> new PhantasmDefinition(
+                                                                                                                                       p));
         ExistentialRuleform ruleform;
         try {
             ruleform = getExistentialRuleformConstructor(phantasm).newInstance(name,
@@ -134,43 +134,12 @@ public class ModelImpl implements Model {
         } catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             InstantiationException ex = new InstantiationException(
-                                                                   "Cannot construct instance of existential ruleform");
+                                                                   String.format("Cannot construct instance of existential ruleform for %s",
+                                                                                 phantasm));
             ex.initCause(e);
             throw ex;
         }
-        return (PhantasmBase<T>) definition.construct(ruleform, this, updatedBy);
-    }
-
-    /**
-     * @param phantasm
-     * @return
-     */
-    private Constructor<? extends ExistentialRuleform<?, ?>> getExistentialRuleformConstructor(Class<PhantasmBase<?>> phantasm) {
-        try {
-            return getExistentialRuleform(phantasm).getConstructor(String.class,
-                                                                   String.class,
-                                                                   Agency.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException(
-                                            "Cannot access or find constructor for ruleform",
-                                            e);
-        }
-    }
-
-    /**
-     * @param phantasm
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private Class<ExistentialRuleform<?, ?>> getExistentialRuleform(Class<PhantasmBase<?>> phantasm) {
-        for (Class<?> mixin : phantasm.getInterfaces()) {
-            if (PhantasmBase.class.equals(mixin)) {
-                return (Class<ExistentialRuleform<?, ?>>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-            }
-        }
-        throw new IllegalArgumentException(
-                                           String.format("Does not extend the PhantasmBase interface: %s",
-                                                         phantasm));
+        return (X) definition.construct(ruleform, this, updatedBy);
     }
 
     /*
@@ -426,11 +395,39 @@ public class ModelImpl implements Model {
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public <T extends ExistentialRuleform<T, ?>> PhantasmBase<T> wrap(Class<PhantasmBase<?>> phantasm,
-                                                                      T ruleform) {
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cache.computeIfAbsent(phantasm,
-                                                                                                (Class<PhantasmBase<?>> p) -> new PhantasmDefinition(
-                                                                                                                                                     p));
-        return (PhantasmBase<T>) definition.wrap(ruleform, this);
+    public <T extends ExistentialRuleform<T, ?>, X extends PhantasmBase<T>> X wrap(Class<X> phantasm,
+                                                                                   T ruleform) {
+        if (ruleform == null) {
+            return null;
+        }
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cache.computeIfAbsent(phantasm,
+                                                                                                             (Class<?> p) -> new PhantasmDefinition(
+                                                                                                                                                    p));
+        return (X) definition.wrap(ruleform, this);
+    }
+
+    /**
+     * @param phantasm
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private Class<ExistentialRuleform<?, ?>> getExistentialRuleform(Class<? extends PhantasmBase<?>> phantasm) {
+        return (Class<ExistentialRuleform<?, ?>>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+    }
+
+    /**
+     * @param phantasm
+     * @return
+     */
+    private Constructor<? extends ExistentialRuleform<?, ?>> getExistentialRuleformConstructor(Class<? extends PhantasmBase<?>> phantasm) {
+        try {
+            return getExistentialRuleform(phantasm).getConstructor(String.class,
+                                                                   String.class,
+                                                                   Agency.class);
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException(
+                                            "Cannot access or find constructor for ruleform",
+                                            e);
+        }
     }
 }

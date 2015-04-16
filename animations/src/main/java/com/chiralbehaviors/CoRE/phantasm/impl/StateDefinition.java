@@ -38,6 +38,7 @@ import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.annotations.Aspect;
 import com.chiralbehaviors.annotations.Attribute;
+import com.chiralbehaviors.annotations.Immediate;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.Relationship;
 import com.chiralbehaviors.annotations.State;
@@ -123,7 +124,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private void process(Method method) {
         if (method.getAnnotation(Relationship.class) != null) {
-            process(method.getAnnotation(Relationship.class), method);
+            process(method.getAnnotation(Relationship.class), method, null);
         } else if (method.getAnnotation(Attribute.class) != null) {
             process(method.getAnnotation(Attribute.class), method);
         } else {
@@ -131,8 +132,20 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    private void process(Relationship annotation, Method method) {
-        // TODO Auto-generated method stub
+    private void process(Relationship annotation, Method method,
+                         Class<PhantasmBase<RuleForm>> phantasm) {
+        Key value = annotation.value();
+        if (method.getAnnotation(Immediate.class) == null) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getChild(value.namespace(),
+                                                                                          value.name(),
+                                                                                          phantasm));
+        } else {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChild(value.namespace(),
+                                                                                                   value.name(),
+                                                                                                   phantasm));
+        }
     }
 
     private void processGetter(Attribute attribute, Method method) {

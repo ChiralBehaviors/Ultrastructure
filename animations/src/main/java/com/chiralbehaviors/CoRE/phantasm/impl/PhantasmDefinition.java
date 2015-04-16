@@ -88,11 +88,15 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
             Object state = facet.construct((RuleForm) ruleform, model);
             instances[i++] = state;
             stateMap.put(facet.getStateInterface(), state);
+            if (facet.getStateInterface().equals(phantasm)) {
+                stateMap.put(PhantasmBase.class, state);
+            }
         }
         return (PhantasmBase<RuleForm>) Proxy.newProxyInstance(phantasm.getClassLoader(),
                                                                new Class[] { phantasm },
                                                                new Phantasm(
-                                                                            stateMap, ruleform));
+                                                                            stateMap,
+                                                                            ruleform));
 
     }
 }

@@ -34,8 +34,8 @@ import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
  *
  */
 public class Phantasm implements InvocationHandler {
-    private final Ruleform              ruleform;
     private final Map<Class<?>, Object> stateMap;
+    private final Ruleform              ruleform;
 
     public Phantasm(Map<Class<?>, Object> stateMap, Ruleform ruleform) {
         this.stateMap = stateMap;

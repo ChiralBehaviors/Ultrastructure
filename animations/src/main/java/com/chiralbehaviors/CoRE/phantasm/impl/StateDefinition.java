@@ -101,6 +101,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         for (Aspect aspect : state.facets()) {
             aspects.add(aspect);
         }
+        process(stateInterface);
         for (Class<?> iFace : stateInterface.getInterfaces()) {
             process(iFace);
         }

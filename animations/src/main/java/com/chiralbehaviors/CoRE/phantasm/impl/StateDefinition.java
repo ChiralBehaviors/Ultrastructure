@@ -123,6 +123,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Method method) {
+        if (method.getDeclaringClass().equals(PhantasmBase.class)) {
+            return;
+        }
         if (method.getAnnotation(Relationship.class) != null) {
             process(method.getAnnotation(Relationship.class), method, null);
         } else if (method.getAnnotation(Attribute.class) != null) {

@@ -658,8 +658,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         if (validatingAttribute != null) {
             TypedQuery<AttributeMetaAttribute> query = em.createNamedQuery(AttributeMetaAttribute.GET_ATTRIBUTE,
                                                                            AttributeMetaAttribute.class);
-            query.setParameter("attr", validatingAttribute);
-            query.setParameter("meta", attribute);
+            query.setParameter("ruleform", validatingAttribute);
+            query.setParameter("attribute", attribute);
             List<AttributeMetaAttribute> attrs = query.getResultList();
             if (attrs == null || attrs.size() == 0) {
                 throw new IllegalArgumentException(

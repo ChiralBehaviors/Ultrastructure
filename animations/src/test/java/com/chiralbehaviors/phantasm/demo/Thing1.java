@@ -23,7 +23,8 @@ package com.chiralbehaviors.phantasm.demo;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.annotations.Aspect;
 import com.chiralbehaviors.annotations.Attribute;
@@ -36,7 +37,7 @@ import com.chiralbehaviors.annotations.State;
  *
  */
 @State(facets = { @Aspect(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing1")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
-public interface Thing1 extends Phantasm<Product> {
+public interface Thing1 extends ScopedPhantasm<Product> {
 
     // Default methods are used to add functional behavior
     default void doSomething(String document) {
@@ -46,6 +47,12 @@ public interface Thing1 extends Phantasm<Product> {
     // Even "this" works because Java 8 default method magic
     default Thing1 doSomethingElse() {
         return this;
+    }
+
+    default Thing1 scopedAccess() {
+        System.out.println(getScope().lookup("kernel", "IsA"));
+        Model model = getModel();
+        return (Thing1) model.wrap(Thing1.class, getRuleform());
     }
 
     // array attributes of the ruleform

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -21,25 +21,17 @@
 package com.chiralbehaviors.CoRE.phantasm;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.fasterxml.uuid.Generators;
-import com.fasterxml.uuid.StringArgGenerator;
 
 /**
  * @author hhildebrand
  *
  */
-public interface Phantasm<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>> {
-    final StringArgGenerator generator = Generators.nameBasedGenerator();
+public interface ScopedPhantasm<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>>
+        extends Phantasm<RuleForm> {
+    Model getModel();
 
-    String getDescription();
-
-    String getName();
-
-    String getNotes();
-
-    RuleForm getRuleform();
-
-    Agency getUpdatedBy();
+    WorkspaceScope getScope();
 }

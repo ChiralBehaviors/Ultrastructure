@@ -63,8 +63,8 @@ public interface Model {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> wrap(Class<Phantasm<? extends T>> phantasm,
-                                                                   T ruleform);
+    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> wrap(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                                       ExistentialRuleform<T, ?> ruleform);
 
     /**
      * Find the ruleform instances that match the supplied attribute

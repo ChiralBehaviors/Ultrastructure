@@ -396,8 +396,8 @@ public class ModelImpl implements Model {
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> wrap(Class<Phantasm<? extends T>> phantasm,
-                                                                          T ruleform) {
+    public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> wrap(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                                              ExistentialRuleform<T, ?> ruleform) {
         if (ruleform == null) {
             return null;
         }

@@ -37,13 +37,14 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 
 /**
  * @author hhildebrand
  *
  */
 public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
-        implements InvocationHandler, Phantasm<RuleForm> {
+        implements InvocationHandler, ScopedPhantasm<RuleForm> {
 
     private final Map<Method, StateFunction<RuleForm>> methods;
     private final Model                                model;
@@ -67,6 +68,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getModel()
      */
+    @Override
     public Model getModel() {
         return model;
     }
@@ -92,6 +94,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getScope()
      */
+    @Override
     public WorkspaceScope getScope() {
         return scope;
     }

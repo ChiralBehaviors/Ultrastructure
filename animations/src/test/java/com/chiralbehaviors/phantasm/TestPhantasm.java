@@ -79,5 +79,6 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(thing1.getRuleform());
         assertEquals(thing1.getRuleform().getName(), thing1.getName());
         assertNull(thing1.getThing2());
+        assertEquals(thing1, thing1.scopedAccess());
     }
 }

@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.annotations.Aspect;
 import com.chiralbehaviors.annotations.Attribute;
@@ -124,7 +125,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Method method) {
-        if (method.getDeclaringClass().equals(Phantasm.class)) {
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (declaringClass.equals(Phantasm.class)
+            || declaringClass.equals(ScopedPhantasm.class)) {
             return;
         }
         if (method.getAnnotation(Relationship.class) != null) {

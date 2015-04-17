@@ -32,7 +32,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.annotations.State;
 
 /**
@@ -41,10 +41,10 @@ import com.chiralbehaviors.annotations.State;
  */
 public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
     private final List<StateDefinition<RuleForm>> facets = new ArrayList<>();
-    private final Class<PhantasmBase<RuleForm>>   phantasm;
+    private final Class<Phantasm<RuleForm>>       phantasm;
 
     @SuppressWarnings("unchecked")
-    public PhantasmDefinition(Class<PhantasmBase<RuleForm>> phantasm) {
+    public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm) {
         this.phantasm = phantasm;
         if (phantasm.getAnnotation(State.class) != null) {
             StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(
@@ -54,7 +54,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         for (Class<?> iFace : phantasm.getInterfaces()) {
             if (iFace.getAnnotation(State.class) != null) {
                 facets.add(new StateDefinition<RuleForm>(
-                                                         (Class<PhantasmBase<RuleForm>>) iFace));
+                                                         (Class<Phantasm<RuleForm>>) iFace));
             }
         }
     }
@@ -65,22 +65,22 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param updatedBy
      * @return
      */
-    public PhantasmBase<RuleForm> construct(ExistentialRuleform<?, ?> ruleform,
-                                            Model model, Agency updatedBy) {
-        @SuppressWarnings("unchecked")
-        RuleForm form = (RuleForm) ruleform;
-        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(form);
+    @SuppressWarnings("unchecked")
+    public Phantasm<?> construct(ExistentialRuleform<?, ?> ruleform,
+                                 Model model, Agency updatedBy) {
+        ExistentialRuleform<?, ?> form = ruleform;
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = (NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?>) model.getNetworkedModel(form);
         for (StateDefinition<RuleForm> facet : facets) {
             for (Aspect<RuleForm> aspect : facet.getAspects(model)) {
-                networkedModel.initialize(form, aspect, updatedBy);
+                networkedModel.initialize((RuleForm) form, aspect, updatedBy);
             }
         }
         return wrap(ruleform, model);
     }
 
     @SuppressWarnings("unchecked")
-    public PhantasmBase<RuleForm> wrap(ExistentialRuleform<?, ?> ruleform,
-                                       Model model) {
+    public Phantasm<? super RuleForm> wrap(ExistentialRuleform<?, ?> ruleform,
+                                           Model model) {
         Map<Class<?>, Object> stateMap = new HashMap<>();
         Object[] instances = new Object[facets.size()];
         int i = 0;
@@ -89,14 +89,14 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
             instances[i++] = state;
             stateMap.put(facet.getStateInterface(), state);
             if (facet.getStateInterface().equals(phantasm)) {
-                stateMap.put(PhantasmBase.class, state);
+                stateMap.put(Phantasm.class, state);
             }
         }
-        return (PhantasmBase<RuleForm>) Proxy.newProxyInstance(phantasm.getClassLoader(),
-                                                               new Class[] { phantasm },
-                                                               new Phantasm(
-                                                                            stateMap,
-                                                                            ruleform));
+        return (Phantasm<RuleForm>) Proxy.newProxyInstance(phantasm.getClassLoader(),
+                                                           new Class[] { phantasm },
+                                                           new PhantasmTwo(
+                                                                           stateMap,
+                                                                           ruleform));
 
     }
 }

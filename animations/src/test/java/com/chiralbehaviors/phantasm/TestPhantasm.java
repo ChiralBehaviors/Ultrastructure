@@ -71,8 +71,8 @@ public class TestPhantasm extends AbstractModelTest {
         importer.loadWorkspace();
         em.flush();
 
-        Thing1 thing1 = model.construct(Thing1.class, "testy", "test",
-                                        kernel.getCore());
+        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test",
+                                                 kernel.getCore());
         assertNotNull(thing1);
         assertEquals(thing1, thing1.doSomethingElse());
         thing1.doSomething("hello");

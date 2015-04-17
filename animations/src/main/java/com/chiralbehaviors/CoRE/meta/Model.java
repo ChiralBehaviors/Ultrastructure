@@ -31,7 +31,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 
 /**
  * The meta model for the CoRE
@@ -50,11 +50,11 @@ public interface Model {
      * @return
      * @throws InstantiationException
      */
-    public <T extends ExistentialRuleform<T, ?>, X extends PhantasmBase<T>> X construct(Class<? extends X> phantasm,
-                                                                                        String name,
-                                                                                        String description,
-                                                                                        Agency updatedBy)
-                                                                                                         throws InstantiationException;
+    <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                        String name,
+                                                                        String description,
+                                                                        Agency updatedBy)
+                                                                                         throws InstantiationException;
 
     /**
      * Wrap the ruleform with an instance of a phantasm using the model
@@ -63,8 +63,8 @@ public interface Model {
      * @param ruleform
      * @return
      */
-    public <T extends ExistentialRuleform<T, ?>, X extends PhantasmBase<T>> X wrap(Class<X> phantasm,
-                                                                                   T ruleform);
+    <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> wrap(Class<Phantasm<? extends T>> phantasm,
+                                                                   T ruleform);
 
     /**
      * Find the ruleform instances that match the supplied attribute

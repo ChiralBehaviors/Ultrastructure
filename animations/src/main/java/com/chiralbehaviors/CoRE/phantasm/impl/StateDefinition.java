@@ -34,7 +34,7 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.annotations.Aspect;
 import com.chiralbehaviors.annotations.Attribute;
@@ -51,12 +51,12 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private static final String                          GET     = "get";
     private static final String                          SET     = "set";
-    private final Class<PhantasmBase<RuleForm>>          stateInterface;
+    private final Class<Phantasm<RuleForm>>              stateInterface;
     private final List<Aspect>                           aspects = new ArrayList<Aspect>();
     private final UUID                                   workspace;
     protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
 
-    public StateDefinition(Class<PhantasmBase<RuleForm>> stateInterface) {
+    public StateDefinition(Class<Phantasm<RuleForm>> stateInterface) {
         this.stateInterface = stateInterface;
         State state = stateInterface.getAnnotation(State.class);
         workspace = Workspace.uuidOf(state.workspace());
@@ -124,7 +124,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Method method) {
-        if (method.getDeclaringClass().equals(PhantasmBase.class)) {
+        if (method.getDeclaringClass().equals(Phantasm.class)) {
             return;
         }
         if (method.getAnnotation(Relationship.class) != null) {
@@ -137,7 +137,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Relationship annotation, Method method,
-                         Class<PhantasmBase<RuleForm>> phantasm) {
+                         Class<Phantasm<? extends RuleForm>> phantasm) {
         Key value = annotation.value();
         if (method.getAnnotation(Immediate.class) == null) {
             methods.put(method,
@@ -255,7 +255,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         return specs;
     }
 
-    public Class<PhantasmBase<RuleForm>> getStateInterface() {
+    public Class<Phantasm<RuleForm>> getStateInterface() {
         return stateInterface;
     }
 }

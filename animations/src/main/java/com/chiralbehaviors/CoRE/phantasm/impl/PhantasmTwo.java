@@ -27,17 +27,17 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 
 /**
  * @author hhildebrand
  *
  */
-public class Phantasm implements InvocationHandler {
+public class PhantasmTwo implements InvocationHandler {
     private final Map<Class<?>, Object> stateMap;
     private final Ruleform              ruleform;
 
-    public Phantasm(Map<Class<?>, Object> stateMap, Ruleform ruleform) {
+    public PhantasmTwo(Map<Class<?>, Object> stateMap, Ruleform ruleform) {
         this.stateMap = stateMap;
         this.ruleform = ruleform;
     }
@@ -64,8 +64,8 @@ public class Phantasm implements InvocationHandler {
         // equals() and hashCode().  Becauase invariance.
         if (method.getName().equals("equals") && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
-            return (args[0] instanceof PhantasmBase) ? ruleform.equals(((PhantasmBase<?>) args[0]).getRuleform())
-                                                    : false;
+            return (args[0] instanceof Phantasm) ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
+                                                : false;
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
         }

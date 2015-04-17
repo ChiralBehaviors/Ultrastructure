@@ -61,7 +61,7 @@ import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.impl.PhantasmDefinition;
 
 /**
@@ -118,19 +118,19 @@ public class ModelImpl implements Model {
      */
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public <T extends ExistentialRuleform<T, ?>, X extends PhantasmBase<T>> X construct(Class<? extends X> phantasm,
-                                                                                        String name,
-                                                                                        String description,
-                                                                                        Agency updatedBy)
-                                                                                                         throws InstantiationException {
+    public <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                               String name,
+                                                                               String description,
+                                                                               Agency updatedBy)
+                                                                                                throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cache.computeIfAbsent(phantasm,
                                                                                                 (Class<?> p) -> new PhantasmDefinition(
                                                                                                                                        p));
-        ExistentialRuleform ruleform;
+        ExistentialRuleform<? extends T, ?> ruleform;
         try {
-            ruleform = getExistentialRuleformConstructor(phantasm).newInstance(name,
-                                                                               description,
-                                                                               updatedBy);
+            ruleform = (T) getExistentialRuleformConstructor(phantasm).newInstance(name,
+                                                                                   description,
+                                                                                   updatedBy);
         } catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             InstantiationException ex = new InstantiationException(
@@ -139,7 +139,8 @@ public class ModelImpl implements Model {
             ex.initCause(e);
             throw ex;
         }
-        return (X) definition.construct(ruleform, this, updatedBy);
+        return (Phantasm<? super T>) definition.construct(ruleform, this,
+                                                          updatedBy);
     }
 
     /*
@@ -395,15 +396,15 @@ public class ModelImpl implements Model {
 
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public <T extends ExistentialRuleform<T, ?>, X extends PhantasmBase<T>> X wrap(Class<X> phantasm,
-                                                                                   T ruleform) {
+    public <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> wrap(Class<Phantasm<? extends T>> phantasm,
+                                                                          T ruleform) {
         if (ruleform == null) {
             return null;
         }
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cache.computeIfAbsent(phantasm,
                                                                                                              (Class<?> p) -> new PhantasmDefinition(
                                                                                                                                                     p));
-        return (X) definition.wrap(ruleform, this);
+        return (Phantasm<? super T>) definition.wrap(ruleform, this);
     }
 
     /**
@@ -411,15 +412,15 @@ public class ModelImpl implements Model {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private Class<ExistentialRuleform<?, ?>> getExistentialRuleform(Class<? extends PhantasmBase<?>> phantasm) {
-        return (Class<ExistentialRuleform<?, ?>>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+    private <T extends ExistentialRuleform<T, ?>> Class<T> getExistentialRuleform(Class<? extends Phantasm<? extends T>> phantasm) {
+        return (Class<T>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
     }
 
     /**
      * @param phantasm
      * @return
      */
-    private Constructor<? extends ExistentialRuleform<?, ?>> getExistentialRuleformConstructor(Class<? extends PhantasmBase<?>> phantasm) {
+    private <T extends ExistentialRuleform<T, ?>> Constructor<? super T> getExistentialRuleformConstructor(Class<? extends Phantasm<? extends T>> phantasm) {
         try {
             return getExistentialRuleform(phantasm).getConstructor(String.class,
                                                                    String.class,

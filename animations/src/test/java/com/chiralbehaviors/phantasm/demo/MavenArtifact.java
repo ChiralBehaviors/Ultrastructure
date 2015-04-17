@@ -21,7 +21,7 @@
 package com.chiralbehaviors.phantasm.demo;
 
 import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.annotations.Aspect;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.State;
@@ -31,7 +31,7 @@ import com.chiralbehaviors.annotations.State;
  *
  */
 @State(facets = { @Aspect(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "MavenArtifact")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
-public interface MavenArtifact extends PhantasmBase<Location> {
+public interface MavenArtifact extends Phantasm<Location> {
     String getArtifactId();
 
     String getClassifier();

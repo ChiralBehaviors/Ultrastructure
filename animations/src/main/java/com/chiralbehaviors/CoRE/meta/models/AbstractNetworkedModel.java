@@ -119,6 +119,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     private final Class<AttributeType>             attribute;
+    private final String                           attributePrefix;
     private final Class<AttributeAuthorization>    authorization;
     private final Class<RuleForm>                  entity;
     private final Model                            model;
@@ -139,6 +140,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         network = (Class<NetworkRuleform<RuleForm>>) extractedNetwork();
         prefix = ModelImpl.prefixFor(entity);
         networkPrefix = ModelImpl.prefixFor(network);
+        attributePrefix = ModelImpl.prefixFor(attribute);
     }
 
     /* (non-Javadoc)
@@ -316,7 +318,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public List<AttributeType> getAttributeValues(RuleForm ruleform,
                                                   Attribute attribute) {
-        TypedQuery<AttributeType> q = em.createNamedQuery(prefix
+        TypedQuery<AttributeType> q = em.createNamedQuery(attributePrefix
                                                                   + AttributeValue.GET_ATTRIBUTE_SUFFIX,
                                                           this.attribute);
         q.setParameter("ruleform", ruleform);

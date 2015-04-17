@@ -51,8 +51,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private static final String                          GET     = "get";
     private static final String                          SET     = "set";
-    private final Class<Phantasm<RuleForm>>              stateInterface;
     private final List<Aspect>                           aspects = new ArrayList<Aspect>();
+    private final Class<Phantasm<RuleForm>>              stateInterface;
     private final UUID                                   workspace;
     protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
 
@@ -94,6 +94,26 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                     model.getWorkspaceModel().getScoped(model.getEntityManager().find(Product.class,
                                                                                                                       workspace))));
 
+    }
+
+    /**
+     * @param model
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> getAspects(Model model) {
+        WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
+        List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> specs = new ArrayList<>();
+        for (Aspect aspect : aspects) {
+            specs.add(new com.chiralbehaviors.CoRE.network.Aspect<RuleForm>(
+                                                                            (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(aspect.classification()),
+                                                                            (RuleForm) scope.lookup(aspect.classifier())));
+        }
+        return specs;
+    }
+
+    public Class<Phantasm<RuleForm>> getStateInterface() {
+        return stateInterface;
     }
 
     private void construct() {
@@ -143,27 +163,6 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             processGetList(annotation, method);
         } else {
             processSingular(annotation, method);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void processSingular(Relationship annotation, Method method) {
-        Key value = annotation.value();
-        if (method.getReturnType().equals(Void.TYPE)) {
-            if (method.getParameterCount() != 1) {
-                throw new IllegalArgumentException(
-                                                   String.format("Not a valid Relationship setter: %s",
-                                                                 method));
-            }
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(value.namespace(),
-                                                                                                   value.name(),
-                                                                                                   arguments[0]));
-        } else {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChild(value.namespace(),
-                                                                                                   value.name(),
-                                                                                                   (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
         }
     }
 
@@ -253,31 +252,32 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void processSingular(Relationship annotation, Method method) {
+        Key value = annotation.value();
+        if (method.getReturnType().equals(Void.TYPE)) {
+            if (method.getParameterCount() != 1) {
+                throw new IllegalArgumentException(
+                                                   String.format("Not a valid Relationship setter: %s",
+                                                                 method));
+            }
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(value.namespace(),
+                                                                                                   value.name(),
+                                                                                                   arguments[0]));
+        } else {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChild(value.namespace(),
+                                                                                                   value.name(),
+                                                                                                   (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
+        }
+    }
+
     private void processUnknown(Method method) {
         if (method.getName().startsWith(GET)) {
             processGetter(method);
         } else if (method.getName().startsWith(SET)) {
             processSetter(method);
         }
-    }
-
-    /**
-     * @param model
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> getAspects(Model model) {
-        WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
-        List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> specs = new ArrayList<>();
-        for (Aspect aspect : aspects) {
-            specs.add(new com.chiralbehaviors.CoRE.network.Aspect<RuleForm>(
-                                                                            (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(aspect.classification()),
-                                                                            (RuleForm) scope.lookup(aspect.classifier())));
-        }
-        return specs;
-    }
-
-    public Class<Phantasm<RuleForm>> getStateInterface() {
-        return stateInterface;
     }
 }

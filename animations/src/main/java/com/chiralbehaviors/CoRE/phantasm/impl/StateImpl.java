@@ -247,7 +247,24 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     }
 
     protected Object setAttributeValue(String scope, String key, Object value) {
-        // TODO Auto-generated method stub
+        @SuppressWarnings("unchecked")
+        List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                                        getAttribute(scope,
+                                                                                                                                     key));
+        if (values.size() == 0) {
+            throw new IllegalArgumentException(
+                                               String.format("No such attribute: %s:%s",
+                                                             scope == null ? ""
+                                                                          : scope,
+                                                             key));
+        } else if (values.size() > 1) {
+            throw new IllegalArgumentException(
+                                               String.format("Multiple values for attribute: %s:%s",
+                                                             scope == null ? ""
+                                                                          : scope,
+                                                             key));
+        }
+        values.get(0).setValue(value);
         return null;
     }
 

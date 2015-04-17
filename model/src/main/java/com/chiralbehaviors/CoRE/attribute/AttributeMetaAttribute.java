@@ -45,8 +45,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "SELECT ra FROM AttributeMetaAttribute ra "
-                                                          + "WHERE ra.attribute = :attr "
-                                                          + "AND ra.metaAttribute = :meta "
+                                                          + "WHERE ra.attribute = :ruleform "
+                                                          + "AND ra.metaAttribute = :attribute "
                                                           + "ORDER BY ra.sequenceNumber") })
 @Entity
 @Table(name = "attribute_meta_attribute", schema = "ruleform")

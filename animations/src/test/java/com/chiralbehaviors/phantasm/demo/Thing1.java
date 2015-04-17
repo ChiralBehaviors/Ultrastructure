@@ -80,6 +80,9 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     @Relationship(@Key(name = "derivedFrom"))
     void setArtifact(MavenArtifact artifact);
 
+    @Attribute(@Key(name = "discount"))
+    void setPercentage(BigDecimal discount);
+
     @Relationship(@Key(name = "thing1Of"))
     void setThing2(Thing2 thing2);
 

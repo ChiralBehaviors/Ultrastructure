@@ -38,7 +38,7 @@ import com.chiralbehaviors.annotations.State;
 public interface Thing2 extends Phantasm<Product> {
     // 
     @Relationship(@Key(name = "thing2Of"))
-    void addFunction(Thing3 thing3);
+    void add(Thing3 thing3);
 
     @Relationship(@Key(name = "inThing1"))
     Thing1 getThing1();

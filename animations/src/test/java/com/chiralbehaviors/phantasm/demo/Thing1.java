@@ -49,12 +49,6 @@ public interface Thing1 extends ScopedPhantasm<Product> {
         return this;
     }
 
-    default Thing1 scopedAccess() {
-        System.out.println(getScope().lookup("kernel", "IsA"));
-        Model model = getModel();
-        return (Thing1) model.wrap(Thing1.class, getRuleform());
-    }
-
     // array attributes of the ruleform
     String[] getAliases();
 
@@ -76,9 +70,18 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     // String attribute using the defaulted workspace name derived from getter
     String getURI();
 
+    default Thing1 scopedAccess() {
+        System.out.println(getScope().lookup("kernel", "IsA"));
+        Model model = getModel();
+        return (Thing1) model.wrap(Thing1.class, getRuleform());
+    }
+
     // Singular product-location authorization 
     @Relationship(@Key(name = "derivedFrom"))
     void setArtifact(MavenArtifact artifact);
+
+    @Relationship(@Key(name = "thing1Of"))
+    void setThing2(Thing2 thing2);
 
     // String attribute using the defaulted workspace name derived from getter
     void setURI(String uri);

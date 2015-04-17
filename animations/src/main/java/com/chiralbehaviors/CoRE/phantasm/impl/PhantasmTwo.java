@@ -48,12 +48,12 @@ public class PhantasmTwo implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
                                                                     throws Throwable {
-        Object state = stateMap.get(method.getDeclaringClass());
+        final Class<?> declaringClass = method.getDeclaringClass();
+        Object state = stateMap.get(declaringClass);
         if (state != null) {
             return method.invoke(state, args);
         }
         if (method.isDefault()) {
-            final Class<?> declaringClass = method.getDeclaringClass();
             Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class,
                                                                                                               int.class);
             constructor.setAccessible(true);

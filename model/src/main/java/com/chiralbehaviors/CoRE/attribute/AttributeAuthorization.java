@@ -152,6 +152,28 @@ abstract public class AttributeAuthorization extends Ruleform {
         return timestampValue;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T getValue() {
+        switch (getAuthorizedAttribute().getValueType()) {
+            case BINARY:
+                return (T) getBinaryValue();
+            case BOOLEAN:
+                return (T) getBooleanValue();
+            case INTEGER:
+                return (T) getIntegerValue();
+            case NUMERIC:
+                return (T) getNumericValue();
+            case TEXT:
+                return (T) getTextValue();
+            case TIMESTAMP:
+                return (T) getTimestampValue();
+            default:
+                throw new IllegalStateException(
+                                                String.format("Invalid value type: %s",
+                                                              getAuthorizedAttribute().getValueType()));
+        }
+    }
+
     public void setAuthorizedAttribute(Attribute productAttributeType3) {
         authorizedAttribute = productAttributeType3;
     }
@@ -168,8 +190,8 @@ abstract public class AttributeAuthorization extends Ruleform {
      * @param booleanValue
      *            the booleanValue to set
      */
-    public void setBooleanValue(Integer booleanValue) {
-        this.booleanValue = booleanValue;
+    public void setBooleanValue(Boolean booleanValue) {
+        this.booleanValue = toInteger(booleanValue);
     }
 
     public void setGroupingAgency(Agency agency) {
@@ -198,5 +220,26 @@ abstract public class AttributeAuthorization extends Ruleform {
      */
     public void setTimestampValue(Timestamp timestampValue) {
         this.timestampValue = timestampValue;
+    }
+
+    public Void setValue(Object value) {
+        switch (getAuthorizedAttribute().getValueType()) {
+            case BINARY:
+                setBinaryValue((byte[]) value);
+            case BOOLEAN:
+                setBooleanValue((Boolean) value);
+            case INTEGER:
+                setIntegerValue((Integer) value);
+            case NUMERIC:
+                setNumericValue((BigDecimal) value);
+            case TEXT:
+                setTextValue((String) value);
+            case TIMESTAMP:
+                setTimestampValue((Timestamp) value);
+            default:
+                throw new IllegalStateException(
+                                                String.format("Invalid value type: %s",
+                                                              getAuthorizedAttribute().getValueType()));
+        }
     }
 }

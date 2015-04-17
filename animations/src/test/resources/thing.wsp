@@ -3,11 +3,6 @@ workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phant
 imports {
     "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
 }
-relationships {
-    derivedFrom = "Derived From" "A is derived from B" | derivativeOf = "Derivative Of" "A is a derivative of B";
-    inThing1 = "In Thing 1" "A is part of a thing1" | thing1Of = "Thing 1 Of" "A is the thing 1 of B";
-    inThing2 = "In Thing 2" "A is part of a thing1" | thing2Of = "Thing 2 Of" "A is the thing 2 of B";
-}
 locations {
     MavenArtifact = "MavenArtifact" "A maven artifact"; 
 }
@@ -15,4 +10,9 @@ products {
     Thing1 = "Thing1" "Thing 1";
     Thing2 = "Thing2" "Thing 2";
     Thing3 = "Thing3" "Thing 3";
-} 
+}
+relationships {
+    derivedFrom = "Derived From" "A is derived from B" | derivativeOf = "Derivative Of" "A is a derivative of B";
+    inThing1 = "In Thing 1" "A is part of a thing1" | thing1Of = "Thing 1 Of" "A is the thing 1 of B";
+    inThing2 = "In Thing 2" "A is part of a thing1" | thing2Of = "Thing 2 Of" "A is the thing 2 of B";
+}

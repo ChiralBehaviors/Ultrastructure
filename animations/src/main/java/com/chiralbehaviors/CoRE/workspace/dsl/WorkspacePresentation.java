@@ -23,8 +23,10 @@ package com.chiralbehaviors.CoRE.workspace.dsl;
 import java.util.Collections;
 import java.util.List;
 
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingsContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
@@ -62,6 +64,16 @@ public class WorkspacePresentation {
         return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
+    public List<ClassifiedAttributeContext> getAgencyAttributeClassifications() {
+        if (context.agencies == null) {
+            return Collections.emptyList();
+        }
+        if (context.agencies.classifiedAttributes() == null) {
+            return Collections.emptyList();
+        }
+        return context.agencies.classifiedAttributes().classifiedAttribute();
+    }
+
     public List<EdgeContext> getAgencyNetworks() {
         if (context.agencies == null) {
             return Collections.emptyList();
@@ -70,6 +82,16 @@ public class WorkspacePresentation {
             return Collections.emptyList();
         }
         return context.agencies.edges().edge();
+    }
+
+    public List<ClassifiedAttributeContext> getAttributeAttributeClassifications() {
+        if (context.attributes == null) {
+            return Collections.emptyList();
+        }
+        if (context.attributes.classifiedAttributes() == null) {
+            return Collections.emptyList();
+        }
+        return context.attributes.classifiedAttributes().classifiedAttribute();
     }
 
     public List<EdgeContext> getAttributeNetworks() {
@@ -82,11 +104,11 @@ public class WorkspacePresentation {
         return context.attributes.edges().edge();
     }
 
-    public List<ExistentialRuleformContext> getAttributes() {
+    public List<AttributeRuleformContext> getAttributes() {
         if (context.attributes == null) {
             return Collections.emptyList();
         }
-        List<ExistentialRuleformContext> ruleforms = context.attributes.existentialRuleform();
+        List<AttributeRuleformContext> ruleforms = context.attributes.attributeRuleform();
         return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
@@ -116,6 +138,16 @@ public class WorkspacePresentation {
         return context.inferences.edge();
     }
 
+    public List<ClassifiedAttributeContext> getIntervalAttributeClassifications() {
+        if (context.intervals == null) {
+            return Collections.emptyList();
+        }
+        if (context.intervals.classifiedAttributes() == null) {
+            return Collections.emptyList();
+        }
+        return context.intervals.classifiedAttributes().classifiedAttribute();
+    }
+
     public List<EdgeContext> getIntervalNetworks() {
         if (context.intervals == null) {
             return Collections.emptyList();
@@ -132,6 +164,16 @@ public class WorkspacePresentation {
         }
 
         return context.intervals.interval();
+    }
+
+    public List<ClassifiedAttributeContext> getLocationAttributeClassifications() {
+        if (context.locations == null) {
+            return Collections.emptyList();
+        }
+        if (context.locations.classifiedAttributes() == null) {
+            return Collections.emptyList();
+        }
+        return context.locations.classifiedAttributes().classifiedAttribute();
     }
 
     public List<EdgeContext> getLocationNetworks() {
@@ -166,6 +208,16 @@ public class WorkspacePresentation {
         return context.sequencingAuthorizations.parentSequencings().parentSequencing();
     }
 
+    public List<ClassifiedAttributeContext> getProductAttributeClassifications() {
+        if (context.products == null) {
+            return Collections.emptyList();
+        }
+        if (context.products.classifiedAttributes() == null) {
+            return Collections.emptyList();
+        }
+        return context.products.classifiedAttributes().classifiedAttribute();
+    }
+
     public List<EdgeContext> getProductNetworks() {
         if (context.products == null) {
             return Collections.emptyList();
@@ -189,6 +241,16 @@ public class WorkspacePresentation {
             return Collections.emptyList();
         }
         return context.protocols.protocol();
+    }
+
+    public List<ClassifiedAttributeContext> getRelationshipAttributeClassifications() {
+        if (context.relationships == null) {
+            return Collections.emptyList();
+        }
+        if (context.relationships.classifiedAttributes() == null) {
+            return Collections.emptyList();
+        }
+        return context.relationships.classifiedAttributes().classifiedAttribute();
     }
 
     public List<EdgeContext> getRelationshipNetworks() {
@@ -226,6 +288,16 @@ public class WorkspacePresentation {
                                : siblings.siblingSequencing();
     }
 
+    public List<ClassifiedAttributeContext> getStatusCodeAttributeClassifications() {
+        if (context.statusCodes == null) {
+            return Collections.emptyList();
+        }
+        if (context.statusCodes.classifiedAttributes() == null) {
+            return Collections.emptyList();
+        }
+        return context.statusCodes.classifiedAttributes().classifiedAttribute();
+    }
+
     public List<EdgeContext> getStatusCodeNetworks() {
         if (context.statusCodes == null) {
             return Collections.emptyList();
@@ -249,6 +321,16 @@ public class WorkspacePresentation {
             return Collections.emptyList();
         }
         return context.statusCodeSequencings.statusCodeSequencingSet();
+    }
+
+    public List<ClassifiedAttributeContext> getUnitAttributeClassifications() {
+        if (context.units == null) {
+            return Collections.emptyList();
+        }
+        if (context.units.classifiedAttributes() == null) {
+            return Collections.emptyList();
+        }
+        return context.units.classifiedAttributes().classifiedAttribute();
     }
 
     public List<EdgeContext> getUnitNetworks() {

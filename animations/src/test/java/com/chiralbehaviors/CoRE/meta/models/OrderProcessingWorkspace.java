@@ -41,10 +41,6 @@ public class OrderProcessingWorkspace {
     protected StatusCode   abandoned;
     protected Product      abc486;
     protected StatusCode   active;
-    protected Agency       anyAgency;
-    protected Location     anyLocation;
-    protected Product      anyProduct;
-    protected Relationship anyRelationship;
     protected Relationship area;
     protected Relationship areaOf;
     protected StatusCode   available;
@@ -59,7 +55,6 @@ public class OrderProcessingWorkspace {
     protected Relationship city;
     protected Relationship cityOf;
     protected StatusCode   completed;
-    protected Agency       core;
     protected Agency       cpu;
     protected Agency       creditDept;
     protected Relationship customerType;
@@ -82,7 +77,6 @@ public class OrderProcessingWorkspace {
     protected Agency       manufacturer;
     protected Product      nonExempt;
     protected Agency       nonExemptAgency;
-    protected Relationship notApplicableRelationship;
     protected Product      orderEntryWorkspace;
     protected Agency       orderFullfillment;
     protected Agency       orgA;
@@ -100,8 +94,6 @@ public class OrderProcessingWorkspace {
     protected Product      salesTax;
     protected Relationship salesTaxStatus;
     protected Relationship salesTaxStatusOf;
-    protected Product      sameProduct;
-    protected Relationship sameRelationship;
     protected Product      ship;
     protected Relationship state;
     protected Relationship stateOf;
@@ -110,7 +102,6 @@ public class OrderProcessingWorkspace {
     protected Relationship street;
     protected Relationship streetOf;
     protected Attribute    taxRateAttribute;
-    protected StatusCode   unset;
     protected Location     us;
     protected StatusCode   waitingOnCreditCheck;
     protected StatusCode   waitingOnFee;

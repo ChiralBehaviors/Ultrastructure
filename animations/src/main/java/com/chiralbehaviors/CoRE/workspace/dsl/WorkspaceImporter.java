@@ -29,10 +29,14 @@ import org.antlr.v4.runtime.Token;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
@@ -41,9 +45,11 @@ import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
@@ -51,12 +57,17 @@ import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
@@ -110,6 +121,7 @@ public class WorkspaceImporter {
         loadUnits();
         loadIntervals();
         loadEdges();
+        loadClassifiedAttributes();
         loadSequencingAuths();
         loadInferences();
         loadProtocols();
@@ -119,6 +131,102 @@ public class WorkspaceImporter {
 
     public void setScope(WorkspaceScope scope) {
         this.scope = scope;
+    }
+
+    private void classifyAgencyAttributes() {
+        for (ClassifiedAttributeContext classified : wsp.getAgencyAttributeClassifications()) {
+            AgencyAttributeAuthorization auth = new AgencyAttributeAuthorization(
+                                                                                 resolve(classified.classification),
+                                                                                 resolve(classified.classifier),
+                                                                                 resolve(classified.authorized),
+                                                                                 model.getKernel().getCore());
+            model.getEntityManager().persist(auth);
+            workspace.add(auth);
+        }
+    }
+
+    private void classifyAttributeMetaAttributes() {
+        for (ClassifiedAttributeContext classified : wsp.getAttributeAttributeClassifications()) {
+            AttributeMetaAttributeAuthorization auth = new AttributeMetaAttributeAuthorization(
+                                                                                               resolve(classified.classification),
+                                                                                               resolve(classified.classifier),
+                                                                                               resolve(classified.authorized),
+                                                                                               model.getKernel().getCore());
+            model.getEntityManager().persist(auth);
+            workspace.add(auth);
+        }
+    }
+
+    private void classifyIntervalAttributes() {
+        for (ClassifiedAttributeContext classified : wsp.getIntervalAttributeClassifications()) {
+            IntervalAttributeAuthorization auth = new IntervalAttributeAuthorization(
+                                                                                     resolve(classified.classification),
+                                                                                     resolve(classified.classifier),
+                                                                                     resolve(classified.authorized),
+                                                                                     model.getKernel().getCore());
+            model.getEntityManager().persist(auth);
+            workspace.add(auth);
+        }
+    }
+
+    private void classifyLocationAttributes() {
+        for (ClassifiedAttributeContext classified : wsp.getLocationAttributeClassifications()) {
+            LocationAttributeAuthorization auth = new LocationAttributeAuthorization(
+                                                                                     resolve(classified.classification),
+                                                                                     resolve(classified.classifier),
+                                                                                     resolve(classified.authorized),
+                                                                                     model.getKernel().getCore());
+            model.getEntityManager().persist(auth);
+            workspace.add(auth);
+        }
+    }
+
+    private void classifyProductAttributes() {
+        for (ClassifiedAttributeContext classified : wsp.getProductAttributeClassifications()) {
+            ProductAttributeAuthorization auth = new ProductAttributeAuthorization(
+                                                                                   resolve(classified.classification),
+                                                                                   resolve(classified.classifier),
+                                                                                   resolve(classified.authorized),
+                                                                                   model.getKernel().getCore());
+            model.getEntityManager().persist(auth);
+            workspace.add(auth);
+        }
+    }
+
+    private void classifyRelationshipAttributes() {
+        for (ClassifiedAttributeContext classified : wsp.getRelationshipAttributeClassifications()) {
+            RelationshipAttributeAuthorization auth = new RelationshipAttributeAuthorization(
+                                                                                             resolve(classified.classification),
+                                                                                             resolve(classified.classifier),
+                                                                                             resolve(classified.authorized),
+                                                                                             model.getKernel().getCore());
+            model.getEntityManager().persist(auth);
+            workspace.add(auth);
+        }
+    }
+
+    private void classifyStatusCodeAttributes() {
+        for (ClassifiedAttributeContext classified : wsp.getStatusCodeAttributeClassifications()) {
+            StatusCodeAttributeAuthorization auth = new StatusCodeAttributeAuthorization(
+                                                                                         resolve(classified.classification),
+                                                                                         resolve(classified.classifier),
+                                                                                         resolve(classified.authorized),
+                                                                                         model.getKernel().getCore());
+            model.getEntityManager().persist(auth);
+            workspace.add(auth);
+        }
+    }
+
+    private void classifyUnitAttributes() {
+        for (ClassifiedAttributeContext classified : wsp.getStatusCodeAttributeClassifications()) {
+            UnitAttributeAuthorization auth = new UnitAttributeAuthorization(
+                                                                             resolve(classified.classification),
+                                                                             resolve(classified.classifier),
+                                                                             resolve(classified.authorized),
+                                                                             model.getKernel().getCore());
+            model.getEntityManager().persist(auth);
+            workspace.add(auth);
+        }
     }
 
     private Product createWorkspaceProduct() {
@@ -172,14 +280,16 @@ public class WorkspaceImporter {
     }
 
     private void loadAttributes() {
-        for (ExistentialRuleformContext ruleform : wsp.getAttributes()) {
+        for (AttributeRuleformContext ruleform : wsp.getAttributes()) {
             Attribute attr = new Attribute(
-                                           stripQuotes(ruleform.name.getText()),
-                                           ruleform.description == null ? null
-                                                                       : stripQuotes(ruleform.description.getText()),
+                                           stripQuotes(ruleform.existentialRuleform().name.getText()),
+                                           ruleform.existentialRuleform().description == null ? null
+                                                                                             : stripQuotes(ruleform.existentialRuleform().description.getText()),
                                            model.getKernel().getCore());
+            setValueType(attr, ruleform.valueType);
             em.persist(attr);
-            workspace.put(ruleform.workspaceName.getText(), attr);
+            workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
+                          attr);
         }
     }
 
@@ -194,6 +304,17 @@ public class WorkspaceImporter {
             em.persist(auth);
             workspace.add(auth);
         }
+    }
+
+    private void loadClassifiedAttributes() {
+        classifyAgencyAttributes();
+        classifyAttributeMetaAttributes();
+        classifyIntervalAttributes();
+        classifyLocationAttributes();
+        classifyProductAttributes();
+        classifyRelationshipAttributes();
+        classifyStatusCodeAttributes();
+        classifyUnitAttributes();
     }
 
     private void loadEdges() {
@@ -560,6 +681,38 @@ public class WorkspaceImporter {
                                 model.getEntityManager().find(Product.class,
                                                               uuid),
                                 model.getKernel().getCore());
+        }
+    }
+
+    /**
+     * @param attr
+     * @param valueType
+     */
+    private void setValueType(Attribute attr, Token valueType) {
+        switch (valueType.getText()) {
+            case "int":
+                attr.setValueType(ValueType.INTEGER);
+                return;
+            case "bool":
+                attr.setValueType(ValueType.BOOLEAN);
+                return;
+            case "text":
+                attr.setValueType(ValueType.TEXT);
+                return;
+            case "binary":
+                attr.setValueType(ValueType.BINARY);
+                return;
+            case "numeric":
+                attr.setValueType(ValueType.NUMERIC);
+                return;
+            case "timestamp":
+                attr.setValueType(ValueType.TIMESTAMP);
+                return;
+            default:
+                throw new IllegalArgumentException(
+                                                   String.format("Invalid attribute value type: %s for %s",
+                                                                 valueType.getText(),
+                                                                 attr));
         }
     }
 

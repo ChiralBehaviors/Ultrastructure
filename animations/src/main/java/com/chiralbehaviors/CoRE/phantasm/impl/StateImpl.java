@@ -255,4 +255,28 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         // TODO Auto-generated method stub
         return null;
     }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param object
+     * @return
+     */
+    public Object setImmediateChild(String scope, String key, Object object) {
+        if (!(object instanceof Phantasm)) {
+            throw new ClassCastException(
+                                         String.format("%s does not implement %s",
+                                                       object.getClass().getCanonicalName(),
+                                                       Phantasm.class.getCanonicalName()));
+        }
+        @SuppressWarnings("unchecked")
+        Phantasm<RuleForm> phantasm = (Phantasm<RuleForm>) object;
+        RuleForm child = phantasm.getRuleform();
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
+        networkedModel.setImmediateChild(ruleform,
+                                         getRelationship(scope, key),
+                                         child,
+                                         model.getKernel().getCoreAnimationSoftware());
+        return null;
+    }
 }

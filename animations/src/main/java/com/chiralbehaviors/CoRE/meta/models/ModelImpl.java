@@ -139,6 +139,7 @@ public class ModelImpl implements Model {
             ex.initCause(e);
             throw ex;
         }
+        getEntityManager().persist(ruleform);
         return (Phantasm<? super T>) definition.construct(ruleform, this,
                                                           updatedBy);
     }

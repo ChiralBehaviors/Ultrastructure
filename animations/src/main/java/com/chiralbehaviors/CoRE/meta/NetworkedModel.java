@@ -389,12 +389,26 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @throws SQLException
      */
     void propagate();
-    
+
     /**
      * Sets a value for an attribute after validating it first
+     * 
      * @param value
      */
     void setAttributeValue(AttributeType value);
+
+    /**
+     * Sets the child of the immediate relationship defined by the parent and
+     * relationship. This is done by first deleting the edge, and then inserting
+     * the edge with the new child
+     * 
+     * @param parent
+     * @param relationship
+     * @param child
+     * @param updatedBy TODO
+     */
+    void setImmediateChild(RuleForm parent, Relationship relationship,
+                           RuleForm child, Agency updatedBy);
 
     /**
      *

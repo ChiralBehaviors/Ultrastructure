@@ -39,7 +39,6 @@ import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.annotations.Aspect;
 import com.chiralbehaviors.annotations.Attribute;
-import com.chiralbehaviors.annotations.Immediate;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.Relationship;
 import com.chiralbehaviors.annotations.State;
@@ -131,7 +130,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             return;
         }
         if (method.getAnnotation(Relationship.class) != null) {
-            process(method.getAnnotation(Relationship.class), method, null);
+            process(method.getAnnotation(Relationship.class), method);
         } else if (method.getAnnotation(Attribute.class) != null) {
             process(method.getAnnotation(Attribute.class), method);
         } else {
@@ -139,20 +138,41 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    private void process(Relationship annotation, Method method,
-                         Class<Phantasm<? extends RuleForm>> phantasm) {
+    private void process(Relationship annotation, Method method) {
+        if (List.class.isAssignableFrom(method.getReturnType())) {
+            processGetList(annotation, method);
+        } else {
+            processSingular(annotation, method);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void processSingular(Relationship annotation, Method method) {
         Key value = annotation.value();
-        if (method.getAnnotation(Immediate.class) == null) {
+        if (method.getReturnType().equals(Void.TYPE)) {
+            if (method.getParameterCount() != 1) {
+                throw new IllegalArgumentException(
+                                                   String.format("Not a valid Relationship setter: %s",
+                                                                 method));
+            }
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getChild(value.namespace(),
-                                                                                          value.name(),
-                                                                                          phantasm));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(value.namespace(),
+                                                                                                   value.name(),
+                                                                                                   arguments[0]));
         } else {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChild(value.namespace(),
                                                                                                    value.name(),
-                                                                                                   phantasm));
+                                                                                                   (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
         }
+    }
+
+    /**
+     * @param annotation
+     * @param method
+     * @return
+     */
+    private void processGetList(Relationship annotation, Method method) {
     }
 
     private void processGetter(Attribute attribute, Method method) {
@@ -243,7 +263,6 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     /**
      * @param model
-     *            TODO
      * @return
      */
     @SuppressWarnings("unchecked")

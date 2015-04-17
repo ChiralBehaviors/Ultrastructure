@@ -22,7 +22,6 @@ package com.chiralbehaviors.phantasm;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -38,6 +37,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.phantasm.demo.Thing1;
+import com.chiralbehaviors.phantasm.demo.Thing2;
 
 /**
  * @author hhildebrand
@@ -73,12 +73,15 @@ public class TestPhantasm extends AbstractModelTest {
 
         Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test",
                                                  kernel.getCore());
+        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tasty",
+                                                 "chips", kernel.getCore());
         assertNotNull(thing1);
         assertEquals(thing1, thing1.doSomethingElse());
         thing1.doSomething("hello");
         assertNotNull(thing1.getRuleform());
         assertEquals(thing1.getRuleform().getName(), thing1.getName());
-        assertNull(thing1.getThing2());
+        thing1.setThing2(thing2);
+        assertNotNull(thing1.getThing2());
         assertEquals(thing1, thing1.scopedAccess());
     }
 }

@@ -222,20 +222,26 @@ abstract public class AttributeAuthorization extends Ruleform {
         this.timestampValue = timestampValue;
     }
 
-    public Void setValue(Object value) {
+    public void setValue(Object value) {
         switch (getAuthorizedAttribute().getValueType()) {
             case BINARY:
                 setBinaryValue((byte[]) value);
+                return;
             case BOOLEAN:
                 setBooleanValue((Boolean) value);
+                return;
             case INTEGER:
                 setIntegerValue((Integer) value);
+                return;
             case NUMERIC:
                 setNumericValue((BigDecimal) value);
+                return;
             case TEXT:
                 setTextValue((String) value);
+                return;
             case TIMESTAMP:
                 setTimestampValue((Timestamp) value);
+                return;
             default:
                 throw new IllegalStateException(
                                                 String.format("Invalid value type: %s",

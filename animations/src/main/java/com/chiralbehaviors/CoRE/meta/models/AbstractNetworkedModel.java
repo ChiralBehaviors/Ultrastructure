@@ -35,8 +35,6 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RU
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 
 import java.lang.reflect.ParameterizedType;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -92,7 +90,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public static void defaultValue(AttributeValue<?> attr) {
         switch (attr.getAttribute().getValueType()) {
             case BINARY: {
-                attr.setBinaryValue(new byte[0]);
+                attr.setBinaryValue(null);
                 break;
             }
             case BOOLEAN: {
@@ -100,19 +98,19 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                 break;
             }
             case INTEGER: {
-                attr.setIntegerValue(-1);
+                attr.setIntegerValue(null);
                 break;
             }
             case NUMERIC: {
-                attr.setNumericValue(new BigDecimal(-1));
+                attr.setNumericValue(null);
                 break;
             }
             case TEXT: {
-                attr.setTextValue("");
+                attr.setTextValue(null);
                 break;
             }
             case TIMESTAMP: {
-                attr.setTimestampValue(new Timestamp(0));
+                attr.setTimestampValue(null);
                 break;
             }
         }

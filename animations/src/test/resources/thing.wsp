@@ -3,13 +3,37 @@ workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phant
 imports {
     "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
 }
+attributes {
+    aliases = "Aliases" "Alias Smith and Jones" text;
+    discount = "Percentage" "The cut off the top" numeric;
+    URI = "URI" "the Universal Resource Indicator" text;
+    
+    artifactId = "Artifact ID" "artifact identifier" text;
+    classifier = "Classifier" "classifier" text;
+    groupId = "Group ID" "group identifier" text;
+    type = "Type" "type" text;
+    version = "Version" "version" text;
+    
+}
 locations {
-    MavenArtifact = "MavenArtifact" "A maven artifact"; 
+    MavenArtifact = "MavenArtifact" "A maven artifact";
+    classified attributes {
+        kernel::IsA.MavenArtifact artifactId
+        kernel::IsA.MavenArtifact classifier
+        kernel::IsA.MavenArtifact groupId
+        kernel::IsA.MavenArtifact type
+        kernel::IsA.MavenArtifact version
+    }
 }
 products {
     Thing1 = "Thing1" "Thing 1";
     Thing2 = "Thing2" "Thing 2";
     Thing3 = "Thing3" "Thing 3";
+    classified attributes {
+        kernel::IsA.Thing1 aliases
+        kernel::IsA.Thing1 URI
+        kernel::IsA.Thing1 discount
+    }
 }
 relationships {
     derivedFrom = "Derived From" "A is derived from B" | derivativeOf = "Derivative Of" "A is a derivative of B";

@@ -24,6 +24,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.math.BigDecimal;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -85,8 +87,8 @@ public class TestPhantasm extends AbstractModelTest {
         thing1.setThing2(thing2);
         assertNotNull(thing1.getThing2());
         assertEquals(thing1, thing1.scopedAccess());
-        //        assertNull(thing1.getPercentage());
-        //        thing1.setPercentage(BigDecimal.ONE);
-        //        assertEquals(BigDecimal.ONE, thing1.getPercentage());
+        assertNull(thing1.getPercentage());
+        thing1.setPercentage(BigDecimal.ONE);
+        assertEquals(BigDecimal.ONE, thing1.getPercentage());
     }
 }

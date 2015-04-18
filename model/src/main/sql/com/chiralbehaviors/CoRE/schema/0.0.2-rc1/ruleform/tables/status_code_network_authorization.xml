@@ -27,7 +27,7 @@
             <column name="authorized_parent" remarks="A network parent a status_code is expected to have" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="authorized_status_code" remarks="A network status_code a status_code is expected to have" type="uuid">
+            <column name="authorized_relationship" remarks="A network relationship a status_code is expected to have" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="cardinality" type="SMALLINT">
@@ -52,9 +52,9 @@
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="status_code" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authorized_status_code" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_authorized_status_code_fkey"
+            baseColumnNames="authorized_relationship" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_authorized_relationship_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="status_code" />
+            referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classification" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_classification_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
@@ -72,7 +72,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="classification, classifier, authorized_parent, authorized_status_code, sequence_number" constraintName="status_code_status_code_authorizatio_status_code_classification_attri_key"
+            columnNames="classification, classifier, authorized_parent, authorized_relationship, sequence_number" constraintName="status_code_status_code_authorizatio_status_code_classification_attri_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="status_code_network_authorization" />
         <createIndex schemaName="ruleform" indexName="status_code_network_authorization_updated_by_fkey_idx" tableName="status_code_network_authorization"
             unique="false"

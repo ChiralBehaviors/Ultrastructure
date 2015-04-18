@@ -116,8 +116,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "workspace_authorization", schema = "ruleform")
 public class WorkspaceAuthorization extends Ruleform {
-    public static final String  AGENCY                                   = "Agency";
+    public static final String  GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
+    public static final String  GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
+    public static final String  GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
 
+    public static final String  AGENCY                                   = "Agency";
     public static final String  AGENCY_ATTRIBUTE                         = "AgencyAttribute";
     public static final String  AGENCY_ATTRIBUTE_AUTHORIZATION           = "AgencyAttributeAuthorization";
     public static final String  AGENCY_LOCATION                          = "AgencyLocation";
@@ -133,9 +136,6 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  ATTRIBUTE_NETWORK                        = "AttributeNetwork";
     public static final String  ATTRIBUTE_NETWORK_ATTRIBUTE              = "AttributeNetworkAttribute";
     public static final String  ATTRIBUTE_NETWORK_AUTHORIZATION          = "AttributeNetworkAuthorization";
-    public static final String  GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
-    public static final String  GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
-    public static final String  GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
     public static final String  INTERVAL                                 = "Interval";
     public static final String  INTERVAL_ATTRIBUTE                       = "IntervalAttribute";
     public static final String  INTERVAL_NETWORK                         = "IntervalNetwork";

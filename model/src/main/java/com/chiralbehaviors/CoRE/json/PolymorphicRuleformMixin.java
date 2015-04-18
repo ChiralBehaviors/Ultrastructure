@@ -14,6 +14,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAttribute;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
@@ -26,7 +27,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitValue;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
@@ -97,7 +97,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                @Type(value = JobChronology.class, name = "jobchronology"),
                @Type(value = AttributeMetaAttributeAuthorization.class, name = "attributemetaattributeauthorization"),
                @Type(value = AgencyNetworkAttribute.class, name = "agencynetworkattribute"),
-               @Type(value = UnitValue.class, name = "unitvalue"),
                @Type(value = Interval.class, name = "interval"),
                @Type(value = WorkspaceAuthorization.class, name = "workspaceauthorization"),
                @Type(value = AttributeNetwork.class, name = "attributenetwork"),
@@ -130,6 +129,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                @Type(value = IntervalNetworkAttribute.class, name = "intervalnetworkattribute"),
                @Type(value = Product.class, name = "product"),
                @Type(value = AgencyProduct.class, name = "agencyproduct"),
+               @Type(value = AgencyProductAttribute.class, name = "agencyproductattribute"),
                @Type(value = StatusCodeAttributeAuthorization.class, name = "statuscodeattributeauthorization"),
                @Type(value = AttributeNetworkAttribute.class, name = "attributenetworkattribute"),
                @Type(value = ProductNetwork.class, name = "productnetwork"),

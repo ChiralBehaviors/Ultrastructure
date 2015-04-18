@@ -20,7 +20,6 @@
     <include relativeToChangelogFile="true" file="tables/protocol-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/job-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/job_chronology-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/unit_values-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_product-0.0.1.xml" />

@@ -60,7 +60,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitValue;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobChronology;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
@@ -184,7 +183,6 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  UNIT_NETWORK                             = "UnitNetwork";
     public static final String  UNIT_NETWORK_ATTRIBUTE                   = "UnitNetworkAttribute";
     public static final String  UNIT_NETWORK_AUTHORIZATION               = "UnitNetworkAuthorization";
-    public static final String  UNIT_VALUE                               = "UnitValue";
     private static final String INTERVAL_ATTRIBUTE_AUTHORIZATION         = "IntervalAttributeAuthorization";
 
     private static final long   serialVersionUID                         = 1L;
@@ -468,10 +466,6 @@ public class WorkspaceAuthorization extends Ruleform {
     @JoinColumn(name = "unit_network_attribute")
     private UnitNetworkAttribute                  unitNetworkAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "unit_value")
-    private UnitValue                             unitValue;
-
     public WorkspaceAuthorization() {
         super();
     }
@@ -612,8 +606,6 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getUnitNetwork();
             case UNIT_NETWORK_ATTRIBUTE:
                 return (T) getUnitNetworkAttribute();
-            case UNIT_VALUE:
-                return (T) getUnitValue();
             case LOCATION:
                 return (T) getLocation();
             case LOCATION_ATTRIBUTE:
@@ -938,11 +930,6 @@ public class WorkspaceAuthorization extends Ruleform {
         return unitNetworkAttribute;
     }
 
-    @JsonIgnore
-    public UnitValue getUnitValue() {
-        return unitValue;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */
@@ -1088,9 +1075,6 @@ public class WorkspaceAuthorization extends Ruleform {
                 break;
             case UNIT_NETWORK_ATTRIBUTE:
                 setUnitNetwork((UnitNetwork) entity);
-                break;
-            case UNIT_VALUE:
-                setUnitValue((UnitValue) entity);
                 break;
             case LOCATION:
                 setLocation((Location) entity);
@@ -1452,11 +1436,6 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setUnitNetworkAttribute(UnitNetworkAttribute unitNetworkAttribute) {
         type = UNIT_NETWORK_ATTRIBUTE;
         this.unitNetworkAttribute = unitNetworkAttribute;
-    }
-
-    public void setUnitValue(UnitValue unitValue) {
-        type = UNIT_VALUE;
-        this.unitValue = unitValue;
     }
 
     public AttributeNetworkAuthorization getAttributeNetworkAuthorization() {

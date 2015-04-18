@@ -76,7 +76,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
 
     /**
      * @param attribute
-     *            TODO
      * @param updatedBy
      */
     public AttributeMetaAttribute(Attribute attribute, Attribute metaAttribute,

@@ -24,6 +24,7 @@
     <include relativeToChangelogFile="true" file="tables/attribute_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_product-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_product_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_location_attribute-0.0.1.xml" />

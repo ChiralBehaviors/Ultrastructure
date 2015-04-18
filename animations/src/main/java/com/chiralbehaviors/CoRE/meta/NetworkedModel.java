@@ -405,7 +405,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param parent
      * @param relationship
      * @param child
-     * @param updatedBy TODO
+     * @param updatedBy
      */
     void setImmediateChild(RuleForm parent, Relationship relationship,
                            RuleForm child, Agency updatedBy);

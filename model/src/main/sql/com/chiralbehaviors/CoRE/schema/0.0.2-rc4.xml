@@ -41,6 +41,7 @@
             <column name="agency_network_attribute" type="uuid" />
             <column name="agency_network_authorization" type="uuid" />
             <column name="agency_product" type="uuid" />
+            <column name="agency_product_attribute" type="uuid" />
             <column name="agency_location_access_authorization" type="uuid" />
             <column name="agency_product_access_authorization" type="uuid" />
             <column name="attribute" type="uuid" />
@@ -137,6 +138,10 @@
             baseColumnNames="agency_product" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_product_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_product_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_product_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency_product_attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"

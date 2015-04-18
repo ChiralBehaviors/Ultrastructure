@@ -47,6 +47,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAttribute;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
@@ -126,6 +127,7 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  AGENCY_NETWORK_ATTRIBUTE                 = "AgencyNetworkAttribute";
     public static final String  AGENCY_NETWORK_AUTHORIZATION             = "AgencyNetworkAuthorization";
     public static final String  AGENCY_PRODUCT                           = "AgencyProduct";
+    public static final String  AGENCY_PRODUCT_ATTRIBUTE                 = "AgencyProductAttribute";
     public static final String  ATTRIBUTE                                = "Attribute";
     public static final String  ATTRIBUTE_META_ATTRIBUTE                 = "AttributeMetaAttribute";
     public static final String  ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION   = "AttributeMetaAttributeAuthorization";
@@ -236,6 +238,10 @@ public class WorkspaceAuthorization extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_product")
     private AgencyProduct                         agencyProduct;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_product_attribute")
+    private AgencyProductAttribute                agencyProductAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attribute")
@@ -584,6 +590,8 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getAgencyNetworkAuthorization();
             case AGENCY_PRODUCT:
                 return (T) getAgencyProduct();
+            case AGENCY_PRODUCT_ATTRIBUTE:
+                return (T) getAgencyProductAttribute();
             case ATTRIBUTE:
                 return (T) getAttribute();
             case ATTRIBUTE_META_ATTRIBUTE:
@@ -1048,6 +1056,9 @@ public class WorkspaceAuthorization extends Ruleform {
             case AGENCY_PRODUCT:
                 setAgencyProduct((AgencyProduct) entity);
                 break;
+            case AGENCY_PRODUCT_ATTRIBUTE:
+                setAgencyProductAttribute((AgencyProductAttribute) entity);
+                break;
             case ATTRIBUTE:
                 setAttribute((Attribute) entity);
                 break;
@@ -1494,6 +1505,14 @@ public class WorkspaceAuthorization extends Ruleform {
 
     public void setUnitNetworkAuthorization(UnitNetworkAuthorization unitNetworkAuthorization) {
         this.unitNetworkAuthorization = unitNetworkAuthorization;
+    }
+
+    public AgencyProductAttribute getAgencyProductAttribute() {
+        return agencyProductAttribute;
+    }
+
+    public void setAgencyProductAttribute(AgencyProductAttribute agencyProductAttribute) {
+        this.agencyProductAttribute = agencyProductAttribute;
     }
 
 }

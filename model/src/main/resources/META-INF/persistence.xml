@@ -20,6 +20,7 @@
         <class>com.chiralbehaviors.CoRE.agency.AgencyLocation</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyProduct</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyProductAttribute</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.Attribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeAuthorization</class>

@@ -19,8 +19,6 @@
  */
 package com.chiralbehaviors.CoRE.agency;
 
-import static com.chiralbehaviors.CoRE.agency.AgencyAttribute.GET_ATTRIBUTE;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -28,8 +26,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -42,59 +38,58 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * The attribute value of an agency attribute
+ * The attribute value for product location attributes
  *
  * @author hhildebrand
  *
  */
 @Entity
-@Table(name = "agency_attribute", schema = "ruleform")
-@NamedQueries({ @NamedQuery(name = GET_ATTRIBUTE, query = "SELECT ra FROM AgencyAttribute ra WHERE ra.agency = :ruleform AND ra.attribute = :attribute ORDER BY ra.sequenceNumber") })
-public class AgencyAttribute extends AttributeValue<Agency> {
-    public static final String GET_ATTRIBUTE    = "agencyAttribute"
-                                                  + GET_ATTRIBUTE_SUFFIX;
-    private static final long  serialVersionUID = 1L;
+@Table(name = "agency_product_attribute", schema = "ruleform")
+public class AgencyProductAttribute extends AttributeValue<AgencyProduct> {
+    private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
-    private Agency             agency;
+    private Agency            agency;
 
-    public AgencyAttribute() {
-        super();
+    // bi-directional many-to-one association to AgencyProduct
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_product")
+    private AgencyProduct     agencyProduct;
+
+    public AgencyProductAttribute() {
     }
 
     /**
      * @param updatedBy
      */
-    public AgencyAttribute(Agency updatedBy) {
+    public AgencyProductAttribute(Agency updatedBy) {
         super(updatedBy);
     }
 
     /**
-     * @param agency
-     * @param attribute
-     * @param updatedBy
-     */
-    public AgencyAttribute(Agency agency, Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
-        setAgency(agency);
-    }
-
-    /**
      * @param attribute
      */
-    public AgencyAttribute(Attribute attribute) {
+    public AgencyProductAttribute(Attribute attribute) {
         super(attribute);
     }
 
     /**
      * @param attribute
+     * @param updatedBy
+     */
+    public AgencyProductAttribute(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+    }
+
+    /**
+     * @param attribute
      * @param value
      * @param updatedBy
      */
-    public AgencyAttribute(Attribute attribute, BigDecimal value,
-                           Agency updatedBy) {
+    public AgencyProductAttribute(Attribute attribute, BigDecimal value,
+                                  Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -103,7 +98,8 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * @param value
      * @param updatedBy
      */
-    public AgencyAttribute(Attribute attribute, boolean value, Agency updatedBy) {
+    public AgencyProductAttribute(Attribute attribute, boolean value,
+                                  Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -112,7 +108,8 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * @param value
      * @param updatedBy
      */
-    public AgencyAttribute(Attribute attribute, int value, Agency updatedBy) {
+    public AgencyProductAttribute(Attribute attribute, int value,
+                                  Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -121,7 +118,8 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * @param value
      * @param updatedBy
      */
-    public AgencyAttribute(Attribute attribute, String value, Agency updatedBy) {
+    public AgencyProductAttribute(Attribute attribute, String value,
+                                  Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -129,20 +127,25 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * @param attribute
      * @param unit
      */
-    public AgencyAttribute(Attribute attribute, Unit unit) {
+    public AgencyProductAttribute(Attribute attribute, Unit unit) {
         super(attribute, unit);
     }
 
     /**
      * @param id
      */
-    public AgencyAttribute(UUID id) {
+    public AgencyProductAttribute(UUID id) {
         super(id);
     }
 
     @JsonGetter
     public Agency getAgency() {
         return agency;
+    }
+
+    @JsonGetter
+    public AgencyProduct getAgencyProduct() {
+        return agencyProduct;
     }
 
     /*
@@ -152,8 +155,8 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformAttribute()
      */
     @Override
-    public SingularAttribute<AgencyAttribute, Agency> getRuleformAttribute() {
-        return AgencyAttribute_.agency;
+    public SingularAttribute<AgencyProductAttribute, AgencyProduct> getRuleformAttribute() {
+        return AgencyProductAttribute_.agencyProduct;
     }
 
     /*
@@ -162,8 +165,8 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * @see com.chiralbehaviors.CoRE.attribute.AttributeValue#getRuleformClass()
      */
     @Override
-    public Class<Agency> getRuleformClass() {
-        return Agency.class;
+    public Class<AgencyProduct> getRuleformClass() {
+        return AgencyProduct.class;
     }
 
     /* (non-Javadoc)
@@ -171,11 +174,15 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      */
     @Override
     @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyAttribute;
+    public SingularAttribute<WorkspaceAuthorization, AgencyProductAttribute> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agencyProductAttribute;
     }
 
     public void setAgency(Agency agency2) {
         agency = agency2;
+    }
+
+    public void setAgencyProduct(AgencyProduct agencyProduct) {
+        this.agencyProduct = agencyProduct;
     }
 }

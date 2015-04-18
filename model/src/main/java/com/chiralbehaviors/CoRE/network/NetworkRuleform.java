@@ -33,6 +33,7 @@ import javax.persistence.MappedSuperclass;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

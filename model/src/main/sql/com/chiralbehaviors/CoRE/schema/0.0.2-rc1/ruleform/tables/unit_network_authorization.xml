@@ -30,6 +30,9 @@
             <column name="authorized_unit" remarks="A network unit a unit is expected to have" type="uuid">
                 <constraints nullable="false" />
             </column>
+            <column name="cardinality" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
             <column defaultValueComputed="1" name="sequence_number" remarks="Ordering and uniqueness, for when an unit can have multiple acceptable values"
                 type="sequence_number"
             >

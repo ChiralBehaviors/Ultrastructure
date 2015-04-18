@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -18,56 +18,48 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.network;
+package com.chiralbehaviors.CoRE.relationship;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
  * @author hhildebrand
  *
  */
+@Entity
+@Table(name = "relationship_network_authorization", schema = "ruleform")
 public class RelationshipNetworkAuthorization extends
         NetworkAuthorization<Relationship> {
 
     private static final long serialVersionUID = 1L;
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParent()
-     */
+    // bi-directional many-to-one association to Event
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "authorized_parent")
+    private Relationship      authorizedParent;
+
+    // bi-directional many-to-one association to Event
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "classifier")
+    private Relationship      classifier;
+
     @Override
     public Relationship getAuthorizedParent() {
-        // TODO Auto-generated method stub
-        return null;
+        return authorizedParent;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
-     */
     @Override
     public Relationship getClassifier() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setAuthorizedParent(Relationship parent) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setClassifier(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setClassifier(Relationship classifier) {
-        // TODO Auto-generated method stub
-
+        return classifier;
     }
 
     /* (non-Javadoc)
@@ -77,6 +69,16 @@ public class RelationshipNetworkAuthorization extends
     public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void setAuthorizedParent(Relationship authorizedParent) {
+        this.authorizedParent = authorizedParent;
+    }
+
+    @Override
+    public void setClassifier(Relationship classifier) {
+        this.classifier = classifier;
     }
 
 }

@@ -32,6 +32,7 @@ import javax.persistence.MappedSuperclass;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  *
@@ -50,6 +51,8 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_relationship")
     private Relationship      authorizedRelationship;
+
+    private Cardinality       cardinality;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
@@ -87,6 +90,10 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
         return authorizedRelationship;
     }
 
+    public Cardinality getCardinality() {
+        return cardinality;
+    }
+
     public Relationship getClassification() {
         return classification;
     }
@@ -105,6 +112,10 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     public void setAuthorizedRelationship(Relationship authorizedRelationship) {
         this.authorizedRelationship = authorizedRelationship;
+    }
+
+    public void setCardinality(Cardinality cardinality) {
+        this.cardinality = cardinality;
     }
 
     public void setClassification(Relationship classification) {

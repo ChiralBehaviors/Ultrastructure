@@ -19,11 +19,13 @@ import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAttribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitValue;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobChronology;
@@ -38,6 +40,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAttribute;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
@@ -46,10 +49,6 @@ import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAttribute;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.network.RelationshipAttribute;
-import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
-import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
@@ -58,11 +57,17 @@ import com.chiralbehaviors.CoRE.product.ProductLocationAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute;
+import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -129,6 +134,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                @Type(value = AttributeNetworkAttribute.class, name = "attributenetworkattribute"),
                @Type(value = ProductNetwork.class, name = "productnetwork"),
                @Type(value = LocationNetworkAttribute.class, name = "locationnetworkattribute"),
+               @Type(value = AttributeNetworkAuthorization.class, name = "attributenetworkauthorization"),
+               @Type(value = IntervalNetworkAuthorization.class, name = "intervalnetworkauthorization"),
+               @Type(value = RelationshipNetworkAuthorization.class, name = "relationshipnetworkauthorization"),
+               @Type(value = StatusCodeNetworkAuthorization.class, name = "statuscodenetworkauthorization"),
+               @Type(value = UnitNetworkAuthorization.class, name = "unitnetworkauthorization"),
 
 })
 public abstract class PolymorphicRuleformMixin {

@@ -20,6 +20,7 @@
 package com.chiralbehaviors.CoRE.network;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * An Aspect is the classification of an networked ruleform within a network.

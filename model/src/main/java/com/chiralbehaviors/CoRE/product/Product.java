@@ -55,7 +55,7 @@ import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;

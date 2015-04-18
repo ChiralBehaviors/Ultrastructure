@@ -55,8 +55,8 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.hellblazer.utils.Tuple;
 
 /**

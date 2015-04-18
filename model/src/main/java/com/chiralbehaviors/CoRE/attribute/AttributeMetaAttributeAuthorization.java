@@ -30,7 +30,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;

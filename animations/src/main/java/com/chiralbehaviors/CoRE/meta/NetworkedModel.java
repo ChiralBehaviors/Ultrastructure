@@ -34,7 +34,7 @@ import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  *

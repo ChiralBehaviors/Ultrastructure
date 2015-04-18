@@ -30,6 +30,9 @@
             <column name="authorized_status_code" remarks="A network status_code a status_code is expected to have" type="uuid">
                 <constraints nullable="false" />
             </column>
+            <column name="cardinality" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
             <column defaultValueComputed="1" name="sequence_number"
                 remarks="Ordering and uniqueness, for when an status_code can have multiple acceptable values" type="sequence_number"
             >

@@ -5,8 +5,82 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <include relativeToChangelogFile="true" file="product_network_authorization/table.xml" />
-    <include relativeToChangelogFile="true" file="product_network_authorization/grants.xml" />
-    <include relativeToChangelogFile="true" file="product_network_authorization/owner.xml" />
-
+    <changeSet author="hhildebrand" id="1390879803225-42">
+        <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular Entities"
+            tableName="product_network_authorization"
+        >
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="product_network_authorization_pkey" />
+            </column>
+            <column name="classification"
+                remarks="In conjunction with the 'classifier' column, determines the classification criteria for selecting network relationships a certain Product must have"
+                type="uuid"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="classifier"
+                remarks="In conjunction with the 'classification' column, determines the classification criteria for selecting network relationships a certain Product must have"
+                type="uuid"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="authorized_parent" remarks="A network parent a Product is expected to have" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="authorized_relationship" remarks="A network relationship a Product is expected to have" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="cardinality" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number"
+                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="grouping_agency" remarks="A network parent an Product is expected to have" type="uuid" />
+            <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule"
+                type="uuid"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="product_network_authorization" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_parent" baseTableName="product_network_authorization" constraintName="product_network_authorization_authorized_parent_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_relationship" baseTableName="product_network_authorization" constraintName="product_network_authorization_authorized_relationship_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classification" baseTableName="product_network_authorization" constraintName="product_network_authorization_classification_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classifier" baseTableName="product_network_authorization" constraintName="product_network_authorization_classifier_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="product_network_authorization" constraintName="product_network_authorization_grouping_agency_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_network_authorization" constraintName="product_network_authorization_updated_by_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform"
+            columnNames="classification, classifier, authorized_parent, authorized_relationship, sequence_number" constraintName="product_attribute_authorizatio_agency_classification_attri_key"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_network_authorization" />
+        <createIndex schemaName="ruleform" indexName="product_network_authorization_updated_by_fkey_idx" tableName="product_network_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

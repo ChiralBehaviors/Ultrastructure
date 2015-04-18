@@ -30,8 +30,8 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
-import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand

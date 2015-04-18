@@ -52,11 +52,13 @@ import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAttribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitValue;
 import com.chiralbehaviors.CoRE.event.Job;
 import com.chiralbehaviors.CoRE.event.JobChronology;
@@ -71,6 +73,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAttribute;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
@@ -79,11 +82,6 @@ import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAttribute;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.network.RelationshipAttribute;
-import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
-import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
-import com.chiralbehaviors.CoRE.network.RelationshipNetworkAttribute;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
@@ -91,11 +89,19 @@ import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
+import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAttribute;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute;
+import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -125,6 +131,7 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION   = "AttributeMetaAttributeAuthorization";
     public static final String  ATTRIBUTE_NETWORK                        = "AttributeNetwork";
     public static final String  ATTRIBUTE_NETWORK_ATTRIBUTE              = "AttributeNetworkAttribute";
+    public static final String  ATTRIBUTE_NETWORK_AUTHORIZATION          = "AttributeNetworkAuthorization";
     public static final String  GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
     public static final String  GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
     public static final String  GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
@@ -132,6 +139,7 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  INTERVAL_ATTRIBUTE                       = "IntervalAttribute";
     public static final String  INTERVAL_NETWORK                         = "IntervalNetwork";
     public static final String  INTERVAL_NETWORK_ATTRIBUTE               = "IntervalNetworkAttribute";
+    public static final String  INTERVAL_NETWORK_AUTHORIZATION           = "IntervalNetworkAuthorization";
     public static final String  JOB                                      = "Job";
     public static final String  JOB_CHRONOLOGY                           = "JobChronology";
     public static final String  LOCATION                                 = "Location";
@@ -150,6 +158,7 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  PRODUCT_LOCATION_ATTRIBUTE               = "ProductLocationAttribute";
     public static final String  PRODUCT_NETWORK                          = "ProductNetwork";
     public static final String  PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
+    public static final String  PRODUCT_NETWORK_AUTHORIZATION            = "ProductNetworkAuthorization";
     public static final String  PRODUCT_PARENT_SEQUENCING_AUTHORIZATION  = "ProductParentSequencingAuthorization";
     public static final String  PRODUCT_SELF_SEQUENCING_AUTHORIZATION    = "ProductSelfSequencingAuthorization";
     public static final String  PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
@@ -159,17 +168,20 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  RELATIONSHIP_ATTRIBUTE_AUTHORIZATION     = "RelationshipAttributeAuthorization";
     public static final String  RELATIONSHIP_NETWORK                     = "RelationshipNetwork";
     public static final String  RELATIONSHIP_NETWORK_ATTRIBUTE           = "RelationshipNetworkAttribute";
+    public static final String  RELATIONSHIP_NETWORK_AUTHORIZATION       = "RelationshipNetworkAuthorization";
     public static final String  STATUS_CODE                              = "StatusCode";
     public static final String  STATUS_CODE_ATTRIBUTE                    = "StatusCodeAttribute";
     public static final String  STATUS_CODE_ATTRIBUTE_AUTHORIZATION      = "StatusCodeAttributeAuthorization";
     public static final String  STATUS_CODE_NETWORK                      = "StatusCodeNetwork";
     public static final String  STATUS_CODE_NETWORK_ATTRIBUTE            = "StatusCodeNetworkAttribute";
+    public static final String  STAUTUS_CODE_NETWORK_AUTHORIZATION       = "StatusCodeNetworkAuthorization";
     public static final String  STATUS_CODE_SEQUENCING                   = "StatusCodeSequencing";
     public static final String  UNIT                                     = "Unit";
     public static final String  UNIT_ATTRIBUTE                           = "UnitAttribute";
     public static final String  UNIT_ATTRIBUTE_AUTHORIZATION             = "UnitAttributeAuthorization";
     public static final String  UNIT_NETWORK                             = "UnitNetwork";
     public static final String  UNIT_NETWORK_ATTRIBUTE                   = "UnitNetworkAttribute";
+    public static final String  UNIT_NETWORK_AUTHORIZATION               = "UnitNetworkAuthorization";
     public static final String  UNIT_VALUE                               = "UnitValue";
     private static final String INTERVAL_ATTRIBUTE_AUTHORIZATION         = "IntervalAttributeAuthorization";
 
@@ -246,6 +258,10 @@ public class WorkspaceAuthorization extends Ruleform {
     private AttributeNetworkAttribute             attributeNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "attribute_network_authorization")
+    private AttributeNetworkAuthorization         attributeNetworkAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "defining_product")
     private Product                               definingProduct;
 
@@ -260,6 +276,10 @@ public class WorkspaceAuthorization extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval_attribute_authorization")
     private IntervalAttributeAuthorization        intervalAttributeAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "interval_network_authorization")
+    private IntervalNetworkAuthorization          intervalNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval_network")
@@ -344,6 +364,10 @@ public class WorkspaceAuthorization extends Ruleform {
     private ProductNetworkAttribute               productNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "product_network_authorization")
+    private ProductNetworkAuthorization           productNetworkAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_parent_sequencing_authorization")
     private ProductParentSequencingAuthorization  productParentSequencingAuthorization;
 
@@ -370,6 +394,10 @@ public class WorkspaceAuthorization extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship_attribute_authorization")
     private RelationshipAttributeAuthorization    relationshipAttributeAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "relationship_network_authorization")
+    private RelationshipNetworkAuthorization      relationshipNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship_network")
@@ -400,6 +428,10 @@ public class WorkspaceAuthorization extends Ruleform {
     private StatusCodeNetworkAttribute            statusCodeNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "status_code_network_authorization")
+    private StatusCodeNetworkAuthorization        statusCodeNetworkAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code_sequencing")
     private StatusCodeSequencing                  statusCodeSequencing;
 
@@ -417,6 +449,10 @@ public class WorkspaceAuthorization extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_attribute_authorization")
     private UnitAttributeAuthorization            unitAttributeAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "unit_network_authorization")
+    private UnitNetworkAuthorization              unitNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_network")
@@ -646,6 +682,18 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getRelationshipNetwork();
             case RELATIONSHIP_NETWORK_ATTRIBUTE:
                 return (T) getRelationshipNetworkAttribute();
+            case ATTRIBUTE_NETWORK_AUTHORIZATION:
+                return (T) getAgencyNetworkAuthorization();
+            case INTERVAL_NETWORK_AUTHORIZATION:
+                return (T) getIntervalNetworkAuthorization();
+            case PRODUCT_NETWORK_AUTHORIZATION:
+                return (T) getProductNetworkAuthorization();
+            case RELATIONSHIP_NETWORK_AUTHORIZATION:
+                return (T) getRelationshipNetworkAuthorization();
+            case STAUTUS_CODE_NETWORK_AUTHORIZATION:
+                return (T) getStatusCodeNetworkAuthorization();
+            case UNIT_NETWORK_AUTHORIZATION:
+                return (T) getUnitNetworkAuthorization();
 
             default:
                 throw new IllegalStateException(
@@ -1147,6 +1195,24 @@ public class WorkspaceAuthorization extends Ruleform {
             case RELATIONSHIP_NETWORK_ATTRIBUTE:
                 setRelationshipNetworkAttribute((RelationshipNetworkAttribute) entity);
                 break;
+            case ATTRIBUTE_NETWORK_AUTHORIZATION:
+                setAttributeNetworkAuthorization((AttributeNetworkAuthorization) entity);
+                break;
+            case INTERVAL_NETWORK_AUTHORIZATION:
+                setIntervalNetworkAuthorization((IntervalNetworkAuthorization) entity);
+                break;
+            case PRODUCT_NETWORK_AUTHORIZATION:
+                setProductNetworkAuthorization((ProductNetworkAuthorization) entity);
+                break;
+            case RELATIONSHIP_NETWORK_AUTHORIZATION:
+                setRelationshipNetworkAuthorization((RelationshipNetworkAuthorization) entity);
+                break;
+            case STAUTUS_CODE_NETWORK_AUTHORIZATION:
+                setStatusCodeNetworkAuthorization((StatusCodeNetworkAuthorization) entity);
+                break;
+            case UNIT_NETWORK_AUTHORIZATION:
+                setUnitNetworkAuthorization((UnitNetworkAuthorization) entity);
+                break;
 
             default:
                 throw new IllegalStateException(
@@ -1380,6 +1446,54 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setUnitValue(UnitValue unitValue) {
         type = UNIT_VALUE;
         this.unitValue = unitValue;
+    }
+
+    public AttributeNetworkAuthorization getAttributeNetworkAuthorization() {
+        return attributeNetworkAuthorization;
+    }
+
+    public void setAttributeNetworkAuthorization(AttributeNetworkAuthorization attributeNetworkAuthorization) {
+        this.attributeNetworkAuthorization = attributeNetworkAuthorization;
+    }
+
+    public IntervalNetworkAuthorization getIntervalNetworkAuthorization() {
+        return intervalNetworkAuthorization;
+    }
+
+    public void setIntervalNetworkAuthorization(IntervalNetworkAuthorization intervalNetworkAuthorization) {
+        this.intervalNetworkAuthorization = intervalNetworkAuthorization;
+    }
+
+    public ProductNetworkAuthorization getProductNetworkAuthorization() {
+        return productNetworkAuthorization;
+    }
+
+    public void setProductNetworkAuthorization(ProductNetworkAuthorization productNetworkAuthorization) {
+        this.productNetworkAuthorization = productNetworkAuthorization;
+    }
+
+    public RelationshipNetworkAuthorization getRelationshipNetworkAuthorization() {
+        return relationshipNetworkAuthorization;
+    }
+
+    public void setRelationshipNetworkAuthorization(RelationshipNetworkAuthorization relationshipNetworkAuthorization) {
+        this.relationshipNetworkAuthorization = relationshipNetworkAuthorization;
+    }
+
+    public StatusCodeNetworkAuthorization getStatusCodeNetworkAuthorization() {
+        return statusCodeNetworkAuthorization;
+    }
+
+    public void setStatusCodeNetworkAuthorization(StatusCodeNetworkAuthorization statusCodeNetworkAuthorization) {
+        this.statusCodeNetworkAuthorization = statusCodeNetworkAuthorization;
+    }
+
+    public UnitNetworkAuthorization getUnitNetworkAuthorization() {
+        return unitNetworkAuthorization;
+    }
+
+    public void setUnitNetworkAuthorization(UnitNetworkAuthorization unitNetworkAuthorization) {
+        this.unitNetworkAuthorization = unitNetworkAuthorization;
     }
 
 }

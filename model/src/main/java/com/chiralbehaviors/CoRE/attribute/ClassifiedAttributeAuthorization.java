@@ -30,7 +30,7 @@ import javax.persistence.MappedSuperclass;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.annotation.JsonGetter;
 
 /**

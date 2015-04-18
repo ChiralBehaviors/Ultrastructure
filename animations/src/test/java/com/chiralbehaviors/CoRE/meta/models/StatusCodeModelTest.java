@@ -31,7 +31,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand

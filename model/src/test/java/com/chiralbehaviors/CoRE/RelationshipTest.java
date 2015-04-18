@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**

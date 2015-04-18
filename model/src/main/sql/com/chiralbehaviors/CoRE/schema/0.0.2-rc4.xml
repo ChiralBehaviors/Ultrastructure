@@ -92,6 +92,12 @@
             <column name="relationship_attribute_authorization" type="uuid" />
             <column name="relationship_network" type="uuid" />
             <column name="relationship_network_attribute" type="uuid" />
+            <column name="attribute_network_authorization" type="uuid" />
+            <column name="interval_network_authorization" type="uuid" />
+            <column name="product_network_authorization" type="uuid" />
+            <column name="relationship_network_authorization" type="uuid" />
+            <column name="status_code_network_authorization" type="uuid" />
+            <column name="unit_network_authorization" type="uuid" />
         </createTable>
         <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, key" constraintName="workspace_key_constraint"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
@@ -332,6 +338,30 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="defining_product" baseTableName="workspace_authorization" constraintName="workspace_authorization_defining_product_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_attribute_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="attribute_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="interval_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_interval_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="interval_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship_network_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_relationship_network_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code_network_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_status_code_network_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="unit_network_authorization" />
 
         <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_fkey_idx" tableName="workspace_authorization"
             unique="false"

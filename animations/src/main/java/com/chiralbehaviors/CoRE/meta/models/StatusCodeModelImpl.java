@@ -39,8 +39,8 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
-import com.chiralbehaviors.CoRE.network.Relationship;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand

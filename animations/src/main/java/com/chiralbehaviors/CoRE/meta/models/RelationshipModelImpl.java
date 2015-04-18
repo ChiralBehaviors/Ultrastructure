@@ -32,10 +32,10 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
-import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.network.RelationshipAttribute;
-import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
-import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
 
 /**
  * @author hhildebrand

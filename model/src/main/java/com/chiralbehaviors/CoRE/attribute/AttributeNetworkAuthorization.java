@@ -20,6 +20,11 @@
 
 package com.chiralbehaviors.CoRE.attribute;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -30,45 +35,41 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
  * @author hhildebrand
  *
  */
+@Entity
+@Table(name = "attribute_network_authorization", schema = "ruleform")
 public class AttributeNetworkAuthorization extends
         NetworkAuthorization<Attribute> {
 
     private static final long serialVersionUID = 1L;
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParent()
-     */
+    // bi-directional many-to-one association to Event
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "authorized_parent")
+    private Attribute         authorizedParent;
+
+    // bi-directional many-to-one association to Event
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "classifier")
+    private Attribute         classifier;
+
     @Override
     public Attribute getAuthorizedParent() {
-        // TODO Auto-generated method stub
-        return null;
+        return authorizedParent;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifier()
-     */
+    @Override
+    public void setAuthorizedParent(Attribute authorizedParent) {
+        this.authorizedParent = authorizedParent;
+    }
+
     @Override
     public Attribute getClassifier() {
-        // TODO Auto-generated method stub
-        return null;
+        return classifier;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setAuthorizedParent(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public void setAuthorizedParent(Attribute parent) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#setClassifier(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
     @Override
     public void setClassifier(Attribute classifier) {
-        // TODO Auto-generated method stub
-
+        this.classifier = classifier;
     }
 
     /* (non-Javadoc)

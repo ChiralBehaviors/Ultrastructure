@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -269,11 +270,11 @@ public final class Util {
 
         Ruleform reference = em.find(ruleform.getClass(), ruleform.getId());
         if (reference != null) {
-            mapped.put(ruleform, reference);
+            mapped.put(ruleform, em.merge(ruleform));
         } else {
             mapped.put(ruleform, ruleform);
-            em.persist(ruleform);
             traverse(em, ruleform, mapped);
+            em.persist(ruleform);
         }
 
         return (T) mapped.get(ruleform);
@@ -287,7 +288,7 @@ public final class Util {
             auth.setEntity(map(em, auth.getEntity(), mapped));
             return;
         }
-        for (Field field : ruleform.getClass().getDeclaredFields()) {
+        for (Field field : getInheritedFields(ruleform.getClass())) {
             if (field.getAnnotation(JoinColumn.class) == null) {
                 continue;
             }
@@ -313,6 +314,14 @@ public final class Util {
                                                               field), e);
             }
         }
+    }
+
+    private static List<Field> getInheritedFields(Class<?> type) {
+        List<Field> fields = new ArrayList<Field>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+        return fields;
     }
 
     private Util() {

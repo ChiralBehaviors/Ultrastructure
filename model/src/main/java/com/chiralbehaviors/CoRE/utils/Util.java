@@ -37,6 +37,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
+import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -265,19 +266,40 @@ public final class Util {
     protected static <T extends Ruleform> T map(EntityManager em, T ruleform,
                                                 Map<Ruleform, Ruleform> mapped) {
         if (mapped.containsKey(ruleform)) {
+            //            System.out.println(String.format("%% already mapped: %s",
+            //                                             ruleform.getClass().getSimpleName()));
             return (T) mapped.get(ruleform);
         }
 
-        Ruleform reference = em.find(ruleform.getClass(), ruleform.getId());
+        Ruleform reference = find(em, ruleform);
         if (reference != null) {
-            mapped.put(ruleform, em.merge(ruleform));
+            //            System.out.println(String.format("%% found: %s",
+            //                                             ruleform.getClass().getSimpleName()));
+            mapped.put(ruleform, reference);
         } else {
+            //            System.out.println(String.format("%% traverse before persist: %s",
+            //                                             ruleform.getClass().getSimpleName()));
             mapped.put(ruleform, ruleform);
             traverse(em, ruleform, mapped);
+            //            System.out.println(String.format("%% persisting: %s",
+            //                                             ruleform.getClass().getSimpleName()));
             em.persist(ruleform);
         }
 
         return (T) mapped.get(ruleform);
+    }
+
+    private static <T extends Ruleform> Ruleform find(EntityManager em,
+                                                      T ruleform) {
+        if (ruleform instanceof WorkspaceAuthorization) {
+            TypedQuery<Long> existQueury = em.createNamedQuery(WorkspaceAuthorization.DOES_WORKSPACE_AUTH_EXIST,
+                                                               Long.class);
+            existQueury.setParameter("id", ruleform.getId());
+            if (existQueury.getFirstResult() == 0) {
+                return null;
+            }
+        }
+        return em.find(ruleform.getClass(), ruleform.getId());
     }
 
     protected static void traverse(EntityManager em, Ruleform ruleform,
@@ -292,6 +314,9 @@ public final class Util {
             if (field.getAnnotation(JoinColumn.class) == null) {
                 continue;
             }
+            //            System.out.println(String.format("* Traversing %s:%s",
+            //                                             ruleform.getClass().getSimpleName(),
+            //                                             field.getName()));
             try {
                 field.setAccessible(true);
                 Ruleform value = get(ruleform, field);
@@ -302,6 +327,10 @@ public final class Util {
                                                         String.format("%s mapped to null",
                                                                       value));
                     }
+                    //                    System.out.println(String.format("* Mapping %s %s:%s",
+                    //                                                     value.getClass().getSimpleName(),
+                    //                                                     System.identityHashCode(value),
+                    //                                                     System.identityHashCode(mappedValue)));
                     set(ruleform, field, mappedValue);
                 }
             } catch (IllegalAccessException e) {

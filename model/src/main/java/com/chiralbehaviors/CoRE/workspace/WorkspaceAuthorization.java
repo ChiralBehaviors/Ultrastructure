@@ -23,6 +23,7 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.DOES_WORKSPACE_AUTH_EXIST;
 import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_AUTHORIZATIONS_BY_TYPE;
 import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_WORKSPACE;
@@ -112,13 +113,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                              + "AND auth.key = :key"),
                @NamedQuery(name = GET_AUTHORIZATIONS_BY_TYPE, query = "SELECT auth FROM WorkspaceAuthorization auth "
                                                                       + "WHERE auth.definingProduct = :product "
-                                                                      + "AND auth.type= :type"), })
+                                                                      + "AND auth.type= :type"),
+               @NamedQuery(name = DOES_WORKSPACE_AUTH_EXIST, query = "SELECT COUNT(auth) FROM WorkspaceAuthorization auth "
+                                                                     + "WHERE auth.id = :id") })
 @Entity
 @Table(name = "workspace_authorization", schema = "ruleform")
 public class WorkspaceAuthorization extends Ruleform {
     public static final String  GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
     public static final String  GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
     public static final String  GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
+    public static final String  DOES_WORKSPACE_AUTH_EXIST                = "workspaceAuthorization.doesAuthExist";
 
     public static final String  AGENCY                                   = "Agency";
     public static final String  AGENCY_ATTRIBUTE                         = "AgencyAttribute";

@@ -25,6 +25,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -125,6 +127,11 @@ public final class Util {
         return map(em, ruleform, new HashMap<>(2048));
     }
 
+    private static String accessor(Field field) {
+        return field.getName().substring(0, 1).toUpperCase()
+               + field.getName().substring(1);
+    }
+
     /**
      * We initially used this code to convert the digest to a hex string:
      *
@@ -158,6 +165,46 @@ public final class Util {
         return digestString;
     }
 
+    private static Ruleform get(Ruleform ruleform, Field field)
+                                                               throws IllegalAccessException {
+        String method = String.format("get%s", accessor(field));
+        Method getter;
+        try {
+            getter = ruleform.getClass().getMethod(method);
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException(String.format("No getter for %s",
+                                                          field), e);
+        }
+        try {
+            return (Ruleform) getter.invoke(ruleform);
+        } catch (IllegalArgumentException | InvocationTargetException e) {
+            throw new IllegalStateException(
+                                            String.format("cannot invoke %s",
+                                                          getter.toGenericString()),
+                                            e);
+        }
+    }
+
+    private static void set(Ruleform ruleform, Field field, Ruleform value)
+                                                                           throws IllegalAccessException {
+        String method = String.format("set%s", accessor(field));
+        Method setter;
+        try {
+            setter = ruleform.getClass().getMethod(method, field.getType());
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException(String.format("No getter for %s",
+                                                          field), e);
+        }
+        try {
+            setter.invoke(ruleform, value);
+        } catch (IllegalArgumentException | InvocationTargetException e) {
+            throw new IllegalStateException(
+                                            String.format("cannot invoke %s",
+                                                          setter.toGenericString()),
+                                            e);
+        }
+    }
+
     private static void visitSCCs(Ruleform ruleform, List<Ruleform> stack,
                                   Map<Ruleform, Integer> low,
                                   List<Ruleform[]> result) {
@@ -175,7 +222,7 @@ public final class Util {
             field.setAccessible(true);
             Ruleform successor;
             try {
-                successor = (Ruleform) field.get(ruleform);
+                successor = get(ruleform, field);
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(
                                                 String.format("IllegalAccess access foreign key field: %s",
@@ -246,7 +293,7 @@ public final class Util {
             }
             try {
                 field.setAccessible(true);
-                Ruleform value = (Ruleform) field.get(ruleform);
+                Ruleform value = get(ruleform, field);
                 if (value != null && !ruleform.equals(value)) {
                     Ruleform mappedValue = map(em, value, mapped);
                     if (mappedValue == null) {
@@ -254,7 +301,7 @@ public final class Util {
                                                         String.format("%s mapped to null",
                                                                       value));
                     }
-                    field.set(ruleform, mappedValue);
+                    set(ruleform, field, mappedValue);
                 }
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(

@@ -28,11 +28,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -90,6 +92,9 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     abstract public RuleForm getAuthorizedParent();
 
+    @JsonIgnore
+    abstract public SingularAttribute<? extends NetworkAuthorization<RuleForm>, ? extends RuleForm> getAuthorizedParentAttribute();
+
     public Relationship getAuthorizedRelationship() {
         return authorizedRelationship;
     }
@@ -107,6 +112,9 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
     }
 
     abstract public RuleForm getClassifier();
+
+    @JsonIgnore
+    abstract public SingularAttribute<? extends NetworkAuthorization<RuleForm>, ? extends RuleForm> getClassifierAttribute();
 
     public Agency getGroupingAgency() {
         return groupingAgency;

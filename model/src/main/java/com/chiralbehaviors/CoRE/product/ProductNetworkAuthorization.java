@@ -89,6 +89,14 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
         return authorizedParent;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParentAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Product>, ? extends Product> getAuthorizedParentAttribute() {
+        return ProductNetworkAuthorization_.authorizedParent;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -99,6 +107,14 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     @JsonGetter
     public Product getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifierAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Product>, ? extends Product> getClassifierAttribute() {
+        return ProductNetworkAuthorization_.classifier;
     }
 
     /* (non-Javadoc)

@@ -58,9 +58,25 @@ public class StatusCodeNetworkAuthorization extends
         return authorizedParent;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParentAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<StatusCode>, ? extends StatusCode> getAuthorizedParentAttribute() {
+        return StatusCodeNetworkAuthorization_.authorizedParent;
+    }
+
     @Override
     public StatusCode getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifierAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<StatusCode>, ? extends StatusCode> getClassifierAttribute() {
+        return StatusCodeNetworkAuthorization_.classifier;
     }
 
     /* (non-Javadoc)

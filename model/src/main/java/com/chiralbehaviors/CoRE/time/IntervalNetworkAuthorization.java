@@ -58,9 +58,25 @@ public class IntervalNetworkAuthorization extends
         return authorizedParent;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParentAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Interval>, ? extends Interval> getAuthorizedParentAttribute() {
+        return IntervalNetworkAuthorization_.authorizedParent;
+    }
+
     @Override
     public Interval getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifierAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Interval>, ? extends Interval> getClassifierAttribute() {
+        return IntervalNetworkAuthorization_.classifier;
     }
 
     /* (non-Javadoc)

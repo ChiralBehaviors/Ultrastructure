@@ -58,9 +58,12 @@ public class AttributeNetworkAuthorization extends
         return authorizedParent;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParentAttribute()
+     */
     @Override
-    public void setAuthorizedParent(Attribute authorizedParent) {
-        this.authorizedParent = authorizedParent;
+    public SingularAttribute<? extends NetworkAuthorization<Attribute>, Attribute> getAuthorizedParentAttribute() {
+        return AttributeNetworkAuthorization_.authorizedParent;
     }
 
     @Override
@@ -68,9 +71,12 @@ public class AttributeNetworkAuthorization extends
         return classifier;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifierAttribute()
+     */
     @Override
-    public void setClassifier(Attribute classifier) {
-        this.classifier = classifier;
+    public SingularAttribute<? extends NetworkAuthorization<Attribute>, Attribute> getClassifierAttribute() {
+        return AttributeNetworkAuthorization_.classifier;
     }
 
     /* (non-Javadoc)
@@ -79,6 +85,16 @@ public class AttributeNetworkAuthorization extends
     @Override
     public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.attributeNetworkAuthorization;
+    }
+
+    @Override
+    public void setAuthorizedParent(Attribute authorizedParent) {
+        this.authorizedParent = authorizedParent;
+    }
+
+    @Override
+    public void setClassifier(Attribute classifier) {
+        this.classifier = classifier;
     }
 
 }

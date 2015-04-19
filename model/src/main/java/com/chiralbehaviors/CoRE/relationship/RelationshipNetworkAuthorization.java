@@ -58,9 +58,25 @@ public class RelationshipNetworkAuthorization extends
         return authorizedParent;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParentAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Relationship>, ? extends Relationship> getAuthorizedParentAttribute() {
+        return RelationshipNetworkAuthorization_.authorizedParent;
+    }
+
     @Override
     public Relationship getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifierAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Relationship>, ? extends Relationship> getClassifierAttribute() {
+        return RelationshipNetworkAuthorization_.classifier;
     }
 
     /* (non-Javadoc)

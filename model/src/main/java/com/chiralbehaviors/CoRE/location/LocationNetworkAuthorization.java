@@ -89,6 +89,11 @@ public class LocationNetworkAuthorization extends
         return authorizedParent;
     }
 
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Location>, ? extends Location> getAuthorizedParentAttribute() {
+        return LocationNetworkAuthorization_.authorizedParent;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -102,6 +107,14 @@ public class LocationNetworkAuthorization extends
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifierAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Location>, ? extends Location> getClassifierAttribute() {
+        return LocationNetworkAuthorization_.classifier;
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */
     @Override
@@ -110,6 +123,9 @@ public class LocationNetworkAuthorization extends
         return WorkspaceAuthorization_.locationNetworkAuthorization;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParentAttribute()
+     */
     /*
      * (non-Javadoc)
      *

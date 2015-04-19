@@ -57,9 +57,25 @@ public class UnitNetworkAuthorization extends NetworkAuthorization<Unit> {
         return authorizedParent;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParentAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Unit>, ? extends Unit> getAuthorizedParentAttribute() {
+        return UnitNetworkAuthorization_.authorizedParent;
+    }
+
     @Override
     public Unit getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifierAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Unit>, ? extends Unit> getClassifierAttribute() {
+        return UnitNetworkAuthorization_.classifier;
     }
 
     /* (non-Javadoc)

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
-
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -24,16 +24,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.JoinColumn;
-
-import com.chiralbehaviors.CoRE.Ruleform;
 
 /**
  * @author hhildebrand
@@ -118,12 +110,6 @@ public final class Util {
         return hash;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Ruleform> T smartMerge(EntityManager em, T ruleform) {
-        Map<Ruleform, Ruleform> mapped = new HashMap<>(2048);
-        return (T) map(em, ruleform, mapped);
-    }
-
     /**
      * We initially used this code to convert the digest to a hex string:
      *
@@ -155,51 +141,6 @@ public final class Util {
 
         String digestString = sb.toString();
         return digestString;
-    }
-
-    protected static Ruleform map(EntityManager em, Ruleform ruleform,
-                                  Map<Ruleform, Ruleform> mapped) {
-        if (mapped.containsKey(ruleform)) {
-            return mapped.get(ruleform);
-        }
-
-        // need to traverse leaf nodes first, before persisting this entity.
-        mapped.put(ruleform, ruleform);
-        traverse(em, ruleform, mapped);
-
-        if (ruleform.getId() != null
-            && em.getReference(ruleform.getClass(), ruleform.getId()) != null) {
-            em.detach(ruleform);
-            mapped.put(ruleform, em.merge(ruleform));
-        } else {
-            em.persist(ruleform);
-            mapped.put(ruleform, ruleform);
-        }
-
-        return mapped.get(ruleform);
-    }
-
-    protected static void traverse(EntityManager em, Ruleform ruleform,
-                                   Map<Ruleform, Ruleform> mapped) {
-        for (Field field : ruleform.getClass().getDeclaredFields()) {
-            if (field.getAnnotation(JoinColumn.class) == null) {
-                continue;
-            }
-            try {
-                Ruleform value = (Ruleform) field.get(ruleform);
-                if (value != null) {
-                    field.set(ruleform, map(em, value, mapped));
-                }
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException(
-                                                String.format("IllegalAccess access foreign key field: %s",
-                                                              field), e);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalStateException(
-                                                String.format("Illegal mapped value for field: %s",
-                                                              field), e);
-            }
-        }
     }
 
     private Util() {

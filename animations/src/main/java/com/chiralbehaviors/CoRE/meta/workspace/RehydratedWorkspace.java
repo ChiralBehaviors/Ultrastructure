@@ -30,7 +30,6 @@ import javax.persistence.EntityManager;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.utils.Util;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
@@ -115,7 +114,7 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
                                                                                       auths);
         auths.clear();
         for (WorkspaceAuthorization auth : oldAuths) {
-            auths.add(Util.smartMerge(em, auth));
+            auths.add(em.merge(auth));
         }
         cache();
     }

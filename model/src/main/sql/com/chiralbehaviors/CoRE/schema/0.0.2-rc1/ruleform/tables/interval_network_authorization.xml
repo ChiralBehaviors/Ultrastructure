@@ -30,9 +30,8 @@
             <column name="authorized_relationship" remarks="A network interval a interval is expected to have" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="cardinality" type="SMALLINT">
-                <constraints nullable="false" />
-            </column>
+            <column name="cardinality" type="SMALLINT" />
+            <column name="child_relationship" remarks="the relationship between the classified child and its child" type="uuid" />
             <column defaultValueComputed="1" name="sequence_number" remarks="Ordering and uniqueness, for when an interval can have multiple acceptable values"
                 type="sequence_number"
             >
@@ -40,13 +39,15 @@
             </column>
             <column name="grouping_agency" remarks="the authoratative agency" type="uuid" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
-            <column name="updated_by" remarks="The interval that last updated this rule"
-                type="uuid"
-            >
+            <column name="updated_by" remarks="The interval that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
         </createTable>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_relationship" baseTableName="interval_network_authorization" constraintName="interval_network_authorization_child_relationship_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_parent" baseTableName="interval_network_authorization" constraintName="interval_network_authorization_authorized_parent_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"

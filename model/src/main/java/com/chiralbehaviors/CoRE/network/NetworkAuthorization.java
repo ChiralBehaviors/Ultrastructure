@@ -55,6 +55,10 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
     private Cardinality       cardinality;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "child_relationship")
+    private Relationship      childRelationship;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
     private Relationship      classification;
 
@@ -94,6 +98,10 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
         return cardinality;
     }
 
+    public Relationship getChildRelationship() {
+        return childRelationship;
+    }
+
     public Relationship getClassification() {
         return classification;
     }
@@ -116,6 +124,10 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     public void setCardinality(Cardinality cardinality) {
         this.cardinality = cardinality;
+    }
+
+    public void setChildRelationship(Relationship childRelationship) {
+        this.childRelationship = childRelationship;
     }
 
     public void setClassification(Relationship classification) {

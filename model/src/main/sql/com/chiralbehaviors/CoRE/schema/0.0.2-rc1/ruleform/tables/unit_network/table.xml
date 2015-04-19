@@ -24,7 +24,7 @@
             <column name="premise2" type="uuid" />
             <column name="ordering" type="ordinal_number" />
             <column name="notes" type="TEXT" />
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
+            <column name="updated_by" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

@@ -40,7 +40,7 @@
             </column>
             <column name="grouping_agency" remarks="A network parent an agency is expected to have" type="uuid" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule"
+            <column name="updated_by" remarks="The agency that last updated this rule"
                 type="uuid"
             >
                 <constraints nullable="false" />

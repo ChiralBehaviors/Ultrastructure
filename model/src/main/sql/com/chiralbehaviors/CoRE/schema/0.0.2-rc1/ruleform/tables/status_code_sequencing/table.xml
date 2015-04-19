@@ -28,7 +28,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule" type="uuid">
+            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

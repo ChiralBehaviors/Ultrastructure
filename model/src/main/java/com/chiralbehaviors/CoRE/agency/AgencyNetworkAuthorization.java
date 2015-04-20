@@ -86,6 +86,14 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
         return authorizedParent;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getAuthorizedParentAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Agency>, Agency> getAuthorizedParentAttribute() {
+        return AgencyNetworkAuthorization_.authorizedParent;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -96,6 +104,14 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
     @JsonGetter
     public Agency getClassifier() {
         return classifier;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.network.NetworkAuthorization#getClassifierAttribute()
+     */
+    @Override
+    public SingularAttribute<? extends NetworkAuthorization<Agency>, Agency> getClassifierAttribute() {
+        return AgencyNetworkAuthorization_.classifier;
     }
 
     /* (non-Javadoc)

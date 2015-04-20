@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.network;
+package com.chiralbehaviors.CoRE.relationship;
 
 import java.util.UUID;
 

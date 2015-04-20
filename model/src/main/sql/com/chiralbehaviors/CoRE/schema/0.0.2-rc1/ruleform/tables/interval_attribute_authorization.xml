@@ -1,11 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
-    <include relativeToChangelogFile="true" file="interval_attribute_authorization/table.xml"/>
-
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform"
+            remarks="Defines rules stating what attributes (and values thereof) are authorized for particular intervals" tableName="interval_attribute_authorization"
+        >
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="interval_attribute_authorization_pkey" />
+            </column>
+            <column name="classification"
+                remarks="In conjunction with the 'interval' column, determines the classification criteria for selecting attributes a certain interval must have"
+                type="uuid"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="classifier"
+                remarks="In conjunction with the 'classification' column, determines the classification criteria for selecting attributes a certain interval must have"
+                type="uuid"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="authorized_attribute" remarks="An Attribute a interval is expected to have" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number"
+                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="boolean_value" type="SMALLINT" />
+            <column name="binary_value" type="BYTEA" />
+            <column name="text_value" remarks="Contains a single acceptable text-value if 'attribute' has a data type of 'text'"
+                type="TEXT" />
+            <column name="integer_value" type="INT4" />
+            <column name="numeric_value" type="numeric" />
+            <column name="timestamp_value" type="TIMESTAMPTZ" />
+            <column name="grouping_agency" type="uuid" />
+            <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
+            <column name="updated_by" remarks="The interval that last updated this rule" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="interval_attribute_authorization" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_attribute" baseTableName="interval_attribute_authorization" constraintName="interval_attribute_authorization_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classification" baseTableName="interval_attribute_authorization" constraintName="interval_attribute_authorization_classification_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classifier" baseTableName="interval_attribute_authorization" constraintName="interval_attribute_authorization_classifier_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="interval" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="interval_attribute_authorization" constraintName="interval_attribute_authorization_grouping_interval_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="interval_attribute_authorization" constraintName="interval_attribute_authorization_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="classification, classifier, authorized_attribute, sequence_number"
+            constraintName="interval_attribute_authorizat_classification_attribute_clas_key" deferrable="false" disabled="false"
+            initiallyDeferred="true" tableName="interval_attribute_authorization" />
+        <createIndex schemaName="ruleform" indexName="interval_attribute_authorization_updated_by_fkey_idx" tableName="interval_attribute_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+        <sql> ALTER TABLE interval_attribute_authorization OWNER TO core; </sql>
+        <rollback />
+        <sql><![CDATA[
+            GRANT ALL ON TABLE interval_attribute_authorization TO core;
+            GRANT SELECT ON TABLE interval_attribute_authorization TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE interval_attribute_authorization TO core_read_write;
+            ]]>
+        </sql>
+        <rollback />
+    </changeSet>
 </databaseChangeLog>

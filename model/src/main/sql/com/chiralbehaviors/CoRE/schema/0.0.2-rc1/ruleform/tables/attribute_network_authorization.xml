@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="0.0.2">
+        <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular attributes"
+            tableName="attribute_network_authorization"
+        >
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="attribute_network_authorization_pkey" />
+            </column>
+            <column name="classification"
+                remarks="In conjunction with the 'classifier' column, determines the classification criteria for selecting network relationships a certain attribute must have"
+                type="uuid"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="classifier"
+                remarks="In conjunction with the 'classification' column, determines the classification criteria for selecting network relationships a certain attribute must have"
+                type="uuid"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="authorized_parent" remarks="A network parent a attribute is expected to have" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="authorized_relationship" remarks="A network attribute a attribute is expected to have" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="cardinality" type="SMALLINT" />
+            <column name="child_relationship" remarks="the relationship between the classified child and its child" type="uuid" />
+            <column defaultValueComputed="1" name="sequence_number"
+                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="grouping_agency" remarks="the authoratative agency" type="uuid" />
+            <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
+            <column name="updated_by" remarks="The attribute that last updated this rule" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_relationship" baseTableName="attribute_network_authorization" constraintName="attribute_network_authorization_child_relationship_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_parent" baseTableName="attribute_network_authorization" constraintName="attribute_network_authorization_authorized_parent_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_relationship" baseTableName="attribute_network_authorization" constraintName="attribute_network_authorization_authorized_relationship_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classification" baseTableName="attribute_network_authorization" constraintName="attribute_network_authorization_classification_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="classifier" baseTableName="attribute_network_authorization" constraintName="attribute_network_authorization_classifier_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="attribute_network_authorization" constraintName="attribute_network_authorization_grouping_agency_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="attribute_network_authorization" constraintName="attribute_network_authorization_updated_by_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform"
+            columnNames="classification, classifier, authorized_parent, authorized_relationship, sequence_number" constraintName="attribute_attribute_authorizatio_attribute_classification_attri_key"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="attribute_network_authorization" />
+        <createIndex schemaName="ruleform" indexName="attribute_network_authorization_updated_by_fkey_idx" tableName="attribute_network_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+        <rollback>
+            <dropTable tableName="attribute_network_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -10,19 +10,31 @@
         <mapping-file>com/chiralbehaviors/CoRE/attribute/unit/unitNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/event/status/statusCodeNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/location/locationNetwork.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/network/relationshipNetwork.xml</mapping-file>
+        <mapping-file>com/chiralbehaviors/CoRE/relationship/relationshipNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/product/productNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/time/intervalNetwork.xml</mapping-file>
+        <class>com.chiralbehaviors.CoRE.agency.Agency</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyAttribute</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyLocation</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyProduct</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyProductAttribute</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.Attribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeValue</class>
+        <class>com.chiralbehaviors.CoRE.attribute.AttributeNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.Unit</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.attribute.unit.UnitValue</class>
+        <class>com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.product.Product</class>
         <class>com.chiralbehaviors.CoRE.product.ProductAttribute</class>
         <class>com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization</class>
@@ -43,35 +55,28 @@
         <class>com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute</class>
         <class>com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing</class>
+        <class>com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.location.Location</class>
         <class>com.chiralbehaviors.CoRE.location.LocationAttribute</class>
         <class>com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.network.Relationship</class>
-        <class>com.chiralbehaviors.CoRE.network.RelationshipAttribute</class>
-        <class>com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.network.RelationshipNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.location.LocationNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.relationship.Relationship</class>
+        <class>com.chiralbehaviors.CoRE.relationship.RelationshipAttribute</class>
+        <class>com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.network.NetworkInference</class>
         <class>com.chiralbehaviors.CoRE.network.NetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.network.NetworkRuleform</class>
-        <class>com.chiralbehaviors.CoRE.agency.Agency</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyAttribute</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.ExistentialRuleform</class>
         <class>com.chiralbehaviors.CoRE.Ruleform</class>
         <class>com.chiralbehaviors.CoRE.time.Interval</class>
         <class>com.chiralbehaviors.CoRE.time.IntervalAttribute</class>
         <class>com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyLocation</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyProduct</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.attribute.AttributeNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.location.LocationNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization</class>
     </persistence-unit>
 </persistence>

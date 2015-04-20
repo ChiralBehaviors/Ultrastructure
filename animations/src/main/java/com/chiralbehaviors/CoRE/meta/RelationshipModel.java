@@ -19,10 +19,10 @@
  */
 package com.chiralbehaviors.CoRE.meta;
 
-import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.network.RelationshipAttribute;
-import com.chiralbehaviors.CoRE.network.RelationshipAttributeAuthorization;
-import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
 
 /**
  * @author hhildebrand

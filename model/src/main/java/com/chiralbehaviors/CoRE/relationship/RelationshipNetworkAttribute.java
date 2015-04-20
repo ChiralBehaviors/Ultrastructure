@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.network;
+package com.chiralbehaviors.CoRE.relationship;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -32,6 +32,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -24,8 +24,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.JoinColumn;
+import javax.persistence.TypedQuery;
+
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
  * @author hhildebrand
@@ -110,6 +125,15 @@ public final class Util {
         return hash;
     }
 
+    public static <T extends Ruleform> T smartMerge(EntityManager em, T ruleform) {
+        return map(em, ruleform, new HashMap<>(2048));
+    }
+
+    private static String accessor(Field field) {
+        return field.getName().substring(0, 1).toUpperCase()
+               + field.getName().substring(1);
+    }
+
     /**
      * We initially used this code to convert the digest to a hex string:
      *
@@ -141,6 +165,192 @@ public final class Util {
 
         String digestString = sb.toString();
         return digestString;
+    }
+
+    private static Ruleform get(Ruleform ruleform, Field field)
+                                                               throws IllegalAccessException {
+        String method = String.format("get%s", accessor(field));
+        Method getter;
+        try {
+            getter = ruleform.getClass().getMethod(method);
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException(String.format("No getter for %s",
+                                                          field), e);
+        }
+        try {
+            return (Ruleform) getter.invoke(ruleform);
+        } catch (IllegalArgumentException | InvocationTargetException e) {
+            throw new IllegalStateException(
+                                            String.format("cannot invoke %s",
+                                                          getter.toGenericString()),
+                                            e);
+        }
+    }
+
+    private static void set(Ruleform ruleform, Field field, Ruleform value)
+                                                                           throws IllegalAccessException {
+        String method = String.format("set%s", accessor(field));
+        Method setter;
+        try {
+            setter = ruleform.getClass().getMethod(method, field.getType());
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException(String.format("No getter for %s",
+                                                          field), e);
+        }
+        try {
+            setter.invoke(ruleform, value);
+        } catch (IllegalArgumentException | InvocationTargetException e) {
+            throw new IllegalStateException(
+                                            String.format("cannot invoke %s",
+                                                          setter.toGenericString()),
+                                            e);
+        }
+    }
+
+    private static void visitSCCs(Ruleform ruleform, List<Ruleform> stack,
+                                  Map<Ruleform, Integer> low,
+                                  List<Ruleform[]> result) {
+        if (low.containsKey(ruleform)) {
+            return;
+        }
+        Integer num = low.size();
+        low.put(ruleform, num);
+        int stackPos = stack.size();
+        stack.add(ruleform);
+        for (Field field : ruleform.getClass().getDeclaredFields()) {
+            if (field.getAnnotation(JoinColumn.class) == null) {
+                continue;
+            }
+            field.setAccessible(true);
+            Ruleform successor;
+            try {
+                successor = get(ruleform, field);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(
+                                                String.format("IllegalAccess access foreign key field: %s",
+                                                              field), e);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalStateException(
+                                                String.format("Illegal mapped value for field: %s",
+                                                              field), e);
+            }
+            visitSCCs(successor, stack, low, result);
+            low.put(ruleform, Math.min(low.get(ruleform), low.get(successor)));
+        }
+        if (num.equals(low.get(ruleform))) {
+            List<Ruleform> component = stack.subList(stackPos, stack.size());
+            stack = stack.subList(0, stackPos);
+
+            // ignore trivial SCCs of a single edge
+            if (component.size() > 1) {
+                Ruleform[] array = component.toArray(new Ruleform[component.size()]);
+                result.add(array);
+            }
+
+            for (Ruleform item : component) {
+                low.put(item, Integer.MAX_VALUE);
+            }
+        }
+
+    }
+
+    protected static List<Ruleform[]> getSCCs(Ruleform ruleform) {
+        List<Ruleform[]> result = new ArrayList<>();
+        Map<Ruleform, Integer> low = new HashMap<>();
+        List<Ruleform> stack = new ArrayList<>();
+        visitSCCs(ruleform, stack, low, result);
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected static <T extends Ruleform> T map(EntityManager em, T ruleform,
+                                                Map<Ruleform, Ruleform> mapped) {
+        if (mapped.containsKey(ruleform)) {
+            //            System.out.println(String.format("%% already mapped: %s",
+            //                                             ruleform.getClass().getSimpleName()));
+            return (T) mapped.get(ruleform);
+        }
+
+        Ruleform reference = find(em, ruleform);
+        if (reference != null) {
+            //            System.out.println(String.format("%% found: %s",
+            //                                             ruleform.getClass().getSimpleName()));
+            mapped.put(ruleform, reference);
+        } else {
+            //            System.out.println(String.format("%% traverse before persist: %s",
+            //                                             ruleform.getClass().getSimpleName()));
+            mapped.put(ruleform, ruleform);
+            traverse(em, ruleform, mapped);
+            //            System.out.println(String.format("%% persisting: %s",
+            //                                             ruleform.getClass().getSimpleName()));
+            em.persist(ruleform);
+        }
+
+        return (T) mapped.get(ruleform);
+    }
+
+    private static <T extends Ruleform> Ruleform find(EntityManager em,
+                                                      T ruleform) {
+        if (ruleform instanceof WorkspaceAuthorization) {
+            TypedQuery<Long> existQueury = em.createNamedQuery(WorkspaceAuthorization.DOES_WORKSPACE_AUTH_EXIST,
+                                                               Long.class);
+            existQueury.setParameter("id", ruleform.getId());
+            if (existQueury.getFirstResult() == 0) {
+                return null;
+            }
+        }
+        return em.find(ruleform.getClass(), ruleform.getId());
+    }
+
+    protected static void traverse(EntityManager em, Ruleform ruleform,
+                                   Map<Ruleform, Ruleform> mapped) {
+        if (ruleform instanceof WorkspaceAuthorization) {
+            WorkspaceAuthorization auth = (WorkspaceAuthorization) ruleform;
+            auth.setDefiningProduct(map(em, auth.getDefiningProduct(), mapped));
+            auth.setEntity(map(em, auth.getEntity(), mapped));
+            return;
+        }
+        for (Field field : getInheritedFields(ruleform.getClass())) {
+            if (field.getAnnotation(JoinColumn.class) == null) {
+                continue;
+            }
+            //            System.out.println(String.format("* Traversing %s:%s",
+            //                                             ruleform.getClass().getSimpleName(),
+            //                                             field.getName()));
+            try {
+                field.setAccessible(true);
+                Ruleform value = get(ruleform, field);
+                if (value != null && !ruleform.equals(value)) {
+                    Ruleform mappedValue = map(em, value, mapped);
+                    if (mappedValue == null) {
+                        throw new IllegalStateException(
+                                                        String.format("%s mapped to null",
+                                                                      value));
+                    }
+                    //                    System.out.println(String.format("* Mapping %s %s:%s",
+                    //                                                     value.getClass().getSimpleName(),
+                    //                                                     System.identityHashCode(value),
+                    //                                                     System.identityHashCode(mappedValue)));
+                    set(ruleform, field, mappedValue);
+                }
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(
+                                                String.format("IllegalAccess access foreign key field: %s",
+                                                              field), e);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalStateException(
+                                                String.format("Illegal mapped value for field: %s",
+                                                              field), e);
+            }
+        }
+    }
+
+    private static List<Field> getInheritedFields(Class<?> type) {
+        List<Field> fields = new ArrayList<Field>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+        return fields;
     }
 
     private Util() {

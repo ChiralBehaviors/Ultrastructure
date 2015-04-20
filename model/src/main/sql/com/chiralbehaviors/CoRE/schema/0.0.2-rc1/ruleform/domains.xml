@@ -16,7 +16,4 @@
     <include
         relativeToChangelogFile="true"
         file="domains/sequence_number.xml" />
-    <include
-        relativeToChangelogFile="true"
-        file="domains/status.xml" />
 </databaseChangeLog>

@@ -20,10 +20,10 @@
     <include relativeToChangelogFile="true" file="tables/protocol-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/job-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/job_chronology-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/unit_values-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_network-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_product-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_product_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/product_location_attribute-0.0.1.xml" />
@@ -65,4 +65,9 @@
     <include relativeToChangelogFile="true" file="tables/relationship_network_attribute/table.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_network_attribute/table.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_network_attribute/table.xml" />
+    <include relativeToChangelogFile="true" file="tables/attribute_network_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/interval_network_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/relationship_network_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/status_code_network_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/unit_network_authorization.xml" />
 </databaseChangeLog>

@@ -29,8 +29,8 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.network.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
 
 /**
  * @author hhildebrand

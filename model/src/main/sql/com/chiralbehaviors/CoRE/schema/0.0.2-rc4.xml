@@ -27,7 +27,7 @@
             <column name="type" type="VARCHAR(256)">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" type="uuid">
+            <column name="updated_by" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
@@ -41,8 +41,7 @@
             <column name="agency_network_attribute" type="uuid" />
             <column name="agency_network_authorization" type="uuid" />
             <column name="agency_product" type="uuid" />
-            <column name="agency_location_access_authorization" type="uuid" />
-            <column name="agency_product_access_authorization" type="uuid" />
+            <column name="agency_product_attribute" type="uuid" />
             <column name="attribute" type="uuid" />
             <column name="attribute_meta_attribute" type="uuid" />
             <column name="attr_meta_attr_auth" type="uuid" />
@@ -53,7 +52,6 @@
             <column name="unit_attribute_authorization" type="uuid" />
             <column name="unit_network" type="uuid" />
             <column name="unit_network_attribute" type="uuid" />
-            <column name="unit_value" type="uuid" />
             <column name="location" type="uuid" />
             <column name="location_attribute" type="uuid" />
             <column name="location_attribute_authorization" type="uuid" />
@@ -92,9 +90,175 @@
             <column name="relationship_attribute_authorization" type="uuid" />
             <column name="relationship_network" type="uuid" />
             <column name="relationship_network_attribute" type="uuid" />
+            <column name="attribute_network_authorization" type="uuid" />
+            <column name="interval_network_authorization" type="uuid" />
+            <column name="product_network_authorization" type="uuid" />
+            <column name="relationship_network_authorization" type="uuid" />
+            <column name="status_code_network_authorization" type="uuid" />
+            <column name="unit_network_authorization" type="uuid" />
         </createTable>
-        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, key" constraintName="workspace_key_constraint"
+
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, key," constraintName="workspace_key_constraint"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency" constraintName="workspace_unique_ruleform_constraint0"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_attribute" constraintName="workspace_unique_ruleform_constraint1"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_attribute_authorization "
+            constraintName="workspace_unique_ruleform_constraint62" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_location" constraintName="workspace_unique_ruleform_constraint2"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_location_attribute"
+            constraintName="workspace_unique_ruleform_constraint3" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_network" constraintName="workspace_unique_ruleform_constraint4"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_network_attribute"
+            constraintName="workspace_unique_ruleform_constraint5" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_network_attribute"
+            constraintName="workspace_unique_ruleform_constraint6" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_network_authorization"
+            constraintName="workspace_unique_ruleform_constraint7" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, attribute" constraintName="workspace_unique_ruleform_constraint8"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, attribute_meta_attribute"
+            constraintName="workspace_unique_ruleform_constraint9" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, attr_meta_attr_auth" constraintName="workspace_unique_ruleform_constraint10"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, attribute_network" constraintName="workspace_unique_ruleform_constraint11"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, attribute_network_attribute"
+            constraintName="workspace_unique_ruleform_constraint12" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, unit" constraintName="workspace_unique_ruleform_constraint13"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, unit_attribute" constraintName="workspace_unique_ruleform_constraint14"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, unit_attribute_authorization"
+            constraintName="workspace_unique_ruleform_constraint15" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, unit_network" constraintName="workspace_unique_ruleform_constraint16"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, unit_network_attribute"
+            constraintName="workspace_unique_ruleform_constraint17" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, location" constraintName="workspace_unique_ruleform_constraint18"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, location_attribute" constraintName="workspace_unique_ruleform_constraint19"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, location_attribute_authorization"
+            constraintName="workspace_unique_ruleform_constraint20" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, location_network" constraintName="workspace_unique_ruleform_constraint21"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, location_network_attribute"
+            constraintName="workspace_unique_ruleform_constraint23" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, location_network_authorization "
+            constraintName="workspace_unique_ruleform_constraint24" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product" constraintName="workspace_unique_ruleform_constraint25"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_attribute " constraintName="workspace_unique_ruleform_constraint26"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_attribute_authorization"
+            constraintName="workspace_unique_ruleform_constraint27" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_network" constraintName="workspace_unique_ruleform_constraint28"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_network_attribute "
+            constraintName="workspace_unique_ruleform_constraint29" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_location " constraintName="workspace_unique_ruleform_constraint30"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_location_attribute"
+            constraintName="workspace_unique_ruleform_constraint31" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, interval, interval_attribute "
+            constraintName="workspace_unique_ruleform_constraint32" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, interval_attribute_authorization"
+            constraintName="workspace_unique_ruleform_constraint33" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, interval_network" constraintName="workspace_unique_ruleform_constraint34"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, interval_network_attribute"
+            constraintName="workspace_unique_ruleform_constraint35" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, status_code" constraintName="workspace_unique_ruleform_constraint36"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, status_code_attribute" constraintName="workspace_unique_ruleform_constraint37"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, status_code_attribute_authorization"
+            constraintName="workspace_unique_ruleform_constraint38" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, status_code_network" constraintName="workspace_unique_ruleform_constraint39"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, status_code_network_attribute"
+            constraintName="workspace_unique_ruleform_constraint40" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, status_code_sequencing"
+            constraintName="workspace_unique_ruleform_constraint41" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, job" constraintName="workspace_unique_ruleform_constraint42"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, job_chronology" constraintName="workspace_unique_ruleform_constraint43"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, meta_protocol" constraintName="workspace_unique_ruleform_constraint44"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, network_inference" constraintName="workspace_unique_ruleform_constraint45"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_child_sequencing_authorization"
+            constraintName="workspace_unique_ruleform_constraint46" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_parent_sequencing_authorization,"
+            constraintName="workspace_unique_ruleform_constraint47" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_self_sequencing_authorization"
+            constraintName="workspace_unique_ruleform_constraint48" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_sibling_sequencing_authorization"
+            constraintName="workspace_unique_ruleform_constraint49" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, protocol" constraintName="workspace_unique_ruleform_constraint50"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, relationship" constraintName="workspace_unique_ruleform_constraint51"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, relationship_attribute"
+            constraintName="workspace_unique_ruleform_constraint52" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, relationship_attribute_authorization"
+            constraintName="workspace_unique_ruleform_constraint53" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, relationship_network" constraintName="workspace_unique_ruleform_constraint54"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, relationship_network_attribute"
+            constraintName="workspace_unique_ruleform_constraint55" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, attribute_network_authorization"
+            constraintName="workspace_unique_ruleform_constraint56" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product,interval_network_authorization"
+            constraintName="workspace_unique_ruleform_constraint57" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_network_authorization"
+            constraintName="workspace_unique_ruleform_constraint58" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, relationship_network_authorization"
+            constraintName="workspace_unique_ruleform_constraint59" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, status_code_network_authorization"
+            constraintName="workspace_unique_ruleform_constraint60" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product,unit_network_authorization"
+            constraintName="workspace_unique_ruleform_constraint61" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
@@ -131,6 +295,10 @@
             baseColumnNames="agency_product" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_product_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_product_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_product_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency_product_attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
@@ -170,10 +338,6 @@
             baseColumnNames="unit_network_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_network_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="unit_network_attribute" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="unit_value" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_value_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="unit_values" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="location" baseTableName="workspace_authorization" constraintName="workspace_authorization_location_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
@@ -332,6 +496,30 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="defining_product" baseTableName="workspace_authorization" constraintName="workspace_authorization_defining_product_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_attribute_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="attribute_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="interval_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_interval_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="interval_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship_network_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_relationship_network_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code_network_authorization" baseTableName="workspace_authorization"
+            constraintName="workspace_authorization_status_code_network_authorization_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="unit_network_authorization" />
 
         <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_fkey_idx" tableName="workspace_authorization"
             unique="false"
@@ -365,19 +553,19 @@
                 ruleform.null_zero(agency_network_attribute) +
                 ruleform.null_zero(agency_network_authorization) +
                 ruleform.null_zero(agency_product) +
-                ruleform.null_zero(agency_location_access_authorization) +
-                ruleform.null_zero(agency_product_access_authorization) +
+                ruleform.null_zero(agency_product_attribute) +
                 ruleform.null_zero(attribute) +
                 ruleform.null_zero(attribute_meta_attribute) +
                 ruleform.null_zero(attr_meta_attr_auth) +
                 ruleform.null_zero(attribute_network) +
                 ruleform.null_zero(attribute_network_attribute) +
+                ruleform.null_zero(attribute_network_authorization) +
                 ruleform.null_zero(unit) +
                 ruleform.null_zero(unit_attribute) +
                 ruleform.null_zero(unit_attribute_authorization) +
                 ruleform.null_zero(unit_network) +
                 ruleform.null_zero(unit_network_attribute) +
-                ruleform.null_zero(unit_value) +
+                ruleform.null_zero(unit_network_authorization) +
                 ruleform.null_zero(location) +
                 ruleform.null_zero(location_attribute) +
                 ruleform.null_zero(location_attribute_authorization) +
@@ -389,6 +577,7 @@
                 ruleform.null_zero(product_attribute_authorization) +
                 ruleform.null_zero(product_network) +
                 ruleform.null_zero(product_network_attribute) +
+                ruleform.null_zero(product_network_authorization) +
                 ruleform.null_zero(product_location) +
                 ruleform.null_zero(product_location_attribute) +
                 ruleform.null_zero(interval) +
@@ -396,11 +585,13 @@
                 ruleform.null_zero(interval_attribute_authorization) +
                 ruleform.null_zero(interval_network) +
                 ruleform.null_zero(interval_network_attribute) +
+                ruleform.null_zero(interval_network_authorization) +
                 ruleform.null_zero(status_code) +
                 ruleform.null_zero(status_code_attribute) +
                 ruleform.null_zero(status_code_attribute_authorization) +
                 ruleform.null_zero(status_code_network) +
                 ruleform.null_zero(status_code_network_attribute) +
+                ruleform.null_zero(status_code_network_authorization) +
                 ruleform.null_zero(status_code_sequencing) +
                 ruleform.null_zero(job) +
                 ruleform.null_zero(job_chronology) +
@@ -414,7 +605,8 @@
                 ruleform.null_zero(relationship) +
                 ruleform.null_zero(relationship_attribute) +
                 ruleform.null_zero(relationship_attribute_authorization) +
-                ruleform.null_zero(relationship_network)
+                ruleform.null_zero(relationship_network) +
+                ruleform.null_zero(relationship_network_authorization)
                 ) = 1)
         ]]>
         </sql>

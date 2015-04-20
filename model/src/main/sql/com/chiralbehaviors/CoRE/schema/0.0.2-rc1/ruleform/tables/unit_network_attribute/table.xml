@@ -29,7 +29,7 @@
             <column name="binary_value" type="BYTEA" />
             <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="uuid" />
             <column name="notes" remarks="Miscellaneous notes about this rule" type="TEXT" />
-            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000001'" remarks="The agency that last updated this rule"
+            <column name="updated_by" remarks="The agency that last updated this rule"
                 type="uuid"
             >
                 <constraints nullable="false" />

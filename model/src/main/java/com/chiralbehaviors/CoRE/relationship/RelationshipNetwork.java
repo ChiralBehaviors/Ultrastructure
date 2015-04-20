@@ -17,13 +17,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.network;
+package com.chiralbehaviors.CoRE.relationship;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
-import static com.chiralbehaviors.CoRE.network.RelationshipNetwork.GET_CHILDREN;
-import static com.chiralbehaviors.CoRE.network.RelationshipNetwork.GET_NETWORKS;
+import static com.chiralbehaviors.CoRE.relationship.RelationshipNetwork.GET_CHILDREN;
+import static com.chiralbehaviors.CoRE.relationship.RelationshipNetwork.GET_NETWORKS;
 
 import java.util.UUID;
 
@@ -38,6 +38,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;

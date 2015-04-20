@@ -27,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.utils.Util;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
@@ -58,7 +59,7 @@ public class WorkspaceSnapshot {
 
     public void retarget(EntityManager em) {
         for (WorkspaceAuthorization auth : auths) {
-            em.persist(auth);
+            Util.smartMerge(em, auth);
         }
     }
 }

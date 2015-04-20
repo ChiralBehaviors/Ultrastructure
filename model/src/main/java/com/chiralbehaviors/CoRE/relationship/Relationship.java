@@ -17,16 +17,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.network;
+package com.chiralbehaviors.CoRE.relationship;
 
-import static com.chiralbehaviors.CoRE.network.Relationship.FIND_BY_NAME;
-import static com.chiralbehaviors.CoRE.network.Relationship.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
-import static com.chiralbehaviors.CoRE.network.Relationship.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
-import static com.chiralbehaviors.CoRE.network.Relationship.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
-import static com.chiralbehaviors.CoRE.network.Relationship.GET_ALL_PARENT_RELATIONSHIPS;
-import static com.chiralbehaviors.CoRE.network.Relationship.GET_CHILD;
-import static com.chiralbehaviors.CoRE.network.Relationship.GET_CHILD_RULES_BY_RELATIONSHIP;
-import static com.chiralbehaviors.CoRE.network.Relationship.ORDERED_ATTRIBUTES;
+import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_BY_NAME;
+import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
+import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.relationship.Relationship.GET_ALL_PARENT_RELATIONSHIPS;
+import static com.chiralbehaviors.CoRE.relationship.Relationship.GET_CHILD;
+import static com.chiralbehaviors.CoRE.relationship.Relationship.GET_CHILD_RULES_BY_RELATIONSHIP;
+import static com.chiralbehaviors.CoRE.relationship.Relationship.ORDERED_ATTRIBUTES;
 
 import java.util.Collections;
 import java.util.Set;

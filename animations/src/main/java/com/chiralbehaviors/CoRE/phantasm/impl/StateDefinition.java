@@ -70,7 +70,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         List<Aspect> failures = new ArrayList<>();
         for (Aspect constraint : aspects) {
             if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier()),
-                                        (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(constraint.classification()),
+                                        (com.chiralbehaviors.CoRE.relationship.Relationship) scope.lookup(constraint.classification()),
                                         ruleform)) {
                 failures.add(constraint);
             }
@@ -106,7 +106,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> specs = new ArrayList<>();
         for (Aspect aspect : aspects) {
             specs.add(new com.chiralbehaviors.CoRE.network.Aspect<RuleForm>(
-                                                                            (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(aspect.classification()),
+                                                                            (com.chiralbehaviors.CoRE.relationship.Relationship) scope.lookup(aspect.classification()),
                                                                             (RuleForm) scope.lookup(aspect.classifier())));
         }
         return specs;

@@ -46,10 +46,6 @@
             <artifactId>jackson-datatype-hibernate4</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.chiralbehaviors</groupId>
-            <artifactId>janus</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>dsl</artifactId>
         </dependency>

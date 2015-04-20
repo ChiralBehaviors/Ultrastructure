@@ -22,26 +22,28 @@ package com.chiralbehaviors.phantasm.demo;
 
 import java.util.List;
 
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.annotations.Aspect;
+import com.chiralbehaviors.annotations.Immediate;
+import com.chiralbehaviors.annotations.Key;
+import com.chiralbehaviors.annotations.Relationship;
+import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classifier = "Thing2") }, workspace = "00000000-0000-0004-0000-000000000006")
-public interface Thing2 extends PhantasmBase<Product> {
+@State(facets = { @Aspect(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing2")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
+public interface Thing2 extends Phantasm<Product> {
     // 
-    @Relationship(name = "thing2Of")
-    void addFunction(Thing3 thing3);
+    @Relationship(@Key(name = "thing2Of"))
+    void add(Thing3 thing3);
 
-    // 
-    @Relationship(name = "inThing1", singular = true)
+    @Relationship(@Key(name = "inThing1"))
     Thing1 getThing1();
 
-    @Relationship(name = "thing2Of", intersect = { @Aspect(classifier = "Thing3") })
+    @Immediate
+    @Relationship(@Key(name = "thing2Of"))
     List<Thing3> getThing3s();
 }

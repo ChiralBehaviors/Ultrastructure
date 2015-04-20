@@ -22,13 +22,12 @@ grammar Workspace;
 
 workspace:
     definition=workspaceDefinition
-    (imports=imported)?
-    //relationships first so that we can define networks
-    (relationships = definedRelationships)?
+    (imports=imported)? 
     (agencies = definedAgencies)?
     (attributes = definedAttributes)?
     (locations = definedLocations)?
     (products = definedProducts)?
+    (relationships = definedRelationships)?
     (statusCodes = definedStatusCodes)?
     (statusCodeSequencings = definedStatusCodeSequencings)?
     (units = definedUnits)?
@@ -41,15 +40,15 @@ workspace:
     EOF;
 
 
-definedAgencies: 'agencies' LB  (existentialRuleform SC)+ (edges)? RB;
-definedAttributes: 'attributes' LB  (existentialRuleform SC)+ (edges)? RB;
-definedIntervals: 'intervals' LB  (interval SC)+ (edges)? RB;
-definedLocations: 'locations' LB  (existentialRuleform SC)+ (edges)? RB;
-definedProducts: 'products' LB  (existentialRuleform SC)+ (edges)? RB;
-definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? RB;
-definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ (edges)? RB;
-definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? RB;
-definedUnits: 'units' LB  (unit SC)+  (edges)? RB;
+definedAgencies: 'agencies' LB  (existentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedAttributes: 'attributes' LB  (attributeRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedIntervals: 'intervals' LB  (interval SC)+ (edges)? (classifiedAttributes)? RB;
+definedLocations: 'locations' LB  (existentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedProducts: 'products' LB  (existentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? (classifiedAttributes)? RB;
+definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? (classifiedAttributes)? RB;
+definedUnits: 'units' LB  (unit SC)+  (edges)? (classifiedAttributes)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
 definedInferences: 'inferences' LB (edge)+ RB ;
 definedProtocols: 'protocols' LB (protocol)+ RB;
@@ -57,8 +56,11 @@ definedMetaProtocols: 'meta protocols' LB (metaProtocol)* RB;
 
 edges: 'edges' LB (edge)+ RB;
 
+classifiedAttributes: 'classified attributes' LB (classifiedAttribute)+ RB;
+
 workspaceDefinition: 
     'workspace:'
+    uri =  QuotedText
     name=QuotedText
     (description=QuotedText)?;
 
@@ -94,6 +96,10 @@ existentialRuleform:
     '=' 
     name = QuotedText 
     (description=QuotedText)?; 
+    
+attributeRuleform:
+    existentialRuleform
+    valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp'); 
 
 unit: 
     existentialRuleform
@@ -217,6 +223,15 @@ childJob:
     ('attr:' (assignToAttribute=qualifiedName))?
     ;
 
+classifiedAttribute:
+    classification = qualifiedName
+    '.'
+    classifier = qualifiedName 
+    authorized = qualifiedName
+    (defaultValue = QuotedText)?
+    (sequenceNumber = Number)?
+    ;
+
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
 QuotedText: '"' (' ' | '!' |'#'.. '~')+ '"'; 
 Boolean: ('true'|'false');
@@ -226,4 +241,4 @@ WS: (' ' | '\t')+ -> skip;
 NL: ('\r'? '\n')+ -> skip;
 LB: '{';
 RB: '}';
-SC: ';';
+SC: ';'; 

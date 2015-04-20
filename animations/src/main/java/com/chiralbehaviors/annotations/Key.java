@@ -1,6 +1,6 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
+ * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
+ *
  
  * This file is part of Ultrastructure.
  *
@@ -18,27 +18,21 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.annotations;
+package com.chiralbehaviors.annotations;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
  * @author hhildebrand
  *
  */
-@Documented
-@Target(TYPE)
-@Retention(RUNTIME)
-public @interface State {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Key {
+    String namespace() default "";
 
-    Aspect[] facets();
-
-    Import[] imports() default {};
-
-    String workspace();
+    String name();
 }

@@ -19,6 +19,8 @@
  */
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -34,14 +36,15 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 
 /**
  * @author hhildebrand
  *
  */
 public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
-        implements InvocationHandler, PhantasmBase<RuleForm> {
+        implements InvocationHandler, ScopedPhantasm<RuleForm> {
 
     private final Map<Method, StateFunction<RuleForm>> methods;
     private final Model                                model;
@@ -63,7 +66,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.PhantasmBase#getModel()
+     * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getModel()
      */
     @Override
     public Model getModel() {
@@ -81,7 +84,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.PhantasmBase#getRuleform()
+     * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getRuleform()
      */
     @Override
     public RuleForm getRuleform() {
@@ -89,7 +92,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.PhantasmBase#getScope()
+     * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getScope()
      */
     @Override
     public WorkspaceScope getScope() {
@@ -97,7 +100,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.PhantasmBase#getUpdatedBy()
+     * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getUpdatedBy()
      */
     @Override
     public Agency getUpdatedBy() {
@@ -113,10 +116,19 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         // Hard override (final) equals() and hashCode().  Becauase invariance.
         if (method.getName().equals("equals") && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
-            return (args[0] instanceof PhantasmBase) ? ruleform.equals(((PhantasmBase<?>) args[0]).getRuleform())
-                                                    : false;
+            return (args[0] instanceof Phantasm) ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
+                                                : false;
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
+        }
+        if (method.isDefault()) {
+            final Class<?> declaringClass = method.getDeclaringClass();
+            Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class,
+                                                                                                              int.class);
+            constructor.setAccessible(true);
+            return constructor.newInstance(declaringClass,
+                                           MethodHandles.Lookup.PRIVATE).unreflectSpecial(method,
+                                                                                          declaringClass).bindTo(proxy).invokeWithArguments(args);
         }
         StateFunction<RuleForm> function = methods.get(method);
         Object returnValue = (function != null) ? function.invoke(this, args)
@@ -134,6 +146,16 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return (Relationship) scope.lookup(s, key);
     }
 
+    private List<Phantasm<? super RuleForm>> wrap(List<RuleForm> queryResult,
+                                                  Class<Phantasm<? extends RuleForm>> phantasm) {
+        List<Phantasm<? super RuleForm>> result = new ArrayList<>(
+                                                                  queryResult.size());
+        for (RuleForm ruleform : queryResult) {
+            result.add(model.wrap(phantasm, ruleform));
+        }
+        return result;
+    }
+
     protected void addChild(String scope, String key, boolean singular,
                             RuleForm child) {
         model.getNetworkedModel(ruleform).link(ruleform,
@@ -142,19 +164,19 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                model.getKernel().getCore());
     }
 
-    protected void addChildren(String scope, String key,
-                               List<RuleForm> children, Agency updatedBy) {
+    protected void addChildren(String s, String key, List<RuleForm> children,
+                               Agency updatedBy) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
         for (RuleForm child : children) {
-            networkedModel.link(ruleform, getRelationship(scope, key), child,
+            networkedModel.link(ruleform, getRelationship(s, key), child,
                                 updatedBy);
         }
     }
 
-    protected Object getAttributeValue(String scope, String key) {
+    protected Object getAttributeValue(String s, String key) {
         @SuppressWarnings("unchecked")
         List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                                        getAttribute(scope,
+                                                                                                                        getAttribute(s,
                                                                                                                                      key));
         if (values.size() == 0) {
             throw new IllegalArgumentException(
@@ -182,25 +204,96 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return values;
     }
 
-    protected RuleForm getChild(String scope, String key, boolean singular) {
-        return model.getNetworkedModel(ruleform).getSingleChild(ruleform,
-                                                                getRelationship(scope,
-                                                                                key));
+    protected void setChild(String scope, String key,
+                            Phantasm<RuleForm> phantasm) {
+        model.getNetworkedModel(ruleform).getSingleChild(ruleform,
+                                                         getRelationship(scope,
+                                                                         key));
     }
 
-    protected List<RuleForm> getChildren(String scope, String key) {
-        return model.getNetworkedModel(ruleform).getChildren(ruleform,
-                                                             getRelationship(scope,
-                                                                             key));
+    protected Object getChild(String scope, String key,
+                              Class<Phantasm<? extends RuleForm>> phantasm) {
+        return model.wrap(phantasm,
+                          model.getNetworkedModel(ruleform).getSingleChild(ruleform,
+                                                                           getRelationship(scope,
+                                                                                           key)));
+    }
+
+    protected List<Phantasm<? super RuleForm>> getChildren(String scope,
+                                                           String key,
+                                                           Class<Phantasm<? extends RuleForm>> phantasm) {
+        List<RuleForm> queryResult = model.getNetworkedModel(ruleform).getChildren(ruleform,
+                                                                                   getRelationship(scope,
+                                                                                                   key));
+        return wrap(queryResult, phantasm);
+    }
+
+    protected Object getImmediateChild(String namespace,
+                                       String name,
+                                       Class<Phantasm<? extends RuleForm>> phantasm) {
+        return model.wrap(phantasm,
+                          model.getNetworkedModel(ruleform).getImmediateChild(ruleform,
+                                                                              getRelationship(namespace,
+                                                                                              name)));
+    }
+
+    protected List<Phantasm<? super RuleForm>> getImmediateChildren(String scope,
+                                                                    String key,
+                                                                    Class<Phantasm<? extends RuleForm>> phantasm) {
+        List<RuleForm> queryResult = model.getNetworkedModel(ruleform).getImmediateChildren(ruleform,
+                                                                                            getRelationship(scope,
+                                                                                                            key));
+        return wrap(queryResult, phantasm);
     }
 
     protected Object setAttributeValue(String scope, String key, Object value) {
-        // TODO Auto-generated method stub
+        @SuppressWarnings("unchecked")
+        List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                                        getAttribute(scope,
+                                                                                                                                     key));
+        if (values.size() == 0) {
+            throw new IllegalArgumentException(
+                                               String.format("No such attribute: %s:%s",
+                                                             scope == null ? ""
+                                                                          : scope,
+                                                             key));
+        } else if (values.size() > 1) {
+            throw new IllegalArgumentException(
+                                               String.format("Multiple values for attribute: %s:%s",
+                                                             scope == null ? ""
+                                                                          : scope,
+                                                             key));
+        }
+        values.get(0).setValue(value);
         return null;
     }
 
     protected Object setAttributeValues(String scope, String key, List<?> values) {
         // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param object
+     * @return
+     */
+    public Object setImmediateChild(String scope, String key, Object object) {
+        if (!(object instanceof Phantasm)) {
+            throw new ClassCastException(
+                                         String.format("%s does not implement %s",
+                                                       object.getClass().getCanonicalName(),
+                                                       Phantasm.class.getCanonicalName()));
+        }
+        @SuppressWarnings("unchecked")
+        Phantasm<RuleForm> phantasm = (Phantasm<RuleForm>) object;
+        RuleForm child = phantasm.getRuleform();
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
+        networkedModel.setImmediateChild(ruleform,
+                                         getRelationship(scope, key),
+                                         child,
+                                         model.getKernel().getCoreAnimationSoftware());
         return null;
     }
 }

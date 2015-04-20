@@ -18,30 +18,28 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.annotations;
+package com.chiralbehaviors.CoRE.phantasm;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.StringArgGenerator;
 
 /**
  * @author hhildebrand
  *
  */
-@Documented
-@Target(METHOD)
-@Retention(RUNTIME)
-public @interface Relationship {
-    boolean immediate() default true;
+public interface Phantasm<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>> {
+    final StringArgGenerator generator = Generators.nameBasedGenerator();
 
-    Aspect[] intersect() default {};
+    String getDescription();
 
-    String name();
+    String getName();
 
-    String scope() default "";
+    String getNotes();
 
-    boolean singular() default false;
+    RuleForm getRuleform();
+
+    Agency getUpdatedBy();
 }

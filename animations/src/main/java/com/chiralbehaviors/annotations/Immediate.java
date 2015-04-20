@@ -18,31 +18,22 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm;
+package com.chiralbehaviors.annotations;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * @author hhildebrand
  *
  */
-public interface PhantasmBase<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>> {
+@Documented
+@Target(METHOD)
+@Retention(RUNTIME)
+public @interface Immediate {
 
-    String getDescription();
-
-    Model getModel();
-
-    String getName();
-
-    String getNotes();
-
-    <T extends RuleForm> T getRuleform();
-
-    WorkspaceScope getScope();
-
-    Agency getUpdatedBy();
 }

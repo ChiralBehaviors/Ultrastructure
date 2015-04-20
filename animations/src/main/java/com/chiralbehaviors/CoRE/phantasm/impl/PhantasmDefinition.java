@@ -20,14 +20,20 @@
 
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.janus.CompositeAssembler;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
@@ -35,20 +41,63 @@ import com.chiralbehaviors.janus.CompositeAssembler;
  */
 public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
     private final List<StateDefinition<RuleForm>> facets = new ArrayList<>();
-    private final Class<PhantasmBase<RuleForm>>   phantasm;
+    private final Class<Phantasm<RuleForm>>       phantasm;
 
-    public PhantasmDefinition(Class<PhantasmBase<RuleForm>> phantasm) {
+    @SuppressWarnings("unchecked")
+    public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm) {
         this.phantasm = phantasm;
+        if (phantasm.getAnnotation(State.class) != null) {
+            StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(
+                                                                            phantasm);
+            facets.add(facet);
+        }
+        for (Class<?> iFace : phantasm.getInterfaces()) {
+            if (iFace.getAnnotation(State.class) != null) {
+                facets.add(new StateDefinition<RuleForm>(
+                                                         (Class<Phantasm<RuleForm>>) iFace));
+            }
+        }
     }
 
-    public PhantasmBase<RuleForm> construct(RuleForm ruleform, Model model) {
-        CompositeAssembler<PhantasmBase<RuleForm>> assembler = new CompositeAssembler<>(
-                                                                                        phantasm);
+    /**
+     * @param ruleform
+     * @param modelImpl
+     * @param updatedBy
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public Phantasm<?> construct(ExistentialRuleform<?, ?> ruleform,
+                                 Model model, Agency updatedBy) {
+        ExistentialRuleform<?, ?> form = ruleform;
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = (NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?>) model.getNetworkedModel(form);
+        for (StateDefinition<RuleForm> facet : facets) {
+            for (Aspect<RuleForm> aspect : facet.getAspects(model)) {
+                networkedModel.initialize((RuleForm) form, aspect, updatedBy);
+            }
+        }
+        return wrap(ruleform, model);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Phantasm<? super RuleForm> wrap(ExistentialRuleform<?, ?> ruleform,
+                                           Model model) {
+        Map<Class<?>, Object> stateMap = new HashMap<>();
         Object[] instances = new Object[facets.size()];
         int i = 0;
+        stateMap.put(Phantasm.class, ruleform);
         for (StateDefinition<RuleForm> facet : facets) {
-            instances[i++] = facet.construct(ruleform, model);
+            Object state = facet.construct((RuleForm) ruleform, model);
+            instances[i++] = state;
+            stateMap.put(facet.getStateInterface(), state);
+            if (facet.getStateInterface().equals(phantasm)) {
+                stateMap.put(phantasm, state);
+            }
         }
-        return assembler.construct(instances);
+        return (Phantasm<RuleForm>) Proxy.newProxyInstance(phantasm.getClassLoader(),
+                                                           new Class[] { phantasm },
+                                                           new PhantasmTwo(
+                                                                           stateMap,
+                                                                           ruleform));
+
     }
 }

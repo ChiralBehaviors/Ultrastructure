@@ -93,6 +93,8 @@
             <column name="relationship_network" type="uuid" />
             <column name="relationship_network_attribute" type="uuid" />
         </createTable>
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, key" constraintName="workspace_key_constraint"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"

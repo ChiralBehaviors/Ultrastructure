@@ -47,6 +47,12 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
+    private Agency              core;
+    private Product             sameProduct;
+    private Product             anyProduct;
+    private Agency              anyAgency;
+    private Location            anyLocation;
+    private Relationship        anyRelationship;
 
     public OrderProcessingLoader(Model model) throws Exception {
         this.em = model.getEntityManager();
@@ -57,10 +63,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         anyProduct = kernel.getAnyProduct();
         anyAgency = kernel.getAnyAgency();
         anyLocation = kernel.getAnyLocation();
-        sameRelationship = kernel.getSameRelationship();
         anyRelationship = kernel.getAnyRelationship();
-        notApplicableRelationship = kernel.getNotApplicableRelationship();
-        unset = kernel.getUnset();
     }
 
     public void createAgencyNetworks() {
@@ -105,8 +108,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         manufacturer = new Agency("MNFR", "Manufacturer", core);
         em.persist(manufacturer);
 
-        nonExemptAgency = new Agency("NonExempt", "Subject to sales taxes",
-                                     core);
+        nonExemptAgency = new Agency("NonExemptAgency",
+                                     "Subject to sales taxes", core);
         em.persist(nonExemptAgency);
 
         orgA = new Agency("OrgA", "Organization A", core);

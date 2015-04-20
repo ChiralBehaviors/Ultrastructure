@@ -65,8 +65,6 @@
         <module>create-database</module>
         <module>model</module>
         <module>animations</module>
-        <module>mixin-generator</module>
-        <module>json</module>
         <module>loader</module>
         <module>loader-plugin</module>
         <module>network-inference-generator</module>

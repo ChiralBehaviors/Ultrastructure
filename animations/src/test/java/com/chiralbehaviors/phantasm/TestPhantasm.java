@@ -20,9 +20,27 @@
 
 package com.chiralbehaviors.phantasm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.math.BigDecimal;
+
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceLexer;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
+import com.chiralbehaviors.phantasm.demo.Thing1;
+import com.chiralbehaviors.phantasm.demo.Thing2;
 
 /**
  * @author hhildebrand
@@ -31,8 +49,46 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 public class TestPhantasm extends AbstractModelTest {
 
     @Test
-    public void testMe() {
+    public void testDemo() throws Exception {
+        WorkspaceLexer l = new WorkspaceLexer(
+                                              new ANTLRInputStream(
+                                                                   getClass().getResourceAsStream("/thing.wsp")));
+        WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
+        p.addErrorListener(new BaseErrorListener() {
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer,
+                                    Object offendingSymbol, int line,
+                                    int charPositionInLine, String msg,
+                                    RecognitionException e) {
+                throw new IllegalStateException("failed to parse at line "
+                                                + line + " due to " + msg, e);
+            }
+        });
+        WorkspaceContext ctx = p.workspace();
 
+        WorkspaceImporter importer = new WorkspaceImporter(
+                                                           new WorkspacePresentation(
+                                                                                     ctx),
+                                                           model);
+        em.getTransaction().begin();
+        importer.loadWorkspace();
+        em.flush();
+
+        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test",
+                                                 kernel.getCore());
+        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tasty",
+                                                 "chips", kernel.getCore());
+        assertNotNull(thing1);
+        assertEquals(thing1, thing1.doSomethingElse());
+        thing1.doSomething("hello");
+        assertNotNull(thing1.getRuleform());
+        assertEquals(thing1.getRuleform().getName(), thing1.getName());
+        assertNull(thing1.getThing2());
+        thing1.setThing2(thing2);
+        assertNotNull(thing1.getThing2());
+        assertEquals(thing1, thing1.scopedAccess());
+        assertNull(thing1.getPercentage());
+        thing1.setPercentage(BigDecimal.ONE);
+        assertEquals(BigDecimal.ONE, thing1.getPercentage());
     }
-
 }

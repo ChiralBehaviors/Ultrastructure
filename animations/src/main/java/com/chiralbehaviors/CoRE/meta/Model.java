@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.meta;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 
@@ -30,6 +31,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 
 /**
  * The meta model for the CoRE
@@ -40,6 +42,31 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 public interface Model {
 
     /**
+     * Create a new instance of the phantasm's existential ruleform type using
+     * the model
+     * 
+     * @param phantasm
+     * @param ruleform
+     * @return
+     * @throws InstantiationException
+     */
+    <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                        String name,
+                                                                        String description,
+                                                                        Agency updatedBy)
+                                                                                         throws InstantiationException;
+
+    /**
+     * Wrap the ruleform with an instance of a phantasm using the model
+     * 
+     * @param phantasm
+     * @param ruleform
+     * @return
+     */
+    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> wrap(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                                       ExistentialRuleform<T, ?> ruleform);
+
+    /**
      * Find the ruleform instances that match the supplied attribute
      *
      * @param attributeValue
@@ -47,15 +74,6 @@ public interface Model {
      * @return the collection of ruleform instances that match the attribute
      */
     <AttributeType extends AttributeValue<RuleForm>, RuleForm extends Ruleform> List<RuleForm> find(AttributeType attributeValue);
-
-    /**
-     * Find an instance using the id
-     *
-     * @param id
-     * @return the instance corresponding to the supplied id, or null if the
-     *         instance does not exist
-     */
-    <RuleForm extends Ruleform> RuleForm find(Long id, Class<RuleForm> ruleform);
 
     /**
      * Find an instance of the ExistentialRuleform using the name
@@ -68,12 +86,13 @@ public interface Model {
                                                                Class<RuleForm> ruleform);
 
     /**
-     * Find the instances of the ruleform that are flagged for research
+     * Find an instance using the id
      *
-     * @param name
-     * @return the instances that have non null research values
+     * @param id
+     * @return the instance corresponding to the supplied id, or null if the
+     *         instance does not exist
      */
-    <RuleForm extends Ruleform> List<RuleForm> findFlagged(Class<RuleForm> ruleform);
+    <RuleForm extends Ruleform> RuleForm find(UUID id, Class<RuleForm> ruleform);
 
     /**
      * Find all the instances of the RuleForm that have been updated by the

@@ -49,7 +49,6 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
  *
  */
 public class DatabaseBackedWorkspace implements EditableWorkspace {
-
     public class EntityList<T extends Ruleform> extends AbstractList<T> {
         private final List<WorkspaceAuthorization> backingList;
 
@@ -76,6 +75,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     }
 
     private final UUID             definingProduct;
+
     protected final EntityManager  em;
     protected final Model          model;
     protected final WorkspaceScope scope;
@@ -130,6 +130,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                                         namespace,
                                                                         updatedBy);
         attribute.setNetwork(link);
+        em.persist(attribute);
         add(link);
         add(attribute);
     }
@@ -162,7 +163,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public <T> T getAccessor(Class<T> accessorInterface) {
-        return WorkspaceAccessHandler.getAccesor(accessorInterface, this);
+        return WorkspaceAccessHandler.getAccesor(accessorInterface, getScope());
     }
 
     /* (non-Javadoc)
@@ -178,6 +179,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                         cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
                                                  getDefiningProduct())));
         return new EntityList<T>(em.createQuery(query).getResultList());
+    }
+
+    @Override
+    public Product getDefiningProduct() {
+        return em.find(Product.class, definingProduct);
     }
 
     /* (non-Javadoc)
@@ -254,7 +260,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         // nothing to do, as we're backed by the DB
     }
 
-    protected Product getDefiningProduct() {
-        return em.find(Product.class, definingProduct);
+    @Override
+    public String toString() {
+        return String.format("DatabaseBackedWorkspace[%s]",
+                             getDefiningProduct().getName());
     }
 }

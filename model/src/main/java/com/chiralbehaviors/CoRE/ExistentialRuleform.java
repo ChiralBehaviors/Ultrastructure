@@ -33,6 +33,7 @@ import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.Relationship;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -46,7 +47,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
-        extends Ruleform implements Attributable<AttributeValue<RuleForm>> {
+        extends Ruleform implements Attributable<AttributeValue<RuleForm>>,
+        Phantasm<RuleForm> {
     public static final String DEDUCE_NEW_NETWORK_RULES_SUFFIX                               = ".deduceNewNetworkRules";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX = ".findClassifiedAttributeAuthorizationsForAttribute";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX               = ".findClassifiedAttributeAuthorizations";
@@ -129,6 +131,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     /**
      * @return the description
      */
+    @Override
     @JsonGetter
     public String getDescription() {
         return description;
@@ -137,6 +140,7 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     /**
      * @return the name
      */
+    @Override
     @JsonGetter
     public String getName() {
         return name;
@@ -214,5 +218,12 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     @Override
     public String toString() {
         return String.format("%s [%s]", getClass().getSimpleName(), getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @JsonIgnore
+    public RuleForm getRuleform() {
+        return (RuleForm) this;
     }
 }

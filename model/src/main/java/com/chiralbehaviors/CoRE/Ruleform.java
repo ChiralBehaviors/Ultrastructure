@@ -61,7 +61,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     public static final String         FIND_ALL_SUFFIX       = ".findAll";
     public static final String         FIND_BY_ID_SUFFIX     = ".findById";
     public static final String         FIND_BY_NAME_SUFFIX   = ".findByName";
-    public static final String         FIND_FLAGGED_SUFFIX   = ".findFlagged";
     public static final NoArgGenerator GENERATOR             = Generators.timeBasedGenerator();
     public static final String         GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
     public static final Integer        TRUE                  = Integer.valueOf((byte) 1);

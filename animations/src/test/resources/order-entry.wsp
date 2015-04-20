@@ -1,18 +1,10 @@
-workspace: "Order Entry" "Pricing example for CACM 1995 Ultrastructure article"
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/order-entry/v1" 
+           "Order Entry" 
+           "Pricing example for CACM 1995 Ultrastructure article"
 imports {
     "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
 }
 
-relationships {
-    area = "Area" "A is a member of the economic community B" | areaOf = "Area Of" "A is economic community of B";
-    city = "City" "A is located in the City B" | cityOf = "City Of" "A is the city of B";
-    customerType = "Customer Type" "A has customer type of B" | customerTypeOf = "Customer Type Of" "A is the customer type of B";
-    region = "Region" "The general region of A is B" | regionOf = "Region Of" "A is the general region of B";
-    state = "State" "A is located in the state B" | stateOf = "State Of" "A is the state of B";
-    salesTaxStatus = "Sales Tax Status" "The sales tax status of A is B" | salesTaxStatusOf = "Sales Tax Status Of" "A is the sales tax status of B";
-    storageType = "StorageType" "The type of storage required for A is B" | storageTypeOf = "StorageType Of" "A is the storage type of B";
-    street = "Street" "A is located on the street B" | streetOf = "Street Of" "A is the street of B";
-}
 agencies {
     billingComputer = "Billing CPU" "Billing computer";
     cpu = "CPU" "General purpose computer";
@@ -26,6 +18,11 @@ agencies {
     nonExemptAgency = "Non Exempt" "Non tax exempt";
     orgA = "OrgA" "Organization A";
     orderFullfillment = "Order Fullfillment" "Order Fullfillment";
+}
+attributes {
+        price = "price"  "price" int; 
+        taxRate = "tax rate" "tax rate" numeric;
+        discountRate = "discount" "discount" numeric;
 }
 locations {
     rsb225 = "225RSB" "225 Reiss Science Bldg";
@@ -53,6 +50,7 @@ locations {
     }
 }
 products {
+    pricedProduct = "Priced Product" "A product we sell";
     abc486 = "abc486" "Laptop computer";
     frozen = "frozen" "Frozen Products";
     chemB = "ChemB" "Chemical B";
@@ -73,6 +71,19 @@ products {
         abc486.salesTaxStatus.nonExempt
         chemB.storageType.frozen
     }
+    classified attributes {
+        kernel::IsA.pricedProduct price 
+    }
+}
+relationships {
+    area = "Area" "A is a member of the economic community B" | areaOf = "Area Of" "A is economic community of B";
+    city = "City" "A is located in the City B" | cityOf = "City Of" "A is the city of B";
+    customerType = "Customer Type" "A has customer type of B" | customerTypeOf = "Customer Type Of" "A is the customer type of B";
+    region = "Region" "The general region of A is B" | regionOf = "Region Of" "A is the general region of B";
+    state = "State" "A is located in the state B" | stateOf = "State Of" "A is the state of B";
+    salesTaxStatus = "Sales Tax Status" "The sales tax status of A is B" | salesTaxStatusOf = "Sales Tax Status Of" "A is the sales tax status of B";
+    storageType = "StorageType" "The type of storage required for A is B" | storageTypeOf = "StorageType Of" "A is the storage type of B";
+    street = "Street" "A is located on the street B" | streetOf = "Street Of" "A is the street of B";
 }
 status codes {
     available = "Available"  "Job is available for processing";

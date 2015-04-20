@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.meta.workspace;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace {
 
     private final Map<String, Ruleform> cache = new HashMap<>();
+    private final WorkspaceScope        scope = new WorkspaceScope(this);
 
     public void cache() {
         for (WorkspaceAuthorization auth : auths) {
@@ -70,7 +72,8 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
      */
     @Override
     public <T> T getAccessor(Class<T> accessorInterface) {
-        return WorkspaceAccessHandler.getAccesor(accessorInterface, this);
+        return WorkspaceAccessHandler.getAccesor(accessorInterface,
+                                                 this.getScope());
     }
 
     /* (non-Javadoc)
@@ -86,8 +89,7 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
      */
     @Override
     public Map<String, Product> getImports() {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptyMap();
     }
 
     /* (non-Javadoc)
@@ -95,8 +97,7 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
      */
     @Override
     public WorkspaceScope getScope() {
-        // TODO Auto-generated method stub
-        return null;
+        return scope;
     }
 
     /* (non-Javadoc)
@@ -116,5 +117,11 @@ public class RehydratedWorkspace extends WorkspaceSnapshot implements Workspace 
             auths.add(em.merge(auth));
         }
         cache();
+    }
+
+    @Override
+    public Product getDefiningProduct() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

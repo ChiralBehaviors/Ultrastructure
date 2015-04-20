@@ -31,14 +31,17 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmBase;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Attribute;
-import com.chiralbehaviors.CoRE.phantasm.annotations.Relationship;
-import com.chiralbehaviors.CoRE.phantasm.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.annotations.Aspect;
+import com.chiralbehaviors.annotations.Attribute;
+import com.chiralbehaviors.annotations.Key;
+import com.chiralbehaviors.annotations.Relationship;
+import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
@@ -48,23 +51,22 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private static final String                          GET     = "get";
     private static final String                          SET     = "set";
-    private final Class<PhantasmBase<RuleForm>>          accessorInterface;
     private final List<Aspect>                           aspects = new ArrayList<Aspect>();
+    private final Class<Phantasm<RuleForm>>              stateInterface;
     private final UUID                                   workspace;
     protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
 
-    public StateDefinition(Class<PhantasmBase<RuleForm>> accessorInterface) {
-        this.accessorInterface = accessorInterface;
-        State state = accessorInterface.getAnnotation(State.class);
-        workspace = UUID.fromString(state.workspace());
+    public StateDefinition(Class<Phantasm<RuleForm>> stateInterface) {
+        this.stateInterface = stateInterface;
+        State state = stateInterface.getAnnotation(State.class);
+        workspace = Workspace.uuidOf(state.workspace());
         construct();
     }
 
     @SuppressWarnings("unchecked")
     public void constrain(Model model, RuleForm ruleform) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
-        WorkspaceScope scope = model.getWorkspaceModel().getScoped(model.getEntityManager().find(Product.class,
-                                                                                                 workspace));
+        WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
         List<Aspect> failures = new ArrayList<>();
         for (Aspect constraint : aspects) {
             if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier()),
@@ -83,8 +85,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Object construct(RuleForm ruleform, Model model) {
         constrain(model, ruleform);
-        return Proxy.newProxyInstance(accessorInterface.getClassLoader(),
-                                      new Class[] { accessorInterface },
+        return Proxy.newProxyInstance(stateInterface.getClassLoader(),
+                                      new Class[] { stateInterface },
                                       new StateImpl(
                                                     ruleform,
                                                     model,
@@ -94,12 +96,33 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     }
 
+    /**
+     * @param model
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> getAspects(Model model) {
+        WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
+        List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> specs = new ArrayList<>();
+        for (Aspect aspect : aspects) {
+            specs.add(new com.chiralbehaviors.CoRE.network.Aspect<RuleForm>(
+                                                                            (com.chiralbehaviors.CoRE.network.Relationship) scope.lookup(aspect.classification()),
+                                                                            (RuleForm) scope.lookup(aspect.classifier())));
+        }
+        return specs;
+    }
+
+    public Class<Phantasm<RuleForm>> getStateInterface() {
+        return stateInterface;
+    }
+
     private void construct() {
-        State state = accessorInterface.getAnnotation(State.class);
+        State state = stateInterface.getAnnotation(State.class);
         for (Aspect aspect : state.facets()) {
             aspects.add(aspect);
         }
-        for (Class<?> iFace : accessorInterface.getInterfaces()) {
+        process(stateInterface);
+        for (Class<?> iFace : stateInterface.getInterfaces()) {
             process(iFace);
         }
     }
@@ -121,6 +144,11 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Method method) {
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (declaringClass.equals(Phantasm.class)
+            || declaringClass.equals(ScopedPhantasm.class)) {
+            return;
+        }
         if (method.getAnnotation(Relationship.class) != null) {
             process(method.getAnnotation(Relationship.class), method);
         } else if (method.getAnnotation(Attribute.class) != null) {
@@ -131,7 +159,19 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Relationship annotation, Method method) {
-        // TODO Auto-generated method stub
+        if (List.class.isAssignableFrom(method.getReturnType())) {
+            processGetList(annotation, method);
+        } else {
+            processSingular(annotation, method);
+        }
+    }
+
+    /**
+     * @param annotation
+     * @param method
+     * @return
+     */
+    private void processGetList(Relationship annotation, Method method) {
     }
 
     private void processGetter(Attribute attribute, Method method) {
@@ -140,14 +180,15 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                             String.format("getter method has arguments %s",
                                                           method.toGenericString()));
         }
+        Key value = attribute.value();
         if (List.class.isAssignableFrom(method.getReturnType())) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(attribute.scope(),
-                                                                                                    attribute.name()));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(value.namespace(),
+                                                                                                    value.name()));
         } else {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(attribute.scope(),
-                                                                                                   attribute.name()));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(value.namespace(),
+                                                                                                   value.name()));
         }
     }
 
@@ -176,15 +217,16 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                             String.format("setter method does not have a singular argument %s",
                                                           method.toGenericString()));
         }
+        Key value = attribute.value();
         if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(attribute.scope(),
-                                                                                                    attribute.name(),
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(value.namespace(),
+                                                                                                    value.name(),
                                                                                                     (List<?>) arguments[0]));
         } else {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(attribute.scope(),
-                                                                                                   attribute.name(),
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(value.namespace(),
+                                                                                                   value.name(),
                                                                                                    arguments[0]));
         }
     }
@@ -207,6 +249,27 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(null,
                                                                                                    key,
                                                                                                    arguments[0]));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void processSingular(Relationship annotation, Method method) {
+        Key value = annotation.value();
+        if (method.getReturnType().equals(Void.TYPE)) {
+            if (method.getParameterCount() != 1) {
+                throw new IllegalArgumentException(
+                                                   String.format("Not a valid Relationship setter: %s",
+                                                                 method));
+            }
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(value.namespace(),
+                                                                                                   value.name(),
+                                                                                                   arguments[0]));
+        } else {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChild(value.namespace(),
+                                                                                                   value.name(),
+                                                                                                   (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
         }
     }
 

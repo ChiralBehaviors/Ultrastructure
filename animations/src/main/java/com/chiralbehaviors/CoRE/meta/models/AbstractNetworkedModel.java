@@ -35,8 +35,6 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RU
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
 
 import java.lang.reflect.ParameterizedType;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -92,7 +90,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public static void defaultValue(AttributeValue<?> attr) {
         switch (attr.getAttribute().getValueType()) {
             case BINARY: {
-                attr.setBinaryValue(new byte[0]);
+                attr.setBinaryValue(null);
                 break;
             }
             case BOOLEAN: {
@@ -100,25 +98,26 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                 break;
             }
             case INTEGER: {
-                attr.setIntegerValue(-1);
+                attr.setIntegerValue(null);
                 break;
             }
             case NUMERIC: {
-                attr.setNumericValue(new BigDecimal(-1));
+                attr.setNumericValue(null);
                 break;
             }
             case TEXT: {
-                attr.setTextValue("");
+                attr.setTextValue(null);
                 break;
             }
             case TIMESTAMP: {
-                attr.setTimestampValue(new Timestamp(0));
+                attr.setTimestampValue(null);
                 break;
             }
         }
     }
 
     private final Class<AttributeType>             attribute;
+    private final String                           attributePrefix;
     private final Class<AttributeAuthorization>    authorization;
     private final Class<RuleForm>                  entity;
     private final Model                            model;
@@ -139,6 +138,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         network = (Class<NetworkRuleform<RuleForm>>) extractedNetwork();
         prefix = ModelImpl.prefixFor(entity);
         networkPrefix = ModelImpl.prefixFor(network);
+        attributePrefix = ModelImpl.prefixFor(attribute);
     }
 
     /* (non-Javadoc)
@@ -316,7 +316,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public List<AttributeType> getAttributeValues(RuleForm ruleform,
                                                   Attribute attribute) {
-        TypedQuery<AttributeType> q = em.createNamedQuery(prefix
+        TypedQuery<AttributeType> q = em.createNamedQuery(attributePrefix
                                                                   + AttributeValue.GET_ATTRIBUTE_SUFFIX,
                                                           this.attribute);
         q.setParameter("ruleform", ruleform);
@@ -402,7 +402,11 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                  relationship),
                                         cb.isNull(networkRoot.get("inference"))));
         TypedQuery<RuleForm> q = em.createQuery(query);
-        return q.getSingleResult();
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
@@ -645,6 +649,74 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
+    public void setAttributeValue(AttributeType value) {
+        Attribute attribute = value.getAttribute();
+        Attribute validatingAttribute = model.getAttributeModel().getSingleChild(attribute,
+                                                                                 model.getKernel().getIsValidatedBy());
+        if (validatingAttribute != null) {
+            TypedQuery<AttributeMetaAttribute> query = em.createNamedQuery(AttributeMetaAttribute.GET_ATTRIBUTE,
+                                                                           AttributeMetaAttribute.class);
+            query.setParameter("ruleform", validatingAttribute);
+            query.setParameter("attribute", attribute);
+            List<AttributeMetaAttribute> attrs = query.getResultList();
+            if (attrs == null || attrs.size() == 0) {
+                throw new IllegalArgumentException(
+                                                   "No valid values for attribute "
+                                                           + attribute.getName());
+            }
+            boolean valid = false;
+            for (AttributeMetaAttribute ama : attrs) {
+                if (ama.getTextValue() != null
+                    && ama.getTextValue().equals(value.getTextValue())) {
+                    valid = true;
+                    em.persist(value);
+                }
+            }
+            if (!valid) {
+                throw new IllegalArgumentException(
+                                                   String.format("%s is not a valid value for attribute %s",
+                                                                 value.getTextValue(),
+                                                                 attribute));
+            }
+        }
+
+    }
+
+    @Override
+    public void setImmediateChild(RuleForm parent, Relationship relationship,
+                                  RuleForm child, Agency updatedBy) {
+        NetworkRuleform<RuleForm> link = getImmediateLink(parent, relationship);
+        if (link != null) {
+            model.getEntityManager().remove(link);
+        }
+        link(parent, relationship, child, updatedBy);
+
+    }
+
+    /**
+     * @param parent
+     * @param relationship
+     * @return
+     */
+    protected NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
+                                                         Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<NetworkRuleform<RuleForm>> query = cb.createQuery(network);
+        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get("parent"),
+                                                        parent),
+                                               cb.equal(networkRoot.get("relationship"),
+                                                        relationship),
+                                               cb.isNull(networkRoot.get("inference"))));
+        TypedQuery<NetworkRuleform<RuleForm>> q = em.createQuery(query);
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
     public void unlink(RuleForm parent, Relationship relationship,
                        RuleForm child) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -860,40 +932,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             }
         }
         return allowedValues;
-    }
-
-    @Override
-    public void setAttributeValue(AttributeType value) {
-        Attribute attribute = value.getAttribute();
-        Attribute validatingAttribute = model.getAttributeModel().getSingleChild(attribute,
-                                                                                 model.getKernel().getIsValidatedBy());
-        if (validatingAttribute != null) {
-            TypedQuery<AttributeMetaAttribute> query = em.createNamedQuery(AttributeMetaAttribute.GET_ATTRIBUTE,
-                                                                           AttributeMetaAttribute.class);
-            query.setParameter("attr", validatingAttribute);
-            query.setParameter("meta", attribute);
-            List<AttributeMetaAttribute> attrs = query.getResultList();
-            if (attrs == null || attrs.size() == 0) {
-                throw new IllegalArgumentException(
-                                                   "No valid values for attribute "
-                                                           + attribute.getName());
-            }
-            boolean valid = false;
-            for (AttributeMetaAttribute ama : attrs) {
-                if (ama.getTextValue() != null
-                    && ama.getTextValue().equals(value.getTextValue())) {
-                    valid = true;
-                    em.persist(value);
-                }
-            }
-            if (!valid) {
-                throw new IllegalArgumentException(
-                                                   String.format("%s is not a valid value for attribute %s",
-                                                                 value.getTextValue(),
-                                                                 attribute));
-            }
-        }
-
     }
 
 }

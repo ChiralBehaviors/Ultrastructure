@@ -1,7 +1,7 @@
 /**
- * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
+ * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -18,19 +18,20 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.meta.workspace;
+package com.chiralbehaviors.CoRE.phantasm;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 
 /**
  * @author hhildebrand
  *
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Key {
-    String value();
+public interface ScopedPhantasm<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>>
+        extends Phantasm<RuleForm> {
+    Model getModel();
+
+    WorkspaceScope getScope();
 }

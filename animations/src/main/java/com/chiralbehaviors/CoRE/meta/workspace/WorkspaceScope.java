@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.annotations.Key;
 
 /**
  * @author hhildebrand
@@ -37,6 +38,12 @@ public class WorkspaceScope {
         if (imports != null)
             this.imports.putAll(imports);
         this.workspace = workspace;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("WorkspaceScope[%s]",
+                             workspace.getDefiningProduct().getName());
     }
 
     public WorkspaceScope(Workspace workspace) {
@@ -55,6 +62,18 @@ public class WorkspaceScope {
     }
 
     /**
+     * Lookup the key in the named scope of the receiver
+     * 
+     * @param key
+     * @return the value associated with the key in the named scope, or null
+     */
+    public Ruleform lookup(Key key) {
+        String namespace = key.namespace();
+        String name = key.name();
+        return lookup(namespace, name);
+    }
+
+    /**
      * Lookup the key in the hierarchical scope of the receiver, searching first
      * in the receiver, then through the ordered list of imported scopes
      * 
@@ -62,35 +81,26 @@ public class WorkspaceScope {
      * @return the value associated with the key in the reciever scope, or null
      */
     public Ruleform lookup(String key) {
-        Ruleform ruleform = workspace.get(key);
-        if (ruleform == null) {
-            for (Workspace workspace : imports.values()) {
-                ruleform = workspace.get(key);
-                if (ruleform != null) {
-                    return ruleform;
-                }
-            }
-        }
-        return ruleform;
+        return workspace.get(key);
     }
 
     /**
-     * Lookup the key in the named scope. The first scope found matching the
-     * name in a traversal of ordered parents is returned.
+     * Lookup the key in the named scope of the receiver
      * 
-     * @param scope
-     * @param key
+     * @param namespace
+     * @param name
      * @return the value associated with the key in the named scope, or null
      */
-    public Ruleform lookup(String scope, String key) {
-        if (scope == null) {
-            return lookup(key);
+    public Ruleform lookup(String namespace, String name) {
+        // null and empty string is alias for null scoped lookup in the workspace
+        if (namespace == null || namespace.length() == 0) {
+            return lookup(name);
         }
-        Workspace workspace = imports.get(scope);
+        Workspace workspace = imports.get(namespace);
         if (workspace == null) {
             return null;
         }
-        return workspace.get(key);
+        return workspace.get(name);
     }
 
     public Workspace remove(String key) {

@@ -117,6 +117,11 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
+    public WorkspaceScope getScoped(UUID definingProduct) {
+        return getScoped(em.find(Product.class, definingProduct));
+    }
+
+    @Override
     public List<WorkspaceAuthorization> getWorkspace(Product definingProduct) {
         TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_WORKSPACE,
                                                                        WorkspaceAuthorization.class);

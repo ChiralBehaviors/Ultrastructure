@@ -334,4 +334,37 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
+
+    public void setValue(Object value) {
+        switch (getAttribute().getValueType()) {
+            case BINARY:
+                setBinaryValue((byte[]) value);
+                return;
+            case BOOLEAN:
+                setBooleanValue((Boolean) value);
+                return;
+            case INTEGER:
+                setIntegerValue((Integer) value);
+                return;
+            case NUMERIC:
+                setNumericValue((BigDecimal) value);
+                return;
+            case TEXT:
+                setTextValue((String) value);
+                return;
+            case TIMESTAMP:
+                setTimestampValue((Timestamp) value);
+                return;
+            default:
+                throw new IllegalStateException(
+                                                String.format("Invalid value type: %s",
+                                                              getAttribute().getValueType()));
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s]: %s", getClass().getSimpleName(),
+                             getAttribute().getName(), getValue());
+    }
 }

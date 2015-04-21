@@ -167,7 +167,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.flush();
         a = em.find(Agency.class, a.getId());
         List<Agency> children = model.getAgencyModel().getChildren(a, equals);
-        assertEquals(children.toString(), 0, children.size());
+        assertEquals(children.toString(), 1, children.size());
         assertEquals(0, model.getAgencyModel().getChildren(a, equals2).size());
         b = em.find(Agency.class, b.getId());
         assertEquals(1, model.getAgencyModel().getChildren(b, equals2).size());

@@ -91,19 +91,19 @@ public class AttributeModelTest extends AbstractModelTest {
                                               ValueType.TEXT, core);
         em.persist(validValues);
 
-        AttributeMetaAttribute a = new AttributeMetaAttribute(validValues, "a",
+        AttributeMetaAttribute a = new AttributeMetaAttribute(attr, "a",
                                                               core);
-        a.setMetaAttribute(attr);
+        a.setMetaAttribute(validValues);
         em.persist(a);
-        AttributeMetaAttribute b = new AttributeMetaAttribute(validValues, "b",
+        AttributeMetaAttribute b = new AttributeMetaAttribute(attr, "b",
                                                               core);
-        b.setMetaAttribute(attr);
+        b.setMetaAttribute(validValues);
         b.setSequenceNumber(10);
         em.persist(b);
-        AttributeMetaAttribute c = new AttributeMetaAttribute(validValues, "c",
+        AttributeMetaAttribute c = new AttributeMetaAttribute(attr, "c",
                                                               core);
         c.setSequenceNumber(100);
-        c.setMetaAttribute(attr);
+        c.setMetaAttribute(validValues);
         em.persist(c);
         model.getAttributeModel().link(attr,
                                        model.getKernel().getIsValidatedBy(),

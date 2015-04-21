@@ -32,6 +32,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
@@ -66,6 +67,7 @@ import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeValueContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
@@ -257,24 +259,20 @@ public class WorkspaceImporter {
 
     private void loadAgencyNetworks() {
         for (EdgeContext edge : wsp.getAgencyNetworks()) {
-            AgencyNetwork network = new AgencyNetwork(
-                                                      resolve(edge.parent),
-                                                      resolve(edge.relationship),
-                                                      resolve(edge.child),
-                                                      model.getKernel().getCore());
-            em.persist(network);
+            AgencyNetwork network = model.getAgencyModel().link(resolve(edge.parent),
+                                                                resolve(edge.relationship),
+                                                                resolve(edge.child),
+                                                                model.getKernel().getCore());
             workspace.add(network);
         }
     }
 
     private void loadAttributeNetworks() {
         for (EdgeContext edge : wsp.getAttributeNetworks()) {
-            AttributeNetwork network = new AttributeNetwork(
-                                                            resolve(edge.parent),
-                                                            resolve(edge.relationship),
-                                                            resolve(edge.child),
-                                                            model.getKernel().getCore());
-            em.persist(network);
+            AttributeNetwork network = model.getAttributeModel().link(resolve(edge.parent),
+                                                                      resolve(edge.relationship),
+                                                                      resolve(edge.child),
+                                                                      model.getKernel().getCore());
             workspace.add(network);
         }
     }
@@ -290,6 +288,16 @@ public class WorkspaceImporter {
             em.persist(attr);
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           attr);
+            for (AttributeValueContext av : ruleform.attributeValue()) {
+                AttributeMetaAttribute ama = new AttributeMetaAttribute();
+                ama.setAttribute(attr);
+                Attribute metaAttribute = resolve(av.attribute);
+                ama.setMetaAttribute(metaAttribute);
+                ama.setUpdatedBy(model.getKernel().getCore());
+                ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
+                ama.setValueFromString(stripQuotes(av.value.getText()));
+                em.persist(ama);
+            }
         }
     }
 
@@ -342,12 +350,10 @@ public class WorkspaceImporter {
 
     private void loadIntervalNetworks() {
         for (EdgeContext edge : wsp.getIntervalNetworks()) {
-            IntervalNetwork network = new IntervalNetwork(
-                                                          resolve(edge.parent),
-                                                          resolve(edge.relationship),
-                                                          resolve(edge.child),
-                                                          model.getKernel().getCore());
-            em.persist(network);
+            IntervalNetwork network = model.getIntervalModel().link(resolve(edge.parent),
+                                                                    resolve(edge.relationship),
+                                                                    resolve(edge.child),
+                                                                    model.getKernel().getCore());
             workspace.add(network);
         }
     }
@@ -374,12 +380,10 @@ public class WorkspaceImporter {
 
     private void loadLocationNetworks() {
         for (EdgeContext edge : wsp.getLocationNetworks()) {
-            LocationNetwork network = new LocationNetwork(
-                                                          resolve(edge.parent),
-                                                          resolve(edge.relationship),
-                                                          resolve(edge.child),
-                                                          model.getKernel().getCore());
-            em.persist(network);
+            LocationNetwork network = model.getLocationModel().link(resolve(edge.parent),
+                                                                    resolve(edge.relationship),
+                                                                    resolve(edge.child),
+                                                                    model.getKernel().getCore());
             workspace.add(network);
         }
     }
@@ -446,12 +450,10 @@ public class WorkspaceImporter {
 
     private void loadProductNetworks() {
         for (EdgeContext edge : wsp.getProductNetworks()) {
-            ProductNetwork network = new ProductNetwork(
-                                                        resolve(edge.parent),
-                                                        resolve(edge.relationship),
-                                                        resolve(edge.child),
-                                                        model.getKernel().getCore());
-            em.persist(network);
+            ProductNetwork network = model.getProductModel().link(resolve(edge.parent),
+                                                                  resolve(edge.relationship),
+                                                                  resolve(edge.child),
+                                                                  model.getKernel().getCore());
             workspace.add(network);
         }
     }
@@ -533,12 +535,10 @@ public class WorkspaceImporter {
 
     private void loadRelationshipNetworks() {
         for (EdgeContext edge : wsp.getRelationshipNetworks()) {
-            RelationshipNetwork network = new RelationshipNetwork(
-                                                                  resolve(edge.parent),
-                                                                  resolve(edge.relationship),
-                                                                  resolve(edge.child),
-                                                                  model.getKernel().getCore());
-            em.persist(network);
+            RelationshipNetwork network = model.getRelationshipModel().link(resolve(edge.parent),
+                                                                            resolve(edge.relationship),
+                                                                            resolve(edge.child),
+                                                                            model.getKernel().getCore());
             workspace.add(network);
         }
     }
@@ -593,12 +593,10 @@ public class WorkspaceImporter {
 
     private void loadStatusCodeNetworks() {
         for (EdgeContext edge : wsp.getStatusCodeNetworks()) {
-            StatusCodeNetwork network = new StatusCodeNetwork(
-                                                              resolve(edge.parent),
-                                                              resolve(edge.relationship),
-                                                              resolve(edge.child),
-                                                              model.getKernel().getCore());
-            em.persist(network);
+            StatusCodeNetwork network = model.getStatusCodeModel().link(resolve(edge.parent),
+                                                                        resolve(edge.relationship),
+                                                                        resolve(edge.child),
+                                                                        model.getKernel().getCore());
             workspace.add(network);
         }
     }
@@ -638,11 +636,10 @@ public class WorkspaceImporter {
 
     private void loadUnitNetworks() {
         for (EdgeContext edge : wsp.getUnitNetworks()) {
-            UnitNetwork network = new UnitNetwork(resolve(edge.parent),
-                                                  resolve(edge.relationship),
-                                                  resolve(edge.child),
-                                                  model.getKernel().getCore());
-            em.persist(network);
+            UnitNetwork network = model.getUnitModel().link(resolve(edge.parent),
+                                                            resolve(edge.relationship),
+                                                            resolve(edge.child),
+                                                            model.getKernel().getCore());
             workspace.add(network);
         }
     }

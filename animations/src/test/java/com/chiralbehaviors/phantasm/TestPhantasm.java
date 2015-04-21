@@ -20,9 +20,7 @@
 
 package com.chiralbehaviors.phantasm;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 
@@ -39,6 +37,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceLexer;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
+import com.chiralbehaviors.phantasm.demo.MavenArtifact;
 import com.chiralbehaviors.phantasm.demo.Thing1;
 import com.chiralbehaviors.phantasm.demo.Thing2;
 
@@ -90,5 +89,20 @@ public class TestPhantasm extends AbstractModelTest {
         assertNull(thing1.getPercentage());
         thing1.setPercentage(BigDecimal.ONE);
         assertEquals(BigDecimal.ONE, thing1.getPercentage());
+
+        MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
+                                                                 "myartifact",
+                                                                 "artifact",
+                                                                 kernel.getCore());
+        artifact.setType("jar");
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        artifact.setType("invalid");
+        try {
+            em.getTransaction().commit();
+            fail();
+        } catch (Exception e) {
+        }
     }
+
 }

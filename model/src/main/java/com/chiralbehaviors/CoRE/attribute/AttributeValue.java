@@ -368,6 +368,32 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         }
     }
 
+    public void setValueFromString(String value) {
+        switch (getAttribute().getValueType()) {
+            case BINARY:
+                setBinaryValue(value.getBytes());
+                return;
+            case BOOLEAN:
+                setBooleanValue(Boolean.valueOf(value));
+                return;
+            case INTEGER:
+                setIntegerValue(Integer.parseInt(value));
+                return;
+            case NUMERIC:
+                setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                return;
+            case TEXT:
+                setTextValue(value);
+                return;
+            case TIMESTAMP:
+                throw new UnsupportedOperationException("Timestamps are a PITA");
+            default:
+                throw new IllegalStateException(
+                                                String.format("Invalid value type: %s",
+                                                              getAttribute().getValueType()));
+        }
+    }
+
     @Override
     public String toString() {
         return String.format("%s[%s]: %s", getClass().getSimpleName(),

@@ -99,7 +99,8 @@ existentialRuleform:
     
 attributeRuleform:
     existentialRuleform
-    valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp'); 
+    valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp')
+    ('attribute values' LB (attributeValue)+ RB)?; 
 
 unit: 
     existentialRuleform
@@ -107,6 +108,11 @@ unit:
     ('enumerated:' enumerated = Boolean)?
     ('min:' min = Number)?
     ('max:' max = Number)?;
+    
+attributeValue:
+    attribute = qualifiedName 
+    ':' value = QuotedText
+    (sequenceNumber = Number)?;
     
 relationshipPair:
     primary=existentialRuleform '|' inverse=existentialRuleform; 

@@ -630,7 +630,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public void propagate() {
         createDeductionTemporaryTables();
         boolean firstPass = true;
-        boolean derived = false;
         do {
             if (infer(firstPass) == 0) {
                 break;
@@ -640,7 +639,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             if (insert() == 0) {
                 break;
             }
-            derived = true;
             alterDeductionTablesForNextPass();
         } while (true);
         generateInverses();

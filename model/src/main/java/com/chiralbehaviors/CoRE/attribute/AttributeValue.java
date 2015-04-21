@@ -33,6 +33,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -253,6 +254,11 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
                                                 String.format("Invalid value type: %s",
                                                               getAttribute().getValueType()));
         }
+    }
+
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
     }
 
     public final void setAttribute(Attribute attribute) {

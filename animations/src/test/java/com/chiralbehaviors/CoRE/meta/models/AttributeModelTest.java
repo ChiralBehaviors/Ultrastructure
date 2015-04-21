@@ -91,8 +91,6 @@ public class AttributeModelTest extends AbstractModelTest {
                                               ValueType.TEXT, core);
         em.persist(validValues);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
         AttributeMetaAttribute a = new AttributeMetaAttribute(validValues, "a",
                                                               core);
         a.setMetaAttribute(attr);
@@ -107,13 +105,10 @@ public class AttributeModelTest extends AbstractModelTest {
         c.setSequenceNumber(100);
         c.setMetaAttribute(attr);
         em.persist(c);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
         model.getAttributeModel().link(attr,
                                        model.getKernel().getIsValidatedBy(),
                                        validValues, core);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        
         Product validatedProduct = new Product(
                                                "ValidatedProduct",
                                                "A product supertype with validation",
@@ -123,7 +118,6 @@ public class AttributeModelTest extends AbstractModelTest {
         Product myProduct = new Product("MyProduct", "my product", core);
         em.persist(myProduct);
 
-        em.getTransaction().commit();
         // set value
         ProductAttribute attributeValue = new ProductAttribute(
                                                                attr,
@@ -131,14 +125,17 @@ public class AttributeModelTest extends AbstractModelTest {
                                                                model.getKernel().getCore());
         attributeValue.setProduct(myProduct);
 
-        model.getProductModel().setAttributeValue(attributeValue);
+        em.persist(attributeValue);
+        em.flush();
         attributeValue.setTextValue("aaa");
         try {
-            model.getProductModel().setAttributeValue(attributeValue);
+            em.persist(attributeValue);
+            em.flush();
             fail();
         } catch (IllegalArgumentException e) {
 
         }
 
     }
+    
 }

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.hibernate.internal.SessionImpl;
 
@@ -35,7 +36,9 @@ import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.event.Job;
@@ -98,6 +101,7 @@ public class Animations implements Triggers {
     private final Set<ProductParentSequencingAuthorization>  parentSequences    = new HashSet<>();
     private final Set<ProductSelfSequencingAuthorization>    selfSequences      = new HashSet<>();
     private final Set<ProductSiblingSequencingAuthorization> siblingSequences   = new HashSet<>();
+    private final Set<AttributeValue<?>>                     attributeValues    = new HashSet<>();
 
     public Animations(Model model, EntityManager em) {
         this.model = model;
@@ -255,6 +259,7 @@ public class Animations implements Triggers {
                                        "StatusCodeSequencing validation failed",
                                        e);
         }
+        validateAttributeValues();
         validateSequenceAuthorizations();
         propagate();
         int cycles = 0;
@@ -553,6 +558,44 @@ public class Animations implements Triggers {
         }
     }
 
+    private void validateAttributeValues() {
+        validateEnums();
+    }
+
+    private void validateEnums() {
+        for (AttributeValue<?> value : attributeValues) {
+            Attribute attribute = value.getAttribute();
+            Attribute validatingAttribute = model.getAttributeModel().getSingleChild(attribute,
+                                                                                     model.getKernel().getIsValidatedBy());
+            if (validatingAttribute != null) {
+                TypedQuery<AttributeMetaAttribute> query = em.createNamedQuery(AttributeMetaAttribute.GET_ATTRIBUTE,
+                                                                               AttributeMetaAttribute.class);
+                query.setParameter("attr", validatingAttribute);
+                query.setParameter("meta", attribute);
+                List<AttributeMetaAttribute> attrs = query.getResultList();
+                if (attrs == null || attrs.size() == 0) {
+                    throw new IllegalArgumentException(
+                                                       "No valid values for attribute "
+                                                               + attribute.getName());
+                }
+                boolean valid = false;
+                for (AttributeMetaAttribute ama : attrs) {
+                    if (ama.getTextValue() != null
+                        && ama.getTextValue().equals(value.getTextValue())) {
+                        valid = true;
+                        em.persist(value);
+                    }
+                }
+                if (!valid) {
+                    throw new IllegalArgumentException(
+                                                       String.format("%s is not a valid value for attribute %s",
+                                                                     value.getTextValue(),
+                                                                     attribute));
+                }
+            }
+        }
+    }
+
     private void validateSequenceAuthorizations() {
         validateParentSequencing();
         validateSiblingSequencing();
@@ -569,5 +612,10 @@ public class Animations implements Triggers {
                 throw new TriggerException("Invalid sequence", e);
             }
         }
+    }
+
+    @Override
+    public <T extends AttributeValue<?>> void persist(T value) {
+        attributeValues.add(value);
     }
 }

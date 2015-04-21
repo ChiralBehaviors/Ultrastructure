@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -63,6 +64,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.impl.PhantasmDefinition;
+import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 
 /**
  * @author hhildebrand
@@ -80,19 +82,20 @@ public class ModelImpl implements Model {
         return builder.toString();
     }
 
-    private final AgencyModel       agencyModel;
-    private final Animations        animations;
-    private final AttributeModel    attributeModel;
-    private final EntityManager     em;
-    private final IntervalModel     intervalModel;
-    private final JobModel          jobModel;
-    private final Kernel            kernel;
-    private final LocationModel     locationModel;
-    private final ProductModel      productModel;
-    private final RelationshipModel relationshipModel;
-    private final StatusCodeModel   statusCodeModel;
-    private final UnitModel         unitModel;
-    private final WorkspaceModel    workspaceModel;
+    private final AgencyModel                         agencyModel;
+    private final Animations                          animations;
+    private final AttributeModel                      attributeModel;
+    private final ThreadLocal<AuthenticatedPrincipal> currentPrincipal = new ThreadLocal<>();
+    private final EntityManager                       em;
+    private final IntervalModel                       intervalModel;
+    private final JobModel                            jobModel;
+    private final Kernel                              kernel;
+    private final LocationModel                       locationModel;
+    private final ProductModel                        productModel;
+    private final RelationshipModel                   relationshipModel;
+    private final StatusCodeModel                     statusCodeModel;
+    private final UnitModel                           unitModel;
+    private final WorkspaceModel                      workspaceModel;
 
     public ModelImpl(EntityManagerFactory emf) {
         EntityManager entityManager = emf.createEntityManager();
@@ -142,6 +145,23 @@ public class ModelImpl implements Model {
         getEntityManager().persist(ruleform);
         return (Phantasm<? super T>) definition.construct(ruleform, this,
                                                           updatedBy);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#executeAs(com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal, java.util.concurrent.Callable)
+     */
+    @Override
+    public <V> V executeAs(AuthenticatedPrincipal principal,
+                           Callable<V> function) throws Exception {
+        V value = null;
+        AuthenticatedPrincipal previous = currentPrincipal.get();
+        currentPrincipal.set(principal);
+        try {
+            value = function.call();
+        } finally {
+            currentPrincipal.set(previous);
+        }
+        return value;
     }
 
     /*

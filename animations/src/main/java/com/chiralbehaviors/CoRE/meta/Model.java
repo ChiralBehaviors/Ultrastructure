@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 
@@ -32,6 +33,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 
 /**
  * The meta model for the CoRE
@@ -40,6 +42,18 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
  *
  */
 public interface Model {
+
+    /**
+     * Execute the function within in the context of the authenticated
+     * principal.
+     * 
+     * @param principal
+     * @param function
+     *            -
+     * @throws Exception
+     */
+    <V> V executeAs(AuthenticatedPrincipal principal, Callable<V> function)
+                                                                           throws Exception;
 
     /**
      * Create a new instance of the phantasm's existential ruleform type using

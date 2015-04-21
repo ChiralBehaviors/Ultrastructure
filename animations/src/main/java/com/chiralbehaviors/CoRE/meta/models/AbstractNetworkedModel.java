@@ -643,9 +643,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             derived = true;
             alterDeductionTablesForNextPass();
         } while (true);
-        if (derived) {
-            generateInverses();
-        }
+        generateInverses();
     }
 
     @Override

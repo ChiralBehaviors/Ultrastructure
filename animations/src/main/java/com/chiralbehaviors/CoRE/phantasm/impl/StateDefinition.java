@@ -181,10 +181,11 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                           method.toGenericString()));
         }
         Key value = attribute.value();
-        if (List.class.isAssignableFrom(method.getReturnType())) {
+        if (method.getReturnType().isArray()) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(value.namespace(),
-                                                                                                    value.name()));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeArray(value.namespace(),
+                                                                                                   value.name(),
+                                                                                                   method.getReturnType().getComponentType()));
         } else {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(value.namespace(),
@@ -202,8 +203,15 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                 method.getName().length());
         if (method.getReturnType().isArray()) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(null,
-                                                                                                    key));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeArray(null,
+                                                                                                   key,
+                                                                                                   method.getReturnType().getComponentType()));
+        }
+        if (Map.class.isAssignableFrom(method.getReturnType())) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeMap(null,
+                                                                                                 key,
+                                                                                                 method.getReturnType()));
         } else {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(null,
@@ -220,9 +228,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         Key value = attribute.value();
         if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(value.namespace(),
-                                                                                                    value.name(),
-                                                                                                    (List<?>) arguments[0]));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeArray(value.namespace(),
+                                                                                                   value.name(),
+                                                                                                   (Object[]) arguments[0]));
         } else {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(value.namespace(),
@@ -241,9 +249,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                 method.getName().length());
         if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(null,
-                                                                                                    key,
-                                                                                                    (List<?>) arguments[0]));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeArray(null,
+                                                                                                   key,
+                                                                                                   (Object[]) arguments[0]));
         } else {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(null,

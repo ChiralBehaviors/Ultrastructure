@@ -24,11 +24,11 @@ import java.util.Collections;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingsContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.MetaProtocolContext;
@@ -56,11 +56,11 @@ public class WorkspacePresentation {
         this.context = context;
     }
 
-    public List<ExistentialRuleformContext> getAgencies() {
+    public List<AttributedExistentialRuleformContext> getAgencies() {
         if (context.agencies == null) {
             return Collections.emptyList();
         }
-        List<ExistentialRuleformContext> ruleforms = context.agencies.existentialRuleform();
+        List<AttributedExistentialRuleformContext> ruleforms = context.agencies.attributedExistentialRuleform();
         return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
@@ -186,11 +186,11 @@ public class WorkspacePresentation {
         return context.locations.edges().edge();
     }
 
-    public List<ExistentialRuleformContext> getLocations() {
+    public List<AttributedExistentialRuleformContext> getLocations() {
         if (context.locations == null) {
             return Collections.emptyList();
         }
-        List<ExistentialRuleformContext> ruleforms = context.locations.existentialRuleform();
+        List<AttributedExistentialRuleformContext> ruleforms = context.locations.attributedExistentialRuleform();
         return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
@@ -228,11 +228,11 @@ public class WorkspacePresentation {
         return context.products.edges().edge();
     }
 
-    public List<ExistentialRuleformContext> getProducts() {
+    public List<AttributedExistentialRuleformContext> getProducts() {
         if (context.products == null) {
             return Collections.emptyList();
         }
-        List<ExistentialRuleformContext> ruleforms = context.products.existentialRuleform();
+        List<AttributedExistentialRuleformContext> ruleforms = context.products.attributedExistentialRuleform();
         return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
@@ -308,11 +308,11 @@ public class WorkspacePresentation {
         return context.statusCodes.edges().edge();
     }
 
-    public List<ExistentialRuleformContext> getStatusCodes() {
+    public List<AttributedExistentialRuleformContext> getStatusCodes() {
         if (context.statusCodes == null) {
             return Collections.emptyList();
         }
-        List<ExistentialRuleformContext> ruleforms = context.statusCodes.existentialRuleform();
+        List<AttributedExistentialRuleformContext> ruleforms = context.statusCodes.attributedExistentialRuleform();
         return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 

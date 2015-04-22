@@ -40,13 +40,13 @@ workspace:
     EOF;
 
 
-definedAgencies: 'agencies' LB  (existentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedAgencies: 'agencies' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
 definedAttributes: 'attributes' LB  (attributeRuleform SC)+ (edges)? (classifiedAttributes)? RB;
 definedIntervals: 'intervals' LB  (interval SC)+ (edges)? (classifiedAttributes)? RB;
-definedLocations: 'locations' LB  (existentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
-definedProducts: 'products' LB  (existentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedLocations: 'locations' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedProducts: 'products' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
 definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? (classifiedAttributes)? RB;
-definedStatusCodes: 'status codes' LB  (existentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedStatusCodes: 'status codes' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
 definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? (classifiedAttributes)? RB;
 definedUnits: 'units' LB  (unit SC)+  (edges)? (classifiedAttributes)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
@@ -81,7 +81,8 @@ interval:
     )?
     ('duration: ' duration = Number
         durationUnit = qualifiedName
-    )?;
+    )?
+    ('attribute values' LB (attributeValue)+ RB)?;
     
 statusCodeSequencingSet:
     service = qualifiedName
@@ -90,26 +91,38 @@ statusCodeSequencingSet:
 sequencePair:
     first = qualifiedName   
     second = qualifiedName;
-    
+   
 existentialRuleform:
     workspaceName = ObjectName  
     '=' 
     name = QuotedText 
     (description=QuotedText)?; 
     
+    
+attributedExistentialRuleform:
+    existentialRuleform
+    ('attribute values' LB (attributeValue)+ RB)?;
+    
 attributeRuleform:
     existentialRuleform
-    valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp'); 
+    valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp')
+    ('attribute values' LB (attributeValue)+ RB)?; 
 
 unit: 
     existentialRuleform
     datatype = ObjectName
     ('enumerated:' enumerated = Boolean)?
     ('min:' min = Number)?
-    ('max:' max = Number)?;
+    ('max:' max = Number)?
+    ('attribute values' LB (attributeValue)+ RB)?;
+    
+attributeValue:
+    attribute = qualifiedName 
+    ':' value = QuotedText
+    (sequenceNumber = Number)?;
     
 relationshipPair:
-    primary=existentialRuleform '|' inverse=existentialRuleform; 
+    primary=attributedExistentialRuleform '|' inverse=attributedExistentialRuleform; 
 
 qualifiedName:
     (namespace=ObjectName '::')?

@@ -570,8 +570,8 @@ public class Animations implements Triggers {
             if (validatingAttribute != null) {
                 TypedQuery<AttributeMetaAttribute> query = em.createNamedQuery(AttributeMetaAttribute.GET_ATTRIBUTE,
                                                                                AttributeMetaAttribute.class);
-                query.setParameter("attr", validatingAttribute);
-                query.setParameter("meta", attribute);
+                query.setParameter("attribute", validatingAttribute);
+                query.setParameter("ruleform", attribute);
                 List<AttributeMetaAttribute> attrs = query.getResultList();
                 if (attrs == null || attrs.size() == 0) {
                     throw new IllegalArgumentException(

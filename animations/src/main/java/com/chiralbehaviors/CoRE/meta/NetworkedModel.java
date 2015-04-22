@@ -417,4 +417,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param child
      */
     void unlink(RuleForm parent, Relationship r, RuleForm child);
+
+    public abstract AttributeType create(RuleForm ruleform, Attribute attribute, Agency updatedBy);
 }

@@ -31,7 +31,6 @@ import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -158,11 +157,8 @@ public class AgencyModelImpl
     }
 
     @Override
-    protected AgencyAttribute create(Agency ruleform,
-                                     ClassifiedAttributeAuthorization<Agency> authorization,
-                                     Agency updateBy) {
-        return new AgencyAttribute(ruleform,
-                                   authorization.getAuthorizedAttribute(),
-                                   updateBy);
+    public AgencyAttribute create(Agency ruleform, Attribute attribute,
+                                  Agency updateBy) {
+        return new AgencyAttribute(ruleform, attribute, updateBy);
     }
 }

@@ -97,6 +97,11 @@ public class UnitAttribute extends AttributeValue<Unit> {
         super(attribute, unit);
     }
 
+    public UnitAttribute(Unit unit, Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+        setUnit(unit);
+    }
+
     public UnitAttribute(UUID id) {
         super(id);
     }

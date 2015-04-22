@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -160,12 +159,8 @@ public class AttributeModelImpl
      */
 
     @Override
-    protected AttributeMetaAttribute create(Attribute ruleform,
-                                            ClassifiedAttributeAuthorization<Attribute> authorization,
-                                            Agency updatedBy) {
-        return new AttributeMetaAttribute(
-                                          ruleform,
-                                          authorization.getAuthorizedAttribute(),
-                                          updatedBy);
+    public AttributeMetaAttribute create(Attribute ruleform,
+                                         Attribute attribute, Agency updatedBy) {
+        return new AttributeMetaAttribute(ruleform, attribute, updatedBy);
     }
 }

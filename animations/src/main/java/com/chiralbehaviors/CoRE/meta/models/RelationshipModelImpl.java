@@ -27,7 +27,6 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -184,12 +183,8 @@ public class RelationshipModelImpl
     }
 
     @Override
-    protected RelationshipAttribute create(Relationship ruleform,
-                                           ClassifiedAttributeAuthorization<Relationship> authorization,
-                                           Agency updatedBy) {
-        return new RelationshipAttribute(
-                                         ruleform,
-                                         authorization.getAuthorizedAttribute(),
-                                         updatedBy);
+    public RelationshipAttribute create(Relationship ruleform,
+                                        Attribute attribute, Agency updatedBy) {
+        return new RelationshipAttribute(ruleform, attribute, updatedBy);
     }
 }

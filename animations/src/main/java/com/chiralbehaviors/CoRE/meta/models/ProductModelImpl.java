@@ -27,7 +27,6 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -158,11 +157,8 @@ public class ProductModelImpl
     }
 
     @Override
-    protected ProductAttribute create(Product ruleform,
-                                      ClassifiedAttributeAuthorization<Product> authorization,
-                                      Agency updatedBy) {
-        return new ProductAttribute(ruleform,
-                                    authorization.getAuthorizedAttribute(),
-                                    updatedBy);
+    public ProductAttribute create(Product ruleform, Attribute attribute,
+                                   Agency updatedBy) {
+        return new ProductAttribute(ruleform, attribute, updatedBy);
     }
 }

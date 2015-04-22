@@ -73,7 +73,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
     private BigDecimal         numericValue;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber       = 1;
+    private Integer            sequenceNumber       = 0;
 
     @Column(name = "text_value")
     private String             textValue;

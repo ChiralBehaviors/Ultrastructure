@@ -27,7 +27,6 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
@@ -160,11 +159,9 @@ public class UnitModelImpl
     }
 
     @Override
-    protected UnitAttribute create(Unit ruleform,
-                                   ClassifiedAttributeAuthorization<Unit> authorization,
-                                   Agency updatedBy) {
-        return new UnitAttribute(authorization.getAuthorizedAttribute(),
-                                 updatedBy);
+    public UnitAttribute create(Unit ruleform, Attribute attribute,
+                                Agency updatedBy) {
+        return new UnitAttribute(ruleform, attribute, updatedBy);
     }
 
 }

@@ -29,7 +29,6 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
@@ -241,11 +240,8 @@ public class StatusCodeModelImpl
     }
 
     @Override
-    protected StatusCodeAttribute create(StatusCode ruleform,
-                                         ClassifiedAttributeAuthorization<StatusCode> authorization,
-                                         Agency updatedBy) {
-        return new StatusCodeAttribute(ruleform,
-                                       authorization.getAuthorizedAttribute(),
-                                       updatedBy);
+    public StatusCodeAttribute create(StatusCode ruleform, Attribute attribute,
+                                      Agency updatedBy) {
+        return new StatusCodeAttribute(ruleform, attribute, updatedBy);
     }
 }

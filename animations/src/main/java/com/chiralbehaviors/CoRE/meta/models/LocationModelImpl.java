@@ -27,7 +27,6 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
@@ -159,11 +158,8 @@ public class LocationModelImpl
      * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
      */
     @Override
-    protected LocationAttribute create(Location ruleform,
-                                       ClassifiedAttributeAuthorization<Location> authorization,
-                                       Agency updatedBy) {
-        return new LocationAttribute(ruleform,
-                                     authorization.getAuthorizedAttribute(),
-                                     updatedBy);
+    public LocationAttribute create(Location ruleform, Attribute attribute,
+                                    Agency updatedBy) {
+        return new LocationAttribute(ruleform, attribute, updatedBy);
     }
 }

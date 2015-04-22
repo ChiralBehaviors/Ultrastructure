@@ -118,8 +118,8 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         // Hard override (final) equals() and hashCode().  Becauase invariance.
         if (method.getName().equals("equals") && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
-            return (args[0] instanceof Phantasm) ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
-                                                : false;
+            return args[0] instanceof Phantasm ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
+                                              : false;
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
         }
@@ -133,8 +133,8 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                                                           declaringClass).bindTo(proxy).invokeWithArguments(args);
         }
         StateFunction<RuleForm> function = methods.get(method);
-        Object returnValue = (function != null) ? function.invoke(this, args)
-                                               : method.invoke(this, args);
+        Object returnValue = function != null ? function.invoke(this, args)
+                                             : method.invoke(this, args);
 
         // always maintain proxy discipline.  Because identity.
         return returnValue == this ? proxy : returnValue;
@@ -170,6 +170,32 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
 
     private Relationship getRelationship(String s, String key) {
         return (Relationship) scope.lookup(s, key);
+    }
+
+    private AttributeValue<RuleForm>[] getValueArray(String namespace,
+                                                     String key) {
+        @SuppressWarnings("unchecked")
+        List<AttributeValue<RuleForm>> values = (List<AttributeValue<RuleForm>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                                                      getAttribute(namespace,
+                                                                                                                                                   key));
+        int max = 0;
+        for (AttributeValue<RuleForm> value : values) {
+            max = Math.max(max, value.getSequenceNumber());
+        }
+        @SuppressWarnings("unchecked")
+        AttributeValue<RuleForm>[] returnValue = new AttributeValue[max];
+        return returnValue;
+    }
+
+    private Map<String, AttributeValue<RuleForm>> getValueMap(String namespace,
+                                                              String key) {
+        Map<String, AttributeValue<RuleForm>> map = new HashMap<>();
+        for (AttributeValue<RuleForm> value : model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                   getAttribute(namespace,
+                                                                                                                key))) {
+            map.put(value.getKey(), value);
+        }
+        return map;
     }
 
     private List<Phantasm<? super RuleForm>> wrap(List<RuleForm> queryResult,
@@ -235,32 +261,6 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return map;
     }
 
-    private Map<String, AttributeValue<RuleForm>> getValueMap(String namespace,
-                                                              String key) {
-        Map<String, AttributeValue<RuleForm>> map = new HashMap<>();
-        for (AttributeValue<RuleForm> value : model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                   getAttribute(namespace,
-                                                                                                                key))) {
-            map.put(value.getKey(), value);
-        }
-        return map;
-    }
-
-    private AttributeValue<RuleForm>[] getValueArray(String namespace,
-                                                     String key) {
-        @SuppressWarnings("unchecked")
-        List<AttributeValue<RuleForm>> values = (List<AttributeValue<RuleForm>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                                                      getAttribute(namespace,
-                                                                                                                                                   key));
-        int max = 0;
-        for (AttributeValue<RuleForm> value : values) {
-            max = Math.max(max, value.getSequenceNumber());
-        }
-        @SuppressWarnings("unchecked")
-        AttributeValue<RuleForm>[] returnValue = new AttributeValue[max];
-        return returnValue;
-    }
-
     protected Object getAttributeValue(String s, String key) {
         @SuppressWarnings("unchecked")
         List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
@@ -317,6 +317,64 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return wrap(queryResult, phantasm);
     }
 
+    protected Object setAttributeArray(String namespace, String key,
+                                       Object[] values) {
+        Attribute attribute = scope.lookup(namespace, key);
+        AttributeValue<RuleForm>[] old = getValueArray(namespace, key);
+        if (values == null) {
+            for (AttributeValue<RuleForm> value : old) {
+                model.getEntityManager().remove(value);
+            }
+        } else if (old.length == values.length) {
+            for (int i = 0; i < values.length; i++) {
+                setValue(attribute, i, old[i], values[i]);
+            }
+        } else if (old.length < values.length) {
+            int i;
+            for (i = 0; i < old.length; i++) {
+                setValue(attribute, i, old[i], values[i]);
+            }
+            for (; i < values.length; i++) {
+                setValue(attribute, i, old[i], values[i]);
+            }
+        } else if (old.length > values.length) {
+            int i;
+            for (i = 0; i < values.length; i++) {
+                setValue(attribute, i, old[i], values[i]);
+            }
+            for (; i < old.length; i++) {
+                model.getEntityManager().remove(old[i]);
+            }
+        }
+        return null;
+    }
+
+    private void setValue(Attribute attribute, int i,
+                          AttributeValue<RuleForm> existing, Object newValue) {
+        if (newValue == null && existing != null) {
+            model.getEntityManager().remove(existing);
+        } else if (newValue != null && existing == null) {
+            AttributeValue<RuleForm> v = newAttributeValue(attribute, i);
+            v.setValue(newValue);
+            model.getEntityManager().persist(v);
+        }
+    }
+
+    private AttributeValue<RuleForm> newAttributeValue(Attribute attribute,
+                                                       int i) {
+        AttributeValue<RuleForm> value = model.getNetworkedModel(ruleform).create(ruleform,
+                                                                                  attribute,
+                                                                                  model.getKernel().getCoreAnimationSoftware());
+        value.setSequenceNumber(i);
+        return value;
+    }
+
+    protected Object setAttributeMap(String namespace, String key,
+                                     Map<String, Object> values) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     protected Object setAttributeValue(String scope, String key, Object value) {
         @SuppressWarnings("unchecked")
         List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
@@ -339,21 +397,10 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return null;
     }
 
-    protected Object setAttributeArray(String scope, String key, Object[] values) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    protected Object setAttributeMap(String scope, String key,
-                                     Map<String, Object> values) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    protected void setChild(String scope, String key,
+    protected void setChild(String namepsapace, String key,
                             Phantasm<RuleForm> phantasm) {
         model.getNetworkedModel(ruleform).getSingleChild(ruleform,
-                                                         getRelationship(scope,
+                                                         getRelationship(namepsapace,
                                                                          key));
     }
 }

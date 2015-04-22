@@ -26,7 +26,6 @@ import java.util.List;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -207,11 +206,8 @@ public class IntervalModelImpl
      * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
      */
     @Override
-    protected IntervalAttribute create(Interval ruleform,
-                                       ClassifiedAttributeAuthorization<Interval> authorization,
-                                       Agency updatedBy) {
-        return new IntervalAttribute(ruleform,
-                                     authorization.getAuthorizedAttribute(),
-                                     updatedBy);
+    public IntervalAttribute create(Interval ruleform, Attribute attribute,
+                                    Agency updatedBy) {
+        return new IntervalAttribute(ruleform, attribute, updatedBy);
     }
 }

@@ -595,7 +595,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         ruleform.link(aspect.getClassification(), aspect.getClassifier(),
                       kernel.getCoreModel(), kernel.getInverseSoftware(), em);
         for (ClassifiedAttributeAuthorization<RuleForm> authorization : getAttributeAuthorizations(aspect)) {
-            AttributeType attribute = create(ruleform, authorization, updatedBy);
+            AttributeType attribute = create(ruleform,
+                                             authorization.getAuthorizedAttribute(),
+                                             updatedBy);
             attributes.add(attribute);
             defaultValue(attribute);
             em.persist(attribute);
@@ -874,10 +876,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
         return inserted;
     }
-
-    abstract protected AttributeType create(RuleForm ruleform,
-                                            ClassifiedAttributeAuthorization<RuleForm> authorization,
-                                            Agency updatedBy);
 
     /**
      * @param attribute

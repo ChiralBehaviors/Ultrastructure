@@ -180,10 +180,13 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                                                                                                                    key));
         int max = 0;
         for (AttributeValue<RuleForm> value : values) {
-            max = Math.max(max, value.getSequenceNumber());
+            max = Math.max(max, value.getSequenceNumber() + 1);
         }
         @SuppressWarnings("unchecked")
         AttributeValue<RuleForm>[] returnValue = new AttributeValue[max];
+        for (AttributeValue<RuleForm> form : values) {
+            returnValue[form.getSequenceNumber()] = form;
+        }
         return returnValue;
     }
 
@@ -231,7 +234,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         Object[] values = (Object[]) Array.newInstance(type,
                                                        attributeValues.length);
         for (AttributeValue<RuleForm> value : attributeValues) {
-            values[value.getSequenceNumber() - 1] = value.getValue();
+            values[value.getSequenceNumber()] = value.getValue();
         }
         return values;
     }
@@ -320,10 +323,23 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     protected Object setAttributeArray(String namespace, String key,
                                        Object[] values) {
         Attribute attribute = scope.lookup(namespace, key);
+        if (attribute == null) {
+            throw new IllegalStateException(
+                                            String.format("The attribute %s:%s does not exist in the workspace",
+                                                          namespace == null ? ""
+                                                                           : namespace,
+                                                          key));
+        }
         AttributeValue<RuleForm>[] old = getValueArray(namespace, key);
         if (values == null) {
-            for (AttributeValue<RuleForm> value : old) {
-                model.getEntityManager().remove(value);
+            if (old != null) {
+                for (AttributeValue<RuleForm> value : old) {
+                    model.getEntityManager().remove(value);
+                }
+            }
+        } else if (old == null) {
+            for (int i = 0; i < values.length; i++) {
+                setValue(attribute, i, null, values[i]);
             }
         } else if (old.length == values.length) {
             for (int i = 0; i < values.length; i++) {
@@ -335,7 +351,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                 setValue(attribute, i, old[i], values[i]);
             }
             for (; i < values.length; i++) {
-                setValue(attribute, i, old[i], values[i]);
+                setValue(attribute, i, null, values[i]);
             }
         } else if (old.length > values.length) {
             int i;
@@ -351,13 +367,11 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
 
     private void setValue(Attribute attribute, int i,
                           AttributeValue<RuleForm> existing, Object newValue) {
-        if (newValue == null && existing != null) {
-            model.getEntityManager().remove(existing);
-        } else if (newValue != null && existing == null) {
-            AttributeValue<RuleForm> v = newAttributeValue(attribute, i);
-            v.setValue(newValue);
-            model.getEntityManager().persist(v);
+        if (existing == null) {
+            existing = newAttributeValue(attribute, i);
+            model.getEntityManager().persist(existing);
         }
+        existing.setValue(newValue);
     }
 
     private AttributeValue<RuleForm> newAttributeValue(Attribute attribute,

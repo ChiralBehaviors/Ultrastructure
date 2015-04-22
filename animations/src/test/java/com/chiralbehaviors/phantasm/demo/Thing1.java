@@ -51,6 +51,7 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     }
 
     // array attributes of the ruleform
+    @Attribute(@Key(name = "aliases"))
     String[] getAliases();
 
     // Singular product-location authorization 
@@ -77,6 +78,10 @@ public interface Thing1 extends ScopedPhantasm<Product> {
         Model model = getModel();
         return (Thing1) model.wrap(Thing1.class, getRuleform());
     }
+
+    // array attributes of the ruleform
+    @Attribute(@Key(name = "aliases"))
+    void setAliases(String[] aliases);
 
     // Singular product-location authorization 
     @Relationship(@Key(name = "derivedFrom"))

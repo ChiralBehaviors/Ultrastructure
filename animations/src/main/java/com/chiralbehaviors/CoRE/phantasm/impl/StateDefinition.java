@@ -226,7 +226,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                           method.toGenericString()));
         }
         Key value = attribute.value();
-        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+        if (method.getParameterTypes()[0].isArray()) {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeArray(value.namespace(),
                                                                                                    value.name(),
@@ -247,7 +247,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
         String key = method.getName().substring(SET.length(),
                                                 method.getName().length());
-        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+        if (method.getParameterTypes()[0].isArray()) {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeArray(null,
                                                                                                    key,

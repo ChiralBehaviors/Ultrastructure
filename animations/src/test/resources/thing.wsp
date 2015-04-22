@@ -11,8 +11,17 @@ attributes {
     artifactId = "Artifact ID" "artifact identifier" text;
     classifier = "Classifier" "classifier" text;
     groupId = "Group ID" "group identifier" text;
-    type = "Type" "type" text;
+    typeValues = "Type Values" "Valid values for the Type attribute" text;
+    type = "Type" "type" text
+        attribute values {
+            typeValues: "jar" 1
+            typeValues: "yml" 2
+            typeValues: "package" 3
+        };
     version = "Version" "version" text;
+    edges {
+        type.kernel::IsValidatedBy.typeValues
+    }
     
 }
 locations {

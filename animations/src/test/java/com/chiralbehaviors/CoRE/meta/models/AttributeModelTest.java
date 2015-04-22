@@ -91,29 +91,24 @@ public class AttributeModelTest extends AbstractModelTest {
                                               ValueType.TEXT, core);
         em.persist(validValues);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-        AttributeMetaAttribute a = new AttributeMetaAttribute(validValues, "a",
+        AttributeMetaAttribute a = new AttributeMetaAttribute(attr, "a",
                                                               core);
-        a.setMetaAttribute(attr);
+        a.setMetaAttribute(validValues);
         em.persist(a);
-        AttributeMetaAttribute b = new AttributeMetaAttribute(validValues, "b",
+        AttributeMetaAttribute b = new AttributeMetaAttribute(attr, "b",
                                                               core);
-        b.setMetaAttribute(attr);
+        b.setMetaAttribute(validValues);
         b.setSequenceNumber(10);
         em.persist(b);
-        AttributeMetaAttribute c = new AttributeMetaAttribute(validValues, "c",
+        AttributeMetaAttribute c = new AttributeMetaAttribute(attr, "c",
                                                               core);
         c.setSequenceNumber(100);
-        c.setMetaAttribute(attr);
+        c.setMetaAttribute(validValues);
         em.persist(c);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
         model.getAttributeModel().link(attr,
                                        model.getKernel().getIsValidatedBy(),
                                        validValues, core);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        
         Product validatedProduct = new Product(
                                                "ValidatedProduct",
                                                "A product supertype with validation",
@@ -123,7 +118,6 @@ public class AttributeModelTest extends AbstractModelTest {
         Product myProduct = new Product("MyProduct", "my product", core);
         em.persist(myProduct);
 
-        em.getTransaction().commit();
         // set value
         ProductAttribute attributeValue = new ProductAttribute(
                                                                attr,
@@ -131,14 +125,17 @@ public class AttributeModelTest extends AbstractModelTest {
                                                                model.getKernel().getCore());
         attributeValue.setProduct(myProduct);
 
-        model.getProductModel().setAttributeValue(attributeValue);
+        em.persist(attributeValue);
+        em.flush();
         attributeValue.setTextValue("aaa");
         try {
-            model.getProductModel().setAttributeValue(attributeValue);
+            em.persist(attributeValue);
+            em.flush();
             fail();
         } catch (IllegalArgumentException e) {
 
         }
 
     }
+    
 }

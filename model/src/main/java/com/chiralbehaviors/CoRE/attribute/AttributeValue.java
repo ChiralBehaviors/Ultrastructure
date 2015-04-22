@@ -33,6 +33,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.fasterxml.jackson.annotation.JsonGetter;
@@ -255,6 +256,11 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
         }
     }
 
+    @Override
+    public void persist(Triggers triggers) {
+        triggers.persist(this);
+    }
+
     public final void setAttribute(Attribute attribute) {
         this.attribute = attribute;
     }
@@ -355,6 +361,32 @@ public abstract class AttributeValue<RuleForm extends Ruleform> extends
             case TIMESTAMP:
                 setTimestampValue((Timestamp) value);
                 return;
+            default:
+                throw new IllegalStateException(
+                                                String.format("Invalid value type: %s",
+                                                              getAttribute().getValueType()));
+        }
+    }
+
+    public void setValueFromString(String value) {
+        switch (getAttribute().getValueType()) {
+            case BINARY:
+                setBinaryValue(value.getBytes());
+                return;
+            case BOOLEAN:
+                setBooleanValue(Boolean.valueOf(value));
+                return;
+            case INTEGER:
+                setIntegerValue(Integer.parseInt(value));
+                return;
+            case NUMERIC:
+                setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                return;
+            case TEXT:
+                setTextValue(value);
+                return;
+            case TIMESTAMP:
+                throw new UnsupportedOperationException("Timestamps are a PITA");
             default:
                 throw new IllegalStateException(
                                                 String.format("Invalid value type: %s",

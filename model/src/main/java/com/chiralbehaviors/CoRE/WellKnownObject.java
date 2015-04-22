@@ -412,6 +412,30 @@ public interface WellKnownObject {
                 return WellKnownObject.SAME;
             }
 
+        },
+        NULLABLE() {
+
+            @Override
+            public String description() {
+                return "A special Attribute that indicates whether or not an attribute value is required";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.BOOLEAN;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NULLABLE;
+            }
+
         };
 
         /* (non-Javadoc)
@@ -2005,6 +2029,7 @@ public interface WellKnownObject {
     String NAMESPACE                 = "namespace";
     String NANOSECONDS               = "Nanoseconds";
     String NOT_APPLICABLE            = "(N/A)";
+    String NULLABLE                  = "Nullable";
     String OWNED_BY                  = "ownedBy";
     String OWNS                      = "owns";
     String PASSWORD_HASH             = "password-hash";

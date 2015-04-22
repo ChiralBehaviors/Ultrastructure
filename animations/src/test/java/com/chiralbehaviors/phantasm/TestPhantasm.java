@@ -105,8 +105,7 @@ public class TestPhantasm extends AbstractModelTest {
                                                                  "artifact",
                                                                  kernel.getCore());
         artifact.setType("jar");
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.flush();
         artifact.setType("invalid");
         try {
             em.getTransaction().commit();

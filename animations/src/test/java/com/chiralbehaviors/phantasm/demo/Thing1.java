@@ -23,6 +23,7 @@ package com.chiralbehaviors.phantasm.demo;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -71,7 +72,8 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     String getURI();
 
     default Thing1 scopedAccess() {
-        System.out.println(getScope().lookup("kernel", "IsA"));
+        Ruleform lookup = getScope().lookup("kernel", "IsA");
+        System.out.println(lookup);
         Model model = getModel();
         return (Thing1) model.wrap(Thing1.class, getRuleform());
     }

@@ -10,7 +10,7 @@
             CREATE DOMAIN sequence_number
               AS integer
               DEFAULT 1
-               CONSTRAINT sequence_number_check CHECK ((VALUE >= 1));
+               CONSTRAINT sequence_number_check CHECK ((VALUE >= 0));
             ALTER DOMAIN sequence_number
               OWNER TO core;
              ]]>

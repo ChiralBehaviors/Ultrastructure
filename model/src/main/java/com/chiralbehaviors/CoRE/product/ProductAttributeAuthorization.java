@@ -29,12 +29,10 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -46,13 +44,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "product_attribute_authorization", schema = "ruleform")
 public class ProductAttributeAuthorization extends
-        ClassifiedAttributeAuthorization<Product> {
-    private static final long serialVersionUID = 1L;
+        AttributeAuthorization<Product, ProductNetwork> {
+    private static final long           serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "classifier")
-    private Product           classifier;
+    @JoinColumn(name = "network_authorization")
+    private ProductNetworkAuthorization networkAuthorization;
 
     public ProductAttributeAuthorization() {
     }
@@ -65,48 +63,15 @@ public class ProductAttributeAuthorization extends
     }
 
     /**
-     * @param classification
-     * @param updatedBy
-     */
-    public ProductAttributeAuthorization(Relationship classification,
-                                         Agency updatedBy) {
-        super(classification, updatedBy);
-    }
-
-    /**
-     * @param classification
-     * @param authorized
-     * @param updatedBy
-     */
-    public ProductAttributeAuthorization(Relationship classification,
-                                         Attribute authorized, Agency updatedBy) {
-        super(classification, authorized, updatedBy);
-    }
-
-    public ProductAttributeAuthorization(Relationship classification,
-                                         Product classifier,
-                                         Attribute authorized, Agency updatedBy) {
-        super(classification, authorized, updatedBy);
-        this.classifier = classifier;
-    }
-
-    /**
      * @param id
      */
     public ProductAttributeAuthorization(UUID id) {
         super(id);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
-     * getClassifier()
-     */
     @Override
-    @JsonGetter
-    public Product getClassifier() {
-        return classifier;
+    public NetworkAuthorization<Product> getNetworkAuthorization() {
+        return networkAuthorization;
     }
 
     /* (non-Javadoc)
@@ -118,14 +83,8 @@ public class ProductAttributeAuthorization extends
         return WorkspaceAuthorization_.productAttributeAuthorization;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
-     * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
-     */
     @Override
-    public void setClassifier(Product classifier) {
-        this.classifier = classifier;
+    public void setNetworkAuthorization(NetworkAuthorization<Product> auth) {
+        networkAuthorization = (ProductNetworkAuthorization) auth;
     }
 }

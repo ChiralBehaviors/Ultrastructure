@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -62,10 +63,12 @@ public class UnitModelImpl
      */
     @Override
     public void authorize(Aspect<Unit> aspect, Attribute... attributes) {
+        UnitNetworkAuthorization auth = new UnitNetworkAuthorization();
+        auth.setAuthorizedParent(aspect.getClassifier());
+        auth.setAuthorizedRelationship(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             UnitAttributeAuthorization authorization = new UnitAttributeAuthorization(
-                                                                                      aspect.getClassification(),
-                                                                                      aspect.getClassifier(),
                                                                                       attribute,
                                                                                       kernel.getCoreModel());
             em.persist(authorization);

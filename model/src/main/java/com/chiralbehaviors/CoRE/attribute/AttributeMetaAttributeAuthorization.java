@@ -74,6 +74,15 @@ public class AttributeMetaAttributeAuthorization extends
         super(id);
     }
 
+    /**
+     * @param attribute
+     * @param coreModel
+     */
+    public AttributeMetaAttributeAuthorization(Attribute attribute,
+                                               Agency agency) {
+        super(attribute, agency);
+    }
+
     @Override
     public NetworkAuthorization<Attribute> getNetworkAuthorization() {
         return networkAuthorization;

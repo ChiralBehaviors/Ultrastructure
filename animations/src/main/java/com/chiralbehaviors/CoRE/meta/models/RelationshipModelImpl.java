@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
 
 /**
  * @author hhildebrand
@@ -61,12 +62,15 @@ public class RelationshipModelImpl
      */
     @Override
     public void authorize(Aspect<Relationship> aspect, Attribute... attributes) {
+        RelationshipNetworkAuthorization auth = new RelationshipNetworkAuthorization();
+        auth.setAuthorizedParent(aspect.getClassifier());
+        auth.setAuthorizedRelationship(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             RelationshipAttributeAuthorization authorization = new RelationshipAttributeAuthorization(
-                                                                                                      aspect.getClassification(),
-                                                                                                      aspect.getClassifier(),
                                                                                                       attribute,
                                                                                                       kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }

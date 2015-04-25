@@ -29,6 +29,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -73,6 +74,14 @@ public class LocationAttributeAuthorization extends
      */
     public LocationAttributeAuthorization(UUID id) {
         super(id);
+    }
+
+    /**
+     * @param attribute
+     * @param coreModel
+     */
+    public LocationAttributeAuthorization(Attribute attribute, Agency agency) {
+        super(attribute, agency);
     }
 
     @Override

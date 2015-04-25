@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -62,12 +63,15 @@ public class LocationModelImpl
      */
     @Override
     public void authorize(Aspect<Location> aspect, Attribute... attributes) {
+        LocationNetworkAuthorization auth = new LocationNetworkAuthorization();
+        auth.setAuthorizedParent(aspect.getClassifier());
+        auth.setAuthorizedRelationship(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             LocationAttributeAuthorization authorization = new LocationAttributeAuthorization(
-                                                                                              aspect.getClassification(),
-                                                                                              aspect.getClassifier(),
                                                                                               attribute,
                                                                                               kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }

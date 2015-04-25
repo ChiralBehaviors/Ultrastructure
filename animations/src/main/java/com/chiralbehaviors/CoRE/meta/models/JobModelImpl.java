@@ -57,8 +57,8 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform_;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.AbstractProtocol;
 import com.chiralbehaviors.CoRE.event.AbstractProtocol_;
 import com.chiralbehaviors.CoRE.event.Job;
@@ -1520,10 +1520,10 @@ public class JobModelImpl implements JobModel {
      * @param child
      * @param job
      */
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>> boolean pathExists(RuleForm rf,
-                                                                                                                                                                                                                                                               Relationship mpRelationship,
-                                                                                                                                                                                                                                                               RuleForm child,
-                                                                                                                                                                                                                                                               NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> netModel) {
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>> boolean pathExists(RuleForm rf,
+                                                                                                                                                                                                                                                     Relationship mpRelationship,
+                                                                                                                                                                                                                                                     RuleForm child,
+                                                                                                                                                                                                                                                     NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> netModel) {
         if (mpRelationship.isAnyOrSame() || mpRelationship.isNotApplicable()) {
             return true;
         }

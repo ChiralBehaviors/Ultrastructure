@@ -33,6 +33,7 @@ import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
@@ -66,12 +67,15 @@ public class StatusCodeModelImpl
      */
     @Override
     public void authorize(Aspect<StatusCode> aspect, Attribute... attributes) {
+        StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization();
+        auth.setAuthorizedParent(aspect.getClassifier());
+        auth.setAuthorizedRelationship(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             StatusCodeAttributeAuthorization authorization = new StatusCodeAttributeAuthorization(
-                                                                                                  aspect.getClassification(),
-                                                                                                  aspect.getClassifier(),
                                                                                                   attribute,
                                                                                                   kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }

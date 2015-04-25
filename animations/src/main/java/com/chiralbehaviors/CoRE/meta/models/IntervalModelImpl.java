@@ -36,6 +36,7 @@ import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
+import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
 
 /**
  * @author hhildebrand
@@ -62,12 +63,15 @@ public class IntervalModelImpl
      */
     @Override
     public void authorize(Aspect<Interval> aspect, Attribute... attributes) {
+        IntervalNetworkAuthorization auth = new IntervalNetworkAuthorization();
+        auth.setAuthorizedParent(aspect.getClassifier());
+        auth.setAuthorizedRelationship(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             IntervalAttributeAuthorization authorization = new IntervalAttributeAuthorization(
-                                                                                              aspect.getClassification(),
-                                                                                              aspect.getClassifier(),
                                                                                               attribute,
                                                                                               kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }

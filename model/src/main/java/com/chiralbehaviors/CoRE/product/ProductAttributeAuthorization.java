@@ -29,6 +29,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -67,6 +68,14 @@ public class ProductAttributeAuthorization extends
      */
     public ProductAttributeAuthorization(UUID id) {
         super(id);
+    }
+
+    /**
+     * @param attribute
+     * @param coreModel
+     */
+    public ProductAttributeAuthorization(Attribute attribute, Agency agency) {
+        super(attribute, agency);
     }
 
     @Override

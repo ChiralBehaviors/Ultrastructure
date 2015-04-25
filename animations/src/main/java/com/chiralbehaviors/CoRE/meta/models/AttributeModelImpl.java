@@ -30,6 +30,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -61,12 +62,15 @@ public class AttributeModelImpl
      */
     @Override
     public void authorize(Aspect<Attribute> aspect, Attribute... attributes) {
+        AttributeNetworkAuthorization auth = new AttributeNetworkAuthorization();
+        auth.setAuthorizedParent(aspect.getClassifier());
+        auth.setAuthorizedRelationship(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             AttributeMetaAttributeAuthorization authorization = new AttributeMetaAttributeAuthorization(
-                                                                                                        aspect.getClassifier(),
-                                                                                                        aspect.getClassification(),
                                                                                                         attribute,
                                                                                                         kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }

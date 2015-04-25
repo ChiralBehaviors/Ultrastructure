@@ -29,6 +29,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
@@ -62,12 +63,15 @@ public class AgencyModelImpl
      */
     @Override
     public void authorize(Aspect<Agency> aspect, Attribute... attributes) {
+        AgencyNetworkAuthorization auth = new AgencyNetworkAuthorization();
+        auth.setAuthorizedParent(aspect.getClassifier());
+        auth.setAuthorizedRelationship(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             AgencyAttributeAuthorization authorization = new AgencyAttributeAuthorization(
-                                                                                          aspect.getClassification(),
-                                                                                          aspect.getClassifier(),
                                                                                           attribute,
                                                                                           kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }

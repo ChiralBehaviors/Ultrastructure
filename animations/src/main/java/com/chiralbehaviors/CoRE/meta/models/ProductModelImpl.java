@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -62,10 +63,12 @@ public class ProductModelImpl
      */
     @Override
     public void authorize(Aspect<Product> aspect, Attribute... attributes) {
+        ProductNetworkAuthorization auth = new ProductNetworkAuthorization();
+        auth.setAuthorizedParent(aspect.getClassifier());
+        auth.setAuthorizedRelationship(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             ProductAttributeAuthorization authorization = new ProductAttributeAuthorization(
-                                                                                            aspect.getClassification(),
-                                                                                            aspect.getClassifier(),
                                                                                             attribute,
                                                                                             kernel.getCoreModel());
             em.persist(authorization);

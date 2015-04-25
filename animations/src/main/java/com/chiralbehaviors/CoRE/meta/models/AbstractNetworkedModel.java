@@ -60,9 +60,9 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
@@ -76,9 +76,9 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  * @author hhildebrand
  *
  */
-abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>>
+abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>>
         implements
-        NetworkedModel<RuleForm, Network, AttributeAuthorization, AttributeType> {
+        NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> {
 
     private static Logger log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
 
@@ -118,7 +118,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     private final Class<AttributeType>             attribute;
     private final String                           attributePrefix;
-    private final Class<AttributeAuthorization>    authorization;
+    private final Class<AttributeAuth>             authorization;
     private final Class<RuleForm>                  entity;
     private final Model                            model;
     private final Class<NetworkRuleform<RuleForm>> network;
@@ -210,10 +210,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * .hellblazer.CoRE.agency.Agency)
      */
     @Override
-    public List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency) {
-        TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                               + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX,
-                                                                       authorization);
+    public List<AttributeAuth> getAttributeAuthorizations(Agency groupingAgency) {
+        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
+                                                                      + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX,
+                                                              authorization);
         query.setParameter("groupingAgency", groupingAgency);
         return query.getResultList();
     }
@@ -226,21 +226,21 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * .hellblazer.CoRE.agency.Agency, com.chiralbehaviors.CoRE.attribute.Attribute)
      */
     @Override
-    public List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency,
-                                                                   Attribute attribute) {
-        TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                               + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
-                                                                       authorization);
+    public List<AttributeAuth> getAttributeAuthorizations(Agency groupingAgency,
+                                                          Attribute attribute) {
+        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
+                                                                      + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
+                                                              authorization);
         query.setParameter("groupingAgency", groupingAgency);
         query.setParameter("attribute", attribute);
         return query.getResultList();
     }
 
     @Override
-    public List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect) {
-        TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
-                                                                       authorization);
+    public List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect) {
+        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
+                                                                      + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
+                                                              authorization);
         query.setParameter("classification", aspect.getClassification());
         query.setParameter("classifier", aspect.getClassifier());
         return query.getResultList();
@@ -254,11 +254,11 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * .hellblazer.CoRE.meta.Aspect, com.chiralbehaviors.CoRE.attribute.Attribute)
      */
     @Override
-    public List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect,
-                                                                   Attribute attribute) {
-        TypedQuery<AttributeAuthorization> query = em.createNamedQuery(prefix
-                                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
-                                                                       authorization);
+    public List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                          Attribute attribute) {
+        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
+                                                                      + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
+                                                              authorization);
         query.setParameter("classification", aspect.getClassification());
         query.setParameter("classifier", aspect.getClassifier());
         query.setParameter("attribute", attribute);
@@ -594,7 +594,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         List<AttributeType> attributes = new ArrayList<>();
         ruleform.link(aspect.getClassification(), aspect.getClassifier(),
                       kernel.getCoreModel(), kernel.getInverseSoftware(), em);
-        for (ClassifiedAttributeAuthorization<RuleForm> authorization : getAttributeAuthorizations(aspect)) {
+        for (AttributeAuth authorization : getAttributeAuthorizations(aspect)) {
             AttributeType attribute = create(ruleform,
                                              authorization.getAuthorizedAttribute(),
                                              updatedBy);
@@ -816,8 +816,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @SuppressWarnings("unchecked")
-    private Class<AttributeAuthorization> extractedAuthorization() {
-        return (Class<AttributeAuthorization>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[2];
+    private Class<AttributeAuth> extractedAuthorization() {
+        return (Class<AttributeAuth>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[2];
     }
 
     @SuppressWarnings("unchecked")
@@ -884,7 +884,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     @SuppressWarnings("unchecked")
     protected <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                           List<AttributeAuthorization> authorizations) {
+                                                           List<AttributeAuth> authorizations) {
         switch (attribute.getValueType()) {
             case BOOLEAN: {
                 return (List<ValueType>) Arrays.asList(Boolean.TRUE,
@@ -897,7 +897,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
 
         List<ValueType> allowedValues = new ArrayList<ValueType>();
-        for (AttributeAuthorization authorization : authorizations) {
+        for (AttributeAuth authorization : authorizations) {
             switch (attribute.getValueType()) {
                 case BOOLEAN: {
                     allowedValues.add((ValueType) authorization.getBooleanValue());

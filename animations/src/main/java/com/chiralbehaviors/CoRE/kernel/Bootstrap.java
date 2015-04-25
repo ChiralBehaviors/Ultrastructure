@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
@@ -423,15 +424,20 @@ public class Bootstrap {
                  core, kernelWorkspace);
         populate("Validates", find(WellKnownRelationship.VALIDATES), core,
                  kernelWorkspace);
+        AgencyNetworkAuthorization loginAuthNet = new AgencyNetworkAuthorization(
+                                                                                 core);
+        loginAuthNet.setAuthorizedRelationship(find(WellKnownRelationship.IS_A));
+        loginAuthNet.setAuthorizedParent(find(WellKnownAgency.CORE_USER));
+        WorkspaceAuthorization loginAuthNetAuth = new WorkspaceAuthorization(
+                                                                             loginAuthNet,
+                                                                             workspace,
+                                                                             core);
+        em.persist(loginAuthNetAuth);
         AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(
-                                                                                  isA,
-                                                                                  find(WellKnownAgency.CORE_USER),
                                                                                   find(WellKnownAttribute.LOGIN),
                                                                                   core);
         populate("LoginAuth", loginAuth, core, kernelWorkspace);
         AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(
-                                                                                         isA,
-                                                                                         find(WellKnownAgency.CORE_USER),
                                                                                          find(WellKnownAttribute.PASSWORD_HASH),
                                                                                          core);
         populate("PasswordHashAuth", passwordHashAuth, core, kernelWorkspace);

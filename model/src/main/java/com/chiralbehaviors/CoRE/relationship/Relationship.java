@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.relationship;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
-import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.GET_CHILD;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.GET_CHILD_RULES_BY_RELATIONSHIP;
@@ -71,19 +70,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "FROM "
                                                                             + "       RelationshipAttribute attrValue, "
                                                                             + "       RelationshipAttributeAuthorization auth, "
+                                                                            + "       RelationshipNetworkAuthorization na, "
                                                                             + "       RelationshipNetwork network "
                                                                             + "WHERE "
-                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.classification AND "
-                                                                            + "        network.child = auth.classifier AND"
-                                                                            + "        attrValue.relationship = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from RelationshipAttributeAuthorization ra "
-                                                                                    + "WHERE ra.classifier = :classification "
-                                                                                    + "AND ra.classifier = :classifier"),
-               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from RelationshipAttributeAuthorization ra "
-                                                                                 + "WHERE ra.groupingAgency = :groupingAgency"),
+                                                                            + "        auth.networkAuthorization = na "
+                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                            + "    AND network.relationship = na.authorizedRelationship "
+                                                                            + "    AND network.child = na.authorizedParent"
+                                                                            + "    AND attrValue.attribute = :ruleform "
+                                                                            + "    AND na.authorizedRelationship = :classification "
+                                                                            + "    AND na.authorizedParent = :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from RelationshipAttributeAuthorization auth "
+                                                                                    + "WHERE auth.networkAuthorization.authorizedRelationship = :classification "
+                                                                                    + "AND auth.networkAuthorization.authorizedParent = :classifier "
+                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
                                                      + "FROM RelationshipNetwork n "
                                                      + "WHERE n.parent = :p "
@@ -107,8 +107,6 @@ public class Relationship extends
                                                                                   + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
     public static final String         FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "relationship"
                                                                                   + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String         FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "relationship"
-                                                                                  + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
     public static final String         GET_ALL_PARENT_RELATIONSHIPS             = "relationship"
                                                                                   + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
     public static final String         GET_CHILD                                = "relationship"

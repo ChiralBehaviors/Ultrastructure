@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.time;
 import static com.chiralbehaviors.CoRE.time.Interval.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.time.Interval.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.time.Interval.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
-import static com.chiralbehaviors.CoRE.time.Interval.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.time.Interval.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.chiralbehaviors.CoRE.time.Interval.GET_CHILD;
 import static com.chiralbehaviors.CoRE.time.Interval.GET_CHILD_RULES_BY_RELATIONSHIP;
@@ -70,19 +69,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "FROM "
                                                                             + "       IntervalAttribute attrValue, "
                                                                             + "       IntervalAttributeAuthorization auth, "
+                                                                            + "       IntervalNetworkAuthorization na, "
                                                                             + "       IntervalNetwork network "
                                                                             + "WHERE "
-                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.classification AND "
-                                                                            + "        network.child = auth.classifier AND"
-                                                                            + "        attrValue.interval = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from IntervalAttributeAuthorization ra "
-                                                                                    + "WHERE ra.classification = :classification "
-                                                                                    + "AND ra.classifier = :classifier"),
-               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from IntervalAttributeAuthorization ra "
-                                                                                 + "WHERE ra.groupingAgency = :groupingAgency"),
+                                                                            + "        auth.networkAuthorization = na "
+                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                            + "    AND network.relationship = na.authorizedRelationship "
+                                                                            + "    AND network.child = na.authorizedParent"
+                                                                            + "    AND attrValue.attribute = :ruleform "
+                                                                            + "    AND na.authorizedRelationship = :classification "
+                                                                            + "    AND na.authorizedParent = :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from IntervalAttributeAuthorization auth "
+                                                                                    + "WHERE auth.networkAuthorization.authorizedRelationship = :classification "
+                                                                                    + "AND auth.networkAuthorization.authorizedParent = :classifier "
+                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
                                                      + "FROM IntervalNetwork n "
                                                      + "WHERE n.parent = :p "

@@ -63,17 +63,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "FROM "
                                                                             + "       AttributeMetaAttribute attrValue, "
                                                                             + "       AttributeMetaAttributeAuthorization auth, "
-                                                                            + "       AttributeNetwork network "
+                                                                            + "       AttributeNetwork network, "
+                                                                            + "       AttributeNetworkAuthorization na "
                                                                             + "WHERE "
-                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.classification AND "
-                                                                            + "        network.child = auth.classifier AND"
-                                                                            + "        attrValue.attribute = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ama from AttributeMetaAttributeAuthorization ama "
-                                                                                    + "WHERE ama.classification = :classification "
-                                                                                    + "AND ama.classifier = :classifier"),
+                                                                            + "        auth.networkAuthorization = na "
+                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                            + "    AND network.relationship = na.authorizedRelationship "
+                                                                            + "    AND network.child = na.authorizedParent"
+                                                                            + "    AND attrValue.attribute = :ruleform "
+                                                                            + "    AND na.authorizedRelationship = :classification "
+                                                                            + "    AND na.authorizedParent = :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from AttributeMetaAttributeAuthorization auth "
+                                                                                    + "WHERE auth.networkAuthorization.authorizedRelationship = :classification "
+                                                                                    + "AND auth.networkAuthorization.authorizedParent = :classifier "
+                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
                                                      + "FROM AttributeNetwork rn "

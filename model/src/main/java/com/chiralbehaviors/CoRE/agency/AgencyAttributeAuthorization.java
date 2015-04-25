@@ -28,6 +28,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -66,6 +67,10 @@ public class AgencyAttributeAuthorization extends
      */
     public AgencyAttributeAuthorization(UUID id) {
         super(id);
+    }
+
+    public AgencyAttributeAuthorization(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
     }
 
     /* (non-Javadoc)

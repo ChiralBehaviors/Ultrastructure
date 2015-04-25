@@ -28,8 +28,8 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
@@ -43,7 +43,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  * @author hhildebrand
  *
  */
-public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuthorization extends ClassifiedAttributeAuthorization<RuleForm>, AttributeType extends AttributeValue<RuleForm>> {
+public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>> {
 
     /**
      * Create a new instance with the supplied aspect
@@ -165,7 +165,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param groupingAgency
      * @return
      */
-    List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency);
+    List<AttributeAuth> getAttributeAuthorizations(Agency groupingAgency);
 
     /**
      * Answer the list of attribute authorizations that are classified by the
@@ -175,8 +175,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param attribute
      * @return
      */
-    List<AttributeAuthorization> getAttributeAuthorizations(Agency groupingAgency,
-                                                            Attribute attribute);
+    List<AttributeAuth> getAttributeAuthorizations(Agency groupingAgency,
+                                                   Attribute attribute);
 
     /**
      * Answer the list of attribute authorizations that are classified by an
@@ -186,7 +186,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            - the classifying aspect.
      * @return
      */
-    List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect);
+    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect);
 
     /**
      * Answer the list of attribute authorizations that are classified by an
@@ -197,8 +197,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param attribute
      * @return
      */
-    List<AttributeAuthorization> getAttributeAuthorizations(Aspect<RuleForm> aspect,
-                                                            Attribute attribute);
+    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                   Attribute attribute);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -418,5 +418,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     void unlink(RuleForm parent, Relationship r, RuleForm child);
 
-    public abstract AttributeType create(RuleForm ruleform, Attribute attribute, Agency updatedBy);
+    public abstract AttributeType create(RuleForm ruleform,
+                                         Attribute attribute, Agency updatedBy);
 }

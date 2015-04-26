@@ -23,6 +23,7 @@ import static com.chiralbehaviors.CoRE.product.Product.FIND_ALL;
 import static com.chiralbehaviors.CoRE.product.Product.FIND_BY_ID;
 import static com.chiralbehaviors.CoRE.product.Product.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.product.Product.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.product.Product.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.product.Product.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.chiralbehaviors.CoRE.product.Product.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.chiralbehaviors.CoRE.product.Product.GET_CHILDREN;
@@ -81,14 +82,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "WHERE "
                                                                             + "        auth.networkAuthorization = na "
                                                                             + "    AND auth.authorizedAttribute = attrValue.attribute "
-                                                                            + "    AND network.relationship = na.authorizedRelationship "
-                                                                            + "    AND network.child = na.authorizedParent"
-                                                                            + "    AND attrValue.attribute = :ruleform "
-                                                                            + "    AND na.authorizedRelationship = :classification "
-                                                                            + "    AND na.authorizedParent = :classifier "),
+                                                                            + "    AND network.relationship = na.classification "
+                                                                            + "    AND network.child = na.classifier"
+                                                                            + "    AND attrValue.product = :ruleform "
+                                                                            + "    AND na.classification = :classification "
+                                                                            + "    AND na.classifier= :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                  + "  auth "
+                                                                                                  + "FROM "
+                                                                                                  + "       ProductAttributeAuthorization auth, "
+                                                                                                  + "       ProductNetworkAuthorization na, "
+                                                                                                  + "       ProductNetwork network "
+                                                                                                  + "WHERE "
+                                                                                                  + "        auth.networkAuthorization = na "
+                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                  + "    AND network.relationship = na.classification "
+                                                                                                  + "    AND network.child = na.classifier"
+                                                                                                  + "    AND na.classification = :classification "
+                                                                                                  + "    AND na.classifier= :classifier "),
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from ProductAttributeAuthorization auth "
-                                                                                    + "WHERE auth.networkAuthorization.authorizedRelationship = :classification "
-                                                                                    + "AND auth.networkAuthorization.authorizedParent = :classifier "
+                                                                                    + "WHERE auth.networkAuthorization.classification = :classification "
+                                                                                    + "AND auth.networkAuthorization.classifier = :classifier "
                                                                                     + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child "
                                                         + "FROM ProductNetwork n "

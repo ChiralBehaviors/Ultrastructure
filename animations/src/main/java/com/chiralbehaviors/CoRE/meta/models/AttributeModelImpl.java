@@ -62,7 +62,8 @@ public class AttributeModelImpl
      */
     @Override
     public void authorize(Aspect<Attribute> aspect, Attribute... attributes) {
-        AttributeNetworkAuthorization auth = new AttributeNetworkAuthorization();
+        AttributeNetworkAuthorization auth = new AttributeNetworkAuthorization(
+                                                                               kernel.getCore());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);

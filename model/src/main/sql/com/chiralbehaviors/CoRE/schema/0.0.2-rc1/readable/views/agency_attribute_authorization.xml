@@ -23,8 +23,8 @@
 			 FROM agency_attribute_authorization base_table
              LEFT JOIN agency_network_authorization na ON base_table.network_authorization = na.id
 			 LEFT JOIN agency res ON base_table.grouping_agency = res.id
-			 LEFT JOIN relationship cls ON na.authorized_relationship = cls.id
-			 LEFT JOIN agency b ON na.authorized_parent = b.id
+			 LEFT JOIN relationship cls ON na.classification = cls.id
+			 LEFT JOIN agency b ON na.classifier = b.id
 			 LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
 			 LEFT JOIN agency up ON base_table.updated_by = up.id
              WHERE base_table.authorized_attribute IS NOT NULL;

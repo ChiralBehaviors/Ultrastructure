@@ -63,7 +63,8 @@ public class UnitModelImpl
      */
     @Override
     public void authorize(Aspect<Unit> aspect, Attribute... attributes) {
-        UnitNetworkAuthorization auth = new UnitNetworkAuthorization();
+        UnitNetworkAuthorization auth = new UnitNetworkAuthorization(
+                                                                     kernel.getCore());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);

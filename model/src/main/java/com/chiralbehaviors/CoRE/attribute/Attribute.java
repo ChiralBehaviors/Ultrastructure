@@ -21,6 +21,7 @@ package com.chiralbehaviors.CoRE.attribute;
 
 import static com.chiralbehaviors.CoRE.attribute.Attribute.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.chiralbehaviors.CoRE.attribute.Attribute.GET_CHILD;
 import static com.chiralbehaviors.CoRE.attribute.Attribute.GET_CHILD_RULES_BY_RELATIONSHIP;
@@ -68,14 +69,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "WHERE "
                                                                             + "        auth.networkAuthorization = na "
                                                                             + "    AND auth.authorizedAttribute = attrValue.attribute "
-                                                                            + "    AND network.relationship = na.authorizedRelationship "
-                                                                            + "    AND network.child = na.authorizedParent"
+                                                                            + "    AND network.relationship = na.classification "
+                                                                            + "    AND network.child = na.classifier"
                                                                             + "    AND attrValue.attribute = :ruleform "
-                                                                            + "    AND na.authorizedRelationship = :classification "
-                                                                            + "    AND na.authorizedParent = :classifier "),
+                                                                            + "    AND na.classification = :classification "
+                                                                            + "    AND na.classifier= :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                  + "  auth "
+                                                                                                  + "FROM "
+                                                                                                  + "       AttributeMetaAttributeAuthorization auth, "
+                                                                                                  + "       AttributeNetworkAuthorization na, "
+                                                                                                  + "       AttributeNetwork network "
+                                                                                                  + "WHERE "
+                                                                                                  + "        auth.networkAuthorization = na "
+                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                  + "    AND network.relationship = na.classification "
+                                                                                                  + "    AND network.child = na.classifier"
+                                                                                                  + "    AND na.classification = :classification "
+                                                                                                  + "    AND na.classifier= :classifier "),
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from AttributeMetaAttributeAuthorization auth "
-                                                                                    + "WHERE auth.networkAuthorization.authorizedRelationship = :classification "
-                                                                                    + "AND auth.networkAuthorization.authorizedParent = :classifier "
+                                                                                    + "WHERE auth.networkAuthorization.classification = :classification "
+                                                                                    + "AND auth.networkAuthorization.classifier = :classifier "
                                                                                     + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
@@ -89,23 +103,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "attribute", schema = "ruleform")
 public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> {
-    public static final String          FIND_BY_NAME                             = "attribute.findByName";
-    public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "attribute"
-                                                                                   + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String          FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "attribute"
-                                                                                   + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String          GET_CHILD                                = "attribute"
-                                                                                   + GET_CHILDREN_SUFFIX;
-    public static final String          GET_CHILD_RULES_BY_RELATIONSHIP          = "attribute"
-                                                                                   + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    private static final long           serialVersionUID                         = 1L;
+    public static final String          FIND_BY_NAME                                           = "attribute.findByName";
+    public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "attribute"
+                                                                                                 + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "attribute"
+                                                                                                 + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String          FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "attribute"
+                                                                                                 + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String          GET_CHILD                                              = "attribute"
+                                                                                                 + GET_CHILDREN_SUFFIX;
+    public static final String          GET_CHILD_RULES_BY_RELATIONSHIP                        = "attribute"
+                                                                                                 + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    private static final long           serialVersionUID                                       = 1L;
 
     // bi-directional many-to-one association to AttributeMetaAttribute
     @OneToMany(mappedBy = "attribute")
     @JsonIgnore
     private Set<AttributeMetaAttribute> attributes;
 
-    private Integer                     inheritable                              = FALSE;
+    private Integer                     inheritable                                            = FALSE;
 
     // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore

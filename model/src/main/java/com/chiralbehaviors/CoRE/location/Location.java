@@ -21,6 +21,7 @@ package com.chiralbehaviors.CoRE.location;
 
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import static com.chiralbehaviors.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.location.Location.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.chiralbehaviors.CoRE.location.Location.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.location.Location.GET_ALL_PARENT_RELATIONSHIPS;
@@ -71,14 +72,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "WHERE "
                                                                             + "        auth.networkAuthorization = na "
                                                                             + "    AND auth.authorizedAttribute = attrValue.attribute "
-                                                                            + "    AND network.relationship = na.authorizedRelationship "
-                                                                            + "    AND network.child = na.authorizedParent"
-                                                                            + "    AND attrValue.attribute = :ruleform "
-                                                                            + "    AND na.authorizedRelationship = :classification "
-                                                                            + "    AND na.authorizedParent = :classifier "),
+                                                                            + "    AND network.relationship = na.classification "
+                                                                            + "    AND network.child = na.classifier"
+                                                                            + "    AND attrValue.location = :ruleform "
+                                                                            + "    AND na.classification = :classification "
+                                                                            + "    AND na.classifier= :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                  + "  auth "
+                                                                                                  + "FROM "
+                                                                                                  + "       IntervalAttributeAuthorization auth, "
+                                                                                                  + "       IntervalNetworkAuthorization na, "
+                                                                                                  + "       IntervalNetwork network "
+                                                                                                  + "WHERE "
+                                                                                                  + "        auth.networkAuthorization = na "
+                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                  + "    AND network.relationship = na.classification "
+                                                                                                  + "    AND network.child = na.classifier"
+                                                                                                  + "    AND na.classification = :classification "
+                                                                                                  + "    AND na.classifier= :classifier "),
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from LocationAttributeAuthorization auth "
-                                                                                    + "WHERE auth.networkAuthorization.authorizedRelationship = :classification "
-                                                                                    + "AND auth.networkAuthorization.authorizedParent = :classifier "
+                                                                                    + "WHERE auth.networkAuthorization.classification = :classification "
+                                                                                    + "AND auth.networkAuthorization.classifier = :classifier "
                                                                                     + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select la from LocationAttributeAuthorization la "
                                                                                  + "WHERE la.groupingAgency = :groupingAgency"),
@@ -95,20 +109,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                            + "AND n.relationship IN :relationships "
                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 public class Location extends ExistentialRuleform<Location, LocationNetwork> {
-    public static final String     FIND_BY_ID                               = "location.findById";
-    public static final String     FIND_BY_NAME                             = "location.findByName";
-    public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "location"
-                                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String     FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "location.findClassifiedAttributes";
-    public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "location.findGroupedAttributeAuthorizations";
-    public static final String     GET_ALL_PARENT_RELATIONSHIPS             = "location"
-                                                                              + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String     GET_CHILD                                = "location"
-                                                                              + GET_CHILDREN_SUFFIX;
-    public static final String     GET_CHILD_RULES_BY_RELATIONSHIP          = "location"
-                                                                              + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String     LOCATION_NAME                            = "location.getName";
-    private static final long      serialVersionUID                         = 1L;
+    public static final String     FIND_BY_ID                                             = "location.findById";
+    public static final String     FIND_BY_NAME                                           = "location.findByName";
+    public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "location"
+                                                                                            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "location"
+                                                                                            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String     FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "location.findClassifiedAttributes";
+    public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS                  = "location.findGroupedAttributeAuthorizations";
+    public static final String     GET_ALL_PARENT_RELATIONSHIPS                           = "location"
+                                                                                            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String     GET_CHILD                                              = "location"
+                                                                                            + GET_CHILDREN_SUFFIX;
+    public static final String     GET_CHILD_RULES_BY_RELATIONSHIP                        = "location"
+                                                                                            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String     LOCATION_NAME                                          = "location.getName";
+    private static final long      serialVersionUID                                       = 1L;
 
     // bi-directional many-to-one association to LocationAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "location")

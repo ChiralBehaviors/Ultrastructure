@@ -593,7 +593,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                 Agency updatedBy) {
         List<AttributeType> attributes = new ArrayList<>();
         ruleform.link(aspect.getClassification(), aspect.getClassifier(),
-                      kernel.getCoreModel(), kernel.getInverseSoftware(), em);
+                      kernel.getCoreModel(), kernel.getCoreAnimationSoftware(),
+                      em);
         for (AttributeAuth authorization : getAttributeAuthorizations(aspect)) {
             AttributeType attribute = create(ruleform,
                                              authorization.getAuthorizedAttribute(),

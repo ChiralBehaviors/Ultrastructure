@@ -12,18 +12,8 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="unit_network_authorization_pkey" />
             </column>
-            <column name="classification"
-                remarks="In conjunction with the 'classifier' column, determines the classification criteria for selecting network units a certain unit must have"
-                type="uuid"
-            >
-                <constraints nullable="false" />
-            </column>
-            <column name="classifier"
-                remarks="In conjunction with the 'classification' column, determines the classification criteria for selecting network units a certain unit must have"
-                type="uuid"
-            >
-                <constraints nullable="false" />
-            </column>
+            <column name="classification" type="uuid" />
+            <column name="classifier" type="uuid" />
             <column name="authorized_parent" remarks="A network parent a unit is expected to have" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -73,7 +63,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="classification, classifier, authorized_parent, authorized_relationship, sequence_number" constraintName="unit_unit_authorizatio_unit_classification_attri_key"
+            columnNames="classification, classifier, authorized_parent, authorized_relationship, child_relationship, sequence_number" constraintName="unit_unit_authorizatio_unit_classification_attri_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="unit_network_authorization" />
         <createIndex schemaName="ruleform" indexName="unit_network_authorization_updated_by_fkey_idx" tableName="unit_network_authorization"
             unique="false"

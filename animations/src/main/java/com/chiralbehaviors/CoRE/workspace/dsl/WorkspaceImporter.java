@@ -137,9 +137,8 @@ public class WorkspaceImporter {
 
     private void classifyAgencyAttributes() {
         for (ClassifiedAttributeContext classified : wsp.getAgencyAttributeClassifications()) {
+
             AgencyAttributeAuthorization auth = new AgencyAttributeAuthorization(
-                                                                                 resolve(classified.classification),
-                                                                                 resolve(classified.classifier),
                                                                                  resolve(classified.authorized),
                                                                                  model.getKernel().getCore());
             model.getEntityManager().persist(auth);

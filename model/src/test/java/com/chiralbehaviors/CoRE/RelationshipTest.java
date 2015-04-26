@@ -85,13 +85,11 @@ public class RelationshipTest extends DatabaseTest {
 
         Relationship relationship = new Relationship();
         relationship.setName("Foo");
-        relationship.setPreferred(true);
         relationship.setUpdatedBy(core);
         em.persist(relationship);
 
         Relationship inverse = new Relationship();
         inverse.setName("Bar");
-        inverse.setPreferred(false);
         inverse.setUpdatedBy(core);
         em.persist(inverse);
 

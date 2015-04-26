@@ -5,8 +5,36 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <include relativeToChangelogFile="true" file="relationship/table.xml" />
-    <include relativeToChangelogFile="true" file="relationship/grants.xml" />
-    <include relativeToChangelogFile="true" file="relationship/owner.xml" />
-
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="relationship">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="relationship_pkey" />
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="TEXT" />
+            <column name="inverse" type="uuid" />
+            <column name="notes" type="TEXT" />
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column name="operator" type="relational_operator" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="relationship" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="relationship" constraintName="relationship_updated_by_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="name" constraintName="relationship_name_constraint"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="relationship" />
+        <createIndex schemaName="ruleform" indexName="relationship_inverse_fkey_idx" tableName="relationship" unique="false">
+            <column name="inverse" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="relationship_updated_by_fkey_idx" tableName="relationship" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

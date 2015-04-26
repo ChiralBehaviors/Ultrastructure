@@ -153,8 +153,6 @@ public class Relationship extends
 
     private String                     operator;
 
-    private Integer                    preferred                                              = FALSE;
-
     public Relationship() {
     }
 
@@ -195,18 +193,6 @@ public class Relationship extends
      */
     public Relationship(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
-    }
-
-    /**
-     * @param name
-     * @param description
-     * @param updatedBy
-     * @param preferred
-     */
-    public Relationship(String name, String description, Agency updatedBy,
-                        boolean preferred) {
-        super(name, description, updatedBy);
-        setPreferred(preferred);
     }
 
     /**
@@ -371,10 +357,6 @@ public class Relationship extends
         return operator;
     }
 
-    public Boolean getPreferred() {
-        return toBoolean(preferred);
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
      */
@@ -496,9 +478,5 @@ public class Relationship extends
 
     public void setOperator(String operator) {
         this.operator = operator;
-    }
-
-    public void setPreferred(Boolean preferred) {
-        this.preferred = toInteger(preferred);
     }
 }

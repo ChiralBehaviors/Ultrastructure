@@ -46,7 +46,7 @@ public class ProductAttributeAuthorizationTest extends AbstractModelTest {
 
         Relationship classification = new Relationship("My classification",
                                                        "A classification",
-                                                       agency, true);
+                                                       agency);
         em.persist(classification);
         Relationship inverse = new Relationship("inverse classification",
                                                 "The inverse classification",

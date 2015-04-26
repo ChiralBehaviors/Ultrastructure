@@ -194,7 +194,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownRelationship wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, inverse, preferred, version) VALUES (?, ?, ?, ?, ?, ?, 1)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, inverse, version) VALUES (?, ?, ?, ?, ?, 1)",
                                                                         wko.tableName()));
         try {
             s.setObject(1, wko.id());
@@ -202,7 +202,6 @@ public class Bootstrap {
             s.setString(3, wko.description());
             s.setObject(4, WellKnownAgency.CORE.id());
             s.setObject(5, wko.inverse().id());
-            s.setByte(6, (byte) (wko.preferred() ? 1 : 0));
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wko), e);

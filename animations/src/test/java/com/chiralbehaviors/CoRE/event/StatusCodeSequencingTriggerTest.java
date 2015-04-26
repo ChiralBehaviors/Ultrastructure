@@ -54,7 +54,7 @@ public class StatusCodeSequencingTriggerTest extends AbstractModelTest {
         codes.add(new Tuple<StatusCode, StatusCode>(b, x));
         model.getJobModel().createStatusCodeSequencings(service, codes, core);
         try {
-            em.getTransaction().commit();
+            em.flush();
             fail("Insert should not have succeeded");
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {

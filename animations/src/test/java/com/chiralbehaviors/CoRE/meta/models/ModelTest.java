@@ -63,7 +63,7 @@ public class ModelTest extends AbstractModelTest {
 
         Agency agency = model.getAgencyModel().create("aspect test", "testy",
                                                       aspect, kernel.getCore()).asRuleform();
-        em.getTransaction().commit();
+        em.flush();
 
         assertNotNull(agency);
 

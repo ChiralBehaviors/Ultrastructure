@@ -44,7 +44,7 @@ public class IntervalModelTest extends AbstractModelTest {
     public void testDefaulting() {
         em.getTransaction().begin();
         model.getIntervalModel().newDefaultInterval("int", "erval");
-        em.getTransaction().commit();
+        em.flush();
     }
 
     @Test

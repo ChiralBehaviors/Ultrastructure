@@ -25,8 +25,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -37,7 +35,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -138,9 +135,7 @@ public class JobModelTest extends AbstractModelTest {
         p.setChildProduct(bento);
         em.persist(p);
 
-        em.getTransaction().commit();
-
-        em.getTransaction().begin();
+        em.flush();
 
         Job job = model.getJobModel().newInitializedJob(kiki, kernel.getCore());
         job.setAssignTo(kernel.getCore());
@@ -152,12 +147,10 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         em.persist(job);
 
-        em.getTransaction().commit();
-
-        em.getTransaction().begin();
+        em.flush();
         jobModel.changeStatus(job, startState, kernel.getCore(),
                               "transition during test");
-        em.getTransaction().commit();
+        em.flush();
 
         TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
                                                Job.class);
@@ -168,7 +161,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testEuOrder() throws Exception {
-        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
@@ -179,15 +171,13 @@ public class JobModelTest extends AbstractModelTest {
         order.setDeliverFrom(scenario.getFactory1());
         order.setRequester(scenario.getCarfleurBon());
         em.persist(order);
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
+        em.flush();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
@@ -198,7 +188,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testGenerateJobs() throws Exception {
-        clearJobs();
         em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(scenario.getDeliver(),
                                                         kernel.getCore());
@@ -217,7 +206,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testGenerateJobsFromProtocols() throws Exception {
-        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Product service = new Product("test service", kernel.getCore());
@@ -230,7 +218,7 @@ public class JobModelTest extends AbstractModelTest {
         Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
         p.setAssignTo(kernel.getPropagationSoftware());
         em.persist(p);
-        txn.commit();
+        em.flush();
         Job order = jobModel.newInitializedJob(service, kernel.getCore());
         order.setAssignTo(kernel.getCoreUser());
         Location loc = new Location("crap location", null, kernel.getCore());
@@ -264,7 +252,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testGetActiveJobs() throws Exception {
-        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
@@ -275,15 +262,13 @@ public class JobModelTest extends AbstractModelTest {
         order.setDeliverFrom(scenario.getFactory1());
         order.setRequester(scenario.getGeorgetownUniversity());
         em.persist(order);
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
+        em.flush();
 
         List<StatusCode> states = Arrays.asList(scenario.getActive(),
                                                 scenario.getAvailable(),
@@ -295,7 +280,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testIteration() throws Exception {
-        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Product service = new Product("test service", kernel.getCore());
@@ -351,13 +335,11 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(1, protocols.size());
         List<Job> jobs = model.getJobModel().insert(order, protocols.get(0));
         assertEquals(3, jobs.size());
-        em.getTransaction().commit();
-
-        em.getTransaction().begin();
+        em.flush();
         em.refresh(order);
         jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
                               null);
-        em.getTransaction().commit();
+        em.flush();
 
         for (Job j : jobs) {
             em.refresh(j);
@@ -367,7 +349,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testJobChronologyOnStatusUpdate() throws Exception {
-        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         alterTriggers(false);
@@ -382,7 +363,7 @@ public class JobModelTest extends AbstractModelTest {
             jobModel.changeStatus(order, scenario.getAvailable(),
                                   kernel.getCore(), "Test transition");
             em.persist(order);
-            txn.commit();
+            em.flush();
             em.refresh(order);
             List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
             assertEquals(String.format("Invalid number of chronologies: %s",
@@ -391,10 +372,9 @@ public class JobModelTest extends AbstractModelTest {
                                                               chronologies.get(1));
 
             assertEquals(fieldErrors.toString(), 0, fieldErrors.size());
-            txn.begin();
             model.getJobModel().changeStatus(order, scenario.getActive(),
                                              kernel.getCore(), null);
-            txn.commit();
+            em.flush();
             chronologies = model.getJobModel().getChronologyForJob(order);
             assertEquals(3, chronologies.size());
             for (JobChronology c : chronologies) {
@@ -449,22 +429,20 @@ public class JobModelTest extends AbstractModelTest {
                                                                                          shovingMe,
                                                                                          kernel.getCore());
         em.persist(auth);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.flush();
 
         Job push = model.getJobModel().newInitializedJob(pushit,
                                                          kernel.getCore());
 
-        em.getTransaction().commit();
+        em.flush();
 
         List<Job> children = model.getJobModel().getAllChildren(push);
         assertEquals(0, children.size());
 
-        em.getTransaction().begin();
         model.getJobModel().changeStatus(push, pushingMe, kernel.getCore(),
                                          null);
         push.setProduct(pushit);
-        em.getTransaction().commit();
+        em.flush();
         em.refresh(push);
         children = model.getJobModel().getAllChildren(push);
         assertEquals(1, children.size());
@@ -473,7 +451,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testMetaProtocols() throws Exception {
-        clearJobs();
         em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(scenario.getDeliver(),
                                                         kernel.getCore());
@@ -540,7 +517,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testNonExemptOrder() throws Exception {
-        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
@@ -551,15 +527,13 @@ public class JobModelTest extends AbstractModelTest {
         order.setDeliverFrom(scenario.getFactory1());
         order.setRequester(scenario.getOrgA());
         em.persist(order);
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
+        em.flush();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
@@ -570,7 +544,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testOrder() throws Exception {
-        clearJobs();
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
@@ -581,15 +554,13 @@ public class JobModelTest extends AbstractModelTest {
         order.setDeliverFrom(scenario.getFactory1());
         order.setRequester(scenario.getGeorgetownUniversity());
         em.persist(order);
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
+        em.flush();
         List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
@@ -597,7 +568,6 @@ public class JobModelTest extends AbstractModelTest {
         List<Job> jobs = jobModel.getAllChildren(order);
         assertEquals(5, jobs.size());
 
-        txn.begin();
         TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
                                                Job.class);
         query.setParameter("service", scenario.getCheckCredit());
@@ -605,24 +575,19 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(scenario.getAvailable(), creditCheck.getStatus());
         jobModel.changeStatus(creditCheck, scenario.getActive(),
                               kernel.getCore(), "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(creditCheck, scenario.getCompleted(),
                               kernel.getCore(), "transition during test");
-        txn.commit();
-        em.clear();
-        txn.begin();
+        em.flush();
         query.setParameter("service", scenario.getPick());
         Job pick = query.getSingleResult();
         assertEquals(scenario.getAvailable(), pick.getStatus());
         jobModel.changeStatus(pick, scenario.getActive(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(pick, scenario.getCompleted(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         em.clear();
         query.setParameter("service", scenario.getPick());
         pick = query.getSingleResult();
@@ -636,36 +601,30 @@ public class JobModelTest extends AbstractModelTest {
         Job fee = query.getSingleResult();
         jobModel.changeStatus(fee, scenario.getActive(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(fee, scenario.getCompleted(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         em.clear();
         query.setParameter("service", scenario.getPrintPurchaseOrder());
         Job printPO = query.getSingleResult();
         assertEquals(scenario.getAvailable(), printPO.getStatus());
         jobModel.changeStatus(printPO, scenario.getActive(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(printPO, scenario.getCompleted(),
                               kernel.getCore(), "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         em.clear();
         query.setParameter("service", scenario.getShip());
         ship = query.getSingleResult();
         assertEquals(scenario.getAvailable(), ship.getStatus());
         jobModel.changeStatus(ship, scenario.getActive(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         jobModel.changeStatus(ship, scenario.getCompleted(), kernel.getCore(),
                               "transition during test");
-        txn.commit();
-        txn.begin();
+        em.flush();
         em.clear();
         query.setParameter("service", scenario.getDeliver());
         Job deliver = query.getSingleResult();
@@ -696,18 +655,14 @@ public class JobModelTest extends AbstractModelTest {
         auth.setUpdatedBy(kernel.getCore());
         em.persist(auth);
 
-        em.getTransaction().commit();
-
-        em.getTransaction().begin();
+        em.flush();
         Job job = model.getJobModel().newInitializedJob(service,
                                                         kernel.getCore());
         em.persist(job);
         model.getJobModel().changeStatus(job, a, kernel.getCore(), null);
-        em.getTransaction().commit();
-
-        em.getTransaction().begin();
+        em.flush();
         model.getJobModel().changeStatus(job, b, kernel.getCore(), null);
-        em.getTransaction().commit();
+        em.flush();
 
         em.refresh(job);
 
@@ -742,19 +697,16 @@ public class JobModelTest extends AbstractModelTest {
                                                                                          takingNames,
                                                                                          kernel.getCore());
         em.persist(auth);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.flush();
 
         Job job = model.getJobModel().newInitializedJob(service,
                                                         kernel.getCore());
         em.persist(job);
 
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.flush();
         model.getJobModel().changeStatus(job, kickingAss, kernel.getCore(),
                                          "taking names");
-
-        em.getTransaction().commit();
+        em.flush();
 
         em.refresh(job);
 
@@ -820,46 +772,31 @@ public class JobModelTest extends AbstractModelTest {
                                                                                               shovingMe,
                                                                                               kernel.getCore());
         em.persist(auth2);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.flush();
 
         Job push = model.getJobModel().newInitializedJob(pushit,
                                                          kernel.getCore());
 
-        em.getTransaction().commit();
+        em.flush();
         em.refresh(push);
         List<Job> children = model.getJobModel().getAllChildren(push);
         assertEquals(2, children.size());
 
-        em.getTransaction().begin();
         for (Job j : children) {
             model.getJobModel().changeStatus(j, pushingMe, kernel.getCore(),
                                              null);
         }
         model.getJobModel().changeStatus(push, pushingMe, kernel.getCore(),
                                          null);
-        em.getTransaction().commit();
+        em.flush();
 
         Job shovingJob = model.getJobModel().getActiveSubJobsForService(push,
                                                                         shoveit).get(0);
-        em.getTransaction().begin();
 
         model.getJobModel().changeStatus(shovingJob, shovingMe, null, null);
-        em.getTransaction().commit();
+        em.flush();
         em.refresh(push);
         assertEquals(shovingMe, push.getStatus());
-    }
-
-    private void clearJobs() throws SQLException {
-        Connection connection = em.unwrap(SessionImpl.class).connection();
-        boolean prev = connection.getAutoCommit();
-        connection.setAutoCommit(false);
-        alterTriggers(false);
-        String query = "DELETE FROM ruleform.job";
-        connection.createStatement().execute(query);
-        alterTriggers(true);
-        connection.commit();
-        connection.setAutoCommit(prev);
     }
 
     /**

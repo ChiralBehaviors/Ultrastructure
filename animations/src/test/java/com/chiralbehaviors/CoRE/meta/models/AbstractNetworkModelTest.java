@@ -158,10 +158,9 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         AgencyNetwork edgeH = new AgencyNetwork(h, equals2, i, core);
         em.persist(edgeH);
 
-        em.getTransaction().commit();
+        em.flush();
         a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
-        em.getTransaction().begin();
         edgeA = em.find(AgencyNetwork.class, edgeA.getId());
         em.remove(edgeA);
         em.flush();
@@ -482,7 +481,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         Agency classifier = new Agency("test not in group agency classifier",
                                        kernel.getCore());
         em.persist(classifier);
-        em.getTransaction().commit();
+        em.flush();
         List<Agency> notInGroup = model.getAgencyModel().getNotInGroup(classifier,
                                                                        inverse);
         assertNotNull(notInGroup);

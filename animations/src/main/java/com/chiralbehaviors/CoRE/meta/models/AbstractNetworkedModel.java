@@ -67,7 +67,6 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
@@ -365,24 +364,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         q.setParameter("relationship", relationship);
         List<RuleForm> resultList = q.getResultList();
         return resultList;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getFacet(com.chiralbehaviors.CoRE.
-     * ExistentialRuleform, com.chiralbehaviors.CoRE.meta.Aspect)
-     */
-    @Override
-    public Facet<RuleForm, AttributeType> getFacet(RuleForm ruleform,
-                                                   Aspect<RuleForm> aspect) {
-        return new Facet<RuleForm, AttributeType>(
-                                                  aspect,
-                                                  ruleform,
-                                                  getAttributesClassifiedBy(ruleform,
-                                                                            aspect)) {
-        };
     }
 
     @Override

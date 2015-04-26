@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
@@ -102,22 +101,6 @@ public class ProductModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
-     */
-    @Override
-    public Facet<Product, ProductAttribute> create(String name,
-                                                   String description,
-                                                   Aspect<Product> aspect,
-                                                   Agency updatedBy) {
-        Product product = new Product(name, description, kernel.getCoreModel());
-        em.persist(product);
-        return new Facet<Product, ProductAttribute>(aspect, product,
-                                                    initialize(product, aspect,
-                                                               updatedBy)) {
-        };
     }
 
     /*

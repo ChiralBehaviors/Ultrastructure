@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
@@ -102,26 +101,6 @@ public class RelationshipModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
-     */
-    @Override
-    public Facet<Relationship, RelationshipAttribute> create(String name,
-                                                             String description,
-                                                             Aspect<Relationship> aspect,
-                                                             Agency updatedBy) {
-        Relationship relationship = new Relationship(name, description,
-                                                     kernel.getCoreModel());
-        em.persist(relationship);
-        return new Facet<Relationship, RelationshipAttribute>(
-                                                              aspect,
-                                                              relationship,
-                                                              initialize(relationship,
-                                                                         aspect,
-                                                                         updatedBy)) {
-        };
     }
 
     /*

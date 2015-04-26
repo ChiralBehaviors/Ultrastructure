@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
@@ -105,19 +104,6 @@ public class IntervalModelImpl
         return copy;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public Facet<Interval, IntervalAttribute> create(String name,
-                                                     String description,
-                                                     Aspect<Interval> aspect,
-                                                     Agency updatedBy) {
-        return create(name, description, null, kernel.getNotApplicableUnit(),
-                      aspect, updatedBy);
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -149,13 +135,13 @@ public class IntervalModelImpl
      * @see com.chiralbehaviors.CoRE.meta.IntervalModel#create(java.lang.String, java.lang.String, java.math.BigDecimal, com.chiralbehaviors.CoRE.attribute.unit.Unit, com.chiralbehaviors.CoRE.network.Aspect, com.chiralbehaviors.CoRE.network.Aspect[])
      */
     @Override
-    public Facet<Interval, IntervalAttribute> create(String name,
-                                                     String description,
-                                                     BigDecimal start,
-                                                     Unit startUnit,
-                                                     Aspect<Interval> aspect,
-                                                     Agency updatedBy,
-                                                     @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
+    public Interval create(String name,
+                           String description,
+                           BigDecimal start,
+                           Unit startUnit,
+                           Aspect<Interval> aspect,
+                           Agency updatedBy,
+                           @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
         return create(name, description, start, startUnit, null,
                       kernel.getNotApplicableUnit(), aspect, updatedBy, aspects);
     }
@@ -164,23 +150,19 @@ public class IntervalModelImpl
      * @see com.chiralbehaviors.CoRE.meta.IntervalModel#create(java.lang.String, java.lang.String, java.math.BigDecimal, com.chiralbehaviors.CoRE.attribute.unit.Unit, java.math.BigDecimal, com.chiralbehaviors.CoRE.attribute.unit.Unit, com.chiralbehaviors.CoRE.network.Aspect, com.chiralbehaviors.CoRE.network.Aspect[])
      */
     @Override
-    public Facet<Interval, IntervalAttribute> create(String name,
-                                                     String description,
-                                                     BigDecimal start,
-                                                     Unit startUnit,
-                                                     BigDecimal duration,
-                                                     Unit durationUnit,
-                                                     Aspect<Interval> aspect,
-                                                     Agency updatedBy,
-                                                     @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
+    public Interval create(String name,
+                           String description,
+                           BigDecimal start,
+                           Unit startUnit,
+                           BigDecimal duration,
+                           Unit durationUnit,
+                           Aspect<Interval> aspect,
+                           Agency updatedBy,
+                           @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
         Interval interval = new Interval(name, start, startUnit, duration,
                                          durationUnit, description, updatedBy);
         em.persist(interval);
-        return new Facet<Interval, IntervalAttribute>(aspect, interval,
-                                                      initialize(interval,
-                                                                 aspect,
-                                                                 updatedBy)) {
-        };
+        return interval;
     }
 
     /* (non-Javadoc)

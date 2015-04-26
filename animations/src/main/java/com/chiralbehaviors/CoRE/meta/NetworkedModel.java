@@ -31,7 +31,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
@@ -44,23 +43,6 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  *
  */
 public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>> {
-
-    /**
-     * Create a new instance with the supplied aspect
-     *
-     * @param name
-     *            The name of the new instance
-     * @param description
-     *            the description of the new instance
-     * @param aspect
-     *            - the initial aspect of the instance
-     * @param updatedBy
-     * @return the new instance
-     */
-    public Facet<RuleForm, AttributeType> create(String name,
-                                                 String description,
-                                                 Aspect<RuleForm> aspect,
-                                                 Agency updatedBy);
 
     /**
      * Create a new instance with the supplied aspects
@@ -256,21 +238,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @return
      */
     List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
-
-    /**
-     * Answer the Facet of the ruleform instance containing the authorized
-     * attributes as classified
-     *
-     * @param ruleform
-     *            - the instance
-     * @param classifier
-     *            - the parent ruleform
-     * @param classification
-     *            - the classifying relationship
-     * @return
-     */
-    Facet<RuleForm, AttributeType> getFacet(RuleForm ruleform,
-                                            Aspect<RuleForm> aspect);
 
     /**
      * Answer the non inferred child that is connected to the parent via the

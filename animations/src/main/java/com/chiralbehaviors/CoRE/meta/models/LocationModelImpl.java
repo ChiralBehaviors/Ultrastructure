@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -103,24 +102,6 @@ public class LocationModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
-     */
-    @Override
-    public Facet<Location, LocationAttribute> create(String name,
-                                                     String description,
-                                                     Aspect<Location> aspect,
-                                                     Agency updatedBy) {
-        Location location = new Location(name, description,
-                                         kernel.getCoreModel());
-        em.persist(location);
-        return new Facet<Location, LocationAttribute>(aspect, location,
-                                                      initialize(location,
-                                                                 aspect,
-                                                                 updatedBy)) {
-        };
     }
 
     /*

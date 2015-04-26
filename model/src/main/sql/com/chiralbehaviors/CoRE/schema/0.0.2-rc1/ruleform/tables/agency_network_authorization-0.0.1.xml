@@ -12,14 +12,14 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_network_authorization_pkey" />
             </column>
-            <column name="classification" type="uuid" />
-            <column name="classifier" type="uuid" />
-            <column name="authorized_parent" remarks="A network parent a agency is expected to have" type="uuid">
+            <column name="classification" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="authorized_relationship" remarks="A network agency a agency is expected to have" type="uuid">
+            <column name="classifier" type="uuid">
                 <constraints nullable="false" />
             </column>
+            <column name="authorized_parent" type="uuid" />
+            <column name="authorized_relationship" type="uuid" />
             <column defaultValueComputed="1" name="sequence_number"
                 remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
             >
@@ -66,8 +66,9 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="classification, classifier, authorized_parent, authorized_relationship, child_relationship, sequence_number" constraintName="agency_attribute_authorizatio_agency_classification_attri_key"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="agency_network_authorization" />
+            columnNames="classification, classifier, authorized_parent, authorized_relationship, child_relationship, sequence_number"
+            constraintName="agency_attribute_authorizatio_agency_classification_attri_key" deferrable="false" disabled="false"
+            initiallyDeferred="true" tableName="agency_network_authorization" />
         <createIndex schemaName="ruleform" indexName="agency_network_authorization_updated_by_fkey_idx" tableName="agency_network_authorization"
             unique="false"
         >

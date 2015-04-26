@@ -64,8 +64,8 @@ public class LocationModelImpl
     @Override
     public void authorize(Aspect<Location> aspect, Attribute... attributes) {
         LocationNetworkAuthorization auth = new LocationNetworkAuthorization();
-        auth.setAuthorizedParent(aspect.getClassifier());
-        auth.setAuthorizedRelationship(aspect.getClassification());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             LocationAttributeAuthorization authorization = new LocationAttributeAuthorization(

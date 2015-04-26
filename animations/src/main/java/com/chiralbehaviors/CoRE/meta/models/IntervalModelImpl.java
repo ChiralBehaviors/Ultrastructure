@@ -64,8 +64,8 @@ public class IntervalModelImpl
     @Override
     public void authorize(Aspect<Interval> aspect, Attribute... attributes) {
         IntervalNetworkAuthorization auth = new IntervalNetworkAuthorization();
-        auth.setAuthorizedParent(aspect.getClassifier());
-        auth.setAuthorizedRelationship(aspect.getClassification());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             IntervalAttributeAuthorization authorization = new IntervalAttributeAuthorization(

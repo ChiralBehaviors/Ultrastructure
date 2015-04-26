@@ -12,14 +12,14 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="attribute_network_authorization_pkey" />
             </column>
-            <column name="classification" type="uuid" />
-            <column name="classifier" type="uuid" />
-            <column name="authorized_parent" remarks="A network parent a attribute is expected to have" type="uuid">
+            <column name="classification" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="authorized_relationship" remarks="A network attribute a attribute is expected to have" type="uuid">
+            <column name="classifier" type="uuid">
                 <constraints nullable="false" />
             </column>
+            <column name="authorized_parent" type="uuid" />
+            <column name="authorized_relationship" type="uuid" />
             <column name="cardinality" type="SMALLINT" />
             <column name="child_relationship" remarks="the relationship between the classified child and its child" type="uuid" />
             <column defaultValueComputed="1" name="sequence_number"
@@ -63,8 +63,9 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="classification, classifier, authorized_parent, authorized_relationship, child_relationship, sequence_number" constraintName="attribute_attribute_authorizatio_attribute_classification_attri_key"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="attribute_network_authorization" />
+            columnNames="classification, classifier, authorized_parent, authorized_relationship, child_relationship, sequence_number"
+            constraintName="attribute_attribute_authorizatio_attribute_classification_attri_key" deferrable="false" disabled="false"
+            initiallyDeferred="true" tableName="attribute_network_authorization" />
         <createIndex schemaName="ruleform" indexName="attribute_network_authorization_updated_by_fkey_idx" tableName="attribute_network_authorization"
             unique="false"
         >

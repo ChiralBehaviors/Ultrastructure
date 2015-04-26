@@ -64,8 +64,8 @@ public class AgencyModelImpl
     @Override
     public void authorize(Aspect<Agency> aspect, Attribute... attributes) {
         AgencyNetworkAuthorization auth = new AgencyNetworkAuthorization();
-        auth.setAuthorizedParent(aspect.getClassifier());
-        auth.setAuthorizedRelationship(aspect.getClassification());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             AgencyAttributeAuthorization authorization = new AgencyAttributeAuthorization(

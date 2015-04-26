@@ -29,11 +29,11 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
@@ -67,12 +67,16 @@ public class StatusCodeModelImpl
      */
     @Override
     public void authorize(Aspect<StatusCode> aspect, Attribute... attributes) {
+        StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization(
+                                                                                 kernel.getCore());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             StatusCodeAttributeAuthorization authorization = new StatusCodeAttributeAuthorization(
-                                                                                                  aspect.getClassification(),
-                                                                                                  aspect.getClassifier(),
                                                                                                   attribute,
                                                                                                   kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }
@@ -241,11 +245,8 @@ public class StatusCodeModelImpl
     }
 
     @Override
-    protected StatusCodeAttribute create(StatusCode ruleform,
-                                         ClassifiedAttributeAuthorization<StatusCode> authorization,
-                                         Agency updatedBy) {
-        return new StatusCodeAttribute(ruleform,
-                                       authorization.getAuthorizedAttribute(),
-                                       updatedBy);
+    public StatusCodeAttribute create(StatusCode ruleform, Attribute attribute,
+                                      Agency updatedBy) {
+        return new StatusCodeAttribute(ruleform, attribute, updatedBy);
     }
 }

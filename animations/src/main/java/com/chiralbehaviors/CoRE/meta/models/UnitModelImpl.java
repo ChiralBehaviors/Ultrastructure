@@ -27,11 +27,11 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -63,10 +63,13 @@ public class UnitModelImpl
      */
     @Override
     public void authorize(Aspect<Unit> aspect, Attribute... attributes) {
+        UnitNetworkAuthorization auth = new UnitNetworkAuthorization(
+                                                                     kernel.getCore());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             UnitAttributeAuthorization authorization = new UnitAttributeAuthorization(
-                                                                                      aspect.getClassification(),
-                                                                                      aspect.getClassifier(),
                                                                                       attribute,
                                                                                       kernel.getCoreModel());
             em.persist(authorization);
@@ -160,11 +163,9 @@ public class UnitModelImpl
     }
 
     @Override
-    protected UnitAttribute create(Unit ruleform,
-                                   ClassifiedAttributeAuthorization<Unit> authorization,
-                                   Agency updatedBy) {
-        return new UnitAttribute(authorization.getAuthorizedAttribute(),
-                                 updatedBy);
+    public UnitAttribute create(Unit ruleform, Attribute attribute,
+                                Agency updatedBy) {
+        return new UnitAttribute(ruleform, attribute, updatedBy);
     }
 
 }

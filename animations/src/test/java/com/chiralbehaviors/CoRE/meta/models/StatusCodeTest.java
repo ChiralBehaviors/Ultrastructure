@@ -178,8 +178,7 @@ public class StatusCodeTest extends AbstractModelTest {
         Job parent = jobModel.newInitializedJob(service, kernel.getCore());
         Job child = jobModel.newInitializedJob(service2, kernel.getCore());
         child.setParent(parent);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.flush();
         em.refresh(parent);
         em.refresh(child);
         assertNotNull("Parent is null", child.getParent());

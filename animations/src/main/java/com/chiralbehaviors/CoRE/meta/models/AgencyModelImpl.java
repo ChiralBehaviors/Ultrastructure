@@ -29,9 +29,9 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -63,12 +63,16 @@ public class AgencyModelImpl
      */
     @Override
     public void authorize(Aspect<Agency> aspect, Attribute... attributes) {
+        AgencyNetworkAuthorization auth = new AgencyNetworkAuthorization(
+                                                                         kernel.getCore());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             AgencyAttributeAuthorization authorization = new AgencyAttributeAuthorization(
-                                                                                          aspect.getClassification(),
-                                                                                          aspect.getClassifier(),
                                                                                           attribute,
                                                                                           kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }
@@ -158,11 +162,8 @@ public class AgencyModelImpl
     }
 
     @Override
-    protected AgencyAttribute create(Agency ruleform,
-                                     ClassifiedAttributeAuthorization<Agency> authorization,
-                                     Agency updateBy) {
-        return new AgencyAttribute(ruleform,
-                                   authorization.getAuthorizedAttribute(),
-                                   updateBy);
+    public AgencyAttribute create(Agency ruleform, Attribute attribute,
+                                  Agency updateBy) {
+        return new AgencyAttribute(ruleform, attribute, updateBy);
     }
 }

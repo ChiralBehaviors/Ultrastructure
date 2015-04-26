@@ -29,11 +29,10 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -45,13 +44,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "agency_attribute_authorization", schema = "ruleform")
 public class AgencyAttributeAuthorization extends
-        ClassifiedAttributeAuthorization<Agency> {
-    private static final long serialVersionUID = 1L;
+        AttributeAuthorization<Agency, AgencyNetwork> {
+    private static final long          serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "classifier")
-    private Agency            classifier;
+    @JoinColumn(name = "network_authorization")
+    private AgencyNetworkAuthorization networkAuthorization;
 
     public AgencyAttributeAuthorization() {
     }
@@ -65,49 +64,13 @@ public class AgencyAttributeAuthorization extends
 
     /**
      * @param id
-     * @param classification
-     * @param updatedBy
-     */
-    public AgencyAttributeAuthorization(Relationship classification,
-                                        Agency updatedBy) {
-        super(classification, updatedBy);
-    }
-
-    public AgencyAttributeAuthorization(Relationship classification,
-                                        Agency classifier,
-                                        Attribute authorized, Agency updatedBy) {
-        this(classification, authorized, updatedBy);
-        this.classifier = classifier;
-    }
-
-    /**
-     * @param id
-     * @param classification
-     * @param authorized
-     * @param updatedBy
-     */
-    public AgencyAttributeAuthorization(Relationship classification,
-                                        Attribute authorized, Agency updatedBy) {
-        super(classification, authorized, updatedBy);
-    }
-
-    /**
-     * @param id
      */
     public AgencyAttributeAuthorization(UUID id) {
         super(id);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
-     * getClassifier()
-     */
-    @Override
-    @JsonGetter
-    public Agency getClassifier() {
-        return classifier;
+    public AgencyAttributeAuthorization(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
     }
 
     /* (non-Javadoc)
@@ -119,14 +82,19 @@ public class AgencyAttributeAuthorization extends
         return WorkspaceAuthorization_.agencyAttributeAuthorization;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization#
-     * setClassifier(com.chiralbehaviors.CoRE.network.Networked)
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.attribute.AttributeAuthorization#getNetworkAuthorization()
      */
     @Override
-    public void setClassifier(Agency classifier) {
-        this.classifier = classifier;
+    public NetworkAuthorization<Agency> getNetworkAuthorization() {
+        return networkAuthorization;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.attribute.AttributeAuthorization#setNetworkAuthorization(com.chiralbehaviors.CoRE.network.NetworkAuthorization)
+     */
+    @Override
+    public void setNetworkAuthorization(NetworkAuthorization<Agency> auth) {
+        networkAuthorization = (AgencyNetworkAuthorization) auth;
     }
 }

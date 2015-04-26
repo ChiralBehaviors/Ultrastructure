@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="1" author="hhildebrand">
         <sql><![CDATA[
@@ -11,27 +11,29 @@
              SELECT     base_table.id ,
                 res.name AS grouping_agency, 
                 cls.name AS classification, 
-			    b.name AS classifier, 
-			    att.name AS authorized_attribute, 
-			    base_table.sequence_number, 
-			    base_table.text_value, 
-			    base_table.integer_value, 
-			    base_table.numeric_value, 
-			    base_table.notes, 
-			    up.name AS updated_by, 
-			    base_table.version
-			 FROM interval_attribute_authorization base_table
-			 LEFT JOIN agency res ON base_table.grouping_agency = res.id
-			 LEFT JOIN relationship cls ON base_table.classification = cls.id
-			 LEFT JOIN interval b ON base_table.classifier = b.id
-			 LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
-			 LEFT JOIN agency up ON base_table.updated_by = up.id;
-			
-			ALTER TABLE readable.interval_attribute_authorization
-			  OWNER TO core;
-			GRANT ALL ON TABLE readable.interval_attribute_authorization TO core;
-			GRANT SELECT ON TABLE readable.interval_attribute_authorization TO core_read_write;
-			GRANT SELECT ON TABLE readable.interval_attribute_authorization TO core_read_only;
+                b.name AS classifier, 
+                att.name AS authorized_attribute, 
+                base_table.sequence_number, 
+                base_table.text_value, 
+                base_table.integer_value, 
+                base_table.numeric_value, 
+                base_table.notes, 
+                up.name AS updated_by, 
+                base_table.version
+             FROM interval_attribute_authorization base_table
+             LEFT JOIN interval_network_authorization na ON base_table.network_authorization = na.id
+             LEFT JOIN agency res ON base_table.grouping_agency = res.id
+             LEFT JOIN relationship cls ON na.classification = cls.id
+             LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
+             LEFT JOIN agency b ON na.classifier = b.id
+             LEFT JOIN agency up ON base_table.updated_by = up.id
+             WHERE base_table.authorized_attribute IS NOT NULL;
+            
+            ALTER TABLE readable.interval_attribute_authorization
+              OWNER TO core;
+            GRANT ALL ON TABLE readable.interval_attribute_authorization TO core;
+            GRANT SELECT ON TABLE readable.interval_attribute_authorization TO core_read_write;
+            GRANT SELECT ON TABLE readable.interval_attribute_authorization TO core_read_only;
             ]]>
         </sql>
         <rollback>

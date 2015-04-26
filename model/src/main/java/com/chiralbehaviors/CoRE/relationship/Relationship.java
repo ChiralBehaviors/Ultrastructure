@@ -21,8 +21,8 @@ package com.chiralbehaviors.CoRE.relationship;
 
 import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
-import static com.chiralbehaviors.CoRE.relationship.Relationship.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.GET_ALL_PARENT_RELATIONSHIPS;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.GET_CHILD;
 import static com.chiralbehaviors.CoRE.relationship.Relationship.GET_CHILD_RULES_BY_RELATIONSHIP;
@@ -71,19 +71,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "FROM "
                                                                             + "       RelationshipAttribute attrValue, "
                                                                             + "       RelationshipAttributeAuthorization auth, "
+                                                                            + "       RelationshipNetworkAuthorization na, "
                                                                             + "       RelationshipNetwork network "
                                                                             + "WHERE "
-                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.classification AND "
-                                                                            + "        network.child = auth.classifier AND"
-                                                                            + "        attrValue.relationship = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from RelationshipAttributeAuthorization ra "
-                                                                                    + "WHERE ra.classifier = :classification "
-                                                                                    + "AND ra.classifier = :classifier"),
-               @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from RelationshipAttributeAuthorization ra "
-                                                                                 + "WHERE ra.groupingAgency = :groupingAgency"),
+                                                                            + "        auth.networkAuthorization = na "
+                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                            + "    AND network.relationship = na.classification "
+                                                                            + "    AND network.child = na.classifier"
+                                                                            + "    AND attrValue.relationship = :ruleform "
+                                                                            + "    AND na.classification = :classification "
+                                                                            + "    AND na.classifier= :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                  + "  auth "
+                                                                                                  + "FROM "
+                                                                                                  + "       IntervalAttributeAuthorization auth, "
+                                                                                                  + "       IntervalNetworkAuthorization na, "
+                                                                                                  + "       IntervalNetwork network "
+                                                                                                  + "WHERE "
+                                                                                                  + "        auth.networkAuthorization = na "
+                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                  + "    AND network.relationship = na.classification "
+                                                                                                  + "    AND network.child = na.classifier"
+                                                                                                  + "    AND na.classification = :classification "
+                                                                                                  + "    AND na.classifier= :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from RelationshipAttributeAuthorization auth "
+                                                                                    + "WHERE auth.networkAuthorization.classification = :classification "
+                                                                                    + "AND auth.networkAuthorization.classifier = :classifier "
+                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
                                                      + "FROM RelationshipNetwork n "
                                                      + "WHERE n.parent = :p "
@@ -98,27 +112,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Relationship extends
         ExistentialRuleform<Relationship, RelationshipNetwork> {
 
-    public static final String         AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "relationship.RelationshipAttributesByClassification";
+    public static final String         AGENCY_ATTRIBUTES_BY_CLASSIFICATION                    = "relationship.RelationshipAttributesByClassification";
 
-    public static final String         AUTHORIZED_AGENCY_ATTRIBUTES             = "relationship.authorizedAttributes";
-    public static final String         FIND_BY_NAME                             = "relationship"
-                                                                                  + FIND_BY_NAME_SUFFIX;
-    public static final String         FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "relationship"
-                                                                                  + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String         FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "relationship"
-                                                                                  + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String         FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "relationship"
-                                                                                  + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String         GET_ALL_PARENT_RELATIONSHIPS             = "relationship"
-                                                                                  + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String         GET_CHILD                                = "relationship"
-                                                                                  + GET_CHILDREN_SUFFIX;
-    public static final String         GET_CHILD_RULES_BY_RELATIONSHIP          = "relationship"
-                                                                                  + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String         ORDERED_ATTRIBUTES                       = "relationship.orderedAttributes";
-    public static final String         QUALIFIED_ENTITY_NETWORK_RULES           = "relationship.qualifiedEntityNetworkRules";
+    public static final String         AUTHORIZED_AGENCY_ATTRIBUTES                           = "relationship.authorizedAttributes";
+    public static final String         FIND_BY_NAME                                           = "relationship"
+                                                                                                + FIND_BY_NAME_SUFFIX;
+    public static final String         FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "relationship"
+                                                                                                + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String         FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "relationship"
+                                                                                                + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String         FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "relationship"
+                                                                                                + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String         GET_ALL_PARENT_RELATIONSHIPS                           = "relationship"
+                                                                                                + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String         GET_CHILD                                              = "relationship"
+                                                                                                + GET_CHILDREN_SUFFIX;
+    public static final String         GET_CHILD_RULES_BY_RELATIONSHIP                        = "relationship"
+                                                                                                + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String         ORDERED_ATTRIBUTES                                     = "relationship.orderedAttributes";
+    public static final String         QUALIFIED_ENTITY_NETWORK_RULES                         = "relationship.qualifiedEntityNetworkRules";
 
-    private static final long          serialVersionUID                         = 1L;
+    private static final long          serialVersionUID                                       = 1L;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "relationship")
     @JsonIgnore
@@ -139,7 +153,7 @@ public class Relationship extends
 
     private String                     operator;
 
-    private Integer                    preferred                                = FALSE;
+    private Integer                    preferred                                              = FALSE;
 
     public Relationship() {
     }

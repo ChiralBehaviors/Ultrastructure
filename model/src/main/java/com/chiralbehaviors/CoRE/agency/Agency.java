@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.agency;
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_ALL;
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.agency.Agency.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.chiralbehaviors.CoRE.agency.Agency.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
 import static com.chiralbehaviors.CoRE.agency.Agency.GET_ALL_PARENT_RELATIONSHIPS;
@@ -72,17 +73,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "FROM "
                                                                             + "       AgencyAttribute attrValue, "
                                                                             + "       AgencyAttributeAuthorization auth, "
+                                                                            + "       AgencyNetworkAuthorization na, "
                                                                             + "       AgencyNetwork network "
                                                                             + "WHERE "
-                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.classification AND "
-                                                                            + "        network.child = auth.classifier AND"
-                                                                            + "        attrValue.agency = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from AgencyAttributeAuthorization ra "
-                                                                                    + "WHERE ra.classification = :classification "
-                                                                                    + "AND ra.classifier = :classifier"),
+                                                                            + "        auth.authorizedAttribute = attrValue.attribute "
+                                                                            + "    AND auth.networkAuthorization = na "
+                                                                            + "    AND network.relationship = na.classification "
+                                                                            + "    AND network.child = na.classifier"
+                                                                            + "    AND attrValue.agency = :ruleform "
+                                                                            + "    AND na.classification = :classification "
+                                                                            + "    AND na.classifier= :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                               + "  auth "
+                                                                                               + "FROM "
+                                                                                               + "       AgencyAttributeAuthorization auth, "
+                                                                                               + "       AgencyNetworkAuthorization na, "
+                                                                                               + "       AgencyNetwork network "
+                                                                                               + "WHERE "
+                                                                                               + "        auth.networkAuthorization = na "
+                                                                                               + "    AND auth.authorizedAttribute = :attribute "
+                                                                                               + "    AND network.relationship = na.classification "
+                                                                                               + "    AND network.child = na.classifier"
+                                                                                               + "    AND na.classification = :classification "
+                                                                                               + "    AND na.classifier= :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from AgencyAttributeAuthorization auth "
+                                                                                    + "WHERE auth.networkAuthorization.classification = :classification "
+                                                                                    + "AND auth.networkAuthorization.classifier = :classifier "
+                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS, query = "select ra from AgencyAttributeAuthorization ra "
                                                                                  + "WHERE ra.groupingAgency = :groupingAgency"),
                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child "
@@ -99,28 +116,30 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "agency", schema = "ruleform")
 public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
-    public static final String   AGENCY_ATTRIBUTES_BY_CLASSIFICATION      = "agency.AgencyAttributesByClassification";
+    public static final String   AGENCY_ATTRIBUTES_BY_CLASSIFICATION                 = "agency.AgencyAttributesByClassification";
 
-    public static final String   AUTHORIZED_AGENCY_ATTRIBUTES             = "agency.authorizedAttributes";
-    public static final String   FIND_ALL                                 = "agency"
-                                                                            + Ruleform.FIND_ALL_SUFFIX;
-    public static final String   FIND_BY_NAME                             = "agency"
-                                                                            + FIND_BY_NAME_SUFFIX;
-    public static final String   FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "agency"
-                                                                            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String   FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "agency"
-                                                                            + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String   FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS    = "agency"
-                                                                            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String   GET_ALL_PARENT_RELATIONSHIPS             = "agency"
-                                                                            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String   GET_CHILD_RULES_BY_RELATIONSHIP          = "agency"
-                                                                            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String   GET_CHILDREN                             = "agency"
-                                                                            + GET_CHILDREN_SUFFIX;
-    public static final String   QUALIFIED_ENTITY_NETWORK_RULES           = "agency.qualifiedEntityNetworkRules";
+    public static final String   AUTHORIZED_AGENCY_ATTRIBUTES                        = "agency.authorizedAttributes";
+    public static final String   FIND_ALL                                            = "agency"
+                                                                                       + Ruleform.FIND_ALL_SUFFIX;
+    public static final String   FIND_BY_NAME                                        = "agency"
+                                                                                       + FIND_BY_NAME_SUFFIX;
+    public static final String   FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS            = "agency"
+                                                                                       + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String   FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "agency"
+                                                                                       + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String   FIND_CLASSIFIED_ATTRIBUTE_VALUES                    = "agency"
+                                                                                       + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String   FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS               = "agency"
+                                                                                       + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String   GET_ALL_PARENT_RELATIONSHIPS                        = "agency"
+                                                                                       + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String   GET_CHILD_RULES_BY_RELATIONSHIP                     = "agency"
+                                                                                       + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String   GET_CHILDREN                                        = "agency"
+                                                                                       + GET_CHILDREN_SUFFIX;
+    public static final String   QUALIFIED_ENTITY_NETWORK_RULES                      = "agency.qualifiedEntityNetworkRules";
 
-    private static final long    serialVersionUID                         = 1L;
+    private static final long    serialVersionUID                                    = 1L;
 
     // bi-directional many-to-one association to AgencyAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "agency")

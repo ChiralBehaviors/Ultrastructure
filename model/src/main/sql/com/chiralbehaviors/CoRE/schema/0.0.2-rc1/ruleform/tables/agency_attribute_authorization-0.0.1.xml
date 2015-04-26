@@ -5,8 +5,69 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <include relativeToChangelogFile="true" file="agency_attribute_authorization/table.xml" />
-    <include relativeToChangelogFile="true" file="agency_attribute_authorization/grants.xml" />
-    <include relativeToChangelogFile="true" file="agency_attribute_authorization/owner.xml" />
-
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform"
+            remarks="Defines rules stating what attributes (and values thereof) are authorized for particular agencys" tableName="agency_attribute_authorization"
+        >
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="agency_attribute_authorization_pkey" />
+            </column>
+            <column name="network_authorization" remarks="The network relationship that authorizes the attributes" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="authorized_attribute" remarks="An Attribute the existential entity is expected to have" type="uuid">
+                <constraints nullable="true" />
+            </column>
+            <column name="authorized_network_attribute" remarks="An Attribute the child network edge is expected to have" type="uuid">
+                <constraints nullable="true" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number"
+                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="boolean_value" type="SMALLINT" />
+            <column name="binary_value" type="BYTEA" />
+            <column name="text_value" remarks="Contains a single acceptable text-value if 'attribute' has a data type of 'text'"
+                type="TEXT" />
+            <column name="integer_value" type="INT4" />
+            <column name="numeric_value" type="numeric" />
+            <column name="timestamp_value" type="TIMESTAMPTZ" />
+            <column name="grouping_agency" type="uuid" />
+            <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="agency_attribute_authorization" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_attribute" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_authorization_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_network_attribute" baseTableName="agency_attribute_authorization" constraintName="agency_network_attribute_authorization_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="network_authorization" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_network_authorization_classification_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency_network_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_authorization_grouping_agency_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_authorization_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform"
+            columnNames="network_authorization, authorized_attribute, authorized_network_attribute, sequence_number" constraintName="agency_attribute_authorizat_classification_attribute_clas_key"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="agency_attribute_authorization" />
+        <createIndex schemaName="ruleform" indexName="agency_attribute_authorization_updated_by_fkey_idx" tableName="agency_attribute_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

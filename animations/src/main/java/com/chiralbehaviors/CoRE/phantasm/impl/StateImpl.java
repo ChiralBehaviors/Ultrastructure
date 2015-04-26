@@ -20,10 +20,12 @@
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -116,8 +118,8 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         // Hard override (final) equals() and hashCode().  Becauase invariance.
         if (method.getName().equals("equals") && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
-            return (args[0] instanceof Phantasm) ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
-                                                : false;
+            return args[0] instanceof Phantasm ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
+                                              : false;
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
         }
@@ -131,11 +133,35 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                                                           declaringClass).bindTo(proxy).invokeWithArguments(args);
         }
         StateFunction<RuleForm> function = methods.get(method);
-        Object returnValue = (function != null) ? function.invoke(this, args)
-                                               : method.invoke(this, args);
+        Object returnValue = function != null ? function.invoke(this, args)
+                                             : method.invoke(this, args);
 
         // always maintain proxy discipline.  Because identity.
         return returnValue == this ? proxy : returnValue;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param object
+     * @return
+     */
+    public Object setImmediateChild(String scope, String key, Object object) {
+        if (!(object instanceof Phantasm)) {
+            throw new ClassCastException(
+                                         String.format("%s does not implement %s",
+                                                       object.getClass().getCanonicalName(),
+                                                       Phantasm.class.getCanonicalName()));
+        }
+        @SuppressWarnings("unchecked")
+        Phantasm<RuleForm> phantasm = (Phantasm<RuleForm>) object;
+        RuleForm child = phantasm.getRuleform();
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
+        networkedModel.setImmediateChild(ruleform,
+                                         getRelationship(scope, key),
+                                         child,
+                                         model.getKernel().getCoreAnimationSoftware());
+        return null;
     }
 
     private Attribute getAttribute(String s, String key) {
@@ -144,6 +170,35 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
 
     private Relationship getRelationship(String s, String key) {
         return (Relationship) scope.lookup(s, key);
+    }
+
+    private AttributeValue<RuleForm>[] getValueArray(String namespace,
+                                                     String key) {
+        @SuppressWarnings("unchecked")
+        List<AttributeValue<RuleForm>> values = (List<AttributeValue<RuleForm>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                                                      getAttribute(namespace,
+                                                                                                                                                   key));
+        int max = 0;
+        for (AttributeValue<RuleForm> value : values) {
+            max = Math.max(max, value.getSequenceNumber() + 1);
+        }
+        @SuppressWarnings("unchecked")
+        AttributeValue<RuleForm>[] returnValue = new AttributeValue[max];
+        for (AttributeValue<RuleForm> form : values) {
+            returnValue[form.getSequenceNumber()] = form;
+        }
+        return returnValue;
+    }
+
+    private Map<String, AttributeValue<RuleForm>> getValueMap(String namespace,
+                                                              String key) {
+        Map<String, AttributeValue<RuleForm>> map = new HashMap<>();
+        for (AttributeValue<RuleForm> value : model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
+                                                                                                   getAttribute(namespace,
+                                                                                                                key))) {
+            map.put(value.getKey(), value);
+        }
+        return map;
     }
 
     private List<Phantasm<? super RuleForm>> wrap(List<RuleForm> queryResult,
@@ -173,6 +228,42 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         }
     }
 
+    protected Object[] getAttributeArray(String scope, String key, Class<?> type) {
+        AttributeValue<RuleForm>[] attributeValues = getValueArray(scope, key);
+
+        Object[] values = (Object[]) Array.newInstance(type,
+                                                       attributeValues.length);
+        for (AttributeValue<RuleForm> value : attributeValues) {
+            values[value.getSequenceNumber()] = value.getValue();
+        }
+        return values;
+    }
+
+    /**
+     * @param object
+     * @param key
+     * @param returnType
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    protected Map<String, ?> getAttributeMap(String namespace, String key,
+                                             Class<?> returnType) {
+        Map<String, ?> map;
+        try {
+            map = (Map<String, ?>) returnType.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalStateException(
+                                            String.format("Cannot create a new instance of %s",
+                                                          returnType.toGenericString()));
+        }
+        for (Map.Entry<String, AttributeValue<RuleForm>> entry : getValueMap(
+                                                                             namespace,
+                                                                             key).entrySet()) {
+            map.put(entry.getKey(), entry.getValue().getValue());
+        }
+        return map;
+    }
+
     protected Object getAttributeValue(String s, String key) {
         @SuppressWarnings("unchecked")
         List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
@@ -192,23 +283,6 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                              key));
         }
         return values.get(0).getValue();
-    }
-
-    protected List<Object> getAttributeValues(String scope, String key) {
-        List<Object> values = new ArrayList<>();
-        for (AttributeValue<RuleForm> value : model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                   getAttribute(scope,
-                                                                                                                key))) {
-            values.add(value.getValue());
-        }
-        return values;
-    }
-
-    protected void setChild(String scope, String key,
-                            Phantasm<RuleForm> phantasm) {
-        model.getNetworkedModel(ruleform).getSingleChild(ruleform,
-                                                         getRelationship(scope,
-                                                                         key));
     }
 
     protected Object getChild(String scope, String key,
@@ -246,6 +320,75 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return wrap(queryResult, phantasm);
     }
 
+    protected Object setAttributeArray(String namespace, String key,
+                                       Object[] values) {
+        Attribute attribute = scope.lookup(namespace, key);
+        if (attribute == null) {
+            throw new IllegalStateException(
+                                            String.format("The attribute %s:%s does not exist in the workspace",
+                                                          namespace == null ? ""
+                                                                           : namespace,
+                                                          key));
+        }
+        AttributeValue<RuleForm>[] old = getValueArray(namespace, key);
+        if (values == null) {
+            if (old != null) {
+                for (AttributeValue<RuleForm> value : old) {
+                    model.getEntityManager().remove(value);
+                }
+            }
+        } else if (old == null) {
+            for (int i = 0; i < values.length; i++) {
+                setValue(attribute, i, null, values[i]);
+            }
+        } else if (old.length == values.length) {
+            for (int i = 0; i < values.length; i++) {
+                setValue(attribute, i, old[i], values[i]);
+            }
+        } else if (old.length < values.length) {
+            int i;
+            for (i = 0; i < old.length; i++) {
+                setValue(attribute, i, old[i], values[i]);
+            }
+            for (; i < values.length; i++) {
+                setValue(attribute, i, null, values[i]);
+            }
+        } else if (old.length > values.length) {
+            int i;
+            for (i = 0; i < values.length; i++) {
+                setValue(attribute, i, old[i], values[i]);
+            }
+            for (; i < old.length; i++) {
+                model.getEntityManager().remove(old[i]);
+            }
+        }
+        return null;
+    }
+
+    private void setValue(Attribute attribute, int i,
+                          AttributeValue<RuleForm> existing, Object newValue) {
+        if (existing == null) {
+            existing = newAttributeValue(attribute, i);
+            model.getEntityManager().persist(existing);
+        }
+        existing.setValue(newValue);
+    }
+
+    private AttributeValue<RuleForm> newAttributeValue(Attribute attribute,
+                                                       int i) {
+        AttributeValue<RuleForm> value = model.getNetworkedModel(ruleform).create(ruleform,
+                                                                                  attribute,
+                                                                                  model.getKernel().getCoreAnimationSoftware());
+        value.setSequenceNumber(i);
+        return value;
+    }
+
+    protected Object setAttributeMap(String namespace, String key,
+                                     Map<String, Object> values) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     protected Object setAttributeValue(String scope, String key, Object value) {
         @SuppressWarnings("unchecked")
         List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
@@ -268,32 +411,10 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return null;
     }
 
-    protected Object setAttributeValues(String scope, String key, List<?> values) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * @param namespace
-     * @param name
-     * @param object
-     * @return
-     */
-    public Object setImmediateChild(String scope, String key, Object object) {
-        if (!(object instanceof Phantasm)) {
-            throw new ClassCastException(
-                                         String.format("%s does not implement %s",
-                                                       object.getClass().getCanonicalName(),
-                                                       Phantasm.class.getCanonicalName()));
-        }
-        @SuppressWarnings("unchecked")
-        Phantasm<RuleForm> phantasm = (Phantasm<RuleForm>) object;
-        RuleForm child = phantasm.getRuleform();
-        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
-        networkedModel.setImmediateChild(ruleform,
-                                         getRelationship(scope, key),
-                                         child,
-                                         model.getKernel().getCoreAnimationSoftware());
-        return null;
+    protected void setChild(String namepsapace, String key,
+                            Phantasm<RuleForm> phantasm) {
+        model.getNetworkedModel(ruleform).getSingleChild(ruleform,
+                                                         getRelationship(namepsapace,
+                                                                         key));
     }
 }

@@ -21,6 +21,7 @@ package com.chiralbehaviors.CoRE.attribute.unit;
 
 import static com.chiralbehaviors.CoRE.attribute.unit.Unit.FIND_BY_NAME;
 import static com.chiralbehaviors.CoRE.attribute.unit.Unit.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.attribute.unit.Unit.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.attribute.unit.Unit.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
 import static com.chiralbehaviors.CoRE.attribute.unit.Unit.GET_CHILD;
 import static com.chiralbehaviors.CoRE.attribute.unit.Unit.GET_CHILD_RULES_BY_RELATIONSHIP;
@@ -61,17 +62,33 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "FROM "
                                                                             + "       UnitAttribute attrValue, "
                                                                             + "       UnitAttributeAuthorization auth, "
+                                                                            + "       UnitNetworkAuthorization na, "
                                                                             + "       UnitNetwork network "
                                                                             + "WHERE "
-                                                                            + "        auth.authorizedAttribute = attrValue.attribute AND "
-                                                                            + "        network.relationship = auth.classification AND "
-                                                                            + "        network.child = auth.classifier AND"
-                                                                            + "        attrValue.attribute = :ruleform AND "
-                                                                            + "        auth.classification = :classification AND "
-                                                                            + "        auth.classifier = :classifier "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select ama from UnitAttributeAuthorization ama "
-                                                                                    + "WHERE ama.classification = :classification "
-                                                                                    + "AND ama.classifier = :classifier"),
+                                                                            + "        auth.networkAuthorization = na "
+                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                            + "    AND network.relationship = na.classification "
+                                                                            + "    AND network.child = na.classifier"
+                                                                            + "    AND attrValue.unitRf = :ruleform "
+                                                                            + "    AND na.classification = :classification "
+                                                                            + "    AND na.classifier= :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                  + "  auth "
+                                                                                                  + "FROM "
+                                                                                                  + "       IntervalAttributeAuthorization auth, "
+                                                                                                  + "       IntervalNetworkAuthorization na, "
+                                                                                                  + "       IntervalNetwork network "
+                                                                                                  + "WHERE "
+                                                                                                  + "        auth.networkAuthorization = na "
+                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                  + "    AND network.relationship = na.classification "
+                                                                                                  + "    AND network.child = na.classifier"
+                                                                                                  + "    AND na.classification = :classification "
+                                                                                                  + "    AND na.classifier= :classifier "),
+               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from UnitAttributeAuthorization auth "
+                                                                                    + "WHERE auth.networkAuthorization.classification = :classification "
+                                                                                    + "AND auth.networkAuthorization.classifier = :classifier "
+                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
                                                      + "FROM UnitNetwork rn "
@@ -84,16 +101,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "unit", schema = "ruleform")
 public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
-    public static final String FIND_BY_NAME                             = "unit.findByName";
-    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS = "unit"
-                                                                          + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES         = "unit"
-                                                                          + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String GET_CHILD                                = "unit"
-                                                                          + GET_CHILDREN_SUFFIX;
-    public static final String GET_CHILD_RULES_BY_RELATIONSHIP          = "unit"
-                                                                          + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    private static final long  serialVersionUID                         = 1L;
+    public static final String FIND_BY_NAME                                           = "unit.findByName";
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "unit"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "unit"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "unit"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String GET_CHILD                                              = "unit"
+                                                                                        + GET_CHILDREN_SUFFIX;
+    public static final String GET_CHILD_RULES_BY_RELATIONSHIP                        = "unit"
+                                                                                        + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    private static final long  serialVersionUID                                       = 1L;
 
     private String             abbreviation;
 
@@ -103,7 +122,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
 
     private String             datatype;
 
-    private Integer            enumerated                               = FALSE;
+    private Integer            enumerated                                             = FALSE;
 
     private BigDecimal         max;
 

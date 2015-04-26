@@ -31,8 +31,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
+import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.fasterxml.jackson.annotation.JsonGetter;
 
 /**
@@ -44,13 +47,18 @@ import com.fasterxml.jackson.annotation.JsonGetter;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-abstract public class AttributeAuthorization extends Ruleform {
+abstract public class AttributeAuthorization<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
+        extends Ruleform {
 
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_attribute")
     private Attribute         authorizedAttribute;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "authorized_network_attribute")
+    private Attribute         authorizedNetworkAttribute;
 
     @Column(name = "binary_value")
     private byte[]            binaryValue;
@@ -70,7 +78,7 @@ abstract public class AttributeAuthorization extends Ruleform {
     private BigDecimal        numericValue;
 
     @Column(name = "sequence_number")
-    private Integer           sequenceNumber   = 1;
+    private int               sequenceNumber   = 0;
 
     @Column(name = "text_value")
     private String            textValue;
@@ -113,6 +121,10 @@ abstract public class AttributeAuthorization extends Ruleform {
         return authorizedAttribute;
     }
 
+    public Attribute getAuthorizedNetworkAttribute() {
+        return authorizedNetworkAttribute;
+    }
+
     /**
      * @return the binaryValue
      */
@@ -135,6 +147,8 @@ abstract public class AttributeAuthorization extends Ruleform {
     public Integer getIntegerValue() {
         return integerValue;
     }
+
+    abstract public NetworkAuthorization<RuleForm> getNetworkAuthorization();
 
     public BigDecimal getNumericValue() {
         return numericValue;
@@ -178,6 +192,10 @@ abstract public class AttributeAuthorization extends Ruleform {
         authorizedAttribute = productAttributeType3;
     }
 
+    public void setAuthorizedNetworkAttribute(Attribute authorizedNetworkAttribute) {
+        this.authorizedNetworkAttribute = authorizedNetworkAttribute;
+    }
+
     /**
      * @param binaryValue
      *            the binaryValue to set
@@ -201,6 +219,8 @@ abstract public class AttributeAuthorization extends Ruleform {
     public void setIntegerValue(Integer integerValue) {
         this.integerValue = integerValue;
     }
+
+    abstract public void setNetworkAuthorization(NetworkAuthorization<RuleForm> auth);
 
     public void setNumericValue(BigDecimal numericValue) {
         this.numericValue = numericValue;

@@ -27,7 +27,6 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -36,6 +35,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -63,10 +63,13 @@ public class ProductModelImpl
      */
     @Override
     public void authorize(Aspect<Product> aspect, Attribute... attributes) {
+        ProductNetworkAuthorization auth = new ProductNetworkAuthorization(
+                                                                           kernel.getCore());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             ProductAttributeAuthorization authorization = new ProductAttributeAuthorization(
-                                                                                            aspect.getClassification(),
-                                                                                            aspect.getClassifier(),
                                                                                             attribute,
                                                                                             kernel.getCoreModel());
             em.persist(authorization);
@@ -158,11 +161,8 @@ public class ProductModelImpl
     }
 
     @Override
-    protected ProductAttribute create(Product ruleform,
-                                      ClassifiedAttributeAuthorization<Product> authorization,
-                                      Agency updatedBy) {
-        return new ProductAttribute(ruleform,
-                                    authorization.getAuthorizedAttribute(),
-                                    updatedBy);
+    public ProductAttribute create(Product ruleform, Attribute attribute,
+                                   Agency updatedBy) {
+        return new ProductAttribute(ruleform, attribute, updatedBy);
     }
 }

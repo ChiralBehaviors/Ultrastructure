@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.attribute.unit;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,6 +30,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
@@ -51,6 +54,18 @@ public class UnitNetworkAuthorization extends NetworkAuthorization<Unit> {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classifier")
     private Unit              classifier;
+
+    public UnitNetworkAuthorization() {
+        super();
+    }
+
+    public UnitNetworkAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public UnitNetworkAuthorization(UUID id) {
+        super(id);
+    }
 
     @Override
     public Unit getAuthorizedParent() {

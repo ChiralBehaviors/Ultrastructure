@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.event.status;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,6 +30,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
@@ -52,6 +55,18 @@ public class StatusCodeNetworkAuthorization extends
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classifier")
     private StatusCode        classifier;
+
+    public StatusCodeNetworkAuthorization() {
+        super();
+    }
+
+    public StatusCodeNetworkAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public StatusCodeNetworkAuthorization(UUID id) {
+        super(id);
+    }
 
     @Override
     public StatusCode getAuthorizedParent() {

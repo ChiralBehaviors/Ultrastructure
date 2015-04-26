@@ -27,11 +27,11 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -63,12 +63,16 @@ public class LocationModelImpl
      */
     @Override
     public void authorize(Aspect<Location> aspect, Attribute... attributes) {
+        LocationNetworkAuthorization auth = new LocationNetworkAuthorization(
+                                                                             kernel.getCore());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             LocationAttributeAuthorization authorization = new LocationAttributeAuthorization(
-                                                                                              aspect.getClassification(),
-                                                                                              aspect.getClassifier(),
                                                                                               attribute,
                                                                                               kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }
@@ -159,11 +163,8 @@ public class LocationModelImpl
      * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
      */
     @Override
-    protected LocationAttribute create(Location ruleform,
-                                       ClassifiedAttributeAuthorization<Location> authorization,
-                                       Agency updatedBy) {
-        return new LocationAttribute(ruleform,
-                                     authorization.getAuthorizedAttribute(),
-                                     updatedBy);
+    public LocationAttribute create(Location ruleform, Attribute attribute,
+                                    Agency updatedBy) {
+        return new LocationAttribute(ruleform, attribute, updatedBy);
     }
 }

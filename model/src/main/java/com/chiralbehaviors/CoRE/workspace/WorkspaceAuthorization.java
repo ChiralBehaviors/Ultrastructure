@@ -119,15 +119,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "workspace_authorization", schema = "ruleform")
 public class WorkspaceAuthorization extends Ruleform {
-    public static final String  GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
-    public static final String  GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
-    public static final String  GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
-    public static final String  DOES_WORKSPACE_AUTH_EXIST                = "workspaceAuthorization.doesAuthExist";
-
     public static final String  AGENCY                                   = "Agency";
     public static final String  AGENCY_ATTRIBUTE                         = "AgencyAttribute";
     public static final String  AGENCY_ATTRIBUTE_AUTHORIZATION           = "AgencyAttributeAuthorization";
     public static final String  AGENCY_LOCATION                          = "AgencyLocation";
+
     public static final String  AGENCY_LOCATION_ATTRIBUTE                = "AgencyLocationAttribute";
     public static final String  AGENCY_NETWORK                           = "AgencyNetwork";
     public static final String  AGENCY_NETWORK_ATTRIBUTE                 = "AgencyNetworkAttribute";
@@ -140,6 +136,10 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  ATTRIBUTE_NETWORK                        = "AttributeNetwork";
     public static final String  ATTRIBUTE_NETWORK_ATTRIBUTE              = "AttributeNetworkAttribute";
     public static final String  ATTRIBUTE_NETWORK_AUTHORIZATION          = "AttributeNetworkAuthorization";
+    public static final String  DOES_WORKSPACE_AUTH_EXIST                = "workspaceAuthorization.doesAuthExist";
+    public static final String  GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
+    public static final String  GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
+    public static final String  GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
     public static final String  INTERVAL                                 = "Interval";
     public static final String  INTERVAL_ATTRIBUTE                       = "IntervalAttribute";
     public static final String  INTERVAL_NETWORK                         = "IntervalNetwork";
@@ -179,8 +179,8 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  STATUS_CODE_ATTRIBUTE_AUTHORIZATION      = "StatusCodeAttributeAuthorization";
     public static final String  STATUS_CODE_NETWORK                      = "StatusCodeNetwork";
     public static final String  STATUS_CODE_NETWORK_ATTRIBUTE            = "StatusCodeNetworkAttribute";
-    public static final String  STAUTUS_CODE_NETWORK_AUTHORIZATION       = "StatusCodeNetworkAuthorization";
     public static final String  STATUS_CODE_SEQUENCING                   = "StatusCodeSequencing";
+    public static final String  STAUTUS_CODE_NETWORK_AUTHORIZATION       = "StatusCodeNetworkAuthorization";
     public static final String  UNIT                                     = "Unit";
     public static final String  UNIT_ATTRIBUTE                           = "UnitAttribute";
     public static final String  UNIT_ATTRIBUTE_AUTHORIZATION             = "UnitAttributeAuthorization";
@@ -286,16 +286,16 @@ public class WorkspaceAuthorization extends Ruleform {
     private IntervalAttributeAuthorization        intervalAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "interval_network_authorization")
-    private IntervalNetworkAuthorization          intervalNetworkAuthorization;
-
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval_network")
     private IntervalNetwork                       intervalNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval_network_attribute")
     private IntervalNetworkAttribute              intervalNetworkAttribute;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "interval_network_authorization")
+    private IntervalNetworkAuthorization          intervalNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "job")
@@ -404,16 +404,16 @@ public class WorkspaceAuthorization extends Ruleform {
     private RelationshipAttributeAuthorization    relationshipAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "relationship_network_authorization")
-    private RelationshipNetworkAuthorization      relationshipNetworkAuthorization;
-
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship_network")
     private RelationshipNetwork                   relationshipNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship_network_attribute")
     private RelationshipNetworkAttribute          relationshipNetworkAttribute;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "relationship_network_authorization")
+    private RelationshipNetworkAuthorization      relationshipNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
@@ -459,16 +459,16 @@ public class WorkspaceAuthorization extends Ruleform {
     private UnitAttributeAuthorization            unitAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "unit_network_authorization")
-    private UnitNetworkAuthorization              unitNetworkAuthorization;
-
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_network")
     private UnitNetwork                           unitNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "unit_network_attribute")
     private UnitNetworkAttribute                  unitNetworkAttribute;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "unit_network_authorization")
+    private UnitNetworkAuthorization              unitNetworkAuthorization;
 
     public WorkspaceAuthorization() {
         super();
@@ -537,6 +537,10 @@ public class WorkspaceAuthorization extends Ruleform {
         return agencyProduct;
     }
 
+    public AgencyProductAttribute getAgencyProductAttribute() {
+        return agencyProductAttribute;
+    }
+
     @JsonIgnore
     public Attribute getAttribute() {
         return attribute;
@@ -560,6 +564,10 @@ public class WorkspaceAuthorization extends Ruleform {
     @JsonIgnore
     public AttributeNetworkAttribute getAttributeNetworkAttribute() {
         return attributeNetworkAttribute;
+    }
+
+    public AttributeNetworkAuthorization getAttributeNetworkAuthorization() {
+        return attributeNetworkAuthorization;
     }
 
     public Product getDefiningProduct() {
@@ -731,6 +739,10 @@ public class WorkspaceAuthorization extends Ruleform {
         return intervalNetworkAttribute;
     }
 
+    public IntervalNetworkAuthorization getIntervalNetworkAuthorization() {
+        return intervalNetworkAuthorization;
+    }
+
     @JsonIgnore
     public Job getJob() {
         return job;
@@ -825,6 +837,10 @@ public class WorkspaceAuthorization extends Ruleform {
         return productNetworkAttribute;
     }
 
+    public ProductNetworkAuthorization getProductNetworkAuthorization() {
+        return productNetworkAuthorization;
+    }
+
     @JsonIgnore
     public ProductParentSequencingAuthorization getProductParentSequencingAuthorization() {
         return productParentSequencingAuthorization;
@@ -870,6 +886,10 @@ public class WorkspaceAuthorization extends Ruleform {
         return relationshipNetworkAttribute;
     }
 
+    public RelationshipNetworkAuthorization getRelationshipNetworkAuthorization() {
+        return relationshipNetworkAuthorization;
+    }
+
     @JsonGetter
     public Ruleform getRuleform() {
         return getEntity();
@@ -898,6 +918,10 @@ public class WorkspaceAuthorization extends Ruleform {
     @JsonIgnore
     public StatusCodeNetworkAttribute getStatusCodeNetworkAttribute() {
         return statusCodeNetworkAttribute;
+    }
+
+    public StatusCodeNetworkAuthorization getStatusCodeNetworkAuthorization() {
+        return statusCodeNetworkAuthorization;
     }
 
     @JsonIgnore
@@ -932,6 +956,10 @@ public class WorkspaceAuthorization extends Ruleform {
     @JsonIgnore
     public UnitNetworkAttribute getUnitNetworkAttribute() {
         return unitNetworkAttribute;
+    }
+
+    public UnitNetworkAuthorization getUnitNetworkAuthorization() {
+        return unitNetworkAuthorization;
     }
 
     /* (non-Javadoc)
@@ -989,6 +1017,10 @@ public class WorkspaceAuthorization extends Ruleform {
         this.agencyProduct = agencyProduct;
     }
 
+    public void setAgencyProductAttribute(AgencyProductAttribute agencyProductAttribute) {
+        this.agencyProductAttribute = agencyProductAttribute;
+    }
+
     public void setAttribute(Attribute attribute) {
         type = ATTRIBUTE;
         this.attribute = attribute;
@@ -1012,6 +1044,11 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setAttributeNetworkAttribute(AttributeNetworkAttribute attributeNetworkAttribute) {
         type = ATTRIBUTE_NETWORK_ATTRIBUTE;
         this.attributeNetworkAttribute = attributeNetworkAttribute;
+    }
+
+    public void setAttributeNetworkAuthorization(AttributeNetworkAuthorization attributeNetworkAuthorization) {
+        type = ATTRIBUTE_NETWORK_AUTHORIZATION;
+        this.attributeNetworkAuthorization = attributeNetworkAuthorization;
     }
 
     public void setDefiningProduct(Product definingProduct) {
@@ -1245,6 +1282,11 @@ public class WorkspaceAuthorization extends Ruleform {
         this.intervalNetworkAttribute = intervalNetworkAttribute;
     }
 
+    public void setIntervalNetworkAuthorization(IntervalNetworkAuthorization intervalNetworkAuthorization) {
+        type = INTERVAL_NETWORK_AUTHORIZATION;
+        this.intervalNetworkAuthorization = intervalNetworkAuthorization;
+    }
+
     public void setJob(Job job) {
         type = JOB;
         this.job = job;
@@ -1339,6 +1381,11 @@ public class WorkspaceAuthorization extends Ruleform {
         this.productNetworkAttribute = productNetworkAttribute;
     }
 
+    public void setProductNetworkAuthorization(ProductNetworkAuthorization productNetworkAuthorization) {
+        type = PRODUCT_NETWORK_AUTHORIZATION;
+        this.productNetworkAuthorization = productNetworkAuthorization;
+    }
+
     public void setProductParentSequencingAuthorization(ProductParentSequencingAuthorization productParentSequencingAuthorization) {
         type = PRODUCT_PARENT_SEQUENCING_AUTHORIZATION;
         this.productParentSequencingAuthorization = productParentSequencingAuthorization;
@@ -1383,6 +1430,11 @@ public class WorkspaceAuthorization extends Ruleform {
         this.relationshipNetworkAttribute = attribute;
     }
 
+    public void setRelationshipNetworkAuthorization(RelationshipNetworkAuthorization relationshipNetworkAuthorization) {
+        type = RELATIONSHIP_NETWORK_AUTHORIZATION;
+        this.relationshipNetworkAuthorization = relationshipNetworkAuthorization;
+    }
+
     public void setRuleform(Ruleform ruleform) {
         setEntity(ruleform);
     }
@@ -1410,6 +1462,11 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setStatusCodeNetworkAttribute(StatusCodeNetworkAttribute statusCodeNetworkAttribute) {
         type = STATUS_CODE_NETWORK_ATTRIBUTE;
         this.statusCodeNetworkAttribute = statusCodeNetworkAttribute;
+    }
+
+    public void setStatusCodeNetworkAuthorization(StatusCodeNetworkAuthorization statusCodeNetworkAuthorization) {
+        type = STAUTUS_CODE_NETWORK_AUTHORIZATION;
+        this.statusCodeNetworkAuthorization = statusCodeNetworkAuthorization;
     }
 
     public void setStatusCodeSequencing(StatusCodeSequencing statusCodeSequencing) {
@@ -1442,60 +1499,9 @@ public class WorkspaceAuthorization extends Ruleform {
         this.unitNetworkAttribute = unitNetworkAttribute;
     }
 
-    public AttributeNetworkAuthorization getAttributeNetworkAuthorization() {
-        return attributeNetworkAuthorization;
-    }
-
-    public void setAttributeNetworkAuthorization(AttributeNetworkAuthorization attributeNetworkAuthorization) {
-        this.attributeNetworkAuthorization = attributeNetworkAuthorization;
-    }
-
-    public IntervalNetworkAuthorization getIntervalNetworkAuthorization() {
-        return intervalNetworkAuthorization;
-    }
-
-    public void setIntervalNetworkAuthorization(IntervalNetworkAuthorization intervalNetworkAuthorization) {
-        this.intervalNetworkAuthorization = intervalNetworkAuthorization;
-    }
-
-    public ProductNetworkAuthorization getProductNetworkAuthorization() {
-        return productNetworkAuthorization;
-    }
-
-    public void setProductNetworkAuthorization(ProductNetworkAuthorization productNetworkAuthorization) {
-        this.productNetworkAuthorization = productNetworkAuthorization;
-    }
-
-    public RelationshipNetworkAuthorization getRelationshipNetworkAuthorization() {
-        return relationshipNetworkAuthorization;
-    }
-
-    public void setRelationshipNetworkAuthorization(RelationshipNetworkAuthorization relationshipNetworkAuthorization) {
-        this.relationshipNetworkAuthorization = relationshipNetworkAuthorization;
-    }
-
-    public StatusCodeNetworkAuthorization getStatusCodeNetworkAuthorization() {
-        return statusCodeNetworkAuthorization;
-    }
-
-    public void setStatusCodeNetworkAuthorization(StatusCodeNetworkAuthorization statusCodeNetworkAuthorization) {
-        this.statusCodeNetworkAuthorization = statusCodeNetworkAuthorization;
-    }
-
-    public UnitNetworkAuthorization getUnitNetworkAuthorization() {
-        return unitNetworkAuthorization;
-    }
-
     public void setUnitNetworkAuthorization(UnitNetworkAuthorization unitNetworkAuthorization) {
+        type = UNIT_NETWORK_AUTHORIZATION;
         this.unitNetworkAuthorization = unitNetworkAuthorization;
-    }
-
-    public AgencyProductAttribute getAgencyProductAttribute() {
-        return agencyProductAttribute;
-    }
-
-    public void setAgencyProductAttribute(AgencyProductAttribute agencyProductAttribute) {
-        this.agencyProductAttribute = agencyProductAttribute;
     }
 
 }

@@ -20,7 +20,11 @@
 
 package com.chiralbehaviors.phantasm;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 
@@ -89,14 +93,19 @@ public class TestPhantasm extends AbstractModelTest {
         assertNull(thing1.getPercentage());
         thing1.setPercentage(BigDecimal.ONE);
         assertEquals(BigDecimal.ONE, thing1.getPercentage());
+        String[] aliases = new String[] { "foo", "bar", "baz" };
+        thing1.setAliases(aliases);
+        em.flush();
+        String[] alsoKnownAs = thing1.getAliases();
+        assertNotNull(alsoKnownAs);
+        assertArrayEquals(aliases, alsoKnownAs);
 
         MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
                                                                  "myartifact",
                                                                  "artifact",
                                                                  kernel.getCore());
         artifact.setType("jar");
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.flush();
         artifact.setType("invalid");
         try {
             em.getTransaction().commit();

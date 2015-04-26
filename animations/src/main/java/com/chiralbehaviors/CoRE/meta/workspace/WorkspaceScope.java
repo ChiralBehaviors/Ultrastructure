@@ -91,10 +91,11 @@ public class WorkspaceScope {
      * @param name
      * @return the value associated with the key in the named scope, or null
      */
-    public Ruleform lookup(String namespace, String name) {
+    @SuppressWarnings("unchecked")
+    public <T extends Ruleform> T lookup(String namespace, String name) {
         // null and empty string is alias for null scoped lookup in the workspace
         if (namespace == null || namespace.length() == 0) {
-            return lookup(name);
+            return (T) lookup(name);
         }
         Workspace workspace = imports.get(namespace);
         if (workspace == null) {

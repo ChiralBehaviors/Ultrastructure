@@ -122,7 +122,7 @@ public class MetaProtocol extends Ruleform {
     private Relationship       requesterAttribute;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber   = 1;
+    private int                sequenceNumber   = 0;
 
     /**
      * The service factor for this rule

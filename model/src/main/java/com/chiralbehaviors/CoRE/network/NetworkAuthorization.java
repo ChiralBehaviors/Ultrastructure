@@ -70,7 +70,7 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
     private Agency            groupingAgency;
 
     @Column(name = "sequence_number")
-    private Integer           sequenceNumber;
+    private int               sequenceNumber   = 0;
 
     public NetworkAuthorization() {
         super();

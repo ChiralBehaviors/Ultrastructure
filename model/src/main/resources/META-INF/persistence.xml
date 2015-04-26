@@ -24,7 +24,6 @@
         <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.Attribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeValue</class>

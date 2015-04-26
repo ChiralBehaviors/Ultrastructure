@@ -27,7 +27,6 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
@@ -36,6 +35,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
 
 /**
  * @author hhildebrand
@@ -62,12 +62,16 @@ public class RelationshipModelImpl
      */
     @Override
     public void authorize(Aspect<Relationship> aspect, Attribute... attributes) {
+        RelationshipNetworkAuthorization auth = new RelationshipNetworkAuthorization(
+                                                                                     kernel.getCore());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
+        em.persist(auth);
         for (Attribute attribute : attributes) {
             RelationshipAttributeAuthorization authorization = new RelationshipAttributeAuthorization(
-                                                                                                      aspect.getClassification(),
-                                                                                                      aspect.getClassifier(),
                                                                                                       attribute,
                                                                                                       kernel.getCoreModel());
+            authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
     }
@@ -184,12 +188,8 @@ public class RelationshipModelImpl
     }
 
     @Override
-    protected RelationshipAttribute create(Relationship ruleform,
-                                           ClassifiedAttributeAuthorization<Relationship> authorization,
-                                           Agency updatedBy) {
-        return new RelationshipAttribute(
-                                         ruleform,
-                                         authorization.getAuthorizedAttribute(),
-                                         updatedBy);
+    public RelationshipAttribute create(Relationship ruleform,
+                                        Attribute attribute, Agency updatedBy) {
+        return new RelationshipAttribute(ruleform, attribute, updatedBy);
     }
 }

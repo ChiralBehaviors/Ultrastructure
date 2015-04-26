@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,79 +176,77 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void processGetter(Attribute attribute, Method method) {
-        if (method.getParameterCount() != 0) {
-            throw new IllegalStateException(
-                                            String.format("getter method has arguments %s",
-                                                          method.toGenericString()));
-        }
-        Key value = attribute.value();
-        if (List.class.isAssignableFrom(method.getReturnType())) {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(value.namespace(),
-                                                                                                    value.name()));
-        } else {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(value.namespace(),
-                                                                                                   value.name()));
-        }
+        processGetter(attribute.value().namespace(), attribute.value().name(),
+                      method);
     }
 
     private void processGetter(Method method) {
+        processGetter(null,
+                      method.getName().substring(GET.length(),
+                                                 method.getName().length()),
+                      method);
+    }
+
+    private void processGetter(String namespace, String name, Method method) {
         if (method.getParameterCount() != 0) {
             throw new IllegalStateException(
                                             String.format("getter method has arguments %s",
                                                           method.toGenericString()));
         }
-        String key = method.getName().substring(GET.length(),
-                                                method.getName().length());
         if (method.getReturnType().isArray()) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValues(null,
-                                                                                                    key));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeArray(namespace,
+                                                                                                   name,
+                                                                                                   method.getReturnType().getComponentType()));
+        } else if (Map.class.isAssignableFrom(method.getReturnType())) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeMap(namespace,
+                                                                                                 name,
+                                                                                                 method.getReturnType()));
+        } else if (List.class.isAssignableFrom(method.getReturnType())) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> Arrays.asList(state.getAttributeArray(namespace,
+                                                                                                                 name,
+                                                                                                                 method.getReturnType().getComponentType())));
         } else {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(null,
-                                                                                                   key));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(namespace,
+                                                                                                   name));
         }
     }
 
     private void processSetter(Attribute attribute, Method method) {
-        if (method.getParameterCount() != 1) {
-            throw new IllegalStateException(
-                                            String.format("setter method does not have a singular argument %s",
-                                                          method.toGenericString()));
-        }
-        Key value = attribute.value();
-        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(value.namespace(),
-                                                                                                    value.name(),
-                                                                                                    (List<?>) arguments[0]));
-        } else {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(value.namespace(),
-                                                                                                   value.name(),
-                                                                                                   arguments[0]));
-        }
+        processSetter(attribute.value().namespace(), attribute.value().name(),
+                      method);
     }
 
     private void processSetter(Method method) {
+        processSetter(null,
+                      method.getName().substring(SET.length(),
+                                                 method.getName().length()),
+                      method);
+    }
+
+    private void processSetter(String namespace, String name, Method method) {
         if (method.getParameterCount() != 1) {
             throw new IllegalStateException(
                                             String.format("setter method does not have a singular argument %s",
                                                           method.toGenericString()));
         }
-        String key = method.getName().substring(SET.length(),
-                                                method.getName().length());
-        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+        if (method.getParameterTypes()[0].isArray()) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValues(null,
-                                                                                                    key,
-                                                                                                    (List<?>) arguments[0]));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeArray(namespace,
+                                                                                                   name,
+                                                                                                   (Object[]) arguments[0]));
+        } else if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeArray(namespace,
+                                                                                                   name,
+                                                                                                   ((List<?>) arguments[0]).toArray()));
         } else {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(null,
-                                                                                                   key,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(namespace,
+                                                                                                   name,
                                                                                                    arguments[0]));
         }
     }

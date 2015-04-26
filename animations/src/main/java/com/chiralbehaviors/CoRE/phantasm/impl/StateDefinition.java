@@ -34,13 +34,15 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.annotations.Aspect;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.annotations.Edge;
+import com.chiralbehaviors.annotations.Facet;
 import com.chiralbehaviors.annotations.Key;
-import com.chiralbehaviors.annotations.Relationship;
 import com.chiralbehaviors.annotations.State;
 
 /**
@@ -51,7 +53,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private static final String                          GET     = "get";
     private static final String                          SET     = "set";
-    private final List<Aspect>                           aspects = new ArrayList<Aspect>();
+    private final List<Facet>                            aspects = new ArrayList<Facet>();
     private final Class<Phantasm<RuleForm>>              stateInterface;
     private final UUID                                   workspace;
     protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
@@ -67,10 +69,10 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     public void constrain(Model model, RuleForm ruleform) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
         WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
-        List<Aspect> failures = new ArrayList<>();
-        for (Aspect constraint : aspects) {
+        List<Facet> failures = new ArrayList<>();
+        for (Facet constraint : aspects) {
             if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier()),
-                                        (com.chiralbehaviors.CoRE.relationship.Relationship) scope.lookup(constraint.classification()),
+                                        (Relationship) scope.lookup(constraint.classification()),
                                         ruleform)) {
                 failures.add(constraint);
             }
@@ -101,13 +103,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> getAspects(Model model) {
+    public List<Aspect<RuleForm>> getAspects(Model model) {
         WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
-        List<com.chiralbehaviors.CoRE.network.Aspect<RuleForm>> specs = new ArrayList<>();
-        for (Aspect aspect : aspects) {
-            specs.add(new com.chiralbehaviors.CoRE.network.Aspect<RuleForm>(
-                                                                            (com.chiralbehaviors.CoRE.relationship.Relationship) scope.lookup(aspect.classification()),
-                                                                            (RuleForm) scope.lookup(aspect.classifier())));
+        List<Aspect<RuleForm>> specs = new ArrayList<>();
+        for (Facet aspect : aspects) {
+            specs.add(new Aspect<RuleForm>(
+                                           (Relationship) scope.lookup(aspect.classification()),
+                                           (RuleForm) scope.lookup(aspect.classifier())));
         }
         return specs;
     }
@@ -118,7 +120,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private void construct() {
         State state = stateInterface.getAnnotation(State.class);
-        for (Aspect aspect : state.facets()) {
+        for (Facet aspect : state.facets()) {
             aspects.add(aspect);
         }
         process(stateInterface);
@@ -149,8 +151,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             || declaringClass.equals(ScopedPhantasm.class)) {
             return;
         }
-        if (method.getAnnotation(Relationship.class) != null) {
-            process(method.getAnnotation(Relationship.class), method);
+        if (method.getAnnotation(Edge.class) != null) {
+            process(method.getAnnotation(Edge.class), method);
         } else if (method.getAnnotation(Key.class) != null) {
             process(method.getAnnotation(Key.class), method);
         } else {
@@ -158,7 +160,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    private void process(Relationship annotation, Method method) {
+    private void process(Edge annotation, Method method) {
         if (List.class.isAssignableFrom(method.getReturnType())) {
             processGetList(annotation, method);
         } else {
@@ -171,7 +173,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
      * @param method
      * @return
      */
-    private void processGetList(Relationship annotation, Method method) {
+    private void processGetList(Edge annotation, Method method) {
     }
 
     private void processGetter(Key attribute, Method method) {
@@ -249,7 +251,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     @SuppressWarnings("unchecked")
-    private void processSingular(Relationship annotation, Method method) {
+    private void processSingular(Edge annotation, Method method) {
         Key value = annotation.value();
         if (method.getReturnType().equals(Void.TYPE)) {
             if (method.getParameterCount() != 1) {

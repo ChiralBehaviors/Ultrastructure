@@ -20,8 +20,7 @@
 
 package com.chiralbehaviors.annotations;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -33,10 +32,8 @@ import java.lang.annotation.Target;
  *
  */
 @Documented
-@Target({ TYPE, FIELD })
+@Target(METHOD)
 @Retention(RUNTIME)
-public @interface Aspect {
-    Key classification();
-
-    Key classifier();
+public @interface Edge {
+    Key value();
 }

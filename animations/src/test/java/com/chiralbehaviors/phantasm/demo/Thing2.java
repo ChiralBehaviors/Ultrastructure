@@ -24,26 +24,26 @@ import java.util.List;
 
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.annotations.Aspect;
+import com.chiralbehaviors.annotations.Facet;
 import com.chiralbehaviors.annotations.Immediate;
 import com.chiralbehaviors.annotations.Key;
-import com.chiralbehaviors.annotations.Relationship;
+import com.chiralbehaviors.annotations.Edge;
 import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing2")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
+@State(facets = { @Facet(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing2")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing2 extends Phantasm<Product> {
     // 
-    @Relationship(@Key(name = "thing2Of"))
+    @Edge(@Key(name = "thing2Of"))
     void add(Thing3 thing3);
 
-    @Relationship(@Key(name = "inThing1"))
+    @Edge(@Key(name = "inThing1"))
     Thing1 getThing1();
 
     @Immediate
-    @Relationship(@Key(name = "thing2Of"))
+    @Edge(@Key(name = "thing2Of"))
     List<Thing3> getThing3s();
 }

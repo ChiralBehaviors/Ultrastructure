@@ -78,7 +78,7 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
     private BigDecimal        numericValue;
 
     @Column(name = "sequence_number")
-    private Integer           sequenceNumber   = 1;
+    private int               sequenceNumber   = 0;
 
     @Column(name = "text_value")
     private String            textValue;

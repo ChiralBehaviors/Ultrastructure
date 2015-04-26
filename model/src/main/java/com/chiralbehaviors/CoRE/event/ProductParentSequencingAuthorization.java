@@ -75,7 +75,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     private Integer            replaceProduct      = FALSE;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber      = 1;
+    private int                sequenceNumber      = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")

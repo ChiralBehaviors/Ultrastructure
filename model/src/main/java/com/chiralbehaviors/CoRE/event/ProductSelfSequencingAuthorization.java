@@ -64,7 +64,7 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
     private static final long  serialVersionUID = 1L;
 
     @Column(name = "sequence_number")
-    private Integer            sequenceNumber   = 1;
+    private int                sequenceNumber   = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.attribute;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,6 +30,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
@@ -52,6 +55,18 @@ public class AttributeNetworkAuthorization extends
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classifier")
     private Attribute         classifier;
+
+    public AttributeNetworkAuthorization() {
+        super();
+    }
+
+    public AttributeNetworkAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public AttributeNetworkAuthorization(UUID id) {
+        super(id);
+    }
 
     @Override
     public Attribute getAuthorizedParent() {

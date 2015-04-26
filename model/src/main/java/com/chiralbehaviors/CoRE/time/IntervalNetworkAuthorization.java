@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.time;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,6 +30,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
@@ -52,6 +55,18 @@ public class IntervalNetworkAuthorization extends
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classifier")
     private Interval          classifier;
+
+    public IntervalNetworkAuthorization() {
+        super();
+    }
+
+    public IntervalNetworkAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public IntervalNetworkAuthorization(UUID id) {
+        super(id);
+    }
 
     @Override
     public Interval getAuthorizedParent() {

@@ -35,10 +35,12 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
 import com.chiralbehaviors.CoRE.event.MetaProtocol;
 import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
@@ -48,10 +50,12 @@ import com.chiralbehaviors.CoRE.event.Protocol;
 import com.chiralbehaviors.CoRE.event.status.StatusCode;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
@@ -60,12 +64,15 @@ import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
+import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeValueContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
@@ -149,10 +156,15 @@ public class WorkspaceImporter {
     private void classifyAttributeMetaAttributes() {
         for (ClassifiedAttributeContext classified : wsp.getAttributeAttributeClassifications()) {
             AttributeMetaAttributeAuthorization auth = new AttributeMetaAttributeAuthorization(
-                                                                                               resolve(classified.classification),
-                                                                                               resolve(classified.classifier),
                                                                                                resolve(classified.authorized),
                                                                                                model.getKernel().getCore());
+            AttributeNetworkAuthorization authorization = new AttributeNetworkAuthorization(
+                                                                                            model.getKernel().getCore());
+            authorization.setClassification(resolve(classified.classification));
+            authorization.setClassifier(resolve(classified.classifier));
+            auth.setNetworkAuthorization(authorization);
+            model.getEntityManager().persist(authorization);
+            workspace.add(authorization);
             model.getEntityManager().persist(auth);
             workspace.add(auth);
         }
@@ -161,10 +173,15 @@ public class WorkspaceImporter {
     private void classifyIntervalAttributes() {
         for (ClassifiedAttributeContext classified : wsp.getIntervalAttributeClassifications()) {
             IntervalAttributeAuthorization auth = new IntervalAttributeAuthorization(
-                                                                                     resolve(classified.classification),
-                                                                                     resolve(classified.classifier),
                                                                                      resolve(classified.authorized),
                                                                                      model.getKernel().getCore());
+            IntervalNetworkAuthorization authorization = new IntervalNetworkAuthorization(
+                                                                                          model.getKernel().getCore());
+            authorization.setClassification(resolve(classified.classification));
+            authorization.setClassifier(resolve(classified.classifier));
+            auth.setNetworkAuthorization(authorization);
+            model.getEntityManager().persist(authorization);
+            workspace.add(authorization);
             model.getEntityManager().persist(auth);
             workspace.add(auth);
         }
@@ -173,10 +190,15 @@ public class WorkspaceImporter {
     private void classifyLocationAttributes() {
         for (ClassifiedAttributeContext classified : wsp.getLocationAttributeClassifications()) {
             LocationAttributeAuthorization auth = new LocationAttributeAuthorization(
-                                                                                     resolve(classified.classification),
-                                                                                     resolve(classified.classifier),
                                                                                      resolve(classified.authorized),
                                                                                      model.getKernel().getCore());
+            LocationNetworkAuthorization authorization = new LocationNetworkAuthorization(
+                                                                                          model.getKernel().getCore());
+            authorization.setClassification(resolve(classified.classification));
+            authorization.setClassifier(resolve(classified.classifier));
+            auth.setNetworkAuthorization(authorization);
+            model.getEntityManager().persist(authorization);
+            workspace.add(authorization);
             model.getEntityManager().persist(auth);
             workspace.add(auth);
         }
@@ -185,10 +207,15 @@ public class WorkspaceImporter {
     private void classifyProductAttributes() {
         for (ClassifiedAttributeContext classified : wsp.getProductAttributeClassifications()) {
             ProductAttributeAuthorization auth = new ProductAttributeAuthorization(
-                                                                                   resolve(classified.classification),
-                                                                                   resolve(classified.classifier),
                                                                                    resolve(classified.authorized),
                                                                                    model.getKernel().getCore());
+            ProductNetworkAuthorization authorization = new ProductNetworkAuthorization(
+                                                                                        model.getKernel().getCore());
+            authorization.setClassification(resolve(classified.classification));
+            authorization.setClassifier(resolve(classified.classifier));
+            auth.setNetworkAuthorization(authorization);
+            model.getEntityManager().persist(authorization);
+            workspace.add(authorization);
             model.getEntityManager().persist(auth);
             workspace.add(auth);
         }
@@ -197,10 +224,15 @@ public class WorkspaceImporter {
     private void classifyRelationshipAttributes() {
         for (ClassifiedAttributeContext classified : wsp.getRelationshipAttributeClassifications()) {
             RelationshipAttributeAuthorization auth = new RelationshipAttributeAuthorization(
-                                                                                             resolve(classified.classification),
-                                                                                             resolve(classified.classifier),
                                                                                              resolve(classified.authorized),
                                                                                              model.getKernel().getCore());
+            RelationshipNetworkAuthorization authorization = new RelationshipNetworkAuthorization(
+                                                                                                  model.getKernel().getCore());
+            authorization.setClassification(resolve(classified.classification));
+            authorization.setClassifier(resolve(classified.classifier));
+            auth.setNetworkAuthorization(authorization);
+            model.getEntityManager().persist(authorization);
+            workspace.add(authorization);
             model.getEntityManager().persist(auth);
             workspace.add(auth);
         }
@@ -209,10 +241,15 @@ public class WorkspaceImporter {
     private void classifyStatusCodeAttributes() {
         for (ClassifiedAttributeContext classified : wsp.getStatusCodeAttributeClassifications()) {
             StatusCodeAttributeAuthorization auth = new StatusCodeAttributeAuthorization(
-                                                                                         resolve(classified.classification),
-                                                                                         resolve(classified.classifier),
                                                                                          resolve(classified.authorized),
                                                                                          model.getKernel().getCore());
+            StatusCodeNetworkAuthorization authorization = new StatusCodeNetworkAuthorization(
+                                                                                              model.getKernel().getCore());
+            authorization.setClassification(resolve(classified.classification));
+            authorization.setClassifier(resolve(classified.classifier));
+            auth.setNetworkAuthorization(authorization);
+            model.getEntityManager().persist(authorization);
+            workspace.add(authorization);
             model.getEntityManager().persist(auth);
             workspace.add(auth);
         }
@@ -221,10 +258,15 @@ public class WorkspaceImporter {
     private void classifyUnitAttributes() {
         for (ClassifiedAttributeContext classified : wsp.getStatusCodeAttributeClassifications()) {
             UnitAttributeAuthorization auth = new UnitAttributeAuthorization(
-                                                                             resolve(classified.classification),
-                                                                             resolve(classified.classifier),
                                                                              resolve(classified.authorized),
                                                                              model.getKernel().getCore());
+            UnitNetworkAuthorization authorization = new UnitNetworkAuthorization(
+                                                                                  model.getKernel().getCore());
+            authorization.setClassification(resolve(classified.classification));
+            authorization.setClassifier(resolve(classified.classifier));
+            auth.setNetworkAuthorization(authorization);
+            model.getEntityManager().persist(authorization);
+            workspace.add(authorization);
             model.getEntityManager().persist(auth);
             workspace.add(auth);
         }

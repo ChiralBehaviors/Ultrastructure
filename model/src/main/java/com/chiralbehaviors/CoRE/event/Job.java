@@ -185,7 +185,7 @@ public class Job extends AbstractProtocol {
     private Protocol           protocol;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber                         = 1;
+    private int                sequenceNumber                         = 0;
 
     /**
      * This job's status

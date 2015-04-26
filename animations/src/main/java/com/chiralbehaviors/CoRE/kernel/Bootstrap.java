@@ -426,20 +426,24 @@ public class Bootstrap {
                  kernelWorkspace);
         AgencyNetworkAuthorization loginAuthNet = new AgencyNetworkAuthorization(
                                                                                  core);
-        loginAuthNet.setAuthorizedRelationship(find(WellKnownRelationship.IS_A));
-        loginAuthNet.setAuthorizedParent(find(WellKnownAgency.CORE_USER));
+        loginAuthNet.setClassification(find(WellKnownRelationship.IS_A));
+        loginAuthNet.setClassifier(find(WellKnownAgency.CORE_USER));
         WorkspaceAuthorization loginAuthNetAuth = new WorkspaceAuthorization(
                                                                              loginAuthNet,
                                                                              workspace,
                                                                              core);
         em.persist(loginAuthNetAuth);
+
         AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(
                                                                                   find(WellKnownAttribute.LOGIN),
                                                                                   core);
+        loginAuth.setNetworkAuthorization(loginAuthNet);
         populate("LoginAuth", loginAuth, core, kernelWorkspace);
         AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(
                                                                                          find(WellKnownAttribute.PASSWORD_HASH),
                                                                                          core);
+        passwordHashAuth.setNetworkAuthorization(loginAuthNet);
+
         populate("PasswordHashAuth", passwordHashAuth, core, kernelWorkspace);
         AgencyNetwork edge = new AgencyNetwork(
                                                find(WellKnownAgency.SUPER_USER),

@@ -145,7 +145,7 @@ public class Protocol extends AbstractProtocol {
     private String             name;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber   = 1;
+    private int                sequenceNumber   = 0;
 
     public Protocol() {
     }

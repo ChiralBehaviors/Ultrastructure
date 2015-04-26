@@ -23,7 +23,6 @@ package com.chiralbehaviors.phantasm.demo;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.annotations.Aspect;
-import com.chiralbehaviors.annotations.Attribute;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.State;
 
@@ -39,7 +38,7 @@ public interface MavenArtifact extends Phantasm<Location> {
 
     String getGroupId();
 
-    @Attribute(@Key(name = "type"))
+    @Key(name = "type")
     String getType();
 
     String getVersion();
@@ -50,7 +49,7 @@ public interface MavenArtifact extends Phantasm<Location> {
 
     void setGroupId(String groupId);
 
-    @Attribute(@Key(name = "type"))
+    @Key(name = "type")
     void setType(String type);
 
     void setVersion(String version);

@@ -28,7 +28,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.annotations.Aspect;
-import com.chiralbehaviors.annotations.Attribute;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.Relationship;
 import com.chiralbehaviors.annotations.State;
@@ -51,7 +50,7 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     }
 
     // array attributes of the ruleform
-    @Attribute(@Key(name = "aliases"))
+    @Key(name = "aliases")
     String[] getAliases();
 
     // Singular product-location authorization 
@@ -59,7 +58,7 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     MavenArtifact getArtifact();
 
     // product attribute that has a non defaulted workspace name
-    @Attribute(@Key(name = "discount"))
+    @Key(name = "discount")
     BigDecimal getPercentage();
 
     // mapped attributes of the ruleform
@@ -80,14 +79,14 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     }
 
     // array attributes of the ruleform
-    @Attribute(@Key(name = "aliases"))
+    @Key(name = "aliases")
     void setAliases(String[] aliases);
 
     // Singular product-location authorization 
     @Relationship(@Key(name = "derivedFrom"))
     void setArtifact(MavenArtifact artifact);
 
-    @Attribute(@Key(name = "discount"))
+    @Key(name = "discount")
     void setPercentage(BigDecimal discount);
 
     @Relationship(@Key(name = "thing1Of"))

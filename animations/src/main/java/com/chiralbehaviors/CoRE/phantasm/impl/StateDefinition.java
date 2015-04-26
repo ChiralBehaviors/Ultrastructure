@@ -39,7 +39,6 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.annotations.Aspect;
-import com.chiralbehaviors.annotations.Attribute;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.Relationship;
 import com.chiralbehaviors.annotations.State;
@@ -128,7 +127,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    private void process(Attribute annotation, Method method) {
+    private void process(Key annotation, Method method) {
         if (method.getName().startsWith(GET)) {
             processGetter(annotation, method);
         } else if (method.getName().startsWith(SET)) {
@@ -152,8 +151,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
         if (method.getAnnotation(Relationship.class) != null) {
             process(method.getAnnotation(Relationship.class), method);
-        } else if (method.getAnnotation(Attribute.class) != null) {
-            process(method.getAnnotation(Attribute.class), method);
+        } else if (method.getAnnotation(Key.class) != null) {
+            process(method.getAnnotation(Key.class), method);
         } else {
             processUnknown(method);
         }
@@ -175,9 +174,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     private void processGetList(Relationship annotation, Method method) {
     }
 
-    private void processGetter(Attribute attribute, Method method) {
-        processGetter(attribute.value().namespace(), attribute.value().name(),
-                      method);
+    private void processGetter(Key attribute, Method method) {
+        processGetter(attribute.namespace(), attribute.name(), method);
     }
 
     private void processGetter(Method method) {
@@ -215,9 +213,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    private void processSetter(Attribute attribute, Method method) {
-        processSetter(attribute.value().namespace(), attribute.value().name(),
-                      method);
+    private void processSetter(Key attribute, Method method) {
+        processSetter(attribute.namespace(), attribute.name(), method);
     }
 
     private void processSetter(Method method) {

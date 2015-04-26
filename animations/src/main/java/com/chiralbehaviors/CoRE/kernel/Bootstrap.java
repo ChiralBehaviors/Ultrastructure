@@ -134,7 +134,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownAttribute wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, value_type, version) VALUES (?, ?, ?, ?, ?, 1)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, value_type, keyed, indexed, version) VALUES (?, ?, ?, ?, ?, 0, 0, 1)",
                                                                         wko.tableName()));
         try {
             s.setObject(1, wko.id());

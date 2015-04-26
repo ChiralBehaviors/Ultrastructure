@@ -282,11 +282,6 @@ public class Relationship extends
         return WellKnownRelationship.COPY.id();
     }
 
-    @JsonGetter
-    public Relationship getInverse() {
-        return inverse;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -445,6 +440,11 @@ public class Relationship extends
     @Override
     public <A extends AttributeValue<Relationship>> void setAttributes(Set<A> attributes) {
         this.attributes = (Set<RelationshipAttribute>) attributes;
+    }
+
+    @JsonGetter
+    public Relationship getInverse() {
+        return inverse;
     }
 
     public void setInverse(Relationship relationship) {

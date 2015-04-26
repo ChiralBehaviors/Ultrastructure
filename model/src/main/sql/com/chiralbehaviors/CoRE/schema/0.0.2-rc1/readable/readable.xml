@@ -40,7 +40,6 @@
     <include relativeToChangelogFile="true" file="views/status_code.xml" />
     <include relativeToChangelogFile="true" file="views/status_code_network.xml" />
     <include relativeToChangelogFile="true" file="views/status_code_sequencing.xml" />
-    <include relativeToChangelogFile="true" file="views/sourcing_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/unit.xml" />
     <include relativeToChangelogFile="true" file="views/unit_attribute.xml" />
     <include relativeToChangelogFile="true" file="views/unit_attribute_authorization.xml" />

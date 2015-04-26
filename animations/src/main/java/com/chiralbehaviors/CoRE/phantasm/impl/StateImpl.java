@@ -164,20 +164,26 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return null;
     }
 
-    private Attribute getAttribute(String s, String key) {
-        return (Attribute) scope.lookup(s, key);
+    private Attribute getAttribute(String namespace, String key) {
+        Attribute attribute = scope.lookup(namespace, key);
+        if (attribute == null) {
+            throw new IllegalStateException(
+                                            String.format("The attribute %s:%s does not exist in the workspace",
+                                                          namespace == null ? ""
+                                                                           : namespace,
+                                                          key));
+        }
+        return attribute;
     }
 
     private Relationship getRelationship(String s, String key) {
         return (Relationship) scope.lookup(s, key);
     }
 
-    private AttributeValue<RuleForm>[] getValueArray(String namespace,
-                                                     String key) {
+    private AttributeValue<RuleForm>[] getValueArray(Attribute attribute) {
         @SuppressWarnings("unchecked")
         List<AttributeValue<RuleForm>> values = (List<AttributeValue<RuleForm>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                                                      getAttribute(namespace,
-                                                                                                                                                   key));
+                                                                                                                                      attribute);
         int max = 0;
         for (AttributeValue<RuleForm> value : values) {
             max = Math.max(max, value.getSequenceNumber() + 1);
@@ -190,15 +196,31 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return returnValue;
     }
 
-    private Map<String, AttributeValue<RuleForm>> getValueMap(String namespace,
-                                                              String key) {
+    private Map<String, AttributeValue<RuleForm>> getValueMap(Attribute attribute) {
         Map<String, AttributeValue<RuleForm>> map = new HashMap<>();
         for (AttributeValue<RuleForm> value : model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                   getAttribute(namespace,
-                                                                                                                key))) {
+                                                                                                   attribute)) {
             map.put(value.getKey(), value);
         }
         return map;
+    }
+
+    private AttributeValue<RuleForm> newAttributeValue(Attribute attribute,
+                                                       int i) {
+        AttributeValue<RuleForm> value = model.getNetworkedModel(ruleform).create(ruleform,
+                                                                                  attribute,
+                                                                                  model.getKernel().getCoreAnimationSoftware());
+        value.setSequenceNumber(i);
+        return value;
+    }
+
+    private void setValue(Attribute attribute, int i,
+                          AttributeValue<RuleForm> existing, Object newValue) {
+        if (existing == null) {
+            existing = newAttributeValue(attribute, i);
+            model.getEntityManager().persist(existing);
+        }
+        existing.setValue(newValue);
     }
 
     private List<Phantasm<? super RuleForm>> wrap(List<RuleForm> queryResult,
@@ -229,7 +251,8 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     }
 
     protected Object[] getAttributeArray(String scope, String key, Class<?> type) {
-        AttributeValue<RuleForm>[] attributeValues = getValueArray(scope, key);
+        AttributeValue<RuleForm>[] attributeValues = getValueArray(getAttribute(scope,
+                                                                                key));
 
         Object[] values = (Object[]) Array.newInstance(type,
                                                        attributeValues.length);
@@ -245,20 +268,12 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
      * @param returnType
      * @return
      */
-    @SuppressWarnings("unchecked")
     protected Map<String, ?> getAttributeMap(String namespace, String key,
                                              Class<?> returnType) {
-        Map<String, ?> map;
-        try {
-            map = (Map<String, ?>) returnType.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalStateException(
-                                            String.format("Cannot create a new instance of %s",
-                                                          returnType.toGenericString()));
-        }
+        Map<String, ?> map = new HashMap<>();
         for (Map.Entry<String, AttributeValue<RuleForm>> entry : getValueMap(
-                                                                             namespace,
-                                                                             key).entrySet()) {
+                                                                             getAttribute(namespace,
+                                                                                          key)).entrySet()) {
             map.put(entry.getKey(), entry.getValue().getValue());
         }
         return map;
@@ -322,15 +337,8 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
 
     protected Object setAttributeArray(String namespace, String key,
                                        Object[] values) {
-        Attribute attribute = scope.lookup(namespace, key);
-        if (attribute == null) {
-            throw new IllegalStateException(
-                                            String.format("The attribute %s:%s does not exist in the workspace",
-                                                          namespace == null ? ""
-                                                                           : namespace,
-                                                          key));
-        }
-        AttributeValue<RuleForm>[] old = getValueArray(namespace, key);
+        Attribute attribute = getAttribute(namespace, key);
+        AttributeValue<RuleForm>[] old = getValueArray(attribute);
         if (values == null) {
             if (old != null) {
                 for (AttributeValue<RuleForm> value : old) {
@@ -365,27 +373,22 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return null;
     }
 
-    private void setValue(Attribute attribute, int i,
-                          AttributeValue<RuleForm> existing, Object newValue) {
-        if (existing == null) {
-            existing = newAttributeValue(attribute, i);
-            model.getEntityManager().persist(existing);
-        }
-        existing.setValue(newValue);
-    }
-
-    private AttributeValue<RuleForm> newAttributeValue(Attribute attribute,
-                                                       int i) {
-        AttributeValue<RuleForm> value = model.getNetworkedModel(ruleform).create(ruleform,
-                                                                                  attribute,
-                                                                                  model.getKernel().getCoreAnimationSoftware());
-        value.setSequenceNumber(i);
-        return value;
-    }
-
     protected Object setAttributeMap(String namespace, String key,
                                      Map<String, Object> values) {
-        // TODO Auto-generated method stub
+        Attribute attribute = getAttribute(namespace, key);
+        Map<String, AttributeValue<RuleForm>> valueMap = getValueMap(attribute);
+        values.keySet().stream().filter(keyName -> !valueMap.containsKey(keyName)).forEach(keyName -> valueMap.remove(keyName));
+        int maxSeq = 0;
+        for (AttributeValue<RuleForm> value : valueMap.values()) {
+            maxSeq = Math.max(maxSeq, value.getSequenceNumber());
+        }
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            AttributeValue<RuleForm> value = valueMap.get(entry.getKey());
+            if (value == null) {
+                value = newAttributeValue(attribute, ++maxSeq);
+            }
+            value.setValue(entry.getValue());
+        }
         return null;
     }
 

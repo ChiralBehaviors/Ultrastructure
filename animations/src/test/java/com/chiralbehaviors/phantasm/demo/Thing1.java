@@ -27,9 +27,9 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.annotations.Edge;
 import com.chiralbehaviors.annotations.Facet;
 import com.chiralbehaviors.annotations.Key;
-import com.chiralbehaviors.annotations.Edge;
 import com.chiralbehaviors.annotations.State;
 
 /**
@@ -62,6 +62,7 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     BigDecimal getPercentage();
 
     // mapped attributes of the ruleform
+    @Key(name = "properties")
     Map<String, String> getProperties();
 
     // Singular child product 
@@ -88,6 +89,10 @@ public interface Thing1 extends ScopedPhantasm<Product> {
 
     @Key(name = "discount")
     void setPercentage(BigDecimal discount);
+
+    // mapped attributes of the ruleform
+    @Key(name = "properties")
+    void setProperties(Map<String, String> props);
 
     @Edge(@Key(name = "thing1Of"))
     void setThing2(Thing2 thing2);

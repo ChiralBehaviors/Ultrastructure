@@ -226,6 +226,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                       method);
     }
 
+    @SuppressWarnings("unchecked")
     private void processSetter(String namespace, String name, Method method) {
         if (method.getParameterCount() != 1) {
             throw new IllegalStateException(
@@ -242,6 +243,11 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeArray(namespace,
                                                                                                    name,
                                                                                                    ((List<?>) arguments[0]).toArray()));
+        } else if (Map.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeMap(namespace,
+                                                                                                 name,
+                                                                                                 ((Map<String, Object>) arguments[0])));
         } else {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(namespace,

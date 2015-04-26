@@ -12,6 +12,7 @@ attributes {
     classifier = "Classifier" "classifier" text;
     groupId = "Group ID" "group identifier" text;
     typeValues = "Type Values" "Valid values for the Type attribute" text;
+    properties = "properties" "a property map" text;
     type = "Type" "type" text
         attribute values {
             typeValues: "jar" 1
@@ -42,6 +43,7 @@ products {
         kernel::IsA.Thing1 aliases
         kernel::IsA.Thing1 URI
         kernel::IsA.Thing1 discount
+        kernel::IsA.Thing1 properties
     }
 }
 relationships {

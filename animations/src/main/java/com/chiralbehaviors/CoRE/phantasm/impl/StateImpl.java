@@ -250,9 +250,15 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         }
     }
 
-    protected Object[] getAttributeArray(String scope, String key, Class<?> type) {
-        AttributeValue<RuleForm>[] attributeValues = getValueArray(getAttribute(scope,
-                                                                                key));
+    protected Object[] getAttributeArray(String namespace, String key,
+                                         Class<?> type) {
+        Attribute attribute = getAttribute(namespace, key);
+        if (!attribute.getIndexed()) {
+            throw new IllegalStateException(
+                                            String.format("Attribute %s:%s is not indexed",
+                                                          namespace, key));
+        }
+        AttributeValue<RuleForm>[] attributeValues = getValueArray(attribute);
 
         Object[] values = (Object[]) Array.newInstance(type,
                                                        attributeValues.length);
@@ -270,10 +276,15 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
      */
     protected Map<String, ?> getAttributeMap(String namespace, String key,
                                              Class<?> returnType) {
+        Attribute attribute = getAttribute(namespace, key);
+        if (!attribute.getKeyed()) {
+            throw new IllegalStateException(
+                                            String.format("Attribute %s:%s is not keyed",
+                                                          namespace, key));
+        }
         Map<String, ?> map = new HashMap<>();
         for (Map.Entry<String, AttributeValue<RuleForm>> entry : getValueMap(
-                                                                             getAttribute(namespace,
-                                                                                          key)).entrySet()) {
+                                                                             attribute).entrySet()) {
             map.put(entry.getKey(), entry.getValue().getValue());
         }
         return map;
@@ -338,6 +349,11 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     protected Object setAttributeArray(String namespace, String key,
                                        Object[] values) {
         Attribute attribute = getAttribute(namespace, key);
+        if (!attribute.getIndexed()) {
+            throw new IllegalStateException(
+                                            String.format("Attribute %s:%s is not indexed",
+                                                          namespace, key));
+        }
         AttributeValue<RuleForm>[] old = getValueArray(attribute);
         if (values == null) {
             if (old != null) {
@@ -376,6 +392,11 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     protected Object setAttributeMap(String namespace, String key,
                                      Map<String, Object> values) {
         Attribute attribute = getAttribute(namespace, key);
+        if (!attribute.getKeyed()) {
+            throw new IllegalStateException(
+                                            String.format("Attribute %s:%s is not keyed",
+                                                          namespace, key));
+        }
         Map<String, AttributeValue<RuleForm>> valueMap = getValueMap(attribute);
         values.keySet().stream().filter(keyName -> !valueMap.containsKey(keyName)).forEach(keyName -> valueMap.remove(keyName));
         int maxSeq = 0;
@@ -386,28 +407,31 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
             AttributeValue<RuleForm> value = valueMap.get(entry.getKey());
             if (value == null) {
                 value = newAttributeValue(attribute, ++maxSeq);
+                model.getEntityManager().persist(value);
+                value.setKey(entry.getKey());
             }
             value.setValue(entry.getValue());
         }
         return null;
     }
 
-    protected Object setAttributeValue(String scope, String key, Object value) {
+    protected Object setAttributeValue(String namespace, String key,
+                                       Object value) {
+        Attribute attribute = getAttribute(namespace, key);
         @SuppressWarnings("unchecked")
         List<AttributeValue<?>> values = (List<AttributeValue<?>>) model.getNetworkedModel(ruleform).getAttributeValues(ruleform,
-                                                                                                                        getAttribute(scope,
-                                                                                                                                     key));
+                                                                                                                        attribute);
         if (values.size() == 0) {
             throw new IllegalArgumentException(
                                                String.format("No such attribute: %s:%s",
-                                                             scope == null ? ""
-                                                                          : scope,
+                                                             namespace == null ? ""
+                                                                              : namespace,
                                                              key));
         } else if (values.size() > 1) {
             throw new IllegalArgumentException(
                                                String.format("Multiple values for attribute: %s:%s",
-                                                             scope == null ? ""
-                                                                          : scope,
+                                                             namespace == null ? ""
+                                                                              : namespace,
                                                              key));
         }
         values.get(0).setValue(value);

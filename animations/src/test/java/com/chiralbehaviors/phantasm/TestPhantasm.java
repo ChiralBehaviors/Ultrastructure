@@ -110,7 +110,8 @@ public class TestPhantasm extends AbstractModelTest {
         thing1.setProperties(properties);
         em.flush();
         Map<String, String> newProps = thing1.getProperties();
-        assertEquals(properties.size(), newProps.size());
+        assertEquals(String.format("got: %s", newProps), properties.size(),
+                     newProps.size());
 
         MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
                                                                  "myartifact",

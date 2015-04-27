@@ -79,41 +79,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         implements
         NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> {
 
-    private static Logger log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
+    private static Logger                          log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
 
-    private static int    MAX_DEDUCTIONS = 1000;
-
-    /**
-     * @param attr
-     */
-    public static void defaultValue(AttributeValue<?> attr) {
-        switch (attr.getAttribute().getValueType()) {
-            case BINARY: {
-                attr.setBinaryValue(null);
-                break;
-            }
-            case BOOLEAN: {
-                attr.setBooleanValue(false);
-                break;
-            }
-            case INTEGER: {
-                attr.setIntegerValue(null);
-                break;
-            }
-            case NUMERIC: {
-                attr.setNumericValue(null);
-                break;
-            }
-            case TEXT: {
-                attr.setTextValue(null);
-                break;
-            }
-            case TIMESTAMP: {
-                attr.setTimestampValue(null);
-                break;
-            }
-        }
-    }
+    private static int                             MAX_DEDUCTIONS = 1000;
 
     private final Class<AttributeType>             attribute;
     private final String                           attributePrefix;
@@ -577,12 +545,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                       kernel.getCoreModel(), kernel.getCoreAnimationSoftware(),
                       em);
         for (AttributeAuth authorization : getAttributeAuthorizations(aspect)) {
-            AttributeType attribute = create(ruleform,
-                                             authorization.getAuthorizedAttribute(),
-                                             updatedBy);
-            attributes.add(attribute);
-            defaultValue(attribute);
-            em.persist(attribute);
+            if (!authorization.getAuthorizedAttribute().getKeyed()
+                && !authorization.getAuthorizedAttribute().getIndexed()) {
+                AttributeType attribute = create(ruleform,
+                                                 authorization.getAuthorizedAttribute(),
+                                                 updatedBy);
+                attributes.add(attribute);
+                attribute.setValue(authorization.getValue());
+                em.persist(attribute);
+            }
         }
         return attributes;
     }

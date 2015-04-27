@@ -194,7 +194,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         Map<String, Product> imports = new HashMap<>();
         for (ProductNetwork link : model.getProductModel().getImmediateChildrenLinks(getDefiningProduct(),
                                                                                      model.getKernel().getImports())) {
-            NetworkAttribute<?> attribute = model.getProductModel().getAttribute(link,
+            NetworkAttribute<?> attribute = model.getProductModel().getAttributeValue(link,
                                                                                  model.getKernel().getNamespaceAttribute());
             if (attribute == null) {
                 throw new IllegalStateException(

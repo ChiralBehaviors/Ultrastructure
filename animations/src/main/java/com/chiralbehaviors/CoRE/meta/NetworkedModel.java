@@ -44,6 +44,9 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  */
 public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>> {
 
+    public abstract AttributeType create(RuleForm ruleform,
+                                         Attribute attribute, Agency updatedBy);
+
     /**
      * Create a new instance with the supplied aspects
      *
@@ -135,11 +138,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
                                                  Aspect<RuleForm> aspect);
 
-    NetworkAttribute<?> getAttribute(Network edge, Attribute attribute);
-
-    NetworkAttribute<?> getAttribute(RuleForm parent, Relationship r,
-                                     RuleForm child, Attribute attribute);
-
     /**
      * Answer the list of attribute authorizations that are classified by the
      * grouping agency
@@ -221,6 +219,14 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
                                                Agency groupingAgency);
+
+    NetworkAttribute<?> getAttributeValue(Network edge, Attribute attribute);
+
+    AttributeValue<RuleForm> getAttributeValue(RuleForm ruleform,
+                                               Attribute attribute);
+
+    NetworkAttribute<?> getAttributeValue(RuleForm parent, Relationship r,
+                                          RuleForm child, Attribute attribute);
 
     /**
      * Answer the child that is connected to the parent via the relationship
@@ -384,7 +390,4 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param child
      */
     void unlink(RuleForm parent, Relationship r, RuleForm child);
-
-    public abstract AttributeType create(RuleForm ruleform,
-                                         Attribute attribute, Agency updatedBy);
 }

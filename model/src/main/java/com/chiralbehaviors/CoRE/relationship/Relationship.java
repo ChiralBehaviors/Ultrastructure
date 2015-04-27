@@ -153,8 +153,6 @@ public class Relationship extends
 
     private String                     operator;
 
-    private Integer                    preferred                                              = FALSE;
-
     public Relationship() {
     }
 
@@ -195,18 +193,6 @@ public class Relationship extends
      */
     public Relationship(String name, String description, Agency updatedBy) {
         super(name, description, updatedBy);
-    }
-
-    /**
-     * @param name
-     * @param description
-     * @param updatedBy
-     * @param preferred
-     */
-    public Relationship(String name, String description, Agency updatedBy,
-                        boolean preferred) {
-        super(name, description, updatedBy);
-        setPreferred(preferred);
     }
 
     /**
@@ -296,11 +282,6 @@ public class Relationship extends
         return WellKnownRelationship.COPY.id();
     }
 
-    @JsonGetter
-    public Relationship getInverse() {
-        return inverse;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -369,10 +350,6 @@ public class Relationship extends
 
     public String getOperator() {
         return operator;
-    }
-
-    public Boolean getPreferred() {
-        return toBoolean(preferred);
     }
 
     /* (non-Javadoc)
@@ -465,6 +442,11 @@ public class Relationship extends
         this.attributes = (Set<RelationshipAttribute>) attributes;
     }
 
+    @JsonGetter
+    public Relationship getInverse() {
+        return inverse;
+    }
+
     public void setInverse(Relationship relationship) {
         inverse = relationship;
         relationship.inverse = this;
@@ -496,9 +478,5 @@ public class Relationship extends
 
     public void setOperator(String operator) {
         this.operator = operator;
-    }
-
-    public void setPreferred(Boolean preferred) {
-        this.preferred = toInteger(preferred);
     }
 }

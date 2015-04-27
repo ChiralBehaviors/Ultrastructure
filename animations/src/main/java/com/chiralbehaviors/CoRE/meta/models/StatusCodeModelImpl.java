@@ -38,7 +38,6 @@ import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
@@ -107,26 +106,6 @@ public class StatusCodeModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
-     */
-    @Override
-    public Facet<StatusCode, StatusCodeAttribute> create(String name,
-                                                         String description,
-                                                         Aspect<StatusCode> aspect,
-                                                         Agency updatedBy) {
-        StatusCode statusCode = new StatusCode(name, description,
-                                               kernel.getCoreModel());
-        em.persist(statusCode);
-        return new Facet<StatusCode, StatusCodeAttribute>(
-                                                          aspect,
-                                                          statusCode,
-                                                          initialize(statusCode,
-                                                                     aspect,
-                                                                     updatedBy)) {
-        };
     }
 
     /*

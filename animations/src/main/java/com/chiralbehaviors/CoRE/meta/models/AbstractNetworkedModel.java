@@ -67,7 +67,6 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
@@ -80,41 +79,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         implements
         NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> {
 
-    private static Logger log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
+    private static Logger                          log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
 
-    private static int    MAX_DEDUCTIONS = 1000;
-
-    /**
-     * @param attr
-     */
-    public static void defaultValue(AttributeValue<?> attr) {
-        switch (attr.getAttribute().getValueType()) {
-            case BINARY: {
-                attr.setBinaryValue(null);
-                break;
-            }
-            case BOOLEAN: {
-                attr.setBooleanValue(false);
-                break;
-            }
-            case INTEGER: {
-                attr.setIntegerValue(null);
-                break;
-            }
-            case NUMERIC: {
-                attr.setNumericValue(null);
-                break;
-            }
-            case TEXT: {
-                attr.setTextValue(null);
-                break;
-            }
-            case TIMESTAMP: {
-                attr.setTimestampValue(null);
-                break;
-            }
-        }
-    }
+    private static int                             MAX_DEDUCTIONS = 1000;
 
     private final Class<AttributeType>             attribute;
     private final String                           attributePrefix;
@@ -171,35 +138,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                         Aspect<RuleForm> aspect) {
         return getAllowedValues(attribute,
                                 getAttributeAuthorizations(aspect, attribute));
-    }
-
-    @Override
-    public NetworkAttribute<?> getAttribute(Network edge, Attribute attribute) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        @SuppressWarnings("unchecked")
-        CriteriaQuery<NetworkAttribute<?>> query = (CriteriaQuery<NetworkAttribute<?>>) cb.createQuery(edge.getAttributeClass());
-        @SuppressWarnings("unchecked")
-        Root<NetworkAttribute<?>> attributeRoot = (Root<NetworkAttribute<?>>) query.from(edge.getAttributeClass());
-        query.select(attributeRoot).where(cb.and(cb.equal(attributeRoot.get("attribute"),
-                                                          attribute),
-                                                 cb.equal(attributeRoot.get("network"),
-                                                          edge)));
-        TypedQuery<NetworkAttribute<?>> q = em.createQuery(query);
-        try {
-            return q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public NetworkAttribute<?> getAttribute(RuleForm parent, Relationship r,
-                                            RuleForm child, Attribute attribute) {
-        Network edge = getImmediateChildLink(parent, r, child);
-        if (edge == null) {
-            return null;
-        }
-        return getAttribute(edge, attribute);
     }
 
     /*
@@ -314,6 +252,53 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
+    public NetworkAttribute<?> getAttributeValue(Network edge,
+                                                 Attribute attribute) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        @SuppressWarnings("unchecked")
+        CriteriaQuery<NetworkAttribute<?>> query = (CriteriaQuery<NetworkAttribute<?>>) cb.createQuery(edge.getAttributeClass());
+        @SuppressWarnings("unchecked")
+        Root<NetworkAttribute<?>> attributeRoot = (Root<NetworkAttribute<?>>) query.from(edge.getAttributeClass());
+        query.select(attributeRoot).where(cb.and(cb.equal(attributeRoot.get("attribute"),
+                                                          attribute),
+                                                 cb.equal(attributeRoot.get("network"),
+                                                          edge)));
+        TypedQuery<NetworkAttribute<?>> q = em.createQuery(query);
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public AttributeValue<RuleForm> getAttributeValue(RuleForm ruleform,
+                                                      Attribute attribute) {
+        List<AttributeType> values = getAttributeValues(ruleform, attribute);
+        if (values.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s has multiple values for %s",
+                                                          attribute, ruleform));
+        }
+        if (values.size() == 0) {
+            return null;
+        }
+        return values.get(0);
+    }
+
+    @Override
+    public NetworkAttribute<?> getAttributeValue(RuleForm parent,
+                                                 Relationship r,
+                                                 RuleForm child,
+                                                 Attribute attribute) {
+        Network edge = getImmediateChildLink(parent, r, child);
+        if (edge == null) {
+            return null;
+        }
+        return getAttributeValue(edge, attribute);
+    }
+
+    @Override
     public List<AttributeType> getAttributeValues(RuleForm ruleform,
                                                   Attribute attribute) {
         TypedQuery<AttributeType> q = em.createNamedQuery(attributePrefix
@@ -365,24 +350,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         q.setParameter("relationship", relationship);
         List<RuleForm> resultList = q.getResultList();
         return resultList;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getFacet(com.chiralbehaviors.CoRE.
-     * ExistentialRuleform, com.chiralbehaviors.CoRE.meta.Aspect)
-     */
-    @Override
-    public Facet<RuleForm, AttributeType> getFacet(RuleForm ruleform,
-                                                   Aspect<RuleForm> aspect) {
-        return new Facet<RuleForm, AttributeType>(
-                                                  aspect,
-                                                  ruleform,
-                                                  getAttributesClassifiedBy(ruleform,
-                                                                            aspect)) {
-        };
     }
 
     @Override
@@ -596,12 +563,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                       kernel.getCoreModel(), kernel.getCoreAnimationSoftware(),
                       em);
         for (AttributeAuth authorization : getAttributeAuthorizations(aspect)) {
-            AttributeType attribute = create(ruleform,
-                                             authorization.getAuthorizedAttribute(),
-                                             updatedBy);
-            attributes.add(attribute);
-            defaultValue(attribute);
-            em.persist(attribute);
+            if (!authorization.getAuthorizedAttribute().getKeyed()
+                && !authorization.getAuthorizedAttribute().getIndexed()) {
+                AttributeType attribute = create(ruleform,
+                                                 authorization.getAuthorizedAttribute(),
+                                                 updatedBy);
+                attributes.add(attribute);
+                attribute.setValue(authorization.getValue());
+                em.persist(attribute);
+            }
         }
         return attributes;
     }
@@ -690,29 +660,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
         link(parent, relationship, child, updatedBy);
 
-    }
-
-    /**
-     * @param parent
-     * @param relationship
-     * @return
-     */
-    protected NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
-                                                         Relationship relationship) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<NetworkRuleform<RuleForm>> query = cb.createQuery(network);
-        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get("parent"),
-                                                        parent),
-                                               cb.equal(networkRoot.get("relationship"),
-                                                        relationship),
-                                               cb.isNull(networkRoot.get("inference"))));
-        TypedQuery<NetworkRuleform<RuleForm>> q = em.createQuery(query);
-        try {
-            return q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
     }
 
     @Override
@@ -927,6 +874,29 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             }
         }
         return allowedValues;
+    }
+
+    /**
+     * @param parent
+     * @param relationship
+     * @return
+     */
+    protected NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
+                                                         Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<NetworkRuleform<RuleForm>> query = cb.createQuery(network);
+        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get("parent"),
+                                                        parent),
+                                               cb.equal(networkRoot.get("relationship"),
+                                                        relationship),
+                                               cb.isNull(networkRoot.get("inference"))));
+        TypedQuery<NetworkRuleform<RuleForm>> q = em.createQuery(query);
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
 }

@@ -34,6 +34,6 @@ import java.lang.annotation.Target;
 @Documented
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface Relationship {
+public @interface Edge {
     Key value();
 }

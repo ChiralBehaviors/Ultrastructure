@@ -27,6 +27,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -100,6 +102,17 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(alsoKnownAs);
         assertArrayEquals(aliases, alsoKnownAs);
 
+        Map<String, String> properties = new HashMap<>();
+        properties.put("foo", "bar");
+        properties.put("baz", "bozo");
+
+        assertEquals(0, thing1.getProperties().size());
+        thing1.setProperties(properties);
+        em.flush();
+        Map<String, String> newProps = thing1.getProperties();
+        assertEquals(String.format("got: %s", newProps), properties.size(),
+                     newProps.size());
+
         MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
                                                                  "myartifact",
                                                                  "artifact",
@@ -108,7 +121,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.flush();
         artifact.setType("invalid");
         try {
-            em.getTransaction().commit();
+            em.flush();
             fail();
         } catch (Exception e) {
         }

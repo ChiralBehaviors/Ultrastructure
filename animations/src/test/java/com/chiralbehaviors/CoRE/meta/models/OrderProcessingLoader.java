@@ -538,22 +538,21 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     public void createRelationships() {
         area = new Relationship("Area",
                                 "A is a member of the economic community B",
-                                core, true);
+                                core);
         em.persist(area);
         areaOf = new Relationship("Area Of", "A is economic community of B",
                                   core, area);
         area.setInverse(areaOf);
         em.persist(areaOf);
 
-        city = new Relationship("City", "A is located in the City B", core,
-                                true);
+        city = new Relationship("City", "A is located in the City B", core);
         em.persist(city);
         cityOf = new Relationship("City Of", "A is the city of B", core, city);
         city.setInverse(cityOf);
         em.persist(cityOf);
 
         customerType = new Relationship("Customer Type",
-                                        "A has customer type of B", core, true);
+                                        "A has customer type of B", core);
         em.persist(customerType);
         customerTypeOf = new Relationship("Customer Type Of",
                                           "A is the customer type of B", core,
@@ -561,15 +560,14 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         customerType.setInverse(customerTypeOf);
         em.persist(customerTypeOf);
 
-        region = new Relationship("Region", "A's general region is B", core,
-                                  true);
+        region = new Relationship("Region", "A's general region is B", core);
         em.persist(region);
         regionOf = new Relationship("Region Of", "A is the region of B", core,
                                     region);
         region.setInverse(regionOf);
         em.persist(regionOf);
 
-        state = new Relationship("State", "The State of A is B", core, true);
+        state = new Relationship("State", "The State of A is B", core);
         em.persist(state);
         stateOf = new Relationship("State Of", "A is the state of B", core,
                                    state);
@@ -578,7 +576,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
         salesTaxStatus = new Relationship("SalesTaxStatus",
                                           "The sales tax status of A is B",
-                                          core, true);
+                                          core);
         em.persist(salesTaxStatus);
         salesTaxStatusOf = new Relationship("SalesTaxStatus Of",
                                             "A is the sales tax status of B",
@@ -589,7 +587,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         storageType = new Relationship(
                                        "StorageType",
                                        "The type of storage required for A is B",
-                                       core, true);
+                                       core);
         em.persist(storageType);
         storageTypeOf = new Relationship("StorageType Of",
                                          "A is the storage type of B", core,
@@ -597,7 +595,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         storageType.setInverse(storageTypeOf);
         em.persist(storageTypeOf);
 
-        street = new Relationship("Street", "The street of A is B", core, true);
+        street = new Relationship("Street", "The street of A is B", core);
         em.persist(street);
         streetOf = new Relationship("Street of", "A is the street of B", core,
                                     street);

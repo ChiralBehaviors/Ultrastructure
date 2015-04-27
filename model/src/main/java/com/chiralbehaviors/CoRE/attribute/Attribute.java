@@ -121,7 +121,10 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
     @JsonIgnore
     private Set<AttributeMetaAttribute> attributes;
 
-    private Integer                     inheritable                                            = FALSE;
+    @Column(name = "indexed")
+    private int                         indexed                                                = FALSE;
+    @Column(name = "keyed")
+    private int                         keyed                                                  = FALSE;
 
     // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore
@@ -282,8 +285,12 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
         return WellKnownAttribute.COPY.id();
     }
 
-    public Boolean getInheritable() {
-        return toBoolean(inheritable);
+    public boolean getIndexed() {
+        return indexed == TRUE;
+    }
+
+    public boolean getKeyed() {
+        return keyed == TRUE;
     }
 
     @Override
@@ -427,8 +434,12 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
         this.attributes = (Set<AttributeMetaAttribute>) attributes;
     }
 
-    public void setInheritable(Boolean inheritable) {
-        this.inheritable = toInteger(inheritable);
+    public void setIndexed(boolean indexed) {
+        this.indexed = indexed ? TRUE : FALSE;
+    }
+
+    public void setKeyed(boolean keyed) {
+        this.keyed = keyed ? TRUE : FALSE;
     }
 
     @Override

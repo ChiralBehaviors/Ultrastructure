@@ -27,17 +27,16 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.annotations.Aspect;
-import com.chiralbehaviors.annotations.Attribute;
+import com.chiralbehaviors.annotations.Edge;
+import com.chiralbehaviors.annotations.Facet;
 import com.chiralbehaviors.annotations.Key;
-import com.chiralbehaviors.annotations.Relationship;
 import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand
  *
  */
-@State(facets = { @Aspect(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing1")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
+@State(facets = { @Facet(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing1")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing1 extends ScopedPhantasm<Product> {
 
     // Default methods are used to add functional behavior
@@ -51,22 +50,23 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     }
 
     // array attributes of the ruleform
-    @Attribute(@Key(name = "aliases"))
+    @Key(name = "aliases")
     String[] getAliases();
 
     // Singular product-location authorization 
-    @Relationship(@Key(name = "derivedFrom"))
+    @Edge(@Key(name = "derivedFrom"))
     MavenArtifact getArtifact();
 
     // product attribute that has a non defaulted workspace name
-    @Attribute(@Key(name = "discount"))
+    @Key(name = "discount")
     BigDecimal getPercentage();
 
     // mapped attributes of the ruleform
+    @Key(name = "properties")
     Map<String, String> getProperties();
 
     // Singular child product 
-    @Relationship(@Key(name = "thing1Of"))
+    @Edge(@Key(name = "thing1Of"))
     Thing2 getThing2();
 
     // String attribute using the defaulted workspace name derived from getter
@@ -80,17 +80,21 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     }
 
     // array attributes of the ruleform
-    @Attribute(@Key(name = "aliases"))
+    @Key(name = "aliases")
     void setAliases(String[] aliases);
 
     // Singular product-location authorization 
-    @Relationship(@Key(name = "derivedFrom"))
+    @Edge(@Key(name = "derivedFrom"))
     void setArtifact(MavenArtifact artifact);
 
-    @Attribute(@Key(name = "discount"))
+    @Key(name = "discount")
     void setPercentage(BigDecimal discount);
 
-    @Relationship(@Key(name = "thing1Of"))
+    // mapped attributes of the ruleform
+    @Key(name = "properties")
+    void setProperties(Map<String, String> props);
+
+    @Edge(@Key(name = "thing1Of"))
     void setThing2(Thing2 thing2);
 
     // String attribute using the defaulted workspace name derived from getter

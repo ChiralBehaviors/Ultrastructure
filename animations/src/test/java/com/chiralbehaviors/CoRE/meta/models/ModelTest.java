@@ -32,7 +32,6 @@ import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -61,20 +60,19 @@ public class ModelTest extends AbstractModelTest {
         model.getAgencyModel().authorize(aspect, attribute);
         em.flush();
 
+        @SuppressWarnings("unchecked")
         Agency agency = model.getAgencyModel().create("aspect test", "testy",
-                                                      aspect, kernel.getCore()).asRuleform();
+                                                      aspect, kernel.getCore());
         em.flush();
 
         assertNotNull(agency);
 
-        Facet<Agency, AgencyAttribute> facet = model.getAgencyModel().getFacet(agency,
-                                                                               aspect);
+        List<AgencyAttribute> attributes = model.getAgencyModel().getAttributesClassifiedBy(agency,
+                                                                                            aspect);
 
-        assertEquals(1, facet.getAttributes().size());
+        assertEquals(1, attributes.size());
 
-        for (Attribute value : facet.getAttributes().keySet()) {
-            assertEquals(attribute, value);
-        }
+        assertEquals(attribute, attributes.get(0).getAttribute());
     }
 
     @Test

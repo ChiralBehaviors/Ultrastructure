@@ -35,7 +35,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
-import com.chiralbehaviors.CoRE.network.Facet;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -74,21 +73,6 @@ public class UnitModelImpl
                                                                                       kernel.getCoreModel());
             em.persist(authorization);
         }
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect)
-     */
-    @Override
-    public Facet<Unit, UnitAttribute> create(String name, String description,
-                                             Aspect<Unit> aspect,
-                                             Agency updatedBy) {
-        Unit unit = new Unit(name, description, kernel.getCoreModel());
-        em.persist(unit);
-        return new Facet<Unit, UnitAttribute>(aspect, unit,
-                                              initialize(unit, aspect,
-                                                         updatedBy)) {
-        };
     }
 
     /*

@@ -40,6 +40,9 @@ public interface Thing2 extends Phantasm<Product> {
     @Edge(@Key(name = "thing2Of"))
     void add(Thing3 thing3);
 
+    @Edge(@Key(name = "thing2Of"))
+    void remove(Thing3 thing3);
+
     @Edge(@Key(name = "inThing1"))
     Thing1 getThing1();
 

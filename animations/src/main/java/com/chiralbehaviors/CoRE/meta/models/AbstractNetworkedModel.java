@@ -436,6 +436,33 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         return (List<Network>) q.getResultList();
     }
 
+    /**
+     * @param parent
+     * @param relationship
+     * @return
+     */
+    @Override
+    public NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
+                                                      Relationship relationship,
+                                                      RuleForm child) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<NetworkRuleform<RuleForm>> query = cb.createQuery(network);
+        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get("parent"),
+                                                        parent),
+                                               cb.equal(networkRoot.get("relationship"),
+                                                        relationship),
+                                               cb.equal(networkRoot.get("child"),
+                                                        child),
+                                               cb.isNull(networkRoot.get("inference"))));
+        TypedQuery<NetworkRuleform<RuleForm>> q = em.createQuery(query);
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
     @Override
     public Collection<Network> getImmediateNetworkEdges(RuleForm parent) {
         List<Network> edges = new ArrayList<Network>();
@@ -876,11 +903,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         return allowedValues;
     }
 
-    /**
-     * @param parent
-     * @param relationship
-     * @return
-     */
     protected NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
                                                          Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();

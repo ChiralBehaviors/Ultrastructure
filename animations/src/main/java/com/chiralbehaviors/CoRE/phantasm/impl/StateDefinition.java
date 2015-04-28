@@ -141,16 +141,35 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     private void process(Edge annotation, Method method) {
         if (method.getName().startsWith("add")) {
             processAdd(annotation, method);
-        } else if (method.getName().startsWith("set")
-                   && method.getParameterTypes().length == 0
+        } else if (method.getName().startsWith("remove")) {
+            processRemove(annotation, method);
+        } else if (method.getParameterTypes().length == 0
                    && List.class.isAssignableFrom(method.getReturnType())) {
             processGetList(annotation, method);
-        } else if (method.getName().startsWith("set")
-                   && method.getParameterTypes().length == 1
+        } else if (method.getParameterTypes().length == 1
                    && List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             processSetList(annotation, method);
         } else {
             processSingular(annotation, method);
+        }
+    }
+
+    /**
+     * @param annotation
+     * @param method
+     */
+    @SuppressWarnings("unchecked")
+    private void processRemove(Edge annotation, Method method) {
+        if (method.getParameterTypes()[0].isArray()) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.removeChildren(annotation.value().namespace(),
+                                                                                                annotation.value().name(),
+                                                                                                (List<Phantasm<RuleForm>>) arguments[0]));
+        } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.removeChild(annotation.value().namespace(),
+                                                                                             annotation.value().name(),
+                                                                                             ((Phantasm<RuleForm>) arguments[0]).getRuleform()));
         }
     }
 
@@ -164,7 +183,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.addChildren(annotation.value().namespace(),
                                                                                              annotation.value().name(),
-                                                                                             (List<RuleForm>) arguments[0]));
+                                                                                             (List<Phantasm<RuleForm>>) arguments[0]));
         } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.addChild(annotation.value().namespace(),

@@ -190,6 +190,17 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return value;
     }
 
+    private void removeImmediateChild(NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel,
+                                      Relationship relationship,
+                                      Phantasm<RuleForm> child) {
+        NetworkRuleform<RuleForm> link = networkedModel.getImmediateLink(ruleform,
+                                                                         relationship,
+                                                                         child.getRuleform());
+        if (link != null) {
+            model.getEntityManager().remove(link);
+        }
+    }
+
     private void setValue(Attribute attribute, int i,
                           AttributeValue<RuleForm> existing, Object newValue) {
         if (existing == null) {
@@ -217,11 +228,12 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return null;
     }
 
-    protected Object addChildren(String s, String key, List<RuleForm> children) {
+    protected Object addChildren(String s, String key,
+                                 List<Phantasm<RuleForm>> children) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
         Relationship relationship = getRelationship(s, key);
-        for (RuleForm child : children) {
-            networkedModel.link(ruleform, relationship, child,
+        for (Phantasm<RuleForm> child : children) {
+            networkedModel.link(ruleform, relationship, child.getRuleform(),
                                 model.getKernel().getCore());
         }
         return null;
@@ -321,6 +333,22 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                                                             getRelationship(scope,
                                                                                                             key));
         return wrap(queryResult, phantasm);
+    }
+
+    protected Object removeChild(String scope, String name, RuleForm child) {
+        removeImmediateChild(model.getNetworkedModel(ruleform),
+                             getRelationship(scope, name), child);
+        return null;
+    }
+
+    protected Object removeChildren(String s, String key,
+                                    List<Phantasm<RuleForm>> children) {
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
+        Relationship relationship = getRelationship(s, key);
+        for (Phantasm<RuleForm> child : children) {
+            removeImmediateChild(networkedModel, relationship, child);
+        }
+        return null;
     }
 
     protected Object setAttributeArray(String namespace, String key,

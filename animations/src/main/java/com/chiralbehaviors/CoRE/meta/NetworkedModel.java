@@ -284,6 +284,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     List<Network> getImmediateChildrenLinks(RuleForm parent,
                                             Relationship relationship);
 
+    NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
+                                               Relationship relationship,
+                                               RuleForm child);
+
     /**
      *
      * @param parent

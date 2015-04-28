@@ -140,30 +140,6 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return returnValue == this ? proxy : returnValue;
     }
 
-    /**
-     * @param namespace
-     * @param name
-     * @param object
-     * @return
-     */
-    public Object setImmediateChild(String scope, String key, Object object) {
-        if (!(object instanceof Phantasm)) {
-            throw new ClassCastException(
-                                         String.format("%s does not implement %s",
-                                                       object.getClass().getCanonicalName(),
-                                                       Phantasm.class.getCanonicalName()));
-        }
-        @SuppressWarnings("unchecked")
-        Phantasm<RuleForm> phantasm = (Phantasm<RuleForm>) object;
-        RuleForm child = phantasm.getRuleform();
-        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
-        networkedModel.setImmediateChild(ruleform,
-                                         getRelationship(scope, key),
-                                         child,
-                                         model.getKernel().getCoreAnimationSoftware());
-        return null;
-    }
-
     private Attribute getAttribute(String namespace, String key) {
         Attribute attribute = scope.lookup(namespace, key);
         if (attribute == null) {
@@ -233,21 +209,22 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return result;
     }
 
-    protected void addChild(String scope, String key, boolean singular,
-                            RuleForm child) {
+    protected Object addChild(String scope, String key, RuleForm child) {
         model.getNetworkedModel(ruleform).link(ruleform,
                                                getRelationship(scope, key),
                                                child,
                                                model.getKernel().getCore());
+        return null;
     }
 
-    protected void addChildren(String s, String key, List<RuleForm> children,
-                               Agency updatedBy) {
+    protected Object addChildren(String s, String key, List<RuleForm> children) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
+        Relationship relationship = getRelationship(s, key);
         for (RuleForm child : children) {
-            networkedModel.link(ruleform, getRelationship(s, key), child,
-                                updatedBy);
+            networkedModel.link(ruleform, relationship, child,
+                                model.getKernel().getCore());
         }
+        return null;
     }
 
     protected Object[] getAttributeArray(String namespace, String key,
@@ -438,10 +415,47 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return null;
     }
 
-    protected void setChild(String namepsapace, String key,
-                            Phantasm<RuleForm> phantasm) {
-        model.getNetworkedModel(ruleform).getSingleChild(ruleform,
-                                                         getRelationship(namepsapace,
-                                                                         key));
+    /**
+     * @param namespace
+     * @param name
+     * @param object
+     * @return
+     */
+    protected Object setImmediateChild(String scope, String key, Object object) {
+        if (!(object instanceof Phantasm)) {
+            throw new ClassCastException(
+                                         String.format("%s does not implement %s",
+                                                       object.getClass().getCanonicalName(),
+                                                       Phantasm.class.getCanonicalName()));
+        }
+        @SuppressWarnings("unchecked")
+        Phantasm<RuleForm> phantasm = (Phantasm<RuleForm>) object;
+        RuleForm child = phantasm.getRuleform();
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
+        networkedModel.setImmediateChild(ruleform,
+                                         getRelationship(scope, key),
+                                         child,
+                                         model.getKernel().getCoreAnimationSoftware());
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param object
+     * @return
+     */
+    protected Object setImmediateChildren(String scope, String key,
+                                          List<RuleForm> children) {
+        Relationship relationship = getRelationship(scope, key);
+        for (Phantasm<RuleForm> phantasm : children) {
+            RuleForm child = phantasm.getRuleform();
+            NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
+            networkedModel.setImmediateChild(ruleform,
+                                             relationship,
+                                             child,
+                                             model.getKernel().getCoreAnimationSoftware());
+        }
+        return null;
     }
 }

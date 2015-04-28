@@ -34,6 +34,5 @@ import java.lang.annotation.Target;
 @Documented
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface Immediate {
-
+public @interface Inferred {
 }

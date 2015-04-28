@@ -24,10 +24,10 @@ import java.util.List;
 
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.annotations.Facet;
-import com.chiralbehaviors.annotations.Immediate;
-import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.Edge;
+import com.chiralbehaviors.annotations.Facet;
+import com.chiralbehaviors.annotations.Inferred;
+import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.State;
 
 /**
@@ -43,7 +43,8 @@ public interface Thing2 extends Phantasm<Product> {
     @Edge(@Key(name = "inThing1"))
     Thing1 getThing1();
 
-    @Immediate
+    // Get immediate or inferred thing3s of this thing2
+    @Inferred
     @Edge(@Key(name = "thing2Of"))
     List<Thing3> getThing3s();
 }

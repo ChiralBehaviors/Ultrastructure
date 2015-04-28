@@ -35,6 +35,7 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -53,8 +54,8 @@ import com.chiralbehaviors.phantasm.demo.Thing2;
  */
 public class TestPhantasm extends AbstractModelTest {
 
-    @Test
-    public void testDemo() throws Exception {
+    @Before
+    public void before() throws Exception {
         WorkspaceLexer l = new WorkspaceLexer(
                                               new ANTLRInputStream(
                                                                    getClass().getResourceAsStream("/thing.wsp")));
@@ -78,6 +79,10 @@ public class TestPhantasm extends AbstractModelTest {
         em.getTransaction().begin();
         importer.loadWorkspace();
         em.flush();
+    }
+
+    @Test
+    public void testDemo() throws Exception {
 
         Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test",
                                                  kernel.getCore());
@@ -112,7 +117,10 @@ public class TestPhantasm extends AbstractModelTest {
         Map<String, String> newProps = thing1.getProperties();
         assertEquals(String.format("got: %s", newProps), properties.size(),
                      newProps.size());
+    }
 
+    @Test
+    public void testEnums() throws Exception {
         MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
                                                                  "myartifact",
                                                                  "artifact",

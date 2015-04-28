@@ -24,10 +24,10 @@ import java.util.List;
 
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.annotations.Facet;
-import com.chiralbehaviors.annotations.Immediate;
-import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.Edge;
+import com.chiralbehaviors.annotations.Facet;
+import com.chiralbehaviors.annotations.Inferred;
+import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.State;
 
 /**
@@ -36,6 +36,9 @@ import com.chiralbehaviors.annotations.State;
  */
 @State(facets = { @Facet(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing2")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing2 extends Phantasm<Product> {
+    @Edge(@Key(name = "thing2Of"))
+    void add(List<Thing3> thing3s);
+
     // 
     @Edge(@Key(name = "thing2Of"))
     void add(Thing3 thing3);
@@ -43,7 +46,14 @@ public interface Thing2 extends Phantasm<Product> {
     @Edge(@Key(name = "inThing1"))
     Thing1 getThing1();
 
-    @Immediate
+    // Get immediate or inferred thing3s of this thing2
+    @Inferred
     @Edge(@Key(name = "thing2Of"))
     List<Thing3> getThing3s();
+
+    @Edge(@Key(name = "thing2Of"))
+    void remove(List<Thing3> thing3s);
+
+    @Edge(@Key(name = "thing2Of"))
+    void remove(Thing3 thing3);
 }

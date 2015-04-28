@@ -27,7 +27,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -35,6 +37,7 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -46,6 +49,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.phantasm.demo.MavenArtifact;
 import com.chiralbehaviors.phantasm.demo.Thing1;
 import com.chiralbehaviors.phantasm.demo.Thing2;
+import com.chiralbehaviors.phantasm.demo.Thing3;
 
 /**
  * @author hhildebrand
@@ -53,8 +57,8 @@ import com.chiralbehaviors.phantasm.demo.Thing2;
  */
 public class TestPhantasm extends AbstractModelTest {
 
-    @Test
-    public void testDemo() throws Exception {
+    @Before
+    public void before() throws Exception {
         WorkspaceLexer l = new WorkspaceLexer(
                                               new ANTLRInputStream(
                                                                    getClass().getResourceAsStream("/thing.wsp")));
@@ -78,6 +82,10 @@ public class TestPhantasm extends AbstractModelTest {
         em.getTransaction().begin();
         importer.loadWorkspace();
         em.flush();
+    }
+
+    @Test
+    public void testDemo() throws Exception {
 
         Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test",
                                                  kernel.getCore());
@@ -113,6 +121,33 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(String.format("got: %s", newProps), properties.size(),
                      newProps.size());
 
+        Thing3 thing3a = (Thing3) model.construct(Thing3.class, "uncle it",
+                                                  "one of my favorite things",
+                                                  kernel.getCore());
+        assertNotNull(thing2.getThing3s());
+        assertEquals(0, thing2.getThing3s().size());
+        thing2.add(thing3a);
+        assertEquals(1, thing2.getThing3s().size());
+        thing2.remove(thing3a);
+        assertEquals(0, thing2.getThing3s().size());
+
+        Thing3 thing3b = (Thing3) model.construct(Thing3.class,
+                                                  "cousin it",
+                                                  "another one of my favorite things",
+                                                  kernel.getCore());
+
+        List<Thing3> aFewOfMyFavoriteThings = new ArrayList<>();
+        aFewOfMyFavoriteThings.add(thing3a);
+        aFewOfMyFavoriteThings.add(thing3b);
+
+        thing2.add(aFewOfMyFavoriteThings);
+        assertEquals(2, thing2.getThing3s().size());
+        thing2.remove(aFewOfMyFavoriteThings);
+        assertEquals(0, thing2.getThing3s().size());
+    }
+
+    @Test
+    public void testEnums() throws Exception {
         MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
                                                                  "myartifact",
                                                                  "artifact",

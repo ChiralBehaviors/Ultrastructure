@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +43,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.annotations.Edge;
 import com.chiralbehaviors.annotations.Facet;
+import com.chiralbehaviors.annotations.Inferred;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.State;
 
@@ -129,19 +131,73 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    private void process(Key annotation, Method method) {
-        if (method.getName().startsWith(GET)) {
-            processGetter(annotation, method);
-        } else if (method.getName().startsWith(SET)) {
-            processSetter(annotation, method);
-        }
-    }
-
     private void process(Class<?> iFace) {
         for (Method method : iFace.getDeclaredMethods()) {
             if (!method.isDefault()) {
                 process(method);
             }
+        }
+    }
+
+    private void process(Edge annotation, Method method) {
+        if (method.getName().startsWith("add")) {
+            processAdd(annotation, method);
+        } else if (method.getName().startsWith("remove")) {
+            processRemove(annotation, method);
+        } else if (method.getParameterTypes().length == 0
+                   && List.class.isAssignableFrom(method.getReturnType())) {
+            processGetList(annotation, method);
+        } else if (method.getParameterTypes().length == 1
+                   && List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            processSetList(annotation, method);
+        } else {
+            processSingular(annotation, method);
+        }
+    }
+
+    /**
+     * @param annotation
+     * @param method
+     */
+    @SuppressWarnings("unchecked")
+    private void processRemove(Edge annotation, Method method) {
+        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.removeChildren(annotation.value().namespace(),
+                                                                                                annotation.value().name(),
+                                                                                                (List<Phantasm<RuleForm>>) arguments[0]));
+        } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.removeChild(annotation.value().namespace(),
+                                                                                             annotation.value().name(),
+                                                                                             ((Phantasm<RuleForm>) arguments[0]).getRuleform()));
+        }
+    }
+
+    /**
+     * @param annotation
+     * @param method
+     */
+    @SuppressWarnings("unchecked")
+    private void processAdd(Edge annotation, Method method) {
+        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.addChildren(annotation.value().namespace(),
+                                                                                             annotation.value().name(),
+                                                                                             (List<Phantasm<RuleForm>>) arguments[0]));
+        } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.addChild(annotation.value().namespace(),
+                                                                                          annotation.value().name(),
+                                                                                          ((Phantasm<RuleForm>) arguments[0]).getRuleform()));
+        }
+    }
+
+    private void process(Key annotation, Method method) {
+        if (method.getName().startsWith(GET)) {
+            processGetter(annotation, method);
+        } else if (method.getName().startsWith(SET)) {
+            processSetter(annotation, method);
         }
     }
 
@@ -160,20 +216,25 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    private void process(Edge annotation, Method method) {
-        if (List.class.isAssignableFrom(method.getReturnType())) {
-            processGetList(annotation, method);
-        } else {
-            processSingular(annotation, method);
-        }
-    }
-
     /**
      * @param annotation
      * @param method
      * @return
      */
+    @SuppressWarnings("unchecked")
     private void processGetList(Edge annotation, Method method) {
+        Class<Phantasm<? extends RuleForm>> phantasm = (Class<Phantasm<? extends RuleForm>>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
+        if (method.getAnnotation(Inferred.class) != null) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getChildren(annotation.value().namespace(),
+                                                                                             annotation.value().name(),
+                                                                                             phantasm));
+        } else {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChildren(annotation.value().namespace(),
+                                                                                                      annotation.value().name(),
+                                                                                                      phantasm));
+        }
     }
 
     private void processGetter(Key attribute, Method method) {
@@ -213,6 +274,17 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.getAttributeValue(namespace,
                                                                                                    name));
         }
+    }
+
+    /**
+     * @param annotation
+     * @param method
+     */
+    private void processSetList(Edge annotation, Method method) {
+        methods.put(method,
+                    (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(annotation.value().namespace(),
+                                                                                               annotation.value().name(),
+                                                                                               method.getReturnType()));
     }
 
     private void processSetter(Key attribute, Method method) {
@@ -269,6 +341,11 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(value.namespace(),
                                                                                                    value.name(),
                                                                                                    arguments[0]));
+        } else if (method.getAnnotation(Inferred.class) != null) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getChild(value.namespace(),
+                                                                                          value.name(),
+                                                                                          (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
         } else {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChild(value.namespace(),

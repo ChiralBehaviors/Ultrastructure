@@ -45,6 +45,10 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
 
     @SuppressWarnings("unchecked")
     public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm) {
+        if (!Phantasm.class.isAssignableFrom(phantasm))
+            throw new IllegalArgumentException(
+                                               String.format("Not a Phantasm: %s",
+                                                             phantasm));
         this.phantasm = phantasm;
         if (phantasm.getAnnotation(State.class) != null) {
             StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(
@@ -79,8 +83,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     }
 
     @SuppressWarnings("unchecked")
-    public Phantasm<? super RuleForm> wrap(ExistentialRuleform<?, ?> ruleform,
-                                           Model model) {
+    public Phantasm<?> wrap(ExistentialRuleform<?, ?> ruleform, Model model) {
         Map<Class<?>, Object> stateMap = new HashMap<>();
         Object[] instances = new Object[facets.size()];
         int i = 0;
@@ -93,11 +96,10 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
                 stateMap.put(phantasm, state);
             }
         }
-        return (Phantasm<RuleForm>) Proxy.newProxyInstance(phantasm.getClassLoader(),
-                                                           new Class[] { phantasm },
-                                                           new PhantasmTwo(
-                                                                           stateMap,
-                                                                           ruleform));
+        return (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
+                                                    new Class[] { phantasm },
+                                                    new PhantasmTwo(stateMap,
+                                                                    ruleform));
 
     }
 }

@@ -27,7 +27,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -127,6 +129,20 @@ public class TestPhantasm extends AbstractModelTest {
         thing2.add(thing3a);
         assertEquals(1, thing2.getThing3s().size());
         thing2.remove(thing3a);
+        assertEquals(0, thing2.getThing3s().size());
+
+        Thing3 thing3b = (Thing3) model.construct(Thing3.class,
+                                                  "cousin it",
+                                                  "another one of my favorite things",
+                                                  kernel.getCore());
+
+        List<Thing3> aFewOfMyFavoriteThings = new ArrayList<>();
+        aFewOfMyFavoriteThings.add(thing3a);
+        aFewOfMyFavoriteThings.add(thing3b);
+
+        thing2.add(aFewOfMyFavoriteThings);
+        assertEquals(2, thing2.getThing3s().size());
+        thing2.remove(aFewOfMyFavoriteThings);
         assertEquals(0, thing2.getThing3s().size());
     }
 

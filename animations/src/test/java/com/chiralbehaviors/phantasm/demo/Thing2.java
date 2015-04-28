@@ -36,12 +36,12 @@ import com.chiralbehaviors.annotations.State;
  */
 @State(facets = { @Facet(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing2")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing2 extends Phantasm<Product> {
+    @Edge(@Key(name = "thing2Of"))
+    void add(List<Thing3> thing3s);
+
     // 
     @Edge(@Key(name = "thing2Of"))
     void add(Thing3 thing3);
-
-    @Edge(@Key(name = "thing2Of"))
-    void remove(Thing3 thing3);
 
     @Edge(@Key(name = "inThing1"))
     Thing1 getThing1();
@@ -50,4 +50,10 @@ public interface Thing2 extends Phantasm<Product> {
     @Inferred
     @Edge(@Key(name = "thing2Of"))
     List<Thing3> getThing3s();
+
+    @Edge(@Key(name = "thing2Of"))
+    void remove(List<Thing3> thing3s);
+
+    @Edge(@Key(name = "thing2Of"))
+    void remove(Thing3 thing3);
 }

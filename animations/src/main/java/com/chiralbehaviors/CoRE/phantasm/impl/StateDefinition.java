@@ -161,7 +161,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
      */
     @SuppressWarnings("unchecked")
     private void processRemove(Edge annotation, Method method) {
-        if (method.getParameterTypes()[0].isArray()) {
+        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.removeChildren(annotation.value().namespace(),
                                                                                                 annotation.value().name(),
@@ -180,7 +180,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
      */
     @SuppressWarnings("unchecked")
     private void processAdd(Edge annotation, Method method) {
-        if (method.getParameterTypes()[0].isArray()) {
+        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.addChildren(annotation.value().namespace(),
                                                                                              annotation.value().name(),

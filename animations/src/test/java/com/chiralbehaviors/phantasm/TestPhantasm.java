@@ -47,6 +47,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.phantasm.demo.MavenArtifact;
 import com.chiralbehaviors.phantasm.demo.Thing1;
 import com.chiralbehaviors.phantasm.demo.Thing2;
+import com.chiralbehaviors.phantasm.demo.Thing3;
 
 /**
  * @author hhildebrand
@@ -117,6 +118,14 @@ public class TestPhantasm extends AbstractModelTest {
         Map<String, String> newProps = thing1.getProperties();
         assertEquals(String.format("got: %s", newProps), properties.size(),
                      newProps.size());
+
+        Thing3 thing3a = (Thing3) model.construct(Thing3.class, "uncle it",
+                                                  "one of my favorite things",
+                                                  kernel.getCore());
+        assertNotNull(thing2.getThing3s());
+        assertEquals(0, thing2.getThing3s().size());
+        thing2.add(thing3a);
+        assertEquals(1, thing2.getThing3s().size());
     }
 
     @Test

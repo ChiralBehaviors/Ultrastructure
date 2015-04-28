@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -222,16 +223,17 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
      */
     @SuppressWarnings("unchecked")
     private void processGetList(Edge annotation, Method method) {
+        Class<Phantasm<? extends RuleForm>> phantasm = (Class<Phantasm<? extends RuleForm>>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
         if (method.getAnnotation(Inferred.class) != null) {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.getChildren(annotation.value().namespace(),
                                                                                              annotation.value().name(),
-                                                                                             (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
+                                                                                             phantasm));
         } else {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChildren(annotation.value().namespace(),
                                                                                                       annotation.value().name(),
-                                                                                                      (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
+                                                                                                      phantasm));
         }
     }
 

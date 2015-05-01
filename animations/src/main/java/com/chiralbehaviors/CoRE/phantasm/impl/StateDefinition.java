@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
@@ -55,7 +57,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private static final String                          GET     = "get";
     private static final String                          SET     = "set";
-    private final List<Facet>                            aspects = new ArrayList<Facet>();
+    private final List<Facet>                            facets  = new ArrayList<Facet>();
     private final Class<Phantasm<RuleForm>>              stateInterface;
     private final UUID                                   workspace;
     protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
@@ -67,27 +69,28 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         construct();
     }
 
+    /**
+     * @param model
+     * @return
+     */
     @SuppressWarnings("unchecked")
-    public void constrain(Model model, RuleForm ruleform) {
-        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
+    public List<Aspect<RuleForm>> getAspects(Model model) {
         WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
-        List<Facet> failures = new ArrayList<>();
-        for (Facet constraint : aspects) {
-            if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier()),
-                                        (Relationship) scope.lookup(constraint.classification()),
-                                        ruleform)) {
-                failures.add(constraint);
-            }
+        List<Aspect<RuleForm>> specs = new ArrayList<>();
+        for (Facet facet : facets) {
+            specs.add(new Aspect<RuleForm>(
+                                           (Relationship) scope.lookup(facet.classification()),
+                                           (RuleForm) scope.lookup(facet.classifier())));
         }
-        if (failures.isEmpty()) {
-            throw new RuntimeException(
-                                       String.format("%s does not have required aspects: ",
-                                                     failures));
-        }
+        return specs;
+    }
+
+    public Class<Phantasm<RuleForm>> getStateInterface() {
+        return stateInterface;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Object construct(RuleForm ruleform, Model model) {
+    public Object wrap(RuleForm ruleform, Model model) {
         constrain(model, ruleform);
         return Proxy.newProxyInstance(stateInterface.getClassLoader(),
                                       new Class[] { stateInterface },
@@ -100,30 +103,40 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     }
 
-    /**
-     * @param model
-     * @return
-     */
     @SuppressWarnings("unchecked")
-    public List<Aspect<RuleForm>> getAspects(Model model) {
+    /**
+     * Constrain the ruleform to have the required facets.  
+     * @param model
+     * @param ruleform
+     * @throws ClassCastException - if the ruleform is not classified as required by the facets of this state definition
+     */
+    private void constrain(Model model, RuleForm ruleform) {
+        NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
         WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
-        List<Aspect<RuleForm>> specs = new ArrayList<>();
-        for (Facet aspect : aspects) {
-            specs.add(new Aspect<RuleForm>(
-                                           (Relationship) scope.lookup(aspect.classification()),
-                                           (RuleForm) scope.lookup(aspect.classifier())));
+        List<Facet> failures = new ArrayList<>();
+        for (Facet constraint : facets) {
+            if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier()),
+                                        (Relationship) scope.lookup(constraint.classification()),
+                                        ruleform)) {
+                failures.add(constraint);
+            }
         }
-        return specs;
+        if (failures.isEmpty()) {
+            throw new ClassCastException(
+                                         String.format("%s does not have required facets %s of state %s",
+                                                       ruleform, failures,
+                                                       stateInterface));
+        }
     }
 
-    public Class<Phantasm<RuleForm>> getStateInterface() {
-        return stateInterface;
-    }
-
+    /**
+     * Construct the map of methods to functions that implement the state
+     * defition behavior
+     */
     private void construct() {
         State state = stateInterface.getAnnotation(State.class);
-        for (Facet aspect : state.facets()) {
-            aspects.add(aspect);
+        for (Facet facet : state.facets()) {
+            facets.add(facet);
         }
         for (Method method : stateInterface.getDeclaredMethods()) {
             if (!method.isDefault()) {
@@ -137,6 +150,24 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                 }
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getInferred(Method method, Key value,
+                             Class<ExistentialRuleform<?, ?>> rulformClass) {
+        if (!rulformClass.equals(getRuleformClass())) {
+            throw new IllegalStateException(
+                                            String.format("Use of @Inferred can only be applied to network relationship methods: %s",
+                                                          method.toGenericString()));
+        }
+        methods.put(method,
+                    (StateImpl<RuleForm> state, Object[] arguments) -> state.getChild(value.namespace(),
+                                                                                      value.name(),
+                                                                                      (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
+    }
+
+    private Class<RuleForm> getRuleformClass() {
+        return Model.getExistentialRuleform(stateInterface);
     }
 
     private void process(Edge annotation, Method method) {
@@ -155,22 +186,28 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    /**
-     * @param annotation
-     * @param method
-     */
-    @SuppressWarnings("unchecked")
-    private void processRemove(Edge annotation, Method method) {
-        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.removeChildren(annotation.value().namespace(),
-                                                                                                annotation.value().name(),
-                                                                                                (List<Phantasm<RuleForm>>) arguments[0]));
-        } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.removeChild(annotation.value().namespace(),
-                                                                                             annotation.value().name(),
-                                                                                             ((Phantasm<RuleForm>) arguments[0]).getRuleform()));
+    private void process(Key annotation, Method method) {
+        if (method.getName().startsWith(GET)) {
+            processPrimitiveGetter(annotation.namespace(), annotation.name(),
+                                   method);
+        } else if (method.getName().startsWith(SET)) {
+            processPrimitiveSetter(annotation.namespace(), annotation.name(),
+                                   method);
+        }
+    }
+
+    private void process(Method method) {
+        Class<?> declaringClass = method.getDeclaringClass();
+        if (declaringClass.equals(Phantasm.class)
+            || declaringClass.equals(ScopedPhantasm.class)) {
+            return;
+        }
+        if (method.getAnnotation(Edge.class) != null) {
+            process(method.getAnnotation(Edge.class), method);
+        } else if (method.getAnnotation(Key.class) != null) {
+            process(method.getAnnotation(Key.class), method);
+        } else {
+            processUnknown(method);
         }
     }
 
@@ -190,29 +227,6 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.addChild(annotation.value().namespace(),
                                                                                           annotation.value().name(),
                                                                                           ((Phantasm<RuleForm>) arguments[0]).getRuleform()));
-        }
-    }
-
-    private void process(Key annotation, Method method) {
-        if (method.getName().startsWith(GET)) {
-            processGetter(annotation.namespace(), annotation.name(), method);
-        } else if (method.getName().startsWith(SET)) {
-            processSetter(annotation.namespace(), annotation.name(), method);
-        }
-    }
-
-    private void process(Method method) {
-        Class<?> declaringClass = method.getDeclaringClass();
-        if (declaringClass.equals(Phantasm.class)
-            || declaringClass.equals(ScopedPhantasm.class)) {
-            return;
-        }
-        if (method.getAnnotation(Edge.class) != null) {
-            process(method.getAnnotation(Edge.class), method);
-        } else if (method.getAnnotation(Key.class) != null) {
-            process(method.getAnnotation(Key.class), method);
-        } else {
-            processUnknown(method);
         }
     }
 
@@ -237,7 +251,19 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    private void processGetter(String namespace, String name, Method method) {
+    private void processGetSingularAuthorization(Method method,
+                                                 Class<? extends Phantasm<?>> phantasmReturned,
+                                                 Key value,
+                                                 Class<ExistentialRuleform<?, ?>> ruleformClass) {
+        methods.put(method,
+                    (StateImpl<RuleForm> state, Object[] arguments) -> state.getSingularAuthorization(ruleformClass,
+                                                                                                      value.namespace(),
+                                                                                                      value.name(),
+                                                                                                      phantasmReturned));
+    }
+
+    private void processPrimitiveGetter(String namespace, String name,
+                                        Method method) {
         if (method.getParameterCount() != 0) {
             throw new IllegalStateException(
                                             String.format("getter method has arguments %s",
@@ -265,19 +291,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    /**
-     * @param annotation
-     * @param method
-     */
-    private void processSetList(Edge annotation, Method method) {
-        methods.put(method,
-                    (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(annotation.value().namespace(),
-                                                                                               annotation.value().name(),
-                                                                                               method.getReturnType()));
-    }
-
     @SuppressWarnings("unchecked")
-    private void processSetter(String namespace, String name, Method method) {
+    private void processPrimitiveSetter(String namespace, String name,
+                                        Method method) {
         if (method.getParameterCount() != 1) {
             throw new IllegalStateException(
                                             String.format("setter method does not have a singular argument %s",
@@ -297,7 +313,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeMap(namespace,
                                                                                                  name,
-                                                                                                 ((Map<String, Object>) arguments[0])));
+                                                                                                 (Map<String, Object>) arguments[0]));
         } else {
             methods.put(method,
                         (StateImpl<RuleForm> state, Object[] arguments) -> state.setAttributeValue(namespace,
@@ -306,43 +322,148 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
+    /**
+     * @param annotation
+     * @param method
+     */
+    @SuppressWarnings("unchecked")
+    private void processRemove(Edge annotation, Method method) {
+        if (List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.removeChildren(annotation.value().namespace(),
+                                                                                                annotation.value().name(),
+                                                                                                (List<Phantasm<RuleForm>>) arguments[0]));
+        } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.removeChild(annotation.value().namespace(),
+                                                                                             annotation.value().name(),
+                                                                                             ((Phantasm<RuleForm>) arguments[0]).getRuleform()));
+        }
+    }
+
+    /**
+     * @param annotation
+     * @param method
+     */
+    @SuppressWarnings("unchecked")
+    private void processSetList(Edge annotation, Method method) {
+        methods.put(method,
+                    (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChildren(annotation.value().namespace(),
+                                                                                                  annotation.value().name(),
+                                                                                                  (List<RuleForm>) arguments[0]));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void processSetSingular(Method method, Key value) {
+        if (method.getParameterCount() != 1) {
+            throw new IllegalArgumentException(
+                                               String.format("Not a valid Relationship setter: %s",
+                                                             method));
+        }
+        Class<? extends Phantasm<?>> phantasmToSet = (Class<Phantasm<?>>) method.getParameterTypes()[0];
+        Class<ExistentialRuleform<?, ?>> ruleformClass = (Class<ExistentialRuleform<?, ?>>) Model.getExistentialRuleform(phantasmToSet);
+        if (ruleformClass.equals(getRuleformClass())) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(value.namespace(),
+                                                                                                   value.name(),
+                                                                                                   (Phantasm<RuleForm>) arguments[0]));
+        } else {
+            processSetSingularAuthorization(method, value, ruleformClass);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void processSetSingularAuthorization(Method method,
+                                                 Key value,
+                                                 Class<ExistentialRuleform<?, ?>> ruleformClass) {
+        Class<RuleForm> stateRuleformClass = getRuleformClass();
+        if (stateRuleformClass.equals(Agency.class)) {
+            if (ruleformClass.equals(Location.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularAgencyLocation(value.namespace(),
+                                                                                                               value.name(),
+                                                                                                               (Phantasm<Location>) arguments[0]));
+            } else if (ruleformClass.equals(Location.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularAgencyProduct(value.namespace(),
+                                                                                                              value.name(),
+                                                                                                              (Phantasm<Product>) arguments[0]));
+            } else {
+                throw new IllegalStateException(
+                                                String.format("No such authorization from Agency to %s",
+                                                              ruleformClass.getSimpleName()));
+            }
+        } else if (stateRuleformClass.equals(Product.class)) {
+            if (ruleformClass.equals(Location.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularProductLocation(value.namespace(),
+                                                                                                                value.name(),
+                                                                                                                (Phantasm<Location>) arguments[0]));
+            } else if (ruleformClass.equals(Agency.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularProductAgency(value.namespace(),
+                                                                                                              value.name(),
+                                                                                                              (Phantasm<Product>) arguments[0]));
+            } else {
+                throw new IllegalStateException(
+                                                String.format("No such authorization from Product to %s",
+                                                              ruleformClass.getSimpleName()));
+            }
+        } else if (stateRuleformClass.equals(Location.class)) {
+            if (ruleformClass.equals(Product.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularLocationProduct(value.namespace(),
+                                                                                                                value.name(),
+                                                                                                                (Phantasm<Location>) arguments[0]));
+            } else if (ruleformClass.equals(Agency.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularLocationAgency(value.namespace(),
+                                                                                                               value.name(),
+                                                                                                               (Phantasm<Product>) arguments[0]));
+            } else {
+                throw new IllegalStateException(
+                                                String.format("No such authorization from Product to %s",
+                                                              ruleformClass.getSimpleName()));
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private void processSingular(Edge annotation, Method method) {
         Key value = annotation.value();
         if (method.getReturnType().equals(Void.TYPE)) {
-            if (method.getParameterCount() != 1) {
-                throw new IllegalArgumentException(
-                                                   String.format("Not a valid Relationship setter: %s",
-                                                                 method));
-            }
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(value.namespace(),
-                                                                                                   value.name(),
-                                                                                                   arguments[0]));
-        } else if (method.getAnnotation(Inferred.class) != null) {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getChild(value.namespace(),
-                                                                                          value.name(),
-                                                                                          (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
+            processSetSingular(method, value);
+            return;
+        }
+
+        Class<? extends Phantasm<?>> phantasmReturned = (Class<Phantasm<?>>) method.getReturnType();
+        Class<ExistentialRuleform<?, ?>> ruleformClass = (Class<ExistentialRuleform<?, ?>>) Model.getExistentialRuleform(phantasmReturned);
+        if (method.getAnnotation(Inferred.class) != null) {
+            getInferred(method, value, ruleformClass);
         } else {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChild(value.namespace(),
-                                                                                                   value.name(),
-                                                                                                   (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
+            if (ruleformClass.equals(getRuleformClass())) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChild(value.namespace(),
+                                                                                                       value.name(),
+                                                                                                       (Class<Phantasm<? extends RuleForm>>) method.getReturnType()));
+            } else {
+                processGetSingularAuthorization(method, phantasmReturned,
+                                                value, ruleformClass);
+            }
         }
     }
 
     private void processUnknown(Method method) {
         if (method.getName().startsWith(GET)) {
-            processGetter(null,
-                          method.getName().substring(GET.length(),
-                                                     method.getName().length()),
-                          method);
+            processPrimitiveGetter(null,
+                                   method.getName().substring(GET.length(),
+                                                              method.getName().length()),
+                                   method);
         } else if (method.getName().startsWith(SET)) {
-            processSetter(null,
-                          method.getName().substring(SET.length(),
-                                                     method.getName().length()),
-                          method);
+            processPrimitiveSetter(null,
+                                   method.getName().substring(SET.length(),
+                                                              method.getName().length()),
+                                   method);
         }
     }
 }

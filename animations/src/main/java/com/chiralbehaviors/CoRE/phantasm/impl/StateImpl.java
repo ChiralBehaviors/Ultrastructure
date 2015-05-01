@@ -33,12 +33,14 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -335,6 +337,21 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return wrap(queryResult, phantasm);
     }
 
+    /**
+     * @param ruleformClass
+     * @param namespace
+     * @param name
+     * @param phantasmReturned
+     * @return
+     */
+    protected Object getSingularAuthorization(Class<ExistentialRuleform<?, ?>> ruleformClass,
+                                              String namespace,
+                                              String name,
+                                              Class<? extends Phantasm<?>> phantasmReturned) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     protected Object removeChild(String scope, String name, RuleForm child) {
         removeImmediateChild(model.getNetworkedModel(ruleform),
                              getRelationship(scope, name), child);
@@ -449,15 +466,8 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
      * @param object
      * @return
      */
-    protected Object setImmediateChild(String scope, String key, Object object) {
-        if (!(object instanceof Phantasm)) {
-            throw new ClassCastException(
-                                         String.format("%s does not implement %s",
-                                                       object.getClass().getCanonicalName(),
-                                                       Phantasm.class.getCanonicalName()));
-        }
-        @SuppressWarnings("unchecked")
-        Phantasm<RuleForm> phantasm = (Phantasm<RuleForm>) object;
+    protected Object setImmediateChild(String scope, String key,
+                                       Phantasm<RuleForm> phantasm) {
         RuleForm child = phantasm.getRuleform();
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = model.getNetworkedModel(ruleform);
         networkedModel.setImmediateChild(ruleform,
@@ -484,6 +494,78 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                              child,
                                              model.getKernel().getCoreAnimationSoftware());
         }
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object setSingularAgencyLocation(String namespace, String name,
+                                               Phantasm<Location> phantasm) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object setSingularAgencyProduct(String namespace, String name,
+                                              Phantasm<Product> phantasm) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object setSingularLocationAgency(String namespace, String name,
+                                               Phantasm<Product> phantasm) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object setSingularLocationProduct(String namespace, String name,
+                                                Phantasm<Location> phantasm) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object setSingularProductAgency(String namespace, String name,
+                                              Phantasm<Product> phantasm) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object setSingularProductLocation(String namespace, String name,
+                                                Phantasm<Location> phantasm) {
+        // TODO Auto-generated method stub
         return null;
     }
 }

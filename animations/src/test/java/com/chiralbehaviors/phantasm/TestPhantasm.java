@@ -144,6 +144,8 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(2, thing2.getThing3s().size());
         thing2.remove(aFewOfMyFavoriteThings);
         assertEquals(0, thing2.getThing3s().size());
+
+        assertNull(thing1.getArtifact());
     }
 
     @Test

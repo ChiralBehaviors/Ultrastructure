@@ -375,7 +375,16 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                         cb.equal(plRoot.get(AgencyLocation_.relationship),
                                                  relationship)));
         TypedQuery<Location> q = em.createQuery(query);
-        return model.wrap(phantasmReturned, q.getSingleResult());
+        List<Location> result = q.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s:%s is a non singular authorization of %s",
+                                                          namespace, name,
+                                                          ruleform));
+        }
+        return model.wrap(phantasmReturned, result.get(0));
     }
 
     /**
@@ -403,7 +412,16 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                         cb.equal(plRoot.get(AgencyProduct_.relationship),
                                                  relationship)));
         TypedQuery<Product> q = em.createQuery(query);
-        return model.wrap(phantasmReturned, q.getSingleResult());
+        List<Product> result = q.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s:%s is a non singular authorization of %s",
+                                                          namespace, name,
+                                                          ruleform));
+        }
+        return model.wrap(phantasmReturned, result.get(0));
     }
 
     /**
@@ -431,7 +449,16 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                         cb.equal(plRoot.get(AgencyLocation_.relationship),
                                                  relationship)));
         TypedQuery<Agency> q = em.createQuery(query);
-        return model.wrap(phantasmReturned, q.getSingleResult());
+        List<Agency> result = q.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s:%s is a non singular authorization of %s",
+                                                          namespace, name,
+                                                          ruleform));
+        }
+        return model.wrap(phantasmReturned, result.get(0));
     }
 
     /**
@@ -459,7 +486,16 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                         cb.equal(plRoot.get(ProductLocation_.relationship),
                                                  relationship)));
         TypedQuery<Product> q = em.createQuery(query);
-        return model.wrap(phantasmReturned, q.getSingleResult());
+        List<Product> result = q.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s:%s is a non singular authorization of %s",
+                                                          namespace, name,
+                                                          ruleform));
+        }
+        return model.wrap(phantasmReturned, result.get(0));
     }
 
     /**
@@ -487,7 +523,16 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                         cb.equal(plRoot.get(AgencyProduct_.relationship),
                                                  relationship)));
         TypedQuery<Agency> q = em.createQuery(query);
-        return model.wrap(phantasmReturned, q.getSingleResult());
+        List<Agency> result = q.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s:%s is a non singular authorization of %s",
+                                                          namespace, name,
+                                                          ruleform));
+        }
+        return model.wrap(phantasmReturned, result.get(0));
     }
 
     /**
@@ -515,7 +560,16 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                         cb.equal(plRoot.get(ProductLocation_.relationship),
                                                  relationship)));
         TypedQuery<Location> q = em.createQuery(query);
-        return model.wrap(phantasmReturned, q.getSingleResult());
+        List<Location> result = q.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s:%s is a non singular authorization of %s",
+                                                          namespace, name,
+                                                          ruleform));
+        }
+        return model.wrap(phantasmReturned, result.get(0));
     }
 
     protected Object removeChild(String scope, String name, RuleForm child) {

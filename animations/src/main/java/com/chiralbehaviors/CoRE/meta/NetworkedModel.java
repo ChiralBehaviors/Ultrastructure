@@ -239,6 +239,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     NetworkAttribute<?> getAttributeValue(RuleForm parent, Relationship r,
                                           RuleForm child, Attribute attribute);
 
+    Agency getAuthorizedAgency(RuleForm ruleform, Relationship relationship);
+
+    Location getAuthorizedLocation(RuleForm ruleform, Relationship relationship);
+
+    Product getAuthorizedProduct(RuleForm ruleform, Relationship relationship);
+
     /**
      * Answer the child that is connected to the parent via the relationship
      *

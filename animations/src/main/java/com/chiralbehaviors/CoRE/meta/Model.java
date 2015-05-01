@@ -49,20 +49,20 @@ public interface Model {
      * @param phantasm
      * @return
      */
-    @SuppressWarnings("unchecked")
-    static <T extends ExistentialRuleform<T, ?>> Class<T> getExistentialRuleform(Class<? extends Phantasm<? extends T>> phantasm) {
-        return (Class<T>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+    static Class<?> getExistentialRuleform(Class<?> phantasm) {
+        return (Class<?>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
     }
 
     /**
      * @param phantasm
      * @return
      */
-    static <T extends ExistentialRuleform<T, ?>> Constructor<? super T> getExistentialRuleformConstructor(Class<? extends Phantasm<? extends T>> phantasm) {
+    @SuppressWarnings("unchecked")
+    static <T extends ExistentialRuleform<T, ?>> Constructor<? super T> getExistentialRuleformConstructor(Class<?> phantasm) {
         try {
-            return getExistentialRuleform(phantasm).getConstructor(String.class,
-                                                                   String.class,
-                                                                   Agency.class);
+            return (Constructor<? super T>) getExistentialRuleform(phantasm).getConstructor(String.class,
+                                                                                            String.class,
+                                                                                            Agency.class);
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException(
                                             "Cannot access or find constructor for ruleform",

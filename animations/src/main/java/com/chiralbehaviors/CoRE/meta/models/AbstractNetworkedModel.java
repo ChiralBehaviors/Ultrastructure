@@ -335,6 +335,30 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         return q.getResultList();
     }
 
+    @Override
+    public Agency getAuthorizedAgency(RuleForm ruleform,
+                                       Relationship relationship) {
+        throw new UnsupportedOperationException(
+                                                String.format("%s to Agency authorizations are undefined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public Location getAuthorizedLocation(RuleForm ruleform,
+                                          Relationship relationship) {
+        throw new UnsupportedOperationException(
+                                                String.format("%s to Location authorizations are undefined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public Product getAuthorizedProduct(RuleForm ruleform,
+                                        Relationship relationship) {
+        throw new UnsupportedOperationException(
+                                                String.format("%s to Product authorizations are undefined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getChild(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
      */

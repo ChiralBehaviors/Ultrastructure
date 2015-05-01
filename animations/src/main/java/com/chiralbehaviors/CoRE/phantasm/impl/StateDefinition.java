@@ -422,55 +422,25 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     private void processSetSingularAuthorization(Method method,
                                                  Key value,
                                                  Class<ExistentialRuleform<?, ?>> ruleformClass) {
-        Class<RuleForm> stateRuleformClass = getRuleformClass();
-        if (stateRuleformClass.equals(Agency.class)) {
-            if (ruleformClass.equals(Location.class)) {
-                methods.put(method,
-                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularAgencyLocation(value.namespace(),
-                                                                                                               value.name(),
-                                                                                                               (Phantasm<Location>) arguments[0]));
-            } else if (ruleformClass.equals(Product.class)) {
-                methods.put(method,
-                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularAgencyProduct(value.namespace(),
-                                                                                                              value.name(),
-                                                                                                              (Phantasm<Product>) arguments[0]));
-            } else {
-                throw new IllegalStateException(
-                                                String.format("No such authorization from Agency to %s",
-                                                              ruleformClass.getSimpleName()));
-            }
-        } else if (stateRuleformClass.equals(Product.class)) {
-            if (ruleformClass.equals(Location.class)) {
-                methods.put(method,
-                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularProductLocation(value.namespace(),
-                                                                                                                value.name(),
-                                                                                                                (Phantasm<Location>) arguments[0]));
-            } else if (ruleformClass.equals(Agency.class)) {
-                methods.put(method,
-                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularProductAgency(value.namespace(),
-                                                                                                              value.name(),
-                                                                                                              (Phantasm<Agency>) arguments[0]));
-            } else {
-                throw new IllegalStateException(
-                                                String.format("No such authorization from Product to %s",
-                                                              ruleformClass.getSimpleName()));
-            }
-        } else if (stateRuleformClass.equals(Location.class)) {
-            if (ruleformClass.equals(Product.class)) {
-                methods.put(method,
-                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularLocationProduct(value.namespace(),
-                                                                                                                value.name(),
-                                                                                                                (Phantasm<Product>) arguments[0]));
-            } else if (ruleformClass.equals(Agency.class)) {
-                methods.put(method,
-                            (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularLocationAgency(value.namespace(),
-                                                                                                               value.name(),
-                                                                                                               (Phantasm<Agency>) arguments[0]));
-            } else {
-                throw new IllegalStateException(
-                                                String.format("No such authorization from Product to %s",
-                                                              ruleformClass.getSimpleName()));
-            }
+        if (ruleformClass.equals(Location.class)) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularLocationAuth(value.namespace(),
+                                                                                                         value.name(),
+                                                                                                         (Phantasm<Location>) arguments[0]));
+        } else if (ruleformClass.equals(Product.class)) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularProductAuth(value.namespace(),
+                                                                                                        value.name(),
+                                                                                                        (Phantasm<Product>) arguments[0]));
+        } else if (ruleformClass.equals(Agency.class)) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularAgencyAuth(value.namespace(),
+                                                                                                       value.name(),
+                                                                                                       (Phantasm<Agency>) arguments[0]));
+        } else {
+            throw new IllegalStateException(
+                                            String.format("No such authorization from Product to %s",
+                                                          ruleformClass.getSimpleName()));
         }
     }
 

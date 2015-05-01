@@ -64,11 +64,13 @@ import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -106,6 +108,30 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         prefix = ModelImpl.prefixFor(entity);
         networkPrefix = ModelImpl.prefixFor(network);
         attributePrefix = ModelImpl.prefixFor(attribute);
+    }
+
+    @Override
+    public void authorize(RuleForm ruleform, Relationship relationship,
+                          Agency authorized) {
+        throw new UnsupportedOperationException(
+                                                String.format("Authorizations between %s and Agency are not defined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public void authorize(RuleForm ruleform, Relationship relationship,
+                          Location authorized) {
+        throw new UnsupportedOperationException(
+                                                String.format("Authorizations between %s and Agency are not defined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public void authorize(RuleForm ruleform, Relationship relationship,
+                          Product authorized) {
+        throw new UnsupportedOperationException(
+                                                String.format("Authorizations between %s and Agency are not defined",
+                                                              ruleform.getClass().getSimpleName()));
     }
 
     /* (non-Javadoc)

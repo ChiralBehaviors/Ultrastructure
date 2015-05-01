@@ -30,9 +30,11 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -90,6 +92,15 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param attributes
      */
     void authorize(Aspect<RuleForm> aspect, Attribute... attributes);
+
+    void authorize(RuleForm ruleform, Relationship relationship,
+                   Agency authorized);
+
+    void authorize(RuleForm ruleform, Relationship relationship,
+                   Location authorized);
+
+    void authorize(RuleForm ruleform, Relationship relationship,
+                   Product authorized);
 
     /**
      * Create a new instance of the RuleForm based on the provided prototype
@@ -387,11 +398,5 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void setImmediateChild(RuleForm parent, Relationship relationship,
                            RuleForm child, Agency updatedBy);
 
-    /**
-     *
-     * @param parent
-     * @param r
-     * @param child
-     */
     void unlink(RuleForm parent, Relationship r, RuleForm child);
 }

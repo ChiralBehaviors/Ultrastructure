@@ -28,13 +28,17 @@ import javax.persistence.TypedQuery;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyLocation;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProduct;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -51,6 +55,52 @@ public class AgencyModelImpl
      */
     public AgencyModelImpl(Model model) {
         super(model);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.agency.Agency)
+     */
+    @Override
+    public void authorize(Agency ruleform, Relationship relationship,
+                          Agency authorized) {
+        throw new UnsupportedOperationException(
+                                                "Agency -> Agency authorizations are modeled with Agency Networks");
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.location.Location)
+     */
+    @Override
+    public void authorize(Agency ruleform, Relationship relationship,
+                          Location authorized) {
+        AgencyLocation a = new AgencyLocation(kernel.getCoreAnimationSoftware());
+        a.setAgency(ruleform);
+        a.setRelationship(relationship);
+        a.setLocation(authorized);
+        em.persist(a);
+        AgencyLocation b = new AgencyLocation(kernel.getCoreAnimationSoftware());
+        b.setAgency(ruleform);
+        a.setRelationship(relationship.getInverse());
+        b.setLocation(authorized);
+        em.persist(b);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.product.Product)
+     */
+    @Override
+    public void authorize(Agency ruleform, Relationship relationship,
+                          Product authorized) {
+        AgencyProduct a = new AgencyProduct(kernel.getCoreAnimationSoftware());
+        a.setAgency(ruleform);
+        a.setRelationship(relationship);
+        a.setProduct(authorized);
+        em.persist(a);
+        AgencyProduct b = new AgencyProduct(kernel.getCoreAnimationSoftware());
+        b.setAgency(ruleform);
+        b.setRelationship(relationship.getInverse());
+        b.setProduct(authorized);
+        em.persist(b);
     }
 
     /*
@@ -104,6 +154,12 @@ public class AgencyModelImpl
         return copy;
     }
 
+    @Override
+    public AgencyAttribute create(Agency ruleform, Attribute attribute,
+                                  Agency updateBy) {
+        return new AgencyAttribute(ruleform, attribute, updateBy);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -142,11 +198,5 @@ public class AgencyModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
-    }
-
-    @Override
-    public AgencyAttribute create(Agency ruleform, Attribute attribute,
-                                  Agency updateBy) {
-        return new AgencyAttribute(ruleform, attribute, updateBy);
     }
 }

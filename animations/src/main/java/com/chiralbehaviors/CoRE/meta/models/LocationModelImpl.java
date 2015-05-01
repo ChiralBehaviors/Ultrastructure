@@ -26,6 +26,7 @@ import java.util.List;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyLocation;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
@@ -35,6 +36,8 @@ import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -76,6 +79,54 @@ public class LocationModelImpl
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.agency.Agency)
+     */
+    @Override
+    public void authorize(Location ruleform, Relationship relationship,
+                          Agency authorized) {
+        AgencyLocation a = new AgencyLocation(kernel.getCoreAnimationSoftware());
+        a.setAgency(authorized);
+        a.setRelationship(relationship);
+        a.setLocation(ruleform);
+        em.persist(a);
+        AgencyLocation b = new AgencyLocation(kernel.getCoreAnimationSoftware());
+        b.setAgency(authorized);
+        a.setRelationship(relationship.getInverse());
+        b.setLocation(ruleform);
+        em.persist(b);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.location.Location)
+     */
+    @Override
+    public void authorize(Location ruleform, Relationship relationship,
+                          Location authorized) {
+        throw new UnsupportedOperationException(
+                                                "Location -> Location authorizations are modeled with Location Networks");
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.product.Product)
+     */
+    @Override
+    public void authorize(Location ruleform, Relationship relationship,
+                          Product authorized) {
+        ProductLocation a = new ProductLocation(
+                                                kernel.getCoreAnimationSoftware());
+        a.setProduct(authorized);
+        a.setRelationship(relationship);
+        a.setLocation(ruleform);
+        em.persist(a);
+        ProductLocation b = new ProductLocation(
+                                                kernel.getCoreAnimationSoftware());
+        b.setProduct(authorized);
+        a.setRelationship(relationship.getInverse());
+        b.setLocation(ruleform);
+        em.persist(b);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -102,6 +153,15 @@ public class LocationModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
+     */
+    @Override
+    public LocationAttribute create(Location ruleform, Attribute attribute,
+                                    Agency updatedBy) {
+        return new LocationAttribute(ruleform, attribute, updatedBy);
     }
 
     /*
@@ -138,14 +198,5 @@ public class LocationModelImpl
         query.setParameter("relationship", relationships);
         query.setParameter("children", children);
         return query.getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
-     */
-    @Override
-    public LocationAttribute create(Location ruleform, Attribute attribute,
-                                    Agency updatedBy) {
-        return new LocationAttribute(ruleform, attribute, updatedBy);
     }
 }

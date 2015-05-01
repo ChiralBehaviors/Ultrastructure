@@ -26,13 +26,16 @@ import java.util.List;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyProduct;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
@@ -75,6 +78,54 @@ public class ProductModelImpl
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.agency.Agency)
+     */
+    @Override
+    public void authorize(Product ruleform, Relationship relationship,
+                          Agency authorized) {
+        AgencyProduct a = new AgencyProduct(kernel.getCoreAnimationSoftware());
+        a.setAgency(authorized);
+        a.setRelationship(relationship);
+        a.setProduct(ruleform);
+        em.persist(a);
+        AgencyProduct b = new AgencyProduct(kernel.getCoreAnimationSoftware());
+        b.setAgency(authorized);
+        a.setRelationship(relationship.getInverse());
+        b.setProduct(ruleform);
+        em.persist(b);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.location.Location)
+     */
+    @Override
+    public void authorize(Product ruleform, Relationship relationship,
+                          Location authorized) {
+        ProductLocation a = new ProductLocation(
+                                                kernel.getCoreAnimationSoftware());
+        a.setProduct(ruleform);
+        a.setRelationship(relationship);
+        a.setLocation(authorized);
+        em.persist(a);
+        ProductLocation b = new ProductLocation(
+                                                kernel.getCoreAnimationSoftware());
+        b.setProduct(ruleform);
+        a.setRelationship(relationship.getInverse());
+        b.setLocation(authorized);
+        em.persist(b);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.product.Product)
+     */
+    @Override
+    public void authorize(Product ruleform, Relationship relationship,
+                          Product authorized) {
+        throw new UnsupportedOperationException(
+                                                "Location -> Location authorizations are modeled with Location Networks");
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -101,6 +152,12 @@ public class ProductModelImpl
             clone.setUpdatedBy(kernel.getCoreModel());
         }
         return copy;
+    }
+
+    @Override
+    public ProductAttribute create(Product ruleform, Attribute attribute,
+                                   Agency updatedBy) {
+        return new ProductAttribute(ruleform, attribute, updatedBy);
     }
 
     /*
@@ -141,11 +198,5 @@ public class ProductModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
-    }
-
-    @Override
-    public ProductAttribute create(Product ruleform, Attribute attribute,
-                                   Agency updatedBy) {
-        return new ProductAttribute(ruleform, attribute, updatedBy);
     }
 }

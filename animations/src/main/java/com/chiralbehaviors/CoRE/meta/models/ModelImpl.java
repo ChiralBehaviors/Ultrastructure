@@ -22,9 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -131,9 +129,9 @@ public class ModelImpl implements Model {
                                                                                                                                        p));
         ExistentialRuleform<? extends T, ?> ruleform;
         try {
-            ruleform = (T) getExistentialRuleformConstructor(phantasm).newInstance(name,
-                                                                                   description,
-                                                                                   updatedBy);
+            ruleform = (T) Model.getExistentialRuleformConstructor(phantasm).newInstance(name,
+                                                                                         description,
+                                                                                         updatedBy);
         } catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             InstantiationException ex = new InstantiationException(
@@ -426,30 +424,5 @@ public class ModelImpl implements Model {
                                                                                                              (Class<?> p) -> new PhantasmDefinition(
                                                                                                                                                     p));
         return (Phantasm<? super T>) definition.wrap(ruleform, this);
-    }
-
-    /**
-     * @param phantasm
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    private <T extends ExistentialRuleform<T, ?>> Class<T> getExistentialRuleform(Class<? extends Phantasm<? extends T>> phantasm) {
-        return (Class<T>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
-    }
-
-    /**
-     * @param phantasm
-     * @return
-     */
-    private <T extends ExistentialRuleform<T, ?>> Constructor<? super T> getExistentialRuleformConstructor(Class<? extends Phantasm<? extends T>> phantasm) {
-        try {
-            return getExistentialRuleform(phantasm).getConstructor(String.class,
-                                                                   String.class,
-                                                                   Agency.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException(
-                                            "Cannot access or find constructor for ruleform",
-                                            e);
-        }
     }
 }

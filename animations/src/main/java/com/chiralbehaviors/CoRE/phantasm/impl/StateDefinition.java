@@ -125,16 +125,16 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         for (Facet aspect : state.facets()) {
             aspects.add(aspect);
         }
-        process(stateInterface);
-        for (Class<?> iFace : stateInterface.getInterfaces()) {
-            process(iFace);
-        }
-    }
-
-    private void process(Class<?> iFace) {
-        for (Method method : iFace.getDeclaredMethods()) {
+        for (Method method : stateInterface.getDeclaredMethods()) {
             if (!method.isDefault()) {
                 process(method);
+            }
+        }
+        for (Class<?> iFace : stateInterface.getInterfaces()) {
+            for (Method method : iFace.getDeclaredMethods()) {
+                if (!method.isDefault()) {
+                    process(method);
+                }
             }
         }
     }
@@ -195,9 +195,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private void process(Key annotation, Method method) {
         if (method.getName().startsWith(GET)) {
-            processGetter(annotation, method);
+            processGetter(annotation.namespace(), annotation.name(), method);
         } else if (method.getName().startsWith(SET)) {
-            processSetter(annotation, method);
+            processSetter(annotation.namespace(), annotation.name(), method);
         }
     }
 
@@ -237,17 +237,6 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
     }
 
-    private void processGetter(Key attribute, Method method) {
-        processGetter(attribute.namespace(), attribute.name(), method);
-    }
-
-    private void processGetter(Method method) {
-        processGetter(null,
-                      method.getName().substring(GET.length(),
-                                                 method.getName().length()),
-                      method);
-    }
-
     private void processGetter(String namespace, String name, Method method) {
         if (method.getParameterCount() != 0) {
             throw new IllegalStateException(
@@ -285,17 +274,6 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                     (StateImpl<RuleForm> state, Object[] arguments) -> state.setImmediateChild(annotation.value().namespace(),
                                                                                                annotation.value().name(),
                                                                                                method.getReturnType()));
-    }
-
-    private void processSetter(Key attribute, Method method) {
-        processSetter(attribute.namespace(), attribute.name(), method);
-    }
-
-    private void processSetter(Method method) {
-        processSetter(null,
-                      method.getName().substring(SET.length(),
-                                                 method.getName().length()),
-                      method);
     }
 
     @SuppressWarnings("unchecked")
@@ -356,9 +334,15 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private void processUnknown(Method method) {
         if (method.getName().startsWith(GET)) {
-            processGetter(method);
+            processGetter(null,
+                          method.getName().substring(GET.length(),
+                                                     method.getName().length()),
+                          method);
         } else if (method.getName().startsWith(SET)) {
-            processSetter(method);
+            processSetter(null,
+                          method.getName().substring(SET.length(),
+                                                     method.getName().length()),
+                          method);
         }
     }
 }

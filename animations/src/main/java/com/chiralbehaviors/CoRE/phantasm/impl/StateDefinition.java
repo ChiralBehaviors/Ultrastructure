@@ -255,11 +255,57 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                  Class<? extends Phantasm<?>> phantasmReturned,
                                                  Key value,
                                                  Class<ExistentialRuleform<?, ?>> ruleformClass) {
-        methods.put(method,
-                    (StateImpl<RuleForm> state, Object[] arguments) -> state.getSingularAuthorization(ruleformClass,
-                                                                                                      value.namespace(),
-                                                                                                      value.name(),
-                                                                                                      phantasmReturned));
+        Class<RuleForm> stateRuleformClass = getRuleformClass();
+        if (stateRuleformClass.equals(Agency.class)) {
+            if (ruleformClass.equals(Location.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.getSingularAgencyLocation(value.namespace(),
+                                                                                                               value.name(),
+                                                                                                               phantasmReturned));
+            } else if (ruleformClass.equals(Product.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.getSingularAgencyProduct(value.namespace(),
+                                                                                                              value.name(),
+                                                                                                              phantasmReturned));
+            } else {
+                throw new IllegalStateException(
+                                                String.format("No such authorization from Agency to %s",
+                                                              ruleformClass.getSimpleName()));
+            }
+        } else if (stateRuleformClass.equals(Product.class)) {
+            if (ruleformClass.equals(Location.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.getSingularProductLocation(ruleformClass,
+                                                                                                                value.namespace(),
+                                                                                                                value.name(),
+                                                                                                                phantasmReturned));
+            } else if (ruleformClass.equals(Agency.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.getSingularProductAgency(value.namespace(),
+                                                                                                              value.name(),
+                                                                                                              phantasmReturned));
+            } else {
+                throw new IllegalStateException(
+                                                String.format("No such authorization from Product to %s",
+                                                              ruleformClass.getSimpleName()));
+            }
+        } else if (stateRuleformClass.equals(Location.class)) {
+            if (ruleformClass.equals(Product.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.getSingularLocationProduct(value.namespace(),
+                                                                                                                value.name(),
+                                                                                                                phantasmReturned));
+            } else if (ruleformClass.equals(Agency.class)) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.getSingularLocationAgency(value.namespace(),
+                                                                                                               value.name(),
+                                                                                                               phantasmReturned));
+            } else {
+                throw new IllegalStateException(
+                                                String.format("No such authorization from Product to %s",
+                                                              ruleformClass.getSimpleName()));
+            }
+        }
     }
 
     private void processPrimitiveGetter(String namespace, String name,
@@ -383,7 +429,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                             (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularAgencyLocation(value.namespace(),
                                                                                                                value.name(),
                                                                                                                (Phantasm<Location>) arguments[0]));
-            } else if (ruleformClass.equals(Location.class)) {
+            } else if (ruleformClass.equals(Product.class)) {
                 methods.put(method,
                             (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularAgencyProduct(value.namespace(),
                                                                                                               value.name(),
@@ -403,7 +449,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                 methods.put(method,
                             (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularProductAgency(value.namespace(),
                                                                                                               value.name(),
-                                                                                                              (Phantasm<Product>) arguments[0]));
+                                                                                                              (Phantasm<Agency>) arguments[0]));
             } else {
                 throw new IllegalStateException(
                                                 String.format("No such authorization from Product to %s",
@@ -414,12 +460,12 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                 methods.put(method,
                             (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularLocationProduct(value.namespace(),
                                                                                                                 value.name(),
-                                                                                                                (Phantasm<Location>) arguments[0]));
+                                                                                                                (Phantasm<Product>) arguments[0]));
             } else if (ruleformClass.equals(Agency.class)) {
                 methods.put(method,
                             (StateImpl<RuleForm> state, Object[] arguments) -> state.setSingularLocationAgency(value.namespace(),
                                                                                                                value.name(),
-                                                                                                               (Phantasm<Product>) arguments[0]));
+                                                                                                               (Phantasm<Agency>) arguments[0]));
             } else {
                 throw new IllegalStateException(
                                                 String.format("No such authorization from Product to %s",

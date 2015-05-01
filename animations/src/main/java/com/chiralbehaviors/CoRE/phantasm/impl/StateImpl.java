@@ -338,16 +338,81 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     }
 
     /**
+     * @param namespace
+     * @param name
+     * @param phantasmReturned
+     * @return
+     */
+    protected Object getSingularAgencyLocation(String namespace,
+                                               String name,
+                                               Class<? extends Phantasm<?>> phantasmReturned) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasmReturned
+     * @return
+     */
+    protected Object getSingularAgencyProduct(String namespace,
+                                              String name,
+                                              Class<? extends Phantasm<?>> phantasmReturned) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasmReturned
+     * @return
+     */
+    protected Object getSingularLocationAgency(String namespace,
+                                               String name,
+                                               Class<? extends Phantasm<?>> phantasmReturned) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasmReturned
+     * @return
+     */
+    protected Object getSingularLocationProduct(String namespace,
+                                                String name,
+                                                Class<? extends Phantasm<?>> phantasmReturned) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasmReturned
+     * @return
+     */
+    protected Object getSingularProductAgency(String namespace,
+                                              String name,
+                                              Class<? extends Phantasm<?>> phantasmReturned) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
      * @param ruleformClass
      * @param namespace
      * @param name
      * @param phantasmReturned
      * @return
      */
-    protected Object getSingularAuthorization(Class<ExistentialRuleform<?, ?>> ruleformClass,
-                                              String namespace,
-                                              String name,
-                                              Class<? extends Phantasm<?>> phantasmReturned) {
+    protected Object getSingularProductLocation(Class<ExistentialRuleform<?, ?>> ruleformClass,
+                                                String namespace,
+                                                String name,
+                                                Class<? extends Phantasm<?>> phantasmReturned) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -524,11 +589,11 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     /**
      * @param namespace
      * @param name
-     * @param phantasm
+     * @param arguments
      * @return
      */
     protected Object setSingularLocationAgency(String namespace, String name,
-                                               Phantasm<Product> phantasm) {
+                                               Phantasm<Agency> arguments) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -536,11 +601,11 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     /**
      * @param namespace
      * @param name
-     * @param phantasm
+     * @param arguments
      * @return
      */
     protected Object setSingularLocationProduct(String namespace, String name,
-                                                Phantasm<Location> phantasm) {
+                                                Phantasm<Product> arguments) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -548,11 +613,11 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     /**
      * @param namespace
      * @param name
-     * @param phantasm
+     * @param arguments
      * @return
      */
     protected Object setSingularProductAgency(String namespace, String name,
-                                              Phantasm<Product> phantasm) {
+                                              Phantasm<Agency> arguments) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -29,8 +29,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
+
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyLocation;
+import com.chiralbehaviors.CoRE.agency.AgencyLocation_;
+import com.chiralbehaviors.CoRE.agency.AgencyProduct;
+import com.chiralbehaviors.CoRE.agency.AgencyProduct_;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.location.Location;
@@ -41,6 +52,8 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductLocation;
+import com.chiralbehaviors.CoRE.product.ProductLocation_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -345,9 +358,24 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
      */
     protected Object getSingularAgencyLocation(String namespace,
                                                String name,
-                                               Class<? extends Phantasm<?>> phantasmReturned) {
-        // TODO Auto-generated method stub
-        return null;
+                                               Class<? extends Phantasm<Location>> phantasmReturned) {
+        Relationship relationship = getRelationship(namespace, name);
+        EntityManager em = model.getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Location> query = cb.createQuery(Location.class);
+        Root<AgencyLocation> plRoot = query.from(AgencyLocation.class);
+        Path<Location> path;
+        try {
+            path = plRoot.get(AgencyLocation_.location);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyLocation_.agency),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(AgencyLocation_.relationship),
+                                                 relationship)));
+        TypedQuery<Location> q = em.createQuery(query);
+        return model.wrap(phantasmReturned, q.getSingleResult());
     }
 
     /**
@@ -358,9 +386,24 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
      */
     protected Object getSingularAgencyProduct(String namespace,
                                               String name,
-                                              Class<? extends Phantasm<?>> phantasmReturned) {
-        // TODO Auto-generated method stub
-        return null;
+                                              Class<? extends Phantasm<Product>> phantasmReturned) {
+        Relationship relationship = getRelationship(namespace, name);
+        EntityManager em = model.getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Product> query = cb.createQuery(Product.class);
+        Root<AgencyProduct> plRoot = query.from(AgencyProduct.class);
+        Path<Product> path;
+        try {
+            path = plRoot.get(AgencyProduct_.product);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.agency),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(AgencyProduct_.relationship),
+                                                 relationship)));
+        TypedQuery<Product> q = em.createQuery(query);
+        return model.wrap(phantasmReturned, q.getSingleResult());
     }
 
     /**
@@ -371,9 +414,24 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
      */
     protected Object getSingularLocationAgency(String namespace,
                                                String name,
-                                               Class<? extends Phantasm<?>> phantasmReturned) {
-        // TODO Auto-generated method stub
-        return null;
+                                               Class<? extends Phantasm<Agency>> phantasmReturned) {
+        Relationship relationship = getRelationship(namespace, name);
+        EntityManager em = model.getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Agency> query = cb.createQuery(Agency.class);
+        Root<AgencyLocation> plRoot = query.from(AgencyLocation.class);
+        Path<Agency> path;
+        try {
+            path = plRoot.get(AgencyLocation_.agency);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyLocation_.location),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(AgencyLocation_.relationship),
+                                                 relationship)));
+        TypedQuery<Agency> q = em.createQuery(query);
+        return model.wrap(phantasmReturned, q.getSingleResult());
     }
 
     /**
@@ -384,9 +442,24 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
      */
     protected Object getSingularLocationProduct(String namespace,
                                                 String name,
-                                                Class<? extends Phantasm<?>> phantasmReturned) {
-        // TODO Auto-generated method stub
-        return null;
+                                                Class<? extends Phantasm<Product>> phantasmReturned) {
+        Relationship relationship = getRelationship(namespace, name);
+        EntityManager em = model.getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Product> query = cb.createQuery(Product.class);
+        Root<ProductLocation> plRoot = query.from(ProductLocation.class);
+        Path<Product> path;
+        try {
+            path = plRoot.get(ProductLocation_.product);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductLocation_.location),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(ProductLocation_.relationship),
+                                                 relationship)));
+        TypedQuery<Product> q = em.createQuery(query);
+        return model.wrap(phantasmReturned, q.getSingleResult());
     }
 
     /**
@@ -397,24 +470,52 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
      */
     protected Object getSingularProductAgency(String namespace,
                                               String name,
-                                              Class<? extends Phantasm<?>> phantasmReturned) {
-        // TODO Auto-generated method stub
-        return null;
+                                              Class<? extends Phantasm<Agency>> phantasmReturned) {
+        Relationship relationship = getRelationship(namespace, name);
+        EntityManager em = model.getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Agency> query = cb.createQuery(Agency.class);
+        Root<AgencyProduct> plRoot = query.from(AgencyProduct.class);
+        Path<Agency> path;
+        try {
+            path = plRoot.get(AgencyProduct_.agency);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.product),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(AgencyProduct_.relationship),
+                                                 relationship)));
+        TypedQuery<Agency> q = em.createQuery(query);
+        return model.wrap(phantasmReturned, q.getSingleResult());
     }
 
     /**
-     * @param ruleformClass
      * @param namespace
      * @param name
      * @param phantasmReturned
      * @return
      */
-    protected Object getSingularProductLocation(Class<ExistentialRuleform<?, ?>> ruleformClass,
-                                                String namespace,
+    protected Object getSingularProductLocation(String namespace,
                                                 String name,
-                                                Class<? extends Phantasm<?>> phantasmReturned) {
-        // TODO Auto-generated method stub
-        return null;
+                                                Class<? extends Phantasm<Location>> phantasmReturned) {
+        Relationship relationship = getRelationship(namespace, name);
+        EntityManager em = model.getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Location> query = cb.createQuery(Location.class);
+        Root<ProductLocation> plRoot = query.from(ProductLocation.class);
+        Path<Location> path;
+        try {
+            path = plRoot.get(ProductLocation_.location);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(ProductLocation_.relationship),
+                                                 relationship)));
+        TypedQuery<Location> q = em.createQuery(query);
+        return model.wrap(phantasmReturned, q.getSingleResult());
     }
 
     protected Object removeChild(String scope, String name, RuleForm child) {

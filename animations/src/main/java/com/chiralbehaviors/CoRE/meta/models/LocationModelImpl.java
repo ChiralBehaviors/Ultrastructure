@@ -133,37 +133,6 @@ public class LocationModelImpl
         em.persist(b);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorizeAgencies(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, java.util.List)
-     */
-    @Override
-    public void authorizeAgencies(Location ruleform, Relationship relationship,
-                                  List<Agency> authorized) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorizeLocations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, java.util.List)
-     */
-    @Override
-    public void authorizeLocations(Location ruleform,
-                                   Relationship relationship,
-                                   List<Location> authorized) {
-        throw new UnsupportedOperationException(
-                                                "Location -> Location authorizations are modeled with Location Networks");
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorizeProducts(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, java.util.List)
-     */
-    @Override
-    public void authorizeProducts(Location ruleform, Relationship relationship,
-                                  List<Product> authorized) {
-        // TODO Auto-generated method stub
-
-    }
-
     /*
      * (non-Javadoc)
      *

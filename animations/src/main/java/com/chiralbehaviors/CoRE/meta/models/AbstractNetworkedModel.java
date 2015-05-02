@@ -137,26 +137,26 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public void authorizeAgencies(RuleForm ruleform, Relationship relationship,
                                   List<Agency> authorized) {
-        throw new UnsupportedOperationException(
-                                                String.format("Authorizations between %s and Agency are not defined",
-                                                              ruleform.getClass().getSimpleName()));
+        for (Agency agency : authorized) {
+            authorize(ruleform, relationship, agency);
+        }
     }
 
     @Override
     public void authorizeLocations(RuleForm ruleform,
                                    Relationship relationship,
                                    List<Location> authorized) {
-        throw new UnsupportedOperationException(
-                                                String.format("Authorizations between %s and Location are not defined",
-                                                              ruleform.getClass().getSimpleName()));
+        for (Location location : authorized) {
+            authorize(ruleform, relationship, location);
+        }
     }
 
     @Override
     public void authorizeProducts(RuleForm ruleform, Relationship relationship,
                                   List<Product> authorized) {
-        throw new UnsupportedOperationException(
-                                                String.format("Authorizations between %s and Product are not defined",
-                                                              ruleform.getClass().getSimpleName()));
+        for (Product product : authorized) {
+            authorize(ruleform, relationship, product);
+        }
     }
 
     /* (non-Javadoc)

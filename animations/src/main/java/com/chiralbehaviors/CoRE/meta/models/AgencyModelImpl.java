@@ -132,36 +132,6 @@ public class AgencyModelImpl
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorizeAgencies(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, java.util.List)
-     */
-    @Override
-    public void authorizeAgencies(Agency ruleform, Relationship relationship,
-                                  List<Agency> authorized) {
-        throw new UnsupportedOperationException(
-                                                "Agency -> Agency authorizations are modeled with Agency Networks");
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorizeLocations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, java.util.List)
-     */
-    @Override
-    public void authorizeLocations(Agency ruleform, Relationship relationship,
-                                   List<Location> authorized) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorizeProducts(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, java.util.List)
-     */
-    @Override
-    public void authorizeProducts(Agency ruleform, Relationship relationship,
-                                  List<Product> authorized) {
-        // TODO Auto-generated method stub
-
-    }
-
     /*
      * (non-Javadoc)
      *

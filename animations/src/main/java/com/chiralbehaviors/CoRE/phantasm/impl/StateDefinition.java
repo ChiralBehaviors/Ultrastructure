@@ -238,17 +238,57 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
      */
     @SuppressWarnings("unchecked")
     private void processGetList(Edge annotation, Method method) {
-        Class<Phantasm<? extends RuleForm>> phantasm = (Class<Phantasm<? extends RuleForm>>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
-        if (method.getAnnotation(Inferred.class) != null) {
-            methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getChildren(annotation.value().namespace(),
-                                                                                             annotation.value().name(),
-                                                                                             phantasm));
+        Class<? extends Phantasm<?>> returnPhantasm = (Class<Phantasm<?>>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
+        Class<?> ruleformClass = Model.getExistentialRuleform(returnPhantasm);
+        if (getRuleformClass().equals(ruleformClass)) {
+            Class<Phantasm<? extends RuleForm>> phantasm = (Class<Phantasm<? extends RuleForm>>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
+            if (method.getAnnotation(Inferred.class) != null) {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.getChildren(annotation.value().namespace(),
+                                                                                                 annotation.value().name(),
+                                                                                                 phantasm));
+            } else {
+                methods.put(method,
+                            (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChildren(annotation.value().namespace(),
+                                                                                                          annotation.value().name(),
+                                                                                                          phantasm));
+            }
         } else {
+            processGetAuthorizations(method, returnPhantasm,
+                                     annotation.value(), ruleformClass);
+        }
+    }
+
+    /**
+     * @param method
+     * @param returnPhantasm
+     * @param annotation
+     * @param ruleformClass
+     */
+    @SuppressWarnings("unchecked")
+    private void processGetAuthorizations(Method method,
+                                          Class<? extends Phantasm<?>> phantasmReturned,
+                                          Key relationship,
+                                          Class<?> ruleformClass) {
+        if (ruleformClass.equals(Location.class)) {
             methods.put(method,
-                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getImmediateChildren(annotation.value().namespace(),
-                                                                                                      annotation.value().name(),
-                                                                                                      phantasm));
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getLocationAuths(relationship.namespace(),
+                                                                                                  relationship.name(),
+                                                                                                  (Class<? extends Phantasm<Location>>) phantasmReturned));
+        } else if (ruleformClass.equals(Product.class)) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getProductAuths(relationship.namespace(),
+                                                                                                 relationship.name(),
+                                                                                                 (Class<? extends Phantasm<Product>>) phantasmReturned));
+        } else if (ruleformClass.equals(Agency.class)) {
+            methods.put(method,
+                        (StateImpl<RuleForm> state, Object[] arguments) -> state.getAgencyAuths(relationship.namespace(),
+                                                                                                relationship.name(),
+                                                                                                (Class<? extends Phantasm<Agency>>) phantasmReturned));
+        } else {
+            throw new IllegalStateException(
+                                            String.format("No such authorization from Product to %s",
+                                                          ruleformClass.getSimpleName()));
         }
     }
 

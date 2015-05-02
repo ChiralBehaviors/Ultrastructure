@@ -295,7 +295,7 @@ public class ProductModelImpl
     public Product getAuthorizedProduct(Product ruleform,
                                         Relationship relationship) {
         throw new UnsupportedOperationException(
-                                                "Location -> Location authorizations are modeled with Location Networks");
+                                                "Product -> Product authorizations are modeled with Product Networks");
     }
 
     /* (non-Javadoc)
@@ -305,7 +305,7 @@ public class ProductModelImpl
     public List<Product> getAuthorizedProducts(Product ruleform,
                                                Relationship relationship) {
         throw new UnsupportedOperationException(
-                                                "Location -> Location authorizations are modeled with Location Networks");
+                                                "Product -> Product authorizations are modeled with Product Networks");
     }
 
     @Override

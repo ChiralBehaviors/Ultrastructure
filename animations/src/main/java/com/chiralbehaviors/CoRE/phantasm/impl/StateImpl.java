@@ -158,8 +158,14 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return model.getNetworkedModel(ruleform);
     }
 
-    private Relationship getRelationship(String s, String key) {
-        return (Relationship) scope.lookup(s, key);
+    private Relationship getRelationship(String namepsace, String name) {
+        Relationship lookup = (Relationship) scope.lookup(namepsace, name);
+        if (lookup == null) {
+            throw new IllegalStateException(
+                                            String.format("Unable to find relationship %s:%s",
+                                                          namepsace, name));
+        }
+        return lookup;
     }
 
     private AttributeValue<RuleForm>[] getValueArray(Attribute attribute) {

@@ -97,7 +97,7 @@ public class ProductModelImpl
         em.persist(a);
         AgencyProduct b = new AgencyProduct(kernel.getCoreAnimationSoftware());
         b.setAgency(authorized);
-        a.setRelationship(relationship.getInverse());
+        b.setRelationship(relationship.getInverse());
         b.setProduct(ruleform);
         em.persist(b);
     }
@@ -108,6 +108,9 @@ public class ProductModelImpl
     @Override
     public void authorize(Product ruleform, Relationship relationship,
                           Location authorized) {
+        assert ruleform != null : "ruleform is null";
+        assert relationship != null : "relationshp is null";
+        assert authorized != null : "authorized is null";
         ProductLocation a = new ProductLocation(
                                                 kernel.getCoreAnimationSoftware());
         a.setProduct(ruleform);
@@ -117,7 +120,7 @@ public class ProductModelImpl
         ProductLocation b = new ProductLocation(
                                                 kernel.getCoreAnimationSoftware());
         b.setProduct(ruleform);
-        a.setRelationship(relationship.getInverse());
+        b.setRelationship(relationship.getInverse());
         b.setLocation(authorized);
         em.persist(b);
     }

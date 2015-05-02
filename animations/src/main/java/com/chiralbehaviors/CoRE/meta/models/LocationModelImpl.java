@@ -98,7 +98,7 @@ public class LocationModelImpl
         em.persist(a);
         AgencyLocation b = new AgencyLocation(kernel.getCoreAnimationSoftware());
         b.setAgency(authorized);
-        a.setRelationship(relationship.getInverse());
+        b.setRelationship(relationship.getInverse());
         b.setLocation(ruleform);
         em.persist(b);
     }
@@ -128,7 +128,7 @@ public class LocationModelImpl
         ProductLocation b = new ProductLocation(
                                                 kernel.getCoreAnimationSoftware());
         b.setProduct(authorized);
-        a.setRelationship(relationship.getInverse());
+        b.setRelationship(relationship.getInverse());
         b.setLocation(ruleform);
         em.persist(b);
     }

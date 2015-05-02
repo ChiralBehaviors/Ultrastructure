@@ -86,7 +86,7 @@ public class AgencyModelImpl
         em.persist(a);
         AgencyLocation b = new AgencyLocation(kernel.getCoreAnimationSoftware());
         b.setAgency(ruleform);
-        a.setRelationship(relationship.getInverse());
+        b.setRelationship(relationship.getInverse());
         b.setLocation(authorized);
         em.persist(b);
     }

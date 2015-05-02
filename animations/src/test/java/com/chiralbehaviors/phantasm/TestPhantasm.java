@@ -146,6 +146,16 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(0, thing2.getThing3s().size());
 
         assertNull(thing1.getArtifact());
+        MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
+                                                                 "myartifact",
+                                                                 "artifact",
+                                                                 kernel.getCore());
+        artifact.setType("jar");
+        em.flush();
+        thing1.setArtifact(artifact);
+        em.flush();
+        assertNotNull(thing1.getArtifact());
+
     }
 
     @Test

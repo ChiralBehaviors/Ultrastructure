@@ -65,6 +65,7 @@ public class Loader {
                                    Configuration.fromYaml(Utils.resolveResource(Loader.class,
                                                                                 argv[0])));
         loader.bootstrap();
+        System.exit(0);
     }
 
     private final Configuration configuration;

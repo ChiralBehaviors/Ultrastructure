@@ -232,6 +232,37 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return result;
     }
 
+    /**
+     * @param namespace
+     * @param name
+     * @param arguments
+     * @return
+     */
+    protected Object addAgencyAuth(String namespace, String name,
+                                   Phantasm<Agency> phantasm) {
+        Relationship relationship = getRelationship(namespace, name);
+        getNetworkedModel().authorize(ruleform, relationship,
+                                      phantasm.getRuleform());
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param arguments
+     * @return
+     */
+    protected Object addAgencyAuths(String namespace, String name,
+                                    List<Phantasm<Agency>> authorized) {
+        Relationship relationship = getRelationship(namespace, name);
+        List<Agency> agencies = new ArrayList<>(authorized.size());
+        for (Phantasm<Agency> phantasm : authorized) {
+            agencies.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().authorizeAgencies(ruleform, relationship, agencies);
+        return null;
+    }
+
     protected Object addChild(String namespace, String name, RuleForm child) {
         getNetworkedModel().link(ruleform, getRelationship(namespace, name),
                                  child, model.getKernel().getCore());
@@ -246,6 +277,69 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
             networkedModel.link(ruleform, relationship, child.getRuleform(),
                                 model.getKernel().getCore());
         }
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object addLocationAuth(String namespace, String name,
+                                     Phantasm<Location> phantasm) {
+        Relationship relationship = getRelationship(namespace, name);
+        getNetworkedModel().authorize(ruleform, relationship,
+                                      phantasm.getRuleform());
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object addLocationAuths(String namespace, String name,
+                                      List<Phantasm<Location>> authorized) {
+        Relationship relationship = getRelationship(namespace, name);
+        List<Location> locations = new ArrayList<>(authorized.size());
+        for (Phantasm<Location> phantasm : authorized) {
+            locations.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().authorizeLocations(ruleform, relationship,
+                                               locations);
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object addProductAuth(String namespace, String name,
+                                    Phantasm<Product> phantasm) {
+        Relationship relationship = getRelationship(namespace, name);
+        getNetworkedModel().authorize(ruleform, relationship,
+                                      phantasm.getRuleform());
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object addProductAuths(String namespace, String name,
+                                     List<Phantasm<Product>> authorized) {
+        Relationship relationship = getRelationship(namespace, name);
+        List<Product> locations = new ArrayList<>(authorized.size());
+        for (Phantasm<Product> phantasm : authorized) {
+            locations.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().authorizeProducts(ruleform, relationship, locations);
         return null;
     }
 
@@ -461,6 +555,38 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         return model.wrap(phantasmReturned, authorized);
     }
 
+    /**
+     * @param namespace
+     * @param name
+     * @param arguments
+     * @return
+     */
+    protected Object removeAgencyAuth(String namespace, String name,
+                                      Phantasm<Agency> phantasm) {
+        Relationship relationship = getRelationship(namespace, name);
+        getNetworkedModel().deauthorize(ruleform, relationship,
+                                        phantasm.getRuleform());
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param arguments
+     * @return
+     */
+    protected Object removeAgencyAuths(String namespace, String name,
+                                       List<Phantasm<Agency>> authorized) {
+        Relationship relationship = getRelationship(namespace, name);
+        List<Agency> agencies = new ArrayList<>(authorized.size());
+        for (Phantasm<Agency> phantasm : authorized) {
+            agencies.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().deauthorizeAgencies(ruleform, relationship,
+                                                agencies);
+        return null;
+    }
+
     protected Object removeChild(String scope, String name, RuleForm child) {
         removeImmediateChild(getNetworkedModel(), getRelationship(scope, name),
                              child);
@@ -474,6 +600,88 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         for (Phantasm<RuleForm> child : children) {
             removeImmediateChild(networkedModel, relationship, child);
         }
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object removeLocationAuth(String namespace, String name,
+                                        Phantasm<Location> phantasm) {
+        Relationship relationship = getRelationship(namespace, name);
+        getNetworkedModel().deauthorize(ruleform, relationship,
+                                        phantasm.getRuleform());
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object removeLocationAuths(String namespace, String name,
+                                         List<Phantasm<Location>> authorized) {
+        Relationship relationship = getRelationship(namespace, name);
+        List<Location> locations = new ArrayList<>(authorized.size());
+        for (Phantasm<Location> phantasm : authorized) {
+            locations.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().deauthorizeLocations(ruleform, relationship,
+                                                 locations);
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object removeProductAuth(String namespace, String name,
+                                       Phantasm<Product> phantasm) {
+        Relationship relationship = getRelationship(namespace, name);
+        getNetworkedModel().deauthorize(ruleform, relationship,
+                                        phantasm.getRuleform());
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object removeProductAuths(String namespace, String name,
+                                        List<Phantasm<Product>> authorized) {
+        Relationship relationship = getRelationship(namespace, name);
+        List<Product> locations = new ArrayList<>(authorized.size());
+        for (Phantasm<Product> phantasm : authorized) {
+            locations.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().deauthorizeProducts(ruleform, relationship,
+                                                locations);
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param arguments
+     * @return
+     */
+    protected Object setAgencyAuths(String namespace, String name,
+                                    List<Phantasm<Agency>> authorized) {
+        Relationship relationship = getRelationship(namespace, name);
+        List<Agency> agencies = new ArrayList<>(authorized.size());
+        for (Phantasm<Agency> phantasm : authorized) {
+            agencies.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().setAuthorizedAgencies(ruleform, relationship,
+                                                  agencies);
         return null;
     }
 
@@ -593,9 +801,9 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
      * @return
      */
     protected Object setImmediateChildren(String namespace, String name,
-                                          List<RuleForm> children) {
+                                          List<Phantasm<RuleForm>> arguments) {
         Relationship relationship = getRelationship(namespace, name);
-        for (Phantasm<RuleForm> phantasm : children) {
+        for (Phantasm<RuleForm> phantasm : arguments) {
             RuleForm child = phantasm.getRuleform();
             NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = getNetworkedModel();
             networkedModel.setImmediateChild(ruleform,
@@ -609,14 +817,50 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     /**
      * @param namespace
      * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object setLocationAuths(String namespace, String name,
+                                      List<Phantasm<Location>> authorized) {
+        Relationship relationship = getRelationship(namespace, name);
+        List<Location> locations = new ArrayList<>(authorized.size());
+        for (Phantasm<Location> phantasm : authorized) {
+            locations.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().setAuthorizedLocations(ruleform, relationship,
+                                                   locations);
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object setProductAuths(String namespace, String name,
+                                     List<Phantasm<Product>> authorized) {
+        Relationship relationship = getRelationship(namespace, name);
+        List<Product> locations = new ArrayList<>(authorized.size());
+        for (Phantasm<Product> phantasm : authorized) {
+            locations.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().setAuthorizedProducts(ruleform, relationship,
+                                                  locations);
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
      * @param arguments
      * @return
      */
     protected Object setSingularAgencyAuth(String namespace, String name,
                                            Phantasm<Agency> phantasm) {
         Relationship relationship = getRelationship(namespace, name);
-        getNetworkedModel().authorize(ruleform, relationship,
-                                      phantasm.getRuleform());
+        getNetworkedModel().authorizeSingular(ruleform, relationship,
+                                              phantasm.getRuleform());
         return null;
     }
 
@@ -629,8 +873,8 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     protected Object setSingularLocationAuth(String namespace, String name,
                                              Phantasm<Location> phantasm) {
         Relationship relationship = getRelationship(namespace, name);
-        getNetworkedModel().authorize(ruleform, relationship,
-                                      phantasm.getRuleform());
+        getNetworkedModel().authorizeSingular(ruleform, relationship,
+                                              phantasm.getRuleform());
         return null;
     }
 
@@ -643,8 +887,8 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
     protected Object setSingularProductAuth(String namespace, String name,
                                             Phantasm<Product> phantasm) {
         Relationship relationship = getRelationship(namespace, name);
-        getNetworkedModel().authorize(ruleform, relationship,
-                                      phantasm.getRuleform());
+        getNetworkedModel().authorizeSingular(ruleform, relationship,
+                                              phantasm.getRuleform());
         return null;
     }
 }

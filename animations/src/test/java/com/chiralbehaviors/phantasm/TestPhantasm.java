@@ -28,6 +28,8 @@ import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +157,27 @@ public class TestPhantasm extends AbstractModelTest {
         thing1.setArtifact(artifact);
         em.flush();
         assertNotNull(thing1.getArtifact());
+
+        assertEquals(0, thing2.getArtifacts().size());
+        thing2.addArtifact(artifact);
+        assertEquals(1, thing2.getArtifacts().size());
+        thing2.removeArtifact(artifact);
+        assertEquals(0, thing2.getArtifacts().size());
+        thing2.addArtifacts(Arrays.asList(artifact));
+        assertEquals(1, thing2.getArtifacts().size());
+
+        MavenArtifact artifact2 = (MavenArtifact) model.construct(MavenArtifact.class,
+                                                                  "myartifact2",
+                                                                  "artifact2",
+                                                                  kernel.getCore());
+        artifact2.setType("jar");
+
+        thing2.setArtifacts(Arrays.asList(artifact2));
+        assertEquals(1, thing2.getArtifacts().size());
+        thing2.addArtifact(artifact);
+        assertEquals(2, thing2.getArtifacts().size());
+        thing2.setArtifacts(Collections.emptyList());
+        assertEquals(0, thing2.getArtifacts().size());
 
     }
 

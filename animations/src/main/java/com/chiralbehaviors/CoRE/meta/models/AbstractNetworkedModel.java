@@ -159,6 +159,81 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
     }
 
+    @Override
+    public void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                                  Agency authorized) {
+        deauthorize(ruleform, relationship,
+                    getAuthorizedAgency(ruleform, relationship));
+        authorize(ruleform, relationship, authorized);
+    }
+
+    @Override
+    public void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                                  Location authorized) {
+        deauthorize(ruleform, relationship,
+                    getAuthorizedLocation(ruleform, relationship));
+        authorize(ruleform, relationship, authorized);
+    }
+
+    @Override
+    public void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                                  Product authorized) {
+        deauthorize(ruleform, relationship,
+                    getAuthorizedProduct(ruleform, relationship));
+        authorize(ruleform, relationship, authorized);
+    }
+
+    @Override
+    public void deauthorize(RuleForm ruleform, Relationship relationship,
+                            Agency authorized) {
+        throw new UnsupportedOperationException(
+                                                String.format("Authorizations between %s and Agency are not defined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public void deauthorize(RuleForm ruleform, Relationship relationship,
+                            Location authorized) {
+        throw new UnsupportedOperationException(
+                                                String.format("Authorizations between %s and Location are not defined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public void deauthorize(RuleForm ruleform, Relationship relationship,
+                            Product authorized) {
+        throw new UnsupportedOperationException(
+                                                String.format("Authorizations between %s and Product are not defined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public void deauthorizeAgencies(RuleForm ruleform,
+                                    Relationship relationship,
+                                    List<Agency> authorized) {
+        for (Agency agency : authorized) {
+            deauthorize(ruleform, relationship, agency);
+        }
+    }
+
+    @Override
+    public void deauthorizeLocations(RuleForm ruleform,
+                                     Relationship relationship,
+                                     List<Location> authorized) {
+        for (Location location : authorized) {
+            deauthorize(ruleform, relationship, location);
+        }
+    }
+
+    @Override
+    public void deauthorizeProducts(RuleForm ruleform,
+                                    Relationship relationship,
+                                    List<Product> authorized) {
+        for (Product product : authorized) {
+            deauthorize(ruleform, relationship, product);
+        }
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#find(long)
      */
@@ -371,17 +446,31 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public Agency getAuthorizedAgency(RuleForm ruleform,
                                       Relationship relationship) {
-        throw new UnsupportedOperationException(
-                                                String.format("%s to Agency authorizations are undefined",
-                                                              ruleform.getClass().getSimpleName()));
+        List<Agency> result = getAuthorizedAgencies(ruleform, relationship);
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s is a non singular authorization of %s",
+                                                          relationship,
+                                                          ruleform));
+        }
+        return result.get(0);
     }
 
     @Override
     public Location getAuthorizedLocation(RuleForm ruleform,
                                           Relationship relationship) {
-        throw new UnsupportedOperationException(
-                                                String.format("%s to Location authorizations are undefined",
-                                                              ruleform.getClass().getSimpleName()));
+        List<Location> result = getAuthorizedLocations(ruleform, relationship);
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s is a non singular authorization of %s",
+                                                          relationship,
+                                                          ruleform));
+        }
+        return result.get(0);
     }
 
     @Override
@@ -395,9 +484,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public Product getAuthorizedProduct(RuleForm ruleform,
                                         Relationship relationship) {
-        throw new UnsupportedOperationException(
-                                                String.format("%s to Product authorizations are undefined",
-                                                              ruleform.getClass().getSimpleName()));
+        List<Product> result = getAuthorizedProducts(ruleform, relationship);
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s is a non singular authorization of %s",
+                                                          relationship,
+                                                          ruleform));
+        }
+        return result.get(0);
     }
 
     @Override
@@ -775,6 +871,33 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             }
         }
 
+    }
+
+    @Override
+    public void setAuthorizedAgencies(RuleForm ruleform,
+                                      Relationship relationship,
+                                      List<Agency> authorized) {
+        deauthorizeAgencies(ruleform, relationship,
+                            getAuthorizedAgencies(ruleform, relationship));
+        authorizeAgencies(ruleform, relationship, authorized);
+    }
+
+    @Override
+    public void setAuthorizedLocations(RuleForm ruleform,
+                                       Relationship relationship,
+                                       List<Location> authorized) {
+        deauthorizeLocations(ruleform, relationship,
+                             getAuthorizedLocations(ruleform, relationship));
+        authorizeLocations(ruleform, relationship, authorized);
+    }
+
+    @Override
+    public void setAuthorizedProducts(RuleForm ruleform,
+                                      Relationship relationship,
+                                      List<Product> authorized) {
+        deauthorizeProducts(ruleform, relationship,
+                            getAuthorizedProducts(ruleform, relationship));
+        authorizeProducts(ruleform, relationship, authorized);
     }
 
     @Override

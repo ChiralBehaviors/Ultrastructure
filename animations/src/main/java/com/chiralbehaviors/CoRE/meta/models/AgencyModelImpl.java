@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -200,33 +201,6 @@ public class AgencyModelImpl
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedAgency(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
-     */
-    @Override
-    public Agency getAuthorizedAgency(Agency ruleform, Relationship relationship) {
-        throw new UnsupportedOperationException(
-                                                "Agency -> Agency authorizations are modeled with Agency Networks");
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedLocation(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
-     */
-    @Override
-    public Location getAuthorizedLocation(Agency ruleform,
-                                          Relationship relationship) {
-        List<Location> result = getAuthorizedLocations(ruleform, relationship);
-        if (result.isEmpty()) {
-            return null;
-        } else if (result.size() > 1) {
-            throw new IllegalStateException(
-                                            String.format("%s is a non singular authorization of %s",
-                                                          relationship,
-                                                          ruleform));
-        }
-        return result.get(0);
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedLocations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
      */
     @Override
@@ -247,24 +221,6 @@ public class AgencyModelImpl
                                                  relationship)));
         TypedQuery<Location> q = em.createQuery(query);
         return q.getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedProduct(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
-     */
-    @Override
-    public Product getAuthorizedProduct(Agency ruleform,
-                                        Relationship relationship) {
-        List<Product> result = getAuthorizedProducts(ruleform, relationship);
-        if (result.isEmpty()) {
-            return null;
-        } else if (result.size() > 1) {
-            throw new IllegalStateException(
-                                            String.format("%s is a non singular authorization of %s",
-                                                          relationship,
-                                                          ruleform));
-        }
-        return result.get(0);
     }
 
     /* (non-Javadoc)
@@ -305,5 +261,61 @@ public class AgencyModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#deauthorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.agency.Agency)
+     */
+    @Override
+    public void deauthorize(Agency ruleform, Relationship relationship,
+                            Agency authorized) {
+        throw new UnsupportedOperationException(
+                                                "Agency -> Agency authorizations are modeled with Agency Networks");
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#deauthorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.location.Location)
+     */
+    @Override
+    public void deauthorize(Agency ruleform, Relationship relationship,
+                            Location authorized) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AgencyLocation> query = cb.createQuery(AgencyLocation.class);
+        Root<AgencyLocation> plRoot = query.from(AgencyLocation.class);
+        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(AgencyLocation_.agency),
+                                                   ruleform),
+                                          cb.equal(plRoot.get(AgencyLocation_.relationship),
+                                                   relationship),
+                                          cb.equal(plRoot.get(AgencyLocation_.location),
+                                                   authorized)));
+        TypedQuery<AgencyLocation> q = em.createQuery(query);
+        try {
+            em.remove(q.getSingleResult());
+        } catch (NoResultException e) {
+            // no need to remove
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#deauthorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.product.Product)
+     */
+    @Override
+    public void deauthorize(Agency ruleform, Relationship relationship,
+                            Product authorized) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AgencyProduct> query = cb.createQuery(AgencyProduct.class);
+        Root<AgencyProduct> plRoot = query.from(AgencyProduct.class);
+        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.agency),
+                                                   ruleform),
+                                          cb.equal(plRoot.get(AgencyProduct_.relationship),
+                                                   relationship),
+                                          cb.equal(plRoot.get(AgencyProduct_.product),
+                                                   authorized)));
+        TypedQuery<AgencyProduct> q = em.createQuery(query);
+        try {
+            em.remove(q.getSingleResult());
+        } catch (NoResultException e) {
+            // no need to remove
+        }
     }
 }

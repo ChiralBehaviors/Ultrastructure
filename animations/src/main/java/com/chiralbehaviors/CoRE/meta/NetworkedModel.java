@@ -111,6 +111,15 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void authorizeProducts(RuleForm ruleform, Relationship relationship,
                            List<Product> authorized);
 
+    void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                           Agency authorized);
+
+    void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                           Location authorized);
+
+    void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                           Product authorized);
+
     /**
      * Create a new instance of the RuleForm based on the provided prototype
      *
@@ -119,6 +128,24 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @return the new instance
      */
     RuleForm create(RuleForm prototype);
+
+    void deauthorize(RuleForm ruleform, Relationship relationship,
+                     Agency authorized);
+
+    void deauthorize(RuleForm ruleform, Relationship relationship,
+                     Location authorized);
+
+    void deauthorize(RuleForm ruleform, Relationship relationship,
+                     Product authorized);
+
+    void deauthorizeAgencies(RuleForm ruleform, Relationship relationship,
+                             List<Agency> authorized);
+
+    void deauthorizeLocations(RuleForm ruleform, Relationship relationship,
+                              List<Location> authorized);
+
+    void deauthorizeProducts(RuleForm ruleform, Relationship relationship,
+                             List<Product> authorized);
 
     /**
      * @param id
@@ -408,6 +435,15 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param value
      */
     void setAttributeValue(AttributeType value);
+
+    void setAuthorizedAgencies(RuleForm ruleform, Relationship relationship,
+                               List<Agency> authorized);
+
+    void setAuthorizedLocations(RuleForm ruleform, Relationship relationship,
+                                List<Location> authorized);
+
+    void setAuthorizedProducts(RuleForm ruleform, Relationship relationship,
+                               List<Product> authorized);
 
     /**
      * Sets the child of the immediate relationship defined by the parent and

@@ -43,6 +43,15 @@ public interface Thing2 extends Phantasm<Product> {
     @Edge(@Key(name = "thing2Of"))
     void add(Thing3 thing3);
 
+    @Edge(@Key(name = "derivedFrom"))
+    void addArtifact(MavenArtifact artifact);
+
+    @Edge(@Key(name = "derivedFrom"))
+    void addArtifacts(List<MavenArtifact> artifacts);
+
+    @Edge(@Key(name = "derivedFrom"))
+    List<MavenArtifact> getArtifacts();
+
     @Edge(@Key(name = "inThing1"))
     Thing1 getThing1();
 
@@ -56,4 +65,10 @@ public interface Thing2 extends Phantasm<Product> {
 
     @Edge(@Key(name = "thing2Of"))
     void remove(Thing3 thing3);
+
+    @Edge(@Key(name = "derivedFrom"))
+    void removeArtifact(MavenArtifact artifact);
+
+    @Edge(@Key(name = "derivedFrom"))
+    void setArtifacts(List<MavenArtifact> artifacts);
 }

@@ -102,6 +102,15 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void authorize(RuleForm ruleform, Relationship relationship,
                    Product authorized);
 
+    void authorizeAgencies(RuleForm ruleform, Relationship relationship,
+                           List<Agency> authorized);
+
+    void authorizeLocations(RuleForm ruleform, Relationship relationship,
+                            List<Location> authorized);
+
+    void authorizeProducts(RuleForm ruleform, Relationship relationship,
+                           List<Product> authorized);
+
     /**
      * Create a new instance of the RuleForm based on the provided prototype
      *
@@ -239,11 +248,20 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     NetworkAttribute<?> getAttributeValue(RuleForm parent, Relationship r,
                                           RuleForm child, Attribute attribute);
 
+    List<Agency> getAuthorizedAgencies(RuleForm ruleform,
+                                       Relationship relationship);
+
     Agency getAuthorizedAgency(RuleForm ruleform, Relationship relationship);
 
     Location getAuthorizedLocation(RuleForm ruleform, Relationship relationship);
 
+    List<Location> getAuthorizedLocations(RuleForm ruleform,
+                                          Relationship relationship);
+
     Product getAuthorizedProduct(RuleForm ruleform, Relationship relationship);
+
+    List<Product> getAuthorizedProducts(RuleForm ruleform,
+                                        Relationship relationship);
 
     /**
      * Answer the child that is connected to the parent via the relationship

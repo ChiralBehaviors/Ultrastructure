@@ -122,7 +122,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public void authorize(RuleForm ruleform, Relationship relationship,
                           Location authorized) {
         throw new UnsupportedOperationException(
-                                                String.format("Authorizations between %s and Agency are not defined",
+                                                String.format("Authorizations between %s and Location are not defined",
                                                               ruleform.getClass().getSimpleName()));
     }
 
@@ -130,7 +130,32 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public void authorize(RuleForm ruleform, Relationship relationship,
                           Product authorized) {
         throw new UnsupportedOperationException(
+                                                String.format("Authorizations between %s and Product are not defined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public void authorizeAgencies(RuleForm ruleform, Relationship relationship,
+                                  List<Agency> authorized) {
+        throw new UnsupportedOperationException(
                                                 String.format("Authorizations between %s and Agency are not defined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public void authorizeLocations(RuleForm ruleform,
+                                   Relationship relationship,
+                                   List<Location> authorized) {
+        throw new UnsupportedOperationException(
+                                                String.format("Authorizations between %s and Location are not defined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public void authorizeProducts(RuleForm ruleform, Relationship relationship,
+                                  List<Product> authorized) {
+        throw new UnsupportedOperationException(
+                                                String.format("Authorizations between %s and Product are not defined",
                                                               ruleform.getClass().getSimpleName()));
     }
 
@@ -336,8 +361,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
+    public List<Agency> getAuthorizedAgencies(RuleForm ruleform,
+                                              Relationship relationship) {
+        throw new UnsupportedOperationException(
+                                                String.format("%s to Agency authorizations are undefined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
     public Agency getAuthorizedAgency(RuleForm ruleform,
-                                       Relationship relationship) {
+                                      Relationship relationship) {
         throw new UnsupportedOperationException(
                                                 String.format("%s to Agency authorizations are undefined",
                                                               ruleform.getClass().getSimpleName()));
@@ -352,8 +385,24 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
+    public List<Location> getAuthorizedLocations(RuleForm ruleform,
+                                                 Relationship relationship) {
+        throw new UnsupportedOperationException(
+                                                String.format("%s to Location authorizations are undefined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
     public Product getAuthorizedProduct(RuleForm ruleform,
                                         Relationship relationship) {
+        throw new UnsupportedOperationException(
+                                                String.format("%s to Product authorizations are undefined",
+                                                              ruleform.getClass().getSimpleName()));
+    }
+
+    @Override
+    public List<Product> getAuthorizedProducts(RuleForm ruleform,
+                                               Relationship relationship) {
         throw new UnsupportedOperationException(
                                                 String.format("%s to Product authorizations are undefined",
                                                               ruleform.getClass().getSimpleName()));

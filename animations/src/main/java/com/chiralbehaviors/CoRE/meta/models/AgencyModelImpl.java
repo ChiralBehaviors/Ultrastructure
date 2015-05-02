@@ -132,6 +132,36 @@ public class AgencyModelImpl
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorizeAgencies(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, java.util.List)
+     */
+    @Override
+    public void authorizeAgencies(Agency ruleform, Relationship relationship,
+                                  List<Agency> authorized) {
+        throw new UnsupportedOperationException(
+                                                "Agency -> Agency authorizations are modeled with Agency Networks");
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorizeLocations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, java.util.List)
+     */
+    @Override
+    public void authorizeLocations(Agency ruleform, Relationship relationship,
+                                   List<Location> authorized) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorizeProducts(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, java.util.List)
+     */
+    @Override
+    public void authorizeProducts(Agency ruleform, Relationship relationship,
+                                  List<Product> authorized) {
+        // TODO Auto-generated method stub
+
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -189,21 +219,14 @@ public class AgencyModelImpl
         return agency;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedAgencies(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
     @Override
-    public List<AgencyNetwork> getInterconnections(Collection<Agency> parents,
-                                                   Collection<Relationship> relationships,
-                                                   Collection<Agency> children) {
-        if (parents == null || parents.size() == 0 || relationships == null
-            || relationships.size() == 0 || children == null
-            || children.size() == 0) {
-            return null;
-        }
-        TypedQuery<AgencyNetwork> query = em.createNamedQuery(AgencyNetwork.GET_NETWORKS,
-                                                              AgencyNetwork.class);
-        query.setParameter("parents", parents);
-        query.setParameter("relationships", relationships);
-        query.setParameter("children", children);
-        return query.getResultList();
+    public List<Agency> getAuthorizedAgencies(Agency ruleform,
+                                              Relationship relationship) {
+        throw new UnsupportedOperationException(
+                                                "Agency -> Agency authorizations are modeled with Agency Networks");
     }
 
     /* (non-Javadoc)
@@ -221,6 +244,24 @@ public class AgencyModelImpl
     @Override
     public Location getAuthorizedLocation(Agency ruleform,
                                           Relationship relationship) {
+        List<Location> result = getAuthorizedLocations(ruleform, relationship);
+        if (result.isEmpty()) {
+            return null;
+        } else if (result.size() > 1) {
+            throw new IllegalStateException(
+                                            String.format("%s is a non singular authorization of %s",
+                                                          relationship,
+                                                          ruleform));
+        }
+        return result.get(0);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedLocations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
+    @Override
+    public List<Location> getAuthorizedLocations(Agency ruleform,
+                                                 Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Location> query = cb.createQuery(Location.class);
         Root<AgencyLocation> plRoot = query.from(AgencyLocation.class);
@@ -235,7 +276,16 @@ public class AgencyModelImpl
                                         cb.equal(plRoot.get(AgencyLocation_.relationship),
                                                  relationship)));
         TypedQuery<Location> q = em.createQuery(query);
-        List<Location> result = q.getResultList();
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedProduct(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
+    @Override
+    public Product getAuthorizedProduct(Agency ruleform,
+                                        Relationship relationship) {
+        List<Product> result = getAuthorizedProducts(ruleform, relationship);
         if (result.isEmpty()) {
             return null;
         } else if (result.size() > 1) {
@@ -248,11 +298,11 @@ public class AgencyModelImpl
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedProduct(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedProducts(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
      */
     @Override
-    public Product getAuthorizedProduct(Agency ruleform,
-                                        Relationship relationship) {
+    public List<Product> getAuthorizedProducts(Agency ruleform,
+                                               Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<AgencyProduct> plRoot = query.from(AgencyProduct.class);
@@ -267,15 +317,23 @@ public class AgencyModelImpl
                                         cb.equal(plRoot.get(AgencyProduct_.relationship),
                                                  relationship)));
         TypedQuery<Product> q = em.createQuery(query);
-        List<Product> result = q.getResultList();
-        if (result.isEmpty()) {
+        return q.getResultList();
+    }
+
+    @Override
+    public List<AgencyNetwork> getInterconnections(Collection<Agency> parents,
+                                                   Collection<Relationship> relationships,
+                                                   Collection<Agency> children) {
+        if (parents == null || parents.size() == 0 || relationships == null
+            || relationships.size() == 0 || children == null
+            || children.size() == 0) {
             return null;
-        } else if (result.size() > 1) {
-            throw new IllegalStateException(
-                                            String.format("%s is a non singular authorization of %s",
-                                                          relationship,
-                                                          ruleform));
         }
-        return result.get(0);
+        TypedQuery<AgencyNetwork> query = em.createNamedQuery(AgencyNetwork.GET_NETWORKS,
+                                                              AgencyNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationships", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 }

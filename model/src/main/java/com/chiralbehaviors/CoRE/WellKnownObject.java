@@ -523,20 +523,9 @@ public interface WellKnownObject {
 
         };
 
-        public WellKnownUnit durationUnit() {
-            return WellKnownUnit.NOT_APPLICABLE;
-        }
-
         @Override
         public UUID id() {
             return new UUID(WellKnownTypes.INTERVAL.ordinal(), ordinal() + 1);
-        }
-
-        /**
-         * @return
-         */
-        public WellKnownUnit startUnit() {
-            return WellKnownUnit.NOT_APPLICABLE;
         }
 
         /* (non-Javadoc)

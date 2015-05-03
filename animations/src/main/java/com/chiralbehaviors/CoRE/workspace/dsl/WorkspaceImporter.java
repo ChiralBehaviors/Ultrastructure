@@ -80,7 +80,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingCon
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.MetaProtocolContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ProtocolContext;
@@ -405,22 +404,15 @@ public class WorkspaceImporter {
     }
 
     private void loadIntervals() {
-        for (IntervalContext ivl : wsp.getIntervals()) {
-            Interval interval = new Interval(
-                                             stripQuotes(ivl.existentialRuleform().name.getText()),
-                                             ivl.start == null ? BigDecimal.valueOf(0)
-                                                              : BigDecimal.valueOf(Long.valueOf(ivl.start.getText())),
-                                             ivl.startUnit == null ? model.getKernel().getNotApplicableUnit()
-                                                                  : workspace.get(ivl.startUnit.getText()),
-                                             ivl.duration == null ? BigDecimal.valueOf(0)
-                                                                 : BigDecimal.valueOf(Long.valueOf(ivl.duration.getText())),
-                                             ivl.durationUnit == null ? model.getKernel().getNotApplicableUnit()
-                                                                     : workspace.get(ivl.durationUnit.getText()),
-                                             stripQuotes(ivl.existentialRuleform().description.getText()),
+        for (AttributedExistentialRuleformContext rf : wsp.getIntervals()) {
+            Interval ruleform = new Interval(
+                                             stripQuotes(rf.existentialRuleform().name.getText()),
+                                             rf.existentialRuleform().description == null ? null
+                                                                                         : stripQuotes(rf.existentialRuleform().description.getText()),
                                              model.getKernel().getCore());
-            em.persist(interval);
-            workspace.put(ivl.existentialRuleform().workspaceName.getText(),
-                          interval);
+            em.persist(ruleform);
+            workspace.put(rf.existentialRuleform().workspaceName.getText(),
+                          ruleform);
         }
     }
 

@@ -24,6 +24,10 @@ attributes {
         taxRate = "tax rate" "tax rate" numeric;
         discountRate = "discount" "discount" numeric;
 }
+intervals {
+    day = "Day" "A single day";
+    week = "Week" "A seven day week";
+}
 locations {
     rsb225 = "225RSB" "225 Reiss Science Bldg";
     bht37 = "37BHT" "37 Bret Harte Terrace";
@@ -147,10 +151,6 @@ units {
     dollar = "Dollar" "US Dollar" number;
     cent = "Cent" "US Cent" number;
     percentage = "Percentage" "Percentage" number min: 0 max: 100;
-}
-intervals {
-    day = "Day" "A single day" duration: 24 dollar;
-    week = "Week" "A seven day week";
 }
 sequencing auths {
     parent {

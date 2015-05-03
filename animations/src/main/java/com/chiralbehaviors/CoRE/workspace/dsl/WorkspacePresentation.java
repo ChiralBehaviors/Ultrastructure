@@ -30,7 +30,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingsCo
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.MetaProtocolContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ProtocolContext;
@@ -158,12 +157,11 @@ public class WorkspacePresentation {
         return context.intervals.edges().edge();
     }
 
-    public List<IntervalContext> getIntervals() {
+    public List<AttributedExistentialRuleformContext> getIntervals() {
         if (context.intervals == null) {
             return Collections.emptyList();
         }
-
-        return context.intervals.interval();
+        return context.intervals.attributedExistentialRuleform();
     }
 
     public List<ClassifiedAttributeContext> getLocationAttributeClassifications() {

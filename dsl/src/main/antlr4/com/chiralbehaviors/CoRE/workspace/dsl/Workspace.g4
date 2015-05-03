@@ -25,14 +25,13 @@ workspace:
     (imports=imported)? 
     (agencies = definedAgencies)?
     (attributes = definedAttributes)?
+    (intervals = definedIntervals)?
     (locations = definedLocations)?
     (products = definedProducts)?
     (relationships = definedRelationships)?
     (statusCodes = definedStatusCodes)?
     (statusCodeSequencings = definedStatusCodeSequencings)?
-    (units = definedUnits)?
-    //intervals refer to units and therefore must be parsed afterwards
-    (intervals = definedIntervals)?
+    (units = definedUnits)? 
     (sequencingAuthorizations = definedSequencingAuthorizations)?
     (inferences = definedInferences)?
     (protocols = definedProtocols)?
@@ -42,7 +41,7 @@ workspace:
 
 definedAgencies: 'agencies' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
 definedAttributes: 'attributes' LB  (attributeRuleform SC)+ (edges)? (classifiedAttributes)? RB;
-definedIntervals: 'intervals' LB  (interval SC)+ (edges)? (classifiedAttributes)? RB;
+definedIntervals: 'intervals' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
 definedLocations: 'locations' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
 definedProducts: 'products' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
 definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? (classifiedAttributes)? RB;
@@ -73,16 +72,6 @@ importedWorkspace:
     uri =  QuotedText 
     'as '
     namespace = ObjectName;
-    
-interval:
-    existentialRuleform
-    ('start: ' start = Number
-        startUnit = qualifiedName
-    )?
-    ('duration: ' duration = Number
-        durationUnit = qualifiedName
-    )?
-    ('attribute values' LB (attributeValue)+ RB)?;
     
 statusCodeSequencingSet:
     service = qualifiedName

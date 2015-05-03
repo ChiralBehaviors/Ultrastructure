@@ -1,14 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
-    <include relativeToChangelogFile="true" file="attribute_network/table.xml"/>
-    <include relativeToChangelogFile="true" file="attribute_network/grants.xml"/> 
-    <include relativeToChangelogFile="true" file="attribute_network/owner.xml"/>
-    <include relativeToChangelogFile="true" file="attribute_network/statistics.xml"/>
-
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="attribute_network">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="attribute_network_pkey" />
+            </column>
+            <column name="parent" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="relationship" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="child" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="inference" type="uuid" />
+            <column name="premise1" type="uuid" />
+            <column name="premise2" type="uuid" />
+            <column name="notes" type="TEXT" />
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column name="ordering" type="ordinal_number" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="attribute_network" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child" baseTableName="attribute_network" constraintName="attribute_network_child_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="parent" baseTableName="attribute_network" constraintName="attribute_network_parent_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship" baseTableName="attribute_network" constraintName="attribute_network_relationship_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="attribute_network" constraintName="attribute_network_updated_by_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2"
+            constraintName="attribute_network_parent_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="attribute_network" />
+        <createIndex schemaName="ruleform" indexName="attribute_network_child_fkey_idx" tableName="attribute_network" unique="false">
+            <column name="child" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="attribute_network_parent_fkey_idx" tableName="attribute_network" unique="false">
+            <column name="parent" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="attribute_network_relationship_fkey_idx" tableName="attribute_network"
+            unique="false"
+        >
+            <column name="relationship" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="attribute_network_updated_by_fkey_idx" tableName="attribute_network"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="premise1" baseTableName="attribute_network" constraintName="attribute_network_premise1_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute_network" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="premise2" baseTableName="attribute_network" constraintName="attribute_network_premise2_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute_network" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="inference" baseTableName="attribute_network" constraintName="attribute_network_inference_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
+    </changeSet>
 </databaseChangeLog>

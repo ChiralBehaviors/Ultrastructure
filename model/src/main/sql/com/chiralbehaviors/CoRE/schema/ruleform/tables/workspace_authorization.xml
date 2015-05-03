@@ -4,18 +4,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
-    <include relativeToChangelogFile="true" file="0.0.2-rc1/ruleform/functions" />
-    <changeSet id="workspace authorization" author="hhildebrand">
-        <createProcedure encoding="utf8" procedureName="null_zero" schemaName="ruleform"><![CDATA[
-            CREATE OR REPLACE FUNCTION null_zero(thing anyelement)
-              RETURNS integer AS
-            $BODY$
-            SELECT CASE WHEN $1 IS NULL THEN 0 ELSE 1 END;
-            $BODY$
-              LANGUAGE sql VOLATILE
-              COST 100;
-        ]]>
-        </createProcedure>
+    <changeSet id="2.0.0" author="hhildebrand">
         <createTable schemaName="ruleform" remarks="A workspace authorization defines the entities in a workspace" tableName="workspace_authorization">
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="workspace_authorization_pkey" />

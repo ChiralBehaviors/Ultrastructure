@@ -4,8 +4,13 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
-    <include relativeToChangelogFile="true" file="0.0.2-rc1/core.xml" />
-    <include relativeToChangelogFile="true" file="0.0.2-rc2.xml" />
-    <include relativeToChangelogFile="true" file="0.0.2-rc4.xml" />
+    <changeSet id="install uuid-ossp" author="hhildebrand">
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+        </sql>
+    </changeSet>
+    <include relativeToChangelogFile="true" file="schemas.xml" />
+    <include relativeToChangelogFile="true" file="ruleform/ruleform.xml" />
+    <include relativeToChangelogFile="true" file="readable/readable.xml" />
 
 </databaseChangeLog>

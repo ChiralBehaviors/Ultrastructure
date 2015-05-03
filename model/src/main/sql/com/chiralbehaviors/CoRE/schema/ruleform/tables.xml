@@ -81,4 +81,6 @@
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_self_sequencing_authorization/product_self_sequencing_authorization.xml" />
 
+    <include relativeToChangelogFile="true" file="tables/workspace_authorization.xml" />
+
 </databaseChangeLog>

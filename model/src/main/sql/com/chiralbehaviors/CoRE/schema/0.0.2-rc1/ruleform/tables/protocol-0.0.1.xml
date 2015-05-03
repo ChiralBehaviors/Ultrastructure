@@ -5,8 +5,133 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <include relativeToChangelogFile="true" file="protocol/table.xml" />
-    <include relativeToChangelogFile="true" file="protocol/grants.xml" />
-    <include relativeToChangelogFile="true" file="protocol/owner.xml" />
+    <changeSet author="hhildebrand" id="1390879803225-45">
+        <createTable schemaName="ruleform" remarks="Defines protocol rules for carrying out tasks" tableName="protocol">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="protocol_pkey" />
+            </column>
+            <column name="sequence_number" remarks="Ordering and uniqueness, for when an service / key combination can have multiple protocol rules"
+                type="sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_to" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="deliver_from" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="service" remarks="The service whose steps are being specified" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="product" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="assign_to" remarks="The agency that should perform the task" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="requester" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="quantity" type="numeric" />
+            <column name="quantity_unit" type="uuid" />
 
+            <column name="children_relationship" type="uuid" />
+            <column name=" child_service " type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="child_product" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="child_assign_to" type="uuid">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_deliver_to" type="uuid">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_deliver_from" type="uuid">
+                <constraints nullable=" false " />
+            </column>
+            <column name="child_quantity" type="numeric" />
+            <column name="child_quantity_unit" type="uuid" />
+            <column name="name" remarks="A text name for the protocol" type="TEXT" />
+            <column name="notes" remarks="Additional notes regarding usage of the attribute" type="TEXT" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="protocol" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="assign_to" baseTableName="protocol" constraintName="protocol_assign_to_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="deliver_from" baseTableName="protocol" constraintName="protocol_deliver_from_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="deliver_to" baseTableName="protocol" constraintName="protocol_deliver_to_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product" baseTableName="protocol" constraintName="protocol_product_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="children_relationship" baseTableName="protocol" constraintName="protocol_children_relationship_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="requester" baseTableName="protocol" constraintName="protocol_requester_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="service" baseTableName="protocol" constraintName="protocol_service_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="protocol" constraintName="protocol_updated_by_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="quantity_unit" baseTableName="protocol" constraintName="protocol_quantity_unit_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_service" baseTableName="protocol" constraintName="child_service_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_product" baseTableName="protocol" constraintName="child_product_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_assign_to" baseTableName="protocol" constraintName="child_assign_to_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_deliver_to" baseTableName="protocol" constraintName="child_deliver_to_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_deliver_from" baseTableName="protocol" constraintName="child_deliver_from_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child_quantity_unit" baseTableName="protocol" constraintName="child_quantity_unit_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+
+        <createIndex schemaName="ruleform" indexName="protocol_updated_by_fkey_idx" tableName="protocol" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_assign_to_fkey_idx" tableName="protocol" unique="false">
+            <column name="assign_to" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_deliver_to_fkey_idx" tableName="protocol" unique="false">
+            <column name="deliver_to" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_deliver_from_fkey_idx" tableName="protocol" unique="false">
+            <column name="deliver_from" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_product_fkey_idx" tableName="protocol" unique="false">
+            <column name="product" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_requester_fkey_idx" tableName="protocol" unique="false">
+            <column name="requester" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="protocol_service_fkey_idx" tableName="protocol" unique="false">
+            <column name="service" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

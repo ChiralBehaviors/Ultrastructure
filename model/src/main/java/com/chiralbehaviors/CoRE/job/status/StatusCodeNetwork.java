@@ -17,13 +17,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event.status;
+package com.chiralbehaviors.CoRE.job.status;
 
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_CHILDREN_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.GET_NETWORKS_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork.GET_CHILDREN;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork.GET_NETWORKS;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork.GET_CHILDREN;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork.GET_NETWORKS;
 
 import java.util.UUID;
 

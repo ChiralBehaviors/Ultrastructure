@@ -17,9 +17,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event.status;
+package com.chiralbehaviors.CoRE.job.status;
 
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute.GET_ATTRIBUTE;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute.GET_ATTRIBUTE;
 
 import java.math.BigDecimal;
 import java.util.UUID;

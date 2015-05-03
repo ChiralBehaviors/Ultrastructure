@@ -17,9 +17,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event;
+package com.chiralbehaviors.CoRE.job;
 
-import static com.chiralbehaviors.CoRE.event.MetaProtocol.FOR_JOB;
+import static com.chiralbehaviors.CoRE.job.MetaProtocol.FOR_JOB;
 
 import java.util.UUID;
 
@@ -64,28 +64,13 @@ public class MetaProtocol extends Ruleform {
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "assign_to_attribute")
-    private Relationship       assignToAttribute;
-
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_from")
     private Relationship       deliverFrom;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "deliver_from_attribute")
-    private Relationship       deliverFromAttribute;
-
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_to")
     private Relationship       deliverTo;
-
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "deliver_to_attribute")
-    private Relationship       deliverToAttribute;
 
     /**
      * The relationship that transforms the product
@@ -94,11 +79,6 @@ public class MetaProtocol extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
     private Relationship       product;
-
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "product_attribute")
-    private Relationship       productAttribute;
 
     /**
      * the relationship that transforms the quantity unit type
@@ -116,11 +96,6 @@ public class MetaProtocol extends Ruleform {
     @JoinColumn(name = "requester")
     private Relationship       requester;
 
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "requester_attribute")
-    private Relationship       requesterAttribute;
-
     @Column(name = "sequence_number")
     private int                sequenceNumber   = 0;
 
@@ -131,14 +106,6 @@ public class MetaProtocol extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
     private Product            service;
-
-    /**
-     * the relationship that transforms the service type
-     */
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "service_attribute")
-    private Relationship       serviceAttribute;
 
     /**
      * the relationship that transforms the service
@@ -188,24 +155,10 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @return the assignToAttribute
-     */
-    public Relationship getAssignToAttribute() {
-        return assignToAttribute;
-    }
-
-    /**
      * @return the deliverFrom
      */
     public Relationship getDeliverFrom() {
         return deliverFrom;
-    }
-
-    /**
-     * @return the deliverFromAttribute
-     */
-    public Relationship getDeliverFromAttribute() {
-        return deliverFromAttribute;
     }
 
     /**
@@ -216,24 +169,10 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @return the deliverToAttribute
-     */
-    public Relationship getDeliverToAttribute() {
-        return deliverToAttribute;
-    }
-
-    /**
      * @return the productOrdered
      */
     public Relationship getProduct() {
         return product;
-    }
-
-    /**
-     * @return the productOrderedAttribute
-     */
-    public Relationship getProductAttribute() {
-        return productAttribute;
     }
 
     public Relationship getQuantityUnit() {
@@ -247,13 +186,6 @@ public class MetaProtocol extends Ruleform {
         return requester;
     }
 
-    /**
-     * @return the requestingAgencyAttribute
-     */
-    public Relationship getRequesterAttribute() {
-        return requesterAttribute;
-    }
-
     public Integer getSequenceNumber() {
         return sequenceNumber;
     }
@@ -263,13 +195,6 @@ public class MetaProtocol extends Ruleform {
      */
     public Product getService() {
         return service;
-    }
-
-    /**
-     * @return the serviceAttribute
-     */
-    public Relationship getServiceAttribute() {
-        return serviceAttribute;
     }
 
     /**
@@ -304,27 +229,11 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @param assignToAttribute
-     *            the assignToAttribute to set
-     */
-    public void setAssignToAttribute(Relationship assignToAttribute) {
-        this.assignToAttribute = assignToAttribute;
-    }
-
-    /**
      * @param deliverFrom
      *            the deliverFrom to set
      */
     public void setDeliverFrom(Relationship deliverFrom) {
         this.deliverFrom = deliverFrom;
-    }
-
-    /**
-     * @param deliverFromAttribute
-     *            the deliverFromAttribute to set
-     */
-    public void setDeliverFromAttribute(Relationship deliverFromAttribute) {
-        this.deliverFromAttribute = deliverFromAttribute;
     }
 
     /**
@@ -336,27 +245,11 @@ public class MetaProtocol extends Ruleform {
     }
 
     /**
-     * @param deliverToAttribute
-     *            the deliverToAttribute to set
-     */
-    public void setDeliverToAttribute(Relationship deliverToAttribute) {
-        this.deliverToAttribute = deliverToAttribute;
-    }
-
-    /**
      * @param productOrdered
      *            the productOrdered to set
      */
     public void setProduct(Relationship productOrdered) {
         product = productOrdered;
-    }
-
-    /**
-     * @param productOrderedAttribute
-     *            the productOrderedAttribute to set
-     */
-    public void setProductAttribute(Relationship productOrderedAttribute) {
-        productAttribute = productOrderedAttribute;
     }
 
     public void setQuantityUnit(Relationship quantityUnit) {
@@ -371,14 +264,6 @@ public class MetaProtocol extends Ruleform {
         requester = requestingAgency;
     }
 
-    /**
-     * @param requestingAgencyAttribute
-     *            the requestingAgencyAttribute to set
-     */
-    public void setRequesterAttribute(Relationship requestingAgencyAttribute) {
-        requesterAttribute = requestingAgencyAttribute;
-    }
-
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
@@ -389,14 +274,6 @@ public class MetaProtocol extends Ruleform {
      */
     public void setService(Product service) {
         this.service = service;
-    }
-
-    /**
-     * @param serviceAttribute
-     *            the serviceAttribute to set
-     */
-    public void setServiceAttribute(Relationship serviceAttribute) {
-        this.serviceAttribute = serviceAttribute;
     }
 
     /**

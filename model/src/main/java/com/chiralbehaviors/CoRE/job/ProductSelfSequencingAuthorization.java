@@ -17,10 +17,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event;
+package com.chiralbehaviors.CoRE.job;
 
-import static com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization.GET_SELF_ACTIONS;
-import static com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization.GET_SEQUENCES;
+import static com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization.GET_SELF_ACTIONS;
+import static com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization.GET_SEQUENCES;
 
 import java.util.UUID;
 
@@ -37,7 +37,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;

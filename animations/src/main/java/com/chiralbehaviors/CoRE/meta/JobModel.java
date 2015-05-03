@@ -26,16 +26,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobChronology;
-import com.chiralbehaviors.CoRE.event.MetaProtocol;
-import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.job.Job;
+import com.chiralbehaviors.CoRE.job.JobChronology;
+import com.chiralbehaviors.CoRE.job.MetaProtocol;
+import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
 
@@ -46,12 +46,6 @@ import com.hellblazer.utils.Tuple;
 public interface JobModel {
     final static int          MAXIMUM_JOB_DEPTH = 20;
     final static InferenceMap NO_TRANSFORMATION = new InferenceMap(false,
-                                                                   false,
-                                                                   false,
-                                                                   false,
-                                                                   false,
-                                                                   false,
-                                                                   false,
                                                                    false,
                                                                    false,
                                                                    false,

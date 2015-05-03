@@ -40,15 +40,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobChronology;
-import com.chiralbehaviors.CoRE.event.MetaProtocol;
-import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.job.Job;
+import com.chiralbehaviors.CoRE.job.JobChronology;
+import com.chiralbehaviors.CoRE.job.MetaProtocol;
+import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
@@ -232,18 +232,12 @@ public class JobModelTest extends AbstractModelTest {
         List<Job> jobs = model.getJobModel().generateImplicitJobs(order,
                                                                   kernel.getCore());
         for (Job j : jobs) {
-            assertNotNull(j.getAssignToAttribute());
             assertNotNull(j.getAssignTo());
             assertNotNull(j.getService());
-            assertNotNull(j.getServiceAttribute());
             assertNotNull(j.getProduct());
-            assertNotNull(j.getProductAttribute());
             assertNotNull(j.getDeliverTo());
-            assertNotNull(j.getDeliverToAttribute());
             assertNotNull(j.getDeliverFrom());
-            assertNotNull(j.getDeliverFromAttribute());
             assertNotNull(j.getRequester());
-            assertNotNull(j.getRequesterAttribute());
             assertNotNull(j.getUpdatedBy());
 
         }

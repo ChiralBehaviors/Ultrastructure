@@ -17,10 +17,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event;
+package com.chiralbehaviors.CoRE.job;
 
-import static com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization.GET_SEQUENCES;
-import static com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization.GET_SIBLING_ACTIONS;
+import static com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization.GET_CHILD_ACTIONS;
+import static com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization.GET_SEQUENCES;
 
 import java.util.UUID;
 
@@ -37,7 +37,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
@@ -48,69 +48,72 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 @NamedQueries({
-               @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
-                                                               + " WHERE seq.parent = :parent"
-                                                               + " AND seq.statusCode = :status "
-                                                               + " ORDER BY seq.sequenceNumber"),
-               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
+               @NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
+                                                             + "WHERE seq.parent = :service"
+                                                             + "  AND seq.statusCode = :status "
+                                                             + "ORDER BY seq.nextChild, seq.sequenceNumber"),
+               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
                                                          + " WHERE seq.parent = :service"
                                                          + " ORDER BY seq.sequenceNumber") })
 @Entity
-@Table(name = "product_sibling_sequencing_authorization", schema = "ruleform")
-public class ProductSiblingSequencingAuthorization extends Ruleform {
-    public static final String GET_SEQUENCES       = "productSequencingAuthorization.getSequences";
-    public static final String GET_SIBLING_ACTIONS = "productSequencingAuthorization.getSiblingActions";
-
-    private static final long  serialVersionUID    = 1L;
-
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "next_sibling")
-    private Product            nextSibling;
+@Table(name = "product_child_sequencing_authorization", schema = "ruleform")
+public class ProductChildSequencingAuthorization extends Ruleform {
+    public static final String GET_CHILD_ACTIONS = "productChildSequencingAuthorization.getChildActions";
+    public static final String GET_SEQUENCES     = "productChildSequencingAuthorization.getSequences";
+    private static final long  serialVersionUID  = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "next_sibling_status")
-    private StatusCode         nextSiblingStatus;
+    @JoinColumn(name = "next_child")
+    private Product            nextChild;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "next_child_status")
+    private StatusCode         nextChildStatus;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
     private Product            parent;
 
     @Column(name = "replace_product")
-    private Integer            replaceProduct      = FALSE;
+    private Integer            replaceProduct    = FALSE;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber      = 0;
+    private int                sequenceNumber    = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
     private StatusCode         statusCode;
 
-    public ProductSiblingSequencingAuthorization() {
+    /**
+     *
+     */
+    public ProductChildSequencingAuthorization() {
+        super();
     }
 
     /**
      * @param updatedBy
      */
-    public ProductSiblingSequencingAuthorization(Agency updatedBy) {
+    public ProductChildSequencingAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
-    public ProductSiblingSequencingAuthorization(Product parent,
-                                                 StatusCode statusCode,
-                                                 Product nextSibling,
-                                                 StatusCode nextSiblingStatus,
-                                                 Agency updatedBy) {
+    public ProductChildSequencingAuthorization(Product parent,
+                                               StatusCode statusCode,
+                                               Product nextChild,
+                                               StatusCode nextChildStatus,
+                                               Agency updatedBy) {
         super(updatedBy);
         setParent(parent);
         setStatusCode(statusCode);
-        setNextSiblingStatus(nextSiblingStatus);
-        setNextSibling(nextSibling);
+        setNextChild(nextChild);
+        setNextChildStatus(nextChildStatus);
     }
 
     /**
      * @param notes
      */
-    public ProductSiblingSequencingAuthorization(String notes) {
+    public ProductChildSequencingAuthorization(String notes) {
         super(notes);
     }
 
@@ -118,14 +121,14 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
      * @param notes
      * @param updatedBy
      */
-    public ProductSiblingSequencingAuthorization(String notes, Agency updatedBy) {
+    public ProductChildSequencingAuthorization(String notes, Agency updatedBy) {
         super(notes, updatedBy);
     }
 
     /**
      * @param id
      */
-    public ProductSiblingSequencingAuthorization(UUID id) {
+    public ProductChildSequencingAuthorization(UUID id) {
         super(id);
     }
 
@@ -133,16 +136,16 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
      * @param id
      * @param updatedBy
      */
-    public ProductSiblingSequencingAuthorization(UUID id, Agency updatedBy) {
+    public ProductChildSequencingAuthorization(UUID id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
-    public Product getNextSibling() {
-        return nextSibling;
+    public Product getNextChild() {
+        return nextChild;
     }
 
-    public StatusCode getNextSiblingStatus() {
-        return nextSiblingStatus;
+    public StatusCode getNextChildStatus() {
+        return nextChildStatus;
     }
 
     public Product getParent() {
@@ -162,8 +165,8 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
      */
     @Override
     @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductSiblingSequencingAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productSiblingSequencingAuthorization;
+    public SingularAttribute<WorkspaceAuthorization, ProductChildSequencingAuthorization> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.productChildSequencingAuthorization;
     }
 
     /**
@@ -178,12 +181,12 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
         triggers.persist(this);
     }
 
-    public void setNextSibling(Product nextSibling) {
-        this.nextSibling = nextSibling;
+    public void setNextChild(Product nextChild) {
+        this.nextChild = nextChild;
     }
 
-    public void setNextSiblingStatus(StatusCode nextSiblingStatus) {
-        this.nextSiblingStatus = nextSiblingStatus;
+    public void setNextChildStatus(StatusCode nextChildStatus) {
+        this.nextChildStatus = nextChildStatus;
     }
 
     public void setParent(Product parent) {
@@ -208,10 +211,10 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
 
     @Override
     public String toString() {
-        return String.format("ProductSiblingSequencingAuthorization [parent=%s, statusCode=%s, nextSibling=%s, nextSiblingStatus=%s, replaceProduct=%s, sequenceNumber=%s]",
+        return String.format("ProductChildSequencingAuthorization [parent=%s, statusCode=%s, nextChild=%s, nextChildStatus=%s, replaceProduct=%s, sequenceNumber=%s]",
                              getParent().getName(), getStatusCode().getName(),
-                             getNextSibling().getName(),
-                             getNextSiblingStatus().getName(),
+                             getNextChild().getName(),
+                             getNextChildStatus().getName(),
                              isReplaceProduct(), getSequenceNumber());
     }
 }

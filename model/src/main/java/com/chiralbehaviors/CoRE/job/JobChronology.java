@@ -17,13 +17,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event;
+package com.chiralbehaviors.CoRE.job;
 
-import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_ALL;
-import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_JOB;
-import static com.chiralbehaviors.CoRE.event.JobChronology.FIND_FOR_PRODUCT;
-import static com.chiralbehaviors.CoRE.event.JobChronology.GET_LOG_FOR_SEQUENCE;
-import static com.chiralbehaviors.CoRE.event.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
+import static com.chiralbehaviors.CoRE.job.JobChronology.FIND_ALL;
+import static com.chiralbehaviors.CoRE.job.JobChronology.FIND_FOR_JOB;
+import static com.chiralbehaviors.CoRE.job.JobChronology.FIND_FOR_PRODUCT;
+import static com.chiralbehaviors.CoRE.job.JobChronology.GET_LOG_FOR_SEQUENCE;
+import static com.chiralbehaviors.CoRE.job.JobChronology.HIGHEST_SEQUENCE_FOR_JOB;
 
 import java.util.UUID;
 
@@ -38,7 +38,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -169,25 +169,13 @@ public class JobChronology extends AbstractProtocol {
         if (getAssignTo() == null) {
             throw new IllegalStateException();
         }
-        if (getAssignToAttribute() == null) {
-            throw new IllegalStateException();
-        }
         if (getDeliverFrom() == null) {
-            throw new IllegalStateException();
-        }
-        if (getDeliverFromAttribute() == null) {
             throw new IllegalStateException();
         }
         if (getDeliverTo() == null) {
             throw new IllegalStateException();
         }
-        if (getDeliverToAttribute() == null) {
-            throw new IllegalStateException();
-        }
         if (getProduct() == null) {
-            throw new IllegalStateException();
-        }
-        if (getProductAttribute() == null) {
             throw new IllegalStateException();
         }
         if (getQuantity() == null) {
@@ -199,13 +187,7 @@ public class JobChronology extends AbstractProtocol {
         if (getRequester() == null) {
             throw new IllegalStateException();
         }
-        if (getRequesterAttribute() == null) {
-            throw new IllegalStateException();
-        }
         if (getService() == null) {
-            throw new IllegalStateException();
-        }
-        if (getServiceAttribute() == null) {
             throw new IllegalStateException();
         }
     }

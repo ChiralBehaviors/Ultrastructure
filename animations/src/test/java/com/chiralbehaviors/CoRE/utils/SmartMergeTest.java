@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
-import com.chiralbehaviors.CoRE.event.Job;
+import com.chiralbehaviors.CoRE.job.Job;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 
 /**

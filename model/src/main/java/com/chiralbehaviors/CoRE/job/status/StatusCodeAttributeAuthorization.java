@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event.status;
+package com.chiralbehaviors.CoRE.job.status;
 
 import java.util.UUID;
 

@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.event;
+package com.chiralbehaviors.CoRE.job;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -35,7 +35,6 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.RuleformIdGenerator;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -65,28 +64,12 @@ public abstract class AbstractProtocol extends Ruleform {
     private Agency            assignTo;
 
     /**
-     * The attribute for the agency assigned to this job
-     */
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "assign_to_attribute")
-    private Attribute         assignToAttribute;
-
-    /**
      * The location where the product will be delivered from
      */
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_from")
     private Location          deliverFrom;
-    /**
-     * The the attribute on the location where the product will be delivered
-     * from
-     */
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "deliver_from_attribute")
-    private Attribute         deliverFromAttribute;
     /**
      * The location to deliver the product of this job
      */
@@ -96,28 +79,12 @@ public abstract class AbstractProtocol extends Ruleform {
     private Location          deliverTo;
 
     /**
-     * The attribute on the location to deliver the product of this job
-     */
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "deliver_to_attribute")
-    private Attribute         deliverToAttribute;
-
-    /**
      * The product of this job
      */
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
     private Product           product;
-
-    /**
-     * The attribute on the product of this job
-     */
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "product_attribute")
-    private Attribute         productAttribute;
 
     @Column(name = "quantity")
     private BigDecimal        quantity         = BigDecimal.ZERO;
@@ -136,28 +103,12 @@ public abstract class AbstractProtocol extends Ruleform {
     private Agency            requester;
 
     /**
-     * The attribute of the consumer of this job's product
-     */
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "requester_attribute")
-    private Attribute         requesterAttribute;
-
-    /**
      * The service this job is performing
      */
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
     private Product           service;
-
-    /**
-     * The attribute on the service this job is performing
-     */
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "service_attribute")
-    private Attribute         serviceAttribute;
 
     public AbstractProtocol() {
         super();
@@ -202,30 +153,17 @@ public abstract class AbstractProtocol extends Ruleform {
 
     public void copyFrom(AbstractProtocol protocol) {
         setAssignTo(protocol.getAssignTo());
-        setAssignToAttribute(protocol.getAssignToAttribute());
         setDeliverTo(protocol.getDeliverTo());
-        setDeliverToAttribute(protocol.getDeliverToAttribute());
         setDeliverFrom(protocol.getDeliverFrom());
-        setDeliverFromAttribute(protocol.getDeliverFromAttribute());
         setProduct(protocol.getProduct());
-        setProductAttribute(protocol.getProductAttribute());
         setRequester(protocol.getRequester());
-        setRequesterAttribute(protocol.getRequesterAttribute());
         setService(protocol.getService());
-        setServiceAttribute(protocol.getServiceAttribute());
         setQuantityUnit(protocol.getQuantityUnit());
         setQuantity(protocol.getQuantity());
     }
 
     public Agency getAssignTo() {
         return assignTo;
-    }
-
-    /**
-     * @return the assignToAttribute
-     */
-    public Attribute getAssignToAttribute() {
-        return assignToAttribute;
     }
 
     /**
@@ -236,13 +174,6 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     /**
-     * @return the deliverFromAttribute
-     */
-    public Attribute getDeliverFromAttribute() {
-        return deliverFromAttribute;
-    }
-
-    /**
      * @return the deliverTo
      */
     public Location getDeliverTo() {
@@ -250,24 +181,10 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     /**
-     * @return the deliverToAttribute
-     */
-    public Attribute getDeliverToAttribute() {
-        return deliverToAttribute;
-    }
-
-    /**
      * @return the product
      */
     public Product getProduct() {
         return product;
-    }
-
-    /**
-     * @return the productAttribute
-     */
-    public Attribute getProductAttribute() {
-        return productAttribute;
     }
 
     public BigDecimal getQuantity() {
@@ -286,52 +203,24 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     /**
-     * @return the requesterAttribute
-     */
-    public Attribute getRequesterAttribute() {
-        return requesterAttribute;
-    }
-
-    /**
      * @return the service
      */
     public Product getService() {
         return service;
     }
 
-    /**
-     * @return the serviceAttribute
-     */
-    public Attribute getServiceAttribute() {
-        return serviceAttribute;
-    }
-
     @JsonIgnore
     public String getToString() {
-        return String.format("requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s, quantity=%s, quantityUnit=%s",
+        return String.format("requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s quantity=%s, quantityUnit=%s",
                              getRequester().getName(), getAssignTo().getName(),
                              getService().getName(), getProduct().getName(),
                              getDeliverTo().getName(),
-                             getDeliverFrom().getName(),
-                             getRequesterAttribute().getName(),
-                             getAssignToAttribute().getName(),
-                             getServiceAttribute().getName(),
-                             getProductAttribute().getName(),
-                             getDeliverToAttribute().getName(),
-                             getDeliverFromAttribute().getName(), quantity,
+                             getDeliverFrom().getName(), quantity,
                              getQuantityUnit().getName());
     }
 
     public void setAssignTo(Agency agency2) {
         assignTo = agency2;
-    }
-
-    /**
-     * @param assignToAttribute
-     *            the assignToAttribute to set
-     */
-    public void setAssignToAttribute(Attribute assignToAttribute) {
-        this.assignToAttribute = assignToAttribute;
     }
 
     /**
@@ -343,14 +232,6 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     /**
-     * @param deliverFromAttribute
-     *            the deliverFromAttribute to set
-     */
-    public void setDeliverFromAttribute(Attribute deliverFromAttribute) {
-        this.deliverFromAttribute = deliverFromAttribute;
-    }
-
-    /**
      * @param deliverTo
      *            the deliverTo to set
      */
@@ -359,27 +240,11 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     /**
-     * @param deliverToAttribute
-     *            the deliverToAttribute to set
-     */
-    public void setDeliverToAttribute(Attribute deliverToAttribute) {
-        this.deliverToAttribute = deliverToAttribute;
-    }
-
-    /**
      * @param product
      *            the product to set
      */
     public void setProduct(Product product) {
         this.product = product;
-    }
-
-    /**
-     * @param productAttribute
-     *            the productAttribute to set
-     */
-    public void setProductAttribute(Attribute productAttribute) {
-        this.productAttribute = productAttribute;
     }
 
     public void setQuantity(BigDecimal quantity) {
@@ -405,14 +270,6 @@ public abstract class AbstractProtocol extends Ruleform {
     }
 
     /**
-     * @param requesterAttribute
-     *            the requesterAttribute to set
-     */
-    public void setRequesterAttribute(Attribute requesterAttribute) {
-        this.requesterAttribute = requesterAttribute;
-    }
-
-    /**
      * @param service
      *            the service to set
      */
@@ -420,30 +277,16 @@ public abstract class AbstractProtocol extends Ruleform {
         this.service = service;
     }
 
-    /**
-     * @param serviceAttribute
-     *            the serviceAttribute to set
-     */
-    public void setServiceAttribute(Attribute serviceAttribute) {
-        this.serviceAttribute = serviceAttribute;
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return String.format("AbstractProtocol [requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, requesterAttribute=%s, assignToAttribute=%s, serviceAttribute=%s, productAttribute=%s, deliverToAttribute=%s, deliverFromAttribute=%s, quantity=%s, quantityUnit=%s]",
+        return String.format("AbstractProtocol [requester=%s, assignTo=%s, service=%s, product=%s, deliverTo=%s, deliverFrom=%s, quantity=%s, quantityUnit=%s]",
                              getRequester().getName(), getAssignTo().getName(),
                              getService().getName(), getProduct().getName(),
                              getDeliverTo().getName(),
-                             getDeliverFrom().getName(),
-                             getRequesterAttribute().getName(),
-                             getAssignToAttribute().getName(),
-                             getServiceAttribute().getName(),
-                             getProductAttribute().getName(),
-                             getDeliverToAttribute().getName(),
-                             getDeliverFromAttribute().getName(), quantity,
+                             getDeliverFrom().getName(), quantity,
                              getQuantityUnit().getName());
     }
 }

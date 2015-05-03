@@ -17,10 +17,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event;
+package com.chiralbehaviors.CoRE.job;
 
-import static com.chiralbehaviors.CoRE.event.Protocol.GET;
-import static com.chiralbehaviors.CoRE.event.Protocol.GET_FOR_SERVICE;
+import static com.chiralbehaviors.CoRE.job.Protocol.GET;
+import static com.chiralbehaviors.CoRE.job.Protocol.GET_FOR_SERVICE;
 
 import java.math.BigDecimal;
 
@@ -36,7 +36,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -59,11 +58,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                + "    AND p.deliverFrom = :deliverFrom"
                                                + "    AND p.deliverTo = :deliverTo"
                                                + "    AND p.assignTo = :assignTo"
-                                               + "    AND p.productAttribute = :productAttribute"
-                                               + "    AND p.assignToAttribute = :assignToAttribute"
-                                               + "    AND p.requesterAttribute = :requesterAttribute"
-                                               + "    AND p.deliverToAttribute = :deliverToAttribute"
-                                               + "    AND p.deliverFromAttribute = :deliverFromAttribute"
                                                + " ORDER BY p.sequenceNumber"),
                @NamedQuery(name = GET_FOR_SERVICE, query = "SELECT p FROM Protocol p "
                                                            + "WHERE p.service = :service "
@@ -83,18 +77,8 @@ public class Protocol extends AbstractProtocol {
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "child_assign_to_attribute")
-    private Attribute          childAssignToAttribute;
-
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_deliver_from")
     private Location           childDeliverFrom;
-
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "child_deliver_from_attribute")
-    private Attribute          childDeliverFromAttribute;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -103,18 +87,8 @@ public class Protocol extends AbstractProtocol {
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "child_deliver_to_attribute")
-    private Attribute          childDeliverToAttribute;
-
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_product")
     private Product            childProduct;
-
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "child_product_attribute")
-    private Attribute          childProductAttribute;
 
     @Column(name = "child_quantity")
     private BigDecimal         childQuantity    = BigDecimal.ZERO;
@@ -136,11 +110,6 @@ public class Protocol extends AbstractProtocol {
     @JoinColumn(name = "child_service")
     private Product            childService;
 
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "child_service_attribute")
-    private Attribute          childServiceAttribute;
-
     @Column(name = "name")
     private String             name;
 
@@ -154,32 +123,16 @@ public class Protocol extends AbstractProtocol {
         return childAssignTo;
     }
 
-    public Attribute getChildAssignToAttribute() {
-        return childAssignToAttribute;
-    }
-
     public Location getChildDeliverFrom() {
         return childDeliverFrom;
-    }
-
-    public Attribute getChildDeliverFromAttribute() {
-        return childDeliverFromAttribute;
     }
 
     public Location getChildDeliverTo() {
         return childDeliverTo;
     }
 
-    public Attribute getChildDeliverToAttribute() {
-        return childDeliverToAttribute;
-    }
-
     public Product getChildProduct() {
         return childProduct;
-    }
-
-    public Attribute getChildProductAttribute() {
-        return childProductAttribute;
     }
 
     public BigDecimal getChildQuantity() {
@@ -196,10 +149,6 @@ public class Protocol extends AbstractProtocol {
 
     public Product getChildService() {
         return childService;
-    }
-
-    public Attribute getChildServiceAttribute() {
-        return childServiceAttribute;
     }
 
     public String getName() {
@@ -226,32 +175,16 @@ public class Protocol extends AbstractProtocol {
         this.childAssignTo = childAssignTo;
     }
 
-    public void setChildAssignToAttribute(Attribute childAssignToAttribute) {
-        this.childAssignToAttribute = childAssignToAttribute;
-    }
-
     public void setChildDeliverFrom(Location childDeliverFrom) {
         this.childDeliverFrom = childDeliverFrom;
-    }
-
-    public void setChildDeliverFromAttribute(Attribute childDeliverFromAttribute) {
-        this.childDeliverFromAttribute = childDeliverFromAttribute;
     }
 
     public void setChildDeliverTo(Location childDeliverTo) {
         this.childDeliverTo = childDeliverTo;
     }
 
-    public void setChildDeliverToAttribute(Attribute childDeliverToAttribute) {
-        this.childDeliverToAttribute = childDeliverToAttribute;
-    }
-
     public void setChildProduct(Product childProduct) {
         this.childProduct = childProduct;
-    }
-
-    public void setChildProductAttribute(Attribute childProductAttribute) {
-        this.childProductAttribute = childProductAttribute;
     }
 
     public void setChildQuantity(BigDecimal childQuantity) {
@@ -268,10 +201,6 @@ public class Protocol extends AbstractProtocol {
 
     public void setChildService(Product childService) {
         this.childService = childService;
-    }
-
-    public void setChildServiceAttribute(Attribute childServiceAttribute) {
-        this.childServiceAttribute = childServiceAttribute;
     }
 
     public void setName(String name) {

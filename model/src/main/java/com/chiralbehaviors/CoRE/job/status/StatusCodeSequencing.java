@@ -17,17 +17,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event.status;
+package com.chiralbehaviors.CoRE.job.status;
 
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_ALL_STATUS_CODE_SEQUENCING;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_CHILD_STATUS_CODES_SERVICE;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_PARENT_STATUS_CODES_SERVICE;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE;
-import static com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing.GET_ALL_STATUS_CODE_SEQUENCING;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing.GET_CHILD_STATUS_CODES_SERVICE;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing.GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing.GET_PARENT_STATUS_CODES_SERVICE;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing.GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE;
+import static com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing.IS_VALID_NEXT_STATUS;
 
 import java.util.UUID;
 

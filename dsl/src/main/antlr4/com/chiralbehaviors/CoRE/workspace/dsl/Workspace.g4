@@ -182,20 +182,14 @@ selfSequencing:
     
 metaProtocol:
     ('transform:' service=qualifiedName)
-    ('service:'serviceType=qualifiedName)?
-    ('attr:' serviceAttribute=qualifiedName)?
-    ('product:' product=qualifiedName)?
-    ('attr:' productAttribute=qualifiedName)?
-    ('from:' from=qualifiedName)?
-    ('attr:' (fromAttribute=qualifiedName))?
-    ('to:' to=qualifiedName)?
-    ('attr:' (toAttribute=qualifiedName))?
+    ('service:'serviceType=qualifiedName)? 
+    ('product:' product=qualifiedName)? 
+    ('from:' from=qualifiedName)? 
+    ('to:' to=qualifiedName)? 
     ('quantity:' quantity=Number)?
     ('unit:' quantityUnit=qualifiedName)?
-    ('requester:' requester=qualifiedName)?
-    ('attr:' requesterAttribute=qualifiedName)?
-    ('assign:' assignTo=qualifiedName)?
-    ('attr:' assignToAttribute=qualifiedName)?
+    ('requester:' requester=qualifiedName)? 
+    ('assign:' assignTo=qualifiedName)? 
     ('sequence:' Number)?
     ('match:' match = ('stop' | 'continue'))?
     ;
@@ -206,36 +200,25 @@ protocol:
     childJob;
     
 matchJob: 
-    ('service:' service=qualifiedName)
-    ('attr:' serviceAttribute=qualifiedName)?
-    ('product:' product=qualifiedName)?
-    ('attr:' productAttribute=qualifiedName)?
-    ('from:' from=qualifiedName)?
-    ('attr:' (fromAttribute=qualifiedName))?
-    ('to:' to=qualifiedName)?
-    ('attr:' (toAttribute=qualifiedName))?
+    ('service:' service=qualifiedName) 
+    ('product:' product=qualifiedName)? 
+    ('from:' from=qualifiedName)? 
+    ('to:' to=qualifiedName)? 
     ('quantity:' quantity=Number)?
     ('unit:' quantityUnit=qualifiedName)?
-    ('requester:' requester=qualifiedName)?
-    ('attr:' requesterAttribute=qualifiedName)?
-    ('assign:' assignTo=qualifiedName)?
-    ('attr:' assignToAttribute=qualifiedName)?
+    ('requester:' requester=qualifiedName)? 
+    ('assign:' assignTo=qualifiedName)? 
     ('sequence:' sequence=Number)?
     ;
     
 childJob: 
-    ('service:' service=qualifiedName)?
-    ('attr:' (serviceAttribute=qualifiedName))?
-    (('children:' childrenRelationship=qualifiedName) | ('product:' product=qualifiedName))?
-    ('attr:' (productAttribute=qualifiedName))?
-    ('from:' from=qualifiedName)?
-    ('attr:' (fromAttribute=qualifiedName))?
-    ('to:' to=qualifiedName)?
-    ('attr:' (toAttribute=qualifiedName))?
+    ('service:' service=qualifiedName)? 
+    (('children:' childrenRelationship=qualifiedName) | ('product:' product=qualifiedName))? 
+    ('from:' from=qualifiedName)? 
+    ('to:' to=qualifiedName)? 
     ('quantity:' quantity=Number)?
     ('unit:' (quantityUnit=qualifiedName))?
-    ('assign:' assignTo=qualifiedName)?
-    ('attr:' (assignToAttribute=qualifiedName))?
+    ('assign:' assignTo=qualifiedName)? 
     ;
 
 classifiedAttribute:

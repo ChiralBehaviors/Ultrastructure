@@ -5,27 +5,20 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.job_chronology AS 
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView schemaName="readable" viewName="job_chronology"><![CDATA[ 
              SELECT base.id, 
-                    sc.name AS status,
+                    base.job,
                     base.sequence_number,
+                    sc.name AS status,
                     s.name AS service, 
+                    at.name AS assign_to, 
                     r.name AS requester, 
                     p.name AS product, 
                     dt.name AS deliver_to, 
                     df.name AS deliver_from, 
-                    at.name AS assign_to, 
                     base.quantity,
                     u.name AS quantity_unit,
-                    ra.name AS requester_attribute,
-                    sa.name AS service_attribute,
-                    pa.name AS product_attribute,
-                    dta.name AS deliver_to_attribute,
-                    dfa.name AS deliver_from_attribute,
-                    ata.name AS assign_to_attribute,
-                    base.job,
                     base.notes, 
                     up.name AS updated_by, base.version
                FROM job_chronology base
@@ -37,13 +30,7 @@
                JOIN location df ON base.deliver_from = df.id
                JOIN status_code sc ON base.status = sc.id
                JOIN agency up ON base.updated_by = up.id
-               JOIN attribute ra ON base.requester_attribute = ra.id
-               JOIN attribute sa ON base.service_attribute = sa.id
-               JOIN attribute pa ON base.product_attribute = pa.id
-               JOIN attribute dta ON base.deliver_to_attribute = dta.id
-               JOIN attribute dfa ON base.deliver_from_attribute = dfa.id
-               JOIN unit u ON base.quantity_unit = u.id
-               JOIN attribute ata ON base.assign_to_attribute = ata.id;
+               JOIN unit u ON base.quantity_unit = u.id;
 			
 			ALTER TABLE readable.job_chronology
 			  OWNER TO core;
@@ -51,7 +38,7 @@
 			GRANT SELECT ON TABLE readable.job_chronology TO core_read_write;
 			GRANT SELECT ON TABLE readable.job_chronology TO core_read_only;
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.job_chronology" />
         </rollback>

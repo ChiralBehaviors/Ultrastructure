@@ -17,24 +17,24 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event;
+package com.chiralbehaviors.CoRE.job;
 
-import static com.chiralbehaviors.CoRE.event.Job.EXISTING_JOB_WITH_PARENT_AND_PROTOCOL;
-import static com.chiralbehaviors.CoRE.event.Job.FIND_ALL;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_ASSIGNED_TO;
-import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS;
-import static com.chiralbehaviors.CoRE.event.Job.GET_CHILD_JOBS_FOR_SERVICE;
-import static com.chiralbehaviors.CoRE.event.Job.GET_NEXT_STATUS_CODES;
-import static com.chiralbehaviors.CoRE.event.Job.GET_STATUS_CODE_SEQUENCES;
-import static com.chiralbehaviors.CoRE.event.Job.GET_SUB_JOBS_ASSIGNED_TO;
-import static com.chiralbehaviors.CoRE.event.Job.GET_TERMINAL_STATES;
-import static com.chiralbehaviors.CoRE.event.Job.GET_UNSET_SIBLINGS;
-import static com.chiralbehaviors.CoRE.event.Job.HAS_SCS;
-import static com.chiralbehaviors.CoRE.event.Job.INITIAL_STATE;
-import static com.chiralbehaviors.CoRE.event.Job.TOP_LEVEL_JOBS;
+import static com.chiralbehaviors.CoRE.job.Job.EXISTING_JOB_WITH_PARENT_AND_PROTOCOL;
+import static com.chiralbehaviors.CoRE.job.Job.FIND_ALL;
+import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS;
+import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES;
+import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
+import static com.chiralbehaviors.CoRE.job.Job.GET_ASSIGNED_TO;
+import static com.chiralbehaviors.CoRE.job.Job.GET_CHILD_JOBS;
+import static com.chiralbehaviors.CoRE.job.Job.GET_CHILD_JOBS_FOR_SERVICE;
+import static com.chiralbehaviors.CoRE.job.Job.GET_NEXT_STATUS_CODES;
+import static com.chiralbehaviors.CoRE.job.Job.GET_STATUS_CODE_SEQUENCES;
+import static com.chiralbehaviors.CoRE.job.Job.GET_SUB_JOBS_ASSIGNED_TO;
+import static com.chiralbehaviors.CoRE.job.Job.GET_TERMINAL_STATES;
+import static com.chiralbehaviors.CoRE.job.Job.GET_UNSET_SIBLINGS;
+import static com.chiralbehaviors.CoRE.job.Job.HAS_SCS;
+import static com.chiralbehaviors.CoRE.job.Job.INITIAL_STATE;
+import static com.chiralbehaviors.CoRE.job.Job.TOP_LEVEL_JOBS;
 
 import java.util.Set;
 
@@ -53,7 +53,7 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;

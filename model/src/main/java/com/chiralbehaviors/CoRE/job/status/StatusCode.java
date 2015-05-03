@@ -17,18 +17,18 @@
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.event.status;
+package com.chiralbehaviors.CoRE.job.status;
 
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.FIND_BY_NAME;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.GET_ALL_PARENT_RELATIONSHIPS;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.GET_CHILD;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.GET_CHILD_RULES_BY_RELATIONSHIP;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.IS_TERMINAL_STATE;
-import static com.chiralbehaviors.CoRE.event.status.StatusCode.ORDERED_ATTRIBUTES;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.FIND_BY_NAME;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.FIND_CLASSIFIED_ATTRIBUTE_VALUES;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.GET_ALL_PARENT_RELATIONSHIPS;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.GET_CHILD;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.GET_CHILD_RULES_BY_RELATIONSHIP;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.IS_TERMINAL_STATE;
+import static com.chiralbehaviors.CoRE.job.status.StatusCode.ORDERED_ATTRIBUTES;
 
 import java.util.Collections;
 import java.util.Set;

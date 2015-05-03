@@ -22,10 +22,10 @@ package com.chiralbehaviors.CoRE.meta.models;
 import java.util.List;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.MetaProtocol;
-import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.job.Job;
+import com.chiralbehaviors.CoRE.job.MetaProtocol;
+import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 
 /**
  * A class full of utility methods to aid in debugging.

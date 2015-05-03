@@ -5,51 +5,33 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-	        CREATE OR REPLACE VIEW readable.meta_protocol AS 
-	             SELECT base_table.id, 
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView viewName="meta_protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
+                 SELECT base_table.id, 
                         s.name AS service,  
                         st.name AS service_type, 
-	                    rr.name AS requesting_agency, 
-                        po.name AS product_ordered,
+                        rr.name AS requester, 
+                        po.name AS product,
                         dt.name AS deliver_to, 
-	                    df.name AS deliver_from, 
+                        df.name AS deliver_from, 
                         at.name AS assign_to,
                         u.name AS quantity_unit,
-                        raa.name AS requesting_agency_attribute, 
-                        sa.name AS service_attribute, 
-                        poa.name AS product_ordered_attribute, 
-                        dta.name AS deliver_to_attribute, 
-                        dfa.name AS deliver_from_attribute, 
                         base_table.stop_on_match,
                         base_table.sequence_number, 
-	                    up.name AS updated_by, 
+                        up.name AS updated_by, 
                         base_table.version
-				   FROM meta_protocol base_table
-				   JOIN product s ON base_table.service = s.id
-                   LEFT JOIN relationship rr ON base_table.requesting_agency = rr.id
-				   LEFT JOIN relationship st ON base_table.service_type = st.id
-				   LEFT JOIN relationship po ON base_table.product_ordered = po.id
+                   FROM meta_protocol base_table
+                   JOIN product s ON base_table.service = s.id
+                   LEFT JOIN relationship rr ON base_table.requester = rr.id
+                   LEFT JOIN relationship st ON base_table.service_type = st.id
+                   LEFT JOIN relationship po ON base_table.product = po.id
                    LEFT JOIN relationship dt ON base_table.deliver_to= dt.id
                    LEFT JOIN relationship df ON base_table.deliver_from = df.id 
                    LEFT JOIN relationship at ON base_table.assign_to = at.id 
                    LEFT JOIN relationship u ON base_table.quantity_unit = u.id
-                   LEFT JOIN relationship raa ON base_table.requesting_agency_attribute = raa.id
-                   LEFT JOIN relationship sa ON base_table.service_attribute = sa.id
-                   LEFT JOIN relationship poa ON base_table.product_ordered_attribute = poa.id
-                   LEFT JOIN relationship dta ON base_table.deliver_to_attribute = dta.id
-                   LEFT JOIN relationship dfa ON base_table.deliver_from_attribute = dfa.id
-                   
-				   JOIN agency up ON base_table.updated_by = up.id;
-				
-				ALTER TABLE readable.meta_protocol
-				  OWNER TO core;
-				GRANT ALL ON TABLE readable.meta_protocol TO core;
-				GRANT SELECT ON TABLE readable.meta_protocol TO core_read_write;
-				GRANT SELECT ON TABLE readable.meta_protocol TO core_read_only;
-            ]]>
-        </sql>
+                   JOIN agency up ON base_table.updated_by = up.id;
+        ]]>
+        </createView>
         <rollback>
             <dropView viewName="readable.meta_protocol" />
         </rollback>

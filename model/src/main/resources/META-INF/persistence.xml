@@ -8,7 +8,7 @@
         <mapping-file>com/chiralbehaviors/CoRE/agency/agencyNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/attribute/attributeNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/attribute/unit/unitNetwork.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/event/status/statusCodeNetwork.xml</mapping-file>
+        <mapping-file>com/chiralbehaviors/CoRE/job/status/statusCodeNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/location/locationNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/relationship/relationshipNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/product/productNetwork.xml</mapping-file>
@@ -41,21 +41,21 @@
         <class>com.chiralbehaviors.CoRE.product.ProductLocationAttribute</class>
         <class>com.chiralbehaviors.CoRE.product.ProductNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.event.AbstractProtocol</class>
-        <class>com.chiralbehaviors.CoRE.event.Job</class>
-        <class>com.chiralbehaviors.CoRE.event.JobChronology</class>
-        <class>com.chiralbehaviors.CoRE.event.MetaProtocol</class>
-        <class>com.chiralbehaviors.CoRE.event.Protocol</class>
-        <class>com.chiralbehaviors.CoRE.event.status.StatusCode</class>
-        <class>com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute</class>
-        <class>com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing</class>
-        <class>com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.AbstractProtocol</class>
+        <class>com.chiralbehaviors.CoRE.job.Job</class>
+        <class>com.chiralbehaviors.CoRE.job.JobChronology</class>
+        <class>com.chiralbehaviors.CoRE.job.MetaProtocol</class>
+        <class>com.chiralbehaviors.CoRE.job.Protocol</class>
+        <class>com.chiralbehaviors.CoRE.job.status.StatusCode</class>
+        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute</class>
+        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing</class>
+        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.location.Location</class>
         <class>com.chiralbehaviors.CoRE.location.LocationAttribute</class>
         <class>com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization</class>

@@ -5,19 +5,19 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="1390879803225-41">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform"
             remarks="Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves"
-            tableName="product_network_attribute"
+            tableName="interval_network_attribute"
         >
             <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="product_network_attribute_pkey" />
+                <constraints primaryKey="true" primaryKeyName="interval_network_attribute_pkey" />
             </column>
             <column name="agency" remarks="The agency that the information in this rule comes from" type="uuid" />
-            <column name="network_rule" remarks="The Product Network rule whose attribute is being defined" type="uuid">
+            <column name="network_rule" remarks="The agency Network rule whose attribute is being defined" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="attribute" remarks="The Attribute of the Product Network rule being defined" type="uuid">
+            <column name="attribute" remarks="The Attribute of the agency Network rule being defined" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="key" type="TEXT" />
@@ -29,9 +29,7 @@
             <column name="binary_value" type="BYTEA" />
             <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="uuid" />
             <column name="notes" remarks="Miscellaneous notes about this rule" type="TEXT" />
-            <column name="updated_by" remarks="The agency that last updated this rule"
-                type="uuid"
-            >
+            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
@@ -40,72 +38,60 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="product_network_attribute" />
+            <dropTable tableName="interval_network_attribute" />
         </rollback>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-246">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency" baseTableName="product_network_attribute" constraintName="product_network_attribute_agency_fkey"
+            baseColumnNames="agency" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_agency_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-247">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="attribute" baseTableName="product_network_attribute" constraintName="product_network_attribute_attribute_fkey"
+            baseColumnNames="attribute" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-248">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="network_rule" baseTableName="product_network_attribute" constraintName="product_network_attribute_network_rule_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_network" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-250">
+            baseColumnNames="network_rule" baseTableName="interval_network_attribute" constraintName="interval_network_interval_network_rule_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="interval_network" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="unit" baseTableName="product_network_attribute" constraintName="product_network_attribute_unit_fkey"
+            baseColumnNames="unit" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_unit_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-251">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="product_network_attribute" constraintName="product_network_attribute_updated_by_fkey"
+            baseColumnNames="updated_by" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-401">
         <addUniqueConstraint schemaName="ruleform" columnNames="agency, network_rule, attribute, sequence_number"
-            constraintName="product_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_network_attribute" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-496">
-        <createIndex schemaName="ruleform" indexName="product_network_attribute_agency_fkey_idx" tableName="product_network_attribute"
+            constraintName="interval_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="interval_network_attribute" />
+        <createIndex schemaName="ruleform" indexName="interval_network_attribute_agency_fkey_idx" tableName="interval_network_attribute"
             unique="false"
         >
             <column name="agency" />
         </createIndex>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-497">
-        <createIndex schemaName="ruleform" indexName="product_network_attribute_attribute_fkey_idx" tableName="product_network_attribute"
+        <createIndex schemaName="ruleform" indexName="interval_network_attribute_attribute_fkey_idx" tableName="interval_network_attribute"
             unique="false"
         >
             <column name="attribute" />
         </createIndex>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-498">
-        <createIndex schemaName="ruleform" indexName="product_network_attribute_network_rule_fkey_idx" tableName="product_network_attribute"
+        <createIndex schemaName="ruleform" indexName="interval_network_interval_network_rule_fkey_idx" tableName="interval_network_attribute"
             unique="false"
         >
             <column name="network_rule" />
         </createIndex>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-500">
-        <createIndex schemaName="ruleform" indexName="product_network_attribute_unit_fkey_idx" tableName="product_network_attribute"
+        <createIndex schemaName="ruleform" indexName="interval_network_attribute_unit_fkey_idx" tableName="interval_network_attribute"
             unique="false"
         >
             <column name="unit" />
         </createIndex>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-501">
-        <createIndex schemaName="ruleform" indexName="product_network_attribute_updated_by_fkey_idx" tableName="product_network_attribute"
+        <createIndex schemaName="ruleform" indexName="interval_network_attribute_updated_by_fkey_idx" tableName="interval_network_attribute"
             unique="false"
         >
             <column name="updated_by" />
         </createIndex>
+        <sql> ALTER TABLE interval_network_attribute OWNER TO core; </sql>
+        <rollback />
+        <sql><![CDATA[
+            GRANT ALL ON TABLE interval_network_attribute TO core;
+            GRANT SELECT ON TABLE interval_network_attribute TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE interval_network_attribute TO core_read_write;
+            ]]>
+        </sql>
+        <rollback />
     </changeSet>
 </databaseChangeLog>

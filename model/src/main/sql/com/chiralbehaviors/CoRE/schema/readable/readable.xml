@@ -19,6 +19,7 @@
     <include relativeToChangelogFile="true" file="views/product_child_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/product_parent_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/product_sibling_sequencing_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/product_self_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/job.xml" />
     <include relativeToChangelogFile="true" file="views/job_chronology.xml" />
     <include relativeToChangelogFile="true" file="views/location.xml" />

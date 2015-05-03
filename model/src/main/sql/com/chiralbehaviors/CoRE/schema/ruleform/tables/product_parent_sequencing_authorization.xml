@@ -5,8 +5,68 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <include relativeToChangelogFile="true" file="product_parent_sequencing_authorization/table.xml" />
-    <include relativeToChangelogFile="true" file="product_parent_sequencing_authorization/grants.xml" />
-    <include relativeToChangelogFile="true" file="product_parent_sequencing_authorization/owner.xml" />
-
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform"
+            remarks="Determines what the next available product should be, based on the status code returned for the previous product"
+            tableName="product_parent_sequencing_authorization"
+        >
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="product_parent_sequencing_authorization_pkey" />
+            </column>
+            <column name="service" remarks="The last product of a given protocol that was completed" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="status_code" remarks="The status of the last product completed" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number"
+                remarks="Ordering and uniqueness, for when a product / Status Code combination can trigger multiple child products" type="sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="parent"
+                remarks="If this is the current job's parent's product, then we should set the parent job's status.  If this is NULL, then it can apply to any parent job that has an product equal to the current job's"
+                type="uuid" />
+            <column name="parent_status_to_set" remarks="The status to set for the parent job, provided it has an product equal to &quot;my_parent&quot;"
+                type="uuid" />
+            <column name="set_if_active_siblings"
+                remarks="Determines if we set the parent job to the status denoted by &quot;parent_status_to_set&quot; if the current job has active sibling jobs.  Setting it to TRUE essentially overrides any say those sibling jobs might have."
+                type="SMALLINT" />
+            <column name="replace_product" type="SMALLINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="product_parent_sequencing_authorization" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="parent" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_my_parent_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="service" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_parent_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="parent_status_to_set" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_parent_status_to_set_fk"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_status_code_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="service, status_code, parent, sequence_number"
+            constraintName="product_parent_sequencing_authorization_parent_status_code_sequ" deferrable="false" disabled="false"
+            initiallyDeferred="true" tableName="product_parent_sequencing_authorization" />
+        <createIndex schemaName="ruleform" indexName="product_parent_sequencing_authorization_updated_by_fkey_idx" tableName="product_parent_sequencing_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

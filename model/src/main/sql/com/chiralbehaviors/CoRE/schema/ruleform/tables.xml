@@ -36,12 +36,12 @@
 
     <include relativeToChangelogFile="true" file="tables/agency_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_network_attribute.xml" />
-    <include relativeToChangelogFile="true" file="tables/interval_network_attribute/table.xml" />
+    <include relativeToChangelogFile="true" file="tables/interval_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/product_network_attribute-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/location_network_attribute/table.xml" />
-    <include relativeToChangelogFile="true" file="tables/relationship_network_attribute/table.xml" />
-    <include relativeToChangelogFile="true" file="tables/status_code_network_attribute/table.xml" />
-    <include relativeToChangelogFile="true" file="tables/unit_network_attribute/table.xml" />
+    <include relativeToChangelogFile="true" file="tables/location_network_attribute.xml" />
+    <include relativeToChangelogFile="true" file="tables/relationship_network_attribute.xml" />
+    <include relativeToChangelogFile="true" file="tables/status_code_network_attribute.xml" />
+    <include relativeToChangelogFile="true" file="tables/unit_network_attribute.xml" />
 
     <include relativeToChangelogFile="true" file="tables/agency_network_authorization-0.0.1.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_network_authorization.xml" />
@@ -79,7 +79,7 @@
     <include relativeToChangelogFile="true" file="tables/product_parent_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_sibling_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml" />
-    <include relativeToChangelogFile="true" file="tables/product_self_sequencing_authorization/product_self_sequencing_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_self_sequencing_authorization.xml" />
 
     <include relativeToChangelogFile="true" file="tables/workspace_authorization.xml" />
 

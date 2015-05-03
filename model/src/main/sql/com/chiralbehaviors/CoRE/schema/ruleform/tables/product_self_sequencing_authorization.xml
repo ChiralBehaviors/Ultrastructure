@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
-    <changeSet id="0.0.2-rc4 create product self sequencing authorization table" author="hparry">
+    <changeSet id="2.0.0" author="hparry">
         <createTable schemaName="ruleform"
             remarks="Determines what the next available product should be, based on the status code returned for the previous product"
             tableName="product_self_sequencing_authorization"
@@ -57,39 +57,5 @@
         >
             <column name="updated_by" />
         </createIndex>
-        <sql><![CDATA[
-            GRANT ALL ON TABLE product_self_sequencing_authorization TO core;
-            GRANT SELECT ON TABLE product_self_sequencing_authorization TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE product_self_sequencing_authorization TO core_read_write;
-            ]]>
-        </sql>
-        <rollback />
-        <sql> ALTER TABLE product_self_sequencing_authorization OWNER
-            TO
-            core;
-        </sql>
-        <rollback />
-    </changeSet>
-    <changeSet id="0.0.2-rc4 product_self_sequencing_authorization readable view" author="hparry">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.product_self_sequencing_authorization AS 
-             SELECT base_table.id, s.name AS service, sc.name AS status_code, 
-                    base_table.sequence_number, base_table.notes,
-                    up.name AS updated_by, base_table.version
-               FROM product_self_sequencing_authorization base_table
-               JOIN product s ON base_table.service = s.id
-               JOIN status_code sc ON base_table.status_code = sc.id
-               JOIN agency up ON base_table.updated_by = up.id;
-            
-            ALTER TABLE readable.product_self_sequencing_authorization
-              OWNER TO core;
-            GRANT ALL ON TABLE readable.product_self_sequencing_authorization TO core;
-            GRANT SELECT ON TABLE readable.product_self_sequencing_authorization TO core_read_write;
-            GRANT SELECT ON TABLE readable.product_self_sequencing_authorization TO core_read_only;
-            ]]>
-        </sql>
-        <rollback>
-            <dropView viewName="readable.product_self_sequencing_authorization" />
-        </rollback>
     </changeSet>
 </databaseChangeLog>

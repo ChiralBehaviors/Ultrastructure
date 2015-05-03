@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="1390879803225-41">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform"
             remarks="Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves"
             tableName="unit_network_attribute"
@@ -29,9 +29,7 @@
             <column name="binary_value" type="BYTEA" />
             <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="uuid" />
             <column name="notes" remarks="Miscellaneous notes about this rule" type="TEXT" />
-            <column name="updated_by" remarks="The agency that last updated this rule"
-                type="uuid"
-            >
+            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
@@ -42,83 +40,48 @@
         <rollback>
             <dropTable tableName="unit_network_attribute" />
         </rollback>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-246">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="unit_network_attribute" constraintName="unit_network_attribute_agency_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-247">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="unit_network_attribute" constraintName="unit_network_attribute_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-248">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="network_rule" baseTableName="unit_network_attribute" constraintName="unit_network_unit_network_rule_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit_network" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-250">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="unit" baseTableName="unit_network_attribute" constraintName="unit_network_attribute_unit_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-251">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="unit_network_attribute" constraintName="unit_network_attribute_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-401">
         <addUniqueConstraint schemaName="ruleform" columnNames="agency, network_rule, attribute, sequence_number"
             constraintName="unit_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="unit_network_attribute" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-496">
         <createIndex schemaName="ruleform" indexName="unit_network_attribute_agency_fkey_idx" tableName="unit_network_attribute"
             unique="false"
         >
             <column name="agency" />
         </createIndex>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-497">
         <createIndex schemaName="ruleform" indexName="unit_network_attribute_attribute_fkey_idx" tableName="unit_network_attribute"
             unique="false"
         >
             <column name="attribute" />
         </createIndex>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-498">
         <createIndex schemaName="ruleform" indexName="unit_network_unit_network_rule_fkey_idx" tableName="unit_network_attribute"
             unique="false"
         >
             <column name="network_rule" />
         </createIndex>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-500">
         <createIndex schemaName="ruleform" indexName="unit_network_attribute_unit_fkey_idx" tableName="unit_network_attribute"
             unique="false"
         >
             <column name="unit" />
         </createIndex>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-501">
         <createIndex schemaName="ruleform" indexName="unit_network_attribute_updated_by_fkey_idx" tableName="unit_network_attribute"
             unique="false"
         >
             <column name="updated_by" />
         </createIndex>
-    </changeSet>
-    <changeSet id="1" author="hhildebrand">
-        <sql> ALTER TABLE unit_network_attribute OWNER TO core; </sql>
-        <rollback />
-    </changeSet>
-    <changeSet id="2" author="hhildebrand">
-        <sql><![CDATA[
-            GRANT ALL ON TABLE unit_network_attribute TO core;
-            GRANT SELECT ON TABLE unit_network_attribute TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE unit_network_attribute TO core_read_write;
-            ]]>
-        </sql>
-        <rollback />
     </changeSet>
 </databaseChangeLog>

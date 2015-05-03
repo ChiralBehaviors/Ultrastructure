@@ -5,8 +5,38 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <include relativeToChangelogFile="true" file="unit/table.xml" />
-    <include relativeToChangelogFile="true" file="unit/grants.xml" />
-    <include relativeToChangelogFile="true" file="unit/owner.xml" />
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="unit">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="unit_pkey" />
+            </column>
+            <column name="name" type="TEXT">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="TEXT" />
+            <column name="abbreviation" type="VARCHAR(10)" />
+            <column name="notes" type="TEXT" />
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column name="datatype" remarks="The underlying datatype of a measurement of this kind of Unit" type="TEXT" />
+            <column name="min" remarks="If the unit is integer or numeric and has a minimum value, it is stored here." type="numeric" />
+            <column name="max" remarks="If the unit is integer or numeric and has a maximum value, it is stored here." type="numeric" />
+            <column defaultValueNumeric="0" name="enumerated"
+                remarks="If the allowable values of the unit constitute an enumerated set, then this should be TRUE." type="SMALLINT" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="unit" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="unit" constraintName="unit_updated_by_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="name" constraintName="unit_name_key" deferrable="false"
+            disabled="false" initiallyDeferred="true" tableName="unit" />
+        <createIndex schemaName="ruleform" indexName="unit_updated_by_fkey_idx" tableName="unit" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>

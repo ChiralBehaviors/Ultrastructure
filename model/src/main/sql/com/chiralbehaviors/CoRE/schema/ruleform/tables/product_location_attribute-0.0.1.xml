@@ -5,8 +5,60 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <include relativeToChangelogFile="true" file="product_location_attribute/table.xml" />
-    <include relativeToChangelogFile="true" file="product_location_attribute/grants.xml" />
-    <include relativeToChangelogFile="true" file="product_location_attribute/owner.xml" />
-
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="product_location_attribute">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="product_location_attribute_pkey" />
+            </column>
+            <column name="agency" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="product_location" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="attribute" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="key" type="TEXT" />
+            <column name="numeric_value" type="numeric" />
+            <column name="integer_value" type="INT4" />
+            <column name="boolean_value" type="SMALLINT" />
+            <column name="text_value" type="TEXT" />
+            <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
+            <column name="binary_value" type="BYTEA" />
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
+                <constraints nullable="false" />
+            </column>
+            <column name="unit" type="uuid" />
+            <column name="notes" type="TEXT" />
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="product_location_attribute" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency" baseTableName="product_location_attribute" constraintName="product_location_attribute_agency_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute" baseTableName="product_location_attribute" constraintName="product_location_attribute_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_location" baseTableName="product_location_attribute" constraintName="product_location_attribute_product_location_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_location_attribute" constraintName="product_location_attribute_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency, product_location, attribute, sequence_number"
+            constraintName="product_location_attribute_agency_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="product_location_attribute" />
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_updated_by_fkey_idx" tableName="product_location_attribute"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

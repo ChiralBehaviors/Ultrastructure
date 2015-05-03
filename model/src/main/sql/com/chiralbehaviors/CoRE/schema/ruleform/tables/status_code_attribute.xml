@@ -1,11 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
-    <include relativeToChangelogFile="true" file="status_code_attribute/table.xml"/> 
-
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="status_code_attribute">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="status_code_attribute_pkey" />
+            </column>
+            <column name="status_code" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="attribute" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="key" type="TEXT" />
+            <column name="numeric_value" type="numeric" />
+            <column name="integer_value" type="INT4" />
+            <column name="boolean_value" type="SMALLINT" />
+            <column name="text_value" type="TEXT" />
+            <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
+            <column name="binary_value" type="BYTEA" />
+            <column name="unit" type="uuid" />
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
+                <constraints nullable="false" />
+            </column>
+            <column name="notes" type="TEXT" />
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="status_code_attribute" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute" baseTableName="status_code_attribute" constraintName="status_code_attribute_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="status_code" baseTableName="status_code_attribute" constraintName="status_code_attribute_status_code_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit" baseTableName="status_code_attribute" constraintName="status_code_attribute_unit_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="status_code_attribute" constraintName="status_code_attribute_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="status_code, attribute" constraintName="status_code_attribute_status_code_key"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="status_code_attribute" />
+        <createIndex schemaName="ruleform" indexName="status_code_attribute_updated_by_fkey_idx" tableName="status_code_attribute"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>

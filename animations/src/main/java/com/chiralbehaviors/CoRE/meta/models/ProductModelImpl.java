@@ -27,6 +27,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
@@ -275,17 +276,24 @@ public class ProductModelImpl
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AgencyProduct> query = cb.createQuery(AgencyProduct.class);
         Root<AgencyProduct> plRoot = query.from(AgencyProduct.class);
+        ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
         query.select(plRoot).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.agency),
                                                    authorized),
                                           cb.equal(plRoot.get(AgencyProduct_.relationship),
-                                                   relationship),
+                                                   relationshipParam),
                                           cb.equal(plRoot.get(AgencyProduct_.product),
                                                    ruleform)));
         TypedQuery<AgencyProduct> q = em.createQuery(query);
+        q.setParameter(relationshipParam, relationship);
         try {
             em.remove(q.getSingleResult());
         } catch (NoResultException e) {
-            // no need to remove
+            return;
+        }
+        q.setParameter(relationshipParam, relationship.getInverse());
+        try {
+            em.remove(q.getSingleResult());
+        } catch (NoResultException e) {
         }
     }
 
@@ -298,17 +306,24 @@ public class ProductModelImpl
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ProductLocation> query = cb.createQuery(ProductLocation.class);
         Root<ProductLocation> plRoot = query.from(ProductLocation.class);
+        ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
         query.select(plRoot).where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
                                                    ruleform),
                                           cb.equal(plRoot.get(ProductLocation_.relationship),
-                                                   relationship),
+                                                   relationshipParam),
                                           cb.equal(plRoot.get(ProductLocation_.location),
                                                    authorized)));
         TypedQuery<ProductLocation> q = em.createQuery(query);
+        q.setParameter(relationshipParam, relationship);
         try {
             em.remove(q.getSingleResult());
         } catch (NoResultException e) {
-            // no need to remove
+            return;
+        }
+        q.setParameter(relationshipParam, relationship.getInverse());
+        try {
+            em.remove(q.getSingleResult());
+        } catch (NoResultException e) {
         }
     }
 

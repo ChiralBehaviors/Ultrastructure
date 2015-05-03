@@ -21,7 +21,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -41,13 +40,6 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 public class IntervalModelTest extends AbstractModelTest {
 
     @Test
-    public void testDefaulting() {
-        em.getTransaction().begin();
-        model.getIntervalModel().newDefaultInterval("int", "erval");
-        em.flush();
-    }
-
-    @Test
     public void testSimpleNetworkPropagation() {
         Agency core = model.getKernel().getCore();
         Relationship equals = model.getKernel().getEquals();
@@ -61,20 +53,11 @@ public class IntervalModelTest extends AbstractModelTest {
         NetworkInference aEqualsA = new NetworkInference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
-        Interval a = new Interval(BigDecimal.valueOf(0),
-                                  BigDecimal.valueOf(100),
-                                  kernel.getUnsetUnit(), kernel.getUnsetUnit(),
-                                  "A", core);
+        Interval a = new Interval("A", core);
         em.persist(a);
-        Interval b = new Interval(BigDecimal.valueOf(0),
-                                  BigDecimal.valueOf(100),
-                                  kernel.getUnsetUnit(), kernel.getUnsetUnit(),
-                                  "B", core);
+        Interval b = new Interval("B", core);
         em.persist(b);
-        Interval c = new Interval(BigDecimal.valueOf(0),
-                                  BigDecimal.valueOf(100),
-                                  kernel.getUnsetUnit(), kernel.getUnsetUnit(),
-                                  "C", core);
+        Interval c = new Interval("C", core);
         em.persist(c);
         IntervalNetwork edgeA = new IntervalNetwork(a, equals, b, core);
         em.persist(edgeA);

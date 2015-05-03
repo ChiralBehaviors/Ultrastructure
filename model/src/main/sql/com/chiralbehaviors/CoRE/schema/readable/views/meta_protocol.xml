@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView viewName="meta_protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
+                 SELECT base_table.id, 
+                        s.name AS service,  
+                        st.name AS service_type, 
+                        rr.name AS requester, 
+                        po.name AS product,
+                        dt.name AS deliver_to, 
+                        df.name AS deliver_from, 
+                        at.name AS assign_to,
+                        u.name AS quantity_unit,
+                        base_table.stop_on_match,
+                        base_table.sequence_number, 
+                        up.name AS updated_by, 
+                        base_table.version
+                   FROM meta_protocol base_table
+                   JOIN product s ON base_table.service = s.id
+                   LEFT JOIN relationship rr ON base_table.requester = rr.id
+                   LEFT JOIN relationship st ON base_table.service_type = st.id
+                   LEFT JOIN relationship po ON base_table.product = po.id
+                   LEFT JOIN relationship dt ON base_table.deliver_to= dt.id
+                   LEFT JOIN relationship df ON base_table.deliver_from = df.id 
+                   LEFT JOIN relationship at ON base_table.assign_to = at.id 
+                   LEFT JOIN relationship u ON base_table.quantity_unit = u.id
+                   JOIN agency up ON base_table.updated_by = up.id;
+        ]]>
+        </createView>
+        <rollback>
+            <dropView viewName="readable.meta_protocol" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

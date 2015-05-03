@@ -51,7 +51,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
@@ -149,15 +149,13 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownInterval wki) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, start_unit, duration_unit, description, updated_by, version) VALUES (?, ?, ?, ?, ?, ?, 1)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, 1)",
                                                                         wki.tableName()));
         try {
             s.setObject(1, wki.id());
             s.setString(2, wki.wkoName());
-            s.setObject(3, wki.startUnit().id());
-            s.setObject(4, wki.durationUnit().id());
-            s.setString(5, wki.description());
-            s.setObject(6, WellKnownAgency.CORE.id());
+            s.setString(3, wki.description());
+            s.setObject(4, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wki), e);

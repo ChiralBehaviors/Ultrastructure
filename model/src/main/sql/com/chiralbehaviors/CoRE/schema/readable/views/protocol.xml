@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand"> 
+        <createView schemaName="readable" viewName="protocol"><![CDATA[
+             SELECT base_table.id,
+                base_table.name,
+                s.name AS service,
+                p.name AS product,
+                r.name AS requester,
+                dt.name AS deliver_to,
+                df.name AS deliver_from,
+                assign.name AS assign_to,
+                base_table.quantity,
+                u.name AS quantity_unit, 
+                cs.name AS child_service,
+                cp.name AS child_product,
+                cat.name AS child_assign_to,
+                base_table.child_quantity,
+                cqu.name AS child_quantity_unit,
+                cdt.name AS child_deliver_to,
+                cdf.name AS child_deliver_from, 
+                base_table.sequence_number,
+                base_table.notes,
+                up.name AS updated_by,
+                base_table.version
+               FROM ruleform.protocol base_table
+               JOIN ruleform.product s ON base_table.service = s.id
+               JOIN ruleform.product p ON base_table.product = p.id
+               JOIN ruleform.agency r ON base_table.requester = r.id
+               JOIN ruleform.location dt ON base_table.deliver_to = dt.id
+               JOIN ruleform.location df ON base_table.deliver_from = df.id
+               JOIN ruleform.agency assign ON base_table.assign_to = assign.id
+               JOIN ruleform.unit u ON base_table.quantity_unit = u.id
+               JOIN ruleform.unit cqu ON base_table.child_quantity_unit = cqu.id 
+               JOIN ruleform.product cs ON base_table.child_service = cs.id
+               JOIN ruleform.product cp ON base_table.child_product = cp.id
+               JOIN ruleform.agency cat ON base_table.child_assign_to = cat.id
+               JOIN ruleform.location cdt ON base_table.child_deliver_to = cdt.id
+               JOIN ruleform.location cdf ON base_table.child_deliver_from = cdf.id
+               JOIN ruleform.agency up ON base_table.updated_by = up.id
+            ]]></createView>
+        <rollback>
+            <dropView viewName="readable.protocol" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

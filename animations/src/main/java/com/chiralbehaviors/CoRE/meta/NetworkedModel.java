@@ -30,9 +30,11 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -91,6 +93,33 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     void authorize(Aspect<RuleForm> aspect, Attribute... attributes);
 
+    void authorize(RuleForm ruleform, Relationship relationship,
+                   Agency authorized);
+
+    void authorize(RuleForm ruleform, Relationship relationship,
+                   Location authorized);
+
+    void authorize(RuleForm ruleform, Relationship relationship,
+                   Product authorized);
+
+    void authorizeAgencies(RuleForm ruleform, Relationship relationship,
+                           List<Agency> authorized);
+
+    void authorizeLocations(RuleForm ruleform, Relationship relationship,
+                            List<Location> authorized);
+
+    void authorizeProducts(RuleForm ruleform, Relationship relationship,
+                           List<Product> authorized);
+
+    void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                           Agency authorized);
+
+    void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                           Location authorized);
+
+    void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                           Product authorized);
+
     /**
      * Create a new instance of the RuleForm based on the provided prototype
      *
@@ -99,6 +128,24 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @return the new instance
      */
     RuleForm create(RuleForm prototype);
+
+    void deauthorize(RuleForm ruleform, Relationship relationship,
+                     Agency authorized);
+
+    void deauthorize(RuleForm ruleform, Relationship relationship,
+                     Location authorized);
+
+    void deauthorize(RuleForm ruleform, Relationship relationship,
+                     Product authorized);
+
+    void deauthorizeAgencies(RuleForm ruleform, Relationship relationship,
+                             List<Agency> authorized);
+
+    void deauthorizeLocations(RuleForm ruleform, Relationship relationship,
+                              List<Location> authorized);
+
+    void deauthorizeProducts(RuleForm ruleform, Relationship relationship,
+                             List<Product> authorized);
 
     /**
      * @param id
@@ -227,6 +274,21 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     NetworkAttribute<?> getAttributeValue(RuleForm parent, Relationship r,
                                           RuleForm child, Attribute attribute);
+
+    List<Agency> getAuthorizedAgencies(RuleForm ruleform,
+                                       Relationship relationship);
+
+    Agency getAuthorizedAgency(RuleForm ruleform, Relationship relationship);
+
+    Location getAuthorizedLocation(RuleForm ruleform, Relationship relationship);
+
+    List<Location> getAuthorizedLocations(RuleForm ruleform,
+                                          Relationship relationship);
+
+    Product getAuthorizedProduct(RuleForm ruleform, Relationship relationship);
+
+    List<Product> getAuthorizedProducts(RuleForm ruleform,
+                                        Relationship relationship);
 
     /**
      * Answer the child that is connected to the parent via the relationship
@@ -374,6 +436,15 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     void setAttributeValue(AttributeType value);
 
+    void setAuthorizedAgencies(RuleForm ruleform, Relationship relationship,
+                               List<Agency> authorized);
+
+    void setAuthorizedLocations(RuleForm ruleform, Relationship relationship,
+                                List<Location> authorized);
+
+    void setAuthorizedProducts(RuleForm ruleform, Relationship relationship,
+                               List<Product> authorized);
+
     /**
      * Sets the child of the immediate relationship defined by the parent and
      * relationship. This is done by first deleting the edge, and then inserting
@@ -387,11 +458,5 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void setImmediateChild(RuleForm parent, Relationship relationship,
                            RuleForm child, Agency updatedBy);
 
-    /**
-     *
-     * @param parent
-     * @param r
-     * @param child
-     */
     void unlink(RuleForm parent, Relationship r, RuleForm child);
 }

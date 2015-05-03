@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="1" author="hhildebrand">
+        <createView schemaName="readable" viewName="product_self_sequencing_authorization"><![CDATA[ 
+           SELECT base_table.id, s.name AS service, sc.name AS status_code, 
+                    base_table.sequence_number, base_table.notes,
+                    up.name AS updated_by, base_table.version
+               FROM product_self_sequencing_authorization base_table
+               JOIN product s ON base_table.service = s.id
+               JOIN status_code sc ON base_table.status_code = sc.id
+               JOIN agency up ON base_table.updated_by = up.id;
+            
+            ALTER TABLE readable.product_self_sequencing_authorization
+              OWNER TO core;
+            GRANT ALL ON TABLE readable.product_self_sequencing_authorization TO core;
+            GRANT SELECT ON TABLE readable.product_self_sequencing_authorization TO core_read_write;
+            GRANT SELECT ON TABLE readable.product_self_sequencing_authorization TO core_read_only;
+            ]]></createView>
+        <rollback>
+            <dropView schemaName="readable" viewName="product_self_sequencing_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

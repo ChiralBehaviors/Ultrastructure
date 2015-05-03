@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="1" author="hhildebrand">
+        <createView schemaName="readable" viewName="interval"><![CDATA[ 
+			 SELECT r.id, r.name, r.description, r.notes, up.name AS updated_by, r.version
+			   FROM interval r
+			   JOIN interval up ON r.updated_by = up.id 
+            ]]>
+        </createView>
+        <rollback>
+            <dropView schemaName="readable" viewName="interval" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

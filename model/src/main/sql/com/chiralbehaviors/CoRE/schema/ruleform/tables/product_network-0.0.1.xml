@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="product_network">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="product_network_pkey" />
+            </column>
+            <column name="parent" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="relationship" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="child" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="inference" type="uuid" />
+            <column name="premise1" type="uuid" />
+            <column name="premise2" type="uuid" />
+            <column name="notes" type="TEXT" />
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column name="ordering" type="ordinal_number" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="product_network" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child" baseTableName="product_network" constraintName="product_network_child_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="parent" baseTableName="product_network" constraintName="product_network_parent_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship" baseTableName="product_network" constraintName="product_network_relationship_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_network" constraintName="product_network_updated_by_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2"
+            constraintName="product_network_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_network" />
+        <createIndex schemaName="ruleform" indexName="product_network_child_fkey_idx" tableName="product_network" unique="false">
+            <column name="child" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_network_parent_fkey_idx" tableName="product_network" unique="false">
+            <column name="parent" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_network_relationship_fkey_idx" tableName="product_network" unique="false">
+            <column name="relationship" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_network_updated_by_fkey_idx" tableName="product_network" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="premise1" baseTableName="product_network" constraintName="product_network_premise1_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_network" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="premise2" baseTableName="product_network" constraintName="product_network_premise2_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_network" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="inference" baseTableName="product_network" constraintName="product_network_inference_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
+    </changeSet>
+</databaseChangeLog>

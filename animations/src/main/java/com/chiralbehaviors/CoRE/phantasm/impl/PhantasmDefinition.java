@@ -89,7 +89,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         int i = 0;
         stateMap.put(Phantasm.class, ruleform);
         for (StateDefinition<RuleForm> facet : facets) {
-            Object state = facet.construct((RuleForm) ruleform, model);
+            Object state = facet.wrap((RuleForm) ruleform, model);
             instances[i++] = state;
             stateMap.put(facet.getStateInterface(), state);
             if (facet.getStateInterface().equals(phantasm)) {

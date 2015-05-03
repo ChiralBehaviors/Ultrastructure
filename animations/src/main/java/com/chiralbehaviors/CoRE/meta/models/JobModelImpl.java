@@ -59,18 +59,18 @@ import com.chiralbehaviors.CoRE.Ruleform_;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.event.AbstractProtocol;
-import com.chiralbehaviors.CoRE.event.AbstractProtocol_;
-import com.chiralbehaviors.CoRE.event.Job;
-import com.chiralbehaviors.CoRE.event.JobChronology;
-import com.chiralbehaviors.CoRE.event.MetaProtocol;
-import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.job.AbstractProtocol;
+import com.chiralbehaviors.CoRE.job.AbstractProtocol_;
+import com.chiralbehaviors.CoRE.job.Job;
+import com.chiralbehaviors.CoRE.job.JobChronology;
+import com.chiralbehaviors.CoRE.job.MetaProtocol;
+import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
@@ -268,42 +268,6 @@ public class JobModelImpl implements JobModel {
                 if (!pathExists(job.getService(), mp.getServiceType(),
                                 p.getService(), model.getProductModel())) {
                     fieldsMissing.add("Service");
-                }
-                if (!pathExists(job.getAssignToAttribute(),
-                                mp.getAssignToAttribute(),
-                                p.getAssignToAttribute(),
-                                model.getAttributeModel())) {
-                    fieldsMissing.add("AssignToAttribute");
-                }
-                if (!pathExists(job.getRequesterAttribute(),
-                                mp.getRequesterAttribute(),
-                                p.getRequesterAttribute(),
-                                model.getAttributeModel())) {
-                    fieldsMissing.add("RequesterAttribute");
-                }
-                if (!pathExists(job.getDeliverToAttribute(),
-                                mp.getDeliverToAttribute(),
-                                p.getDeliverToAttribute(),
-                                model.getAttributeModel())) {
-                    fieldsMissing.add("DeliverToAttribute");
-                }
-                if (!pathExists(job.getDeliverFromAttribute(),
-                                mp.getDeliverFromAttribute(),
-                                p.getDeliverFromAttribute(),
-                                model.getAttributeModel())) {
-                    fieldsMissing.add("DeliverFromAttribute");
-                }
-                if (!pathExists(job.getProductAttribute(),
-                                mp.getProductAttribute(),
-                                p.getProductAttribute(),
-                                model.getAttributeModel())) {
-                    fieldsMissing.add("ProductAttribute");
-                }
-                if (!pathExists(job.getServiceAttribute(),
-                                mp.getServiceAttribute(),
-                                p.getServiceAttribute(),
-                                model.getAttributeModel())) {
-                    fieldsMissing.add("ServiceAttribute");
                 }
                 mpGaps.put(mp, fieldsMissing);
             }
@@ -1015,16 +979,10 @@ public class JobModelImpl implements JobModel {
         job.setService(service);
         job.setUpdatedBy(updatedBy);
         job.setAssignTo(kernel.getNotApplicableAgency());
-        job.setAssignToAttribute(kernel.getNotApplicableAttribute());
         job.setDeliverFrom(kernel.getNotApplicableLocation());
-        job.setDeliverFromAttribute(kernel.getNotApplicableAttribute());
         job.setDeliverTo(kernel.getNotApplicableLocation());
-        job.setDeliverToAttribute(kernel.getNotApplicableAttribute());
         job.setProduct(kernel.getNotApplicableProduct());
-        job.setProductAttribute(kernel.getNotApplicableAttribute());
         job.setRequester(kernel.getNotApplicableAgency());
-        job.setRequesterAttribute(kernel.getNotApplicableAttribute());
-        job.setServiceAttribute(kernel.getNotApplicableAttribute());
         job.setQuantityUnit(kernel.getNotApplicableUnit());
         job.setStatus(kernel.getUnset());
         em.persist(job);
@@ -1046,16 +1004,10 @@ public class JobModelImpl implements JobModel {
         mp.setUpdatedBy(updatedBy);
         mp.setService(service);
         mp.setAssignTo(any);
-        mp.setAssignToAttribute(any);
         mp.setDeliverTo(any);
-        mp.setDeliverToAttribute(any);
         mp.setDeliverFrom(any);
-        mp.setDeliverFromAttribute(any);
         mp.setProduct(any);
-        mp.setProductAttribute(any);
         mp.setRequester(any);
-        mp.setRequesterAttribute(any);
-        mp.setServiceAttribute(any);
         mp.setServiceType(kernel.getSameRelationship());
         mp.setQuantityUnit(any);
         em.persist(mp);
@@ -1067,29 +1019,18 @@ public class JobModelImpl implements JobModel {
         Protocol protocol = new Protocol();
         protocol.setUpdatedBy(updatedBy);
         protocol.setService(service);
-        protocol.setServiceAttribute(kernel.getNotApplicableAttribute());
         protocol.setAssignTo(kernel.getNotApplicableAgency());
-        protocol.setAssignToAttribute(kernel.getNotApplicableAttribute());
         protocol.setDeliverFrom(kernel.getNotApplicableLocation());
-        protocol.setDeliverFromAttribute(kernel.getNotApplicableAttribute());
         protocol.setDeliverTo(kernel.getNotApplicableLocation());
-        protocol.setDeliverToAttribute(kernel.getNotApplicableAttribute());
         protocol.setProduct(kernel.getNotApplicableProduct());
-        protocol.setProductAttribute(kernel.getNotApplicableAttribute());
         protocol.setRequester(kernel.getNotApplicableAgency());
-        protocol.setRequesterAttribute(kernel.getNotApplicableAttribute());
         protocol.setQuantityUnit(kernel.getNotApplicableUnit());
         protocol.setChildAssignTo(kernel.getSameAgency());
-        protocol.setChildAssignToAttribute(kernel.getSameAttribute());
         protocol.setChildDeliverFrom(kernel.getSameLocation());
-        protocol.setChildDeliverFromAttribute(kernel.getSameAttribute());
         protocol.setChildDeliverTo(kernel.getSameLocation());
-        protocol.setChildDeliverToAttribute(kernel.getSameAttribute());
         protocol.setChildrenRelationship(kernel.getNotApplicableRelationship());
         protocol.setChildProduct(kernel.getSameProduct());
-        protocol.setChildProductAttribute(kernel.getSameAttribute());
         protocol.setChildService(kernel.getSameProduct());
-        protocol.setChildServiceAttribute(kernel.getSameAttribute());
         protocol.setChildQuantityUnit(kernel.getNotApplicableUnit());
         em.persist(protocol);
         return protocol;
@@ -1266,46 +1207,20 @@ public class JobModelImpl implements JobModel {
         child.setAssignTo(resolve(inferred.assignTo, protocol.getAssignTo(),
                                   parent.getAssignTo(),
                                   protocol.getChildAssignTo()));
-        child.setAssignToAttribute(resolve(inferred.assignToAttribute,
-                                           protocol.getAssignToAttribute(),
-                                           parent.getAssignToAttribute(),
-                                           protocol.getChildAssignToAttribute()));
         child.setDeliverTo(resolve(inferred.deliverTo, protocol.getDeliverTo(),
                                    parent.getDeliverTo(),
                                    protocol.getChildDeliverTo()));
-        child.setDeliverToAttribute(resolve(inferred.deliverToAttribute,
-                                            protocol.getDeliverToAttribute(),
-                                            parent.getDeliverToAttribute(),
-                                            protocol.getChildDeliverToAttribute()));
         child.setDeliverFrom(resolve(inferred.deliverFrom,
                                      protocol.getDeliverFrom(),
                                      parent.getDeliverFrom(),
                                      protocol.getChildDeliverFrom()));
-        child.setDeliverFromAttribute(resolve(inferred.deliverFromAttribute,
-                                              protocol.getDeliverFromAttribute(),
-                                              parent.getDeliverFromAttribute(),
-                                              protocol.getChildDeliverFromAttribute()));
-        child.setProductAttribute(resolve(inferred.productAttribute,
-                                          protocol.getProductAttribute(),
-                                          parent.getProductAttribute(),
-                                          protocol.getChildProductAttribute()));
         child.setService(resolve(false, protocol.getService(),
                                  parent.getService(),
                                  protocol.getChildService()));
-        child.setServiceAttribute(resolve(inferred.serviceAttribute,
-                                          protocol.getServiceAttribute(),
-                                          parent.getServiceAttribute(),
-                                          protocol.getChildServiceAttribute()));
         if (inferred.requester || protocol.getRequester().isAnyOrSame()) {
             child.setRequester(parent.getRequester());
         } else {
             child.setRequester(protocol.getRequester());
-        }
-        if (inferred.requesterAttribute
-            || protocol.getRequesterAttribute().isAnyOrSame()) {
-            child.setRequesterAttribute(parent.getRequesterAttribute());
-        } else {
-            child.setRequesterAttribute(protocol.getRequesterAttribute());
         }
 
         if (protocol.getChildQuantityUnit().isSame()) {
@@ -1355,56 +1270,25 @@ public class JobModelImpl implements JobModel {
                                                                                    query)));
         }
 
-        // Service Attribute
-        addMask(job.getServiceAttribute(), metaprotocol.getServiceAttribute(),
-                AbstractProtocol_.serviceAttribute, cb, query, protocol, masks);
-
         // Deliver From
         addMask(job.getDeliverFrom(), metaprotocol.getDeliverFrom(),
                 AbstractProtocol_.deliverFrom, cb, query, protocol, masks);
-
-        // Deliver From Attribute
-        addMask(job.getDeliverFromAttribute(),
-                metaprotocol.getDeliverFromAttribute(),
-                AbstractProtocol_.deliverFromAttribute, cb, query, protocol,
-                masks);
 
         // Deliver To
         addMask(job.getDeliverTo(), metaprotocol.getDeliverTo(),
                 AbstractProtocol_.deliverTo, cb, query, protocol, masks);
 
-        // Deliver To Attribute
-        addMask(job.getDeliverToAttribute(),
-                metaprotocol.getDeliverToAttribute(),
-                AbstractProtocol_.deliverToAttribute, cb, query, protocol,
-                masks);
-
         // Product
         addMask(job.getProduct(), metaprotocol.getProduct(),
                 AbstractProtocol_.product, cb, query, protocol, masks);
-
-        // Product Attribute
-        addMask(job.getProductAttribute(), metaprotocol.getProductAttribute(),
-                AbstractProtocol_.productAttribute, cb, query, protocol, masks);
 
         // Requester
         addMask(job.getRequester(), metaprotocol.getRequester(),
                 AbstractProtocol_.requester, cb, query, protocol, masks);
 
-        // Requester Attribute
-        addMask(job.getRequesterAttribute(),
-                metaprotocol.getRequesterAttribute(),
-                AbstractProtocol_.requesterAttribute, cb, query, protocol,
-                masks);
-
         // Assign To
         addMask(job.getAssignTo(), metaprotocol.getAssignTo(),
                 AbstractProtocol_.assignTo, cb, query, protocol, masks);
-
-        // Assign To Attribute
-        addMask(job.getAssignToAttribute(),
-                metaprotocol.getAssignToAttribute(),
-                AbstractProtocol_.assignToAttribute, cb, query, protocol, masks);
 
         // Quqntity Unit
         addMask(job.getQuantityUnit(), metaprotocol.getQuantityUnit(),
@@ -1435,18 +1319,6 @@ public class JobModelImpl implements JobModel {
         if (!job.getDeliverFrom().equals(p.getDeliverFrom())) {
             missingFields.add("DeliverFrom");
         }
-        if (!job.getRequesterAttribute().equals(p.getRequesterAttribute())) {
-            missingFields.add("RequesterAttribute");
-        }
-        if (!job.getProductAttribute().equals(p.getProductAttribute())) {
-            missingFields.add("ProductAttribute");
-        }
-        if (!job.getDeliverToAttribute().equals(p.getDeliverToAttribute())) {
-            missingFields.add("DeliverToAttribute");
-        }
-        if (!job.getDeliverFromAttribute().equals(p.getDeliverFromAttribute())) {
-            missingFields.add("DeliverFromAttribute");
-        }
         return missingFields;
 
     }
@@ -1460,12 +1332,6 @@ public class JobModelImpl implements JobModel {
         query.setParameter("deliverTo", job.getDeliverTo());
         query.setParameter("deliverFrom", job.getDeliverFrom());
         query.setParameter("assignTo", job.getAssignTo());
-        query.setParameter("productAttribute", job.getProductAttribute());
-        query.setParameter("assignToAttribute", job.getAssignToAttribute());
-        query.setParameter("requesterAttribute", job.getRequesterAttribute());
-        query.setParameter("deliverToAttribute", job.getDeliverToAttribute());
-        query.setParameter("deliverFromAttribute",
-                           job.getDeliverFromAttribute());
         return query.getResultList();
     }
 
@@ -1502,16 +1368,10 @@ public class JobModelImpl implements JobModel {
      */
     private InferenceMap map(Protocol protocol, MetaProtocol metaProtocol) {
         return new InferenceMap(isTxfm(metaProtocol.getAssignTo()),
-                                isTxfm(metaProtocol.getAssignToAttribute()),
                                 isTxfm(metaProtocol.getDeliverFrom()),
-                                isTxfm(metaProtocol.getDeliverFromAttribute()),
                                 isTxfm(metaProtocol.getDeliverTo()),
-                                isTxfm(metaProtocol.getDeliverToAttribute()),
                                 isTxfm(metaProtocol.getProduct()),
-                                isTxfm(metaProtocol.getProductAttribute()),
                                 isTxfm(metaProtocol.getRequester()),
-                                isTxfm(metaProtocol.getRequesterAttribute()),
-                                isTxfm(metaProtocol.getServiceAttribute()),
                                 isTxfm(metaProtocol.getQuantityUnit()));
     }
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView schemaName="readable" viewName="job"><![CDATA[
+             SELECT base_table.id, 
+                    s.name AS service, 
+                    r.name AS requester, 
+                    p.name AS product,  
+                    dt.name AS deliver_to, 
+                    df.name AS deliver_from, 
+                    at.name AS assign_to,
+                    sc.name AS status, 
+                    base_table.quantity,
+                    u.name AS quantity_unit,
+                    base_table.parent,
+                    base_table.sequence_number,
+                    base_table.notes,
+                    up.name AS updated_by, base_table.version,
+                    base_table.protocol
+               FROM job base_table
+               JOIN product s ON base_table.service = s.id
+               JOIN product p ON base_table.product = p.id
+               JOIN agency at ON base_table.assign_to = at.id
+               JOIN agency r ON base_table.requester = r.id
+               JOIN location dt ON base_table.deliver_to = dt.id
+               JOIN location df ON base_table.deliver_from = df.id
+               JOIN status_code sc ON base_table.status = sc.id
+               JOIN agency up ON base_table.updated_by = up.id
+               JOIN unit u ON base_table.quantity_unit = u.id
+            ]]></createView>
+        <rollback>
+            <dropView viewName="readable.job" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="product_location">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="product_location_pkey" />
+            </column>
+            <column name="agency" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000001'"/>
+            <column name="product" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="relationship" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="location" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column name="notes" type="TEXT" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="product_location" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency" baseTableName="product_location" constraintName="product_location_agency_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="location" baseTableName="product_location" constraintName="product_location_location_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product" baseTableName="product_location" constraintName="product_location_product_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship" baseTableName="product_location" constraintName="product_location_relationship_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_location" constraintName="product_location_updated_by_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency, product, relationship, location" constraintName="product_location_agency_key"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_location" />
+        <createIndex schemaName="ruleform" indexName="product_location_location_fkey_idx" tableName="product_location" unique="false">
+            <column name="location" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_location_product_fkey_idx" tableName="product_location" unique="false">
+            <column name="product" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_location_relationship_fkey_idx" tableName="product_location"
+            unique="false"
+        >
+            <column name="relationship" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_location_updated_by_fkey_idx" tableName="product_location" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

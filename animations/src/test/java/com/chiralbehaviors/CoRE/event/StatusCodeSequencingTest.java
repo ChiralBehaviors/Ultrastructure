@@ -36,8 +36,8 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.JobModelImpl;

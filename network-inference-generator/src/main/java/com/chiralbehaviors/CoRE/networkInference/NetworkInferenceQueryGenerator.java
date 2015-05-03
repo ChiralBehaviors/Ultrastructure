@@ -55,7 +55,7 @@ public class NetworkInferenceQueryGenerator extends AbstractMojo {
             "attribute_network", "attributeNetwork" },
             { "UnitNetwork", "com.chiralbehaviors.CoRE.attribute.unit",
             "unit_network", "unitNetwork" },
-            { "StatusCodeNetwork", "com.chiralbehaviors.CoRE.event.status",
+            { "StatusCodeNetwork", "com.chiralbehaviors.CoRE.job.status",
             "status_code_network", "statusCodeNetwork" },
             { "LocationNetwork", "com.chiralbehaviors.CoRE.location",
             "location_network", "locationNetwork" },

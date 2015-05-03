@@ -29,12 +29,12 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeAttribute;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.network.Aspect;

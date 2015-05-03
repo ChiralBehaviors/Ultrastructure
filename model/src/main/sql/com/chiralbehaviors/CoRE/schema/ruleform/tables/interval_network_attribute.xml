@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform"
+            remarks="Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves"
+            tableName="interval_network_attribute"
+        >
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="interval_network_attribute_pkey" />
+            </column>
+            <column name="agency" remarks="The agency that the information in this rule comes from" type="uuid" />
+            <column name="network_rule" remarks="The agency Network rule whose attribute is being defined" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="attribute" remarks="The Attribute of the agency Network rule being defined" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="key" type="TEXT" />
+            <column name="text_value" remarks="If the Attribute has a text value, it is stored in this column" type="TEXT" />
+            <column name="numeric_value" remarks="If the Attribute has a numeric (real) value, it is stored in this column" type="numeric" />
+            <column name="integer_value" remarks="If the Attribute has an integer value, it is stored in this column" type="INT4" />
+            <column name="boolean_value" remarks="If the Attribute has a boolean value, it is stored in this column" type="SMALLINT" />
+            <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
+            <column name="binary_value" type="BYTEA" />
+            <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="uuid" />
+            <column name="notes" remarks="Miscellaneous notes about this rule" type="TEXT" />
+            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column defaultValueNumeric="1" name="sequence_number" type="INT4">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="interval_network_attribute" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_agency_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="network_rule" baseTableName="interval_network_attribute" constraintName="interval_network_interval_network_rule_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="interval_network" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_unit_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency, network_rule, attribute, sequence_number"
+            constraintName="interval_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="interval_network_attribute" />
+        <createIndex schemaName="ruleform" indexName="interval_network_attribute_agency_fkey_idx" tableName="interval_network_attribute"
+            unique="false"
+        >
+            <column name="agency" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="interval_network_attribute_attribute_fkey_idx" tableName="interval_network_attribute"
+            unique="false"
+        >
+            <column name="attribute" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="interval_network_interval_network_rule_fkey_idx" tableName="interval_network_attribute"
+            unique="false"
+        >
+            <column name="network_rule" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="interval_network_attribute_unit_fkey_idx" tableName="interval_network_attribute"
+            unique="false"
+        >
+            <column name="unit" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="interval_network_attribute_updated_by_fkey_idx" tableName="interval_network_attribute"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+        <sql> ALTER TABLE interval_network_attribute OWNER TO core; </sql>
+        <rollback />
+        <sql><![CDATA[
+            GRANT ALL ON TABLE interval_network_attribute TO core;
+            GRANT SELECT ON TABLE interval_network_attribute TO core_read_only;
+            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE interval_network_attribute TO core_read_write;
+            ]]>
+        </sql>
+        <rollback />
+    </changeSet>
+</databaseChangeLog>

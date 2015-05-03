@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand">
+        <sql splitStatements="false"><![CDATA[
+            CREATE OR REPLACE FUNCTION null_zero(thing anyelement)
+              RETURNS integer AS
+            $BODY$
+            SELECT CASE WHEN $1 IS NULL THEN 0 ELSE 1 END;
+            $BODY$
+              LANGUAGE sql VOLATILE
+              COST 100;
+            ALTER FUNCTION null_zero(anyelement)
+              OWNER TO core;
+            COMMENT ON FUNCTION null_zero(anyelement) IS 'If the given parameter is null, return 0; otherwise return 1.  Facilitates creating constraints in which only one of several columns may be non-null.  Written by David Fetter and found on http://www.depesz.com/index.php/2007/09/19/postgresql-tips-tricks-4/#comment-21750';
+            ]]>
+        </sql>
+        <rollback> DROP FUNCTION null_zero(anyelement); </rollback>
+    </changeSet>
+</databaseChangeLog>

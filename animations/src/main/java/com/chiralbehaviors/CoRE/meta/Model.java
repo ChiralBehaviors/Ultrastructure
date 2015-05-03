@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -44,16 +46,29 @@ import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
 public interface Model {
 
     /**
-     * Execute the function within in the context of the authenticated
-     * principal.
-     * 
-     * @param principal
-     * @param function
-     *            -
-     * @throws Exception
+     * @param phantasm
+     * @return
      */
-    <V> V executeAs(AuthenticatedPrincipal principal, Callable<V> function)
-                                                                           throws Exception;
+    static Class<?> getExistentialRuleform(Class<?> phantasm) {
+        return (Class<?>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+    }
+
+    /**
+     * @param phantasm
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    static <T extends ExistentialRuleform<T, ?>> Constructor<? super T> getExistentialRuleformConstructor(Class<?> phantasm) {
+        try {
+            return (Constructor<? super T>) getExistentialRuleform(phantasm).getConstructor(String.class,
+                                                                                            String.class,
+                                                                                            Agency.class);
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException(
+                                            "Cannot access or find constructor for ruleform",
+                                            e);
+        }
+    }
 
     /**
      * Create a new instance of the phantasm's existential ruleform type using
@@ -71,14 +86,16 @@ public interface Model {
                                                                                          throws InstantiationException;
 
     /**
-     * Wrap the ruleform with an instance of a phantasm using the model
+     * Execute the function within in the context of the authenticated
+     * principal.
      * 
-     * @param phantasm
-     * @param ruleform
-     * @return
+     * @param principal
+     * @param function
+     *            -
+     * @throws Exception
      */
-    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> wrap(Class<? extends Phantasm<? extends T>> phantasm,
-                                                                                       ExistentialRuleform<T, ?> ruleform);
+    <V> V executeAs(AuthenticatedPrincipal principal, Callable<V> function)
+                                                                           throws Exception;
 
     /**
      * Find the ruleform instances that match the supplied attribute
@@ -197,5 +214,15 @@ public interface Model {
      * @param ruleform
      */
     void inferNetworks(ExistentialRuleform<?, ?> ruleform);
+
+    /**
+     * Wrap the ruleform with an instance of a phantasm using the model
+     * 
+     * @param phantasm
+     * @param ruleform
+     * @return
+     */
+    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> wrap(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                                       ExistentialRuleform<T, ?> ruleform);
 
 }

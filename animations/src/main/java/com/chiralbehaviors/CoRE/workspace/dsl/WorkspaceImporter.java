@@ -41,17 +41,17 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
-import com.chiralbehaviors.CoRE.event.MetaProtocol;
-import com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.event.Protocol;
-import com.chiralbehaviors.CoRE.event.status.StatusCode;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeAttributeAuthorization;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.job.MetaProtocol;
+import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
@@ -80,7 +80,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingCon
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.IntervalContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.MetaProtocolContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ProtocolContext;
@@ -405,22 +404,15 @@ public class WorkspaceImporter {
     }
 
     private void loadIntervals() {
-        for (IntervalContext ivl : wsp.getIntervals()) {
-            Interval interval = new Interval(
-                                             stripQuotes(ivl.existentialRuleform().name.getText()),
-                                             ivl.start == null ? BigDecimal.valueOf(0)
-                                                              : BigDecimal.valueOf(Long.valueOf(ivl.start.getText())),
-                                             ivl.startUnit == null ? model.getKernel().getNotApplicableUnit()
-                                                                  : workspace.get(ivl.startUnit.getText()),
-                                             ivl.duration == null ? BigDecimal.valueOf(0)
-                                                                 : BigDecimal.valueOf(Long.valueOf(ivl.duration.getText())),
-                                             ivl.durationUnit == null ? model.getKernel().getNotApplicableUnit()
-                                                                     : workspace.get(ivl.durationUnit.getText()),
-                                             stripQuotes(ivl.existentialRuleform().description.getText()),
+        for (AttributedExistentialRuleformContext rf : wsp.getIntervals()) {
+            Interval ruleform = new Interval(
+                                             stripQuotes(rf.existentialRuleform().name.getText()),
+                                             rf.existentialRuleform().description == null ? null
+                                                                                         : stripQuotes(rf.existentialRuleform().description.getText()),
                                              model.getKernel().getCore());
-            em.persist(interval);
-            workspace.put(ivl.existentialRuleform().workspaceName.getText(),
-                          interval);
+            em.persist(ruleform);
+            workspace.put(rf.existentialRuleform().workspaceName.getText(),
+                          ruleform);
         }
     }
 
@@ -451,31 +443,18 @@ public class WorkspaceImporter {
         for (MetaProtocolContext mpc : wsp.getMetaProtocols()) {
             MetaProtocol metaProtocol = model.getJobModel().newInitializedMetaProtocol(resolve(mpc.service),
                                                                                        model.getKernel().getCore());
-            if (mpc.serviceAttribute != null) {
-                metaProtocol.setServiceAttribute(resolve(mpc.serviceAttribute));
-            }
             if (mpc.product != null)
                 metaProtocol.setProduct(resolve(mpc.product));
-            if (mpc.productAttribute != null)
-                metaProtocol.setProductAttribute(resolve(mpc.productAttribute));
             if (mpc.from != null)
                 metaProtocol.setDeliverFrom(resolve(mpc.from));
-            if (mpc.fromAttribute != null)
-                metaProtocol.setDeliverFromAttribute(resolve(mpc.fromAttribute));
             if (mpc.to != null)
                 metaProtocol.setDeliverTo(resolve(mpc.to));
-            if (mpc.toAttribute != null)
-                metaProtocol.setDeliverToAttribute(resolve(mpc.toAttribute));
             if (mpc.quantityUnit != null)
                 metaProtocol.setQuantityUnit(resolve(mpc.quantityUnit));
             if (mpc.requester != null)
                 metaProtocol.setRequester(resolve(mpc.requester));
-            if (mpc.requesterAttribute != null)
-                metaProtocol.setRequesterAttribute(resolve(mpc.requesterAttribute));
             if (mpc.assignTo != null)
                 metaProtocol.setAssignTo(resolve(mpc.assignTo));
-            if (mpc.assignToAttribute != null)
-                metaProtocol.setAssignToAttribute(resolve(mpc.assignToAttribute));
             if (mpc.match != null && mpc.match.getText().equals("stop")) {
                 metaProtocol.setStopOnMatch(true);
             }
@@ -522,60 +501,37 @@ public class WorkspaceImporter {
         for (ProtocolContext pc : wsp.getProtocols()) {
             Protocol protocol = model.getJobModel().newInitializedProtocol(resolve(pc.matchJob().service),
                                                                            model.getKernel().getCore());
-            if (pc.matchJob().serviceAttribute != null) {
-                protocol.setServiceAttribute(resolve(pc.matchJob().serviceAttribute));
-            }
             if (pc.matchJob().product != null)
                 protocol.setProduct(resolve(pc.matchJob().product));
-            if (pc.matchJob().productAttribute != null)
-                protocol.setProductAttribute(resolve(pc.matchJob().productAttribute));
             if (pc.matchJob().from != null)
                 protocol.setDeliverFrom(resolve(pc.matchJob().from));
-            if (pc.matchJob().fromAttribute != null)
-                protocol.setDeliverFromAttribute(resolve(pc.matchJob().fromAttribute));
             if (pc.matchJob().to != null)
                 protocol.setDeliverTo(resolve(pc.matchJob().to));
-            if (pc.matchJob().toAttribute != null)
-                protocol.setDeliverToAttribute(resolve(pc.matchJob().toAttribute));
             if (pc.matchJob().quantity != null)
                 protocol.setQuantity(BigDecimal.valueOf(Long.parseLong(pc.matchJob().quantity.getText())));
             if (pc.matchJob().quantityUnit != null)
                 protocol.setQuantityUnit(resolve(pc.matchJob().quantityUnit));
             if (pc.matchJob().requester != null)
                 protocol.setRequester(resolve(pc.matchJob().requester));
-            if (pc.matchJob().requesterAttribute != null)
-                protocol.setRequesterAttribute(resolve(pc.matchJob().requesterAttribute));
             if (pc.matchJob().assignTo != null)
                 protocol.setAssignTo(resolve(pc.matchJob().assignTo));
-            if (pc.matchJob().assignToAttribute != null)
-                protocol.setAssignToAttribute(resolve(pc.matchJob().assignToAttribute));
             if (pc.matchJob().sequence != null)
                 protocol.setSequenceNumber(Integer.parseInt(pc.matchJob().sequence.getText()));
 
             if (pc.childJob().service != null)
                 protocol.setChildService(resolve(pc.childJob().service));
-            if (pc.childJob().serviceAttribute != null)
-                protocol.setChildServiceAttribute(resolve(pc.childJob().serviceAttribute));
             if (pc.childJob().product != null)
                 protocol.setChildProduct(resolve(pc.childJob().product));
-            if (pc.childJob().productAttribute != null)
-                protocol.setChildProductAttribute(resolve(pc.childJob().productAttribute));
             if (pc.childJob().from != null)
                 protocol.setChildDeliverFrom(resolve(pc.childJob().from));
-            if (pc.childJob().fromAttribute != null)
-                protocol.setChildDeliverFromAttribute(resolve(pc.childJob().fromAttribute));
             if (pc.childJob().to != null)
                 protocol.setChildDeliverTo(resolve(pc.childJob().to));
-            if (pc.childJob().toAttribute != null)
-                protocol.setChildDeliverToAttribute(resolve(pc.childJob().toAttribute));
             if (pc.childJob().quantity != null)
                 protocol.setChildQuantity(BigDecimal.valueOf(Long.parseLong(pc.childJob().quantity.getText())));
             if (pc.childJob().quantityUnit != null)
                 protocol.setChildQuantityUnit(resolve(pc.childJob().quantityUnit));
             if (pc.childJob().assignTo != null)
                 protocol.setChildAssignTo(resolve(pc.childJob().assignTo));
-            if (pc.childJob().assignToAttribute != null)
-                protocol.setChildAssignToAttribute(resolve(pc.childJob().assignToAttribute));
             workspace.add(protocol);
         }
 

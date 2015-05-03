@@ -6,8 +6,7 @@
 >
 
     <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.relationship_attribute_authorization AS 
+        <createView schemaName="readable" viewName="relationship_attribute_authorization"><![CDATA[
              SELECT     base_table.id ,
                 res.name AS grouping_agency, 
                 cls.name AS classification, 
@@ -35,7 +34,7 @@
             GRANT SELECT ON TABLE readable.relationship_attribute_authorization TO core_read_write;
             GRANT SELECT ON TABLE readable.relationship_attribute_authorization TO core_read_only;
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.relationship_attribute_authorization" />
         </rollback>

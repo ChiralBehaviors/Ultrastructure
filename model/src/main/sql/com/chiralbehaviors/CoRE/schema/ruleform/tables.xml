@@ -5,77 +5,77 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <include relativeToChangelogFile="true" file="tables/agency-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/attribute-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/location-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/product-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/relationship-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/status_code-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/unit-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency.xml" />
+    <include relativeToChangelogFile="true" file="tables/attribute.xml" />
+    <include relativeToChangelogFile="true" file="tables/location.xml" />
+    <include relativeToChangelogFile="true" file="tables/product.xml" />
+    <include relativeToChangelogFile="true" file="tables/relationship.xml" />
+    <include relativeToChangelogFile="true" file="tables/status_code.xml" />
+    <include relativeToChangelogFile="true" file="tables/unit.xml" />
     <include relativeToChangelogFile="true" file="tables/interval.xml" />
 
-    <include relativeToChangelogFile="true" file="tables/agency_attribute-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_attribute.xml" />
+    <include relativeToChangelogFile="true" file="tables/attribute_meta_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/interval_attribute.xml" />
-    <include relativeToChangelogFile="true" file="tables/location_attribute-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/product_attribute-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/location_attribute.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_attribute.xml" />
 
     <include relativeToChangelogFile="true" file="tables/network_inference.xml" />
 
-    <include relativeToChangelogFile="true" file="tables/agency_network-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/attribute_network-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_network.xml" />
+    <include relativeToChangelogFile="true" file="tables/attribute_network.xml" />
     <include relativeToChangelogFile="true" file="tables/interval_network.xml" />
-    <include relativeToChangelogFile="true" file="tables/location_network-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/product_network-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/relationship_network-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/location_network.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_network.xml" />
+    <include relativeToChangelogFile="true" file="tables/relationship_network.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_network.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_network.xml" />
 
     <include relativeToChangelogFile="true" file="tables/agency_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/interval_network_attribute.xml" />
-    <include relativeToChangelogFile="true" file="tables/product_network_attribute-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/location_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_network_attribute.xml" />
 
-    <include relativeToChangelogFile="true" file="tables/agency_network_authorization-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_network_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute_network_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/interval_network_authorization.xml" />
-    <include relativeToChangelogFile="true" file="tables/location_network_authorization-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/product_network_authorization-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/location_network_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_network_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship_network_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_network_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_network_authorization.xml" />
 
-    <include relativeToChangelogFile="true" file="tables/agency_attribute_authorization-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/attr_meta_attr_auth-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/attr_meta_attr_auth.xml" />
     <include relativeToChangelogFile="true" file="tables/interval_attribute_authorization.xml" />
-    <include relativeToChangelogFile="true" file="tables/location_attribute_authorization-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/product_attribute_authorization-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/location_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/unit_attribute_authorization.xml" />
 
-    <include relativeToChangelogFile="true" file="tables/protocol-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/job-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/job_chronology-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/meta_protocol-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/protocol.xml" />
+    <include relativeToChangelogFile="true" file="tables/job.xml" />
+    <include relativeToChangelogFile="true" file="tables/job_chronology.xml" />
+    <include relativeToChangelogFile="true" file="tables/meta_protocol.xml" />
 
-    <include relativeToChangelogFile="true" file="tables/product_location-0.0.1.xml" />
-    <include relativeToChangelogFile="true" file="tables/product_location_attribute-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_location.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_location_attribute.xml" />
 
-    <include relativeToChangelogFile="true" file="tables/agency_product-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_product.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_product_attribute.xml" />
 
     <include relativeToChangelogFile="true" file="tables/agency_location.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_location_attribute.xml" />
 
-    <include relativeToChangelogFile="true" file="tables/status_code_sequencing-0.0.1.xml" />
+    <include relativeToChangelogFile="true" file="tables/status_code_sequencing.xml" />
     <include relativeToChangelogFile="true" file="tables/product_parent_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_sibling_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml" />

@@ -19,6 +19,6 @@
             COMMENT ON FUNCTION null_zero(anyelement) IS 'If the given parameter is null, return 0; otherwise return 1.  Facilitates creating constraints in which only one of several columns may be non-null.  Written by David Fetter and found on http://www.depesz.com/index.php/2007/09/19/postgresql-tips-tricks-4/#comment-21750';
             ]]>
         </sql>
-        <rollback> DROP FUNCTION null_zero(thing); </rollback>
+        <rollback> DROP FUNCTION null_zero(anyelement); </rollback>
     </changeSet>
 </databaseChangeLog>

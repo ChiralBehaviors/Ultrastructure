@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1" author="hhildebrand">
+    <changeSet id="2.0.0" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.agency_location AS 
 			 SELECT bl.id, res.name AS agency, rel.name AS relationship, l.name AS location, bl.notes, up.name AS updated_by, bl.version

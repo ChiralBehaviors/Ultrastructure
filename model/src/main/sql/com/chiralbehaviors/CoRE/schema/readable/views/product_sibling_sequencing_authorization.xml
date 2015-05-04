@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1" author="hhildebrand">
+    <changeSet id="2.0.0" author="hhildebrand">
         <sql><![CDATA[
             CREATE OR REPLACE VIEW readable.product_sibling_sequencing_authorization AS 
 			 SELECT base_table.id, p.name AS parent, sc.name AS status_code, 

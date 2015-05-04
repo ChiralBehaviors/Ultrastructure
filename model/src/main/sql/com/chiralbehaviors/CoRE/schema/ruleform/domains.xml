@@ -33,4 +33,5 @@
              ]]>
         </sql>
         <rollback> DROP DOMAIN sequence_number; DROP DOMAIN ordinal_number; DROP DOMAIN relational_operator; </rollback>
+    </changeSet>
 </databaseChangeLog>

@@ -65,7 +65,6 @@ public class Loader {
                                    Configuration.fromYaml(Utils.resolveResource(Loader.class,
                                                                                 argv[0])));
         loader.bootstrap();
-        System.exit(0);
     }
 
     private final Configuration configuration;
@@ -174,6 +173,9 @@ public class Loader {
                                                                           properties);
         EntityManager em = emf.createEntityManager();
         KernelUtil.loadKernel(em);
+        em.close();
+        emf.close();
+        log.info("Bootstrapping complete");
     }
 
     protected void createDatabase() throws Exception, SQLException {

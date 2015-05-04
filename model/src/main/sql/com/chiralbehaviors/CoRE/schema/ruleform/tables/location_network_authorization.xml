@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand (generated)" id="0.0.2">
+    <changeSet author="hhildebrand (generated)" id="2.0.0">
         <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular Locations"
             tableName="location_network_authorization"
         >

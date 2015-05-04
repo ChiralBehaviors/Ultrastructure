@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="0.0.2">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="agency_location_attribute">
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_location_attribute_pkey" />

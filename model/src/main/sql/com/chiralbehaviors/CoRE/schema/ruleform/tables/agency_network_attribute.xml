@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="0.0.2">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform"
             remarks="Ruleform for storing attribute data that pertain to a network rule as a whole, as opposed to either of the participating Entities themselves"
             tableName="agency_network_attribute"

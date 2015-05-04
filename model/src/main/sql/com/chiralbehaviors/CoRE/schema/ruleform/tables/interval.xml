@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="1390879803225-17">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform"
             remarks="A interval is a time period or instant in the system.  It defines placement, ordering and scheduling of actions, agencies, locations and products in time"
             tableName="interval"

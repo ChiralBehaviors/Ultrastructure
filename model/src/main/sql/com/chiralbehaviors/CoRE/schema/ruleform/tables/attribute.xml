@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="1390879803225-9">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform"
             remarks="Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes."
             tableName="attribute"

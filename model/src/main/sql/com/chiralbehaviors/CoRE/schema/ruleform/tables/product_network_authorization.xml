@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="1390879803225-42">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular Entities"
             tableName="product_network_authorization"
         >

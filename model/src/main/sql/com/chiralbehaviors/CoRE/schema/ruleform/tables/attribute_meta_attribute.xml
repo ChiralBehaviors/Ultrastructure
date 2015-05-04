@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="1390879803225-10">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="attribute_meta_attribute">
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="attribute_attribute_pkey" />

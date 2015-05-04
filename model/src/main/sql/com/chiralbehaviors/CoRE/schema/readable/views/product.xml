@@ -5,9 +5,8 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.product AS 
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView schemaName="readable" viewName="product"><![CDATA[
 			 SELECT b.id, b.name, b.description, b.notes, up.name AS updated_by, b.version
 			   FROM product b
 			   JOIN agency up ON b.updated_by = up.id;
@@ -15,7 +14,7 @@
 			ALTER TABLE readable.product
 			  OWNER TO core;
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.product" />
         </rollback>

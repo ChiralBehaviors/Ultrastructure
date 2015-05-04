@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="1390879803225-45">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" remarks="Defines protocol rules for carrying out tasks" tableName="protocol">
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="protocol_pkey" />

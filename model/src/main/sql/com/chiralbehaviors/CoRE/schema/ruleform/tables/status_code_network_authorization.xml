@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand" id="0.0.2">
+    <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" remarks="Defines rules stating what network status_codes are authorized for particular status_codes"
             tableName="status_code_network_authorization"
         >

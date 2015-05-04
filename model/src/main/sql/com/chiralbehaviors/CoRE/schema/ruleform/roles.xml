@@ -9,7 +9,7 @@
 
 
     <changeSet
-        id="1"
+        id="2.0.0"
         author="hhildebrand"
     >
         <sql> ALTER ROLE core SET search_path TO ruleform, public,

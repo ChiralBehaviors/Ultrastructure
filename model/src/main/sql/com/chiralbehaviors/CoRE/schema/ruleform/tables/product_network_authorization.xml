@@ -5,12 +5,12 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet author="hhildebrand (generated)" id="0.0.2">
-        <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular Locations"
-            tableName="location_network_authorization"
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular Entities"
+            tableName="product_network_authorization"
         >
             <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="location_network_authorization_pkey" />
+                <constraints primaryKey="true" primaryKeyName="product_network_authorization_pkey" />
             </column>
             <column name="classification" type="uuid">
                 <constraints nullable="false" />
@@ -27,7 +27,7 @@
             >
                 <constraints nullable="false" />
             </column>
-            <column name="grouping_agency" remarks="A network parent an Location is expected to have" type="uuid" />
+            <column name="grouping_agency" remarks="A network parent an Product is expected to have" type="uuid" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
             <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
@@ -35,41 +35,41 @@
             <column name="version" type="INT4" />
         </createTable>
         <rollback>
-            <dropTable tableName="location_network_authorization" />
+            <dropTable tableName="product_network_authorization" />
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="child_relationship" baseTableName="location_network_authorization" constraintName="location_network_authorization_child_relationship_fkey"
+            baseColumnNames="child_relationship" baseTableName="product_network_authorization" constraintName="product_network_authorization_child_relationship_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authorized_parent" baseTableName="location_network_authorization" constraintName="location_network_authorization_authorized_parent_fkey"
+            baseColumnNames="authorized_parent" baseTableName="product_network_authorization" constraintName="product_network_authorization_authorized_parent_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="location" />
+            referencedTableName="product" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authorized_relationship" baseTableName="location_network_authorization" constraintName="location_network_authorization_authorized_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classification" baseTableName="location_network_authorization" constraintName="location_network_authorization_classification_fkey"
+            baseColumnNames="authorized_relationship" baseTableName="product_network_authorization" constraintName="product_network_authorization_authorized_relationship_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classifier" baseTableName="location_network_authorization" constraintName="location_network_authorization_classifier_fkey"
+            baseColumnNames="classification" baseTableName="product_network_authorization" constraintName="product_network_authorization_classification_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="location" />
+            referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="grouping_agency" baseTableName="location_network_authorization" constraintName="location_network_authorization_grouping_agency_fkey"
+            baseColumnNames="classifier" baseTableName="product_network_authorization" constraintName="product_network_authorization_classifier_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="product_network_authorization" constraintName="product_network_authorization_grouping_agency_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="location_network_authorization" constraintName="location_network_authorization_updated_by_fkey"
+            baseColumnNames="updated_by" baseTableName="product_network_authorization" constraintName="product_network_authorization_updated_by_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
             columnNames="classification, classifier, authorized_parent, authorized_relationship, child_relationship, sequence_number"
-            constraintName="location_attribute_auth_agency_classification_key" deferrable="false" disabled="false" initiallyDeferred="true"
-            tableName="location_network_authorization" />
-        <createIndex schemaName="ruleform" indexName="location_network_authorization_updated_by_fkey_idx" tableName="location_network_authorization"
+            constraintName="product_attribute_authorizatio_agency_classification_attri_key" deferrable="false" disabled="false"
+            initiallyDeferred="true" tableName="product_network_authorization" />
+        <createIndex schemaName="ruleform" indexName="product_network_authorization_updated_by_fkey_idx" tableName="product_network_authorization"
             unique="false"
         >
             <column name="updated_by" />

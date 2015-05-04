@@ -5,9 +5,8 @@
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-	<changeSet id="1" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.relationship_network AS 
+	<changeSet id="2.0.0" author="hhildebrand">
+        <createView schemaName="readable" viewName="relationship_network"><![CDATA[
 			 SELECT n.id, 
                     p.name AS parent, 
                     rel.name AS relationship, 
@@ -28,7 +27,7 @@
 			ALTER TABLE readable.relationship_network
 			  OWNER TO core;
             ]]>
-		</sql>
+		</createView>
 		<rollback>
 			<dropView viewName="readable.relationship_network" />
 		</rollback>

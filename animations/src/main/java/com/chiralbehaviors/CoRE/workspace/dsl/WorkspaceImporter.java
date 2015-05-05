@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
@@ -147,6 +148,13 @@ public class WorkspaceImporter {
             AgencyAttributeAuthorization auth = new AgencyAttributeAuthorization(
                                                                                  resolve(classified.authorized),
                                                                                  model.getKernel().getCore());
+            AgencyNetworkAuthorization authorization = new AgencyNetworkAuthorization(
+                                                                                      model.getKernel().getCore());
+            authorization.setClassification(resolve(classified.classification));
+            authorization.setClassifier(resolve(classified.classifier));
+            auth.setNetworkAuthorization(authorization);
+            model.getEntityManager().persist(authorization);
+            workspace.add(authorization);
             model.getEntityManager().persist(auth);
             workspace.add(auth);
         }

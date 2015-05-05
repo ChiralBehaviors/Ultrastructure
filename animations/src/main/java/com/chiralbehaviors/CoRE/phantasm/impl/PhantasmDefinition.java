@@ -33,6 +33,7 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.annotations.State;
 
 /**
@@ -42,6 +43,7 @@ import com.chiralbehaviors.annotations.State;
 public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
     private final List<StateDefinition<RuleForm>> facets = new ArrayList<>();
     private final Class<Phantasm<RuleForm>>       phantasm;
+    private final StateDefinition<RuleForm>       thisFacet;
 
     @SuppressWarnings("unchecked")
     public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm) {
@@ -54,6 +56,9 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
             StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(
                                                                             phantasm);
             facets.add(facet);
+            thisFacet = facet;
+        } else {
+            thisFacet = null;
         }
         for (Class<?> iFace : phantasm.getInterfaces()) {
             if (iFace.getAnnotation(State.class) != null) {
@@ -93,13 +98,22 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         Object[] instances = new Object[facets.size()];
         int i = 0;
         stateMap.put(Phantasm.class, ruleform);
+        Object thisState = null;
         for (StateDefinition<RuleForm> facet : facets) {
             Object state = facet.wrap((RuleForm) ruleform, model);
+            if (facet.equals(thisFacet)) {
+                thisState = state;
+            }
             instances[i++] = state;
             stateMap.put(facet.getStateInterface(), state);
-            if (facet.getStateInterface().equals(phantasm)) {
-                stateMap.put(phantasm, state);
+        }
+        if (ScopedPhantasm.class.isAssignableFrom(phantasm)) {
+            if (thisFacet == null) {
+                throw new IllegalStateException(
+                                                String.format("%s extends ScopedPhantasm, but does not define @State annotation",
+                                                              phantasm));
             }
+            stateMap.put(ScopedPhantasm.class, thisState);
         }
         return (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
                                                     new Class[] { phantasm },

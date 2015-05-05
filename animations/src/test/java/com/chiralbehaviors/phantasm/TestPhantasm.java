@@ -179,6 +179,7 @@ public class TestPhantasm extends AbstractModelTest {
         thing2.setArtifacts(Collections.emptyList());
         assertEquals(0, thing2.getArtifacts().size());
 
+        assertNotNull(thing1.getScope());
     }
 
     @Test

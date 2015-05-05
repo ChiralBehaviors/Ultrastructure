@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.chiralbehaviors.CoRE</groupId>
+        <artifactId>CoRE.app</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>loader-plugin-test</artifactId>
+    <name>Loader Plugin Test</name>
+    <description>A functional test that exercises the Ultrastructure loader plugin</description>
+
+    <profiles>
+        <profile>
+            <id>functional.test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>load</goal>
+                                </goals>
+                                <configuration>
+                                    <loader>
+                                        <dbaServer>${testing.db.server}</dbaServer>
+                                        <dbaPort>${testing.db.port}</dbaPort>
+                                        <dbaUsername>${testing.db.password}</dbaUsername>
+                                        <dbaPassword>${testing.db.login}</dbaPassword>
+
+                                        <coreServer>${db.server}</coreServer>
+                                        <corePort>${db.port}</corePort>
+                                        <coreUsername>${db.login}</coreUsername>
+                                        <corePassword>${db.password}</corePassword>
+
+                                        <dropDatabase>true</dropDatabase>
+                                    </loader>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>loader-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

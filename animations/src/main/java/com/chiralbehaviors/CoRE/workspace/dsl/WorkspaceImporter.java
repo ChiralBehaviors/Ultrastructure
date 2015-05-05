@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
@@ -147,6 +148,13 @@ public class WorkspaceImporter {
             AgencyAttributeAuthorization auth = new AgencyAttributeAuthorization(
                                                                                  resolve(classified.authorized),
                                                                                  model.getKernel().getCore());
+            AgencyNetworkAuthorization authorization = new AgencyNetworkAuthorization(
+                                                                                      model.getKernel().getCore());
+            authorization.setClassification(resolve(classified.classification));
+            authorization.setClassifier(resolve(classified.classifier));
+            auth.setNetworkAuthorization(authorization);
+            model.getEntityManager().persist(authorization);
+            workspace.add(authorization);
             model.getEntityManager().persist(auth);
             workspace.add(auth);
         }
@@ -726,8 +734,15 @@ public class WorkspaceImporter {
     @SuppressWarnings("unchecked")
     <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
         if (qualifiedName.namespace != null) {
-            return (T) scope.lookup(qualifiedName.namespace.getText(),
-                                    qualifiedName.member.getText());
+            T ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
+                                          qualifiedName.member.getText());
+            if (ruleform == null) {
+                throw new InvalidKeyException(
+                                              String.format("Cannot resolve %s:%s",
+                                                            qualifiedName.namespace.getText(),
+                                                            qualifiedName.member.getText()));
+            }
+            return ruleform;
         }
         T ruleform = workspace.get(qualifiedName.member.getText());
         if (ruleform == null) {

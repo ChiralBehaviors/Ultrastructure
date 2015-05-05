@@ -72,6 +72,9 @@ public class DatabaseLoader extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Loading database");
+        if (loader == null) {
+            throw new MojoFailureException("No loader configuration supplied");
+        }
         try {
             new Loader(loader).bootstrap();
         } catch (Exception e) {

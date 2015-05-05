@@ -9,7 +9,7 @@
     </parent>
     <artifactId>loader</artifactId>
     <name>Loader</name>
-    <description>A stand alone loader for Ultrastructure</description>
+    <description>A stand alone loader for Ultrastructure for dropping, defining and bootstrapping the database</description>
     <dependencies>
         <dependency>
             <groupId>org.liquibase</groupId>

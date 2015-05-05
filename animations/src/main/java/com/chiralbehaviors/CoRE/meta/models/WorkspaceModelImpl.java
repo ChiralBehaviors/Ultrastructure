@@ -118,7 +118,11 @@ public class WorkspaceModelImpl implements WorkspaceModel {
 
     @Override
     public WorkspaceScope getScoped(UUID definingProduct) {
-        return getScoped(em.find(Product.class, definingProduct));
+        Product product = em.find(Product.class, definingProduct);
+        if (product == null) {
+            throw new IllegalStateException("Defining Product is null");
+        }
+        return getScoped(product);
     }
 
     @Override

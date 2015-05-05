@@ -61,6 +61,11 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
                                                          (Class<Phantasm<RuleForm>>) iFace));
             }
         }
+        if (facets.isEmpty()) {
+            throw new IllegalArgumentException(
+                                               String.format("Require at least one @State annotation on a Phantasm: %s",
+                                                             phantasm));
+        }
     }
 
     /**

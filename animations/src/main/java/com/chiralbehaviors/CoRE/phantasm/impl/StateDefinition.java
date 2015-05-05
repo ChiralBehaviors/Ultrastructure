@@ -113,11 +113,30 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     private void constrain(Model model, RuleForm ruleform) {
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
         WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
+        if (scope == null) {
+            throw new IllegalStateException(
+                                            String.format("Cannot obtain workspace for state interface %s",
+                                                          stateInterface));
+        }
         List<Facet> failures = new ArrayList<>();
         for (Facet constraint : facets) {
-            if (!networked.isAccessible((RuleForm) scope.lookup(constraint.classifier()),
-                                        (Relationship) scope.lookup(constraint.classification()),
-                                        ruleform)) {
+            RuleForm classifier = (RuleForm) scope.lookup(constraint.classifier());
+            if (classifier == null) {
+                throw new IllegalStateException(
+                                                String.format("Cannot obtain classifer %s:%s for %s",
+                                                              constraint.classifier().namespace(),
+                                                              constraint.classifier().name(),
+                                                              stateInterface));
+            }
+            Relationship classification = (Relationship) scope.lookup(constraint.classification());
+            if (classification == null) {
+                throw new IllegalStateException(
+                                                String.format("Cannot obtain classification %s:%s for %s",
+                                                              constraint.classification().namespace(),
+                                                              constraint.classification().name(),
+                                                              stateInterface));
+            }
+            if (!networked.isAccessible(classifier, classification, ruleform)) {
                 failures.add(constraint);
             }
         }

@@ -50,6 +50,16 @@ public interface Model {
      * @return
      */
     static Class<?> getExistentialRuleform(Class<?> phantasm) {
+        if (!phantasm.isInterface()) {
+            throw new IllegalArgumentException(
+                                               String.format("%s is not an interface",
+                                                             phantasm));
+        }
+        if (!Phantasm.class.isAssignableFrom(phantasm)) {
+            throw new IllegalArgumentException(
+                                               String.format("%s is not a Phantasm",
+                                                             phantasm));
+        }
         return (Class<?>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
     }
 

@@ -69,15 +69,11 @@
         <module>loader-plugin</module>
         <module>network-inference-generator</module>
         <module>dsl</module>
+        <module>loader-plugin-test</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.chiralbehaviors</groupId>
-                <artifactId>janus</artifactId>
-                <version>1.0.1-SNAPSHOT</version>
-            </dependency>
             <dependency>
                 <groupId>org.eclipse.xtend</groupId>
                 <artifactId>org.eclipse.xtend.lib</artifactId>
@@ -109,12 +105,12 @@
                 <version>0.9.8</version>
             </dependency>
             <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>dsl</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>loader</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -130,19 +126,19 @@
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>animations</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>json</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>model</artifactId>
                 <type>test-jar</type>
                 <scope>test</scope>
@@ -155,12 +151,12 @@
                 <type>maven-plugin</type>
             </dependency>
             <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>animations</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>animations</artifactId>
                 <classifier>sql</classifier>
                 <version>${project.version}</version>
@@ -171,12 +167,12 @@
                 <version>3.0.4</version>
             </dependency>
             <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>model</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>model</artifactId>
                 <classifier>sql</classifier>
                 <version>${project.version}</version>
@@ -380,6 +376,11 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>loader-plugin</artifactId>
+                    <version>${project.version}</version>
+                </plugin>
+                <plugin>
                     <groupId>org.antlr</groupId>
                     <artifactId>antlr4-maven-plugin</artifactId>
                     <version>4.5</version>
@@ -393,12 +394,12 @@
                     <version>2.17</version>
                 </plugin>
                 <plugin>
-                    <groupId>com.chiralbehaviors.CoRE</groupId>
+                    <groupId>${project.groupId}</groupId>
                     <artifactId>network-inference-generator</artifactId>
                     <version>${project.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>com.chiralbehaviors.CoRE</groupId>
+                    <groupId>${project.groupId}</groupId>
                     <artifactId>mixin-generator</artifactId>
                     <version>${project.version}</version>
                 </plugin>

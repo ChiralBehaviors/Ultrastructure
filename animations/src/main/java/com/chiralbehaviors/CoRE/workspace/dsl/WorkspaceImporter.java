@@ -734,8 +734,15 @@ public class WorkspaceImporter {
     @SuppressWarnings("unchecked")
     <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
         if (qualifiedName.namespace != null) {
-            return (T) scope.lookup(qualifiedName.namespace.getText(),
-                                    qualifiedName.member.getText());
+            T ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
+                                          qualifiedName.member.getText());
+            if (ruleform == null) {
+                throw new InvalidKeyException(
+                                              String.format("Cannot resolve %s:%s",
+                                                            qualifiedName.namespace.getText(),
+                                                            qualifiedName.member.getText()));
+            }
+            return ruleform;
         }
         T ruleform = workspace.get(qualifiedName.member.getText());
         if (ruleform == null) {

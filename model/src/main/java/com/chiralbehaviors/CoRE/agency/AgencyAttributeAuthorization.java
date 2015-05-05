@@ -27,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
@@ -49,6 +50,7 @@ public class AgencyAttributeAuthorization extends
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @NotNull
     @JoinColumn(name = "network_authorization")
     private AgencyNetworkAuthorization networkAuthorization;
 

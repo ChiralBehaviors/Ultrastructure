@@ -30,11 +30,13 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.internal.SessionImpl;
 
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
-import com.chiralbehaviors.CoRE.meta.workspace.RehydratedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,14 +94,10 @@ public class KernelUtil {
     }
 
     public static Workspace getKernelWorkspace(Model model) {
-        try (InputStream is = KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)) {
-            RehydratedWorkspace kernelSnapshot = readKernel(is);
-            Kernel kernel = kernelSnapshot.getAccessor(Kernel.class);
-            return new DatabaseBackedWorkspace(kernel.getKernelWorkspace(),
-                                               model);
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to rehydrate kernel", e);
-        }
+        return new DatabaseBackedWorkspace(
+                                           model.getEntityManager().find(Product.class,
+                                                                         WellKnownProduct.KERNEL_WORKSPACE.id()),
+                                           model);
     }
 
     public static void loadKernel(EntityManager em) throws IOException {
@@ -110,31 +108,28 @@ public class KernelUtil {
     public static void loadKernel(EntityManager em, InputStream is)
                                                                    throws IOException {
         em.getTransaction().begin();
-        RehydratedWorkspace workspace = rehydrateKernel(is);
+        WorkspaceSnapshot workspace = rehydrateKernel(is);
         workspace.retarget(em);
         em.getTransaction().commit();
     }
 
-    private static RehydratedWorkspace readKernel(InputStream is)
-                                                                 throws IOException,
-                                                                 JsonParseException,
-                                                                 JsonMappingException {
+    private static WorkspaceSnapshot readKernel(InputStream is)
+                                                               throws IOException,
+                                                               JsonParseException,
+                                                               JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
         mapper.registerModule(new Hibernate4Module());
-        RehydratedWorkspace workspace = mapper.readValue(is,
-                                                         RehydratedWorkspace.class);
-        workspace.cache();
+        WorkspaceSnapshot workspace = mapper.readValue(is,
+                                                       WorkspaceSnapshot.class);
         return workspace;
     }
 
-    private static RehydratedWorkspace rehydrateKernel(InputStream is)
-                                                                      throws IOException,
-                                                                      JsonParseException,
-                                                                      JsonMappingException {
-        RehydratedWorkspace workspace = readKernel(is);
-        workspace.cache();
-        return workspace;
+    private static WorkspaceSnapshot rehydrateKernel(InputStream is)
+                                                                    throws IOException,
+                                                                    JsonParseException,
+                                                                    JsonMappingException {
+        return readKernel(is);
     }
 
     static void alterTriggers(Connection connection, boolean enable)

@@ -682,12 +682,7 @@ public class WorkspaceImporter {
     private void processImports() {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = stripQuotes(w.uri.getText());
-            if (!uri.startsWith(Workspace.URN_UUID)) {
-                throw new IllegalStateException(
-                                                String.format("Only support import URIs of form urn:uuid:<uuid>: %s",
-                                                              uri));
-            }
-            UUID uuid = UUID.fromString(uri.substring(Workspace.URN_UUID.length()));
+            UUID uuid = Workspace.uuidOf(uri);
             workspace.addImport(w.namespace.getText(),
                                 model.getEntityManager().find(Product.class,
                                                               uuid),

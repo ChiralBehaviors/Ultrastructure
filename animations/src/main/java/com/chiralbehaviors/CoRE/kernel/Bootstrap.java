@@ -87,7 +87,8 @@ public class Bootstrap {
         bootstrap.bootstrap();
         em.getTransaction().commit();
         bootstrap.serialize(argv[1]);
-        System.exit(0);
+        em.close();
+        emf.close();
     }
 
     private final Connection    connection;

@@ -42,8 +42,8 @@ import com.hellblazer.utils.collections.OaHashSet;
  *
  */
 public class WorkspaceSnapshot {
-    private static ArrayList<WorkspaceAuthorization> getAuthorizations(Product definingProduct,
-                                                                       EntityManager em) {
+    public static ArrayList<WorkspaceAuthorization> getAuthorizations(Product definingProduct,
+                                                                      EntityManager em) {
         TypedQuery<WorkspaceAuthorization> query = em.createQuery("SELECT auth FROM WorkspaceAuthorization auth "
                                                                           + "WHERE auth.definingProduct = :product",
                                                                   WorkspaceAuthorization.class);

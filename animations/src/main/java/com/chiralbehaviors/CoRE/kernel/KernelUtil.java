@@ -113,23 +113,16 @@ public class KernelUtil {
         em.getTransaction().commit();
     }
 
-    private static WorkspaceSnapshot readKernel(InputStream is)
-                                                               throws IOException,
-                                                               JsonParseException,
-                                                               JsonMappingException {
+    private static WorkspaceSnapshot rehydrateKernel(InputStream is)
+                                                                    throws IOException,
+                                                                    JsonParseException,
+                                                                    JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
         mapper.registerModule(new Hibernate4Module());
         WorkspaceSnapshot workspace = mapper.readValue(is,
                                                        WorkspaceSnapshot.class);
         return workspace;
-    }
-
-    private static WorkspaceSnapshot rehydrateKernel(InputStream is)
-                                                                    throws IOException,
-                                                                    JsonParseException,
-                                                                    JsonMappingException {
-        return readKernel(is);
     }
 
     static void alterTriggers(Connection connection, boolean enable)

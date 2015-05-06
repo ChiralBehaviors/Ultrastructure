@@ -428,7 +428,7 @@ public class Bootstrap {
         loginAuthNet.setClassifier(find(WellKnownAgency.CORE_USER));
         WorkspaceAuthorization loginAuthNetAuth = new WorkspaceAuthorization(
                                                                              loginAuthNet,
-                                                                             workspace,
+                                                                             kernelWorkspace,
                                                                              core);
         em.persist(loginAuthNetAuth);
 

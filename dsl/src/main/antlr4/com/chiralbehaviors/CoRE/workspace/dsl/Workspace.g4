@@ -39,15 +39,15 @@ workspace:
     EOF;
 
 
-definedAgencies: 'agencies' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
-definedAttributes: 'attributes' LB  (attributeRuleform SC)+ (edges)? (classifiedAttributes)? RB;
-definedIntervals: 'intervals' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
-definedLocations: 'locations' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
-definedProducts: 'products' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
-definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? (classifiedAttributes)? RB;
-definedStatusCodes: 'status codes' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? RB;
+definedAgencies: 'agencies' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
+definedAttributes: 'attributes' LB  (attributeRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
+definedIntervals: 'intervals' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
+definedLocations: 'locations' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
+definedProducts: 'products' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
+definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
+definedStatusCodes: 'status codes' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
 definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? (classifiedAttributes)? RB;
-definedUnits: 'units' LB  (unit SC)+  (edges)? (classifiedAttributes)? RB;
+definedUnits: 'units' LB  (unit SC)+  (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
 definedInferences: 'inferences' LB (edge)+ RB ;
 definedProtocols: 'protocols' LB (protocol)+ RB;
@@ -56,6 +56,8 @@ definedMetaProtocols: 'meta protocols' LB (metaProtocol)* RB;
 edges: 'edges' LB (edge)+ RB;
 
 classifiedAttributes: 'classified attributes' LB (classifiedAttribute)+ RB;
+
+networkAuthorizations: 'network authorizations' LB (networkAuthorization)+ RB;
 
 workspaceDefinition: 
     'workspace:'
@@ -217,6 +219,18 @@ classifiedAttribute:
     authorized = qualifiedName
     (defaultValue = QuotedText)?
     (sequenceNumber = Number)?
+    ;
+    
+networkAuthorization:
+    classification = qualifiedName
+    '.'
+    classifier = qualifiedName 
+    ('childRelationship: ' childRelationship = qualifiedName)?
+    ('authorizedRelationship: ' authorizedRelationship = qualifiedName)?
+    ('authorizedParent: ' authorizedParent = qualifiedName)?
+    ('cardinality: ' cardinality = Number)?
+    ('defaultValue: ' defaultValue = QuotedText)?
+    ('sequenceNumber: ' sequenceNumber = Number)?
     ;
 
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;

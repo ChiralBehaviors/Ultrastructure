@@ -82,6 +82,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttribut
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.MetaProtocolContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.NetworkAuthorizationContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ProtocolContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.QualifiedNameContext;
@@ -109,37 +110,6 @@ public class WorkspaceImporter {
         this.wsp = wsp;
         this.model = model;
         this.em = model.getEntityManager();
-    }
-
-    public Workspace getWorkspace() {
-        return workspace;
-    }
-
-    public Workspace loadWorkspace() {
-        scope = model.getWorkspaceModel().createWorkspace(createWorkspaceProduct(),
-                                                          model.getKernel().getCoreAnimationSoftware());
-        workspace = (EditableWorkspace) scope.getWorkspace();
-        processImports();
-        loadRelationships();
-        loadAgencies();
-        loadAttributes();
-        loadLocations();
-        loadProducts();
-        loadStatusCodes();
-        loadStatusCodeSequencings();
-        loadUnits();
-        loadIntervals();
-        loadEdges();
-        loadClassifiedAttributes();
-        loadSequencingAuths();
-        loadInferences();
-        loadProtocols();
-        loadMetaprotocols();
-        return workspace;
-    }
-
-    public void setScope(WorkspaceScope scope) {
-        this.scope = scope;
     }
 
     private void classifyAgencyAttributes() {
@@ -292,6 +262,10 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
     private void loadAgencies() {
         for (AttributedExistentialRuleformContext ruleform : wsp.getAgencies()) {
             Agency agency = new Agency(
@@ -306,6 +280,29 @@ public class WorkspaceImporter {
 
     }
 
+    private void loadAgencyNetworkAuths() {
+        for (NetworkAuthorizationContext context : wsp.getAgencyNetworkAuthorizations()) {
+            AgencyNetworkAuthorization authorization = new AgencyNetworkAuthorization(
+                                                                                      model.getKernel().getCore());
+            authorization.setClassifier(resolve(context.classifier));
+            authorization.setClassification(resolve(context.classification));
+            QualifiedNameContext temp = context.childRelationship;
+            if (temp != null) {
+                authorization.setChildRelationship(resolve(temp));
+            }
+            temp = context.authorizedParent;
+            if (temp != null) {
+                authorization.setAuthorizedParent(resolve(temp));
+            }
+            temp = context.authorizedRelationship;
+            if (temp != null) {
+                authorization.setAuthorizedRelationship(resolve(temp));
+            }
+            em.persist(authorization);
+        }
+
+    }
+
     private void loadAgencyNetworks() {
         for (EdgeContext edge : wsp.getAgencyNetworks()) {
             AgencyNetwork network = model.getAgencyModel().link(resolve(edge.parent),
@@ -314,6 +311,30 @@ public class WorkspaceImporter {
                                                                 model.getKernel().getCore());
             workspace.add(network);
         }
+    }
+
+    private void loadAttributeNetworkAuths() {
+        for (NetworkAuthorizationContext context : wsp.getAttributeNetworkAuthorizations()) {
+            AttributeNetworkAuthorization authorization = new AttributeNetworkAuthorization(
+                                                                                            model.getKernel().getCore());
+            authorization.setClassifier(resolve(context.classifier));
+            authorization.setClassification(resolve(context.classification));
+            QualifiedNameContext temp = context.childRelationship;
+            if (temp != null) {
+                authorization.setChildRelationship(resolve(temp));
+            }
+            temp = context.authorizedParent;
+            if (temp != null) {
+                authorization.setAuthorizedParent(resolve(temp));
+            }
+            temp = context.authorizedRelationship;
+            if (temp != null) {
+                authorization.setAuthorizedRelationship(resolve(temp));
+            }
+            em.persist(authorization);
+
+        }
+
     }
 
     private void loadAttributeNetworks() {
@@ -401,6 +422,30 @@ public class WorkspaceImporter {
         }
     }
 
+    private void loadIntervalNetworkAuths() {
+        for (NetworkAuthorizationContext context : wsp.getIntervalNetworkAuthorizations()) {
+            IntervalNetworkAuthorization authorization = new IntervalNetworkAuthorization(
+                                                                                          model.getKernel().getCore());
+            authorization.setClassifier(resolve(context.classifier));
+            authorization.setClassification(resolve(context.classification));
+            QualifiedNameContext temp = context.childRelationship;
+            if (temp != null) {
+                authorization.setChildRelationship(resolve(temp));
+            }
+            temp = context.authorizedParent;
+            if (temp != null) {
+                authorization.setAuthorizedParent(resolve(temp));
+            }
+            temp = context.authorizedRelationship;
+            if (temp != null) {
+                authorization.setAuthorizedRelationship(resolve(temp));
+            }
+            em.persist(authorization);
+
+        }
+
+    }
+
     private void loadIntervalNetworks() {
         for (EdgeContext edge : wsp.getIntervalNetworks()) {
             IntervalNetwork network = model.getIntervalModel().link(resolve(edge.parent),
@@ -422,6 +467,30 @@ public class WorkspaceImporter {
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
+    }
+
+    private void loadLocationNetworkAuths() {
+        for (NetworkAuthorizationContext context : wsp.getLocationNetworkAuthorizations()) {
+            LocationNetworkAuthorization authorization = new LocationNetworkAuthorization(
+                                                                                          model.getKernel().getCore());
+            authorization.setClassifier(resolve(context.classifier));
+            authorization.setClassification(resolve(context.classification));
+            QualifiedNameContext temp = context.childRelationship;
+            if (temp != null) {
+                authorization.setChildRelationship(resolve(temp));
+            }
+            temp = context.authorizedParent;
+            if (temp != null) {
+                authorization.setAuthorizedParent(resolve(temp));
+            }
+            temp = context.authorizedRelationship;
+            if (temp != null) {
+                authorization.setAuthorizedRelationship(resolve(temp));
+            }
+            em.persist(authorization);
+
+        }
+
     }
 
     private void loadLocationNetworks() {
@@ -469,6 +538,18 @@ public class WorkspaceImporter {
         }
     }
 
+    private void loadNetworkAuths() {
+        loadAgencyNetworkAuths();
+        loadAttributeNetworkAuths();
+        loadIntervalNetworkAuths();
+        loadLocationNetworkAuths();
+        loadProductNetworkAuths();
+        loadRelationshipNetworkAuths();
+        loadStatusCodeNetworkAuths();
+        loadUnitNetworkAuths();
+
+    }
+
     private void loadParentSequencing() {
         for (ParentSequencingContext seq : wsp.getParentSequencings()) {
             ProductParentSequencingAuthorization auth = new ProductParentSequencingAuthorization(
@@ -480,6 +561,29 @@ public class WorkspaceImporter {
             em.persist(auth);
             workspace.add(auth);
         }
+    }
+
+    private void loadProductNetworkAuths() {
+        for (NetworkAuthorizationContext context : wsp.getProductNetworkAuthorizations()) {
+            ProductNetworkAuthorization authorization = new ProductNetworkAuthorization(
+                                                                                        model.getKernel().getCore());
+            authorization.setClassifier(resolve(context.classifier));
+            authorization.setClassification(resolve(context.classification));
+            QualifiedNameContext temp = context.childRelationship;
+            if (temp != null) {
+                authorization.setChildRelationship(resolve(temp));
+            }
+            temp = context.authorizedParent;
+            if (temp != null) {
+                authorization.setAuthorizedParent(resolve(temp));
+            }
+            temp = context.authorizedRelationship;
+            if (temp != null) {
+                authorization.setAuthorizedRelationship(resolve(temp));
+            }
+            em.persist(authorization);
+        }
+
     }
 
     private void loadProductNetworks() {
@@ -545,6 +649,30 @@ public class WorkspaceImporter {
 
     }
 
+    private void loadRelationshipNetworkAuths() {
+        for (NetworkAuthorizationContext context : wsp.getRelationshipNetworkAuthorizations()) {
+            RelationshipNetworkAuthorization authorization = new RelationshipNetworkAuthorization(
+                                                                                                  model.getKernel().getCore());
+            authorization.setClassifier(resolve(context.classifier));
+            authorization.setClassification(resolve(context.classification));
+            QualifiedNameContext temp = context.childRelationship;
+            if (temp != null) {
+                authorization.setChildRelationship(resolve(temp));
+            }
+            temp = context.authorizedParent;
+            if (temp != null) {
+                authorization.setAuthorizedParent(resolve(temp));
+            }
+            temp = context.authorizedRelationship;
+            if (temp != null) {
+                authorization.setAuthorizedRelationship(resolve(temp));
+            }
+            em.persist(authorization);
+
+        }
+
+    }
+
     private void loadRelationshipNetworks() {
         for (EdgeContext edge : wsp.getRelationshipNetworks()) {
             RelationshipNetwork network = model.getRelationshipModel().link(resolve(edge.parent),
@@ -604,6 +732,30 @@ public class WorkspaceImporter {
         }
     }
 
+    private void loadStatusCodeNetworkAuths() {
+        for (NetworkAuthorizationContext context : wsp.getStatusCodeNetworkAuthorizations()) {
+            StatusCodeNetworkAuthorization authorization = new StatusCodeNetworkAuthorization(
+                                                                                              model.getKernel().getCore());
+            authorization.setClassifier(resolve(context.classifier));
+            authorization.setClassification(resolve(context.classification));
+            QualifiedNameContext temp = context.childRelationship;
+            if (temp != null) {
+                authorization.setChildRelationship(resolve(temp));
+            }
+            temp = context.authorizedParent;
+            if (temp != null) {
+                authorization.setAuthorizedParent(resolve(temp));
+            }
+            temp = context.authorizedRelationship;
+            if (temp != null) {
+                authorization.setAuthorizedRelationship(resolve(temp));
+            }
+            em.persist(authorization);
+
+        }
+
+    }
+
     private void loadStatusCodeNetworks() {
         for (EdgeContext edge : wsp.getStatusCodeNetworks()) {
             StatusCodeNetwork network = model.getStatusCodeModel().link(resolve(edge.parent),
@@ -648,6 +800,30 @@ public class WorkspaceImporter {
 
     }
 
+    private void loadUnitNetworkAuths() {
+        for (NetworkAuthorizationContext context : wsp.getUnitNetworkAuthorizations()) {
+            UnitNetworkAuthorization authorization = new UnitNetworkAuthorization(
+                                                                                  model.getKernel().getCore());
+            authorization.setClassifier(resolve(context.classifier));
+            authorization.setClassification(resolve(context.classification));
+            QualifiedNameContext temp = context.childRelationship;
+            if (temp != null) {
+                authorization.setChildRelationship(resolve(temp));
+            }
+            temp = context.authorizedParent;
+            if (temp != null) {
+                authorization.setAuthorizedParent(resolve(temp));
+            }
+            temp = context.authorizedRelationship;
+            if (temp != null) {
+                authorization.setAuthorizedRelationship(resolve(temp));
+            }
+            em.persist(authorization);
+
+        }
+
+    }
+
     private void loadUnitNetworks() {
         for (EdgeContext edge : wsp.getUnitNetworks()) {
             UnitNetwork network = model.getUnitModel().link(resolve(edge.parent),
@@ -679,20 +855,65 @@ public class WorkspaceImporter {
         }
     }
 
+    public Workspace loadWorkspace() {
+        scope = model.getWorkspaceModel().createWorkspace(createWorkspaceProduct(),
+                                                          model.getKernel().getCoreAnimationSoftware());
+        workspace = (EditableWorkspace) scope.getWorkspace();
+        processImports();
+        loadRelationships();
+        loadAgencies();
+        loadAttributes();
+        loadLocations();
+        loadProducts();
+        loadStatusCodes();
+        loadStatusCodeSequencings();
+        loadUnits();
+        loadIntervals();
+        loadEdges();
+        loadClassifiedAttributes();
+        loadNetworkAuths();
+        loadSequencingAuths();
+        loadInferences();
+        loadProtocols();
+        loadMetaprotocols();
+        return workspace;
+    }
+
     private void processImports() {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = stripQuotes(w.uri.getText());
-            if (!uri.startsWith(Workspace.URN_UUID)) {
-                throw new IllegalStateException(
-                                                String.format("Only support import URIs of form urn:uuid:<uuid>: %s",
-                                                              uri));
-            }
-            UUID uuid = UUID.fromString(uri.substring(Workspace.URN_UUID.length()));
+            UUID uuid = Workspace.uuidOf(uri);
             workspace.addImport(w.namespace.getText(),
                                 model.getEntityManager().find(Product.class,
                                                               uuid),
                                 model.getKernel().getCore());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
+        if (qualifiedName.namespace != null) {
+            T ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
+                                          qualifiedName.member.getText());
+            if (ruleform == null) {
+                throw new InvalidKeyException(
+                                              String.format("Cannot resolve %s:%s",
+                                                            qualifiedName.namespace.getText(),
+                                                            qualifiedName.member.getText()));
+            }
+            return ruleform;
+        }
+        T ruleform = workspace.get(qualifiedName.member.getText());
+        if (ruleform == null) {
+            throw new InvalidKeyException(
+                                          String.format("Cannot find workspace key: %s",
+                                                        qualifiedName.member.getText()));
+        }
+        return ruleform;
+    }
+
+    public void setScope(WorkspaceScope scope) {
+        this.scope = scope;
     }
 
     /**
@@ -729,27 +950,5 @@ public class WorkspaceImporter {
 
     private String stripQuotes(String original) {
         return original.substring(1, original.length() - 1);
-    }
-
-    @SuppressWarnings("unchecked")
-    <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
-        if (qualifiedName.namespace != null) {
-            T ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
-                                          qualifiedName.member.getText());
-            if (ruleform == null) {
-                throw new InvalidKeyException(
-                                              String.format("Cannot resolve %s:%s",
-                                                            qualifiedName.namespace.getText(),
-                                                            qualifiedName.member.getText()));
-            }
-            return ruleform;
-        }
-        T ruleform = workspace.get(qualifiedName.member.getText());
-        if (ruleform == null) {
-            throw new InvalidKeyException(
-                                          String.format("Cannot find workspace key: %s",
-                                                        qualifiedName.member.getText()));
-        }
-        return ruleform;
     }
 }

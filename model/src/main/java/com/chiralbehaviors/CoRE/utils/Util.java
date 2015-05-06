@@ -126,11 +126,11 @@ public final class Util {
         return hash;
     }
 
-    public static Map<Ruleform, Ruleform> slice(Ruleform T,
+    public static Map<Ruleform, Ruleform> slice(Ruleform ruleform,
                                                 Predicate<Ruleform> systemDefinition,
                                                 Map<Ruleform, Ruleform> sliced,
                                                 Set<UUID> traversed) {
-
+        map(ruleform, systemDefinition, sliced, traversed);
         return sliced;
     }
 
@@ -236,6 +236,12 @@ public final class Util {
 
     protected static void traverse(EntityManager em, Ruleform ruleform,
                                    Map<Ruleform, Ruleform> mapped) {
+        if (ruleform instanceof WorkspaceAuthorization) {
+            WorkspaceAuthorization auth = (WorkspaceAuthorization) ruleform;
+            auth.setDefiningProduct(map(em, auth.getDefiningProduct(), mapped));
+            auth.setEntity(map(em, auth.getEntity(), mapped));
+            return;
+        }
         for (Field field : getInheritedFields(ruleform.getClass())) {
             if (field.getAnnotation(JoinColumn.class) == null) {
                 continue;

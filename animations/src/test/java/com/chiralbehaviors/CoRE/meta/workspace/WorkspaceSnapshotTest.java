@@ -77,12 +77,26 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                                                                  pseudoScientist,
                                                                  definingProduct,
                                                                  pseudoScientist);
-        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(Arrays.asList(auth));
+        Product aLeak = new Product("Snowden", kernel.getCore());
+        WorkspaceAuthorization auth2 = new WorkspaceAuthorization(
+                                                                  aLeak,
+                                                                  definingProduct,
+                                                                  pseudoScientist);
+        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(Arrays.asList(auth,
+                                                                         auth2));
+        assertEquals("Did not find the leak!", 1, snapshot.getFrontier().size());
+        assertEquals("Imposter!", kernel.getCore(),
+                     snapshot.getFrontier().get(0));
         snapshot.retarget(em);
         em.getTransaction().commit();
         WorkspaceSnapshot retrieved = new WorkspaceSnapshot(definingProduct, em);
-        assertEquals(1, retrieved.getAuths().size());
-        assertEquals(auth, retrieved.getAuths().get(0));
-        assertEquals(pseudoScientist, retrieved.getAuths().get(0).getEntity());
+        assertEquals(2, retrieved.getAuths().size());
+        for (WorkspaceAuthorization a : retrieved.getAuths()) {
+            if (a.getAgency() != null) {
+                assertEquals(pseudoScientist, a.getRuleform());
+            } else {
+                assertEquals(aLeak, a.getRuleform());
+            }
+        }
     }
 }

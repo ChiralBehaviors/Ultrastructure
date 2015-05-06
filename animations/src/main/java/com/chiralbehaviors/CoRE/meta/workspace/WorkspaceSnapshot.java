@@ -55,6 +55,7 @@ public class WorkspaceSnapshot {
 
     @JsonSerialize
     protected final List<WorkspaceAuthorization> auths;
+    @JsonSerialize
     protected final List<Ruleform>               frontier;
 
     public WorkspaceSnapshot() {
@@ -71,8 +72,9 @@ public class WorkspaceSnapshot {
         Map<Ruleform, Ruleform> exits = new HashMap<>();
         Set<UUID> traversed = new OaHashSet<UUID>(1024);
         for (WorkspaceAuthorization auth : auths) {
-            Util.slice(auth, ruleform -> included.contains(ruleform.getId()),
-                       exits, traversed);
+            Util.slice(auth.getRuleform(),
+                       ruleform -> included.contains(ruleform.getId()), exits,
+                       traversed);
         }
         frontier = new ArrayList<>(exits.values());
     }
@@ -83,6 +85,10 @@ public class WorkspaceSnapshot {
 
     public List<WorkspaceAuthorization> getAuths() {
         return auths;
+    }
+
+    public List<Ruleform> getFrontier() {
+        return frontier;
     }
 
     public void retarget(EntityManager em) {

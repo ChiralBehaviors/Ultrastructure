@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
@@ -128,6 +129,7 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
     /**
      * @return the binaryValue
      */
+    @JsonIgnore
     public byte[] getBinaryValue() {
         return binaryValue;
     }
@@ -135,6 +137,7 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
     /**
      * @return the booleanValue
      */
+    @JsonIgnore
     public Integer getBooleanValue() {
         return booleanValue;
     }
@@ -144,12 +147,15 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
         return groupingAgency;
     }
 
+    @JsonIgnore
     public Integer getIntegerValue() {
         return integerValue;
     }
 
+    @JsonGetter
     abstract public NetworkAuthorization<RuleForm> getNetworkAuthorization();
 
+    @JsonIgnore
     public BigDecimal getNumericValue() {
         return numericValue;
     }
@@ -158,15 +164,18 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
         return sequenceNumber;
     }
 
+    @JsonIgnore
     public String getTextValue() {
         return textValue;
     }
 
+    @JsonIgnore
     public Timestamp getTimestampValue() {
         return timestampValue;
     }
 
     @SuppressWarnings("unchecked")
+    @JsonGetter
     public <T> T getValue() {
         switch (getAuthorizedAttribute().getValueType()) {
             case BINARY:

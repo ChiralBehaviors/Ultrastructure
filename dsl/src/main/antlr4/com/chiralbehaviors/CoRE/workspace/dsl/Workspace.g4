@@ -226,8 +226,8 @@ networkAuthorization:
     '.'
     classifier = qualifiedName 
     ('childRelationship: ' childRelationship = qualifiedName)?
-    ('authorizedParent: ' authorizedParent = qualifiedName)?
     ('authorizedRelationship: ' authorizedRelationship = qualifiedName)?
+    ('authorizedParent: ' authorizedParent = qualifiedName)?
     ('cardinality: ' cardinality = Number)?
     ('defaultValue: ' defaultValue = QuotedText)?
     ('sequenceNumber: ' sequenceNumber = Number)?

@@ -40,8 +40,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  * The abstract super class of all network authorizations.
  * 
- * from left to right: classification, classifier, auth parent, auth
- * relationship, child relationship, cardinality
+ * from left to right: classification, classifier, auth relationship, auth
+ * parent, child relationship, cardinality
  * 
  * {classification, classifier} is the “parent”
  * 

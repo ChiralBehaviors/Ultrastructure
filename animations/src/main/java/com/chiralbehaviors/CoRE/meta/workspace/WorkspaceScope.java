@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
-import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,7 +90,6 @@ public class WorkspaceScope {
      * @param namespace
      * @param name
      * @return the value associated with the key in the named scope, or null
-     * @throws InvalidKeyException 
      */
     @SuppressWarnings("unchecked")
     public <T extends Ruleform> T lookup(String namespace, String name) {

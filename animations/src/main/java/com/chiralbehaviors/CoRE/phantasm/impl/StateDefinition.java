@@ -143,7 +143,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                 failures.add(constraint);
             }
         }
-        if (failures.isEmpty()) {
+        if (!failures.isEmpty()) {
             throw new ClassCastException(
                                          String.format("%s does not have required facets %s of state %s",
                                                        ruleform, failures,

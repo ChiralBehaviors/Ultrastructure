@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="2.0.0" author="hparry">
+        <sql><![CDATA[
+        CREATE OR REPLACE VIEW readable.attribute_network_authorization AS 
+            SELECT 
+                classification.name as classification,
+                classifier.name as classifier,
+                bridge.name as child_relationship,
+                authorized_rel.name as auth_relationship,
+                authorized_parent.name as auth_parent
+                
+                from ruleform.attribute_network_authorization auth
+                join ruleform.attribute classifier on auth.classifier = classifier.id
+                join ruleform.relationship classification on auth.classification = classification.id
+                join ruleform.relationship bridge on auth.child_relationship = bridge.id
+                join ruleform.attribute authorized_parent on auth.authorized_parent = authorized_parent.id
+                join ruleform.relationship authorized_rel on auth.authorized_relationship = authorized_rel.id;
+            
+            ALTER TABLE readable.attribute_network_authorization
+              OWNER TO core;
+            ]]>
+        </sql>
+        <rollback>
+            <dropView viewName="readable.attribute_network_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

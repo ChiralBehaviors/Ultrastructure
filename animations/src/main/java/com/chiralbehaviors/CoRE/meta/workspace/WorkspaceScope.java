@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
+import java.security.InvalidKeyException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,6 +91,7 @@ public class WorkspaceScope {
      * @param namespace
      * @param name
      * @return the value associated with the key in the named scope, or null
+     * @throws InvalidKeyException 
      */
     @SuppressWarnings("unchecked")
     public <T extends Ruleform> T lookup(String namespace, String name) {
@@ -99,9 +101,13 @@ public class WorkspaceScope {
         }
         Workspace workspace = imports.get(namespace);
         if (workspace == null) {
-            return null;
+            throw new IllegalArgumentException(String.format("Namespace %s does not exist", namespace));
         }
-        return workspace.get(name);
+        T member = workspace.get(name);
+        if (member == null) {
+            throw new IllegalArgumentException(String.format("Member %s:%s does not exist", namespace, name));
+        }
+        return member;
     }
 
     public Workspace remove(String key) {

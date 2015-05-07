@@ -111,6 +111,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
      * @throws ClassCastException - if the ruleform is not classified as required by the facets of this state definition
      */
     private void constrain(Model model, RuleForm ruleform) {
+        if (ruleform == null) {
+            throw new IllegalStateException("Ruleform cannot be null");
+        }
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
         WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
         if (scope == null) {
@@ -136,7 +139,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                               constraint.classification().name(),
                                                               stateInterface));
             }
-            if (!networked.isAccessible(classifier, classification, ruleform)) {
+            if (!networked.isAccessible(ruleform, classification, classifier)) {
                 failures.add(constraint);
             }
         }

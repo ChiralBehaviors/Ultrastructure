@@ -299,6 +299,7 @@ public class WorkspaceImporter {
                 authorization.setAuthorizedRelationship(resolve(temp));
             }
             em.persist(authorization);
+            workspace.add(authorization);
         }
 
     }
@@ -332,6 +333,7 @@ public class WorkspaceImporter {
                 authorization.setAuthorizedRelationship(resolve(temp));
             }
             em.persist(authorization);
+            workspace.add(authorization);
 
         }
 
@@ -441,6 +443,7 @@ public class WorkspaceImporter {
                 authorization.setAuthorizedRelationship(resolve(temp));
             }
             em.persist(authorization);
+            workspace.add(authorization);
 
         }
 
@@ -488,6 +491,7 @@ public class WorkspaceImporter {
                 authorization.setAuthorizedRelationship(resolve(temp));
             }
             em.persist(authorization);
+            workspace.add(authorization);
 
         }
 
@@ -582,6 +586,7 @@ public class WorkspaceImporter {
                 authorization.setAuthorizedRelationship(resolve(temp));
             }
             em.persist(authorization);
+            workspace.add(authorization);
         }
 
     }
@@ -668,6 +673,7 @@ public class WorkspaceImporter {
                 authorization.setAuthorizedRelationship(resolve(temp));
             }
             em.persist(authorization);
+            workspace.add(authorization);
 
         }
 
@@ -751,6 +757,7 @@ public class WorkspaceImporter {
                 authorization.setAuthorizedRelationship(resolve(temp));
             }
             em.persist(authorization);
+            workspace.add(authorization);
 
         }
 
@@ -819,6 +826,7 @@ public class WorkspaceImporter {
                 authorization.setAuthorizedRelationship(resolve(temp));
             }
             em.persist(authorization);
+            workspace.add(authorization);
 
         }
 

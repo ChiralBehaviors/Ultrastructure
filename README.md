@@ -14,7 +14,7 @@ You can build the project:
     $ cd <project root>
     $ mvn clean install
 
-The default build does do any DB activity, nor tests.  To run tests, you need to activate the profile “database.active”:
+The default build does not perform any DB activity, nor tests.  To run tests, you need to activate the profile “database.active”:
 
     $ mvn -P database.active clean install
 

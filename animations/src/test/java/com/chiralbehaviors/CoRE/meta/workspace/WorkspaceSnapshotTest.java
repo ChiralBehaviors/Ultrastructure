@@ -25,9 +25,11 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -77,12 +79,29 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                                                                  pseudoScientist,
                                                                  definingProduct,
                                                                  pseudoScientist);
-        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(Arrays.asList(auth));
+        Product aLeak = new Product("Snowden", kernel.getCore());
+        WorkspaceAuthorization auth2 = new WorkspaceAuthorization(
+                                                                  aLeak,
+                                                                  definingProduct,
+                                                                  pseudoScientist);
+        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(Arrays.asList(auth,
+                                                                         auth2));
+        assertEquals("Did not find the leak!", 1, snapshot.getFrontier().size());
+        Ruleform mole = snapshot.getFrontier().get(0);
+        assertEquals("Imposter!", kernel.getCore(), mole);
         snapshot.retarget(em);
         em.getTransaction().commit();
-        WorkspaceSnapshot retrieved = new WorkspaceSnapshot(definingProduct, em);
-        assertEquals(1, retrieved.getAuths().size());
-        assertEquals(auth, retrieved.getAuths().get(0));
-        assertEquals(pseudoScientist, retrieved.getAuths().get(0).getEntity());
+        List<WorkspaceAuthorization> retrieved = WorkspaceSnapshot.getAuthorizations(definingProduct,
+                                                                                     em);
+        assertEquals(2, retrieved.size());
+        for (WorkspaceAuthorization a : retrieved) {
+            if (a.getAgency() != null) {
+                assertEquals(pseudoScientist, a.getRuleform());
+            } else {
+                assertEquals(aLeak, a.getRuleform());
+                assertEquals("compromised!", kernel.getCore().getName(),
+                             a.getRuleform().getUpdatedBy().getName());
+            }
+        }
     }
 }

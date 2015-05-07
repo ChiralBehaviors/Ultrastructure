@@ -537,6 +537,7 @@ public class WorkspaceAuthorization extends Ruleform {
         return agencyProduct;
     }
 
+    @JsonIgnore
     public AgencyProductAttribute getAgencyProductAttribute() {
         return agencyProductAttribute;
     }
@@ -566,6 +567,7 @@ public class WorkspaceAuthorization extends Ruleform {
         return attributeNetworkAttribute;
     }
 
+    @JsonIgnore
     public AttributeNetworkAuthorization getAttributeNetworkAuthorization() {
         return attributeNetworkAuthorization;
     }
@@ -739,6 +741,7 @@ public class WorkspaceAuthorization extends Ruleform {
         return intervalNetworkAttribute;
     }
 
+    @JsonIgnore
     public IntervalNetworkAuthorization getIntervalNetworkAuthorization() {
         return intervalNetworkAuthorization;
     }
@@ -837,6 +840,7 @@ public class WorkspaceAuthorization extends Ruleform {
         return productNetworkAttribute;
     }
 
+    @JsonIgnore
     public ProductNetworkAuthorization getProductNetworkAuthorization() {
         return productNetworkAuthorization;
     }
@@ -886,6 +890,7 @@ public class WorkspaceAuthorization extends Ruleform {
         return relationshipNetworkAttribute;
     }
 
+    @JsonIgnore
     public RelationshipNetworkAuthorization getRelationshipNetworkAuthorization() {
         return relationshipNetworkAuthorization;
     }
@@ -920,6 +925,7 @@ public class WorkspaceAuthorization extends Ruleform {
         return statusCodeNetworkAttribute;
     }
 
+    @JsonIgnore
     public StatusCodeNetworkAuthorization getStatusCodeNetworkAuthorization() {
         return statusCodeNetworkAuthorization;
     }
@@ -929,6 +935,7 @@ public class WorkspaceAuthorization extends Ruleform {
         return statusCodeSequencing;
     }
 
+    @JsonIgnore
     public String getType() {
         return type;
     }
@@ -958,6 +965,7 @@ public class WorkspaceAuthorization extends Ruleform {
         return unitNetworkAttribute;
     }
 
+    @JsonIgnore
     public UnitNetworkAuthorization getUnitNetworkAuthorization() {
         return unitNetworkAuthorization;
     }

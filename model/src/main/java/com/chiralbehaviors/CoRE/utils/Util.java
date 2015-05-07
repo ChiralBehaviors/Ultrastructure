@@ -25,13 +25,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
@@ -123,33 +126,24 @@ public final class Util {
         return hash;
     }
 
-    public static <T extends Ruleform> T smartMerge(EntityManager em, T ruleform) {
-        return map(em, ruleform, new HashMap<>(2048));
+    public static Map<Ruleform, Ruleform> slice(Ruleform ruleform,
+                                                Predicate<Ruleform> systemDefinition,
+                                                Map<Ruleform, Ruleform> sliced,
+                                                Set<UUID> traversed) {
+        map(ruleform, systemDefinition, sliced, traversed);
+        return sliced;
     }
 
-    /**
-     * We initially used this code to convert the digest to a hex string:
-     *
-     * return new BigInteger( 1, md.digest( bytes )).toString( 16 );
-     *
-     * This was a case of being too clever.
-     *
-     * This approach doesn't always work reliably; you could get hashes that
-     * were less than 32 characters long! This is because a full, 32-character
-     * MD5 hash considers leading zeros to be significant. If you have a byte
-     * whose value is between 0 and 15 and you convert it to hexadecimal, you
-     * get only one character. This implementation avoids the issue by checking
-     * to see if the result of Integer.toHexString on a byte of the hash is one
-     * character long; if so, it left-pads it with a single zero.
-     */
+    public static <T extends Ruleform> T smartMerge(EntityManager em,
+                                                    T ruleform,
+                                                    Map<Ruleform, Ruleform> mapped) {
+        return map(em, ruleform, mapped);
+    }
+
     private static String digestString(byte[] raw) {
         StringBuffer sb = new StringBuffer();
         for (byte element : raw) {
-            // Convert a byte into a (potentially) two character hexadecimal
-            // digit
             String hex = Integer.toHexString(0xff & element);
-            // If the byte represented 0 through 15, it's going to be a single
-            // digit; pad it!
             if (hex.length() == 1) {
                 sb.append('0');
             }
@@ -158,33 +152,6 @@ public final class Util {
 
         String digestString = sb.toString();
         return digestString;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected static <T extends Ruleform> T map(EntityManager em, T ruleform,
-                                                Map<Ruleform, Ruleform> mapped) {
-        if (mapped.containsKey(ruleform)) {
-            //            System.out.println(String.format("%% already mapped: %s",
-            //                                             ruleform.getClass().getSimpleName()));
-            return (T) mapped.get(ruleform);
-        }
-
-        Ruleform reference = find(em, ruleform);
-        if (reference != null) {
-            //            System.out.println(String.format("%% found: %s",
-            //                                             ruleform.getClass().getSimpleName()));
-            mapped.put(ruleform, reference);
-        } else {
-            //            System.out.println(String.format("%% traverse before persist: %s",
-            //                                             ruleform.getClass().getSimpleName()));
-            mapped.put(ruleform, ruleform);
-            traverse(em, ruleform, mapped);
-            //            System.out.println(String.format("%% persisting: %s",
-            //                                             ruleform.getClass().getSimpleName()));
-            em.persist(ruleform);
-        }
-
-        return (T) mapped.get(ruleform);
     }
 
     private static <T extends Ruleform> Ruleform find(EntityManager em,
@@ -198,6 +165,73 @@ public final class Util {
             }
         }
         return em.find(ruleform.getClass(), ruleform.getId());
+    }
+
+    private static List<Field> getInheritedFields(Class<?> type) {
+        List<Field> fields = new ArrayList<Field>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+        return fields;
+    }
+
+    private static Ruleform map(Ruleform value,
+                                Predicate<Ruleform> systemDefinition,
+                                Map<Ruleform, Ruleform> sliced,
+                                Set<UUID> traversed) {
+        Ruleform mappedValue = sliced.get(value);
+        if (mappedValue != null) {
+            // this value has already been determined to be part of another system
+            return mappedValue;
+        }
+        if (!traversed.add(value.getId())) {
+            // We've already traversed this value
+            return value;
+        }
+        if (systemDefinition.test(value)) {
+            // This value is in the system, traverse it
+            traverseBoundary(value, systemDefinition, sliced, traversed);
+            return value;
+        }
+
+        // This value is not in the system and has not been traversed, create a mapped value that stands for an exit from the system
+        try {
+            mappedValue = value.getClass().getConstructor().newInstance();
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException(
+                                            String.format("Unable to get no argument constructor on ruleform: %s",
+                                                          value.getClass()), e);
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException e) {
+            throw new IllegalStateException(
+                                            String.format("Unable to instantiate copy of ruleform: %s",
+                                                          value.getClass()), e);
+        }
+
+        // Mapped value has the same id, but null fields for everything else
+        mappedValue.setId(value.getId());
+        sliced.put(value, mappedValue);
+        traverseBoundary(value, systemDefinition, sliced, traversed);
+        return mappedValue;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected static <T extends Ruleform> T map(EntityManager em, T ruleform,
+                                                Map<Ruleform, Ruleform> mapped) {
+        if (mapped.containsKey(ruleform)) {
+            return (T) mapped.get(ruleform);
+        }
+
+        Ruleform reference = find(em, ruleform);
+        if (reference != null) {
+            mapped.put(ruleform, reference);
+        } else {
+            mapped.put(ruleform, ruleform);
+            traverse(em, ruleform, mapped);
+            em.persist(ruleform);
+        }
+
+        return (T) mapped.get(ruleform);
     }
 
     protected static void traverse(EntityManager em, Ruleform ruleform,
@@ -222,7 +256,9 @@ public final class Util {
                                                         String.format("%s mapped to null",
                                                                       value));
                     }
-                    field.set(ruleform, mappedValue);
+                    if (mappedValue != value) {
+                        field.set(ruleform, mappedValue);
+                    }
                 }
             } catch (IllegalAccessException e) {
                 throw new IllegalStateException(
@@ -236,12 +272,31 @@ public final class Util {
         }
     }
 
-    private static List<Field> getInheritedFields(Class<?> type) {
-        List<Field> fields = new ArrayList<Field>();
-        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+    protected static void traverseBoundary(Ruleform ruleform,
+                                           Predicate<Ruleform> systemDefinition,
+                                           Map<Ruleform, Ruleform> sliced,
+                                           Set<UUID> traversed) {
+        for (Field field : getInheritedFields(ruleform.getClass())) {
+            if (field.getAnnotation(JoinColumn.class) == null) {
+                continue;
+            }
+            try {
+                field.setAccessible(true);
+                Ruleform value = (Ruleform) field.get(ruleform);
+                if (value != null && !ruleform.equals(value)) {
+                    field.set(ruleform,
+                              map(value, systemDefinition, sliced, traversed));
+                }
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(
+                                                String.format("IllegalAccess access foreign key field: %s",
+                                                              field), e);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalStateException(
+                                                String.format("Illegal mapped value for field: %s",
+                                                              field), e);
+            }
         }
-        return fields;
     }
 
     private Util() {

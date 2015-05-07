@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE.utils;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.HashMap;
+
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -52,7 +54,7 @@ public class SmartMergeTest extends AbstractModelTest {
         job.setRequester(kernel.getAnyAgency());
         em.getTransaction().rollback();
         em.getTransaction().begin();
-        Job merged = Util.smartMerge(em, job);
+        Job merged = Util.smartMerge(em, job, new HashMap<>());
         assertNotNull(merged);
         em.flush();
     }

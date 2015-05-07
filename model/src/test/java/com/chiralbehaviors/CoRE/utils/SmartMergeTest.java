@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -52,7 +54,7 @@ public class SmartMergeTest extends DatabaseTest {
                                                    "A is a mass list that has B as a member",
                                                    core, massList);
 
-        Relationship merged = Util.smartMerge(em, massList);
+        Relationship merged = Util.smartMerge(em, massList, new HashMap<>(1024));
         em.getTransaction().commit();
         assertEquals(massList, merged);
         assertEquals(massListOf, merged.getInverse());

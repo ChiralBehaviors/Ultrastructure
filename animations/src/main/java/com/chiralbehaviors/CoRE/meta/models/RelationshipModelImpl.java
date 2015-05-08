@@ -62,7 +62,7 @@ public class RelationshipModelImpl
     @Override
     public void authorize(Aspect<Relationship> aspect, Attribute... attributes) {
         RelationshipNetworkAuthorization auth = new RelationshipNetworkAuthorization(
-                                                                                     kernel.getCore());
+                                                                                     model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);

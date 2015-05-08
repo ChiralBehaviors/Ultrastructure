@@ -27,20 +27,20 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.Aspect;
 
 /**
- * Represents the authenticated Agency and the authorized active aspects the
- * principal has enabled
+ * Represents the Agency and the authorized active aspects the principal has
+ * enabled
  *
  * @author hhildebrand
  *
  */
-public class AuthenticatedPrincipal {
+public class AuthorizedPrincipal {
     private final List<Aspect<Agency>> activeRoles;
     private final Agency               principal;
 
     /**
      * @param principal
      */
-    public AuthenticatedPrincipal(Agency principal) {
+    public AuthorizedPrincipal(Agency principal) {
         this(principal, Collections.<Aspect<Agency>> emptyList());
     }
 
@@ -48,8 +48,7 @@ public class AuthenticatedPrincipal {
      * @param principal
      * @param activeRoles
      */
-    public AuthenticatedPrincipal(Agency principal,
-                                  List<Aspect<Agency>> activeRoles) {
+    public AuthorizedPrincipal(Agency principal, List<Aspect<Agency>> activeRoles) {
         this.principal = principal;
         this.activeRoles = Collections.unmodifiableList(activeRoles);
     }

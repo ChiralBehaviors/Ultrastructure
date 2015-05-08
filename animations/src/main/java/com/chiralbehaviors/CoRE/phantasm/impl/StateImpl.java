@@ -265,7 +265,8 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
 
     protected Object addChild(String namespace, String name, RuleForm child) {
         getNetworkedModel().link(ruleform, getRelationship(namespace, name),
-                                 child, model.getKernel().getCore());
+                                 child,
+                                 model.getCurrentPrincipal().getPrincipal());
         return null;
     }
 
@@ -275,7 +276,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         Relationship relationship = getRelationship(s, key);
         for (Phantasm<RuleForm> child : children) {
             networkedModel.link(ruleform, relationship, child.getRuleform(),
-                                model.getKernel().getCore());
+                                model.getCurrentPrincipal().getPrincipal());
         }
         return null;
     }

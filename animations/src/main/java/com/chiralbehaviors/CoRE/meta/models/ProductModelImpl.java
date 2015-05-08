@@ -74,7 +74,7 @@ public class ProductModelImpl
     @Override
     public void authorize(Aspect<Product> aspect, Attribute... attributes) {
         ProductNetworkAuthorization auth = new ProductNetworkAuthorization(
-                                                                           kernel.getCore());
+                                                                           model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);

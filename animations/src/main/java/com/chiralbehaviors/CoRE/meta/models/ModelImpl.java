@@ -62,7 +62,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.impl.PhantasmDefinition;
-import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 
 /**
  * @author hhildebrand
@@ -80,20 +80,20 @@ public class ModelImpl implements Model {
         return builder.toString();
     }
 
-    private final AgencyModel                         agencyModel;
-    private final Animations                          animations;
-    private final AttributeModel                      attributeModel;
-    private final ThreadLocal<AuthenticatedPrincipal> currentPrincipal = new ThreadLocal<>();
-    private final EntityManager                       em;
-    private final IntervalModel                       intervalModel;
-    private final JobModel                            jobModel;
-    private final Kernel                              kernel;
-    private final LocationModel                       locationModel;
-    private final ProductModel                        productModel;
-    private final RelationshipModel                   relationshipModel;
-    private final StatusCodeModel                     statusCodeModel;
-    private final UnitModel                           unitModel;
-    private final WorkspaceModel                      workspaceModel;
+    private final AgencyModel                      agencyModel;
+    private final Animations                       animations;
+    private final AttributeModel                   attributeModel;
+    private final ThreadLocal<AuthorizedPrincipal> currentPrincipal = new ThreadLocal<>();
+    private final EntityManager                    em;
+    private final IntervalModel                    intervalModel;
+    private final JobModel                         jobModel;
+    private final Kernel                           kernel;
+    private final LocationModel                    locationModel;
+    private final ProductModel                     productModel;
+    private final RelationshipModel                relationshipModel;
+    private final StatusCodeModel                  statusCodeModel;
+    private final UnitModel                        unitModel;
+    private final WorkspaceModel                   workspaceModel;
 
     public ModelImpl(EntityManagerFactory emf) {
         EntityManager entityManager = emf.createEntityManager();
@@ -149,10 +149,10 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#executeAs(com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal, java.util.concurrent.Callable)
      */
     @Override
-    public <V> V executeAs(AuthenticatedPrincipal principal,
-                           Callable<V> function) throws Exception {
+    public <V> V executeAs(AuthorizedPrincipal principal, Callable<V> function)
+                                                                               throws Exception {
         V value = null;
-        AuthenticatedPrincipal previous = currentPrincipal.get();
+        AuthorizedPrincipal previous = currentPrincipal.get();
         currentPrincipal.set(principal);
         try {
             value = function.call();
@@ -298,6 +298,14 @@ public class ModelImpl implements Model {
     @Override
     public AttributeModel getAttributeModel() {
         return attributeModel;
+    }
+
+    @Override
+    public AuthorizedPrincipal getCurrentPrincipal() {
+        AuthorizedPrincipal authorizedPrincipal = currentPrincipal.get();
+        return authorizedPrincipal == null ? new AuthorizedPrincipal(
+                                                                     kernel.getCoreAnimationSoftware())
+                                          : authorizedPrincipal;
     }
 
     /*

@@ -81,20 +81,20 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         implements
         NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> {
 
-    private static Logger                          log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
+    private static Logger                            log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
 
-    private static int                             MAX_DEDUCTIONS = 1000;
+    private static int                               MAX_DEDUCTIONS = 1000;
 
-    private final Class<AttributeType>             attribute;
-    private final String                           attributePrefix;
-    private final Class<AttributeAuth>             authorization;
-    private final Class<RuleForm>                  entity;
-    private final Model                            model;
-    private final Class<NetworkRuleform<RuleForm>> network;
-    private final String                           networkPrefix;
-    private final String                           prefix;
-    protected final EntityManager                  em;
-    protected final Kernel                         kernel;
+    protected final Class<AttributeType>             attribute;
+    protected final String                           attributePrefix;
+    protected final Class<AttributeAuth>             authorization;
+    protected final EntityManager                    em;
+    protected final Class<RuleForm>                  entity;
+    protected final Kernel                           kernel;
+    protected final Model                            model;
+    protected final Class<NetworkRuleform<RuleForm>> network;
+    protected final String                           networkPrefix;
+    protected final String                           prefix;
 
     @SuppressWarnings("unchecked")
     public AbstractNetworkedModel(Model model) {

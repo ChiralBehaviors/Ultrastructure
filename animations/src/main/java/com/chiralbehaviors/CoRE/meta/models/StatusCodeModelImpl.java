@@ -67,7 +67,7 @@ public class StatusCodeModelImpl
     @Override
     public void authorize(Aspect<StatusCode> aspect, Attribute... attributes) {
         StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization(
-                                                                                 kernel.getCore());
+                                                                                 model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);

@@ -25,7 +25,7 @@
 			   LEFT JOIN unit u ON aa.unit_value = u.id
 			   JOIN agency up ON aa.updated_by = up.id;
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.attribute_meta_attribute" />
         </rollback>

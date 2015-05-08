@@ -5,8 +5,8 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet id="2.0.0" author="hhildebrand"> 
-        <createView schemaName="readable" viewName="protocol"><![CDATA[
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView schemaName="readable" viewName="protocol" replaceIfExists="true"><![CDATA[
              SELECT base_table.id,
                 base_table.name,
                 s.name AS service,

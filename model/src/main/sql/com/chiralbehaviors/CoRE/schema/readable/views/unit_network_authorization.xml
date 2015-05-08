@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="2.0.0" author="hparry">
-        <sql><![CDATA[
-        CREATE OR REPLACE VIEW readable.unit_network_authorization AS 
+        <createView schemaName="readable" viewName="unit_attribute_authorization" replaceIfExists="true"><![CDATA[ 
             SELECT 
                 classification.name as classification,
                 classifier.name as classifier,
@@ -20,12 +19,9 @@
                 join ruleform.relationship classification on auth.classification = classification.id
                 join ruleform.relationship bridge on auth.child_relationship = bridge.id
                 join ruleform.unit authorized_parent on auth.authorized_parent = authorized_parent.id
-                join ruleform.relationship authorized_rel on auth.authorized_relationship = authorized_rel.id;
-            
-            ALTER TABLE readable.unit_network_authorization
-              OWNER TO core;
+                join ruleform.relationship authorized_rel on auth.authorized_relationship = authorized_rel.id
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.unit_network_authorization" />
         </rollback>

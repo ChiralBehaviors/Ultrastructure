@@ -50,9 +50,9 @@
             baseColumnNames="authorized_network_attribute" baseTableName="relationship_attribute_authorization" constraintName="relationship_attribute_authorization_network_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="network_authorization" baseTableName="relationship_attribute_authorization"
-            constraintName="relationship_attribute_network_authorization_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship_network_authorization" />
+            baseColumnNames="network_authorization" baseTableName="relationship_attribute_authorization" constraintName="relationship_attribute_network_authorization_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship_network_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="relationship_attribute_authorization" constraintName="relationship_attribute_authorization_grouping_agency_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
@@ -69,14 +69,8 @@
         >
             <column name="updated_by" />
         </createIndex>
-    </changeSet>
-
-
-    <changeSet id="2" author="hhildebrand">
         <sql> ALTER TABLE relationship_attribute_authorization OWNER TO core; </sql>
         <rollback />
-    </changeSet>
-    <changeSet id="4" author="hhildebrand">
         <sql><![CDATA[
             GRANT ALL ON TABLE relationship_attribute_authorization TO core;
             GRANT SELECT ON TABLE relationship_attribute_authorization TO core_read_only;

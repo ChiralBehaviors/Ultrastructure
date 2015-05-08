@@ -38,13 +38,9 @@
         <rollback>
             <dropTable tableName="attribute" />
         </rollback>
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-126">
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="attribute" constraintName="attribute_updated_by_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="1390879803225-446">
         <createIndex schemaName="ruleform" indexName="attribute_updated_by_fkey_idx" tableName="attribute" unique="false">
             <column name="updated_by" />
         </createIndex>

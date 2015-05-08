@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.status_code AS 
+        <createView schemaName="readable" viewName="status_code" replaceIfExists="true"><![CDATA[ 
 			 SELECT base_table.id, base_table.name, base_table.description, base_table.notes, base_table.fail_parent, base_table.propagate_children, up.name AS updated_by, base_table.version
 			   FROM status_code base_table
-			   JOIN agency up ON base_table.updated_by = up.id;
-			
-			ALTER TABLE readable.status_code
-			  OWNER TO core;
-			GRANT ALL ON TABLE readable.status_code TO core;
-			GRANT SELECT ON TABLE readable.status_code TO core_read_write;
-			GRANT SELECT ON TABLE readable.status_code TO core_read_only;
+			   JOIN agency up ON base_table.updated_by = up.id
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.status_code" />
         </rollback>

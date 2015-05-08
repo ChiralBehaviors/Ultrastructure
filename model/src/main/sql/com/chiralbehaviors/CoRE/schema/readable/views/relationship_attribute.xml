@@ -6,7 +6,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView schemaName="readable" viewName="relationship_attribute"><![CDATA[
+        <createView schemaName="readable" viewName="relationship_attribute" replaceIfExists="true"><![CDATA[
 			 SELECT ra.id, 
                     r.name AS relationship, 
                     a.name AS attribute, 
@@ -23,10 +23,7 @@
 			   JOIN relationship r ON ra.relationship = r.id
 			   JOIN attribute a ON ra.attribute = a.id
 			   LEFT JOIN unit u ON ra.unit = u.id
-			   JOIN agency up ON ra.updated_by = up.id;
-			
-			ALTER TABLE readable.relationship_attribute
-			  OWNER TO core;
+			   JOIN agency up ON ra.updated_by = up.id
             ]]>
         </createView>
         <rollback>

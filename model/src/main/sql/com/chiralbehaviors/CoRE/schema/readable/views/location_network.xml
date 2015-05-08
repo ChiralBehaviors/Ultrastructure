@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.location_network AS 
+        <createView viewName="location_network" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT n.id, 
                     p.name AS parent, 
                     rel.name AS relationship, 
@@ -24,11 +23,8 @@
 			   JOIN relationship rel ON n.relationship = rel.id
 			   JOIN location c ON n.child = c.id
 			   JOIN agency u ON n.updated_by = u.id;
-			
-			ALTER TABLE readable.location_network
-			  OWNER TO core;
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.location_network" />
         </rollback>

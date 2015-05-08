@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.product_sibling_sequencing_authorization AS 
+        <createView schemaName="readable" viewName="product_sibling_sequencing_authorization" replaceIfExists="true"><![CDATA[ 
 			 SELECT base_table.id, p.name AS parent, sc.name AS status_code, 
 			        base_table.sequence_number, ns.name AS next_sibling, 
 			        nss.name AS next_sibling_status, base_table.notes,
@@ -17,15 +16,9 @@
 			   JOIN status_code sc ON base_table.status_code = sc.id
 			   LEFT JOIN product ns ON base_table.next_sibling = ns.id
 			   LEFT JOIN status_code nss ON base_table.next_sibling_status = nss.id
-			   JOIN agency up ON base_table.updated_by = up.id;
-			
-			ALTER TABLE readable.product_sibling_sequencing_authorization
-			  OWNER TO core;
-			GRANT ALL ON TABLE readable.product_sibling_sequencing_authorization TO core;
-			GRANT SELECT ON TABLE readable.product_sibling_sequencing_authorization TO core_read_write;
-			GRANT SELECT ON TABLE readable.product_sibling_sequencing_authorization TO core_read_only;
+			   JOIN agency up ON base_table.updated_by = up.id
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.product_sibling_sequencing_authorization" />
         </rollback>

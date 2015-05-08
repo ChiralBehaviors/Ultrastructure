@@ -6,8 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.status_code_attribute_authorization AS 
+        <createView schemaName="readable" viewName="status_code_attribute_authorization" replaceIfExists="true"><![CDATA[ 
              SELECT     base_table.id ,
                 res.name AS grouping_agency, 
                 cls.name AS classification, 
@@ -27,15 +26,9 @@
              LEFT JOIN status_code b ON na.classifier = b.id
              LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
              LEFT JOIN agency up ON base_table.updated_by = up.id
-             WHERE base_table.authorized_attribute IS NOT NULL;
-            
-            ALTER TABLE readable.status_code_attribute_authorization
-              OWNER TO core;
-            GRANT ALL ON TABLE readable.status_code_attribute_authorization TO core;
-            GRANT SELECT ON TABLE readable.status_code_attribute_authorization TO core_read_write;
-            GRANT SELECT ON TABLE readable.status_code_attribute_authorization TO core_read_only;
+             WHERE base_table.authorized_attribute IS NOT NULL
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.status_code_attribute_authorization" />
         </rollback>

@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.product_location AS 
+        <createView viewName="product_location" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT bl.id, res.name AS agency, b.name AS product, rel.name AS relationship, l.name AS location, bl.notes, up.name AS updated_by, bl.version
 			   FROM product_location bl
 			   JOIN agency res ON bl.agency = res.id
 			   JOIN product b ON bl.product = b.id
 			   JOIN relationship rel ON bl.relationship = rel.id
 			   JOIN location l ON bl.location = l.id
-			   JOIN agency up ON bl.updated_by = up.id;
-			
-			ALTER TABLE readable.product_location
-			  OWNER TO core;
+			   JOIN agency up ON bl.updated_by = up.id
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.product_location" />
         </rollback>

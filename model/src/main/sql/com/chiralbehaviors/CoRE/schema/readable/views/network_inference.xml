@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.network_inference AS 
+        <createView viewName="network_inference" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT c.id, r1.name AS premise1, r2.name AS premise2, r3.name AS inference, c.notes, up.name AS updated_by, c.version
 			   FROM network_inference c
 			   JOIN relationship r1 ON c.premise1 = r1.id
 			   JOIN relationship r2 ON c.premise2 = r2.id
 			   JOIN relationship r3 ON c.inference = r3.id
-			   JOIN agency up ON c.updated_by = up.id;
-			
-			ALTER TABLE readable.network_inference
-			  OWNER TO core;
+			   JOIN agency up ON c.updated_by = up.id; 
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.network_inference" />
         </rollback>

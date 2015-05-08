@@ -6,8 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.location_attribute_authorization AS 
+        <createView viewName="location_attribute_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT     base_table.id ,
                 res.name AS grouping_agency, 
                 cls.name AS classification, 
@@ -27,15 +26,9 @@
              LEFT JOIN location b ON na.classifier = b.id 
              LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
              LEFT JOIN agency up ON base_table.updated_by = up.id
-             WHERE base_table.authorized_attribute IS NOT NULL;
-            
-            ALTER TABLE readable.location_attribute_authorization
-              OWNER TO core;
-            GRANT ALL ON TABLE readable.location_attribute_authorization TO core;
-            GRANT SELECT ON TABLE readable.location_attribute_authorization TO core_read_write;
-            GRANT SELECT ON TABLE readable.location_attribute_authorization TO core_read_only;
+             WHERE base_table.authorized_attribute IS NOT NULL
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.location_attribute_authorization" />
         </rollback>

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
-	<changeSet id="2.0.0" author="hhildebrand">
-		<sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.status_code_network AS 
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView schemaName="readable" viewName="status_code_network" replaceIfExists="true"><![CDATA[ 
 			 SELECT n.id, 
                     p.name AS parent, 
                     rel.name AS relationship, 
@@ -23,14 +22,11 @@
 			   JOIN status_code p ON n.parent = p.id
 			   JOIN relationship rel ON n.relationship = rel.id
 			   JOIN status_code c ON n.child = c.id
-			   JOIN agency u ON n.updated_by = u.id;
-			
-			ALTER TABLE readable.status_code_network
-			  OWNER TO core;
+			   JOIN agency u ON n.updated_by = u.id
             ]]>
-		</sql>
-		<rollback>
-			<dropView viewName="readable.status_code_network" />
-		</rollback>
-	</changeSet>
+		</createView>
+        <rollback>
+            <dropView viewName="readable.status_code_network" />
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

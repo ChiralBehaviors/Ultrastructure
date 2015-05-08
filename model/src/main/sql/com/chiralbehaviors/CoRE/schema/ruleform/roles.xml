@@ -12,9 +12,7 @@
         id="2.0.0"
         author="hhildebrand"
     >
-        <sql> ALTER ROLE core SET search_path TO ruleform, public,
-            sysadmin,
-            core_admin, readable;
+        <sql> ALTER ROLE core SET search_path TO ruleform, public, readable;
         </sql>
         <sql> ALTER ROLE core_read_write SET search_path TO ruleform;
         </sql>

@@ -6,8 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.product_attribute AS 
+        <createView viewName="product_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT ba.id, 
                     b.name AS product, 
                     a.name AS attribute, 
@@ -24,12 +23,9 @@
 			   JOIN product b ON ba.product = b.id
 			   JOIN attribute a ON ba.attribute = a.id
 			   LEFT JOIN unit u ON ba.unit = u.id
-			   JOIN agency up ON ba.updated_by = up.id;
-			
-			ALTER TABLE readable.product_attribute
-			  OWNER TO core;
+			   JOIN agency up ON ba.updated_by = up.id
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.product_attribute" />
         </rollback>

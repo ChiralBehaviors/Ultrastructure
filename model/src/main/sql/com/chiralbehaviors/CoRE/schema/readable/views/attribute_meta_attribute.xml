@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.attribute_meta_attribute AS 
+        <createView viewName="attribute_meta_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT aa.id, 
 			     ba.name AS base_attribute, 
 			     a.name AS attribute, 
@@ -25,13 +24,10 @@
 			   JOIN attribute a ON aa.meta_attribute = a.id
 			   LEFT JOIN unit u ON aa.unit_value = u.id
 			   JOIN agency up ON aa.updated_by = up.id;
-			
-			ALTER TABLE readable.attribute_meta_attribute
-			  OWNER TO core;
             ]]>
         </sql>
         <rollback>
-            <dropView viewName="readable.attribute_meta_attribute"/>
+            <dropView viewName="readable.attribute_meta_attribute" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

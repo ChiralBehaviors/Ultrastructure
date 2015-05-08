@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.interval_attribute AS 
+        <createView viewName="interval_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT ra.id, 
                     r.name AS interval, 
                     a.name AS attribute, 
@@ -25,11 +24,8 @@
 			   JOIN attribute a ON ra.attribute = a.id
 			   LEFT JOIN unit u ON ra.unit = u.id
 			   JOIN agency up ON ra.updated_by = up.id;
-			
-			ALTER TABLE readable.interval_attribute
-			  OWNER TO core;
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.interval_attribute" />
         </rollback>

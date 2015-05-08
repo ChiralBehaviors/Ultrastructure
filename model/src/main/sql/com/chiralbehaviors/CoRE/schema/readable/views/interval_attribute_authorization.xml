@@ -6,8 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE OR REPLACE VIEW readable.interval_attribute_authorization AS 
+        <createView viewName="interval_attribute_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT     base_table.id ,
                 res.name AS grouping_agency, 
                 cls.name AS classification, 
@@ -28,14 +27,8 @@
              LEFT JOIN agency b ON na.classifier = b.id
              LEFT JOIN agency up ON base_table.updated_by = up.id
              WHERE base_table.authorized_attribute IS NOT NULL;
-            
-            ALTER TABLE readable.interval_attribute_authorization
-              OWNER TO core;
-            GRANT ALL ON TABLE readable.interval_attribute_authorization TO core;
-            GRANT SELECT ON TABLE readable.interval_attribute_authorization TO core_read_write;
-            GRANT SELECT ON TABLE readable.interval_attribute_authorization TO core_read_only;
             ]]>
-        </sql>
+        </createView>
         <rollback>
             <dropView viewName="readable.interval_attribute_authorization" />
         </rollback>

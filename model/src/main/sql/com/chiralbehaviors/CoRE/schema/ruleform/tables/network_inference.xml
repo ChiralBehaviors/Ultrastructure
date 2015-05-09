@@ -47,5 +47,14 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="network_inference_premise1_idx" tableName="network_inference" unique="false">
+            <column name="premise1"></column>
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="network_inference_premise2_idx" tableName="network_inference" unique="false">
+            <column name="premise2"></column>
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="network_inference_inference_idx" tableName="network_inference" unique="false">
+            <column name="inference"></column>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

@@ -782,8 +782,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                 Agency updatedBy) {
         List<AttributeType> attributes = new ArrayList<>();
         ruleform.link(aspect.getClassification(), aspect.getClassifier(),
-                      kernel.getCoreModel(), kernel.getCoreAnimationSoftware(),
-                      em);
+                      model.getCurrentPrincipal().getPrincipal(),
+                      model.getCurrentPrincipal().getPrincipal(), em);
         for (AttributeAuth authorization : getAttributeAuthorizations(aspect)) {
             if (!authorization.getAuthorizedAttribute().getKeyed()
                 && !authorization.getAuthorizedAttribute().getIndexed()) {
@@ -818,7 +818,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public Network link(RuleForm parent, Relationship r, RuleForm child,
                         Agency updatedBy) {
-        return parent.link(r, child, updatedBy, kernel.getInverseSoftware(), em);
+        return parent.link(r, child, updatedBy,
+                           model.getCurrentPrincipal().getPrincipal(), em);
     }
 
     @Override

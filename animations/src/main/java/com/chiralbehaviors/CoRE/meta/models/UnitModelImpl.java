@@ -70,7 +70,7 @@ public class UnitModelImpl
         for (Attribute attribute : attributes) {
             UnitAttributeAuthorization authorization = new UnitAttributeAuthorization(
                                                                                       attribute,
-                                                                                      kernel.getCoreModel());
+                                                                                      model.getCurrentPrincipal().getPrincipal());
             em.persist(authorization);
         }
     }
@@ -87,7 +87,8 @@ public class UnitModelImpl
     public final Unit create(String name, String description,
                              Aspect<Unit> aspect, Agency updatedBy,
                              Aspect<Unit>... aspects) {
-        Unit agency = new Unit(name, description, kernel.getCoreModel());
+        Unit agency = new Unit(name, description,
+                               model.getCurrentPrincipal().getPrincipal());
         em.persist(agency);
         initialize(agency, aspect, updatedBy);
         if (aspects != null) {
@@ -110,18 +111,20 @@ public class UnitModelImpl
         Unit copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(kernel.getCoreModel());
+        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (UnitNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     kernel.getCoreModel(),
-                                     kernel.getInverseSoftware(), em);
+            network.getParent().link(network.getRelationship(),
+                                     copy,
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     em);
         }
         for (UnitAttribute attribute : prototype.getAttributes()) {
             UnitAttribute clone = (UnitAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setUnit(copy);
-            clone.setUpdatedBy(kernel.getCoreModel());
+            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         }
         return copy;
     }

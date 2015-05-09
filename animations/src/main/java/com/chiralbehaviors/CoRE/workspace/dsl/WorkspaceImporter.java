@@ -857,7 +857,7 @@ public class WorkspaceImporter {
 
     public Workspace loadWorkspace() {
         scope = model.getWorkspaceModel().createWorkspace(createWorkspaceProduct(),
-                                                          model.getKernel().getCoreAnimationSoftware());
+                                                          model.getCurrentPrincipal().getPrincipal());
         workspace = (EditableWorkspace) scope.getWorkspace();
         processImports();
         loadRelationships();

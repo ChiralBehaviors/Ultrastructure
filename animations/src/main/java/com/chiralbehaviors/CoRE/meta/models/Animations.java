@@ -472,7 +472,7 @@ public class Animations implements Triggers {
     private void process(Job j) {
         JobModel jobModel = model.getJobModel();
         jobModel.generateImplicitJobsForExplicitJobs(j,
-                                                     model.getKernel().getCoreAnimationSoftware());
+                                                     model.getCurrentPrincipal().getPrincipal());
         jobModel.processJobSequencing(j);
     }
 

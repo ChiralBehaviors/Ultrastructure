@@ -197,7 +197,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
                                                        int i) {
         AttributeValue<RuleForm> value = getNetworkedModel().create(ruleform,
                                                                     attribute,
-                                                                    model.getKernel().getCoreAnimationSoftware());
+                                                                    model.getCurrentPrincipal().getPrincipal());
         value.setSequenceNumber(i);
         return value;
     }
@@ -791,7 +791,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
         networkedModel.setImmediateChild(ruleform,
                                          getRelationship(namespace, name),
                                          child,
-                                         model.getKernel().getCoreAnimationSoftware());
+                                         model.getCurrentPrincipal().getPrincipal());
         return null;
     }
 
@@ -810,7 +810,7 @@ public class StateImpl<RuleForm extends ExistentialRuleform<RuleForm, NetworkRul
             networkedModel.setImmediateChild(ruleform,
                                              relationship,
                                              child,
-                                             model.getKernel().getCoreAnimationSoftware());
+                                             model.getCurrentPrincipal().getPrincipal());
         }
         return null;
     }

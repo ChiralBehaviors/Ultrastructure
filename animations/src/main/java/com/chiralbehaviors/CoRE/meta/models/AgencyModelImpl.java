@@ -81,12 +81,14 @@ public class AgencyModelImpl
     @Override
     public void authorize(Agency ruleform, Relationship relationship,
                           Location authorized) {
-        AgencyLocation a = new AgencyLocation(kernel.getCoreAnimationSoftware());
+        AgencyLocation a = new AgencyLocation(
+                                              model.getCurrentPrincipal().getPrincipal());
         a.setAgency(ruleform);
         a.setRelationship(relationship);
         a.setLocation(authorized);
         em.persist(a);
-        AgencyLocation b = new AgencyLocation(kernel.getCoreAnimationSoftware());
+        AgencyLocation b = new AgencyLocation(
+                                              model.getCurrentPrincipal().getPrincipal());
         b.setAgency(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setLocation(authorized);
@@ -99,12 +101,14 @@ public class AgencyModelImpl
     @Override
     public void authorize(Agency ruleform, Relationship relationship,
                           Product authorized) {
-        AgencyProduct a = new AgencyProduct(kernel.getCoreAnimationSoftware());
+        AgencyProduct a = new AgencyProduct(
+                                            model.getCurrentPrincipal().getPrincipal());
         a.setAgency(ruleform);
         a.setRelationship(relationship);
         a.setProduct(authorized);
         em.persist(a);
-        AgencyProduct b = new AgencyProduct(kernel.getCoreAnimationSoftware());
+        AgencyProduct b = new AgencyProduct(
+                                            model.getCurrentPrincipal().getPrincipal());
         b.setAgency(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setProduct(authorized);
@@ -128,7 +132,7 @@ public class AgencyModelImpl
         for (Attribute attribute : attributes) {
             AgencyAttributeAuthorization authorization = new AgencyAttributeAuthorization(
                                                                                           attribute,
-                                                                                          kernel.getCoreModel());
+                                                                                          model.getCurrentPrincipal().getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -146,18 +150,20 @@ public class AgencyModelImpl
         Agency copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(kernel.getCoreModel());
+        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (AgencyNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     kernel.getCoreModel(),
-                                     kernel.getInverseSoftware(), em);
+            network.getParent().link(network.getRelationship(),
+                                     copy,
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     em);
         }
         for (AttributeValue<Agency> attribute : prototype.getAttributes()) {
             AgencyAttribute clone = (AgencyAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setAgency(copy);
-            clone.setUpdatedBy(kernel.getCoreModel());
+            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         }
         return copy;
     }
@@ -180,7 +186,8 @@ public class AgencyModelImpl
     public final Agency create(String name, String description,
                                Aspect<Agency> aspect, Agency updatedBy,
                                Aspect<Agency>... aspects) {
-        Agency agency = new Agency(name, description, kernel.getCoreModel());
+        Agency agency = new Agency(name, description,
+                                   model.getCurrentPrincipal().getPrincipal());
         em.persist(agency);
         initialize(agency, aspect, updatedBy);
         if (aspects != null) {

@@ -918,7 +918,7 @@ public class JobModelImpl implements JobModel {
         }
         List<Job> jobs = new ArrayList<>();
         if (protocol.getChildrenRelationship().equals(kernel.getNotApplicableRelationship())) {
-            Job job = new Job(kernel.getCoreAnimationSoftware());
+            Job job = new Job(model.getCurrentPrincipal().getPrincipal());
             insert(job,
                    parent,
                    protocol,
@@ -929,7 +929,7 @@ public class JobModelImpl implements JobModel {
         } else {
             for (Product child : model.getProductModel().getChildren(parent.getProduct(),
                                                                      protocol.getChildrenRelationship())) {
-                Job job = new Job(kernel.getCoreAnimationSoftware());
+                Job job = new Job(model.getCurrentPrincipal().getPrincipal());
                 insert(job, parent, protocol, txfm, child);
                 jobs.add(job);
             }
@@ -1108,7 +1108,7 @@ public class JobModelImpl implements JobModel {
                 ensureNextStateIsValid(job, job.getService(), job.getStatus(),
                                        seq.getStatusToSet());
                 changeStatus(job, seq.getStatusToSet(),
-                             kernel.getCoreAnimationSoftware(),
+                             model.getCurrentPrincipal().getPrincipal(),
                              "Automatically switching staus via direct communication from sibling jobs");
             } catch (Throwable e) {
                 if (log.isTraceEnabled()) {
@@ -1421,7 +1421,7 @@ public class JobModelImpl implements JobModel {
                                            child.getStatus(),
                                            seq.getNextChildStatus());
                     changeStatus(child, seq.getNextChildStatus(),
-                                 kernel.getCoreAnimationSoftware(),
+                                 model.getCurrentPrincipal().getPrincipal(),
                                  "Automatically switching status via direct communication from parent job");
                     if (seq.isReplaceProduct()) {
                         child.setProduct(job.getProduct());
@@ -1466,7 +1466,7 @@ public class JobModelImpl implements JobModel {
                                                seq.getParentStatusToSet());
                         changeStatus(job.getParent(),
                                      seq.getParentStatusToSet(),
-                                     kernel.getCoreAnimationSoftware(),
+                                     model.getCurrentPrincipal().getPrincipal(),
                                      "Automatically switching status via direct communication from child job");
                         if (seq.isReplaceProduct()) {
                             job.getParent().setProduct(job.getProduct());
@@ -1492,7 +1492,7 @@ public class JobModelImpl implements JobModel {
                                                seq.getParentStatusToSet());
                         changeStatus(job.getParent(),
                                      seq.getParentStatusToSet(),
-                                     kernel.getCoreAnimationSoftware(),
+                                     model.getCurrentPrincipal().getPrincipal(),
                                      "Automatically switching status via direct communication from child job");
                         if (seq.isReplaceProduct()) {
                             job.getParent().setProduct(job.getProduct());
@@ -1551,7 +1551,7 @@ public class JobModelImpl implements JobModel {
                                            sibling.getStatus(),
                                            seq.getNextSiblingStatus());
                     changeStatus(sibling, seq.getNextSiblingStatus(),
-                                 kernel.getCoreAnimationSoftware(),
+                                 model.getCurrentPrincipal().getPrincipal(),
                                  "Automatically switching staus via direct communication from sibling jobs");
                     if (seq.isReplaceProduct()) {
                         sibling.setProduct(job.getProduct());

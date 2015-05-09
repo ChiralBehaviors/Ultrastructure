@@ -74,14 +74,14 @@ public class LocationModelImpl
     @Override
     public void authorize(Aspect<Location> aspect, Attribute... attributes) {
         LocationNetworkAuthorization auth = new LocationNetworkAuthorization(
-                                                                             kernel.getCore());
+                                                                             model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             LocationAttributeAuthorization authorization = new LocationAttributeAuthorization(
                                                                                               attribute,
-                                                                                              kernel.getCoreModel());
+                                                                                              model.getCurrentPrincipal().getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -93,12 +93,14 @@ public class LocationModelImpl
     @Override
     public void authorize(Location ruleform, Relationship relationship,
                           Agency authorized) {
-        AgencyLocation a = new AgencyLocation(kernel.getCoreAnimationSoftware());
+        AgencyLocation a = new AgencyLocation(
+                                              model.getCurrentPrincipal().getPrincipal());
         a.setAgency(authorized);
         a.setRelationship(relationship);
         a.setLocation(ruleform);
         em.persist(a);
-        AgencyLocation b = new AgencyLocation(kernel.getCoreAnimationSoftware());
+        AgencyLocation b = new AgencyLocation(
+                                              model.getCurrentPrincipal().getPrincipal());
         b.setAgency(authorized);
         b.setRelationship(relationship.getInverse());
         b.setLocation(ruleform);
@@ -122,13 +124,13 @@ public class LocationModelImpl
     public void authorize(Location ruleform, Relationship relationship,
                           Product authorized) {
         ProductLocation a = new ProductLocation(
-                                                kernel.getCoreAnimationSoftware());
+                                                model.getCurrentPrincipal().getPrincipal());
         a.setProduct(authorized);
         a.setRelationship(relationship);
         a.setLocation(ruleform);
         em.persist(a);
         ProductLocation b = new ProductLocation(
-                                                kernel.getCoreAnimationSoftware());
+                                                model.getCurrentPrincipal().getPrincipal());
         b.setProduct(authorized);
         b.setRelationship(relationship.getInverse());
         b.setLocation(ruleform);
@@ -147,18 +149,20 @@ public class LocationModelImpl
         Location copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(kernel.getCoreModel());
+        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (LocationNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     kernel.getCoreModel(),
-                                     kernel.getInverseSoftware(), em);
+            network.getParent().link(network.getRelationship(),
+                                     copy,
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     em);
         }
         for (LocationAttribute attribute : prototype.getAttributes()) {
             LocationAttribute clone = (LocationAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setLocation(copy);
-            clone.setUpdatedBy(kernel.getCoreModel());
+            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         }
         return copy;
     }
@@ -184,8 +188,10 @@ public class LocationModelImpl
     public final Location create(String name, String description,
                                  Aspect<Location> aspect, Agency updatedBy,
                                  Aspect<Location>... aspects) {
-        Location location = new Location(name, description,
-                                         kernel.getCoreModel());
+        Location location = new Location(
+                                         name,
+                                         description,
+                                         model.getCurrentPrincipal().getPrincipal());
         em.persist(location);
         initialize(location, aspect, updatedBy);
         if (aspects != null) {

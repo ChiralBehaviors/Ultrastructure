@@ -35,7 +35,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
-import com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 
 /**
  * The meta model for the CoRE
@@ -104,8 +104,8 @@ public interface Model {
      *            -
      * @throws Exception
      */
-    <V> V executeAs(AuthenticatedPrincipal principal, Callable<V> function)
-                                                                           throws Exception;
+    <V> V executeAs(AuthorizedPrincipal principal, Callable<V> function)
+                                                                        throws Exception;
 
     /**
      * Find the ruleform instances that match the supplied attribute
@@ -155,6 +155,12 @@ public interface Model {
      * @return the Attribute model
      */
     AttributeModel getAttributeModel();
+
+    /**
+     * 
+     * @return the current thread's authorized principal
+     */
+    AuthorizedPrincipal getCurrentPrincipal();
 
     /**
      * Answer the product manager used for this model instance

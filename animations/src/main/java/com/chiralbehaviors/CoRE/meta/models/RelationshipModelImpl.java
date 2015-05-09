@@ -62,14 +62,14 @@ public class RelationshipModelImpl
     @Override
     public void authorize(Aspect<Relationship> aspect, Attribute... attributes) {
         RelationshipNetworkAuthorization auth = new RelationshipNetworkAuthorization(
-                                                                                     kernel.getCore());
+                                                                                     model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             RelationshipAttributeAuthorization authorization = new RelationshipAttributeAuthorization(
                                                                                                       attribute,
-                                                                                                      kernel.getCoreModel());
+                                                                                                      model.getCurrentPrincipal().getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -87,18 +87,20 @@ public class RelationshipModelImpl
         Relationship copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(kernel.getCoreModel());
+        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (RelationshipNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     kernel.getCoreModel(),
-                                     kernel.getInverseSoftware(), em);
+            network.getParent().link(network.getRelationship(),
+                                     copy,
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     em);
         }
         for (RelationshipAttribute attribute : prototype.getAttributes()) {
             RelationshipAttribute clone = (RelationshipAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setRelationship(copy);
-            clone.setUpdatedBy(kernel.getCoreModel());
+            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         }
         return copy;
     }
@@ -116,8 +118,10 @@ public class RelationshipModelImpl
                                      Aspect<Relationship> aspect,
                                      Agency updatedBy,
                                      Aspect<Relationship>... aspects) {
-        Relationship relationship = new Relationship(name, description,
-                                                     kernel.getCoreModel());
+        Relationship relationship = new Relationship(
+                                                     name,
+                                                     description,
+                                                     model.getCurrentPrincipal().getPrincipal());
         em.persist(relationship);
         initialize(relationship, aspect, updatedBy);
         if (aspects != null) {
@@ -131,12 +135,15 @@ public class RelationshipModelImpl
     @Override
     public final Relationship create(String rel1Name, String rel1Description,
                                      String rel2Name, String rel2Description) {
-        Relationship relationship = new Relationship(rel1Name, rel1Description,
-                                                     kernel.getCoreModel());
+        Relationship relationship = new Relationship(
+                                                     rel1Name,
+                                                     rel1Description,
+                                                     model.getCurrentPrincipal().getPrincipal());
 
-        Relationship relationship2 = new Relationship(rel2Name,
+        Relationship relationship2 = new Relationship(
+                                                      rel2Name,
                                                       rel2Description,
-                                                      kernel.getCoreModel());
+                                                      model.getCurrentPrincipal().getPrincipal());
 
         relationship.setInverse(relationship2);
         relationship2.setInverse(relationship);

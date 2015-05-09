@@ -62,14 +62,14 @@ public class AttributeModelImpl
     @Override
     public void authorize(Aspect<Attribute> aspect, Attribute... attributes) {
         AttributeNetworkAuthorization auth = new AttributeNetworkAuthorization(
-                                                                               kernel.getCore());
+                                                                               model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             AttributeMetaAttributeAuthorization authorization = new AttributeMetaAttributeAuthorization(
                                                                                                         attribute,
-                                                                                                        kernel.getCoreModel());
+                                                                                                        model.getCurrentPrincipal().getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -87,18 +87,20 @@ public class AttributeModelImpl
         Attribute copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(kernel.getCoreModel());
+        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (AttributeNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     kernel.getCoreModel(),
-                                     kernel.getInverseSoftware(), em);
+            network.getParent().link(network.getRelationship(),
+                                     copy,
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     em);
         }
         for (AttributeMetaAttribute attribute : prototype.getAttributes()) {
             AttributeMetaAttribute clone = (AttributeMetaAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setAttribute(copy);
-            clone.setUpdatedBy(kernel.getCoreModel());
+            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         }
         return copy;
     }
@@ -108,8 +110,10 @@ public class AttributeModelImpl
     public final Attribute create(String name, String description,
                                   Aspect<Attribute> aspect, Agency updatedBy,
                                   Aspect<Attribute>... aspects) {
-        Attribute attribute = new Attribute(name, description,
-                                            kernel.getCoreModel());
+        Attribute attribute = new Attribute(
+                                            name,
+                                            description,
+                                            model.getCurrentPrincipal().getPrincipal());
         em.persist(attribute);
         initialize(attribute, aspect, updatedBy);
         if (aspects != null) {

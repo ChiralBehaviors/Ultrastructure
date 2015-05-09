@@ -67,14 +67,14 @@ public class StatusCodeModelImpl
     @Override
     public void authorize(Aspect<StatusCode> aspect, Attribute... attributes) {
         StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization(
-                                                                                 kernel.getCore());
+                                                                                 model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             StatusCodeAttributeAuthorization authorization = new StatusCodeAttributeAuthorization(
                                                                                                   attribute,
-                                                                                                  kernel.getCoreModel());
+                                                                                                  model.getCurrentPrincipal().getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -92,18 +92,20 @@ public class StatusCodeModelImpl
         StatusCode copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(kernel.getCoreModel());
+        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (StatusCodeNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     kernel.getCoreModel(),
-                                     kernel.getInverseSoftware(), em);
+            network.getParent().link(network.getRelationship(),
+                                     copy,
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     em);
         }
         for (StatusCodeAttribute attribute : prototype.getAttributes()) {
             StatusCodeAttribute clone = (StatusCodeAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setStatusCode(copy);
-            clone.setUpdatedBy(kernel.getCoreModel());
+            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         }
         return copy;
     }
@@ -120,8 +122,10 @@ public class StatusCodeModelImpl
     public final StatusCode create(String name, String description,
                                    Aspect<StatusCode> aspect, Agency updatedBy,
                                    Aspect<StatusCode>... aspects) {
-        StatusCode agency = new StatusCode(name, description,
-                                           kernel.getCoreModel());
+        StatusCode agency = new StatusCode(
+                                           name,
+                                           description,
+                                           model.getCurrentPrincipal().getPrincipal());
         em.persist(agency);
         initialize(agency, aspect, updatedBy);
         if (aspects != null) {

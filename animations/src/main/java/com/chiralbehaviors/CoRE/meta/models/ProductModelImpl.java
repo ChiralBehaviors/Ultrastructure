@@ -74,14 +74,14 @@ public class ProductModelImpl
     @Override
     public void authorize(Aspect<Product> aspect, Attribute... attributes) {
         ProductNetworkAuthorization auth = new ProductNetworkAuthorization(
-                                                                           kernel.getCore());
+                                                                           model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             ProductAttributeAuthorization authorization = new ProductAttributeAuthorization(
                                                                                             attribute,
-                                                                                            kernel.getCoreModel());
+                                                                                            model.getCurrentPrincipal().getPrincipal());
             em.persist(authorization);
         }
     }
@@ -92,12 +92,14 @@ public class ProductModelImpl
     @Override
     public void authorize(Product ruleform, Relationship relationship,
                           Agency authorized) {
-        AgencyProduct a = new AgencyProduct(kernel.getCoreAnimationSoftware());
+        AgencyProduct a = new AgencyProduct(
+                                            model.getCurrentPrincipal().getPrincipal());
         a.setAgency(authorized);
         a.setRelationship(relationship);
         a.setProduct(ruleform);
         em.persist(a);
-        AgencyProduct b = new AgencyProduct(kernel.getCoreAnimationSoftware());
+        AgencyProduct b = new AgencyProduct(
+                                            model.getCurrentPrincipal().getPrincipal());
         b.setAgency(authorized);
         b.setRelationship(relationship.getInverse());
         b.setProduct(ruleform);
@@ -114,13 +116,13 @@ public class ProductModelImpl
         assert relationship != null : "relationshp is null";
         assert authorized != null : "authorized is null";
         ProductLocation a = new ProductLocation(
-                                                kernel.getCoreAnimationSoftware());
+                                                model.getCurrentPrincipal().getPrincipal());
         a.setProduct(ruleform);
         a.setRelationship(relationship);
         a.setLocation(authorized);
         em.persist(a);
         ProductLocation b = new ProductLocation(
-                                                kernel.getCoreAnimationSoftware());
+                                                model.getCurrentPrincipal().getPrincipal());
         b.setProduct(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setLocation(authorized);
@@ -149,18 +151,20 @@ public class ProductModelImpl
         Product copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(kernel.getCoreModel());
+        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (ProductNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     kernel.getCoreModel(),
-                                     kernel.getInverseSoftware(), em);
+            network.getParent().link(network.getRelationship(),
+                                     copy,
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     model.getCurrentPrincipal().getPrincipal(),
+                                     em);
         }
         for (ProductAttribute attribute : prototype.getAttributes()) {
             ProductAttribute clone = (ProductAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setProduct(copy);
-            clone.setUpdatedBy(kernel.getCoreModel());
+            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         }
         return copy;
     }
@@ -183,7 +187,10 @@ public class ProductModelImpl
     final public Product create(String name, String description,
                                 Aspect<Product> aspect, Agency updatedBy,
                                 Aspect<Product>... aspects) {
-        Product product = new Product(name, description, kernel.getCoreModel());
+        Product product = new Product(
+                                      name,
+                                      description,
+                                      model.getCurrentPrincipal().getPrincipal());
         em.persist(product);
         initialize(product, aspect, updatedBy);
         if (aspects != null) {

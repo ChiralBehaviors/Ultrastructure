@@ -44,7 +44,7 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="attribute_network" constraintName="attribute_network_updated_by_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2"
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, inference, premise1, premise2"
             constraintName="attribute_network_parent_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="attribute_network" />
         <createIndex schemaName="ruleform" indexName="attribute_network_child_fkey_idx" tableName="attribute_network" unique="false">
             <column name="child" />

@@ -84,6 +84,21 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="attribute_network_attribute_key_idx" tableName="attribute_network_attribute"
+            unique="false"
+        >
+            <column name="key" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="attribute_network_attribute_numeric_idx" tableName="attribute_network_attribute"
+            unique="false"
+        >
+            <column name="numeric_value" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="attribute_network_attribute_timestamp_idx" tableName="attribute_network_attribute"
+            unique="false"
+        >
+            <column name="timestamp_value" />
+        </createIndex>
         <sql> ALTER TABLE attribute_network_attribute OWNER TO core; </sql>
         <rollback />
         <sql><![CDATA[

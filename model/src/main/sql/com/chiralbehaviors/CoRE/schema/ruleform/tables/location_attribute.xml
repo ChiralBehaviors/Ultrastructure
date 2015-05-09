@@ -35,31 +35,46 @@
         </createTable>
         <rollback>
             <dropTable tableName="location_attribute" />
-        </rollback> 
+        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="location_attribute" constraintName="location_attribute_attribute_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" /> 
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="location" baseTableName="location_attribute" constraintName="location_attribute_location_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" /> 
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="location" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="location_attribute" constraintName="location_attribute_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" /> 
+            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="unit" baseTableName="location_attribute" constraintName="product_attribute_unit_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" /> 
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <addUniqueConstraint schemaName="ruleform" columnNames="location, attribute, sequence_number" constraintName="location_attribute_location_key"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="location_attribute" /> 
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="location_attribute" />
         <createIndex schemaName="ruleform" indexName="location_attribute_integer_idx" tableName="location_attribute" unique="false">
             <column name="integer_value" />
-        </createIndex> 
-        <createIndex schemaName="ruleform" indexName="location_attribute_text_idx" tableName="location_attribute" unique="false">
-            <column name="text_value" />
-        </createIndex> 
+        </createIndex>
         <createIndex schemaName="ruleform" indexName="location_attribute_updated_by_fkey_idx" tableName="location_attribute"
             unique="false"
         >
             <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="location_attribute_key_idx" tableName="location_attribute" unique="false">
+            <column name="key" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="location_attribute_numeric_idx" tableName="location_attribute" unique="false">
+            <column name="numeric_value" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="location_attribute_timestamp_idx" tableName="location_attribute" unique="false">
+            <column name="timestamp_value" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="location_attribute_location_idx" tableName="location_attribute" unique="false">
+            <column name="location" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="location_attribute_attribute_idx" tableName="location_attribute" unique="false">
+            <column name="attribute" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="location_attribute_unit_idx" tableName="location_attribute" unique="false">
+            <column name="unit" />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

@@ -109,5 +109,8 @@
         <createIndex schemaName="ruleform" indexName="job_chronology_service_fkey_idx" tableName="job_chronology" unique="false">
             <column name="service" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="job_chronology_job_fkey_idx" tableName="job_chronology" unique="false">
+            <column name="job" />
+        </createIndex>
     </changeSet>
 </databaseChangeLog>

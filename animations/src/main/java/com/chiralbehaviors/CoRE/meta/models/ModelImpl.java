@@ -121,9 +121,8 @@ public class ModelImpl implements Model {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
                                                                                String name,
-                                                                               String description,
-                                                                               Agency updatedBy)
-                                                                                                throws InstantiationException {
+                                                                               String description)
+                                                                                                  throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cache.computeIfAbsent(phantasm,
                                                                                                 (Class<?> p) -> new PhantasmDefinition(
                                                                                                                                        p));
@@ -131,7 +130,7 @@ public class ModelImpl implements Model {
         try {
             ruleform = (T) Model.getExistentialRuleformConstructor(phantasm).newInstance(name,
                                                                                          description,
-                                                                                         updatedBy);
+                                                                                         getCurrentPrincipal().getPrincipal());
         } catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             InstantiationException ex = new InstantiationException(
@@ -141,8 +140,9 @@ public class ModelImpl implements Model {
             throw ex;
         }
         getEntityManager().persist(ruleform);
-        return (Phantasm<? super T>) definition.construct(ruleform, this,
-                                                          updatedBy);
+        return (Phantasm<? super T>) definition.construct(ruleform,
+                                                          this,
+                                                          getCurrentPrincipal().getPrincipal());
     }
 
     /* (non-Javadoc)

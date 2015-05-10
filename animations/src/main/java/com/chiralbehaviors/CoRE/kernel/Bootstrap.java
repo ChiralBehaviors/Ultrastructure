@@ -256,10 +256,11 @@ public class Bootstrap {
                  find(WellKnownAttribute.NOT_APPLICABLE), core, kernelWorkspace);
         populate("SameAttribute", find(WellKnownAttribute.SAME), core,
                  kernelWorkspace);
-        populate("LoginAttribute", find(WellKnownAttribute.LOGIN), core,
+        populate("Login", find(WellKnownAttribute.LOGIN), core, kernelWorkspace);
+        populate("PasswordHash", find(WellKnownAttribute.PASSWORD_HASH), core,
                  kernelWorkspace);
-        populate("PasswordHashAttribute",
-                 find(WellKnownAttribute.PASSWORD_HASH), core, kernelWorkspace);
+        populate("PasswordRounds", find(WellKnownAttribute.PASSWORD_ROUNDS),
+                 core, kernelWorkspace);
         populate("NamespaceAttribute", find(WellKnownAttribute.NAMESPACE),
                  core, kernelWorkspace);
 
@@ -436,13 +437,19 @@ public class Bootstrap {
                                                                                   find(WellKnownAttribute.LOGIN),
                                                                                   core);
         loginAuth.setNetworkAuthorization(loginAuthNet);
-        populate("LoginAuth", loginAuth, core, kernelWorkspace);
+        populate(loginAuth, core, kernelWorkspace);
         AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(
                                                                                          find(WellKnownAttribute.PASSWORD_HASH),
                                                                                          core);
         passwordHashAuth.setNetworkAuthorization(loginAuthNet);
 
-        populate("PasswordHashAuth", passwordHashAuth, core, kernelWorkspace);
+        populate(passwordHashAuth, core, kernelWorkspace);
+        AgencyAttributeAuthorization passwordRounds = new AgencyAttributeAuthorization(
+                                                                                       find(WellKnownAttribute.PASSWORD_ROUNDS),
+                                                                                       core);
+        passwordRounds.setNetworkAuthorization(loginAuthNet);
+
+        populate(passwordRounds, core, kernelWorkspace);
         AgencyNetwork edge = new AgencyNetwork(
                                                find(WellKnownAgency.SUPER_USER),
                                                isA,
@@ -522,5 +529,9 @@ public class Bootstrap {
                   Product kernelWorkspace) {
         em.persist(new WorkspaceAuthorization(key, ruleform, kernelWorkspace,
                                               core));
+    }
+
+    void populate(Ruleform ruleform, Agency core, Product kernelWorkspace) {
+        em.persist(new WorkspaceAuthorization(ruleform, kernelWorkspace, core));
     }
 }

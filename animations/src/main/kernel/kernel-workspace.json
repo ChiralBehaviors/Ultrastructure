@@ -1,8 +1,8 @@
 {
   "auths" : [ {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e25502-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e25502-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c97d559-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c97d559-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : {
@@ -28,8 +28,8 @@
     "key" : null,
     "ruleform" : {
       "type" : "productnetwork",
-      "@id" : "ProductNetwork-90e25501-f3a6-11e4-8afe-37486e12444e",
-      "id" : "90e25501-f3a6-11e4-8afe-37486e12444e",
+      "@id" : "ProductNetwork-4c97d558-f72f-11e4-b99b-c9f0b71bbc75",
+      "id" : "4c97d558-f72f-11e4-b99b-c9f0b71bbc75",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -73,8 +73,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e49ef4-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e49ef4-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9b09ab-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9b09ab-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -95,8 +95,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e4ed16-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e4ed16-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9ba5ed-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9ba5ed-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -117,8 +117,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e56248-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e56248-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9bf40f-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9bf40f-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -139,8 +139,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e5b06a-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e5b06a-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9c6941-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9c6941-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -148,8 +148,8 @@
     "key" : "SameAttribute",
     "ruleform" : {
       "type" : "attribute",
-      "@id" : "Attribute-00000000-0000-0001-0000-000000000007",
-      "id" : "00000000-0000-0001-0000-000000000007",
+      "@id" : "Attribute-00000000-0000-0001-0000-000000000009",
+      "id" : "00000000-0000-0001-0000-000000000009",
       "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -161,13 +161,13 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e6259c-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e6259c-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9cde73-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9cde73-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : "LoginAttribute",
+    "key" : "Login",
     "ruleform" : {
       "type" : "attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-000000000003",
@@ -183,17 +183,17 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e69ace-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e69ace-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9d53a5-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9d53a5-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : "PasswordHashAttribute",
+    "key" : "PasswordHash",
     "ruleform" : {
       "type" : "attribute",
-      "@id" : "Attribute-00000000-0000-0001-0000-000000000006",
-      "id" : "00000000-0000-0001-0000-000000000006",
+      "@id" : "Attribute-00000000-0000-0001-0000-000000000007",
+      "id" : "00000000-0000-0001-0000-000000000007",
       "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -205,8 +205,30 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e71000-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e71000-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9defe7-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9defe7-f72f-11e4-b99b-c9f0b71bbc75",
+    "notes" : null,
+    "version" : 0,
+    "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
+    "key" : "PasswordRounds",
+    "ruleform" : {
+      "type" : "attribute",
+      "@id" : "Attribute-00000000-0000-0001-0000-000000000008",
+      "id" : "00000000-0000-0001-0000-000000000008",
+      "notes" : null,
+      "version" : 1,
+      "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
+      "description" : "The Attribute that contains the required rounds for password hash of the CoRE user",
+      "name" : "password-rounds",
+      "indexed" : false,
+      "keyed" : false,
+      "valueType" : "INTEGER"
+    }
+  }, {
+    "type" : "workspaceauthorization",
+    "@id" : "WorkspaceAuthorization-4c9e6519-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9e6519-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -227,8 +249,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e78532-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e78532-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9eda4b-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9eda4b-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -246,8 +268,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e7fa64-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e7fa64-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9f4f7d-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9f4f7d-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -265,8 +287,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e86f96-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e86f96-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4c9febbf-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4c9febbf-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -284,8 +306,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e8bdb8-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e8bdb8-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca060f1-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca060f1-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -303,8 +325,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e8bdb9-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e8bdb9-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca060f2-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca060f2-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -313,8 +335,8 @@
     "ruleform" : "Product-00000000-0000-0004-0000-000000000006"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e8bdba-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e8bdba-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca08803-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca08803-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -323,8 +345,8 @@
     "ruleform" : "Product-00000000-0000-0004-0000-000000000003"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e959fc-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e959fc-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca0fd35-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca0fd35-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -342,8 +364,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e9a81e-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e9a81e-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca17267-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca17267-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -361,8 +383,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90e9f640-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90e9f640-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca20ea9-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca20ea9-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -380,8 +402,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ea6b72-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ea6b72-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca283db-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca283db-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -399,8 +421,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90eab994-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90eab994-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca2f90d-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca2f90d-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -418,8 +440,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90eb07b6-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90eb07b6-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca3472f-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca3472f-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -437,8 +459,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90eb7ce8-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90eb7ce8-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca3bc61-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca3bc61-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -456,8 +478,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90eb7ce9-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90eb7ce9-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca3bc62-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca3bc62-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -466,8 +488,8 @@
     "ruleform" : "Agency-00000000-0000-0000-0000-000000000003"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ebf21b-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ebf21b-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca43194-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca43194-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -485,8 +507,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ec403d-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ec403d-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca47fb6-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca47fb6-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -504,8 +526,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ec8e5f-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ec8e5f-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca4f4e8-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca4f4e8-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -523,8 +545,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ed0291-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ed0291-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca5430a-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca5430a-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -542,8 +564,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ed50b3-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ed50b3-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca5912c-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca5912c-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -561,8 +583,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ed9ed5-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ed9ed5-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca6065e-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca6065e-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -580,8 +602,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90edecf7-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90edecf7-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca67b90-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca67b90-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -599,8 +621,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ee3b19-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ee3b19-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca6c9b2-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca6c9b2-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -618,8 +640,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90eed75b-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90eed75b-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca765f4-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca765f4-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -639,8 +661,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ef739d-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ef739d-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca80236-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca80236-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -660,8 +682,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f00fdf-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f00fdf-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca89e78-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca89e78-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -681,8 +703,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f08512-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f08512-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca93abb-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca93abb-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -713,8 +735,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f08513-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f08513-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca961cc-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca961cc-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -723,8 +745,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000002"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f0ac24-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f0ac24-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca961cd-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca961cd-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -733,8 +755,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000013"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f0ac25-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f0ac25-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca961ce-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca961ce-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -743,8 +765,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000012"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f14868-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f14868-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4ca9fe11-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4ca9fe11-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -775,8 +797,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f14869-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f14869-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4caa2522-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4caa2522-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -785,8 +807,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000015"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f1e4ac-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f1e4ac-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4caac165-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4caac165-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -817,8 +839,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f20bbd-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f20bbd-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4caac166-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4caac166-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -827,8 +849,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000001a"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f2a800-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f2a800-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cab5da9-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cab5da9-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -859,8 +881,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f2a801-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f2a801-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cab84ba-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cab84ba-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -869,8 +891,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000020"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f34444-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f34444-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cac20fd-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cac20fd-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -901,8 +923,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f36b55-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f36b55-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cac480e-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cac480e-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -911,8 +933,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000018"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f40797-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f40797-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cace450-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cace450-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -932,8 +954,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f4a3da-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f4a3da-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cad8093-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cad8093-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -964,8 +986,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f4caeb-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f4caeb-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cada7a4-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cada7a4-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -974,8 +996,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000009"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f5672e-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f5672e-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cae43e7-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cae43e7-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1006,8 +1028,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f5672f-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f5672f-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cae43e8-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cae43e8-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1016,8 +1038,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000005"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f60372-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f60372-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4caf2e4b-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4caf2e4b-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1048,8 +1070,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f62a83-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f62a83-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4caf7c6c-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4caf7c6c-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1058,8 +1080,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000000e"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f6c6c6-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f6c6c6-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb018af-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb018af-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1090,8 +1112,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f6c6c7-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f6c6c7-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb018b0-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb018b0-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1100,8 +1122,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000001b"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f7630a-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f7630a-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb0b4f3-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb0b4f3-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1132,8 +1154,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f7630b-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f7630b-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb0dc04-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb0dc04-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1142,8 +1164,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000000c"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f7d83e-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f7d83e-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb17847-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb17847-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1174,8 +1196,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f7ff4f-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f7ff4f-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb17848-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb17848-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1184,8 +1206,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000007"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f87481-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f87481-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb2148a-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb2148a-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1205,8 +1227,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f8c2a4-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f8c2a4-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb289bd-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb289bd-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1237,8 +1259,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f8e9b5-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f8e9b5-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb2b0ce-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb2b0ce-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1247,8 +1269,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000001e"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f985f8-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f985f8-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb34d11-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb34d11-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1279,8 +1301,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f985f9-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f985f9-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb34d12-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb34d12-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1289,8 +1311,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000010"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90f9fb2b-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90f9fb2b-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb3e954-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb3e954-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1310,8 +1332,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fa705d-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fa705d-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb45e86-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb45e86-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1331,8 +1353,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fa976f-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fa976f-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb4aca8-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb4aca8-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1352,8 +1374,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fb0ca1-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fb0ca1-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb521da-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb521da-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1373,8 +1395,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fb5ac3-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fb5ac3-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb5970c-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb5970c-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1394,8 +1416,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fbcff5-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fbcff5-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb6334e-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb6334e-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1418,8 +1440,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fc1e17-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fc1e17-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb6a880-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb6a880-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1442,8 +1464,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fc9349-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fc9349-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb71db2-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb71db2-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1466,8 +1488,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fd087b-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fd087b-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb792e4-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb792e4-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1490,8 +1512,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fd7dad-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fd7dad-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb80816-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb80816-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1514,8 +1536,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fdcbcf-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fdcbcf-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb87d48-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb87d48-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1538,8 +1560,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fe4101-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fe4101-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb8f27a-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb8f27a-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1562,8 +1584,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fe8f23-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fe8f23-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb967ac-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb967ac-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1586,8 +1608,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90fedd45-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90fedd45-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cb9dcde-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cb9dcde-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1610,8 +1632,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ff2b67-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ff2b67-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cba5210-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cba5210-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1634,8 +1656,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-90ffa099-f3a6-11e4-8afe-37486e12444e",
-    "id" : "90ffa099-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbac742-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbac742-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1658,8 +1680,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-910015cb-f3a6-11e4-8afe-37486e12444e",
-    "id" : "910015cb-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbb3c74-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbb3c74-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1677,8 +1699,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-910063ed-f3a6-11e4-8afe-37486e12444e",
-    "id" : "910063ed-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbbb1a6-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbbb1a6-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1696,8 +1718,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-9100d91f-f3a6-11e4-8afe-37486e12444e",
-    "id" : "9100d91f-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbc26d8-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbc26d8-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1715,8 +1737,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-91012741-f3a6-11e4-8afe-37486e12444e",
-    "id" : "91012741-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbc9c0a-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbc9c0a-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1734,8 +1756,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-91019c74-f3a6-11e4-8afe-37486e12444e",
-    "id" : "91019c74-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbd384d-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbd384d-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1766,8 +1788,8 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-91019c75-f3a6-11e4-8afe-37486e12444e",
-    "id" : "91019c75-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbd5f5e-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbd5f5e-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1776,8 +1798,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000022"
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-9101c387-f3a6-11e4-8afe-37486e12444e",
-    "id" : "9101c387-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbd5f60-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbd5f60-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1785,8 +1807,8 @@
     "key" : null,
     "ruleform" : {
       "type" : "agencynetworkauthorization",
-      "@id" : "AgencyNetworkAuthorization-9101c386-f3a6-11e4-8afe-37486e12444e",
-      "id" : "9101c386-f3a6-11e4-8afe-37486e12444e",
+      "@id" : "AgencyNetworkAuthorization-4cbd5f5f-f72f-11e4-b99b-c9f0b71bbc75",
+      "id" : "4cbd5f5f-f72f-11e4-b99b-c9f0b71bbc75",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1801,17 +1823,17 @@
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-9101ea99-f3a6-11e4-8afe-37486e12444e",
-    "id" : "9101ea99-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbd5f62-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbd5f62-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : "LoginAuth",
+    "key" : null,
     "ruleform" : {
       "type" : "agencyattributeauthorization",
-      "@id" : "AgencyAttributeAuthorization-9101c388-f3a6-11e4-8afe-37486e12444e",
-      "id" : "9101c388-f3a6-11e4-8afe-37486e12444e",
+      "@id" : "AgencyAttributeAuthorization-4cbd5f61-f72f-11e4-b99b-c9f0b71bbc75",
+      "id" : "4cbd5f61-f72f-11e4-b99b-c9f0b71bbc75",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1819,36 +1841,59 @@
       "authorizedNetworkAttribute" : null,
       "groupingAgency" : null,
       "sequenceNumber" : 0,
-      "networkAuthorization" : "AgencyNetworkAuthorization-9101c386-f3a6-11e4-8afe-37486e12444e",
+      "networkAuthorization" : "AgencyNetworkAuthorization-4cbd5f5f-f72f-11e4-b99b-c9f0b71bbc75",
       "value" : null
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-910211ab-f3a6-11e4-8afe-37486e12444e",
-    "id" : "910211ab-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbd8674-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbd8674-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : "PasswordHashAuth",
+    "key" : null,
     "ruleform" : {
       "type" : "agencyattributeauthorization",
-      "@id" : "AgencyAttributeAuthorization-910211aa-f3a6-11e4-8afe-37486e12444e",
-      "id" : "910211aa-f3a6-11e4-8afe-37486e12444e",
+      "@id" : "AgencyAttributeAuthorization-4cbd8673-f72f-11e4-b99b-c9f0b71bbc75",
+      "id" : "4cbd8673-f72f-11e4-b99b-c9f0b71bbc75",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
-      "authorizedAttribute" : "Attribute-00000000-0000-0001-0000-000000000006",
+      "authorizedAttribute" : "Attribute-00000000-0000-0001-0000-000000000007",
       "authorizedNetworkAttribute" : null,
       "groupingAgency" : null,
       "sequenceNumber" : 0,
-      "networkAuthorization" : "AgencyNetworkAuthorization-9101c386-f3a6-11e4-8afe-37486e12444e",
+      "networkAuthorization" : "AgencyNetworkAuthorization-4cbd5f5f-f72f-11e4-b99b-c9f0b71bbc75",
       "value" : null
     }
   }, {
     "type" : "workspaceauthorization",
-    "@id" : "WorkspaceAuthorization-910211ad-f3a6-11e4-8afe-37486e12444e",
-    "id" : "910211ad-f3a6-11e4-8afe-37486e12444e",
+    "@id" : "WorkspaceAuthorization-4cbd8676-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbd8676-f72f-11e4-b99b-c9f0b71bbc75",
+    "notes" : null,
+    "version" : 0,
+    "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
+    "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
+    "key" : null,
+    "ruleform" : {
+      "type" : "agencyattributeauthorization",
+      "@id" : "AgencyAttributeAuthorization-4cbd8675-f72f-11e4-b99b-c9f0b71bbc75",
+      "id" : "4cbd8675-f72f-11e4-b99b-c9f0b71bbc75",
+      "notes" : null,
+      "version" : 0,
+      "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
+      "authorizedAttribute" : "Attribute-00000000-0000-0001-0000-000000000008",
+      "authorizedNetworkAttribute" : null,
+      "groupingAgency" : null,
+      "sequenceNumber" : 0,
+      "networkAuthorization" : "AgencyNetworkAuthorization-4cbd5f5f-f72f-11e4-b99b-c9f0b71bbc75",
+      "value" : null
+    }
+  }, {
+    "type" : "workspaceauthorization",
+    "@id" : "WorkspaceAuthorization-4cbdad88-f72f-11e4-b99b-c9f0b71bbc75",
+    "id" : "4cbdad88-f72f-11e4-b99b-c9f0b71bbc75",
     "notes" : null,
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
@@ -1856,8 +1901,8 @@
     "key" : null,
     "ruleform" : {
       "type" : "agencynetwork",
-      "@id" : "AgencyNetwork-910211ac-f3a6-11e4-8afe-37486e12444e",
-      "id" : "910211ac-f3a6-11e4-8afe-37486e12444e",
+      "@id" : "AgencyNetwork-4cbdad87-f72f-11e4-b99b-c9f0b71bbc75",
+      "id" : "4cbdad87-f72f-11e4-b99b-c9f0b71bbc75",
       "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",

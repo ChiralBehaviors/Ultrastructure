@@ -21,16 +21,10 @@ package com.chiralbehaviors.CoRE.workspace.dsl;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 
 /**
  * @author hparry
@@ -39,29 +33,10 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 public class TestImport extends AbstractModelTest {
     @Test
     public void testExampleWorkspace() throws Exception {
-        WorkspaceLexer l = new WorkspaceLexer(
-                                              new ANTLRInputStream(
-                                                                   getClass().getResourceAsStream("/order-entry.wsp")));
-        WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
-        p.addErrorListener(new BaseErrorListener() {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer,
-                                    Object offendingSymbol, int line,
-                                    int charPositionInLine, String msg,
-                                    RecognitionException e) {
-                throw new IllegalStateException("failed to parse at line "
-                                                + line + " due to " + msg, e);
-            }
-        });
-        WorkspaceContext ctx = p.workspace();
-
-        WorkspaceImporter importer = new WorkspaceImporter(
-                                                           new WorkspacePresentation(
-                                                                                     ctx),
-                                                           model);
         em.getTransaction().begin();
-        importer.loadWorkspace();
-        em.getTransaction().commit();
+        WorkspaceImporter importer = WorkspaceImporter.creatWorkspace(getClass().getResourceAsStream("/thing.wsp"),
+                                                                      model);
+        em.flush();
         DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(
                                                                         importer.getWorkspace().getDefiningProduct(),
                                                                         model);

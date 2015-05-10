@@ -19,12 +19,19 @@
  */
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.management.openmbean.InvalidKeyException;
 import javax.persistence.EntityManager;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -92,6 +99,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContex
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 
 /**
  * @author hparry
@@ -99,7 +107,33 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
  */
 public class WorkspaceImporter {
 
-    private static final String         STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
+    private static final String STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
+
+    public static WorkspaceImporter creatWorkspace(InputStream source,
+                                                   Model model)
+                                                               throws IOException {
+        WorkspaceLexer l = new WorkspaceLexer(new ANTLRInputStream(source));
+        WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
+        p.addErrorListener(new BaseErrorListener() {
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer,
+                                    Object offendingSymbol, int line,
+                                    int charPositionInLine, String msg,
+                                    RecognitionException e) {
+                throw new IllegalStateException("failed to parse at line "
+                                                + line + " due to " + msg, e);
+            }
+        });
+        WorkspaceContext ctx = p.workspace();
+
+        WorkspaceImporter importer = new WorkspaceImporter(
+                                                           new WorkspacePresentation(
+                                                                                     ctx),
+                                                           model);
+        importer.loadWorkspace();
+        return importer;
+    }
+
     private final EntityManager         em;
     private final Model                 model;
     private WorkspaceScope              scope;
@@ -110,6 +144,38 @@ public class WorkspaceImporter {
         this.wsp = wsp;
         this.model = model;
         this.em = model.getEntityManager();
+    }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
+
+    public Workspace loadWorkspace() {
+        scope = model.getWorkspaceModel().createWorkspace(createWorkspaceProduct(),
+                                                          model.getCurrentPrincipal().getPrincipal());
+        workspace = (EditableWorkspace) scope.getWorkspace();
+        processImports();
+        loadRelationships();
+        loadAgencies();
+        loadAttributes();
+        loadLocations();
+        loadProducts();
+        loadStatusCodes();
+        loadStatusCodeSequencings();
+        loadUnits();
+        loadIntervals();
+        loadEdges();
+        loadClassifiedAttributes();
+        loadNetworkAuths();
+        loadSequencingAuths();
+        loadInferences();
+        loadProtocols();
+        loadMetaprotocols();
+        return workspace;
+    }
+
+    public void setScope(WorkspaceScope scope) {
+        this.scope = scope;
     }
 
     private void classifyAgencyAttributes() {
@@ -260,10 +326,6 @@ public class WorkspaceImporter {
         workspaceProduct.setId(Workspace.uuidOf(uri));
         em.persist(workspaceProduct);
         return workspaceProduct;
-    }
-
-    public Workspace getWorkspace() {
-        return workspace;
     }
 
     private void loadAgencies() {
@@ -855,30 +917,6 @@ public class WorkspaceImporter {
         }
     }
 
-    public Workspace loadWorkspace() {
-        scope = model.getWorkspaceModel().createWorkspace(createWorkspaceProduct(),
-                                                          model.getCurrentPrincipal().getPrincipal());
-        workspace = (EditableWorkspace) scope.getWorkspace();
-        processImports();
-        loadRelationships();
-        loadAgencies();
-        loadAttributes();
-        loadLocations();
-        loadProducts();
-        loadStatusCodes();
-        loadStatusCodeSequencings();
-        loadUnits();
-        loadIntervals();
-        loadEdges();
-        loadClassifiedAttributes();
-        loadNetworkAuths();
-        loadSequencingAuths();
-        loadInferences();
-        loadProtocols();
-        loadMetaprotocols();
-        return workspace;
-    }
-
     private void processImports() {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = stripQuotes(w.uri.getText());
@@ -888,32 +926,6 @@ public class WorkspaceImporter {
                                                               uuid),
                                 model.getCurrentPrincipal().getPrincipal());
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
-        if (qualifiedName.namespace != null) {
-            T ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
-                                          qualifiedName.member.getText());
-            if (ruleform == null) {
-                throw new InvalidKeyException(
-                                              String.format("Cannot resolve %s:%s",
-                                                            qualifiedName.namespace.getText(),
-                                                            qualifiedName.member.getText()));
-            }
-            return ruleform;
-        }
-        T ruleform = workspace.get(qualifiedName.member.getText());
-        if (ruleform == null) {
-            throw new InvalidKeyException(
-                                          String.format("Cannot find workspace key: %s",
-                                                        qualifiedName.member.getText()));
-        }
-        return ruleform;
-    }
-
-    public void setScope(WorkspaceScope scope) {
-        this.scope = scope;
     }
 
     /**
@@ -950,5 +962,27 @@ public class WorkspaceImporter {
 
     private String stripQuotes(String original) {
         return original.substring(1, original.length() - 1);
+    }
+
+    @SuppressWarnings("unchecked")
+    <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
+        if (qualifiedName.namespace != null) {
+            T ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
+                                          qualifiedName.member.getText());
+            if (ruleform == null) {
+                throw new InvalidKeyException(
+                                              String.format("Cannot resolve %s:%s",
+                                                            qualifiedName.namespace.getText(),
+                                                            qualifiedName.member.getText()));
+            }
+            return ruleform;
+        }
+        T ruleform = workspace.get(qualifiedName.member.getText());
+        if (ruleform == null) {
+            throw new InvalidKeyException(
+                                          String.format("Cannot find workspace key: %s",
+                                                        qualifiedName.member.getText()));
+        }
+        return ruleform;
     }
 }

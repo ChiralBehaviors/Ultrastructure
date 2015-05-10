@@ -91,8 +91,7 @@ public interface Model {
      */
     <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
                                                                         String name,
-                                                                        String description,
-                                                                        Agency updatedBy)
+                                                                        String description)
                                                                                          throws InstantiationException;
 
     /**

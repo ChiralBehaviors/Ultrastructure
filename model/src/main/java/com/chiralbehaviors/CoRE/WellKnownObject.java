@@ -365,6 +365,30 @@ public interface WellKnownObject {
             }
 
         },
+        NULLABLE() {
+
+            @Override
+            public String description() {
+                return "A special Attribute that indicates whether or not an attribute value is required";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.BOOLEAN;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.NULLABLE;
+            }
+
+        },
         PASSWORD_HASH() {
 
             @Override
@@ -389,6 +413,30 @@ public interface WellKnownObject {
             }
 
         },
+        PASSWORD_ROUNDS() {
+
+            @Override
+            public String description() {
+                return "The Attribute that contains the required rounds for password hash of the CoRE user";
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+             */
+            @Override
+            public ValueType valueType() {
+                return ValueType.INTEGER;
+            }
+
+            /* (non-Javadoc)
+             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+             */
+            @Override
+            public String wkoName() {
+                return WellKnownObject.PASSWORD_ROUNDS;
+            }
+
+        },
         SAME() {
 
             @Override
@@ -410,30 +458,6 @@ public interface WellKnownObject {
             @Override
             public String wkoName() {
                 return WellKnownObject.SAME;
-            }
-
-        },
-        NULLABLE() {
-
-            @Override
-            public String description() {
-                return "A special Attribute that indicates whether or not an attribute value is required";
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
-             */
-            @Override
-            public ValueType valueType() {
-                return ValueType.BOOLEAN;
-            }
-
-            /* (non-Javadoc)
-             * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-             */
-            @Override
-            public String wkoName() {
-                return WellKnownObject.NULLABLE;
             }
 
         };
@@ -2022,6 +2046,7 @@ public interface WellKnownObject {
     String OWNED_BY                  = "ownedBy";
     String OWNS                      = "owns";
     String PASSWORD_HASH             = "password-hash";
+    String PASSWORD_ROUNDS           = "password-rounds";
     String PROPAGATION_SOFTWARE      = "Propagation Software";
     String PROTOTYPE                 = "prototype";
     String PROTOTYPE_OF              = "prototype-of";

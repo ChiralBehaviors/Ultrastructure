@@ -44,7 +44,7 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="unit_network" constraintName="unit_network_updated_by_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, premise1, premise2"
+        <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, inference, premise1, premise2"
             constraintName="unit_network_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="unit_network" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="premise1" baseTableName="unit_network" constraintName="unit_network_premise1_fkey" deferrable="true"

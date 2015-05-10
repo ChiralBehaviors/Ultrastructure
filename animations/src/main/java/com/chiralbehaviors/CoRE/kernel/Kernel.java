@@ -129,7 +129,7 @@ public interface Kernel {
 
     Relationship getLessThanOrEqual();
 
-    Attribute getLoginAttribute();
+    Attribute getLogin();
 
     Relationship getMapsToLocation();
 
@@ -165,7 +165,7 @@ public interface Kernel {
 
     Relationship getOwns();
 
-    Attribute getPasswordHashAttribute();
+    Attribute getPasswordHash();
 
     Agency getPropagationSoftware();
 
@@ -204,9 +204,9 @@ public interface Kernel {
     Product getWorkspace();
 
     Relationship getWorkspaceOf();
-    
+
     Relationship getValidates();
-    
+
     Relationship getIsValidatedBy();
 
 }

@@ -19,15 +19,8 @@
  */
 package com.chiralbehaviors.CoRE.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,83 +42,6 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
  */
 public final class Util {
 
-    public static String md5Hash(byte[] bytes) throws IOException {
-        if (bytes == null) {
-            return null;
-        }
-        return md5Hash(new ByteArrayInputStream(bytes));
-    }
-
-    /**
-     * Generates an MD5 hash of the given File.
-     *
-     * @param file
-     *            the file to hash
-     * @return a 32-character hexadecimal string that is the MD5 hash of the
-     *         given File's contents, or <code>null</code> if the given File has
-     *         is <code>null</code>.
-     * @throws IOException
-     *             if there is a problem reading the file
-     */
-    public static String md5Hash(File file) throws IOException {
-        if (file == null) {
-            return null;
-        }
-        FileInputStream fis = new FileInputStream(file);
-        try {
-            return md5Hash(fis);
-        } finally {
-            fis.close();
-        }
-    }
-
-    /**
-     * Generates an MD5 hash of the given byte array. Uses
-     * {@link java.security.MessageDigest}.
-     *
-     * @param is
-     *            the input stream to hash
-     * @return a 32-character hexadecimal string that is the MD5 hash of the
-     *         given byte array, or <code>null</code> if the given String is
-     *         <code>null</code>.
-     * @throws IOException
-     */
-    public static String md5Hash(InputStream is) throws IOException {
-        if (is == null) {
-            return null;
-        }
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            return null;
-        }
-        byte[] buffer = new byte[4096];
-        for (int read = is.read(buffer); read != -1; read = is.read(buffer)) {
-            md.update(buffer, 0, read);
-        }
-        byte[] raw = md.digest();
-
-        String digestString = digestString(raw);
-        return digestString;
-    }
-
-    /**
-     * Generates an MD5 hash of the given String. Useful for hashing passwords
-     * and such.
-     *
-     * @param toEncrypt
-     *            the String to hash
-     * @return a 32-character hexadecimal string that is the MD5 hash of the
-     *         given String, or <code>null</code> if the given String is
-     *         <code>null</code>.
-     * @throws IOException
-     */
-    public static String md5Hash(String toEncrypt) throws IOException {
-        String hash = toEncrypt == null ? null : md5Hash(toEncrypt.getBytes());
-        return hash;
-    }
-
     public static Map<Ruleform, Ruleform> slice(Ruleform ruleform,
                                                 Predicate<Ruleform> systemDefinition,
                                                 Map<Ruleform, Ruleform> sliced,
@@ -138,20 +54,6 @@ public final class Util {
                                                     T ruleform,
                                                     Map<Ruleform, Ruleform> mapped) {
         return map(em, ruleform, mapped);
-    }
-
-    private static String digestString(byte[] raw) {
-        StringBuffer sb = new StringBuffer();
-        for (byte element : raw) {
-            String hex = Integer.toHexString(0xff & element);
-            if (hex.length() == 1) {
-                sb.append('0');
-            }
-            sb.append(hex);
-        }
-
-        String digestString = sb.toString();
-        return digestString;
     }
 
     private static <T extends Ruleform> Ruleform find(EntityManager em,

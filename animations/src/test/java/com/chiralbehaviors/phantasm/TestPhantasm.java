@@ -89,10 +89,9 @@ public class TestPhantasm extends AbstractModelTest {
     @Test
     public void testDemo() throws Exception {
 
-        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test",
-                                                 kernel.getCore());
+        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test");
         Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tasty",
-                                                 "chips", kernel.getCore());
+                                                 "chips");
         assertNotNull(thing1);
         assertEquals(thing1, thing1.doSomethingElse());
         thing1.doSomething("hello");
@@ -124,8 +123,7 @@ public class TestPhantasm extends AbstractModelTest {
                      newProps.size());
 
         Thing3 thing3a = (Thing3) model.construct(Thing3.class, "uncle it",
-                                                  "one of my favorite things",
-                                                  kernel.getCore());
+                                                  "one of my favorite things");
         assertNotNull(thing2.getThing3s());
         assertEquals(0, thing2.getThing3s().size());
         thing2.add(thing3a);
@@ -135,8 +133,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         Thing3 thing3b = (Thing3) model.construct(Thing3.class,
                                                   "cousin it",
-                                                  "another one of my favorite things",
-                                                  kernel.getCore());
+                                                  "another one of my favorite things");
 
         List<Thing3> aFewOfMyFavoriteThings = new ArrayList<>();
         aFewOfMyFavoriteThings.add(thing3a);
@@ -150,8 +147,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNull(thing1.getArtifact());
         MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
                                                                  "myartifact",
-                                                                 "artifact",
-                                                                 kernel.getCore());
+                                                                 "artifact");
         artifact.setType("jar");
         em.flush();
         thing1.setArtifact(artifact);
@@ -168,8 +164,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         MavenArtifact artifact2 = (MavenArtifact) model.construct(MavenArtifact.class,
                                                                   "myartifact2",
-                                                                  "artifact2",
-                                                                  kernel.getCore());
+                                                                  "artifact2");
         artifact2.setType("jar");
 
         thing2.setArtifacts(Arrays.asList(artifact2));
@@ -186,8 +181,7 @@ public class TestPhantasm extends AbstractModelTest {
     public void testEnums() throws Exception {
         MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
                                                                  "myartifact",
-                                                                 "artifact",
-                                                                 kernel.getCore());
+                                                                 "artifact");
         artifact.setType("jar");
         em.flush();
         artifact.setType("invalid");

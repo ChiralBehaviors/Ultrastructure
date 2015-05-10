@@ -52,13 +52,37 @@
             baseColumnNames="updated_by" baseTableName="product_location_attribute" constraintName="product_location_attribute_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="agency, product_location, attribute, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="product_location, attribute, sequence_number"
             constraintName="product_location_attribute_agency_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="product_location_attribute" />
         <createIndex schemaName="ruleform" indexName="product_location_attribute_updated_by_fkey_idx" tableName="product_location_attribute"
             unique="false"
         >
             <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_key_idx" tableName="product_location_attribute"
+            unique="false"
+        >
+            <column name="key" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_numeric_idx" tableName="product_location_attribute"
+            unique="false"
+        >
+            <column name="numeric_value" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_timestampo_idx" tableName="product_location_attribute"
+            unique="false"
+        >
+            <column name="timestamp_value" />
+        </createIndex> 
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_product_location_idx" tableName="product_location_attribute" unique="false">
+            <column name="product_location" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_attribute_idx" tableName="product_location_attribute" unique="false">
+            <column name="attribute" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_unit_idx" tableName="product_location_attribute" unique="false">
+            <column name="unit" />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

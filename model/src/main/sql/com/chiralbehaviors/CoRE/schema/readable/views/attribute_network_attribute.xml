@@ -6,9 +6,9 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView viewName="agency_product_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
+        <createView viewName="attribute_network_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT ba.id, 
-                    ba.agency_product, 
+                    b.id AS network_rule, 
                     a.name AS attribute, 
                     ba.key AS key,
 			        ba.numeric_value, 
@@ -19,14 +19,15 @@
                      ba.notes, 
 			        up.name AS updated_by, 
 			        ba.version
-			   FROM agency_product_attribute ba
+			   FROM attribute_network_attribute ba
+			   JOIN attribute_network b ON ba.network_rule = b.id
 			   JOIN attribute a ON ba.attribute = a.id
 			   LEFT JOIN unit u ON ba.unit = u.id
-			   JOIN agency up ON ba.updated_by = up.id; 
+			   JOIN agency up ON ba.updated_by = up.id;
             ]]>
         </createView>
         <rollback>
-            <dropView viewName="readable.agency_product_attribute" />
+            <dropView viewName="readable.attribute_network_attribute" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

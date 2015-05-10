@@ -6,7 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView schemaName="readable" viewName="unit_attribute_authorization" replaceIfExists="true"><![CDATA[ 
+        <createView schemaName="readable" viewName="unit" replaceIfExists="true"><![CDATA[ 
 			 SELECT b.id, 
 			     b.name, 
                  b.description, 

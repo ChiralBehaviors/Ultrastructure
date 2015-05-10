@@ -27,7 +27,7 @@
             ]]>
         </createView>
         <rollback>
-            <dropView viewName="readable.agency_attribute" />
+            <dropView viewName="readable.agency_network_attribute" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

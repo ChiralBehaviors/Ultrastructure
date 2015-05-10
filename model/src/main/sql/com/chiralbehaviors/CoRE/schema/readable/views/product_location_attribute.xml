@@ -6,9 +6,9 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView viewName="agency_product_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
+        <createView viewName="product_location_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT ba.id, 
-                    ba.agency_product, 
+                    ba.product_location, 
                     a.name AS attribute, 
                     ba.key AS key,
 			        ba.numeric_value, 
@@ -19,14 +19,14 @@
                      ba.notes, 
 			        up.name AS updated_by, 
 			        ba.version
-			   FROM agency_product_attribute ba
+			   FROM product_location_attribute ba
 			   JOIN attribute a ON ba.attribute = a.id
 			   LEFT JOIN unit u ON ba.unit = u.id
 			   JOIN agency up ON ba.updated_by = up.id; 
             ]]>
         </createView>
         <rollback>
-            <dropView viewName="readable.agency_product_attribute" />
+            <dropView viewName="readable.product_location_attribute" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

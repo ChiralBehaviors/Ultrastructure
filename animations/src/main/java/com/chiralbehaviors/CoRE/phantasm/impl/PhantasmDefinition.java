@@ -39,9 +39,9 @@ import com.chiralbehaviors.annotations.State;
  *
  */
 public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    private final Class<Phantasm<RuleForm>>                phantasm;
-    private final Map<Method, StateFunction<RuleForm>>     methods = new HashMap<>();
     private final Map<Class<?>, StateDefinition<RuleForm>> facets  = new HashMap<>();
+    private final Map<Method, StateFunction<RuleForm>>     methods = new HashMap<>();
+    private final Class<Phantasm<RuleForm>>                phantasm;
 
     @SuppressWarnings("unchecked")
     public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm) {

@@ -134,6 +134,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         return specs;
     }
 
+    /**
+     * @return
+     */
+    public List<Method> getInstantiations() {
+        return instantiations;
+    }
+
     public Map<Method, StateFunction<RuleForm>> getMethods() {
         return methods;
     }
@@ -779,12 +786,5 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                               method.getName().length()),
                                    method);
         }
-    }
-
-    /**
-     * @return
-     */
-    public List<Method> getInstantiations() {
-        return instantiations;
     }
 }

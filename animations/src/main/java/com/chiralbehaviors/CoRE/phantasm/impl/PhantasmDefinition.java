@@ -20,10 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -33,7 +32,6 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
-import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.annotations.State;
 
 /**
@@ -41,9 +39,9 @@ import com.chiralbehaviors.annotations.State;
  *
  */
 public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    private final List<StateDefinition<RuleForm>> facets = new ArrayList<>();
-    private final Class<Phantasm<RuleForm>>       phantasm;
-    private final StateDefinition<RuleForm>       thisFacet;
+    private final Map<Class<?>, StateDefinition<RuleForm>> facets  = new HashMap<>();
+    private final Map<Method, StateFunction<RuleForm>>     methods = new HashMap<>();
+    private final Class<Phantasm<RuleForm>>                phantasm;
 
     @SuppressWarnings("unchecked")
     public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm) {
@@ -55,15 +53,15 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         if (phantasm.getAnnotation(State.class) != null) {
             StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(
                                                                             phantasm);
-            facets.add(facet);
-            thisFacet = facet;
-        } else {
-            thisFacet = null;
+            facets.put(phantasm, facet);
+            methods.putAll(facet.getMethods());
         }
         for (Class<?> iFace : phantasm.getInterfaces()) {
             if (iFace.getAnnotation(State.class) != null) {
-                facets.add(new StateDefinition<RuleForm>(
-                                                         (Class<Phantasm<RuleForm>>) iFace));
+                StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(
+                                                                                (Class<Phantasm<RuleForm>>) iFace);
+                facets.put(iFace, facet);
+                methods.putAll(facet.getMethods());
             }
         }
         if (facets.isEmpty()) {
@@ -84,7 +82,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
                                  Model model, Agency updatedBy) {
         ExistentialRuleform<?, ?> form = ruleform;
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = (NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?>) model.getNetworkedModel(form);
-        for (StateDefinition<RuleForm> facet : facets) {
+        for (StateDefinition<RuleForm> facet : facets.values()) {
             for (Aspect<RuleForm> aspect : facet.getAspects(model)) {
                 networkedModel.initialize((RuleForm) form, aspect, updatedBy);
             }
@@ -94,31 +92,31 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
 
     @SuppressWarnings("unchecked")
     public Phantasm<?> wrap(ExistentialRuleform<?, ?> ruleform, Model model) {
-        Map<Class<?>, Object> stateMap = new HashMap<>();
-        Object[] instances = new Object[facets.size()];
-        int i = 0;
-        stateMap.put(Phantasm.class, ruleform);
-        Object thisState = null;
-        for (StateDefinition<RuleForm> facet : facets) {
-            Object state = facet.wrap((RuleForm) ruleform, model);
-            if (facet.equals(thisFacet)) {
-                thisState = state;
-            }
-            instances[i++] = state;
-            stateMap.put(facet.getStateInterface(), state);
+        for (StateDefinition<RuleForm> facet : facets.values()) {
+            facet.constrain(model, (RuleForm) ruleform);
         }
-        if (ScopedPhantasm.class.isAssignableFrom(phantasm)) {
-            if (thisFacet == null) {
-                throw new IllegalStateException(
-                                                String.format("%s extends ScopedPhantasm, but does not define @State annotation",
-                                                              phantasm));
+        PhantasmTwo<RuleForm> doppelgänger = new PhantasmTwo<RuleForm>(
+                                                                      (RuleForm) ruleform,
+                                                                      facets,
+                                                                      methods,
+                                                                      model);
+        Phantasm<?> proxy = (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
+                                                                 new Class[] { phantasm },
+                                                                 doppelgänger);
+        for (StateDefinition<RuleForm> facet : facets.values()) {
+            for (Method method : facet.getInstantiations()) {
+                try {
+                    doppelgänger.invokeDefault(proxy, method, new Object[] {},
+                                              facet.getStateInterface());
+                } catch (Throwable e) {
+                    throw new IllegalStateException(
+                                                    String.format("Unable to invoke instantiation: %s",
+                                                                  method.toGenericString()),
+                                                    e);
+                }
             }
-            stateMap.put(ScopedPhantasm.class, thisState);
         }
-        return (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
-                                                    new Class[] { phantasm },
-                                                    new PhantasmTwo(stateMap,
-                                                                    ruleform));
+        return proxy;
 
     }
 }

@@ -18,18 +18,23 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.impl;
+package com.chiralbehaviors.annotations;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * 
+ * Indicates that the default method should be invoked when constructing a
+ * phantasm.
+ * 
  * @author hhildebrand
  *
  */
-@FunctionalInterface
-public interface StateFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    Object invoke(PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                  Object[] arguments);
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Instantiation {
+
 }

@@ -26,6 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 
+ * A namespace scoped (optional) name within a workspace
+ * 
  * @author hhildebrand
  *
  */

@@ -95,18 +95,18 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         for (StateDefinition<RuleForm> facet : facets.values()) {
             facet.constrain(model, (RuleForm) ruleform);
         }
-        PhantasmTwo<RuleForm> doppelgänge = new PhantasmTwo<RuleForm>(
+        PhantasmTwo<RuleForm> doppelgänger = new PhantasmTwo<RuleForm>(
                                                                       (RuleForm) ruleform,
                                                                       facets,
                                                                       methods,
                                                                       model);
         Phantasm<?> proxy = (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
                                                                  new Class[] { phantasm },
-                                                                 doppelgänge);
+                                                                 doppelgänger);
         for (StateDefinition<RuleForm> facet : facets.values()) {
             for (Method method : facet.getInstantiations()) {
                 try {
-                    doppelgänge.invokeDefault(proxy, method, new Object[] {},
+                    doppelgänger.invokeDefault(proxy, method, new Object[] {},
                                               facet.getStateInterface());
                 } catch (Throwable e) {
                     throw new IllegalStateException(

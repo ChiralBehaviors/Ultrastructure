@@ -28,6 +28,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Indicates a state interface, classified by a number of facets.
+ * 
  * @author hhildebrand
  *
  */

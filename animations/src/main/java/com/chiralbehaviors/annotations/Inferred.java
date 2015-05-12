@@ -28,6 +28,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * Indicates that the relationship should be interpreted as containing inferred
+ * network edges, not simply immediate
+ * 
  * @author hhildebrand
  *
  */

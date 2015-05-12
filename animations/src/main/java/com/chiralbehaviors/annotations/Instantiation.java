@@ -18,18 +18,16 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.impl;
-
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+package com.chiralbehaviors.annotations;
 
 /**
+ * 
+ * Indicates that the default method should be invoked when constructing a
+ * phantasm.
+ * 
  * @author hhildebrand
  *
  */
-@FunctionalInterface
-public interface StateFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    Object invoke(PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                  Object[] arguments);
+public @interface Instantiation {
+
 }

@@ -28,6 +28,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * 
+ * Represents a relationship from one existential entity to another, via the
+ * relationship
+ * 
  * @author hhildebrand
  *
  */

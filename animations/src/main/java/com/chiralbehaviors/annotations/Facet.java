@@ -29,6 +29,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * 
+ * Represents a classification within an existential entity network
+ * 
  * @author hhildebrand
  *
  */

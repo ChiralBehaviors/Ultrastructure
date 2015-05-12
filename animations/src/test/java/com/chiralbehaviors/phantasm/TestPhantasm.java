@@ -90,8 +90,7 @@ public class TestPhantasm extends AbstractModelTest {
     public void testDemo() throws Exception {
 
         Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test");
-        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tasty",
-                                                 "chips");
+        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tasty", "chips");
         assertNotNull(thing1);
         assertEquals(thing1, thing1.doSomethingElse());
         thing1.doSomething("hello");
@@ -131,8 +130,7 @@ public class TestPhantasm extends AbstractModelTest {
         thing2.remove(thing3a);
         assertEquals(0, thing2.getThing3s().size());
 
-        Thing3 thing3b = (Thing3) model.construct(Thing3.class,
-                                                  "cousin it",
+        Thing3 thing3b = (Thing3) model.construct(Thing3.class, "cousin it",
                                                   "another one of my favorite things");
 
         List<Thing3> aFewOfMyFavoriteThings = new ArrayList<>();
@@ -148,7 +146,7 @@ public class TestPhantasm extends AbstractModelTest {
         MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
                                                                  "myartifact",
                                                                  "artifact");
-        artifact.setType("jar");
+        assertEquals("jar", artifact.getType());
         em.flush();
         thing1.setArtifact(artifact);
         em.flush();

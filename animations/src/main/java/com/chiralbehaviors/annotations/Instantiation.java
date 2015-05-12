@@ -20,6 +20,11 @@
 
 package com.chiralbehaviors.annotations;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * 
  * Indicates that the default method should be invoked when constructing a
@@ -28,6 +33,8 @@ package com.chiralbehaviors.annotations;
  * @author hhildebrand
  *
  */
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Instantiation {
 
 }

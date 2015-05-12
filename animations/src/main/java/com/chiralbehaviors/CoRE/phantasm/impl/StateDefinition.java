@@ -158,6 +158,10 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         for (Method method : stateInterface.getDeclaredMethods()) {
             if (!method.isDefault()) {
                 process(method);
+            } else {
+                if (method.getAnnotation(Instantiation.class) != null) {
+                    instantiations.add(method);
+                }
             }
         }
         for (Class<?> iFace : stateInterface.getInterfaces()) {
@@ -217,20 +221,12 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Method method) {
-        if (method.getAnnotation(Instantiation.class) != null) {
-            if (!method.isDefault()) {
-                throw new IllegalStateException(
-                                                String.format("Must be a default method for @Instantiation: %s",
-                                                              method.toGenericString()));
-            }
-            instantiations.add(method);
-            return;
-        }
-        if (method.getName().equals("getWorkspace")
+        if (method.getName().equals("getScope")
             && method.getDeclaringClass().equals(ScopedPhantasm.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> scope);
+                         Object[] arguments) -> state.getScope(this));
+            return;
         }
         Class<?> declaringClass = method.getDeclaringClass();
         if (declaringClass.equals(Phantasm.class)
@@ -783,5 +779,12 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                               method.getName().length()),
                                    method);
         }
+    }
+
+    /**
+     * @return
+     */
+    public List<Method> getInstantiations() {
+        return instantiations;
     }
 }

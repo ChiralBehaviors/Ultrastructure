@@ -24,6 +24,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,10 +51,10 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  */
 public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
         implements InvocationHandler, ScopedPhantasm<RuleForm> {
+    private final Map<Class<?>, StateDefinition<RuleForm>> facets;
     private final Map<Method, StateFunction<RuleForm>>     methods;
     private final Model                                    model;
     private final RuleForm                                 ruleform;
-    private final Map<Class<?>, StateDefinition<RuleForm>> facets;
 
     public PhantasmTwo(RuleForm ruleform,
                        Map<Class<?>, StateDefinition<RuleForm>> facets,
@@ -119,17 +120,16 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                                     throws Throwable {
         StateFunction<RuleForm> function = methods.get(method);
         if (function != null) {
-            WorkspaceScope scope = model.getWorkspaceModel().getScoped(facets.get(method.getDeclaringClass()).getWorkspace());
+            StateDefinition<RuleForm> stateDefinition = facets.get(method.getDeclaringClass());
+            WorkspaceScope scope = null;
+            if (stateDefinition != null) {
+                scope = model.getWorkspaceModel().getScoped(stateDefinition.getWorkspace());
+            }
             return function.invoke(this, scope, args);
         }
         final Class<?> declaringClass = method.getDeclaringClass();
         if (method.isDefault()) {
-            Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class,
-                                                                                                              int.class);
-            constructor.setAccessible(true);
-            return constructor.newInstance(declaringClass,
-                                           MethodHandles.Lookup.PRIVATE).unreflectSpecial(method,
-                                                                                          declaringClass).bindTo(proxy).invokeWithArguments(args);
+            return invokeDefault(proxy, method, args, declaringClass);
         }
         // equals() and hashCode().  Becauase invariance.
         if (method.getName().equals("equals") && args.length == 1
@@ -527,6 +527,10 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return returned;
     }
 
+    protected WorkspaceScope getScope(StateDefinition<RuleForm> definition) {
+        return model.getWorkspaceModel().getScoped(definition.getWorkspace());
+    }
+
     /**
      * @param namespace
      * @param name
@@ -582,6 +586,21 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
             return null;
         }
         return model.wrap(phantasmReturned, authorized);
+    }
+
+    protected Object invokeDefault(Object proxy, Method method, Object[] args,
+                                   final Class<?> declaringClass)
+                                                                 throws NoSuchMethodException,
+                                                                 Throwable,
+                                                                 IllegalAccessException,
+                                                                 InstantiationException,
+                                                                 InvocationTargetException {
+        Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class,
+                                                                                                          int.class);
+        constructor.setAccessible(true);
+        return constructor.newInstance(declaringClass,
+                                       MethodHandles.Lookup.PRIVATE).unreflectSpecial(method,
+                                                                                      declaringClass).bindTo(proxy).invokeWithArguments(args);
     }
 
     /**

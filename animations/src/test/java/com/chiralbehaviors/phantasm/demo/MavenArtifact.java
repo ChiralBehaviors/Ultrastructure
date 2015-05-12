@@ -23,6 +23,7 @@ package com.chiralbehaviors.phantasm.demo;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.annotations.Facet;
+import com.chiralbehaviors.annotations.Instantiation;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.State;
 
@@ -53,4 +54,9 @@ public interface MavenArtifact extends Phantasm<Location> {
     void setType(String type);
 
     void setVersion(String version);
+
+    @Instantiation
+    default void initialize() {
+        setType("jar");
+    }
 }

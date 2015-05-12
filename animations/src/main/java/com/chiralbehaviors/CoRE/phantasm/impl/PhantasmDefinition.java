@@ -95,13 +95,28 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         for (StateDefinition<RuleForm> facet : facets.values()) {
             facet.constrain(model, (RuleForm) ruleform);
         }
-        return (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
-                                                    new Class[] { phantasm },
-                                                    new PhantasmTwo<RuleForm>(
-                                                                              (RuleForm) ruleform,
-                                                                              facets,
-                                                                              methods,
-                                                                              model));
+        PhantasmTwo<RuleForm> doppelgänge = new PhantasmTwo<RuleForm>(
+                                                                      (RuleForm) ruleform,
+                                                                      facets,
+                                                                      methods,
+                                                                      model);
+        Phantasm<?> proxy = (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
+                                                                 new Class[] { phantasm },
+                                                                 doppelgänge);
+        for (StateDefinition<RuleForm> facet : facets.values()) {
+            for (Method method : facet.getInstantiations()) {
+                try {
+                    doppelgänge.invokeDefault(proxy, method, new Object[] {},
+                                              facet.getStateInterface());
+                } catch (Throwable e) {
+                    throw new IllegalStateException(
+                                                    String.format("Unable to invoke instantiation: %s",
+                                                                  method.toGenericString()),
+                                                    e);
+                }
+            }
+        }
+        return proxy;
 
     }
 }

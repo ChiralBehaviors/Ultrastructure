@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.security.InvalidKeyException;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.annotations.Key;
@@ -59,7 +60,8 @@ public class WorkspaceAccessHandler implements InvocationHandler {
         return getAsBeanAccessor(method);
     }
 
-    protected Ruleform getAsBeanAccessor(Method method) {
+    protected Ruleform getAsBeanAccessor(Method method)
+                                                       throws InvalidKeyException {
         String name = method.getName();
         if (!name.startsWith("get")) {
             throw new UnsupportedOperationException(
@@ -68,6 +70,11 @@ public class WorkspaceAccessHandler implements InvocationHandler {
         }
         name = name.substring("get".length());
         Ruleform ruleform = workspace.lookup(name);
+        if (ruleform == null) {
+            throw new InvalidKeyException(
+                                          String.format("Cannot find %s in this workspace",
+                                                        name));
+        }
         return ruleform;
     }
 }

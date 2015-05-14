@@ -109,7 +109,7 @@ public class WorkspaceImporter {
 
     private static final String STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
 
-    public static WorkspaceImporter creatWorkspace(InputStream source,
+    public static WorkspaceImporter createWorkspace(InputStream source,
                                                    Model model)
                                                                throws IOException {
         WorkspaceLexer l = new WorkspaceLexer(new ANTLRInputStream(source));

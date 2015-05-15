@@ -1,7 +1,11 @@
 Ultrastructure
 ==============
 
-An implementation of Ultrastructure using PostgreSQL.  The license for this project is the [GPLv3 License](http://www.gnu.org/licenses/gpl-3.0.html)
+An implementation of Ultrastructure using PostgreSQL.
+
+Build Status: [![Build Status](https://chiralbehaviors.ci.cloudbees.com/buildStatus/icon?job=Ultrastructure)](https://chiralbehaviors.ci.cloudbees.com/view/Maintained%20Open%20Source/job/Ultrastructure/)
+
+The license for this project is the [GPLv3 License](http://www.gnu.org/licenses/gpl-3.0.html)
 
 To run this software you will need a working PostgreSQL database version 9.3+.  You can either install from [prebuilt PostgreSQL installations](http://www.enterprisedb.com/products-services-training/pgdownload) or your own prefered method.
 
@@ -34,4 +38,5 @@ To drop the database and start from scratch, simply add "-Ddrop=true" to the ful
 
     $ cd drop-database
     $ mvn install -Ddrop=true
+
 

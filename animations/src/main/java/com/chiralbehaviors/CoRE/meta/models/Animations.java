@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -95,7 +96,7 @@ public class Animations implements Triggers {
     private boolean                                          inferRelationshipNetwork;
     private boolean                                          inferStatusCodeNetwork;
     private boolean                                          inferUnitNetwork;
-    private final List<Job>                                  jobs               = new ArrayList<>();
+    private final Set<Job>                                   jobs               = new LinkedHashSet<>();
     private final Model                                      model;
     private final Set<Product>                               modifiedServices   = new HashSet<>();
     private final Set<ProductParentSequencingAuthorization>  parentSequences    = new HashSet<>();

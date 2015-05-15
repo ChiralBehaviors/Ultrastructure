@@ -30,6 +30,7 @@ import com.chiralbehaviors.annotations.State;
  * @author hhildebrand
  *
  */
+// we can define the facets, if it isn't the default
 @State(facets = { @Facet(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing3")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing3 extends Phantasm<Product> {
 

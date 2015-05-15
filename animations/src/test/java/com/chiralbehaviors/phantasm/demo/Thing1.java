@@ -28,7 +28,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.annotations.Edge;
-import com.chiralbehaviors.annotations.Facet;
 import com.chiralbehaviors.annotations.Key;
 import com.chiralbehaviors.annotations.State;
 
@@ -36,7 +35,7 @@ import com.chiralbehaviors.annotations.State;
  * @author hhildebrand
  *
  */
-@State(facets = { @Facet(classification = @Key(namespace = "kernel", name = "IsA"), classifier = @Key(name = "Thing1")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
+@State(workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing1 extends ScopedPhantasm<Product> {
 
     // Default methods are used to add functional behavior

@@ -57,7 +57,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     private static final String                          GET            = "get";
     private static final String                          SET            = "set";
-    private final List<Facet>                            facets         = new ArrayList<Facet>();
+    private final List<ScopedFacet>                      facets         = new ArrayList<>();
     private final List<Method>                           instantiations = new ArrayList<>();
     private final Class<Phantasm<RuleForm>>              stateInterface;
     private final UUID                                   workspace;
@@ -88,22 +88,20 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                             String.format("Cannot obtain workspace for state interface %s",
                                                           stateInterface));
         }
-        List<Facet> failures = new ArrayList<>();
-        for (Facet constraint : facets) {
-            RuleForm classifier = (RuleForm) scope.lookup(constraint.classifier());
+        List<ScopedFacet> failures = new ArrayList<>();
+        for (ScopedFacet constraint : facets) {
+            RuleForm classifier = (RuleForm) constraint.resolveClassifier(scope);
             if (classifier == null) {
                 throw new IllegalStateException(
-                                                String.format("Cannot obtain classifer %s:%s for %s",
-                                                              constraint.classifier().namespace(),
-                                                              constraint.classifier().name(),
+                                                String.format("Cannot obtain classifer %s for %s",
+                                                              constraint.toClassifierString(),
                                                               stateInterface));
             }
-            Relationship classification = (Relationship) scope.lookup(constraint.classification());
+            Relationship classification = (Relationship) constraint.resolveClassification(scope);
             if (classification == null) {
                 throw new IllegalStateException(
-                                                String.format("Cannot obtain classification %s:%s for %s",
-                                                              constraint.classification().namespace(),
-                                                              constraint.classification().name(),
+                                                String.format("Cannot obtain classification %s for %s",
+                                                              constraint.toClassificationString(),
                                                               stateInterface));
             }
             if (!networked.isAccessible(ruleform, classification, classifier)) {
@@ -126,10 +124,10 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     public List<Aspect<RuleForm>> getAspects(Model model) {
         WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
         List<Aspect<RuleForm>> specs = new ArrayList<>();
-        for (Facet facet : facets) {
+        for (ScopedFacet facet : facets) {
             specs.add(new Aspect<RuleForm>(
-                                           (Relationship) scope.lookup(facet.classification()),
-                                           (RuleForm) scope.lookup(facet.classifier())));
+                                           (Relationship) facet.resolveClassification(scope),
+                                           (RuleForm) facet.resolveClassifier(scope)));
         }
         return specs;
     }
@@ -160,7 +158,10 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     private void construct() {
         State state = stateInterface.getAnnotation(State.class);
         for (Facet facet : state.facets()) {
-            facets.add(facet);
+            facets.add(ScopedFacet.from(facet));
+        }
+        if (facets.isEmpty()) {
+            facets.add(ScopedFacet.from(stateInterface));
         }
         for (Method method : stateInterface.getDeclaredMethods()) {
             if (!method.isDefault()) {

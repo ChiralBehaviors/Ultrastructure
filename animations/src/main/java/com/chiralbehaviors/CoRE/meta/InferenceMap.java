@@ -46,7 +46,7 @@ public class InferenceMap {
 
     @Override
     public String toString() {
-        return String.format("TransformationMap [assignTo=%s, assignToAttribute=%s, deliverFrom=%s, deliverFromAttribute=%s, deliverTo=%s, deliverToAttribute=%s, product=%s, productAttribute=%s, requester=%s, requesterAttribute=%s, serviceAttribute=%s, quantityUnit=%s]",
+        return String.format("TransformationMap [assignTo=%s, deliverFrom=%s, deliverTo=%s, product=%s, requester=%s, quantityUnit=%s]",
                              assignTo, deliverFrom, deliverTo, product,
                              requester, quantityUnit);
     }

@@ -684,7 +684,8 @@ public class JobModelImpl implements JobModel {
                                                                       metaProtocol).entrySet();
             if (infered.size() == 0) {
                 if (log.isTraceEnabled()) {
-                    log.trace(String.format("job has no direct matches %s", job));
+                    log.trace(String.format("job has no infered matches %s",
+                                            job));
                 }
             }
             for (Map.Entry<Protocol, InferenceMap> transformed : infered) {

@@ -204,18 +204,9 @@ public class WorkspaceImporter {
                                                                                                                               model.getCurrentPrincipal().getPrincipal());
                                                     authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
-                                                    QualifiedNameContext temp = constraint.childRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setChildRelationship(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedParent;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedParent(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedRelationship(resolve(temp));
-                                                    }
+                                                    authorization.setChildRelationship(resolve(constraint.childRelationship));
+                                                    authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
+                                                    authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
                                                     em.persist(authorization);
                                                 });
     }
@@ -237,18 +228,9 @@ public class WorkspaceImporter {
                                                                                                                                     model.getCurrentPrincipal().getPrincipal());
                                                     authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
-                                                    QualifiedNameContext temp = constraint.childRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setChildRelationship(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedParent;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedParent(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedRelationship(resolve(temp));
-                                                    }
+                                                    authorization.setChildRelationship(resolve(constraint.childRelationship));
+                                                    authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
+                                                    authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
                                                     em.persist(authorization);
                                                 });
     }
@@ -409,18 +391,9 @@ public class WorkspaceImporter {
                                                                                                                                   model.getCurrentPrincipal().getPrincipal());
                                                     authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
-                                                    QualifiedNameContext temp = constraint.childRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setChildRelationship(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedParent;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedParent(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedRelationship(resolve(temp));
-                                                    }
+                                                    authorization.setChildRelationship(resolve(constraint.childRelationship));
+                                                    authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
+                                                    authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
                                                     em.persist(authorization);
                                                 });
     }
@@ -829,18 +802,9 @@ public class WorkspaceImporter {
                                                                                                                                   model.getCurrentPrincipal().getPrincipal());
                                                     authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
-                                                    QualifiedNameContext temp = constraint.childRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setChildRelationship(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedParent;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedParent(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedRelationship(resolve(temp));
-                                                    }
+                                                    authorization.setChildRelationship(resolve(constraint.childRelationship));
+                                                    authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
+                                                    authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
                                                     em.persist(authorization);
                                                 });
     }
@@ -906,18 +870,9 @@ public class WorkspaceImporter {
                                                                                                                                           model.getCurrentPrincipal().getPrincipal());
                                                     authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
-                                                    QualifiedNameContext temp = constraint.childRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setChildRelationship(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedParent;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedParent(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedRelationship(resolve(temp));
-                                                    }
+                                                    authorization.setChildRelationship(resolve(constraint.childRelationship));
+                                                    authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
+                                                    authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
                                                     em.persist(authorization);
                                                 });
     }
@@ -993,18 +948,9 @@ public class WorkspaceImporter {
                                                                                                                                       model.getCurrentPrincipal().getPrincipal());
                                                     authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
-                                                    QualifiedNameContext temp = constraint.childRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setChildRelationship(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedParent;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedParent(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedRelationship(resolve(temp));
-                                                    }
+                                                    authorization.setChildRelationship(resolve(constraint.childRelationship));
+                                                    authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
+                                                    authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
                                                     em.persist(authorization);
                                                 });
     }
@@ -1048,18 +994,9 @@ public class WorkspaceImporter {
                                                                                                                           model.getCurrentPrincipal().getPrincipal());
                                                     authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
-                                                    QualifiedNameContext temp = constraint.childRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setChildRelationship(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedParent;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedParent(resolve(temp));
-                                                    }
-                                                    temp = constraint.authorizedRelationship;
-                                                    if (temp != null) {
-                                                        authorization.setAuthorizedRelationship(resolve(temp));
-                                                    }
+                                                    authorization.setChildRelationship(resolve(constraint.childRelationship));
+                                                    authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
+                                                    authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
                                                     em.persist(authorization);
                                                 });
     }

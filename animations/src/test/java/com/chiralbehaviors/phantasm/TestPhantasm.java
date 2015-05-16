@@ -43,6 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceLexer;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser;
@@ -188,6 +189,15 @@ public class TestPhantasm extends AbstractModelTest {
             fail();
         } catch (Exception e) {
         }
+    }
+
+    @Test
+    public void testThis() throws InstantiationException {
+
+        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test");
+        Product child = model.getProductModel().getChild(thing1.getScope().getWorkspace().getDefiningProduct(),
+                                                         model.getKernel().getHasMember());
+        assertEquals("Thing1", child.getName());
     }
 
 }

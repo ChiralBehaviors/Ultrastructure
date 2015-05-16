@@ -108,6 +108,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 public class WorkspaceImporter {
 
     private static final String STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
+    private static final String THIS                          = "this";
 
     public static WorkspaceImporter createWorkspace(InputStream source,
                                                     Model model)
@@ -910,11 +911,16 @@ public class WorkspaceImporter {
             }
             return ruleform;
         }
-        T ruleform = workspace.get(qualifiedName.member.getText());
-        if (ruleform == null) {
-            throw new InvalidKeyException(
-                                          String.format("Cannot find workspace key: %s",
-                                                        qualifiedName.member.getText()));
+        T ruleform;
+        if (qualifiedName.member.getText().equals(THIS)) {
+            ruleform = (T) workspace.getDefiningProduct();
+        } else {
+            ruleform = workspace.get(qualifiedName.member.getText());
+            if (ruleform == null) {
+                throw new InvalidKeyException(
+                                              String.format("Cannot find workspace key: %s",
+                                                            qualifiedName.member.getText()));
+            }
         }
         return ruleform;
     }

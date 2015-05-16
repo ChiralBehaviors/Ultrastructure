@@ -181,6 +181,8 @@ public class WorkspaceImporter {
      * @param facet
      */
     private void agencyAuthorizations(FacetContext facet) {
+        // TODO Auto-generated method stub
+
     }
 
     private void agencyFacets() {
@@ -785,10 +787,19 @@ public class WorkspaceImporter {
         }
     }
 
+    /**
+     * @param facet
+     */
+    private void locationAuthorizations(FacetContext facet) {
+        // TODO Auto-generated method stub
+
+    }
+
     private void locationFacets() {
         for (FacetContext facet : wsp.getLocationFacets()) {
             classifiedLocationAttributes(facet);
             locationNetworkConstraints(facet);
+            locationAuthorizations(facet);
         }
     }
 
@@ -820,10 +831,19 @@ public class WorkspaceImporter {
         }
     }
 
+    /**
+     * @param facet
+     */
+    private void productAuthorizations(FacetContext facet) {
+        // TODO Auto-generated method stub
+
+    }
+
     private void productFacets() {
         for (FacetContext facet : wsp.getProductFacets()) {
             classifiedProductAttributes(facet);
             productNetworkConstraints(facet);
+            productAuthorizations(facet);
         }
     }
 

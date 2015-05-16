@@ -75,8 +75,8 @@ products {
         abc486.salesTaxStatus.nonExempt
         chemB.storageType.frozen
     }
-    classified attributes {
-        kernel::IsA.pricedProduct price 
+    facets {
+        kernel::IsA.pricedProduct attributes: { price } 
     }
 }
 relationships {

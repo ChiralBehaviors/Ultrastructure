@@ -27,12 +27,10 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformC
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingsContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.MetaProtocolContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.NetworkAuthorizationContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.NetworkAuthorizationsContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ParentSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ProtocolContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.RelationshipPairContext;
@@ -65,28 +63,14 @@ public class WorkspacePresentation {
         return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
-    public List<ClassifiedAttributeContext> getAgencyAttributeClassifications() {
+    public List<FacetContext> getAgencyFacets() {
         if (context.agencies == null) {
             return Collections.emptyList();
         }
-        if (context.agencies.classifiedAttributes() == null) {
+        if (context.agencies.facets() == null) {
             return Collections.emptyList();
         }
-        return context.agencies.classifiedAttributes().classifiedAttribute();
-    }
-
-    public List<NetworkAuthorizationContext> getAgencyNetworkAuthorizations() {
-        if (context.agencies == null) {
-            return Collections.emptyList();
-        }
-
-        NetworkAuthorizationsContext networkAuthorizations = context.agencies.networkAuthorizations();
-        if (networkAuthorizations == null) {
-            return Collections.emptyList();
-        }
-        List<NetworkAuthorizationContext> ruleforms = networkAuthorizations.networkAuthorization();
-
-        return ruleforms == null ? Collections.emptyList() : ruleforms;
+        return context.agencies.facets().facet();
     }
 
     public List<EdgeContext> getAgencyNetworks() {
@@ -99,28 +83,14 @@ public class WorkspacePresentation {
         return context.agencies.edges().edge();
     }
 
-    public List<ClassifiedAttributeContext> getAttributeAttributeClassifications() {
+    public List<FacetContext> getAttributeFacets() {
         if (context.attributes == null) {
             return Collections.emptyList();
         }
-        if (context.attributes.classifiedAttributes() == null) {
+        if (context.attributes.facets() == null) {
             return Collections.emptyList();
         }
-        return context.attributes.classifiedAttributes().classifiedAttribute();
-    }
-
-    public List<NetworkAuthorizationContext> getAttributeNetworkAuthorizations() {
-        if (context.attributes == null) {
-            return Collections.emptyList();
-        }
-
-        NetworkAuthorizationsContext networkAuthorizations = context.attributes.networkAuthorizations();
-        if (networkAuthorizations == null) {
-            return Collections.emptyList();
-        }
-        List<NetworkAuthorizationContext> ruleforms = networkAuthorizations.networkAuthorization();
-
-        return ruleforms == null ? Collections.emptyList() : ruleforms;
+        return context.attributes.facets().facet();
     }
 
     public List<EdgeContext> getAttributeNetworks() {
@@ -167,25 +137,14 @@ public class WorkspacePresentation {
         return context.inferences.edge();
     }
 
-    public List<ClassifiedAttributeContext> getIntervalAttributeClassifications() {
+    public List<FacetContext> getIntervalFacets() {
         if (context.intervals == null) {
             return Collections.emptyList();
         }
-        if (context.intervals.classifiedAttributes() == null) {
+        if (context.intervals.facets() == null) {
             return Collections.emptyList();
         }
-        return context.intervals.classifiedAttributes().classifiedAttribute();
-    }
-
-    public List<NetworkAuthorizationContext> getIntervalNetworkAuthorizations() {
-        if (context.intervals == null
-            || context.intervals.networkAuthorizations() == null) {
-            return Collections.emptyList();
-        }
-
-        List<NetworkAuthorizationContext> ruleforms = context.intervals.networkAuthorizations().networkAuthorization();
-
-        return ruleforms == null ? Collections.emptyList() : ruleforms;
+        return context.intervals.facets().facet();
     }
 
     public List<EdgeContext> getIntervalNetworks() {
@@ -205,28 +164,14 @@ public class WorkspacePresentation {
         return context.intervals.attributedExistentialRuleform();
     }
 
-    public List<ClassifiedAttributeContext> getLocationAttributeClassifications() {
+    public List<FacetContext> getLocationFacets() {
         if (context.locations == null) {
             return Collections.emptyList();
         }
-        if (context.locations.classifiedAttributes() == null) {
+        if (context.locations.facets() == null) {
             return Collections.emptyList();
         }
-        return context.locations.classifiedAttributes().classifiedAttribute();
-    }
-
-    public List<NetworkAuthorizationContext> getLocationNetworkAuthorizations() {
-        if (context.locations == null) {
-            return Collections.emptyList();
-        }
-
-        NetworkAuthorizationsContext networkAuthorizations = context.locations.networkAuthorizations();
-        if (networkAuthorizations == null) {
-            return Collections.emptyList();
-        }
-        List<NetworkAuthorizationContext> ruleforms = networkAuthorizations.networkAuthorization();
-
-        return ruleforms == null ? Collections.emptyList() : ruleforms;
+        return context.locations.facets().facet();
     }
 
     public List<EdgeContext> getLocationNetworks() {
@@ -261,28 +206,14 @@ public class WorkspacePresentation {
         return context.sequencingAuthorizations.parentSequencings().parentSequencing();
     }
 
-    public List<ClassifiedAttributeContext> getProductAttributeClassifications() {
+    public List<FacetContext> getProductFacets() {
         if (context.products == null) {
             return Collections.emptyList();
         }
-        if (context.products.classifiedAttributes() == null) {
+        if (context.products.facets() == null) {
             return Collections.emptyList();
         }
-        return context.products.classifiedAttributes().classifiedAttribute();
-    }
-
-    public List<NetworkAuthorizationContext> getProductNetworkAuthorizations() {
-        if (context.products == null) {
-            return Collections.emptyList();
-        }
-
-        NetworkAuthorizationsContext networkAuthorizations = context.products.networkAuthorizations();
-        if (networkAuthorizations == null) {
-            return Collections.emptyList();
-        }
-        List<NetworkAuthorizationContext> ruleforms = networkAuthorizations.networkAuthorization();
-
-        return ruleforms == null ? Collections.emptyList() : ruleforms;
+        return context.products.facets().facet();
     }
 
     public List<EdgeContext> getProductNetworks() {
@@ -310,25 +241,14 @@ public class WorkspacePresentation {
         return context.protocols.protocol();
     }
 
-    public List<ClassifiedAttributeContext> getRelationshipAttributeClassifications() {
+    public List<FacetContext> getRelationshipFacets() {
         if (context.relationships == null) {
             return Collections.emptyList();
         }
-        if (context.relationships.classifiedAttributes() == null) {
+        if (context.relationships.facets() == null) {
             return Collections.emptyList();
         }
-        return context.relationships.classifiedAttributes().classifiedAttribute();
-    }
-
-    public List<NetworkAuthorizationContext> getRelationshipNetworkAuthorizations() {
-        if (context.relationships == null
-            || context.relationships.networkAuthorizations() == null) {
-            return Collections.emptyList();
-        }
-
-        List<NetworkAuthorizationContext> ruleforms = context.relationships.networkAuthorizations().networkAuthorization();
-
-        return ruleforms == null ? Collections.emptyList() : ruleforms;
+        return context.relationships.facets().facet();
     }
 
     public List<EdgeContext> getRelationshipNetworks() {
@@ -366,25 +286,14 @@ public class WorkspacePresentation {
                                : siblings.siblingSequencing();
     }
 
-    public List<ClassifiedAttributeContext> getStatusCodeAttributeClassifications() {
+    public List<FacetContext> getStatusCodeFacets() {
         if (context.statusCodes == null) {
             return Collections.emptyList();
         }
-        if (context.statusCodes.classifiedAttributes() == null) {
+        if (context.statusCodes.facets() == null) {
             return Collections.emptyList();
         }
-        return context.statusCodes.classifiedAttributes().classifiedAttribute();
-    }
-
-    public List<NetworkAuthorizationContext> getStatusCodeNetworkAuthorizations() {
-        if (context.statusCodes == null
-            || context.statusCodes.networkAuthorizations() == null) {
-            return Collections.emptyList();
-        }
-
-        List<NetworkAuthorizationContext> ruleforms = context.statusCodes.networkAuthorizations().networkAuthorization();
-
-        return ruleforms == null ? Collections.emptyList() : ruleforms;
+        return context.statusCodes.facets().facet();
     }
 
     public List<EdgeContext> getStatusCodeNetworks() {
@@ -412,25 +321,14 @@ public class WorkspacePresentation {
         return context.statusCodeSequencings.statusCodeSequencingSet();
     }
 
-    public List<ClassifiedAttributeContext> getUnitAttributeClassifications() {
+    public List<FacetContext> getUnitFacets() {
         if (context.units == null) {
             return Collections.emptyList();
         }
-        if (context.units.classifiedAttributes() == null) {
+        if (context.units.facets() == null) {
             return Collections.emptyList();
         }
-        return context.units.classifiedAttributes().classifiedAttribute();
-    }
-
-    public List<NetworkAuthorizationContext> getUnitNetworkAuthorizations() {
-        if (context.units == null
-            || context.units.networkAuthorizations() == null) {
-            return Collections.emptyList();
-        }
-
-        List<NetworkAuthorizationContext> ruleforms = context.units.networkAuthorizations().networkAuthorization();
-
-        return ruleforms == null ? Collections.emptyList() : ruleforms;
+        return context.units.facets().facet();
     }
 
     public List<EdgeContext> getUnitNetworks() {

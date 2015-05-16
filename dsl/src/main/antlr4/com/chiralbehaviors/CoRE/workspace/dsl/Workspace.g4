@@ -39,15 +39,15 @@ workspace:
     EOF;
 
 
-definedAgencies: 'agencies' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
-definedAttributes: 'attributes' LB  (attributeRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
-definedIntervals: 'intervals' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
-definedLocations: 'locations' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
-definedProducts: 'products' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
-definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
-definedStatusCodes: 'status codes' LB  (attributedExistentialRuleform SC)+ (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
-definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? (classifiedAttributes)? RB;
-definedUnits: 'units' LB  (unit SC)+  (edges)? (classifiedAttributes)? (networkAuthorizations)? RB;
+definedAgencies: 'agencies' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
+definedAttributes: 'attributes' LB  (attributeRuleform SC)+ (edges)? (facets)? RB;
+definedIntervals: 'intervals' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
+definedLocations: 'locations' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
+definedProducts: 'products' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
+definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? (facets)? RB;
+definedStatusCodes: 'status codes' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
+definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? (facets)? RB;
+definedUnits: 'units' LB  (unit SC)+  (edges)? (facets)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
 definedInferences: 'inferences' LB (edge)+ RB ;
 definedProtocols: 'protocols' LB (protocol)+ RB;
@@ -55,9 +55,7 @@ definedMetaProtocols: 'meta protocols' LB (metaProtocol)* RB;
 
 edges: 'edges' LB (edge)+ RB;
 
-classifiedAttributes: 'classified attributes' LB (classifiedAttribute)+ RB;
-
-networkAuthorizations: 'network authorizations' LB (networkAuthorization)+ RB;
+facets: 'facets' LB (facet)+ RB;
 
 workspaceDefinition: 
     'workspace:'
@@ -212,25 +210,24 @@ childJob:
     ('assign:' assignTo=qualifiedName)? 
     ;
 
-classifiedAttribute:
+facet:
     classification = qualifiedName
     '.'
-    classifier = qualifiedName 
-    authorized = qualifiedName
-    (defaultValue = QuotedText)?
-    (sequenceNumber = Number)?
+    classifier = qualifiedName
+    ('attributes' LB classifiedAttributes RB)?
+    ('constraints' LB networkConstraints RB)?
+    ('authorizations' LB xeeAuthorizations RB)?
     ;
-    
-networkAuthorization:
-    classification = qualifiedName
-    '.'
-    classifier = qualifiedName 
-    ('childRelationship: ' childRelationship = qualifiedName)?
-    ('authorizedRelationship: ' authorizedRelationship = qualifiedName)?
-    ('authorizedParent: ' authorizedParent = qualifiedName)?
-    ('cardinality: ' cardinality = Number)?
-    ('defaultValue: ' defaultValue = QuotedText)?
-    ('sequenceNumber: ' sequenceNumber = Number)?
+classifiedAttributes: (qualifiedName)+;
+networkConstraints: (constraint)+;
+xeeAuthorizations: (constraint)+;
+constraint: 
+    'childRelationship ' childRelationship = qualifiedName
+    'authorizedRelationship ' authorizedRelationship = qualifiedName
+    'authorizedParent ' authorizedParent = qualifiedName
+    'cardinality ' cardinality = Number
+    ('sequenceNumber ' sequenceNumber = Number)?
+    ('attributes:' LB (qualifiedName)+ RB)?
     ;
 
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;

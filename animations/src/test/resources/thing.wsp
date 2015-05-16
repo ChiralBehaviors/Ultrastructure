@@ -35,6 +35,9 @@ products {
     Thing1 = "Thing1" "Thing 1";
     Thing2 = "Thing2" "Thing 2";
     Thing3 = "Thing3" "Thing 3";
+    edges {
+        this.kernel::HasMember.Thing1
+    }
     facets {
         kernel::IsA.Thing1 attributes {aliases URI discount properties}
     }

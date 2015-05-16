@@ -226,7 +226,7 @@ constraint:
     'authorizedRelationship ' authorizedRelationship = qualifiedName
     'authorizedParent ' authorizedParent = qualifiedName
     'cardinality ' cardinality = Number
-    'sequenceNumber ' sequenceNumber = Number
+    ('sequenceNumber ' sequenceNumber = Number)?
     ('attributes:' LB (qualifiedName)+ RB)?
     ;
 

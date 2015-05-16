@@ -27,23 +27,16 @@ attributes {
 }
 locations {
     MavenArtifact = "MavenArtifact" "A maven artifact";
-    classified attributes {
-        kernel::IsA.MavenArtifact artifactId
-        kernel::IsA.MavenArtifact classifier
-        kernel::IsA.MavenArtifact groupId
-        kernel::IsA.MavenArtifact type
-        kernel::IsA.MavenArtifact version
+    facets {
+        kernel::IsA.MavenArtifact attributes { artifactId classifier groupId type version }
     }
 }
 products {
     Thing1 = "Thing1" "Thing 1";
     Thing2 = "Thing2" "Thing 2";
     Thing3 = "Thing3" "Thing 3";
-    classified attributes {
-        kernel::IsA.Thing1 aliases
-        kernel::IsA.Thing1 URI
-        kernel::IsA.Thing1 discount
-        kernel::IsA.Thing1 properties
+    facets {
+        kernel::IsA.Thing1 attributes {aliases URI discount properties}
     }
 }
 relationships {

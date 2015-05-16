@@ -225,6 +225,16 @@ public class WorkspacePresentation {
         }
         return context.products.edges().edge();
     }
+    
+    public List<EdgeContext> getProductRelationships() {
+        if (context.products == null) {
+            return Collections.emptyList();
+        }
+        if (context.products.productRelationships() == null) {
+            return Collections.emptyList();
+        }
+        return context.products.productRelationships().edge();
+    }
 
     public List<AttributedExistentialRuleformContext> getProducts() {
         if (context.products == null) {

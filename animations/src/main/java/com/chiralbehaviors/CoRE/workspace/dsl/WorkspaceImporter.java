@@ -73,6 +73,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationship;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
@@ -167,11 +168,26 @@ public class WorkspaceImporter {
         loadIntervals();
         loadEdges();
         loadFacets();
+        loadProductRelationships();
         loadSequencingAuths();
         loadInferences();
         loadProtocols();
         loadMetaprotocols();
         return workspace;
+    }
+
+    private void loadProductRelationships() {
+        for (EdgeContext edge : wsp.getProductRelationships()) {
+            ProductRelationship pr = new ProductRelationship(
+                                                             model.getCurrentPrincipal().getPrincipal(),
+                                                             resolve(edge.parent),
+                                                             resolve(edge.relationship),
+                                                             resolve(edge.child),
+                                                             model.getCurrentPrincipal().getPrincipal());
+            em.persist(pr);
+            workspace.add(pr);
+        }
+
     }
 
     public void setScope(WorkspaceScope scope) {

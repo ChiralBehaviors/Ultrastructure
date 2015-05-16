@@ -43,7 +43,7 @@ definedAgencies: 'agencies' LB  (attributedExistentialRuleform SC)+ (edges)? (fa
 definedAttributes: 'attributes' LB  (attributeRuleform SC)+ (edges)? (facets)? RB;
 definedIntervals: 'intervals' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
 definedLocations: 'locations' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
-definedProducts: 'products' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
+definedProducts: 'products' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? (productRelationships)? RB;
 definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? (facets)? RB;
 definedStatusCodes: 'status codes' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
 definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? (facets)? RB;
@@ -56,6 +56,8 @@ definedMetaProtocols: 'meta protocols' LB (metaProtocol)* RB;
 edges: 'edges' LB (edge)+ RB;
 
 facets: 'facets' LB (facet)+ RB;
+
+productRelationships: 'productRelationships' LB (edge) + RB;
 
 workspaceDefinition: 
     'workspace:'

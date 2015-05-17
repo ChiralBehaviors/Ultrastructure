@@ -35,7 +35,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
@@ -53,68 +52,43 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "product_relationship", schema = "ruleform")
 @NamedQueries({ @NamedQuery(name = PRODUCTS_AT_RELATIONSHIP, query = "SELECT n.product "
-                                                                 + "FROM ProductRelationship n "
-                                                                 + "WHERE n.relationship = :relationship "
-                                                                 + "AND n.child = :child"), })
-public class ProductRelationship extends Ruleform implements
+                                                                     + "FROM ProductRelationship n "
+                                                                     + "WHERE n.relationship = :relationship "
+                                                                     + "AND n.child = :child"), })
+public class ProductRelationship extends EntityRelationship implements
         Attributable<ProductRelationshipAttribute> {
-    public static final String            PRODUCTS_AT_RELATIONSHIP = "productRelationship.productsAtRelationship";
-    private static final long             serialVersionUID     = 1L;
-
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency")
-    private Agency                        agency;
+    public static final String                PRODUCTS_AT_RELATIONSHIP = "productRelationship.productsAtRelationship";
+    private static final long                 serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to ProductRelationshipAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productRelationship")
     @JsonIgnore
     private Set<ProductRelationshipAttribute> attributes;
 
-    // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "relationship")
-    private Relationship                      relationship;
-
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
-    private Product                       product;
-
-    // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "child")
-    private Relationship                  child;
+    private Product                           product;
 
     public ProductRelationship() {
     }
 
-    /**
-     * @param updatedBy
-     */
     public ProductRelationship(Agency updatedBy) {
         super(updatedBy);
     }
 
     public ProductRelationship(Agency agency, Product product,
-                           Relationship relationship, Relationship child,
-                           Agency updatedBy) {
+                               Relationship relationship, Relationship child,
+                               Agency updatedBy) {
         super(updatedBy);
         this.product = product;
-        this.relationship = relationship;
-        this.child = child;
-        this.agency = agency;
+        setRelationship(relationship);
+        setChild(child);
+        setAgency(agency);
     }
 
-    /**
-     * @param id
-     */
     public ProductRelationship(UUID id) {
         super(id);
-    }
-
-    public Agency getAgency() {
-        return agency;
     }
 
     @Override
@@ -122,16 +96,8 @@ public class ProductRelationship extends Ruleform implements
         return attributes;
     }
 
-    public Relationship getRelationship() {
-        return relationship;
-    }
-
     public Product getProduct() {
         return product;
-    }
-
-    public Relationship getChild() {
-        return child;
     }
 
     /* (non-Javadoc)
@@ -143,25 +109,13 @@ public class ProductRelationship extends Ruleform implements
         return WorkspaceAuthorization_.productRelationship;
     }
 
-    public void setAgency(Agency agency2) {
-        agency = agency2;
-    }
-
     @SuppressWarnings("unchecked")
     @Override
     public <A extends ProductRelationshipAttribute> void setAttributes(Set<A> attributes) {
         this.attributes = (Set<ProductRelationshipAttribute>) attributes;
     }
 
-    public void setRelationship(Relationship relationship) {
-        this.relationship = relationship;
-    }
-
     public void setProduct(Product product) {
         this.product = product;
-    }
-
-    public void setChild(Relationship child) {
-        this.child = child;
     }
 }

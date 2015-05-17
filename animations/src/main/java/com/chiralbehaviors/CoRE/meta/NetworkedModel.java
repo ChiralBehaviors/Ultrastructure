@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.product.EntityRelationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
@@ -102,7 +103,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void authorize(RuleForm ruleform, Relationship relationship,
                    Product authorized);
 
-    void authorize(RuleForm ruleform, Relationship relationship,
+    <T extends EntityRelationship> List<T> authorize(RuleForm ruleform, Relationship relationship,
                    Relationship authorized);
 
     void authorizeAgencies(RuleForm ruleform, Relationship relationship,
@@ -114,7 +115,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void authorizeProducts(RuleForm ruleform, Relationship relationship,
                            List<Product> authorized);
 
-    void authorizeRelationships(RuleForm ruleform, Relationship relationship,
+    <T extends EntityRelationship> List<T> authorizeRelationships(RuleForm ruleform, Relationship relationship,
                                 List<Relationship> authorized);
 
     void authorizeSingular(RuleForm ruleform, Relationship relationship,
@@ -126,7 +127,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void authorizeSingular(RuleForm ruleform, Relationship relationship,
                            Product authorized);
 
-    void authorizeSingular(RuleForm ruleform, Relationship relationship,
+    <T extends EntityRelationship> List<T> authorizeSingular(RuleForm ruleform, Relationship relationship,
                            Relationship authorized);
 
     /**

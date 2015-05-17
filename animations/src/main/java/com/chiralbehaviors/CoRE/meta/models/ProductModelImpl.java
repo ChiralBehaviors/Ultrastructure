@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
@@ -39,6 +41,7 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.product.EntityRelationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
@@ -132,7 +135,7 @@ public class ProductModelImpl
     }
 
     @Override
-    public void authorize(Product ruleform, Relationship relationship,
+    public List<EntityRelationship> authorize(Product ruleform, Relationship relationship,
                           Relationship authorized) {
         assert ruleform != null : "ruleform is null";
         assert relationship != null : "relationshp is null";
@@ -149,6 +152,8 @@ public class ProductModelImpl
         b.setRelationship(relationship.getInverse());
         b.setChild(authorized);
         em.persist(b);
+        
+        return Stream.of(a, b).collect(Collectors.toList());
     }
 
     /*

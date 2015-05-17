@@ -145,7 +145,7 @@ public class ProductRelationshipAttribute extends AttributeValue<ProductRelation
     }
 
     @JsonGetter
-    public ProductRelationship getEntityRelationship() {
+    public EntityRelationship getEntityRelationship() {
         return productRelationship;
     }
 

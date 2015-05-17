@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -70,6 +71,7 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.product.EntityRelationship;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
@@ -135,8 +137,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public void authorize(RuleForm ruleform, Relationship relationship,
-                          Relationship authorized) {
+    public <T extends EntityRelationship> List<T> authorize(RuleForm ruleform,
+                                                            Relationship relationship,
+                                                            Relationship authorized) {
         throw new UnsupportedOperationException(
                                                 String.format("Authorizations between %s and Relationship are not defined",
                                                               ruleform.getClass().getSimpleName()));
@@ -167,13 +170,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void authorizeRelationships(RuleForm ruleform,
-                                       Relationship relationship,
-                                       List<Relationship> authorized) {
-        for (Relationship r : authorized) {
-            authorize(ruleform, relationship, r);
-        }
+    public <T extends EntityRelationship> List<T> authorizeRelationships(RuleForm ruleform,
+                                                                         Relationship relationship,
+                                                                         List<Relationship> authorized) {
+        return (List<T>) authorized.stream()
+                .map(r -> authorize(ruleform, relationship, r))
+                .flatMap(list -> list.stream())
+                .collect(Collectors.toList());
+
     }
 
     @Override
@@ -201,11 +207,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                                  Relationship authorized) {
+    public <T extends EntityRelationship> List<T> authorizeSingular(RuleForm ruleform,
+                                                                    Relationship relationship,
+                                                                    Relationship authorized) {
         deauthorize(ruleform, relationship,
                     getAuthorizedRelationship(ruleform, relationship));
-        authorize(ruleform, relationship, authorized);
+        return authorize(ruleform, relationship, authorized);
     }
 
     @Override

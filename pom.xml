@@ -70,6 +70,7 @@
         <module>network-inference-generator</module>
         <module>dsl</module>
         <module>loader-plugin-test</module>
+        <module>phantasm-generator</module>
     </modules>
 
     <dependencyManagement>

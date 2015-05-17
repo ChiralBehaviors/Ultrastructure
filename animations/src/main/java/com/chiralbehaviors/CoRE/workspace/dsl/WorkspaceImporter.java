@@ -26,6 +26,11 @@ import java.util.UUID;
 
 import javax.management.openmbean.InvalidKeyException;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -74,6 +79,7 @@ import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationship;
+import com.chiralbehaviors.CoRE.product.ProductRelationship_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
@@ -178,14 +184,29 @@ public class WorkspaceImporter {
 
     private void loadProductRelationships() {
         for (EdgeContext edge : wsp.getProductRelationships()) {
-            ProductRelationship pr = new ProductRelationship(
-                                                             model.getCurrentPrincipal().getPrincipal(),
-                                                             resolve(edge.parent),
-                                                             resolve(edge.relationship),
-                                                             resolve(edge.child),
-                                                             model.getCurrentPrincipal().getPrincipal());
-            em.persist(pr);
-            workspace.add(pr);
+            
+            Product parent = resolve(edge.parent);
+            Relationship relationship = resolve(edge.relationship);
+            Relationship child = resolve(edge.child);
+            
+            model.getProductModel().authorize(parent, relationship, child);
+            
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<ProductRelationship> query = cb.createQuery(ProductRelationship.class);
+            Root<ProductRelationship> plRoot = query.from(ProductRelationship.class);
+            ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
+            query.select(plRoot).where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
+                                                       parent),
+                                              cb.equal(plRoot.get(ProductRelationship_.relationship),
+                                                       relationshipParam),
+                                              cb.equal(plRoot.get(ProductRelationship_.child),
+                                                       child)));
+            TypedQuery<ProductRelationship> q = em.createQuery(query);
+            q.setParameter(relationshipParam, relationship);
+            workspace.add(q.getSingleResult());
+            q.setParameter(relationshipParam, relationship.getInverse());
+
+            workspace.add(q.getSingleResult());
         }
 
     }

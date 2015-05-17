@@ -209,6 +209,9 @@ public class TestPhantasm extends AbstractModelTest {
                            thing1.getScope().getWorkspace().get("derivedFrom"));
         assertNotNull(query.getSingleResult());
 
+        query.setParameter("relationship", kernel.getHasMember().getInverse());
+        assertNotNull(query.getSingleResult());
+
     }
 
 }

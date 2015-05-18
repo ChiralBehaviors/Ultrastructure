@@ -73,6 +73,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationship;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
@@ -177,15 +178,25 @@ public class WorkspaceImporter {
 
     private void loadProductRelationships() {
         for (EdgeContext edge : wsp.getProductRelationships()) {
-
             Product parent = resolve(edge.parent);
             Relationship relationship = resolve(edge.relationship);
             Relationship child = resolve(edge.child);
-
-            model.getProductModel().authorize(parent, relationship, child)
-                .stream()
-                .forEach(auth -> workspace.add(auth));
-
+            ProductRelationship pr = new ProductRelationship(
+                                                             model.getCurrentPrincipal().getPrincipal(),
+                                                             parent,
+                                                             relationship,
+                                                             child,
+                                                             model.getCurrentPrincipal().getPrincipal());
+            em.persist(pr);
+            workspace.add(pr);
+            ProductRelationship pr2 = new ProductRelationship(
+                                                              model.getCurrentPrincipal().getPrincipal(),
+                                                              parent,
+                                                              relationship.getInverse(),
+                                                              child,
+                                                              model.getCurrentPrincipal().getPrincipal());
+            em.persist(pr2);
+            workspace.add(pr2);
         }
 
     }

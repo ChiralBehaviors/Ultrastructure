@@ -41,6 +41,9 @@ products {
     facets {
         kernel::IsA.Thing1 attributes {aliases URI discount properties}
     }
+    productRelationships {
+        this.kernel::HasMember.derivedFrom
+    }
 }
 relationships {
     derivedFrom = "Derived From" "A is derived from B" | derivativeOf = "Derivative Of" "A is a derivative of B";

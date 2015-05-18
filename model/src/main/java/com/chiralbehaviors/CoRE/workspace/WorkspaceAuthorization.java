@@ -91,6 +91,8 @@ import com.chiralbehaviors.CoRE.product.ProductLocationAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationship;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
@@ -161,6 +163,8 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  PRODUCT_CHILD_SEQUENCING_AUTHORIZATION   = "ProductChildSequencingAuthorization";
     public static final String  PRODUCT_LOCATION                         = "ProductLocation";
     public static final String  PRODUCT_LOCATION_ATTRIBUTE               = "ProductLocationAttribute";
+    public static final String  PRODUCT_RELATIONSHIP                     = "ProductRelationship";
+    public static final String  PRODUCT_RELATIONSHIP_ATTRIBUTE           = "ProductRelationshipAttribute";
     public static final String  PRODUCT_NETWORK                          = "ProductNetwork";
     public static final String  PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
     public static final String  PRODUCT_NETWORK_AUTHORIZATION            = "ProductNetworkAuthorization";
@@ -362,6 +366,14 @@ public class WorkspaceAuthorization extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_location_attribute")
     private ProductLocationAttribute              productLocationAttribute;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "product_relationship")
+    private ProductRelationship                   productRelationship;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "product_relationship_attribute")
+    private ProductRelationshipAttribute          productRelationshipAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_network")
@@ -646,6 +658,10 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getProductLocation();
             case PRODUCT_LOCATION_ATTRIBUTE:
                 return (T) getProductLocationAttribute();
+            case PRODUCT_RELATIONSHIP:
+                return (T) getProductRelationship();
+            case PRODUCT_RELATIONSHIP_ATTRIBUTE:
+                return (T) getProductRelationshipAttribute();
             case INTERVAL:
                 return (T) getInterval();
             case INTERVAL_ATTRIBUTE:
@@ -714,6 +730,16 @@ public class WorkspaceAuthorization extends Ruleform {
                                                 String.format("Invalid type: %s",
                                                               type));
         }
+    }
+
+    @JsonIgnore
+    private ProductRelationshipAttribute getProductRelationshipAttribute() {
+        return productRelationshipAttribute;
+    }
+
+    @JsonIgnore
+    private ProductRelationship getProductRelationship() {
+        return productRelationship;
     }
 
     @JsonIgnore
@@ -1164,6 +1190,12 @@ public class WorkspaceAuthorization extends Ruleform {
             case PRODUCT_LOCATION_ATTRIBUTE:
                 setProductLocationAttribute((ProductLocationAttribute) entity);
                 break;
+            case PRODUCT_RELATIONSHIP:
+                setProductRelationship((ProductRelationship) entity);
+                break;
+            case PRODUCT_RELATIONSHIP_ATTRIBUTE:
+                setProductRelationshipAttribute((ProductRelationshipAttribute) entity);
+                break;
             case INTERVAL:
                 setInterval((Interval) entity);
                 break;
@@ -1263,6 +1295,17 @@ public class WorkspaceAuthorization extends Ruleform {
                                                 String.format("Invalid type: %s",
                                                               entity.getClass().getSimpleName()));
         }
+    }
+
+    private void setProductRelationshipAttribute(ProductRelationshipAttribute entity) {
+        type = PRODUCT_RELATIONSHIP_ATTRIBUTE;
+        this.productRelationshipAttribute = entity;
+        
+    }
+
+    private void setProductRelationship(ProductRelationship entity) {
+        type = PRODUCT_RELATIONSHIP;
+        this.productRelationship = entity;
     }
 
     public void setInterval(Interval interval) {

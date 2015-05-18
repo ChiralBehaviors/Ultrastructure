@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.TypedQuery;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -44,6 +46,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductRelationship;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceLexer;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser;
@@ -195,9 +198,17 @@ public class TestPhantasm extends AbstractModelTest {
     public void testThis() throws InstantiationException {
 
         Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test");
-        Product child = model.getProductModel().getChild(thing1.getScope().getWorkspace().getDefiningProduct(),
+        Product workspace = thing1.getScope().getWorkspace().getDefiningProduct();
+        Product child = model.getProductModel().getChild(workspace,
                                                          model.getKernel().getHasMember());
         assertEquals("Thing1", child.getName());
+        TypedQuery<Product> query = em.createNamedQuery(ProductRelationship.PRODUCTS_AT_RELATIONSHIP,
+                                                        Product.class);
+        query.setParameter("relationship", kernel.getHasMember());
+        query.setParameter("child",
+                           thing1.getScope().getWorkspace().get("derivedFrom"));
+        assertNotNull(query.getSingleResult());
+
     }
 
 }

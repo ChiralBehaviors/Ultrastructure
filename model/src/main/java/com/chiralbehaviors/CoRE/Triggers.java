@@ -110,9 +110,9 @@ public interface Triggers {
 
     void persist(StatusCodeSequencing scs);
 
-    void persist(UnitNetwork u);
-
     <T extends AttributeValue<?>> void persist(T value);
+
+    void persist(UnitNetwork u);
 
     void update(Job j);
 }

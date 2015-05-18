@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 
 /**
  * 
- * Represents a classification within an existential entity network
+ * Represents a classifier within an existential entity network
  * 
  * @author hhildebrand
  *
@@ -39,7 +39,7 @@ import java.lang.annotation.Target;
 @Target({ TYPE, FIELD })
 @Retention(RUNTIME)
 public @interface Facet {
-    Key classification();
-
     Key classifier();
+
+    Key classification();
 }

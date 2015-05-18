@@ -64,18 +64,18 @@ public class ProductAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public ProductAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param attribute
      * @param coreModel
      */
     public ProductAttributeAuthorization(Attribute attribute, Agency agency) {
         super(attribute, agency);
+    }
+
+    /**
+     * @param id
+     */
+    public ProductAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     @Override

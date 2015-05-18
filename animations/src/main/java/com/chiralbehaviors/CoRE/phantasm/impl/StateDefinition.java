@@ -90,21 +90,21 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
         List<ScopedFacet> failures = new ArrayList<>();
         for (ScopedFacet constraint : facets) {
-            RuleForm classifier = (RuleForm) constraint.resolveClassifier(scope);
-            if (classifier == null) {
+            RuleForm classification = (RuleForm) constraint.resolveClassifier(scope);
+            if (classification == null) {
                 throw new IllegalStateException(
                                                 String.format("Cannot obtain classifer %s for %s",
                                                               constraint.toClassifierString(),
                                                               stateInterface));
             }
-            Relationship classification = (Relationship) constraint.resolveClassification(scope);
-            if (classification == null) {
+            Relationship classifier = (Relationship) constraint.resolveClassification(scope);
+            if (classifier == null) {
                 throw new IllegalStateException(
-                                                String.format("Cannot obtain classification %s for %s",
+                                                String.format("Cannot obtain classifier %s for %s",
                                                               constraint.toClassificationString(),
                                                               stateInterface));
             }
-            if (!networked.isAccessible(ruleform, classification, classifier)) {
+            if (!networked.isAccessible(ruleform, classifier, classification)) {
                 failures.add(constraint);
             }
         }

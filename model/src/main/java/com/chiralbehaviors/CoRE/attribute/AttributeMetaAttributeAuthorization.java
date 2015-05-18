@@ -68,19 +68,19 @@ public class AttributeMetaAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public AttributeMetaAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param attribute
      * @param coreModel
      */
     public AttributeMetaAttributeAuthorization(Attribute attribute,
                                                Agency agency) {
         super(attribute, agency);
+    }
+
+    /**
+     * @param id
+     */
+    public AttributeMetaAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     @Override

@@ -235,20 +235,20 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            - the instance
      * @param groupingAgency
      *            - the classifying agency
-     * @return the list of existing attributes authorized by this classification
+     * @return the list of existing attributes authorized by this classifier
      */
     List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
                                                   Agency groupingAgency);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
-     * authorized by the classification relationship described by the aspect
+     * authorized by the classifier relationship described by the aspect
      *
      * @param ruleform
      *            - the instance
      * @param aspect
      *            - the classifying aspect
-     * @return the list of existing attributes authorized by this classification
+     * @return the list of existing attributes authorized by this classifier
      */
     List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
                                                   Aspect<RuleForm> aspect);

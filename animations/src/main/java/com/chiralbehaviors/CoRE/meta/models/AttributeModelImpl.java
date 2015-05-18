@@ -63,8 +63,8 @@ public class AttributeModelImpl
     public void authorize(Aspect<Attribute> aspect, Attribute... attributes) {
         AttributeNetworkAuthorization auth = new AttributeNetworkAuthorization(
                                                                                model.getCurrentPrincipal().getPrincipal());
-        auth.setClassifier(aspect.getClassifier());
-        auth.setClassification(aspect.getClassification());
+        auth.setClassification(aspect.getClassifier());
+        auth.setClassifier(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             AttributeMetaAttributeAuthorization authorization = new AttributeMetaAttributeAuthorization(

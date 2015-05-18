@@ -12,10 +12,10 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="interval_network_authorization_pkey" />
             </column>
-            <column name="classification" type="uuid">
+            <column name="classifier" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="classifier" type="uuid">
+            <column name="classification" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="authorized_parent" type="uuid" />
@@ -47,11 +47,11 @@
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="interval" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classification" baseTableName="interval_network_authorization" constraintName="interval_network_authorization_classification_fkey"
+            baseColumnNames="classifier" baseTableName="interval_network_authorization" constraintName="interval_network_authorization_classification_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classifier" baseTableName="interval_network_authorization" constraintName="interval_network_authorization_classifier_fkey"
+            baseColumnNames="classification" baseTableName="interval_network_authorization" constraintName="interval_network_authorization_classifier_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="interval" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -63,7 +63,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="classification, classifier, authorized_parent, authorized_relationship, child_relationship, sequence_number"
+            columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, sequence_number"
             constraintName="interval_interval_authorizatio_interval_classification_attri_key" deferrable="false" disabled="false"
             initiallyDeferred="true" tableName="interval_network_authorization" />
         <createIndex schemaName="ruleform" indexName="interval_network_authorization_updated_by_fkey_idx" tableName="interval_network_authorization"
@@ -77,12 +77,12 @@
         <createIndex schemaName="ruleform" indexName="interval_network_authorization_classifier_idx" tableName="interval_network_authorization"
             unique="false"
         >
-            <column name="classifier" />
+            <column name="classification" />
         </createIndex>
         <createIndex schemaName="ruleform" indexName="interval_network_authorization_classification_idx" tableName="interval_network_authorization"
             unique="false"
         >
-            <column name="classification" />
+            <column name="classifier" />
         </createIndex>
         <createIndex schemaName="ruleform" indexName="interval_network_authorization_authorized_parent_idx" tableName="interval_network_authorization"
             unique="false"

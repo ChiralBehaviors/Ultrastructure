@@ -63,18 +63,18 @@ public class UnitAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public UnitAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param attribute
      * @param updatedBy
      */
     public UnitAttributeAuthorization(Attribute attribute, Agency updatedBy) {
         super(attribute, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public UnitAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     @Override

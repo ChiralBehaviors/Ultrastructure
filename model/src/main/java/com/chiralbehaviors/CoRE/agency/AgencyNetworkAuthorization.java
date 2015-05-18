@@ -52,8 +52,8 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "classifier")
-    private Agency            classifier;
+    @JoinColumn(name = "classification")
+    private Agency            classification;
 
     public AgencyNetworkAuthorization() {
         super();
@@ -102,8 +102,8 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
      */
     @Override
     @JsonGetter
-    public Agency getClassifier() {
-        return classifier;
+    public Agency getClassification() {
+        return classification;
     }
 
     /* (non-Javadoc)
@@ -111,7 +111,7 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
      */
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Agency>, Agency> getClassifierAttribute() {
-        return AgencyNetworkAuthorization_.classifier;
+        return AgencyNetworkAuthorization_.classification;
     }
 
     /* (non-Javadoc)
@@ -143,7 +143,7 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
      * .chiralbehaviors.CoRE.network.Networked)
      */
     @Override
-    public void setClassifier(Agency classifier) {
-        this.classifier = classifier;
+    public void setClassification(Agency classification) {
+        this.classification = classification;
     }
 }

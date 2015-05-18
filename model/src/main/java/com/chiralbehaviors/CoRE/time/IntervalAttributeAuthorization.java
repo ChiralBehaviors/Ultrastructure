@@ -63,18 +63,18 @@ public class IntervalAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public IntervalAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param attribute
      * @param coreModel
      */
     public IntervalAttributeAuthorization(Attribute attribute, Agency agency) {
         super(attribute, agency);
+    }
+
+    /**
+     * @param id
+     */
+    public IntervalAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     @Override

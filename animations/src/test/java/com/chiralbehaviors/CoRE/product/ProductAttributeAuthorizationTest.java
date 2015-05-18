@@ -44,13 +44,13 @@ public class ProductAttributeAuthorizationTest extends AbstractModelTest {
         agency.setUpdatedBy(agency);
         em.persist(agency);
 
-        Relationship classification = new Relationship("My classification",
-                                                       "A classification",
+        Relationship classifier = new Relationship("My classifier",
+                                                       "A classifier",
                                                        agency);
-        em.persist(classification);
-        Relationship inverse = new Relationship("inverse classification",
-                                                "The inverse classification",
-                                                agency, classification);
+        em.persist(classifier);
+        Relationship inverse = new Relationship("inverse classifier",
+                                                "The inverse classifier",
+                                                agency, classifier);
         em.persist(inverse);
 
         Product classificationProduct = new Product();
@@ -59,14 +59,14 @@ public class ProductAttributeAuthorizationTest extends AbstractModelTest {
         em.persist(classificationProduct);
 
         Attribute authorizedAttribute = new Attribute();
-        authorizedAttribute.setName("My classification");
+        authorizedAttribute.setName("My classifier");
         authorizedAttribute.setUpdatedBy(agency);
         authorizedAttribute.setValueType(ValueType.NUMERIC);
         em.persist(authorizedAttribute);
 
         model.getProductModel().getAllowedValues(authorizedAttribute,
                                                  new Aspect<Product>(
-                                                                     classification,
+                                                                     classifier,
                                                                      classificationProduct));
         em.getTransaction().rollback();
     }

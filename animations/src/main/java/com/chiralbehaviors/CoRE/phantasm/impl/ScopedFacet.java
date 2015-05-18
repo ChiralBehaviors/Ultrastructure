@@ -59,25 +59,25 @@ public interface ScopedFacet {
 
             @Override
             public Ruleform resolveClassification(WorkspaceScope scope) {
-                return scope.lookup(facet.classification());
+                return scope.lookup(facet.classifier());
             }
 
             @Override
             public Ruleform resolveClassifier(WorkspaceScope scope) {
-                return scope.lookup(facet.classifier());
+                return scope.lookup(facet.classification());
             }
 
             @Override
             public String toClassificationString() {
                 return String.format("%s:%s",
-                                     facet.classification().namespace(),
-                                     facet.classification().name());
+                                     facet.classifier().namespace(),
+                                     facet.classifier().name());
             }
 
             @Override
             public String toClassifierString() {
-                return String.format("%s:%s", facet.classifier().namespace(),
-                                     facet.classifier().name());
+                return String.format("%s:%s", facet.classification().namespace(),
+                                     facet.classification().name());
             }
         };
     }

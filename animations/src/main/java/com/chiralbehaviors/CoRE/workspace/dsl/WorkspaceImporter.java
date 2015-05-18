@@ -205,8 +205,8 @@ public class WorkspaceImporter {
         networkConstraints.constraint().forEach(constraint -> {
                                                     AgencyNetworkAuthorization authorization = new AgencyNetworkAuthorization(
                                                                                                                               model.getCurrentPrincipal().getPrincipal());
-                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
+                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
@@ -229,8 +229,8 @@ public class WorkspaceImporter {
         networkConstraints.constraint().forEach(constraint -> {
                                                     AttributeNetworkAuthorization authorization = new AttributeNetworkAuthorization(
                                                                                                                                     model.getCurrentPrincipal().getPrincipal());
-                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
+                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
@@ -241,8 +241,8 @@ public class WorkspaceImporter {
     private void classifiedAgencyAttributes(FacetContext facet) {
         AgencyNetworkAuthorization authorization = new AgencyNetworkAuthorization(
                                                                                   model.getCurrentPrincipal().getPrincipal());
-        authorization.setClassification(resolve(facet.classification));
         authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
         facet.classifiedAttributes().qualifiedName().forEach(attribute -> {
@@ -259,8 +259,8 @@ public class WorkspaceImporter {
     private void classifiedIntervalAttributes(FacetContext facet) {
         IntervalNetworkAuthorization authorization = new IntervalNetworkAuthorization(
                                                                                       model.getCurrentPrincipal().getPrincipal());
-        authorization.setClassification(resolve(facet.classification));
         authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
         facet.classifiedAttributes().qualifiedName().forEach(attribute -> {
@@ -277,8 +277,8 @@ public class WorkspaceImporter {
     private void classifiedLocationAttributes(FacetContext facet) {
         LocationNetworkAuthorization authorization = new LocationNetworkAuthorization(
                                                                                       model.getCurrentPrincipal().getPrincipal());
-        authorization.setClassification(resolve(facet.classification));
         authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
         facet.classifiedAttributes().qualifiedName().forEach(attribute -> {
@@ -295,8 +295,8 @@ public class WorkspaceImporter {
     private void classifiedMetaAttributes(FacetContext facet) {
         AttributeNetworkAuthorization authorization = new AttributeNetworkAuthorization(
                                                                                         model.getCurrentPrincipal().getPrincipal());
-        authorization.setClassification(resolve(facet.classification));
         authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
         facet.classifiedAttributes().qualifiedName().forEach(attribute -> {
@@ -313,8 +313,8 @@ public class WorkspaceImporter {
     private void classifiedProductAttributes(FacetContext facet) {
         ProductNetworkAuthorization authorization = new ProductNetworkAuthorization(
                                                                                     model.getCurrentPrincipal().getPrincipal());
-        authorization.setClassification(resolve(facet.classification));
         authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
         facet.classifiedAttributes().qualifiedName().forEach(attribute -> {
@@ -331,8 +331,8 @@ public class WorkspaceImporter {
     private void classifiedRelationshipAttributes(FacetContext facet) {
         RelationshipNetworkAuthorization authorization = new RelationshipNetworkAuthorization(
                                                                                               model.getCurrentPrincipal().getPrincipal());
-        authorization.setClassification(resolve(facet.classification));
         authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
         facet.classifiedAttributes().qualifiedName().forEach(attribute -> {
@@ -349,8 +349,8 @@ public class WorkspaceImporter {
     private void classifiedStatusCodeAttributes(FacetContext facet) {
         StatusCodeNetworkAuthorization authorization = new StatusCodeNetworkAuthorization(
                                                                                           model.getCurrentPrincipal().getPrincipal());
-        authorization.setClassification(resolve(facet.classification));
         authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
         facet.classifiedAttributes().qualifiedName().forEach(attribute -> {
@@ -392,8 +392,8 @@ public class WorkspaceImporter {
         networkConstraints.constraint().forEach(constraint -> {
                                                     IntervalNetworkAuthorization authorization = new IntervalNetworkAuthorization(
                                                                                                                                   model.getCurrentPrincipal().getPrincipal());
-                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
+                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
@@ -812,8 +812,8 @@ public class WorkspaceImporter {
         networkConstraints.constraint().forEach(constraint -> {
                                                     LocationNetworkAuthorization authorization = new LocationNetworkAuthorization(
                                                                                                                                   model.getCurrentPrincipal().getPrincipal());
-                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
+                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
@@ -856,8 +856,8 @@ public class WorkspaceImporter {
         networkConstraints.constraint().forEach(constraint -> {
                                                     ProductNetworkAuthorization authorization = new ProductNetworkAuthorization(
                                                                                                                                 model.getCurrentPrincipal().getPrincipal());
-                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
+                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     QualifiedNameContext temp = constraint.childRelationship;
                                                     if (temp != null) {
                                                         authorization.setChildRelationship(resolve(temp));
@@ -889,8 +889,8 @@ public class WorkspaceImporter {
         networkConstraints.constraint().forEach(constraint -> {
                                                     RelationshipNetworkAuthorization authorization = new RelationshipNetworkAuthorization(
                                                                                                                                           model.getCurrentPrincipal().getPrincipal());
-                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
+                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
@@ -972,8 +972,8 @@ public class WorkspaceImporter {
         networkConstraints.constraint().forEach(constraint -> {
                                                     StatusCodeNetworkAuthorization authorization = new StatusCodeNetworkAuthorization(
                                                                                                                                       model.getCurrentPrincipal().getPrincipal());
-                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
+                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
@@ -995,8 +995,8 @@ public class WorkspaceImporter {
     private void unitFacets(FacetContext facet) {
         UnitNetworkAuthorization authorization = new UnitNetworkAuthorization(
                                                                               model.getCurrentPrincipal().getPrincipal());
-        authorization.setClassification(resolve(facet.classification));
         authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
         facet.classifiedAttributes().qualifiedName().forEach(attribute -> {
@@ -1018,8 +1018,8 @@ public class WorkspaceImporter {
         networkConstraints.constraint().forEach(constraint -> {
                                                     UnitNetworkAuthorization authorization = new UnitNetworkAuthorization(
                                                                                                                           model.getCurrentPrincipal().getPrincipal());
-                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setClassification(resolve(facet.classification));
+                                                    authorization.setClassifier(resolve(facet.classifier));
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));

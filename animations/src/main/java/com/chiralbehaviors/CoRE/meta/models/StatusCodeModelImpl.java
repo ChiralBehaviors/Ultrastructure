@@ -68,8 +68,8 @@ public class StatusCodeModelImpl
     public void authorize(Aspect<StatusCode> aspect, Attribute... attributes) {
         StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization(
                                                                                  model.getCurrentPrincipal().getPrincipal());
-        auth.setClassifier(aspect.getClassifier());
-        auth.setClassification(aspect.getClassification());
+        auth.setClassification(aspect.getClassifier());
+        auth.setClassifier(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             StatusCodeAttributeAuthorization authorization = new StatusCodeAttributeAuthorization(

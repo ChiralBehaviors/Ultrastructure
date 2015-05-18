@@ -168,6 +168,13 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     abstract public UUID getNotApplicableId();
 
     @SuppressWarnings("unchecked")
+    @Override
+    @JsonIgnore
+    public RuleForm getRuleform() {
+        return (RuleForm) this;
+    }
+
+    @SuppressWarnings("unchecked")
     @JsonIgnore
     public Class<RuleForm> getRuleformClass() {
         return (Class<RuleForm>) getClass();
@@ -218,12 +225,5 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     @Override
     public String toString() {
         return String.format("%s [%s]", getClass().getSimpleName(), getName());
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    @JsonIgnore
-    public RuleForm getRuleform() {
-        return (RuleForm) this;
     }
 }

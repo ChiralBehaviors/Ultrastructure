@@ -43,19 +43,19 @@ public class ModelTest extends AbstractModelTest {
     public void testCreateFromAspects() {
         em.getTransaction().begin();
 
-        Agency classifier = new Agency("aspect classifer", kernel.getCore());
-        em.persist(classifier);
-        Relationship classification = new Relationship("aspect classification",
-                                                       kernel.getCore());
-        classification.setInverse(classification);
+        Agency classification = new Agency("aspect classifer", kernel.getCore());
         em.persist(classification);
+        Relationship classifier = new Relationship("aspect classifier",
+                                                       kernel.getCore());
+        classifier.setInverse(classifier);
+        em.persist(classifier);
 
         Attribute attribute = new Attribute("aspect attribute",
                                             kernel.getCore());
         attribute.setValueType(ValueType.TEXT);
         em.persist(attribute);
 
-        Aspect<Agency> aspect = new Aspect<Agency>(classification, classifier);
+        Aspect<Agency> aspect = new Aspect<Agency>(classifier, classification);
 
         model.getAgencyModel().authorize(aspect, attribute);
         em.flush();

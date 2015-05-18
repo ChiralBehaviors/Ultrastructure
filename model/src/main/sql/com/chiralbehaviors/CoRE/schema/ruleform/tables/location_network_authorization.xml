@@ -12,10 +12,10 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="location_network_authorization_pkey" />
             </column>
-            <column name="classification" type="uuid">
+            <column name="classifier" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="classifier" type="uuid">
+            <column name="classification" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="authorized_parent" type="uuid" />
@@ -50,11 +50,11 @@
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classification" baseTableName="location_network_authorization" constraintName="location_network_authorization_classification_fkey"
+            baseColumnNames="classifier" baseTableName="location_network_authorization" constraintName="location_network_authorization_classification_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classifier" baseTableName="location_network_authorization" constraintName="location_network_authorization_classifier_fkey"
+            baseColumnNames="classification" baseTableName="location_network_authorization" constraintName="location_network_authorization_classifier_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="location" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -66,7 +66,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="classification, classifier, authorized_parent, authorized_relationship, child_relationship, sequence_number"
+            columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, sequence_number"
             constraintName="location_attribute_auth_agency_classification_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="location_network_authorization" />
         <createIndex schemaName="ruleform" indexName="location_network_authorization_updated_by_fkey_idx" tableName="location_network_authorization"
@@ -77,12 +77,12 @@
         <createIndex schemaName="ruleform" indexName="location_network_authorization_classifier_idx" tableName="location_network_authorization"
             unique="false"
         >
-            <column name="classifier" />
+            <column name="classification" />
         </createIndex>
         <createIndex schemaName="ruleform" indexName="location_network_authorization_classification_idx" tableName="location_network_authorization"
             unique="false"
         >
-            <column name="classification" />
+            <column name="classifier" />
         </createIndex>
         <createIndex schemaName="ruleform" indexName="location_network_authorization_authorized_parent_idx" tableName="location_network_authorization"
             unique="false"

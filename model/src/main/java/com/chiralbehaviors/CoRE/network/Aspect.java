@@ -23,37 +23,37 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
- * An Aspect is the classification of an networked ruleform within a network.
- * The network relation is A relationship B, where "relationship" is the
- * aspect's classification and "B" is the aspect's classifier.
+ * An Aspect is the classifier of an networked ruleform within a network. The
+ * network relation is A relationship B, where "relationship" is the aspect's
+ * classifier and "B" is the aspect's classification.
  *
  * @author hhildebrand
  *
  */
 public class Aspect<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
-    private final Relationship classification;
-    private final RuleForm     classifier;
+    private final RuleForm     classification;
+    private final Relationship classifier;
 
     /**
-     * @param classification
      * @param classifier
+     * @param classification
      */
-    public Aspect(Relationship classification, RuleForm classifier) {
-        this.classifier = classifier;
+    public Aspect(Relationship classifier, RuleForm classification) {
         this.classification = classification;
+        this.classifier = classifier;
     }
 
     public Relationship getClassification() {
-        return classification;
+        return classifier;
     }
 
     public RuleForm getClassifier() {
-        return classifier;
+        return classification;
     }
 
     @Override
     public String toString() {
-        return "Aspect [classification=" + classification + ", classifier="
-               + classifier + "]";
+        return "Aspect [classifier=" + classifier + ", classification="
+               + classification + "]";
     }
 }

@@ -70,18 +70,18 @@ public class LocationAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public LocationAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param attribute
      * @param coreModel
      */
     public LocationAttributeAuthorization(Attribute attribute, Agency agency) {
         super(attribute, agency);
+    }
+
+    /**
+     * @param id
+     */
+    public LocationAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     @Override

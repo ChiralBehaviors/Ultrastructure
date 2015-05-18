@@ -52,8 +52,8 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
 
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "classifier")
-    private Product           classifier;
+    @JoinColumn(name = "classification")
+    private Product           classification;
 
     /**
      *
@@ -105,8 +105,8 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
      */
     @Override
     @JsonGetter
-    public Product getClassifier() {
-        return classifier;
+    public Product getClassification() {
+        return classification;
     }
 
     /* (non-Javadoc)
@@ -114,7 +114,7 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
      */
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Product>, ? extends Product> getClassifierAttribute() {
-        return ProductNetworkAuthorization_.classifier;
+        return ProductNetworkAuthorization_.classification;
     }
 
     /* (non-Javadoc)
@@ -146,7 +146,7 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
      * .chiralbehaviors.CoRE.network.Networked)
      */
     @Override
-    public void setClassifier(Product classifier) {
-        this.classifier = classifier;
+    public void setClassification(Product classification) {
+        this.classification = classification;
     }
 }

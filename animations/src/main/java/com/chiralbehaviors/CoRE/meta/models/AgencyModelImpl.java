@@ -126,8 +126,8 @@ public class AgencyModelImpl
     public void authorize(Aspect<Agency> aspect, Attribute... attributes) {
         AgencyNetworkAuthorization auth = new AgencyNetworkAuthorization(
                                                                          model.getCurrentPrincipal().getPrincipal());
-        auth.setClassifier(aspect.getClassifier());
-        auth.setClassification(aspect.getClassification());
+        auth.setClassification(aspect.getClassifier());
+        auth.setClassifier(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             AgencyAttributeAuthorization authorization = new AgencyAttributeAuthorization(

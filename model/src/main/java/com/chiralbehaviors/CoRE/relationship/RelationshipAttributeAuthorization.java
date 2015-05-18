@@ -63,19 +63,19 @@ public class RelationshipAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public RelationshipAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param attribute
      * @param coreModel
      */
     public RelationshipAttributeAuthorization(Attribute attribute,
                                               Agency updatedBy) {
         super(attribute, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public RelationshipAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     @Override

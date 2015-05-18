@@ -25,5 +25,5 @@ package com.chiralbehaviors.CoRE.network;
  *
  */
 public enum Cardinality {
-    ZERO, ONE, N;
+    N, ONE, ZERO;
 }

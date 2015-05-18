@@ -76,11 +76,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                             + "WHERE "
                                                                             + "        auth.networkAuthorization = na "
                                                                             + "    AND auth.authorizedAttribute = attrValue.attribute "
-                                                                            + "    AND network.relationship = na.classification "
-                                                                            + "    AND network.child = na.classifier"
+                                                                            + "    AND network.relationship = na.classifier "
+                                                                            + "    AND network.child = na.classification"
                                                                             + "    AND attrValue.relationship = :ruleform "
-                                                                            + "    AND na.classification = :classification "
-                                                                            + "    AND na.classifier= :classifier "),
+                                                                            + "    AND na.classifier = :classifier "
+                                                                            + "    AND na.classification= :classification "),
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
                                                                                                   + "  auth "
                                                                                                   + "FROM "
@@ -90,13 +90,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                                                   + "WHERE "
                                                                                                   + "        auth.networkAuthorization = na "
                                                                                                   + "    AND auth.authorizedAttribute = :attribute "
-                                                                                                  + "    AND network.relationship = na.classification "
-                                                                                                  + "    AND network.child = na.classifier"
-                                                                                                  + "    AND na.classification = :classification "
-                                                                                                  + "    AND na.classifier= :classifier "),
+                                                                                                  + "    AND network.relationship = na.classifier "
+                                                                                                  + "    AND network.child = na.classification"
+                                                                                                  + "    AND na.classifier = :classifier "
+                                                                                                  + "    AND na.classification= :classification "),
                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from RelationshipAttributeAuthorization auth "
-                                                                                    + "WHERE auth.networkAuthorization.classification = :classification "
-                                                                                    + "AND auth.networkAuthorization.classifier = :classifier "
+                                                                                    + "WHERE auth.networkAuthorization.classifier = :classifier "
+                                                                                    + "AND auth.networkAuthorization.classification = :classification "
                                                                                     + "AND auth.authorizedAttribute IS NOT NULL"),
                @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
                                                      + "FROM RelationshipNetwork n "
@@ -282,6 +282,11 @@ public class Relationship extends
         return WellKnownRelationship.COPY.id();
     }
 
+    @JsonGetter
+    public Relationship getInverse() {
+        return inverse;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -440,11 +445,6 @@ public class Relationship extends
     @Override
     public <A extends AttributeValue<Relationship>> void setAttributes(Set<A> attributes) {
         this.attributes = (Set<RelationshipAttribute>) attributes;
-    }
-
-    @JsonGetter
-    public Relationship getInverse() {
-        return inverse;
     }
 
     public void setInverse(Relationship relationship) {

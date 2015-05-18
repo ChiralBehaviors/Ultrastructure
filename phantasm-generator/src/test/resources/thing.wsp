@@ -40,6 +40,16 @@ products {
     }
     facets {
         kernel::IsA.Thing1 attributes {aliases URI discount properties}
+            constraints {
+                childRelationship thing1Of
+                    authorizedRelationship kernel::IsA
+                    authorizedParent Thing2
+                    cardinality 1
+                childRelationship derivedFrom
+                    authorizedRelationship kernel::IsA
+                    authorizedParent MavenArtifact
+                    cardinality 1
+            }
     }
 }
 relationships {

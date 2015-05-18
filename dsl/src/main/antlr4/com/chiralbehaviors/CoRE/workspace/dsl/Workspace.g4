@@ -216,11 +216,9 @@ facet:
     classification = qualifiedName
     ('attributes' LB classifiedAttributes RB)?
     ('constraints' LB networkConstraints RB)?
-    ('authorizations' LB xeeAuthorizations RB)?
     ;
 classifiedAttributes: (qualifiedName)+;
 networkConstraints: (constraint)+;
-xeeAuthorizations: (constraint)+;
 constraint: 
     'childRelationship ' childRelationship = qualifiedName
     'authorizedRelationship ' authorizedRelationship = qualifiedName

@@ -64,6 +64,10 @@ public class AgencyAttributeAuthorization extends
         super(updatedBy);
     }
 
+    public AgencyAttributeAuthorization(Attribute attribute, Agency updatedBy) {
+        super(attribute, updatedBy);
+    }
+
     /**
      * @param id
      */
@@ -71,8 +75,12 @@ public class AgencyAttributeAuthorization extends
         super(id);
     }
 
-    public AgencyAttributeAuthorization(Attribute attribute, Agency updatedBy) {
-        super(attribute, updatedBy);
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.attribute.AttributeAuthorization#getNetworkAuthorization()
+     */
+    @Override
+    public NetworkAuthorization<Agency> getNetworkAuthorization() {
+        return networkAuthorization;
     }
 
     /* (non-Javadoc)
@@ -82,14 +90,6 @@ public class AgencyAttributeAuthorization extends
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, AgencyAttributeAuthorization> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.agencyAttributeAuthorization;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.attribute.AttributeAuthorization#getNetworkAuthorization()
-     */
-    @Override
-    public NetworkAuthorization<Agency> getNetworkAuthorization() {
-        return networkAuthorization;
     }
 
     /* (non-Javadoc)

@@ -53,8 +53,8 @@ public class StatusCodeNetworkAuthorization extends
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "classifier")
-    private StatusCode        classifier;
+    @JoinColumn(name = "classification")
+    private StatusCode        classification;
 
     public StatusCodeNetworkAuthorization() {
         super();
@@ -82,8 +82,8 @@ public class StatusCodeNetworkAuthorization extends
     }
 
     @Override
-    public StatusCode getClassifier() {
-        return classifier;
+    public StatusCode getClassification() {
+        return classification;
     }
 
     /* (non-Javadoc)
@@ -91,7 +91,7 @@ public class StatusCodeNetworkAuthorization extends
      */
     @Override
     public SingularAttribute<? extends NetworkAuthorization<StatusCode>, ? extends StatusCode> getClassifierAttribute() {
-        return StatusCodeNetworkAuthorization_.classifier;
+        return StatusCodeNetworkAuthorization_.classification;
     }
 
     /* (non-Javadoc)
@@ -108,8 +108,8 @@ public class StatusCodeNetworkAuthorization extends
     }
 
     @Override
-    public void setClassifier(StatusCode classifier) {
-        this.classifier = classifier;
+    public void setClassification(StatusCode classification) {
+        this.classification = classification;
     }
 
 }

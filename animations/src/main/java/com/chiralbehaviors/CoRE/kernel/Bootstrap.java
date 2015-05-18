@@ -425,8 +425,8 @@ public class Bootstrap {
                  kernelWorkspace);
         AgencyNetworkAuthorization loginAuthNet = new AgencyNetworkAuthorization(
                                                                                  core);
-        loginAuthNet.setClassification(find(WellKnownRelationship.IS_A));
-        loginAuthNet.setClassifier(find(WellKnownAgency.CORE_USER));
+        loginAuthNet.setClassifier(find(WellKnownRelationship.IS_A));
+        loginAuthNet.setClassification(find(WellKnownAgency.CORE_USER));
         WorkspaceAuthorization loginAuthNetAuth = new WorkspaceAuthorization(
                                                                              loginAuthNet,
                                                                              kernelWorkspace,

@@ -45,7 +45,7 @@ public interface MavenArtifact extends Phantasm<Location> {
 
     void setArtifactId(String artifactId);
 
-    void setClassifier(String classifier);
+    void setClassifier(String classification);
 
     void setGroupId(String groupId);
 

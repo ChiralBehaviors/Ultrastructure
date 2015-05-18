@@ -40,10 +40,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  * The abstract super class of all network authorizations.
  * 
- * from left to right: classification, classifier, auth relationship, auth
+ * from left to right: classifier, classification, auth relationship, auth
  * parent, child relationship, cardinality
  * 
- * {classification, classifier} is the “parent”
+ * {classifier, classification} is the “parent”
  * 
  * {auth parent, auth relationship} is the “child”
  * 
@@ -71,8 +71,8 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
     private Relationship      childRelationship;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "classification")
-    private Relationship      classification;
+    @JoinColumn(name = "classifier")
+    private Relationship      classifier;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -117,11 +117,11 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
         return childRelationship;
     }
 
-    public Relationship getClassification() {
-        return classification;
-    }
+    abstract public RuleForm getClassification();
 
-    abstract public RuleForm getClassifier();
+    public Relationship getClassifier() {
+        return classifier;
+    }
 
     @JsonIgnore
     abstract public SingularAttribute<? extends NetworkAuthorization<RuleForm>, ? extends RuleForm> getClassifierAttribute();
@@ -148,11 +148,11 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
         this.childRelationship = childRelationship;
     }
 
-    public void setClassification(Relationship classification) {
-        this.classification = classification;
+    public void setClassifier(Relationship classifier) {
+        this.classifier = classifier;
     }
 
-    abstract public void setClassifier(RuleForm classifier);
+    abstract public void setClassification(RuleForm classification);
 
     public void setGroupingAgency(Agency groupingAgency) {
         this.groupingAgency = groupingAgency;

@@ -52,8 +52,8 @@ public class LocationNetworkAuthorization extends
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "classifier")
-    private Location          classifier;
+    @JoinColumn(name = "classification")
+    private Location          classification;
 
     /**
      *
@@ -102,8 +102,8 @@ public class LocationNetworkAuthorization extends
      */
     @Override
     @JsonGetter
-    public Location getClassifier() {
-        return classifier;
+    public Location getClassification() {
+        return classification;
     }
 
     /* (non-Javadoc)
@@ -111,7 +111,7 @@ public class LocationNetworkAuthorization extends
      */
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Location>, ? extends Location> getClassifierAttribute() {
-        return LocationNetworkAuthorization_.classifier;
+        return LocationNetworkAuthorization_.classification;
     }
 
     /* (non-Javadoc)
@@ -146,7 +146,7 @@ public class LocationNetworkAuthorization extends
      * .chiralbehaviors.CoRE.network.Networked)
      */
     @Override
-    public void setClassifier(Location classifier) {
-        this.classifier = classifier;
+    public void setClassification(Location classification) {
+        this.classification = classification;
     }
 }

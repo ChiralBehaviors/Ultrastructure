@@ -53,8 +53,8 @@ public class RelationshipNetworkAuthorization extends
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "classifier")
-    private Relationship      classifier;
+    @JoinColumn(name = "classification")
+    private Relationship      classification;
 
     public RelationshipNetworkAuthorization() {
         super();
@@ -82,8 +82,8 @@ public class RelationshipNetworkAuthorization extends
     }
 
     @Override
-    public Relationship getClassifier() {
-        return classifier;
+    public Relationship getClassification() {
+        return classification;
     }
 
     /* (non-Javadoc)
@@ -91,7 +91,7 @@ public class RelationshipNetworkAuthorization extends
      */
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Relationship>, ? extends Relationship> getClassifierAttribute() {
-        return RelationshipNetworkAuthorization_.classifier;
+        return RelationshipNetworkAuthorization_.classification;
     }
 
     /* (non-Javadoc)
@@ -108,8 +108,8 @@ public class RelationshipNetworkAuthorization extends
     }
 
     @Override
-    public void setClassifier(Relationship classifier) {
-        this.classifier = classifier;
+    public void setClassification(Relationship classification) {
+        this.classification = classification;
     }
 
 }

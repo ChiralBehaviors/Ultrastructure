@@ -53,8 +53,8 @@ public class IntervalNetworkAuthorization extends
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "classifier")
-    private Interval          classifier;
+    @JoinColumn(name = "classification")
+    private Interval          classification;
 
     public IntervalNetworkAuthorization() {
         super();
@@ -82,8 +82,8 @@ public class IntervalNetworkAuthorization extends
     }
 
     @Override
-    public Interval getClassifier() {
-        return classifier;
+    public Interval getClassification() {
+        return classification;
     }
 
     /* (non-Javadoc)
@@ -91,7 +91,7 @@ public class IntervalNetworkAuthorization extends
      */
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Interval>, ? extends Interval> getClassifierAttribute() {
-        return IntervalNetworkAuthorization_.classifier;
+        return IntervalNetworkAuthorization_.classification;
     }
 
     /* (non-Javadoc)
@@ -108,8 +108,8 @@ public class IntervalNetworkAuthorization extends
     }
 
     @Override
-    public void setClassifier(Interval classifier) {
-        this.classifier = classifier;
+    public void setClassification(Interval classification) {
+        this.classification = classification;
     }
 
 }

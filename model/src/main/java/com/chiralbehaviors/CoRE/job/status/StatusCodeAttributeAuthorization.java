@@ -63,19 +63,19 @@ public class StatusCodeAttributeAuthorization extends
     }
 
     /**
-     * @param id
-     */
-    public StatusCodeAttributeAuthorization(UUID id) {
-        super(id);
-    }
-
-    /**
      * @param attribute
      * @param coreModel
      */
     public StatusCodeAttributeAuthorization(Attribute attribute,
                                             Agency updatedBy) {
         super(attribute, updatedBy);
+    }
+
+    /**
+     * @param id
+     */
+    public StatusCodeAttributeAuthorization(UUID id) {
+        super(id);
     }
 
     @Override

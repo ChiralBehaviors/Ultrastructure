@@ -211,9 +211,9 @@ childJob:
     ;
 
 facet:
-    classification = qualifiedName
-    '.'
     classifier = qualifiedName
+    '.'
+    classification = qualifiedName
     ('attributes' LB classifiedAttributes RB)?
     ('constraints' LB networkConstraints RB)?
     ('authorizations' LB xeeAuthorizations RB)?

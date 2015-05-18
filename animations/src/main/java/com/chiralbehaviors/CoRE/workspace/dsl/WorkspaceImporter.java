@@ -27,11 +27,6 @@ import java.util.UUID;
 import javax.management.openmbean.InvalidKeyException;
 import javax.persistence.EntityManager;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -99,7 +94,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContex
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 
 /**
  * @author hparry
@@ -113,24 +107,7 @@ public class WorkspaceImporter {
     public static WorkspaceImporter createWorkspace(InputStream source,
                                                     Model model)
                                                                 throws IOException {
-        WorkspaceLexer l = new WorkspaceLexer(new ANTLRInputStream(source));
-        WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
-        p.addErrorListener(new BaseErrorListener() {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer,
-                                    Object offendingSymbol, int line,
-                                    int charPositionInLine, String msg,
-                                    RecognitionException e) {
-                throw new IllegalStateException("failed to parse at line "
-                                                + line + " due to " + msg, e);
-            }
-        });
-        WorkspaceContext ctx = p.workspace();
-
-        WorkspaceImporter importer = new WorkspaceImporter(
-                                                           new WorkspacePresentation(
-                                                                                     ctx),
-                                                           model);
+        WorkspaceImporter importer = new WorkspaceImporter(source, model);
         importer.loadWorkspace();
         return importer;
     }
@@ -140,6 +117,11 @@ public class WorkspaceImporter {
     private WorkspaceScope              scope;
     private EditableWorkspace           workspace;
     private final WorkspacePresentation wsp;
+
+    public WorkspaceImporter(InputStream source, Model model)
+                                                             throws IOException {
+        this(new WorkspacePresentation(source), model);
+    }
 
     public WorkspaceImporter(WorkspacePresentation wsp, Model model) {
         this.wsp = wsp;

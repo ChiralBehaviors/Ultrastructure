@@ -32,7 +32,6 @@ import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 import com.hellblazer.utils.Utils;
@@ -46,12 +45,9 @@ public class PhantasmGenerator {
     private static final String        TEMPLATES_FACET_STG = "templates/facet.stg";
     private final Configuration        configuration;
     private final Map<FacetKey, Facet> facets              = new HashMap<>();
-    @SuppressWarnings("unused")
-    private final Model                model;
 
-    public PhantasmGenerator(Configuration configuration, Model model) {
+    public PhantasmGenerator(Configuration configuration) {
         this.configuration = configuration;
-        this.model = model;
     }
 
     public void generate() throws IOException {

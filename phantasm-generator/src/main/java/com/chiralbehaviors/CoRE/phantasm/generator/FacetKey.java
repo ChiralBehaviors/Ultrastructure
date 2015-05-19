@@ -30,11 +30,6 @@ public class FacetKey {
     private final ScopedName classification;
     private final ScopedName classifier;
 
-    public FacetKey(ScopedName classification, ScopedName classifier) {
-        this.classification = classification;
-        this.classifier = classifier;
-    }
-
     /**
      * @param facet
      */
@@ -43,11 +38,56 @@ public class FacetKey {
              new ScopedName(facet.classification));
     }
 
+    public FacetKey(ScopedName classification, ScopedName classifier) {
+        this.classification = classification;
+        this.classifier = classifier;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof FacetKey)) {
+            return false;
+        }
+        FacetKey other = (FacetKey) obj;
+        if (classification == null) {
+            if (other.classification != null) {
+                return false;
+            }
+        } else if (!classification.equals(other.classification)) {
+            return false;
+        }
+        if (classifier == null) {
+            if (other.classifier != null) {
+                return false;
+            }
+        } else if (!classifier.equals(other.classifier)) {
+            return false;
+        }
+        return true;
+    }
+
     public ScopedName getClassification() {
         return classification;
     }
 
     public ScopedName getClassifier() {
         return classifier;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                 + ((classification == null) ? 0 : classification.hashCode());
+        result = prime * result
+                 + ((classifier == null) ? 0 : classifier.hashCode());
+        return result;
     }
 }

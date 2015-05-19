@@ -39,7 +39,7 @@ facet(facet) ::= <<
  * Generated Phantasm
  * 
  */
-package <facet.packageName>; 
+package <facet.packageName>;
 <facet.imports: {dec| import <dec>;<\n>}>
 @State(facets = {@Facet(classification = <key(facet.classification)>, classifier = <key(facet.classifier)>)})
 public interface <facet.className> extends Phantasm\<<facet.ruleformType>\> {

@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.generator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,30 +29,19 @@ import java.util.List;
  */
 public class Facet {
     private final String       className;
-    private final List<String> imports;
-    private final List<Getter> inferredRelationshipGetters;
+    private final List<String> imports                     = new ArrayList<>();
+    private final List<Getter> inferredRelationshipGetters = new ArrayList<>();
     private final String       packageName;
-    private final List<Getter> primitiveGetters;
-    private final List<Setter> primitiveSetters;
-    private final List<Getter> relationshipGetters;
-    private final List<Setter> relationshipSetters;
+    private final List<Getter> primitiveGetters            = new ArrayList<>();
+    private final List<Setter> primitiveSetters            = new ArrayList<>();
+    private final List<Getter> relationshipGetters         = new ArrayList<>();
+    private final List<Setter> relationshipSetters         = new ArrayList<>();
     private final String       ruleformType;
 
-    public Facet(List<String> imports, String packageName, String className,
-                 String ruleformType, List<Getter> primitiveGetters,
-                 List<Setter> primitiveSetters,
-                 List<Getter> inferredRelationshipGetters,
-                 List<Getter> relationshipGetters,
-                 List<Setter> relationshipSetters) {
-        this.imports = imports;
+    public Facet(String packageName, String className, String ruleformType) {
         this.packageName = packageName;
         this.className = className;
         this.ruleformType = ruleformType;
-        this.primitiveGetters = primitiveGetters;
-        this.primitiveSetters = primitiveSetters;
-        this.inferredRelationshipGetters = inferredRelationshipGetters;
-        this.relationshipGetters = relationshipGetters;
-        this.relationshipSetters = relationshipSetters;
     }
 
     public String getClassName() {
@@ -89,5 +79,4 @@ public class Facet {
     public String getRuleformType() {
         return ruleformType;
     }
-
 }

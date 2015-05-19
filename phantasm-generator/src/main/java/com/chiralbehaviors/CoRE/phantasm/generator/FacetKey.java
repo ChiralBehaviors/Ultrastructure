@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.generator;
 
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
+
 /**
  * @author hhildebrand
  *
@@ -31,6 +33,14 @@ public class FacetKey {
     public FacetKey(ScopedName classification, ScopedName classifier) {
         this.classification = classification;
         this.classifier = classifier;
+    }
+
+    /**
+     * @param facet
+     */
+    public FacetKey(FacetContext facet) {
+        this(new ScopedName(facet.classifier),
+             new ScopedName(facet.classification));
     }
 
     public ScopedName getClassification() {

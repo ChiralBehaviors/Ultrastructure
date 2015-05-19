@@ -20,22 +20,20 @@
 
 package com.chiralbehaviors.CoRE.phantasm.generator;
 
-import static com.chiralbehaviors.CoRE.meta.workspace.Workspace.uuidOf;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 import com.hellblazer.utils.Utils;
 
@@ -44,31 +42,41 @@ import com.hellblazer.utils.Utils;
  *
  */
 public class PhantasmGenerator {
-    private static final String FACET               = "facet";
-    private static final String TEMPLATES_FACET_STG = "templates/facet.stg";
-    private final Configuration configuration;
-    private final Model         model;
+    private static final String        FACET               = "facet";
+    private static final String        TEMPLATES_FACET_STG = "templates/facet.stg";
+    private final Configuration        configuration;
+    private final Map<FacetKey, Facet> facets              = new HashMap<>();
+    @SuppressWarnings("unused")
+    private final Model                model;
 
-    public PhantasmGenerator(Model model, Configuration configuration) {
+    public PhantasmGenerator(Configuration configuration, Model model) {
         this.configuration = configuration;
         this.model = model;
     }
 
     public void generate() throws IOException {
-        List<Facet> facets;
         try {
-            facets = generateFacets();
+            generateFacets();
         } catch (IOException e) {
             throw new IOException(String.format("Unable to load workspace: %s",
                                                 configuration.resource));
         }
-        for (Facet facet : facets) {
+        for (Facet facet : facets.values()) {
             File file = getOutputFile(facet);
             STGroup group = new STGroupFile(TEMPLATES_FACET_STG);
             ST template = group.getInstanceOf(FACET);
             template.add(FACET, facet);
             generate(template, file);
         }
+    }
+
+    private Facet constructFacet(FacetContext facet, String ruleformType) {
+        String packageName = configuration.appendTypeToPackage ? String.format("%s.%s",
+                                                                               configuration.packageName,
+                                                                               ruleformType.toLowerCase())
+                                                              : configuration.packageName;
+        return new Facet(packageName, facet.classification.member.getText(),
+                         ruleformType);
     }
 
     private void generate(ST template, File file) {
@@ -99,10 +107,40 @@ public class PhantasmGenerator {
         }
     }
 
-    private List<Facet> generateFacets() throws IOException {
-        @SuppressWarnings("unused")
-        WorkspaceScope workspace = getWorkspace();
-        return Collections.emptyList();
+    private void generateFacets() throws IOException {
+        WorkspacePresentation wsp = new WorkspacePresentation(
+                                                              Utils.resolveResource(getClass(),
+                                                                                    configuration.resource));
+        wsp.getAgencyFacets().forEach(facet -> {
+            facets.put(new FacetKey(facet), constructFacet(facet, "Agency"));
+        });
+        wsp.getAgencyFacets().forEach(facet -> {
+                                          facets.put(new FacetKey(facet),
+                                                     constructFacet(facet,
+                                                                    "Attribute"));
+                                      });
+        wsp.getIntervalFacets().forEach(facet -> {
+            facets.put(new FacetKey(facet), constructFacet(facet, "Interval"));
+        });
+        wsp.getLocationFacets().forEach(facet -> {
+            facets.put(new FacetKey(facet), constructFacet(facet, "Location"));
+        });
+        wsp.getProductFacets().forEach(facet -> {
+            facets.put(new FacetKey(facet), constructFacet(facet, "Product"));
+        });
+        wsp.getRelationshipFacets().forEach(facet -> {
+                                                facets.put(new FacetKey(facet),
+                                                           constructFacet(facet,
+                                                                          "Relationship"));
+                                            });
+        wsp.getStatusCodeFacets().forEach(facet -> {
+                                              facets.put(new FacetKey(facet),
+                                                         constructFacet(facet,
+                                                                        "StatusCode"));
+                                          });
+        wsp.getUnitFacets().forEach(facet -> {
+            facets.put(new FacetKey(facet), constructFacet(facet, "Unit"));
+        });
     }
 
     private File getOutputFile(Facet facet) {
@@ -122,13 +160,7 @@ public class PhantasmGenerator {
         return file;
     }
 
-    private WorkspaceScope getWorkspace() throws IOException {
-        WorkspacePresentation wsp = new WorkspacePresentation(
-                                                              Utils.resolveResource(getClass(),
-                                                                                    configuration.resource));
-        return model.getWorkspaceModel().getScoped(uuidOf(stripQuotes(wsp.getWorkspaceDefinition().uri.getText())));
-    }
-
+    @SuppressWarnings("unused")
     private String stripQuotes(String original) {
         return original.substring(1, original.length() - 1);
     }

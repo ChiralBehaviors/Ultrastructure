@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.generator;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
@@ -33,7 +34,9 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
  *
  */
 public class TestGenerator extends AbstractModelTest {
-    private static final String THING_WSP = "/thing.wsp";
+    private static final String COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED = "com.chiralbehaviors.CoRE.phantasm.test.generated";
+    private static final String TARGET_PHANTASM_TEST_GENERATION                   = "target/phantasm-test-generation";
+    private static final String THING_WSP                                         = "/thing.wsp";
 
     @Before
     public void initializeWorkspace() throws IOException {
@@ -47,8 +50,12 @@ public class TestGenerator extends AbstractModelTest {
     public void testIt() throws IOException {
         Configuration configuration = new Configuration();
         configuration.resource = THING_WSP;
-        PhantasmGenerator generator = new PhantasmGenerator(model,
-                                                            configuration);
+        configuration.appendTypeToPackage = true;
+        configuration.outputDirectory = new File(
+                                                 TARGET_PHANTASM_TEST_GENERATION);
+        configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;
+        PhantasmGenerator generator = new PhantasmGenerator(configuration,
+                                                            model);
         generator.generate();
     }
 }

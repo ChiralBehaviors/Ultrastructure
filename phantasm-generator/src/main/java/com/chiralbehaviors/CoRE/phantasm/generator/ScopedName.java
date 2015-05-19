@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.generator;
 
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.QualifiedNameContext;
+
 /**
  * @author hhildebrand
  *
@@ -27,6 +29,11 @@ package com.chiralbehaviors.CoRE.phantasm.generator;
 public class ScopedName {
     private final String name;
     private final String namespace;
+
+    public ScopedName(QualifiedNameContext key) {
+        namespace = key.namespace != null ? key.namespace.getText() : null;
+        name = key.member.getText();
+    }
 
     public ScopedName(String namespace, String name) {
         this.namespace = namespace;

@@ -20,8 +20,16 @@
 
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
@@ -49,7 +57,30 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceDefinitio
  */
 public class WorkspacePresentation {
 
+    public static WorkspaceContext getWorkspaceContext(InputStream source)
+                                                                          throws IOException {
+        WorkspaceLexer l = new WorkspaceLexer(new ANTLRInputStream(source));
+        WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
+        p.addErrorListener(new BaseErrorListener() {
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer,
+                                    Object offendingSymbol, int line,
+                                    int charPositionInLine, String msg,
+                                    RecognitionException e) {
+                throw new IllegalStateException("failed to parse at line "
+                                                + line + " due to " + msg, e);
+            }
+        });
+        WorkspaceContext ctx = p.workspace();
+        return ctx;
+    }
+
     private final WorkspaceContext context;
+
+    public WorkspacePresentation(InputStream workspaceResource)
+                                                               throws IOException {
+        this(getWorkspaceContext(workspaceResource));
+    }
 
     public WorkspacePresentation(WorkspaceContext context) {
         this.context = context;

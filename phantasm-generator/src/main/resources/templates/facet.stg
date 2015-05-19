@@ -1,0 +1,53 @@
+group phantasm;
+
+key(scoped) ::=  <<@Key(<if(scoped.namespace)>namespace="<scoped.namespace>", <endif>name="<scoped.name>")>>
+
+primitiveGetter(getter) ::= <<
+    <key(getter.key)>
+    <getter.returnType> <getter.methodName>();
+
+>>
+
+primitiveSetter(setter) ::= <<
+    <key(setter.key)>
+    void <setter.methodName>(<setter.parameterType> <setter.parameterName>);
+
+>>
+
+inferredRelationshipGetter(getter) ::= <<
+    @Inferred
+    @Edge(<key(getter.key)>)
+    <getter.returnType> <getter.methodName>();
+
+>>
+
+relationshipGetter(getter) ::= <<
+    @Edge(<key(getter.key)>)
+    <getter.returnType> <getter.methodName>();
+
+>>
+
+relationshipSetter(setter) ::= <<
+    @Edge(@Key(<key(setter.key)>))
+    void <setter.methodName>(<setter.parameterType> <setter.parameterName>);
+
+>>
+
+facet(facet) ::= <<
+/**
+ * Generated Phantasm
+ */
+package <facet.packageName>;
+<facet.imports: {dec| import <dec>;<\n>}>
+@State(facets = {@Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>)}
+       workspace = <facet.uri>)
+public interface <facet.className> extends ScopedPhantasm\<<facet.ruleformType>\> {
+
+<facet.primitiveGetters: {getter| <primitiveGetter(getter)><\n>}>
+<facet.primitiveSetters: {setter| <primitiveSetter(setter)><\n>}>
+<facet.relationshipGetters: {getter| <relationshipGetter(getter)><\n>}>
+<facet.inferredRelationshipGetters: {getter| <inferredRelationshipGetter(getter)><\n>}>
+<facet.relationshipSetters: {setter| <relationshipSetter(setter)><\n>}>
+
+}
+>>

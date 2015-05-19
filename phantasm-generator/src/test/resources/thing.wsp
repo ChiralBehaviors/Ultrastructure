@@ -9,7 +9,7 @@ attributes {
     URI = "URI" "the Universal Resource Indicator" text;
     
     artifactId = "Artifact ID" "artifact identifier" text;
-    classification = "Classifier" "classification" text;
+    classifier = "Classifier" "classifier" text;
     groupId = "Group ID" "group identifier" text;
     typeValues = "Type Values" "Valid values for the Type attribute" text;
     properties = "properties" "a property map" keyed: true text;
@@ -28,7 +28,7 @@ attributes {
 locations {
     MavenArtifact = "MavenArtifact" "A maven artifact";
     facets {
-        kernel::IsA.MavenArtifact attributes { artifactId classification groupId type version }
+        kernel::IsA.MavenArtifact attributes { artifactId classifier groupId type version }
     }
 }
 products {
@@ -50,6 +50,23 @@ products {
                     authorizedParent MavenArtifact
                     cardinality 1
             }
+        kernel::IsA.Thing2
+            constraints {
+                childRelationship inThing1
+                    authorizedRelationship kernel::IsA
+                    authorizedParent Thing1
+                    cardinality 1
+                childRelationship derivedFrom
+                    authorizedRelationship kernel::IsA
+                    authorizedParent MavenArtifact
+                    cardinality 3
+                childRelationship thing2Of
+                    get: inferred
+                    authorizedRelationship kernel::IsA
+                    authorizedParent Thing3
+                    cardinality 3
+            }
+        kernel::IsA.Thing3
     }
 }
 relationships {

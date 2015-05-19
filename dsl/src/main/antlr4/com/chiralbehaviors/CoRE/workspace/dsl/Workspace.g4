@@ -216,13 +216,12 @@ facet:
     classification = qualifiedName
     ('attributes' LB classifiedAttributes RB)?
     ('constraints' LB networkConstraints RB)?
-    ('authorizations' LB xeeAuthorizations RB)?
     ;
 classifiedAttributes: (qualifiedName)+;
 networkConstraints: (constraint)+;
-xeeAuthorizations: (constraint)+;
 constraint: 
     'childRelationship ' childRelationship = qualifiedName
+    ('get:' inferredGet = 'inferred' | 'immediate')?
     'authorizedRelationship ' authorizedRelationship = qualifiedName
     'authorizedParent ' authorizedParent = qualifiedName
     'cardinality ' cardinality = Number

@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.generator;
 
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.QualifiedNameContext;
 
 /**
  * @author hhildebrand
@@ -38,7 +39,17 @@ public class FacetKey {
              new ScopedName(facet.classification));
     }
 
-    public FacetKey(ScopedName classification, ScopedName classifier) {
+    /**
+     * @param authorizedRelationship
+     * @param authorizedParent
+     */
+    public FacetKey(QualifiedNameContext authorizedRelationship,
+                    QualifiedNameContext authorizedParent) {
+        this(new ScopedName(authorizedRelationship),
+             new ScopedName(authorizedParent));
+    }
+
+    public FacetKey(ScopedName classifier, ScopedName classification) {
         this.classification = classification;
         this.classifier = classifier;
     }
@@ -89,5 +100,10 @@ public class FacetKey {
         result = prime * result
                  + ((classifier == null) ? 0 : classifier.hashCode());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s : %s", classifier, classification);
     }
 }

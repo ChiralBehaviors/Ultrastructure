@@ -90,7 +90,7 @@ public class ScopedName {
 
     @Override
     public String toString() {
-        return String.format("ScopedName [namespace=%s, name=%s]", namespace,
+        return String.format("[%s:%s]", namespace == null ? "" : namespace,
                              name);
     }
 }

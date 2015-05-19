@@ -32,20 +32,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformC
  *
  */
 public class MappedAttribute {
-    private final List<String> imports = new ArrayList<>();
-    private final String       name;
-    private final String       type;
-
-    public static String stripQuotes(String original) {
-        return original.substring(1, original.length() - 1);
-    }
-
-    public MappedAttribute(AttributeRuleformContext attribute) {
-        this.name = normalize(stripQuotes(attribute.existentialRuleform().name.getText()));
-        this.type = getType(attribute);
-    }
-
-    private String normalize(String text) {
+    public static String normalize(String text) {
         StringBuffer buff = new StringBuffer();
         buff.append(Character.toUpperCase(text.charAt(0)));
         boolean capitalizeNext = false;
@@ -63,25 +50,31 @@ public class MappedAttribute {
         return buff.toString();
     }
 
-    private String getType(AttributeRuleformContext attribute) {
-        StringBuffer rt = new StringBuffer();
-        if (isTrue(attribute.keyed)) {
-            imports.add("java.util.Map");
-            rt.append("Map<String, ");
-            rt.append(baseTypeOf(attribute.valueType.getText()));
-            rt.append('>');
-
-        } else if (isTrue(attribute.indexed)) {
-            rt.append(baseTypeOf(attribute.valueType.getText()));
-            rt.append("[]");
-        } else {
-            rt.append(baseTypeOf(attribute.valueType.getText()));
-        }
-        return rt.toString();
+    public static String stripQuotes(String original) {
+        return original.substring(1, original.length() - 1);
     }
 
-    protected boolean isTrue(Token indexed) {
-        return indexed != null && "true".equals(indexed.getText());
+    private final List<String> imports = new ArrayList<>();
+
+    private final String       name;
+
+    private final String       type;
+
+    public MappedAttribute(AttributeRuleformContext attribute) {
+        this.name = normalize(stripQuotes(attribute.existentialRuleform().name.getText()));
+        this.type = getType(attribute);
+    }
+
+    public List<String> getImports() {
+        return imports;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
     }
 
     private String baseTypeOf(String valueType) {
@@ -105,15 +98,24 @@ public class MappedAttribute {
         }
     }
 
-    public String getName() {
-        return name;
+    private String getType(AttributeRuleformContext attribute) {
+        StringBuffer rt = new StringBuffer();
+        if (isTrue(attribute.keyed)) {
+            imports.add("java.util.Map");
+            rt.append("Map<String, ");
+            rt.append(baseTypeOf(attribute.valueType.getText()));
+            rt.append('>');
+
+        } else if (isTrue(attribute.indexed)) {
+            rt.append(baseTypeOf(attribute.valueType.getText()));
+            rt.append("[]");
+        } else {
+            rt.append(baseTypeOf(attribute.valueType.getText()));
+        }
+        return rt.toString();
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public List<String> getImports() {
-        return imports;
+    protected boolean isTrue(Token indexed) {
+        return indexed != null && "true".equals(indexed.getText());
     }
 }

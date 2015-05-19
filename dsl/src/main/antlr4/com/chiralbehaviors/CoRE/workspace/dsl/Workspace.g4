@@ -221,6 +221,7 @@ classifiedAttributes: (qualifiedName)+;
 networkConstraints: (constraint)+;
 constraint: 
     'childRelationship ' childRelationship = qualifiedName
+    ('get:' inferredGet = 'inferred' | 'immediate')?
     'authorizedRelationship ' authorizedRelationship = qualifiedName
     'authorizedParent ' authorizedParent = qualifiedName
     'cardinality ' cardinality = Number

@@ -50,6 +50,23 @@ products {
                     authorizedParent MavenArtifact
                     cardinality 1
             }
+        kernel::IsA.Thing2
+            constraints {
+                childRelationship inThing1
+                    authorizedRelationship kernel::IsA
+                    authorizedParent Thing1
+                    cardinality 1
+                childRelationship derivedFrom
+                    authorizedRelationship kernel::IsA
+                    authorizedParent MavenArtifact
+                    cardinality 3
+                childRelationship thing2Of
+                    get: inferred
+                    authorizedRelationship kernel::IsA
+                    authorizedParent Thing3
+                    cardinality 3
+            }
+        kernel::IsA.Thing3
     }
 }
 relationships {

@@ -39,6 +39,14 @@ public class Setter {
                              + (name.length() == 1 ? "" : name.substring(1));
     }
 
+    public Setter(ScopedName key, String methodName, String parameterType,
+                  String parameterName) {
+        this.key = key;
+        this.methodName = methodName;
+        this.parameterType = parameterType;
+        this.parameterName = parameterName;
+    }
+
     public ScopedName getKey() {
         return key;
     }

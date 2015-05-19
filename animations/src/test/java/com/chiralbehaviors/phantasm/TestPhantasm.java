@@ -34,21 +34,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceLexer;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.phantasm.demo.MavenArtifact;
 import com.chiralbehaviors.phantasm.demo.Thing1;
 import com.chiralbehaviors.phantasm.demo.Thing2;
@@ -62,28 +53,9 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Before
     public void before() throws Exception {
-        WorkspaceLexer l = new WorkspaceLexer(
-                                              new ANTLRInputStream(
-                                                                   getClass().getResourceAsStream("/thing.wsp")));
-        WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
-        p.addErrorListener(new BaseErrorListener() {
-            @Override
-            public void syntaxError(Recognizer<?, ?> recognizer,
-                                    Object offendingSymbol, int line,
-                                    int charPositionInLine, String msg,
-                                    RecognitionException e) {
-                throw new IllegalStateException("failed to parse at line "
-                                                + line + " due to " + msg, e);
-            }
-        });
-        WorkspaceContext ctx = p.workspace();
-
-        WorkspaceImporter importer = new WorkspaceImporter(
-                                                           new WorkspacePresentation(
-                                                                                     ctx),
-                                                           model);
         em.getTransaction().begin();
-        importer.loadWorkspace();
+        WorkspaceImporter.createWorkspace(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
+                                          model);
         em.flush();
     }
 

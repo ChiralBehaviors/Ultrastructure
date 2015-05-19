@@ -123,7 +123,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     public ProductNetwork(Product parent, Relationship relationship,
                           Product child, Agency updatedBy) {
         super(relationship, updatedBy);
-        setRelationship(relationship);
         this.parent = parent;
         this.child = child;
     }

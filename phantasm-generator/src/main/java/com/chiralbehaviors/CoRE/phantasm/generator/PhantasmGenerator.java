@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.List;
 
 import org.stringtemplate.v4.ST;
@@ -101,7 +102,7 @@ public class PhantasmGenerator {
     private List<Facet> generateFacets() throws IOException {
         @SuppressWarnings("unused")
         WorkspaceScope workspace = getWorkspace();
-        return null;
+        return Collections.emptyList();
     }
 
     private File getOutputFile(Facet facet) {

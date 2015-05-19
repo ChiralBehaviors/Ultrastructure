@@ -20,27 +20,35 @@
 
 package com.chiralbehaviors.CoRE.phantasm.generator;
 
-import java.util.Arrays;
+import java.io.IOException;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.stringtemplate.v4.ST;
-import org.stringtemplate.v4.STGroup;
-import org.stringtemplate.v4.STGroupFile;
+
+import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 
 /**
  * @author hhildebrand
  *
  */
-public class TestGenerator {
+public class TestGenerator extends AbstractModelTest {
+    private static final String THING_WSP = "/thing.wsp";
+
+    @Before
+    public void initializeWorkspace() throws IOException {
+        model.getEntityManager().getTransaction().begin();
+        WorkspaceImporter.createWorkspace(TestGenerator.class.getResourceAsStream(THING_WSP),
+                                          model);
+        model.getEntityManager().flush();
+    }
 
     @Test
-    public void testIt() {
-        Facet facet = new Facet(Arrays.asList("foo"), "zeee package",
-                                "PhantasmII", "Agency", null, null, null, null,
-                                null);
-        STGroup group = new STGroupFile("templates/facet.stg");
-        ST template = group.getInstanceOf("facet");
-        template.add("facet", facet);
-        System.out.println(template.render());
+    public void testIt() throws IOException {
+        Configuration configuration = new Configuration();
+        configuration.resource = THING_WSP;
+        PhantasmGenerator generator = new PhantasmGenerator(model,
+                                                            configuration);
+        generator.generate();
     }
 }

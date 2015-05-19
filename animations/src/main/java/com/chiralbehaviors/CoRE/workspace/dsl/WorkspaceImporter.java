@@ -901,19 +901,10 @@ public class WorkspaceImporter {
         }
     }
 
-    /**
-     * @param facet
-     */
-    private void productAuthorizations(FacetContext facet) {
-        // TODO Auto-generated method stub
-
-    }
-
     private void productFacets() {
         for (FacetContext facet : wsp.getProductFacets()) {
             classifiedProductAttributes(facet);
             productNetworkConstraints(facet);
-            productAuthorizations(facet);
         }
     }
 

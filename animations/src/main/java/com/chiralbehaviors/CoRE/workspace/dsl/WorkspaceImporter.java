@@ -532,6 +532,7 @@ public class WorkspaceImporter {
                 ama.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
                 ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
                 ama.setValueFromString(stripQuotes(av.value.getText()));
+                workspace.add(ama);
                 em.persist(ama);
             }
         }

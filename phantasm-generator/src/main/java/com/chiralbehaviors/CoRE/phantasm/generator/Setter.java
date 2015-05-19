@@ -30,12 +30,13 @@ public class Setter {
     private final String     parameterName;
     private final String     parameterType;
 
-    public Setter(ScopedName key, String methodName, String parameterType,
-                  String parameterName) {
+    public Setter(ScopedName key, MappedAttribute attribute) {
         this.key = key;
-        this.methodName = methodName;
-        this.parameterType = parameterType;
-        this.parameterName = parameterName;
+        String name = attribute.getName();
+        this.methodName = String.format("set%s", name);
+        this.parameterType = attribute.getType();
+        this.parameterName = Character.toLowerCase(name.charAt(0))
+                             + (name.length() == 1 ? "" : name.substring(1));
     }
 
     public ScopedName getKey() {

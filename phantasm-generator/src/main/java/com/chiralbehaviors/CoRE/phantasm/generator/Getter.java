@@ -29,10 +29,10 @@ public class Getter {
     private final String     methodName;
     private final String     returnType;
 
-    public Getter(ScopedName key, String methodName, String returnType) {
+    public Getter(ScopedName key, MappedAttribute mappedAttribute) {
         this.key = key;
-        this.methodName = methodName;
-        this.returnType = returnType;
+        this.methodName = String.format("get%s", mappedAttribute.getName());
+        this.returnType = mappedAttribute.getType();
     }
 
     public ScopedName getKey() {

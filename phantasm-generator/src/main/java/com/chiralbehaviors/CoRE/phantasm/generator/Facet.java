@@ -21,15 +21,21 @@
 package com.chiralbehaviors.CoRE.phantasm.generator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 
 /**
  * @author hhildebrand
  *
  */
 public class Facet {
-    private final String       className;
-    private final List<String> imports                     = new ArrayList<>();
+    private final FacetContext facet;
+    private final Set<String>  imports                     = new HashSet<>();
     private final List<Getter> inferredRelationshipGetters = new ArrayList<>();
     private final String       packageName;
     private final List<Getter> primitiveGetters            = new ArrayList<>();
@@ -38,17 +44,17 @@ public class Facet {
     private final List<Setter> relationshipSetters         = new ArrayList<>();
     private final String       ruleformType;
 
-    public Facet(String packageName, String className, String ruleformType) {
+    public Facet(String packageName, String ruleformType, FacetContext facet) {
         this.packageName = packageName;
-        this.className = className;
+        this.facet = facet;
         this.ruleformType = ruleformType;
     }
 
     public String getClassName() {
-        return className;
+        return facet.classification.member.getText();
     }
 
-    public List<String> getImports() {
+    public Set<String> getImports() {
         return imports;
     }
 
@@ -78,5 +84,30 @@ public class Facet {
 
     public String getRuleformType() {
         return ruleformType;
+    }
+
+    public ScopedName getClassifier() {
+        return new ScopedName(facet.classifier);
+    }
+
+    public ScopedName getClassification() {
+        return new ScopedName(facet.classification);
+    }
+
+    public void resolve(Map<FacetKey, Facet> facets,
+                        WorkspacePresentation presentation,
+                        Map<ScopedName, MappedAttribute> mapped) {
+        resolveAttributes(presentation, mapped);
+    }
+
+    private void resolveAttributes(WorkspacePresentation presentation,
+                                   Map<ScopedName, MappedAttribute> mapped) {
+        facet.classifiedAttributes().qualifiedName().forEach(name -> {
+            ScopedName key = new ScopedName(name);
+            MappedAttribute attribute = mapped.get(key);
+            primitiveGetters.add(new Getter(key, attribute));
+            primitiveSetters.add(new Setter(key, attribute));
+            imports.addAll(attribute.getImports());
+        });
     }
 }

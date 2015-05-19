@@ -36,7 +36,8 @@ public class ScopedName {
     }
 
     public ScopedName(String namespace, String name) {
-        this.namespace = namespace;
+        this.namespace = (namespace != null && namespace.equals("")) ? null
+                                                                    : namespace;
         this.name = name;
     }
 
@@ -85,5 +86,11 @@ public class ScopedName {
         result = prime * result
                  + ((namespace == null) ? 0 : namespace.hashCode());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ScopedName [namespace=%s, name=%s]", namespace,
+                             name);
     }
 }

@@ -41,14 +41,14 @@ facet(facet) ::= <<
  */
 package <facet.packageName>;
 <facet.imports: {dec| import <dec>;<\n>}>
-@State(facets = {@Facet(classification = <key(facet.classification)>, classifier = <key(facet.classifier)>)})
+@State(facets = {@Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>)})
 public interface <facet.className> extends Phantasm\<<facet.ruleformType>\> {
 
-<facet.primitiveGetters: {getter| primitiveGetter(getter)<\n>}>
-<facet.primitiveSetters: {setter| primitiveSetter(setter)<\n>}>
-<facet.relationshipGetter: {getter| relationshipGetter(getter)<\n>}>
-<facet.inferredRelationshipGetters: {getter| inferredRelationshipGetter(getter)<\n>}>
-<facet.relationshipSetters: {setter| relationshipSetter(setter)<\n>}>
+<facet.primitiveGetters: {getter| <primitiveGetter(getter)><\n>}>
+<facet.primitiveSetters: {setter| <primitiveSetter(setter)><\n>}>
+<facet.relationshipGetter: {getter| <relationshipGetter(getter)><\n>}>
+<facet.inferredRelationshipGetters: {getter| <inferredRelationshipGetter(getter)><\n>}>
+<facet.relationshipSetters: {setter| <relationshipSetter(setter)><\n>}>
 
 }
 >>

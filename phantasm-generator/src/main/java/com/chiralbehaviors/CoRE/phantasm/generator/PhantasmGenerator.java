@@ -66,13 +66,19 @@ public class PhantasmGenerator {
         }
     }
 
+    private void resolve(WorkspacePresentation presentation) {
+        Map<ScopedName, MappedAttribute> mapped = mapAttributes(presentation);
+        for (Facet facet : facets.values()) {
+            facet.resolve(facets, presentation, mapped);
+        }
+    }
+
     private Facet constructFacet(FacetContext facet, String ruleformType) {
         String packageName = configuration.appendTypeToPackage ? String.format("%s.%s",
                                                                                configuration.packageName,
                                                                                ruleformType.toLowerCase())
                                                               : configuration.packageName;
-        return new Facet(packageName, facet.classification.member.getText(),
-                         ruleformType);
+        return new Facet(packageName, ruleformType, facet);
     }
 
     private void generate(ST template, File file) {
@@ -137,6 +143,7 @@ public class PhantasmGenerator {
         wsp.getUnitFacets().forEach(facet -> {
             facets.put(new FacetKey(facet), constructFacet(facet, "Unit"));
         });
+        resolve(wsp);
     }
 
     private File getOutputFile(Facet facet) {
@@ -156,8 +163,15 @@ public class PhantasmGenerator {
         return file;
     }
 
-    @SuppressWarnings("unused")
-    private String stripQuotes(String original) {
-        return original.substring(1, original.length() - 1);
+    public static Map<ScopedName, MappedAttribute> mapAttributes(WorkspacePresentation workspace) {
+        Map<ScopedName, MappedAttribute> mapped = new HashMap<>();
+        workspace.getAttributes().forEach(attribute -> {
+                                              mapped.put(new ScopedName(
+                                                                        "",
+                                                                        attribute.existentialRuleform().workspaceName.getText()),
+                                                         new MappedAttribute(
+                                                                             attribute));
+                                          });
+        return mapped;
     }
 }

@@ -73,12 +73,13 @@ public class PhantasmGenerator {
         }
     }
 
-    private Facet constructFacet(FacetContext facet, String ruleformType) {
+    private Facet constructFacet(FacetContext facet, String ruleformType,
+                                 String uri) {
         String packageName = configuration.appendTypeToPackage ? String.format("%s.%s",
                                                                                configuration.packageName,
                                                                                ruleformType.toLowerCase())
                                                               : configuration.packageName;
-        return new Facet(packageName, ruleformType, facet);
+        return new Facet(packageName, ruleformType, facet, uri);
     }
 
     private void generate(ST template, File file) {
@@ -113,36 +114,55 @@ public class PhantasmGenerator {
         WorkspacePresentation wsp = new WorkspacePresentation(
                                                               Utils.resolveResource(getClass(),
                                                                                     configuration.resource));
-        wsp.getAgencyFacets().forEach(facet -> {
-            facets.put(new FacetKey(facet), constructFacet(facet, "Agency"));
-        });
+
+        String uri = wsp.getWorkspaceDefinition().uri.getText();
         wsp.getAgencyFacets().forEach(facet -> {
                                           facets.put(new FacetKey(facet),
                                                      constructFacet(facet,
-                                                                    "Attribute"));
+                                                                    "Agency",
+                                                                    uri));
+                                      });
+        wsp.getAgencyFacets().forEach(facet -> {
+                                          facets.put(new FacetKey(facet),
+                                                     constructFacet(facet,
+                                                                    "Attribute",
+                                                                    uri));
                                       });
         wsp.getIntervalFacets().forEach(facet -> {
-            facets.put(new FacetKey(facet), constructFacet(facet, "Interval"));
-        });
+                                            facets.put(new FacetKey(facet),
+                                                       constructFacet(facet,
+                                                                      "Interval",
+                                                                      uri));
+                                        });
         wsp.getLocationFacets().forEach(facet -> {
-            facets.put(new FacetKey(facet), constructFacet(facet, "Location"));
-        });
+                                            facets.put(new FacetKey(facet),
+                                                       constructFacet(facet,
+                                                                      "Location",
+                                                                      uri));
+                                        });
         wsp.getProductFacets().forEach(facet -> {
-            facets.put(new FacetKey(facet), constructFacet(facet, "Product"));
-        });
+                                           facets.put(new FacetKey(facet),
+                                                      constructFacet(facet,
+                                                                     "Product",
+                                                                     uri));
+                                       });
         wsp.getRelationshipFacets().forEach(facet -> {
                                                 facets.put(new FacetKey(facet),
                                                            constructFacet(facet,
-                                                                          "Relationship"));
+                                                                          "Relationship",
+                                                                          uri));
                                             });
         wsp.getStatusCodeFacets().forEach(facet -> {
                                               facets.put(new FacetKey(facet),
                                                          constructFacet(facet,
-                                                                        "StatusCode"));
+                                                                        "StatusCode",
+                                                                        uri));
                                           });
         wsp.getUnitFacets().forEach(facet -> {
-            facets.put(new FacetKey(facet), constructFacet(facet, "Unit"));
-        });
+                                        facets.put(new FacetKey(facet),
+                                                   constructFacet(facet,
+                                                                  "Unit", uri));
+                                    });
         resolve(wsp);
     }
 

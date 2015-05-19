@@ -39,7 +39,8 @@ facet(facet) ::= <<
  */
 package <facet.packageName>;
 <facet.imports: {dec| import <dec>;<\n>}>
-@State(facets = {@Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>)})
+@State(facets = {@Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>)}
+       workspace = <facet.uri>)
 public interface <facet.className> extends ScopedPhantasm\<<facet.ruleformType>\> {
 
 <facet.primitiveGetters: {getter| <primitiveGetter(getter)><\n>}>

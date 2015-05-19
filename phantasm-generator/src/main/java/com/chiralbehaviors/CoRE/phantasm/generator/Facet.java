@@ -46,11 +46,14 @@ public class Facet {
     private final List<Getter> relationshipGetters         = new ArrayList<>();
     private final List<Setter> relationshipSetters         = new ArrayList<>();
     private final String       ruleformType;
+    private final String       uri;
 
-    public Facet(String packageName, String ruleformType, FacetContext facet) {
+    public Facet(String packageName, String ruleformType, FacetContext facet,
+                 String uri) {
         this.packageName = packageName;
         this.facet = facet;
         this.ruleformType = ruleformType;
+        this.uri = uri;
     }
 
     public ScopedName getClassification() {
@@ -97,6 +100,10 @@ public class Facet {
         return ruleformType;
     }
 
+    public String getUri() {
+        return uri;
+    }
+
     public void resolve(Map<FacetKey, Facet> facets,
                         WorkspacePresentation presentation,
                         Map<ScopedName, MappedAttribute> mapped) {
@@ -104,30 +111,8 @@ public class Facet {
         resolveRelationships(presentation, facets);
     }
 
-    private void resolveAttributes(WorkspacePresentation presentation,
-                                   Map<ScopedName, MappedAttribute> mapped) {
-        ClassifiedAttributesContext classifiedAttributes = facet.classifiedAttributes();
-        if (classifiedAttributes == null) {
-            return;
-        }
-        classifiedAttributes.qualifiedName().forEach(name -> {
-            ScopedName key = new ScopedName(name);
-            MappedAttribute attribute = mapped.get(key);
-            primitiveGetters.add(new Getter(key, attribute));
-            primitiveSetters.add(new Setter(key, attribute));
-            imports.addAll(attribute.getImports());
-        });
-    }
-
-    private void resolveRelationships(WorkspacePresentation presentation,
-                                      Map<FacetKey, Facet> facets) {
-        NetworkConstraintsContext networkConstraints = facet.networkConstraints();
-        if (networkConstraints == null) {
-            return;
-        }
-        networkConstraints.constraint().forEach(constraint -> {
-            resolve(constraint, facets);
-        });
+    private String getImport() {
+        return String.format("%s.%s", packageName, getClassName());
     }
 
     private void resolve(ConstraintContext constraint,
@@ -164,6 +149,21 @@ public class Facet {
                         constraint.inferredGet == null ? false
                                                       : constraint.inferredGet.getText().equals("inferred"));
         }
+    }
+
+    private void resolveAttributes(WorkspacePresentation presentation,
+                                   Map<ScopedName, MappedAttribute> mapped) {
+        ClassifiedAttributesContext classifiedAttributes = facet.classifiedAttributes();
+        if (classifiedAttributes == null) {
+            return;
+        }
+        classifiedAttributes.qualifiedName().forEach(name -> {
+            ScopedName key = new ScopedName(name);
+            MappedAttribute attribute = mapped.get(key);
+            primitiveGetters.add(new Getter(key, attribute));
+            primitiveSetters.add(new Setter(key, attribute));
+            imports.addAll(attribute.getImports());
+        });
     }
 
     private void resolveList(ScopedName key, String parameterName,
@@ -215,7 +215,14 @@ public class Facet {
                                            String.format("%ss", parameterName)));
     }
 
-    private String getImport() {
-        return String.format("%s.%s", packageName, getClassName());
+    private void resolveRelationships(WorkspacePresentation presentation,
+                                      Map<FacetKey, Facet> facets) {
+        NetworkConstraintsContext networkConstraints = facet.networkConstraints();
+        if (networkConstraints == null) {
+            return;
+        }
+        networkConstraints.constraint().forEach(constraint -> {
+            resolve(constraint, facets);
+        });
     }
 }

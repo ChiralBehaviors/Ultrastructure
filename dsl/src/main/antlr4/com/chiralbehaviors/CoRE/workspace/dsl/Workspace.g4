@@ -214,19 +214,20 @@ facet:
     classifier = qualifiedName
     '.'
     classification = qualifiedName
-    ('attributes' LB classifiedAttributes RB)?
+    (LB classifiedAttributes RB)?
     ('constraints' LB networkConstraints RB)?
     ;
 classifiedAttributes: (qualifiedName)+;
 networkConstraints: (constraint)+;
 constraint: 
-    'childRelationship ' childRelationship = qualifiedName
+    cardinality = Number
+    childRelationship = qualifiedName
     ('get:' inferredGet = 'inferred' | 'immediate')?
-    'authorizedRelationship ' authorizedRelationship = qualifiedName
-    'authorizedParent ' authorizedParent = qualifiedName
-    'cardinality ' cardinality = Number
-    ('sequenceNumber ' sequenceNumber = Number)?
-    ('attributes:' LB (qualifiedName)+ RB)?
+    ':'
+    authorizedRelationship = qualifiedName '.'
+    authorizedParent = qualifiedName
+    ('sequence ' sequenceNumber = Number)?
+    (LB (qualifiedName)+ RB)?
     ;
 
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;

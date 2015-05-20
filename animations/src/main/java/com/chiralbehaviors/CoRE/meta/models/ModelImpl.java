@@ -80,20 +80,20 @@ public class ModelImpl implements Model {
         return builder.toString();
     }
 
-    private final AgencyModel                      agencyModel;
-    private final Animations                       animations;
-    private final AttributeModel                   attributeModel;
-    private final ThreadLocal<AuthorizedPrincipal> currentPrincipal = new ThreadLocal<>();
-    private final EntityManager                    em;
-    private final IntervalModel                    intervalModel;
-    private final JobModel                         jobModel;
-    private final Kernel                           kernel;
-    private final LocationModel                    locationModel;
-    private final ProductModel                     productModel;
-    private final RelationshipModel                relationshipModel;
-    private final StatusCodeModel                  statusCodeModel;
-    private final UnitModel                        unitModel;
-    private final WorkspaceModel                   workspaceModel;
+    private final AgencyModel       agencyModel;
+    private final Animations        animations;
+    private final AttributeModel    attributeModel;
+    private AuthorizedPrincipal     currentPrincipal;
+    private final EntityManager     em;
+    private final IntervalModel     intervalModel;
+    private final JobModel          jobModel;
+    private final Kernel            kernel;
+    private final LocationModel     locationModel;
+    private final ProductModel      productModel;
+    private final RelationshipModel relationshipModel;
+    private final StatusCodeModel   statusCodeModel;
+    private final UnitModel         unitModel;
+    private final WorkspaceModel    workspaceModel;
 
     public ModelImpl(EntityManagerFactory emf) {
         EntityManager entityManager = emf.createEntityManager();
@@ -112,6 +112,31 @@ public class ModelImpl implements Model {
         statusCodeModel = new StatusCodeModelImpl(this);
         unitModel = new UnitModelImpl(this);
         workspaceModel = new WorkspaceModelImpl(this);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#apply(com.chiralbehaviors.CoRE.phantasm.Phantasm, java.lang.Class)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> apply(Phantasm<? extends T> source,
+                                                                                               Class<? extends Phantasm<? extends T>> phantasm) {
+        @SuppressWarnings({ "rawtypes" })
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cache.computeIfAbsent(phantasm,
+                                                                                                             (Class<?> p) -> new PhantasmDefinition(
+                                                                                                                                                    p));
+        return (Phantasm<? super T>) definition.construct(source.getRuleform(),
+                                                          this,
+                                                          getCurrentPrincipal().getPrincipal());
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#cast(com.chiralbehaviors.CoRE.phantasm.Phantasm, java.lang.Class)
+     */
+    @Override
+    public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> cast(Phantasm<? extends T> source,
+                                                                                              Class<? extends Phantasm<? extends T>> phantasm) {
+        return (Phantasm<? super T>) wrap(phantasm, source.getRuleform());
     }
 
     /* (non-Javadoc)
@@ -152,12 +177,12 @@ public class ModelImpl implements Model {
     public <V> V executeAs(AuthorizedPrincipal principal, Callable<V> function)
                                                                                throws Exception {
         V value = null;
-        AuthorizedPrincipal previous = currentPrincipal.get();
-        currentPrincipal.set(principal);
+        AuthorizedPrincipal previous = currentPrincipal;
+        currentPrincipal = principal;
         try {
             value = function.call();
         } finally {
-            currentPrincipal.set(previous);
+            currentPrincipal = previous;
         }
         return value;
     }
@@ -302,7 +327,7 @@ public class ModelImpl implements Model {
 
     @Override
     public AuthorizedPrincipal getCurrentPrincipal() {
-        AuthorizedPrincipal authorizedPrincipal = currentPrincipal.get();
+        AuthorizedPrincipal authorizedPrincipal = currentPrincipal;
         return authorizedPrincipal == null ? new AuthorizedPrincipal(
                                                                      kernel.getCoreAnimationSoftware())
                                           : authorizedPrincipal;

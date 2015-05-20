@@ -115,10 +115,10 @@ public class AttributeModelImpl
                                             description,
                                             model.getCurrentPrincipal().getPrincipal());
         em.persist(attribute);
-        initialize(attribute, aspect, updatedBy);
+        initialize(attribute, aspect);
         if (aspects != null) {
             for (Aspect<Attribute> a : aspects) {
-                initialize(attribute, a, updatedBy);
+                initialize(attribute, a);
             }
         }
         return attribute;

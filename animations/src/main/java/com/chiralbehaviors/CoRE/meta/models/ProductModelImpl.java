@@ -192,10 +192,10 @@ public class ProductModelImpl
                                       description,
                                       model.getCurrentPrincipal().getPrincipal());
         em.persist(product);
-        initialize(product, aspect, updatedBy);
+        initialize(product, aspect);
         if (aspects != null) {
             for (Aspect<Product> a : aspects) {
-                initialize(product, a, updatedBy);
+                initialize(product, a);
             }
         }
         return product;

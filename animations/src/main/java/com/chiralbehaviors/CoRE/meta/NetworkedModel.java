@@ -395,11 +395,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * 
      * @param ruleform
      * @param aspect
-     * @param updatedBy
-     * @return
      */
-    List<AttributeType> initialize(RuleForm ruleform, Aspect<RuleForm> aspect,
-                                   Agency updatedBy);
+    void initialize(RuleForm ruleform, Aspect<RuleForm> aspect);
 
     /**
      *

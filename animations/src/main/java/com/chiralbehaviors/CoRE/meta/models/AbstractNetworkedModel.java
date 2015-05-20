@@ -777,25 +777,25 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public final List<AttributeType> initialize(RuleForm ruleform,
-                                                Aspect<RuleForm> aspect,
-                                                Agency updatedBy) {
-        List<AttributeType> attributes = new ArrayList<>();
-        ruleform.link(aspect.getClassification(), aspect.getClassifier(),
-                      model.getCurrentPrincipal().getPrincipal(),
-                      model.getCurrentPrincipal().getPrincipal(), em);
+    public final void initialize(RuleForm ruleform, Aspect<RuleForm> aspect) {
+        Agency principal = model.getCurrentPrincipal().getPrincipal();
+        if (getImmediateChildren(aspect.getClassifier(),
+                                 aspect.getClassification()).isEmpty()) {
+            ruleform.link(aspect.getClassification(), aspect.getClassifier(),
+                          principal, principal, em);
+        }
         for (AttributeAuth authorization : getAttributeAuthorizations(aspect)) {
             if (!authorization.getAuthorizedAttribute().getKeyed()
                 && !authorization.getAuthorizedAttribute().getIndexed()) {
-                AttributeType attribute = create(ruleform,
-                                                 authorization.getAuthorizedAttribute(),
-                                                 updatedBy);
-                attributes.add(attribute);
-                attribute.setValue(authorization.getValue());
-                em.persist(attribute);
+                if (getAttributeValue(ruleform, null) == null) {
+                    AttributeType attribute = create(ruleform,
+                                                     authorization.getAuthorizedAttribute(),
+                                                     principal);
+                    attribute.setValue(authorization.getValue());
+                    em.persist(attribute);
+                }
             }
         }
-        return attributes;
     }
 
     /* (non-Javadoc)

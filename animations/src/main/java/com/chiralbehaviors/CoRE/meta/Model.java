@@ -92,7 +92,7 @@ public interface Model {
     <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
                                                                         String name,
                                                                         String description)
-                                                                                         throws InstantiationException;
+                                                                                           throws InstantiationException;
 
     /**
      * Execute the function within in the context of the authenticated
@@ -239,5 +239,26 @@ public interface Model {
      */
     <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> wrap(Class<? extends Phantasm<? extends T>> phantasm,
                                                                                        ExistentialRuleform<T, ?> ruleform);
+
+    /**
+     * Cast the phantasm to another facet
+     * 
+     * @param targetPhantasm
+     * @param ruleform
+     * @return
+     */
+    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> cast(Phantasm<? extends T> source,
+                                                                                       Class<? extends Phantasm<? extends T>> phantasm);
+
+    /**
+     * Apply the facet to the phantasm, classifying the underlying ruleform
+     * according to the
+     * 
+     * @param targetPhantasm
+     * @param ruleform
+     * @return
+     */
+    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> apply(Phantasm<? extends T> source,
+                                                                                        Class<? extends Phantasm<? extends T>> phantasm);
 
 }

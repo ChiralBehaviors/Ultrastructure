@@ -90,10 +90,10 @@ public class UnitModelImpl
         Unit agency = new Unit(name, description,
                                model.getCurrentPrincipal().getPrincipal());
         em.persist(agency);
-        initialize(agency, aspect, updatedBy);
+        initialize(agency, aspect);
         if (aspects != null) {
             for (Aspect<Unit> a : aspects) {
-                initialize(agency, a, updatedBy);
+                initialize(agency, a);
             }
         }
         return agency;

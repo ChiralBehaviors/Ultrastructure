@@ -127,10 +127,10 @@ public class StatusCodeModelImpl
                                            description,
                                            model.getCurrentPrincipal().getPrincipal());
         em.persist(agency);
-        initialize(agency, aspect, updatedBy);
+        initialize(agency, aspect);
         if (aspects != null) {
             for (Aspect<StatusCode> a : aspects) {
-                initialize(agency, a, updatedBy);
+                initialize(agency, a);
             }
         }
         return agency;

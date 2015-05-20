@@ -34,7 +34,6 @@ import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
@@ -63,13 +62,14 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                                                    model.getKernel().getIsA(),
                                                    model.getKernel().getWorkspace(),
                                                    updatedBy));
-        for (ProductAttribute attribute : model.getProductModel().initialize(definingProduct,
-                                                                             new Aspect<Product>(
-                                                                                                 model.getKernel().getIsA(),
-                                                                                                 model.getKernel().getWorkspace()),
-                                                                             updatedBy)) {
-            workspace.add(attribute);
-        }
+        Aspect<Product> aspect = new Aspect<Product>(
+                                                     model.getKernel().getIsA(),
+                                                     model.getKernel().getWorkspace());
+        model.getProductModel().initialize(definingProduct, aspect);
+        model.getProductModel().getAttributesClassifiedBy(definingProduct,
+                                                          aspect).forEach(attribute -> {
+                                                                              workspace.add(attribute);
+                                                                          });
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         return scope;

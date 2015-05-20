@@ -123,10 +123,10 @@ public class RelationshipModelImpl
                                                      description,
                                                      model.getCurrentPrincipal().getPrincipal());
         em.persist(relationship);
-        initialize(relationship, aspect, updatedBy);
+        initialize(relationship, aspect);
         if (aspects != null) {
             for (Aspect<Relationship> a : aspects) {
-                initialize(relationship, a, updatedBy);
+                initialize(relationship, a);
             }
         }
         return relationship;

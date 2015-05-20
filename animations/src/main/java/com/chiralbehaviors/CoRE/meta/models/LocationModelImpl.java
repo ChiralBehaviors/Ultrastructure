@@ -193,10 +193,10 @@ public class LocationModelImpl
                                          description,
                                          model.getCurrentPrincipal().getPrincipal());
         em.persist(location);
-        initialize(location, aspect, updatedBy);
+        initialize(location, aspect);
         if (aspects != null) {
             for (Aspect<Location> a : aspects) {
-                initialize(location, a, updatedBy);
+                initialize(location, a);
             }
         }
         return location;

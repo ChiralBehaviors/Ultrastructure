@@ -84,7 +84,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = (NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?>) model.getNetworkedModel(form);
         for (StateDefinition<RuleForm> facet : facets.values()) {
             for (Aspect<RuleForm> aspect : facet.getAspects(model)) {
-                networkedModel.initialize((RuleForm) form, aspect, updatedBy);
+                networkedModel.initialize((RuleForm) form, aspect);
             }
         }
         return wrap(ruleform, model);
@@ -96,10 +96,10 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
             facet.constrain(model, (RuleForm) ruleform);
         }
         PhantasmTwo<RuleForm> doppelgänger = new PhantasmTwo<RuleForm>(
-                                                                      (RuleForm) ruleform,
-                                                                      facets,
-                                                                      methods,
-                                                                      model);
+                                                                       (RuleForm) ruleform,
+                                                                       facets,
+                                                                       methods,
+                                                                       model);
         Phantasm<?> proxy = (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
                                                                  new Class[] { phantasm },
                                                                  doppelgänger);
@@ -107,7 +107,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
             for (Method method : facet.getInstantiations()) {
                 try {
                     doppelgänger.invokeDefault(proxy, method, new Object[] {},
-                                              facet.getStateInterface());
+                                               facet.getStateInterface());
                 } catch (Throwable e) {
                     throw new IllegalStateException(
                                                     String.format("Unable to invoke instantiation: %s",

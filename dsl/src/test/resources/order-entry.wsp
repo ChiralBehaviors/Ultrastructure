@@ -73,7 +73,7 @@ products {
         chemB.storageType.frozen
     }
     facets {
-        kernel::IsA.pricedProduct attributes { price }
+        kernel::IsA.pricedProduct { price }
     }
 }
 relationships {

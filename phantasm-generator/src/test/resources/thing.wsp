@@ -28,7 +28,7 @@ attributes {
 locations {
     MavenArtifact = "MavenArtifact" "A maven artifact";
     facets {
-        kernel::IsA.MavenArtifact attributes { artifactId classifier groupId type version }
+        kernel::IsA.MavenArtifact { artifactId classifier groupId type version }
     }
 }
 products {
@@ -39,32 +39,16 @@ products {
         this.kernel::HasMember.Thing1
     }
     facets {
-        kernel::IsA.Thing1 attributes {aliases URI discount properties}
+        kernel::IsA.Thing1 {aliases URI discount properties}
             constraints {
-                childRelationship thing1Of
-                    authorizedRelationship kernel::IsA
-                    authorizedParent Thing2
-                    cardinality 1
-                childRelationship derivedFrom
-                    authorizedRelationship kernel::IsA
-                    authorizedParent MavenArtifact
-                    cardinality 1
+                1 thing1Of: kernel::IsA.Thing2 
+                1 derivedFrom: kernel::IsA.MavenArtifact
             }
         kernel::IsA.Thing2
             constraints {
-                childRelationship inThing1
-                    authorizedRelationship kernel::IsA
-                    authorizedParent Thing1
-                    cardinality 1
-                childRelationship derivedFrom
-                    authorizedRelationship kernel::IsA
-                    authorizedParent MavenArtifact
-                    cardinality 3
-                childRelationship thing2Of
-                    get: inferred
-                    authorizedRelationship kernel::IsA
-                    authorizedParent Thing3
-                    cardinality 3
+                1 inThing1: kernel::IsA.Thing1 
+                3 derivedFrom: kernel::IsA.MavenArtifact 
+                3 thing2Of get: inferred: kernel::IsA.Thing3
             }
         kernel::IsA.Thing3
     }

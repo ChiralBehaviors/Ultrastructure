@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.annotations.Key;
+import com.chiralbehaviors.CoRE.annotations.Key;
 
 /**
  * @author hhildebrand

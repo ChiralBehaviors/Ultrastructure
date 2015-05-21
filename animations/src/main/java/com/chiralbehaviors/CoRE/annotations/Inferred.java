@@ -18,10 +18,9 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.annotations;
+package com.chiralbehaviors.CoRE.annotations;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -29,17 +28,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 
- * Represents a classifier within an existential entity network
+ * Indicates that the relationship should be interpreted as containing inferred
+ * network edges, not simply immediate
  * 
  * @author hhildebrand
  *
  */
 @Documented
-@Target({ TYPE, FIELD })
+@Target(METHOD)
 @Retention(RUNTIME)
-public @interface Facet {
-    Key classifier();
-
-    Key classification();
+public @interface Inferred {
 }

@@ -28,7 +28,7 @@ relationshipGetter(getter) ::= <<
 >>
 
 relationshipSetter(setter) ::= <<
-    @Edge(@Key(<key(setter.key)>))
+    @Edge(<key(setter.key)>)
     void <setter.methodName>(<setter.parameterType> <setter.parameterName>);
 
 >>
@@ -38,8 +38,19 @@ facet(facet) ::= <<
  * Generated Phantasm
  */
 package <facet.packageName>;
+import com.chiralbehaviors.CoRE.annotations.*;
+import com.chiralbehaviors.CoRE.phantasm.*;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 <facet.imports: {dec| import <dec>;<\n>}>
-@State(facets = {@Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>)}
+@SuppressWarnings("unused")
+@State(facets = {@Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>)},
        workspace = <facet.uri>)
 public interface <facet.className> extends ScopedPhantasm\<<facet.ruleformType>\> {
 

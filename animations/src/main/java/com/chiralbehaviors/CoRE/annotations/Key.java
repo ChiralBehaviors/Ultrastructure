@@ -1,6 +1,6 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
+ * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
+ *
  
  * This file is part of Ultrastructure.
  *
@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.annotations;
+package com.chiralbehaviors.CoRE.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,14 +27,15 @@ import java.lang.annotation.Target;
 
 /**
  * 
- * Indicates that the default method should be invoked when constructing a
- * phantasm.
+ * A namespace scoped (optional) name within a workspace
  * 
  * @author hhildebrand
  *
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Instantiation {
+public @interface Key {
+    String namespace() default "";
 
+    String name();
 }

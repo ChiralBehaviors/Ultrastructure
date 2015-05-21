@@ -223,6 +223,7 @@ constraint:
     cardinality = Number
     childRelationship = qualifiedName
     ('get:' inferredGet = 'inferred' | 'immediate')?
+    ('method:' methodNaming = 'relationship' | 'entity')?
     ':'
     authorizedRelationship = qualifiedName '.'
     authorizedParent = qualifiedName

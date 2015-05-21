@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.antlr.v4.runtime.Token;
+
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributesContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ConstraintContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
@@ -131,19 +133,27 @@ public class Facet {
         }
         ScopedName key = new ScopedName(constraint.childRelationship);
         int cardinality = Integer.parseInt(constraint.cardinality.getText());
+        Token methodNaming = constraint.methodNaming;
         String className = type.getClassName();
+        String baseName;
+        if (methodNaming == null || methodNaming.getText().equals("entity")) {
+            baseName = className;
+        } else {
+            baseName = constraint.childRelationship.member.getText();
+        }
         String parameterName = Character.toLowerCase(className.charAt(0))
                                + (className.length() == 1 ? ""
                                                          : className.substring(1));
         if (cardinality == 1) {
             relationshipGetters.add(new Getter(key, String.format("get%s",
-                                                                  className),
+                                                                  baseName),
                                                className));
             relationshipSetters.add(new Setter(key, String.format("set%s",
-                                                                  className),
+                                                                  baseName),
                                                className, parameterName));
         } else if (cardinality > 1) {
             resolveList(key,
+                        baseName,
                         parameterName,
                         className,
                         constraint.inferredGet == null ? false
@@ -166,51 +176,51 @@ public class Facet {
         });
     }
 
-    private void resolveList(ScopedName key, String parameterName,
-                             String className, boolean inferredGet) {
+    private void resolveList(ScopedName key, String baseName,
+                             String parameterName, String className,
+                             boolean inferredGet) {
         if (inferredGet) {
-            inferredRelationshipGetters.add(new Getter(
-                                                       key,
+            inferredRelationshipGetters.add(new Getter(key,
                                                        String.format("get%ss",
-                                                                     className),
+                                                                     baseName),
                                                        className));
             relationshipGetters.add(new Getter(key,
                                                String.format("getImmediate%ss",
-                                                             className),
+                                                             baseName),
                                                className));
             relationshipSetters.add(new Setter(key,
                                                String.format("setImmediate%ss",
-                                                             className),
+                                                             baseName),
                                                className,
                                                String.format("%ss",
                                                              parameterName)));
         } else {
             relationshipGetters.add(new Getter(key, String.format("get%ss",
-                                                                  className),
+                                                                  baseName),
                                                className));
             relationshipSetters.add(new Setter(key, String.format("set%ss",
-                                                                  className),
+                                                                  baseName),
                                                className,
                                                String.format("%ss",
                                                              parameterName)));
         }
 
-        relationshipSetters.add(new Setter(key, String.format("add%s",
-                                                              className),
+        relationshipSetters.add(new Setter(key,
+                                           String.format("add%s", baseName),
                                            className, parameterName));
         relationshipSetters.add(new Setter(key, String.format("remove%s",
-                                                              className),
+                                                              baseName),
                                            className, parameterName));
 
         imports.add("java.util.List");
         relationshipSetters.add(new Setter(
                                            key,
-                                           String.format("add%ss", className),
+                                           String.format("add%ss", baseName),
                                            String.format("List<%s>", className),
                                            String.format("%ss", parameterName)));
         relationshipSetters.add(new Setter(
                                            key,
-                                           String.format("remove%ss", className),
+                                           String.format("remove%ss", baseName),
                                            String.format("List<%s>", className),
                                            String.format("%ss", parameterName)));
     }

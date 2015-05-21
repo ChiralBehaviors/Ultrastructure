@@ -21,8 +21,8 @@
 package com.chiralbehaviors.CoRE.phantasm.impl;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.annotations.Facet;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.annotations.Facet;
 
 /**
  * @author hhildebrand

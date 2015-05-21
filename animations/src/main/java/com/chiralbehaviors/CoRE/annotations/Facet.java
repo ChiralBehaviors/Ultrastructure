@@ -1,6 +1,6 @@
 /**
- * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
- *
+ * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+ * 
  
  * This file is part of Ultrastructure.
  *
@@ -18,24 +18,28 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.annotations;
+package com.chiralbehaviors.CoRE.annotations;
 
-import java.lang.annotation.ElementType;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
  * 
- * A namespace scoped (optional) name within a workspace
+ * Represents a classifier within an existential entity network
  * 
  * @author hhildebrand
  *
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Key {
-    String namespace() default "";
+@Documented
+@Target({ TYPE, FIELD })
+@Retention(RUNTIME)
+public @interface Facet {
+    Key classifier();
 
-    String name();
+    Key classification();
 }

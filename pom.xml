@@ -71,6 +71,7 @@
         <module>dsl</module>
         <module>loader-plugin-test</module>
         <module>phantasm-generator</module>
+        <module>phantasm-plugin</module>
     </modules>
 
     <dependencyManagement>
@@ -138,6 +139,16 @@
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>phantasm-generator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>phantasm-plugin</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>

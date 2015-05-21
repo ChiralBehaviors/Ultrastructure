@@ -122,12 +122,12 @@ public class PhantasmGenerator {
                                                                     "Agency",
                                                                     uri));
                                       });
-        wsp.getAgencyFacets().forEach(facet -> {
-                                          facets.put(new FacetKey(facet),
-                                                     constructFacet(facet,
-                                                                    "Attribute",
-                                                                    uri));
-                                      });
+        wsp.getAttributeFacets().forEach(facet -> {
+                                             facets.put(new FacetKey(facet),
+                                                        constructFacet(facet,
+                                                                       "Attribute",
+                                                                       uri));
+                                         });
         wsp.getIntervalFacets().forEach(facet -> {
                                             facets.put(new FacetKey(facet),
                                                        constructFacet(facet,

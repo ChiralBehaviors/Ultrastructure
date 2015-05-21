@@ -31,6 +31,12 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.annotations.Edge;
+import com.chiralbehaviors.CoRE.annotations.Facet;
+import com.chiralbehaviors.CoRE.annotations.Inferred;
+import com.chiralbehaviors.CoRE.annotations.Instantiation;
+import com.chiralbehaviors.CoRE.annotations.Key;
+import com.chiralbehaviors.CoRE.annotations.State;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
@@ -42,12 +48,6 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.annotations.Edge;
-import com.chiralbehaviors.annotations.Facet;
-import com.chiralbehaviors.annotations.Inferred;
-import com.chiralbehaviors.annotations.Instantiation;
-import com.chiralbehaviors.annotations.Key;
-import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand

@@ -18,24 +18,23 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.annotations;
+package com.chiralbehaviors.CoRE.annotations;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that the relationship should be interpreted as containing inferred
- * network edges, not simply immediate
+ * 
+ * Indicates that the default method should be invoked when constructing a
+ * phantasm.
  * 
  * @author hhildebrand
  *
  */
-@Documented
-@Target(METHOD)
-@Retention(RUNTIME)
-public @interface Inferred {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Instantiation {
+
 }

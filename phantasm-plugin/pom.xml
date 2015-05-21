@@ -7,10 +7,11 @@
         <artifactId>CoRE.app</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>loader-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Loader Plugin</name>
-    <description>A maven plugin to load, drop and bootstrap a database</description>
+    <artifactId>phantasm-plugin</artifactId>
+    <name>Phantasm Plugin</name>
+    <description>A Maven plugin for generating phantasms from workspace facets.</description>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -18,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>loader</artifactId>
+            <artifactId>phantasm-generator</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -34,7 +35,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <goalPrefix>loader</goalPrefix>
+                    <goalPrefix>generate</goalPrefix>
                 </configuration>
             </plugin>
         </plugins>
@@ -76,43 +77,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
-    <profiles>
-        <profile>
-            <id>test-loader</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>${project.groupId}</groupId>
-                        <version>${project.version}</version>
-                        <artifactId>loader-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>load</goal>
-                                </goals>
-                                <phase>package</phase>
-                                <configuration>
-                                    <loader>
-                                        <dbaServer>${testing.db.server}</dbaServer>
-                                        <dbaPort>${testing.db.port}</dbaPort>
-                                        <dbaDb>${testing.db.database}</dbaDb>
-                                        <dbaUsername>${testing.db.login}</dbaUsername>
-                                        <dbaPassword>${testing.db.password}</dbaPassword>
-
-                                        <coreServer>${db.server}</coreServer>
-                                        <corePort>${db.port}</corePort>
-                                        <coreDb>${db.database}</coreDb>
-                                        <coreUsername>${db.login}</coreUsername>
-                                        <corePassword>${db.password}</corePassword>
-                                        <dropDatabase>true</dropDatabase>
-                                    </loader>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

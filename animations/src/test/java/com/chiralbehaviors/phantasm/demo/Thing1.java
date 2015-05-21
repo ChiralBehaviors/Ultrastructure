@@ -24,12 +24,12 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.annotations.Edge;
+import com.chiralbehaviors.CoRE.annotations.Key;
+import com.chiralbehaviors.CoRE.annotations.State;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.annotations.Edge;
-import com.chiralbehaviors.annotations.Key;
-import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand

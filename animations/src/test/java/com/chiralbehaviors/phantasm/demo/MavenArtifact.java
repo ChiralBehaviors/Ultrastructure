@@ -20,11 +20,11 @@
 
 package com.chiralbehaviors.phantasm.demo;
 
+import com.chiralbehaviors.CoRE.annotations.Instantiation;
+import com.chiralbehaviors.CoRE.annotations.Key;
+import com.chiralbehaviors.CoRE.annotations.State;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
-import com.chiralbehaviors.annotations.Instantiation;
-import com.chiralbehaviors.annotations.Key;
-import com.chiralbehaviors.annotations.State;
 
 /**
  * @author hhildebrand

@@ -38,6 +38,7 @@ facet(facet) ::= <<
  * Generated Phantasm
  */
 package <facet.packageName>;
+
 import com.chiralbehaviors.CoRE.annotations.*;
 import com.chiralbehaviors.CoRE.phantasm.*;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -49,6 +50,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 <facet.imports: {dec| import <dec>;<\n>}>
+
 @SuppressWarnings("unused")
 @State(facets = {@Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>)},
        workspace = <facet.uri>)

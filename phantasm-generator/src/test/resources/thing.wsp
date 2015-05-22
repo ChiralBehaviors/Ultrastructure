@@ -41,14 +41,14 @@ products {
     facets {
         kernel::IsA.Thing1 {aliases URI discount properties}
             constraints {
-                1 thing1Of: kernel::IsA.Thing2 
-                1 derivedFrom: kernel::IsA.MavenArtifact
+                one thing1Of: kernel::IsA.Thing2 
+                one derivedFrom: kernel::IsA.MavenArtifact
             }
         kernel::IsA.Thing2
             constraints {
-                1 inThing1: kernel::IsA.Thing1 
-                3 derivedFrom: kernel::IsA.MavenArtifact 
-                3 thing2Of get: inferred: kernel::IsA.Thing3
+                one inThing1: kernel::IsA.Thing1 
+                n derivedFrom: kernel::IsA.MavenArtifact 
+                n thing2Of get: inferred: kernel::IsA.Thing3
             }
         kernel::IsA.Thing3
     }

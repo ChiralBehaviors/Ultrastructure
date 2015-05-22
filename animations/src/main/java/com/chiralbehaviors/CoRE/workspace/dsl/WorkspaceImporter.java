@@ -63,6 +63,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
@@ -213,6 +214,7 @@ public class WorkspaceImporter {
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+                                                    authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
                                                     workspace.add(authorization);
                                                     em.persist(authorization);
                                                 });
@@ -387,6 +389,7 @@ public class WorkspaceImporter {
         authorization.setChildRelationship(resolve(constraint.childRelationship));
         authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
         authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
     }
@@ -420,6 +423,7 @@ public class WorkspaceImporter {
         authorization.setChildRelationship(resolve(constraint.childRelationship));
         authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
         authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
     }
@@ -463,6 +467,7 @@ public class WorkspaceImporter {
         authorization.setChildRelationship(resolve(constraint.childRelationship));
         authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
         authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
     }
@@ -500,6 +505,7 @@ public class WorkspaceImporter {
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+                                                    authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
                                                     workspace.add(authorization);
                                                     em.persist(authorization);
                                                 });
@@ -980,6 +986,7 @@ public class WorkspaceImporter {
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+                                                    authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
                                                     em.persist(authorization);
                                                 });
     }
@@ -1063,6 +1070,7 @@ public class WorkspaceImporter {
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+                                                    authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
                                                     workspace.add(authorization);
                                                     em.persist(authorization);
                                                 });
@@ -1110,6 +1118,7 @@ public class WorkspaceImporter {
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+                                                    authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
                                                     workspace.add(authorization);
                                                     em.persist(authorization);
                                                 });

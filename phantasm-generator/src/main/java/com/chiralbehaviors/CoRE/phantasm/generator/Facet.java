@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.antlr.v4.runtime.Token;
 
+import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributesContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ConstraintContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
@@ -132,7 +133,8 @@ public class Facet {
             imports.add(type.getImport());
         }
         ScopedName key = new ScopedName(constraint.childRelationship);
-        int cardinality = Integer.parseInt(constraint.cardinality.getText());
+        Cardinality cardinality = Enum.valueOf(Cardinality.class,
+                                               constraint.cardinality.getText().toUpperCase());
         Token methodNaming = constraint.methodNaming;
         String className = type.getClassName();
         String baseName;
@@ -144,20 +146,29 @@ public class Facet {
         String parameterName = Character.toLowerCase(className.charAt(0))
                                + (className.length() == 1 ? ""
                                                          : className.substring(1));
-        if (cardinality == 1) {
-            relationshipGetters.add(new Getter(key, String.format("get%s",
-                                                                  baseName),
-                                               className));
-            relationshipSetters.add(new Setter(key, String.format("set%s",
-                                                                  baseName),
-                                               className, parameterName));
-        } else if (cardinality > 1) {
-            resolveList(key,
-                        baseName,
-                        parameterName,
-                        className,
-                        constraint.inferredGet == null ? false
-                                                      : constraint.inferredGet.getText().equals("inferred"));
+        switch (cardinality) {
+            case ONE: {
+                relationshipGetters.add(new Getter(key,
+                                                   String.format("get%s",
+                                                                 baseName),
+                                                   className));
+                relationshipSetters.add(new Setter(key,
+                                                   String.format("set%s",
+                                                                 baseName),
+                                                   className, parameterName));
+                break;
+            }
+            case N: {
+                resolveList(key,
+                            baseName,
+                            parameterName,
+                            className,
+                            constraint.inferredGet == null ? false
+                                                          : constraint.inferredGet.getText().equals("inferred"));
+                break;
+            }
+            default:
+                break;
         }
     }
 

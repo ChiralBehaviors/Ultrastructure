@@ -148,22 +148,22 @@ abstract public class Ruleform implements Serializable, Cloneable {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Ruleform)) {
             return false;
         }
         Ruleform other = (Ruleform) obj;
-        if (id == null) {
-            if (other.id != null) {
+        if (getId() == null) {
+            if (other.getId() != null) {
                 return false;
             }
-        } else if (!id.equals(other.id)) {
+        } else if (!getId().equals(other.getId())) {
             return false;
         }
         return true;
     }
 
     @JsonGetter
-    public final UUID getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -201,10 +201,10 @@ abstract public class Ruleform implements Serializable, Cloneable {
      */
     @Override
     public int hashCode() {
-        if (id == null) {
+        if (getId() == null) {
             return 31;
         }
-        return id.hashCode();
+        return getId().hashCode();
     }
 
     public void persist(Triggers triggers) {

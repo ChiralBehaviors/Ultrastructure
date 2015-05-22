@@ -26,8 +26,6 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.job.Job;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 
@@ -40,11 +38,6 @@ public class SmartMergeTest extends AbstractModelTest {
     @Test
     public void testCircularity() {
         em.getTransaction().begin();
-        Attribute attr = new Attribute("attribute", null, kernel.getCore());
-        attr.setValueType(ValueType.TEXT);
-        em.persist(attr);
-        em.flush();
-        em.refresh(attr);
         Job job = model.getJobModel().newInitializedJob(kernel.getAnyProduct(),
                                                         kernel.getCore());
         job.setAssignTo(kernel.getCore());
@@ -52,10 +45,7 @@ public class SmartMergeTest extends AbstractModelTest {
         job.setDeliverTo(kernel.getAnyLocation());
         job.setDeliverFrom(kernel.getAnyLocation());
         job.setRequester(kernel.getAnyAgency());
-        em.getTransaction().rollback();
-        em.getTransaction().begin();
         Job merged = Util.smartMerge(em, job, new HashMap<>());
         assertNotNull(merged);
-        em.flush();
     }
 }

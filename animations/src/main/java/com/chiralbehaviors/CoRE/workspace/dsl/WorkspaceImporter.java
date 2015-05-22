@@ -213,6 +213,7 @@ public class WorkspaceImporter {
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+                                                    workspace.add(authorization);
                                                     em.persist(authorization);
                                                 });
     }
@@ -386,6 +387,7 @@ public class WorkspaceImporter {
         authorization.setChildRelationship(resolve(constraint.childRelationship));
         authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
         authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+        workspace.add(authorization);
         em.persist(authorization);
     }
 
@@ -418,6 +420,7 @@ public class WorkspaceImporter {
         authorization.setChildRelationship(resolve(constraint.childRelationship));
         authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
         authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+        workspace.add(authorization);
         em.persist(authorization);
     }
 
@@ -460,6 +463,7 @@ public class WorkspaceImporter {
         authorization.setChildRelationship(resolve(constraint.childRelationship));
         authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
         authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+        workspace.add(authorization);
         em.persist(authorization);
     }
 
@@ -496,6 +500,7 @@ public class WorkspaceImporter {
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+                                                    workspace.add(authorization);
                                                     em.persist(authorization);
                                                 });
     }
@@ -1058,6 +1063,7 @@ public class WorkspaceImporter {
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+                                                    workspace.add(authorization);
                                                     em.persist(authorization);
                                                 });
     }
@@ -1104,6 +1110,7 @@ public class WorkspaceImporter {
                                                     authorization.setChildRelationship(resolve(constraint.childRelationship));
                                                     authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
                                                     authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+                                                    workspace.add(authorization);
                                                     em.persist(authorization);
                                                 });
     }

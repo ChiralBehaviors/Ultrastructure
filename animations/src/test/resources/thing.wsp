@@ -41,8 +41,8 @@ products {
     facets {
         kernel::IsA.Thing1 { aliases URI discount properties }
             constraints {
-                1 thing1Of: kernel::IsA.Thing2
-                1 derivedFrom: kernel::IsA.MavenArtifact
+                one thing1Of: kernel::IsA.Thing2
+                one derivedFrom: kernel::IsA.MavenArtifact
             }
     }
 }

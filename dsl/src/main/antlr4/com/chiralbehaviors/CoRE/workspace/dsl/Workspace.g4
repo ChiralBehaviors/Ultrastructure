@@ -220,7 +220,7 @@ facet:
 classifiedAttributes: (qualifiedName)+;
 networkConstraints: (constraint)+;
 constraint: 
-    cardinality = Number
+    cardinality = ('zero' | 'one' | 'n')
     childRelationship = qualifiedName
     ('get:' inferredGet = 'inferred' | 'immediate')?
     ('method:' methodNaming = 'relationship' | 'entity')?

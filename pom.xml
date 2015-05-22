@@ -388,11 +388,6 @@
             <plugins>
                 <plugin>
                     <groupId>${project.groupId}</groupId>
-                    <artifactId>network-inference-generator</artifactId>
-                    <version>${project.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>${project.groupId}</groupId>
                     <artifactId>loader-plugin</artifactId>
                     <version>${project.version}</version>
                 </plugin>

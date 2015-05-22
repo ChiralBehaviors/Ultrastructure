@@ -28,7 +28,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
@@ -115,13 +115,11 @@ public class OrderProcessingWorkspace {
     public Workspace createWorkspace(Model model)
                                                  throws IllegalArgumentException,
                                                  IllegalAccessException {
-        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(
-                                                                        orderEntryWorkspace,
-                                                                        model);
+        EditableWorkspace workspace = (EditableWorkspace) model.getWorkspaceModel().getScoped(orderEntryWorkspace).getWorkspace();
         for (Field field : OrderProcessingWorkspace.class.getDeclaredFields()) {
             ExistentialRuleform<?, ?> extRuleform = (ExistentialRuleform<?, ?>) field.get(this);
             workspace.put(extRuleform.getName(), extRuleform);
         }
-        return workspace;
+        return model.getWorkspaceModel().getScoped(orderEntryWorkspace).getWorkspace();
     }
 }

@@ -27,6 +27,7 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
@@ -75,6 +76,16 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         return scope;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.WorkspaceModel#flush()
+     */
+    @Override
+    public void flush() {
+        for (WorkspaceScope scope : scopes.values()) {
+            scope.getWorkspace().flushCache();
+        }
+    }
+
     @Override
     public WorkspaceAuthorization get(Product definingProduct, String key) {
         TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATION,
@@ -109,9 +120,11 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                                                                               definingProduct,
                                                                               model));
         scopes.put(definingProduct.getId(), scope);
-        for (Product workspace : model.getProductModel().getChildren(definingProduct,
-                                                                     model.getKernel().getImports())) {
-            scope.add("", getScoped(workspace).getWorkspace());
+        if (!definingProduct.getId().equals(WellKnownProduct.KERNEL_WORKSPACE.id())) { // special handling of kernel ::sigh::
+            for (Product workspace : model.getProductModel().getChildren(definingProduct,
+                                                                         model.getKernel().getImports())) {
+                scope.add("", getScoped(workspace).getWorkspace());
+            }
         }
         return scope;
     }

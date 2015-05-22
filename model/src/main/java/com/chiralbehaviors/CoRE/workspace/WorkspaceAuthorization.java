@@ -31,6 +31,7 @@ import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_WORK
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -205,268 +206,268 @@ public class WorkspaceAuthorization extends Ruleform {
         return builder.toString();
     }
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency")
     private Agency                                agency;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_attribute")
     private AgencyAttribute                       agencyAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_attribute_authorization")
     private AgencyAttributeAuthorization          agencyAttributeAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location")
     private AgencyLocation                        agencyLocation;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location_attribute")
     private AgencyLocationAttribute               agencyLocationAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network")
     private AgencyNetwork                         agencyNetwork;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network_attribute")
     private AgencyNetworkAttribute                agencyNetworkAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network_authorization")
     private AgencyNetworkAuthorization            agencyNetworkAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product")
     private AgencyProduct                         agencyProduct;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product_attribute")
     private AgencyProductAttribute                agencyProductAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute")
     private Attribute                             attribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_meta_attribute")
     private AttributeMetaAttribute                attributeMetaAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attr_meta_attr_auth")
     private AttributeMetaAttributeAuthorization   attributeMetaAttributeAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_network")
     private AttributeNetwork                      attributeNetwork;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_network_attribute")
     private AttributeNetworkAttribute             attributeNetworkAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_network_authorization")
     private AttributeNetworkAuthorization         attributeNetworkAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "defining_product")
     private Product                               definingProduct;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval")
     private Interval                              interval;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_attribute")
     private IntervalAttribute                     intervalAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_attribute_authorization")
     private IntervalAttributeAuthorization        intervalAttributeAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_network")
     private IntervalNetwork                       intervalNetwork;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_network_attribute")
     private IntervalNetworkAttribute              intervalNetworkAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_network_authorization")
     private IntervalNetworkAuthorization          intervalNetworkAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
     private Job                                   job;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "job_chronology")
     private JobChronology                         jobChronology;
 
     private String                                key;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location")
     private Location                              location;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_attribute")
     private LocationAttribute                     locationAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_attribute_authorization")
     private LocationAttributeAuthorization        locationAttributeAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_network")
     private LocationNetwork                       locationNetwork;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_network_attribute")
     private LocationNetworkAttribute              locationNetworkAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_network_authorization")
     private LocationNetworkAuthorization          locationNetworkAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "meta_protocol")
     private MetaProtocol                          metaProtocol;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "network_inference")
     private NetworkInference                      networkInference;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product")
     private Product                               product;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_attribute")
     private ProductAttribute                      productAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_attribute_authorization")
     private ProductAttributeAuthorization         productAttributeAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_child_sequencing_authorization")
     private ProductChildSequencingAuthorization   productChildSequencingAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location")
     private ProductLocation                       productLocation;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location_attribute")
     private ProductLocationAttribute              productLocationAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network")
     private ProductNetwork                        productNetwork;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network_attribute")
     private ProductNetworkAttribute               productNetworkAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network_authorization")
     private ProductNetworkAuthorization           productNetworkAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_parent_sequencing_authorization")
     private ProductParentSequencingAuthorization  productParentSequencingAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_self_sequencing_authorization")
     private ProductSelfSequencingAuthorization    productSelfSequencingAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_sibling_sequencing_authorization")
     private ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "protocol")
     private Protocol                              protocol;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship")
     private Relationship                          relationship;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_attribute")
     private RelationshipAttribute                 relationshipAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_attribute_authorization")
     private RelationshipAttributeAuthorization    relationshipAttributeAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_network")
     private RelationshipNetwork                   relationshipNetwork;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_network_attribute")
     private RelationshipNetworkAttribute          relationshipNetworkAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_network_authorization")
     private RelationshipNetworkAuthorization      relationshipNetworkAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
     private StatusCode                            statusCode;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_attribute")
     private StatusCodeAttribute                   statusCodeAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_attribute_authorization")
     private StatusCodeAttributeAuthorization      statusCodeAttributeAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_network")
     private StatusCodeNetwork                     statusCodeNetwork;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_network_attribute")
     private StatusCodeNetworkAttribute            statusCodeNetworkAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_network_authorization")
     private StatusCodeNetworkAuthorization        statusCodeNetworkAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_sequencing")
     private StatusCodeSequencing                  statusCodeSequencing;
 
     @Column(name = "type")
     private String                                type;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit")
     private Unit                                  unit;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_attribute")
     private UnitAttribute                         unitAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_attribute_authorization")
     private UnitAttributeAuthorization            unitAttributeAuthorization;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_network")
     private UnitNetwork                           unitNetwork;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_network_attribute")
     private UnitNetworkAttribute                  unitNetworkAttribute;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_network_authorization")
     private UnitNetworkAuthorization              unitNetworkAuthorization;
 

@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform_;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -1257,7 +1258,7 @@ public class JobModelImpl implements JobModel {
         List<Predicate> masks = new ArrayList<>();
 
         // Service gets special handling.  we don't want infinite jobs due to ANY
-        if (metaprotocol.getServiceType().equals(kernel.getSameRelationship())) {
+        if (metaprotocol.getServiceType().getId().equals(WellKnownRelationship.SAME.id())) {
             masks.add(cb.equal(protocol.get(AbstractProtocol_.service),
                                job.getService()));
         } else {
@@ -1358,8 +1359,8 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private boolean isTxfm(Relationship relationship) {
-        return !kernel.getAnyRelationship().equals(relationship)
-               && !kernel.getSameRelationship().equals(relationship);
+        return !WellKnownRelationship.ANY.id().equals(relationship.getId())
+               && !WellKnownRelationship.SAME.id().equals(relationship.getId());
     }
 
     /**
@@ -1642,10 +1643,10 @@ public class JobModelImpl implements JobModel {
                                                                                                                                   CriteriaBuilder cb,
                                                                                                                                   CriteriaQuery<Protocol> query,
                                                                                                                                   Root<Protocol> protocol) {
-        if (!relationship.equals(kernel.getAnyRelationship())) {
+        if (!relationship.getId().equals(WellKnownRelationship.ANY.id())) {
             Predicate mask;
             Path<RuleForm> columnPath = protocol.get(column);
-            if (relationship.equals(kernel.getSameRelationship())) {
+            if (relationship.getId().equals(WellKnownRelationship.SAME.id())) {
                 mask = cb.equal(columnPath, ruleform);
             } else {
                 mask = columnPath.in(inferenceSubquery(ruleform,

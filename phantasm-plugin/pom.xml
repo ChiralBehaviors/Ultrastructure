@@ -34,9 +34,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <goalPrefix>generate</goalPrefix>
-                </configuration>
             </plugin>
         </plugins>
         <pluginManagement>

@@ -70,29 +70,6 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.chiralbehaviors.CoRE</groupId>
-                                    <artifactId>animations</artifactId>
-                                    <classifier>phat</classifier>
-                                    <version>${project.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/classes/animations</outputDirectory>
-                                    <destFileName>animations-${project.version}-phat.jar</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>unpack</id>
                         <phase>process-resources</phase>
                         <goals>

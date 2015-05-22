@@ -12,7 +12,12 @@
     <logger name="org.hibernate">
         <level value="ERROR" />
     </logger>
-
+    <logger name="org.hibernate.SQL">
+        <level value="ERROR" />
+    </logger>
+    <logger name="org.hibernate.type">
+        <level value="ERROR" />
+    </logger>
     <root>
         <level value="INFO" />
         <appender-ref ref="C" />

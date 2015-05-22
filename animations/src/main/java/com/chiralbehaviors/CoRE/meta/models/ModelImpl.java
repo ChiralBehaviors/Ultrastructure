@@ -41,11 +41,11 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue_;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
@@ -58,7 +58,6 @@ import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.impl.PhantasmDefinition;
@@ -99,9 +98,8 @@ public class ModelImpl implements Model {
         EntityManager entityManager = emf.createEntityManager();
         animations = new Animations(this, entityManager);
         em = new EmWrapper(animations, entityManager);
-        Workspace kernelWorkspace = KernelUtil.getKernelWorkspace(this);
-        kernelWorkspace.replaceFrom(em);
-        kernel = kernelWorkspace.getAccessor(Kernel.class);
+        workspaceModel = new WorkspaceModelImpl(this);
+        kernel = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id()).getWorkspace().getAccessor(Kernel.class);
         attributeModel = new AttributeModelImpl(this);
         productModel = new ProductModelImpl(this);
         intervalModel = new IntervalModelImpl(this);
@@ -111,7 +109,6 @@ public class ModelImpl implements Model {
         relationshipModel = new RelationshipModelImpl(this);
         statusCodeModel = new StatusCodeModelImpl(this);
         unitModel = new UnitModelImpl(this);
-        workspaceModel = new WorkspaceModelImpl(this);
     }
 
     /* (non-Javadoc)
@@ -303,6 +300,14 @@ public class ModelImpl implements Model {
                                                                     Class<Ruleform> ruleform) {
         return em.createNamedQuery(prefixFor(ruleform) + FIND_BY_NAME_SUFFIX).setParameter("agency",
                                                                                            updatedBy).getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#flushWorkspaces()
+     */
+    @Override
+    public void flushWorkspaces() {
+        workspaceModel.flush();
     }
 
     /*

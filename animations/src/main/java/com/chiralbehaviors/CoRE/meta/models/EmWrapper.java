@@ -48,6 +48,7 @@ public class EmWrapper implements EntityManager {
 
         @Override
         public void begin() {
+            animations.begin();
             txn.begin();
         }
 
@@ -95,6 +96,7 @@ public class EmWrapper implements EntityManager {
 
     @Override
     public void clear() {
+        animations.flush();
         em.clear();
     }
 

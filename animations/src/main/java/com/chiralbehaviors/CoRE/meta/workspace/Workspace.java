@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -46,6 +46,8 @@ public interface Workspace {
         }
         return URL_UUID_GENERATOR.generate(url);
     }
+
+    void flushCache();
 
     <T extends Ruleform> T get(String key);
 

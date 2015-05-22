@@ -441,6 +441,7 @@ public class Animations implements Triggers {
 
     public void rollback() {
         reset();
+        model.flushWorkspaces();
     }
 
     /* (non-Javadoc)
@@ -618,5 +619,12 @@ public class Animations implements Triggers {
     @Override
     public <T extends AttributeValue<?>> void persist(T value) {
         attributeValues.add(value);
+    }
+
+    /**
+     * 
+     */
+    public void begin() {
+        model.flushWorkspaces();
     }
 }

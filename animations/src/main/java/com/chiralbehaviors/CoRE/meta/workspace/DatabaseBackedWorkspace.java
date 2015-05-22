@@ -74,11 +74,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         }
     }
 
-    private final UUID             definingProduct;
-
-    protected final EntityManager  em;
-    protected final Model          model;
-    protected final WorkspaceScope scope;
+    private final UUID                    definingProduct;
+    protected final Map<String, Ruleform> cache = new HashMap<String, Ruleform>();
+    protected final EntityManager         em;
+    protected final Model                 model;
+    protected final WorkspaceScope        scope;
 
     public DatabaseBackedWorkspace(Product definingProduct, Model model) {
         assert definingProduct != null;
@@ -136,12 +136,25 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#flushCache()
+     */
+    @Override
+    public void flushCache() {
+        cache.clear();
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#get(java.lang.String)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends Ruleform> T get(String key) {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null");
+        }
+        Ruleform cached = cache.get(key);
+        if (cached != null) {
+            return (T) cached;
         }
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
@@ -152,7 +165,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                  getDefiningProduct())));
         try {
             WorkspaceAuthorization authorization = em.createQuery(query).getSingleResult();
-            return authorization.getEntity();
+            T ruleform = authorization.getEntity();
+            cache.put(key, ruleform);
+            return ruleform;
         } catch (NoResultException e) {
             return null;
         }
@@ -195,7 +210,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         for (ProductNetwork link : model.getProductModel().getImmediateChildrenLinks(getDefiningProduct(),
                                                                                      model.getKernel().getImports())) {
             NetworkAttribute<?> attribute = model.getProductModel().getAttributeValue(link,
-                                                                                 model.getKernel().getNamespaceAttribute());
+                                                                                      model.getKernel().getNamespaceAttribute());
             if (attribute == null) {
                 throw new IllegalStateException(
                                                 String.format("Import has no namespace attribute defined: %s",
@@ -224,6 +239,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public <T extends Ruleform> void put(String key, T ruleform) {
+        cache.put(key, ruleform);
         WorkspaceAuthorization authorization = new WorkspaceAuthorization();
         authorization.setDefiningProduct(getDefiningProduct());
         authorization.setEntity(ruleform);

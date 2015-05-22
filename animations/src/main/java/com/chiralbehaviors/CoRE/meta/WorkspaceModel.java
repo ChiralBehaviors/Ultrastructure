@@ -43,13 +43,15 @@ public interface WorkspaceModel {
      */
     WorkspaceScope createWorkspace(Product definingProduct, Agency updatedBy);
 
-    WorkspaceAuthorization get(Product definingProduct, String key);
+    void flush();
 
-    WorkspaceScope getScoped(UUID definingProduct);
+    WorkspaceAuthorization get(Product definingProduct, String key);
 
     List<WorkspaceAuthorization> getByType(Product definingProduct, String type);
 
     WorkspaceScope getScoped(Product definingProduct);
+
+    WorkspaceScope getScoped(UUID definingProduct);
 
     List<WorkspaceAuthorization> getWorkspace(Product definingProduct);
 }

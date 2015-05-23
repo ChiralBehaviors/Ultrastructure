@@ -31,7 +31,6 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -158,6 +157,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @return all existential ruleforms that exist for this model
      */
     List<RuleForm> findAll();
+
+    List<Facet<RuleForm, Network>> getAllFacets();
+
+    List<Facet<RuleForm, Network>> getAllFacetsOf(RuleForm ruleform);
 
     /**
      * Answer the allowed values for an Attribute, classified by the supplied
@@ -306,6 +309,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @return
      */
     List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
+
+    Facet<RuleForm, Network> getFacet(Aspect<RuleForm> aspect);
 
     /**
      * Answer the non inferred child that is connected to the parent via the

@@ -74,30 +74,5 @@
         <rollback>
             <dropTable tableName="interval_network_authorization" />
         </rollback>
-        <createIndex schemaName="ruleform" indexName="interval_network_authorization_classifier_idx" tableName="interval_network_authorization"
-            unique="false"
-        >
-            <column name="classification" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="interval_network_authorization_classification_idx" tableName="interval_network_authorization"
-            unique="false"
-        >
-            <column name="classifier" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="interval_network_authorization_authorized_parent_idx" tableName="interval_network_authorization"
-            unique="false"
-        >
-            <column name="authorized_parent" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="interval_network_authorization_authorized_relationship_idx" tableName="interval_network_authorization"
-            unique="false"
-        >
-            <column name="authorized_relationship" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="interval_network_authorization_child_relationship_idx" tableName="interval_network_authorization"
-            unique="false"
-        >
-            <column name="child_relationship" />
-        </createIndex>
     </changeSet>
 </databaseChangeLog>

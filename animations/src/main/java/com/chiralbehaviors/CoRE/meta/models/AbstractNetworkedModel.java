@@ -65,9 +65,10 @@ import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.meta.Facet;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
-import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -1140,6 +1141,24 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    @Override
+    public List<Facet<RuleForm, Network>> getAllFacetsOf(RuleForm ruleform) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Facet<RuleForm, Network> getFacet(Aspect<RuleForm> aspect) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Facet<RuleForm, Network>> getAllFacets() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

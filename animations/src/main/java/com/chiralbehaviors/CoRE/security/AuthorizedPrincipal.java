@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.network.Aspect;
+import com.chiralbehaviors.CoRE.meta.Aspect;
 
 /**
  * Represents the Agency and the authorized active aspects the principal has

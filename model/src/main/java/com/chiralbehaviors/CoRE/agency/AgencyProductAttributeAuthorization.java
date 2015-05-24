@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.agency;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,6 +30,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -49,6 +52,27 @@ public class AgencyProductAttributeAuthorization extends
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_authorization")
     private AgencyProductAuthorization networkAuthorization;
+
+    public AgencyProductAttributeAuthorization() {
+        super();
+    }
+
+    public AgencyProductAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public AgencyProductAttributeAuthorization(Attribute authorized,
+                                               Agency updatedBy) {
+        super(authorized, updatedBy);
+    }
+
+    public AgencyProductAttributeAuthorization(UUID id) {
+        super(id);
+    }
+
+    public AgencyProductAttributeAuthorization(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
+    }
 
     @Override
     public AgencyProductAuthorization getNetworkAuthorization() {

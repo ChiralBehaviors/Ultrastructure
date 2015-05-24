@@ -32,8 +32,10 @@ import org.antlr.v4.runtime.Token;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
@@ -67,6 +69,7 @@ import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
@@ -376,8 +379,16 @@ public class WorkspaceImporter {
      */
     private void createAgencyLocationAuth(FacetContext facet,
                                           ConstraintContext constraint) {
-        // TODO Auto-generated method stub
-
+        AgencyLocationAuthorization authorization = new AgencyLocationAuthorization(
+                                                                                    model.getCurrentPrincipal().getPrincipal());
+        authorization.setFromParent(resolve(facet.classification));
+        authorization.setFromRelationship(resolve(facet.classifier));
+        authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setToParent(resolve(constraint.authorizedParent));
+        authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        workspace.add(authorization);
+        em.persist(authorization);
     }
 
     private void createAgencyNetworkAuth(FacetContext facet,
@@ -400,8 +411,16 @@ public class WorkspaceImporter {
      */
     private void createAgencyProductAuth(FacetContext facet,
                                          ConstraintContext constraint) {
-        // TODO Auto-generated method stub
-
+        AgencyProductAuthorization authorization = new AgencyProductAuthorization(
+                                                                                  model.getCurrentPrincipal().getPrincipal());
+        authorization.setFromParent(resolve(facet.classification));
+        authorization.setFromRelationship(resolve(facet.classifier));
+        authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setToParent(resolve(constraint.authorizedParent));
+        authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        workspace.add(authorization);
+        em.persist(authorization);
     }
 
     /**
@@ -410,8 +429,16 @@ public class WorkspaceImporter {
      */
     private void createLocationAgencyAuth(FacetContext facet,
                                           ConstraintContext constraint) {
-        // TODO Auto-generated method stub
-
+        AgencyLocationAuthorization authorization = new AgencyLocationAuthorization(
+                                                                                    model.getCurrentPrincipal().getPrincipal());
+        authorization.setFromParent(resolve(constraint.authorizedParent));
+        authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setToParent(resolve(facet.classification));
+        authorization.setToRelationship(resolve(facet.classifier));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        workspace.add(authorization);
+        em.persist(authorization);
     }
 
     private void createLocationNetworkAuth(FacetContext facet,
@@ -434,8 +461,16 @@ public class WorkspaceImporter {
      */
     private void createLocationProductAuth(FacetContext facet,
                                            ConstraintContext constraint) {
-        // TODO Auto-generated method stub
-
+        ProductLocationAuthorization authorization = new ProductLocationAuthorization(
+                                                                                      model.getCurrentPrincipal().getPrincipal());
+        authorization.setFromParent(resolve(constraint.authorizedParent));
+        authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setToParent(resolve(facet.classification));
+        authorization.setToRelationship(resolve(facet.classifier));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        workspace.add(authorization);
+        em.persist(authorization);
     }
 
     /**
@@ -444,8 +479,16 @@ public class WorkspaceImporter {
      */
     private void createProductAgencyAuth(FacetContext facet,
                                          ConstraintContext constraint) {
-        // TODO Auto-generated method stub
-
+        AgencyProductAuthorization authorization = new AgencyProductAuthorization(
+                                                                                  model.getCurrentPrincipal().getPrincipal());
+        authorization.setFromParent(resolve(constraint.authorizedParent));
+        authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setToParent(resolve(facet.classification));
+        authorization.setToRelationship(resolve(facet.classifier));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        workspace.add(authorization);
+        em.persist(authorization);
     }
 
     /**
@@ -454,8 +497,16 @@ public class WorkspaceImporter {
      */
     private void createProductLocationAuth(FacetContext facet,
                                            ConstraintContext constraint) {
-        // TODO Auto-generated method stub
-
+        ProductLocationAuthorization authorization = new ProductLocationAuthorization(
+                                                                                      model.getCurrentPrincipal().getPrincipal());
+        authorization.setFromParent(resolve(facet.classification));
+        authorization.setFromRelationship(resolve(facet.classifier));
+        authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setToParent(resolve(constraint.authorizedParent));
+        authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        workspace.add(authorization);
+        em.persist(authorization);
     }
 
     private void createProductNetworkAuth(FacetContext facet,

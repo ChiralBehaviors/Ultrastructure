@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.agency;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,6 +30,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
@@ -50,12 +53,25 @@ public class AgencyLocationAttributeAuthorization extends
     @JoinColumn(name = "network_authorization")
     private AgencyLocationAuthorization networkAuthorization;
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyLocationAttributeAuthorization;
+    public AgencyLocationAttributeAuthorization() {
+        super();
+    }
+
+    public AgencyLocationAttributeAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public AgencyLocationAttributeAuthorization(Attribute authorized,
+                                                Agency updatedBy) {
+        super(authorized, updatedBy);
+    }
+
+    public AgencyLocationAttributeAuthorization(UUID id) {
+        super(id);
+    }
+
+    public AgencyLocationAttributeAuthorization(UUID id, Agency updatedBy) {
+        super(id, updatedBy);
     }
 
     /* (non-Javadoc)
@@ -64,6 +80,14 @@ public class AgencyLocationAttributeAuthorization extends
     @Override
     public XDomainNetworkAuthorization<Agency, Location> getNetworkAuthorization() {
         return networkAuthorization;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
+     */
+    @Override
+    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
+        return WorkspaceAuthorization_.agencyLocationAttributeAuthorization;
     }
 
     /* (non-Javadoc)

@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.product;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,6 +30,7 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -52,6 +55,18 @@ public class ProductLocationAuthorization extends
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "to_parent")
     private Location          toParent;
+
+    public ProductLocationAuthorization() {
+        super();
+    }
+
+    public ProductLocationAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public ProductLocationAuthorization(UUID id) {
+        super(id);
+    }
 
     @Override
     public Product getFromParent() {

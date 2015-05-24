@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.agency;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -52,6 +54,18 @@ public class AgencyLocationAuthorization extends
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "to_parent")
     private Location          toParent;
+
+    public AgencyLocationAuthorization() {
+        super();
+    }
+
+    public AgencyLocationAuthorization(Agency updatedBy) {
+        super(updatedBy);
+    }
+
+    public AgencyLocationAuthorization(UUID id) {
+        super(id);
+    }
 
     @Override
     public Agency getFromParent() {

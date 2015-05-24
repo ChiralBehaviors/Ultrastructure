@@ -1085,10 +1085,12 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setAgencyLocationAttributeAuthorization(AgencyLocationAttributeAuthorization agencyLocationAttributeAuthorization) {
+        type = AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION;
         this.agencyLocationAttributeAuthorization = agencyLocationAttributeAuthorization;
     }
 
     public void setAgencyLocationAuthorization(AgencyLocationAuthorization agencyLocationAuthorization) {
+        type = AGENCY_LOCATION_AUTHORIZATION;
         this.agencyLocationAuthorization = agencyLocationAuthorization;
     }
 
@@ -1113,14 +1115,17 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setAgencyProductAttribute(AgencyProductAttribute agencyProductAttribute) {
+        type = AGENCY_PRODUCT_ATTRIBUTE;
         this.agencyProductAttribute = agencyProductAttribute;
     }
 
     public void setAgencyProductAttributeAuthorization(AgencyProductAttributeAuthorization agencyProductAttributeAuthorization) {
+        type = AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION;
         this.agencyProductAttributeAuthorization = agencyProductAttributeAuthorization;
     }
 
     public void setAgencyProductAuthorization(AgencyProductAuthorization agencyProductAuthorization) {
+        type = AGENCY_PRODUCT_AUTHORIZATION;
         this.agencyProductAuthorization = agencyProductAuthorization;
     }
 
@@ -1493,10 +1498,12 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setProductLocationAttributeAuthorization(ProductLocationAttributeAuthorization productLocationAttributeAuthorization) {
+        type = PRODUCT_LOCATION_ATTRIBUTE_AUTHORIZATION;
         this.productLocationAttributeAuthorization = productLocationAttributeAuthorization;
     }
 
     public void setProductLocationAuthorization(ProductLocationAuthorization productLocationAuthorization) {
+        type = PRODUCT_LOCATION_AUTHORIZATION;
         this.productLocationAuthorization = productLocationAuthorization;
     }
 
@@ -1521,6 +1528,7 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setProductSelfSequencingAuthorization(ProductSelfSequencingAuthorization productSelfSequencingAuthorization) {
+        type = PRODUCT_SELF_SEQUENCING_AUTHORIZATION;
         this.productSelfSequencingAuthorization = productSelfSequencingAuthorization;
     }
 

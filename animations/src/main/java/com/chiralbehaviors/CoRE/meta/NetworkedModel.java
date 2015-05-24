@@ -158,10 +158,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<RuleForm> findAll();
 
-    List<Facet<RuleForm, Network>> getAllFacets();
-
-    List<Facet<RuleForm, Network>> getAllFacetsOf(RuleForm ruleform);
-
     /**
      * Answer the allowed values for an Attribute, classified by the supplied
      * aspect
@@ -309,8 +305,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @return
      */
     List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
-
-    Facet<RuleForm, Network> getFacet(Aspect<RuleForm> aspect);
 
     /**
      * Answer the non inferred child that is connected to the parent via the

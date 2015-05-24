@@ -6,70 +6,71 @@
 >
 
     <changeSet author="hhildebrand" id="2.0.0">
-        <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular Entities"
-            tableName="product_network_authorization"
-        >
+        <createTable schemaName="ruleform" tableName="product_location_authorization">
             <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="product_network_authorization_pkey" />
+                <constraints primaryKey="true" primaryKeyName="product_location_authorization_pkey" />
             </column>
-            <column name="classifier" type="uuid">
+            <column name="from_relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="classification" type="uuid">
+            <column name="from_parent" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="authorized_parent" type="uuid" />
-            <column name="authorized_relationship" type="uuid" />
+            <column name="to_parent" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="to_relationship" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
+                <constraints nullable="false" />
+            </column>
             <column name="cardinality" type="SMALLINT" />
-            <column name="child_relationship" remarks="the relationship between the classified child and its child" type="uuid" />
-            <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
-            >
+            <column name="connection" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="grouping_agency" remarks="A network parent an Product is expected to have" type="uuid" />
+            <column name="grouping_product" remarks="A network parent an product is expected to have" type="uuid" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
+            <column name="updated_by" remarks="The product that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
         </createTable>
         <rollback>
-            <dropTable tableName="product_network_authorization" />
+            <dropTable tableName="product_location_authorization" />
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="child_relationship" baseTableName="product_network_authorization" constraintName="product_network_authorization_child_relationship_fkey"
+            baseColumnNames="connection" baseTableName="product_location_authorization" constraintName="product_location_authorization_connection_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authorized_parent" baseTableName="product_network_authorization" constraintName="product_network_authorization_authorized_parent_fkey"
+            baseColumnNames="to_parent" baseTableName="product_location_authorization" constraintName="product_location_authorization_to_parent_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="location" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="to_relationship" baseTableName="product_location_authorization" constraintName="product_location_authorization_to_relationship_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="from_relationship" baseTableName="product_location_authorization" constraintName="product_location_authorization_from_parent_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="from_parent" baseTableName="product_location_authorization" constraintName="product_location_authorization_from_relationship_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="authorized_relationship" baseTableName="product_network_authorization" constraintName="product_network_authorization_authorized_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classifier" baseTableName="product_network_authorization" constraintName="product_network_authorization_classification_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classification" baseTableName="product_network_authorization" constraintName="product_network_authorization_classifier_fkey"
+            baseColumnNames="grouping_product" baseTableName="product_location_authorization" constraintName="product_location_authorization_grouping_product_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="grouping_agency" baseTableName="product_network_authorization" constraintName="product_network_authorization_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="product_network_authorization" constraintName="product_network_authorization_updated_by_fkey"
+            baseColumnNames="updated_by" baseTableName="product_location_authorization" constraintName="product_location_authorization_updated_by_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
+            referencedTableName="product" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, sequence_number"
-            constraintName="product_attribute_authorizatio_agency_classification_attri_key" deferrable="false" disabled="false"
-            initiallyDeferred="true" tableName="product_network_authorization" />
-        <createIndex schemaName="ruleform" indexName="product_network_authorization_updated_by_fkey_idx" tableName="product_network_authorization"
+            columnNames="from_relationship, from_parent, to_parent, to_relationship, connection, sequence_number" constraintName="product_location_unique_key"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_location_authorization" />
+        <createIndex schemaName="ruleform" indexName="product_location_authorization_updated_by_fkey_idx" tableName="product_location_authorization"
             unique="false"
         >
             <column name="updated_by" />

@@ -64,23 +64,26 @@ public class AbstractModelTest {
 
     @AfterClass
     public static void afterClass() {
-        if (em != null && em.getTransaction().isActive()) {
-            try {
-                em.getTransaction().rollback();
-                em.clear();
-                em.close();
-            } catch (Throwable e) {
-                LoggerFactory.getLogger(AbstractModelTest.class).warn(String.format("Had a bit of trouble cleaning up after %s",
-                                                                                    e.getMessage()),
-                                                                      e);
+        if (em != null) {
+            if (em.getTransaction().isActive()) {
+                try {
+                    em.getTransaction().rollback();
+                    em.close();
+                } catch (Throwable e) {
+                    LoggerFactory.getLogger(AbstractModelTest.class).warn(String.format("Had a bit of trouble cleaning up after %s",
+                                                                                        e.getMessage()),
+                                                                          e);
+                }
             }
         }
     }
 
     @BeforeClass
     public static void initializeDatabase() throws IOException, SQLException {
-        if (em != null && em.isOpen()) {
-            em.close();
+        if (em != null) {
+            if (em.isOpen()) {
+                em.close();
+            }
         }
         em = getEntityManager();
         KernelUtil.clearAndLoadKernel(em);

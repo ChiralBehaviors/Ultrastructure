@@ -228,7 +228,7 @@ constraint:
     authorizedRelationship = qualifiedName '.'
     authorizedParent = qualifiedName
     ('sequence ' sequenceNumber = Number)?
-    (LB (qualifiedName)+ RB)?
+    (LB classifiedAttributes RB)?
     ;
 
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;

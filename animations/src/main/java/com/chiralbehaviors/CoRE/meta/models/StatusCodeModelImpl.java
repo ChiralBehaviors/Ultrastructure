@@ -35,9 +35,9 @@ import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
-import com.chiralbehaviors.CoRE.network.Aspect;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 

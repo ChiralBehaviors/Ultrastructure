@@ -19,8 +19,12 @@
         <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyLocation</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyProduct</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyProductAttribute</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyProductAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization</class>
         <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.Attribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeAuthorization</class>
@@ -29,6 +33,7 @@
         <class>com.chiralbehaviors.CoRE.attribute.AttributeValue</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.Unit</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute</class>
         <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization</class>
@@ -39,6 +44,8 @@
         <class>com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.product.ProductLocation</class>
         <class>com.chiralbehaviors.CoRE.product.ProductLocationAttribute</class>
+        <class>com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.product.ProductLocationAuthorization</class>
         <class>com.chiralbehaviors.CoRE.product.ProductNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization</class>
@@ -69,6 +76,7 @@
         <class>com.chiralbehaviors.CoRE.network.NetworkInference</class>
         <class>com.chiralbehaviors.CoRE.network.NetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.network.NetworkRuleform</class>
+        <class>com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.ExistentialRuleform</class>
         <class>com.chiralbehaviors.CoRE.Ruleform</class>
         <class>com.chiralbehaviors.CoRE.time.Interval</class>

@@ -32,6 +32,7 @@ import com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -54,8 +55,7 @@ public class AgencyLocationAttributeAuthorization extends
      */
     @Override
     public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        // TODO Auto-generated method stub
-        return null;
+        return WorkspaceAuthorization_.agencyLocationAttributeAuthorization;
     }
 
     /* (non-Javadoc)

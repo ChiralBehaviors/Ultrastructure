@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -67,8 +68,7 @@ public class ProductLocationAuthorization extends
      */
     @Override
     public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        // TODO Auto-generated method stub
-        return null;
+        return WorkspaceAuthorization_.productLocationAuthorization;
     }
 
     @Override

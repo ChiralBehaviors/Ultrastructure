@@ -45,11 +45,15 @@ import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyLocation;
 import com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct;
 import com.chiralbehaviors.CoRE.agency.AgencyProductAttribute;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
@@ -89,6 +93,8 @@ import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttribute;
+import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
@@ -126,11 +132,15 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  AGENCY_LOCATION                          = "AgencyLocation";
 
     public static final String  AGENCY_LOCATION_ATTRIBUTE                = "AgencyLocationAttribute";
+    public static final String  AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION  = "AgencyLocationAttributeAuthorization";
+    public static final String  AGENCY_LOCATION_AUTHORIZATION            = "AgencyLocationAuthorization";
     public static final String  AGENCY_NETWORK                           = "AgencyNetwork";
     public static final String  AGENCY_NETWORK_ATTRIBUTE                 = "AgencyNetworkAttribute";
     public static final String  AGENCY_NETWORK_AUTHORIZATION             = "AgencyNetworkAuthorization";
     public static final String  AGENCY_PRODUCT                           = "AgencyProduct";
     public static final String  AGENCY_PRODUCT_ATTRIBUTE                 = "AgencyProductAttribute";
+    public static final String  AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION   = "AgencyProductAttributeAuthorization";
+    public static final String  AGENCY_PRODUCT_AUTHORIZATION             = "AgencyProductAuthorization";
     public static final String  ATTRIBUTE                                = "Attribute";
     public static final String  ATTRIBUTE_META_ATTRIBUTE                 = "AttributeMetaAttribute";
     public static final String  ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION   = "AttributeMetaAttributeAuthorization";
@@ -162,6 +172,8 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  PRODUCT_CHILD_SEQUENCING_AUTHORIZATION   = "ProductChildSequencingAuthorization";
     public static final String  PRODUCT_LOCATION                         = "ProductLocation";
     public static final String  PRODUCT_LOCATION_ATTRIBUTE               = "ProductLocationAttribute";
+    public static final String  PRODUCT_LOCATION_ATTRIBUTE_AUTHORIZATION = "ProductLocationAttributeAuthorization";
+    public static final String  PRODUCT_LOCATION_AUTHORIZATION           = "ProductLocationAuthorization";
     public static final String  PRODUCT_NETWORK                          = "ProductNetwork";
     public static final String  PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
     public static final String  PRODUCT_NETWORK_AUTHORIZATION            = "ProductNetworkAuthorization";
@@ -227,6 +239,14 @@ public class WorkspaceAuthorization extends Ruleform {
     private AgencyLocationAttribute               agencyLocationAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "agency_location_attribute_authorization")
+    private AgencyLocationAttributeAuthorization  agencyLocationAttributeAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "agency_location_authorization")
+    private AgencyLocationAuthorization           agencyLocationAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network")
     private AgencyNetwork                         agencyNetwork;
 
@@ -245,6 +265,14 @@ public class WorkspaceAuthorization extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product_attribute")
     private AgencyProductAttribute                agencyProductAttribute;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "agency_product_attribute_authorization")
+    private AgencyProductAttributeAuthorization   agencyProductAttributeAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "agency_product_authorization")
+    private AgencyProductAuthorization            agencyProductAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute")
@@ -363,6 +391,14 @@ public class WorkspaceAuthorization extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location_attribute")
     private ProductLocationAttribute              productLocationAttribute;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_location_attribute_authorization")
+    private ProductLocationAttributeAuthorization productLocationAttributeAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_location_authorization")
+    private ProductLocationAuthorization          productLocationAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network")
@@ -519,6 +555,16 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     @JsonIgnore
+    public AgencyLocationAttributeAuthorization getAgencyLocationAttributeAuthorization() {
+        return agencyLocationAttributeAuthorization;
+    }
+
+    @JsonIgnore
+    public AgencyLocationAuthorization getAgencyLocationAuthorization() {
+        return agencyLocationAuthorization;
+    }
+
+    @JsonIgnore
     public AgencyNetwork getAgencyNetwork() {
         return agencyNetwork;
     }
@@ -541,6 +587,16 @@ public class WorkspaceAuthorization extends Ruleform {
     @JsonIgnore
     public AgencyProductAttribute getAgencyProductAttribute() {
         return agencyProductAttribute;
+    }
+
+    @JsonIgnore
+    public AgencyProductAttributeAuthorization getAgencyProductAttributeAuthorization() {
+        return agencyProductAttributeAuthorization;
+    }
+
+    @JsonIgnore
+    public AgencyProductAuthorization getAgencyProductAuthorization() {
+        return agencyProductAuthorization;
     }
 
     @JsonIgnore
@@ -709,6 +765,18 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getStatusCodeNetworkAuthorization();
             case UNIT_NETWORK_AUTHORIZATION:
                 return (T) getUnitNetworkAuthorization();
+            case AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION:
+                return (T) getAgencyLocationAttributeAuthorization();
+            case AGENCY_LOCATION_AUTHORIZATION:
+                return (T) getAgencyLocationAuthorization();
+            case AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION:
+                return (T) getAgencyProductAttributeAuthorization();
+            case AGENCY_PRODUCT_AUTHORIZATION:
+                return (T) getAgencyProductAuthorization();
+            case PRODUCT_LOCATION_ATTRIBUTE_AUTHORIZATION:
+                return (T) getProductLocationAttributeAuthorization();
+            case PRODUCT_LOCATION_AUTHORIZATION:
+                return (T) getProductLocationAuthorization();
 
             default:
                 throw new IllegalStateException(
@@ -829,6 +897,16 @@ public class WorkspaceAuthorization extends Ruleform {
     @JsonIgnore
     public ProductLocationAttribute getProductLocationAttribute() {
         return productLocationAttribute;
+    }
+
+    @JsonIgnore
+    public ProductLocationAttributeAuthorization getProductLocationAttributeAuthorization() {
+        return productLocationAttributeAuthorization;
+    }
+
+    @JsonIgnore
+    public ProductLocationAuthorization getProductLocationAuthorization() {
+        return productLocationAuthorization;
     }
 
     @JsonIgnore
@@ -1006,6 +1084,14 @@ public class WorkspaceAuthorization extends Ruleform {
         this.agencyLocationAttribute = agencyLocationAttribute;
     }
 
+    public void setAgencyLocationAttributeAuthorization(AgencyLocationAttributeAuthorization agencyLocationAttributeAuthorization) {
+        this.agencyLocationAttributeAuthorization = agencyLocationAttributeAuthorization;
+    }
+
+    public void setAgencyLocationAuthorization(AgencyLocationAuthorization agencyLocationAuthorization) {
+        this.agencyLocationAuthorization = agencyLocationAuthorization;
+    }
+
     public void setAgencyNetwork(AgencyNetwork agencyNetwork) {
         type = AGENCY_NETWORK;
         this.agencyNetwork = agencyNetwork;
@@ -1028,6 +1114,14 @@ public class WorkspaceAuthorization extends Ruleform {
 
     public void setAgencyProductAttribute(AgencyProductAttribute agencyProductAttribute) {
         this.agencyProductAttribute = agencyProductAttribute;
+    }
+
+    public void setAgencyProductAttributeAuthorization(AgencyProductAttributeAuthorization agencyProductAttributeAuthorization) {
+        this.agencyProductAttributeAuthorization = agencyProductAttributeAuthorization;
+    }
+
+    public void setAgencyProductAuthorization(AgencyProductAuthorization agencyProductAuthorization) {
+        this.agencyProductAuthorization = agencyProductAuthorization;
     }
 
     public void setAttribute(Attribute attribute) {
@@ -1258,6 +1352,24 @@ public class WorkspaceAuthorization extends Ruleform {
             case UNIT_NETWORK_AUTHORIZATION:
                 setUnitNetworkAuthorization((UnitNetworkAuthorization) entity);
                 break;
+            case AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION:
+                setAgencyLocationAttributeAuthorization((AgencyLocationAttributeAuthorization) entity);
+                break;
+            case AGENCY_LOCATION_AUTHORIZATION:
+                setAgencyLocationAuthorization((AgencyLocationAuthorization) entity);
+                break;
+            case AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION:
+                setAgencyProductAttributeAuthorization((AgencyProductAttributeAuthorization) entity);
+                break;
+            case AGENCY_PRODUCT_AUTHORIZATION:
+                setAgencyProductAuthorization((AgencyProductAuthorization) entity);
+                break;
+            case PRODUCT_LOCATION_ATTRIBUTE_AUTHORIZATION:
+                setProductLocationAttributeAuthorization((ProductLocationAttributeAuthorization) entity);
+                break;
+            case PRODUCT_LOCATION_AUTHORIZATION:
+                setProductLocationAuthorization((ProductLocationAuthorization) entity);
+                break;
 
             default:
                 throw new IllegalStateException(
@@ -1378,6 +1490,14 @@ public class WorkspaceAuthorization extends Ruleform {
     public void setProductLocationAttribute(ProductLocationAttribute productLocationAttribute) {
         type = PRODUCT_LOCATION_ATTRIBUTE;
         this.productLocationAttribute = productLocationAttribute;
+    }
+
+    public void setProductLocationAttributeAuthorization(ProductLocationAttributeAuthorization productLocationAttributeAuthorization) {
+        this.productLocationAttributeAuthorization = productLocationAttributeAuthorization;
+    }
+
+    public void setProductLocationAuthorization(ProductLocationAuthorization productLocationAuthorization) {
+        this.productLocationAuthorization = productLocationAuthorization;
     }
 
     public void setProductNetwork(ProductNetwork productNetwork) {

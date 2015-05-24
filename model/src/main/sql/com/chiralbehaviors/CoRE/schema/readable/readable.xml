@@ -78,4 +78,13 @@
     <include relativeToChangelogFile="true" file="views/product_self_sequencing_authorization.xml" />
 
     <include relativeToChangelogFile="true" file="views/network_inference.xml" />
+    
+    <include relativeToChangelogFile="true" file="views/agency_network_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/attribute_network_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/interval_network_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/location_network_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/product_network_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/relationship_network_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/status_code_network_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/unit_network_attribute_authorization.xml" />
 </databaseChangeLog>

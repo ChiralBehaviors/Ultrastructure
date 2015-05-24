@@ -6,14 +6,14 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView viewName="relationship_network_attribute_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
+        <createView viewName="agency_location_attribute_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT     base_table.id ,
                 res.name AS grouping_agency, 
-                cls.name AS classifier, 
-                b.name AS classification, 
-                c.name AS child_relationship,
-                ar.name AS authorized_relationship, 
-                ap.name AS authorized_parent, 
+                from_r.name AS from_relationship, 
+                from_p.name AS from_parent, 
+                c.name AS connection,
+                to_r.name AS to_relationship, 
+                to_p.name AS to_parent, 
                 att.name AS authorized_attribute, 
                 base_table.sequence_number, 
                 base_table.text_value, 
@@ -22,21 +22,20 @@
                 base_table.notes, 
                 up.name AS updated_by, 
                 base_table.version
-             FROM relationship_attribute_authorization base_table
-             LEFT JOIN relationship_network_authorization na ON base_table.network_authorization = na.id
+             FROM agency_location_attribute_authorization base_table
+             LEFT JOIN agency_location_authorization na ON base_table.network_authorization = na.id
              LEFT JOIN agency res ON base_table.grouping_agency = res.id
-             LEFT JOIN relationship cls ON na.classifier = cls.id
-             LEFT JOIN relationship b ON na.classification = b.id
-             LEFT JOIN relationship c ON na.child_relationship = c.id
-             LEFT JOIN relationship ar ON na.authorized_relationship = ar.id
-             LEFT JOIN relationship ap ON na.authorized_parent = ap.id
+             LEFT JOIN relationship from_r ON na.from_relationship = from_r.id
+             LEFT JOIN agency from_p ON na.from_parent = from_p.id
+             LEFT JOIN relationship c ON na.connection = c.id
+             LEFT JOIN relationship to_r ON na.to_relationship = to_r.id
+             LEFT JOIN location to_p ON na.to_parent = to_p.id
              LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
              LEFT JOIN agency up ON base_table.updated_by = up.id
-             WHERE base_table.authorized_network_attribute IS NOT NULL;
             ]]>
         </createView>
         <rollback>
-            <dropView schemaName="readable" viewName="relationship_network_attribute_authorization" />
+            <dropView schemaName="readable" viewName="agency_location_attribute_authorization" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

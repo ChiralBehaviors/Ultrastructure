@@ -29,7 +29,7 @@
              LEFT JOIN interval b ON na.classification = b.id
              LEFT JOIN relationship c ON na.child_relationship = c.id
              LEFT JOIN relationship ar ON na.authorized_relationship = ar.id
-             LEFT JOIN interval ap ON na.authorized_parent = b.id
+             LEFT JOIN interval ap ON na.authorized_parent = ap.id
              LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
              LEFT JOIN agency up ON base_table.updated_by = up.id
              WHERE base_table.authorized_network_attribute IS NOT NULL;

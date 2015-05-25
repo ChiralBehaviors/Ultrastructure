@@ -90,14 +90,14 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         }
         List<ScopedFacet> failures = new ArrayList<>();
         for (ScopedFacet constraint : facets) {
-            RuleForm classification = (RuleForm) constraint.resolveClassifier(scope);
+            RuleForm classification = (RuleForm) constraint.resolveClassification(scope);
             if (classification == null) {
                 throw new IllegalStateException(
                                                 String.format("Cannot obtain classification %s for %s",
                                                               constraint.toClassificationString(),
                                                               stateInterface));
             }
-            Relationship classifier = (Relationship) constraint.resolveClassification(scope);
+            Relationship classifier = (Relationship) constraint.resolveClassifier(scope);
             if (classifier == null) {
                 throw new IllegalStateException(
                                                 String.format("Cannot obtain classifier %s for %s",
@@ -126,8 +126,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         List<Aspect<RuleForm>> specs = new ArrayList<>();
         for (ScopedFacet facet : facets) {
             specs.add(new Aspect<RuleForm>(
-                                           (Relationship) facet.resolveClassification(scope),
-                                           (RuleForm) facet.resolveClassifier(scope)));
+                                           (Relationship) facet.resolveClassifier(scope),
+                                           (RuleForm) facet.resolveClassification(scope)));
         }
         return specs;
     }

@@ -93,15 +93,15 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             RuleForm classification = (RuleForm) constraint.resolveClassifier(scope);
             if (classification == null) {
                 throw new IllegalStateException(
-                                                String.format("Cannot obtain classifer %s for %s",
-                                                              constraint.toClassifierString(),
+                                                String.format("Cannot obtain classification %s for %s",
+                                                              constraint.toClassificationString(),
                                                               stateInterface));
             }
             Relationship classifier = (Relationship) constraint.resolveClassification(scope);
             if (classifier == null) {
                 throw new IllegalStateException(
                                                 String.format("Cannot obtain classifier %s for %s",
-                                                              constraint.toClassificationString(),
+                                                              constraint.toClassifierString(),
                                                               stateInterface));
             }
             if (!networked.isAccessible(ruleform, classifier, classification)) {

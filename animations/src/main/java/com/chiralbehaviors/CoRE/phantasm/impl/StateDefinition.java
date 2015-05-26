@@ -88,7 +88,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                             String.format("Cannot obtain workspace for state interface %s",
                                                           stateInterface));
         }
-        List<ScopedFacet> failures = new ArrayList<>();
+        List<String> failures = new ArrayList<>();
         for (ScopedFacet constraint : facets) {
             RuleForm classification = (RuleForm) constraint.resolveClassification(scope);
             if (classification == null) {
@@ -105,7 +105,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                               stateInterface));
             }
             if (!networked.isAccessible(ruleform, classifier, classification)) {
-                failures.add(constraint);
+                failures.add(constraint.toFacetString());
             }
         }
         if (!failures.isEmpty()) {

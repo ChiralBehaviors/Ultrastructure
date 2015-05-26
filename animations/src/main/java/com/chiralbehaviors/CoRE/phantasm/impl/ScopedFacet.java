@@ -86,6 +86,11 @@ public interface ScopedFacet {
 
     Ruleform resolveClassifier(WorkspaceScope scope);
 
+    default String toFacetString() {
+        return String.format("[%s] : [%s]", toClassifierString(),
+                             toClassificationString());
+    }
+
     String toClassificationString();
 
     String toClassifierString();

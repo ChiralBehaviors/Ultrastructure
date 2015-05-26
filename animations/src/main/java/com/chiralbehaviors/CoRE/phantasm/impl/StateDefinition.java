@@ -225,6 +225,10 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         } else if (method.getName().startsWith(SET)) {
             processPrimitiveSetter(annotation.namespace(), annotation.name(),
                                    method);
+        } else {
+            throw new IllegalStateException(
+                                            String.format("The method is neither a primitive setter/getter: %s",
+                                                          method.toGenericString()));
         }
     }
 

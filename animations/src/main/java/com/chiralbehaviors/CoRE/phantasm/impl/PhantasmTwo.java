@@ -139,7 +139,15 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
         }
-        return method.invoke(this, args);
+        try {
+            return method.invoke(this, args);
+        } catch (IllegalArgumentException | IllegalAccessException
+                | InvocationTargetException e) {
+            throw new IllegalStateException(
+                                            String.format("Error invoking: %s",
+                                                          method.toGenericString()),
+                                            e);
+        }
     }
 
     private Attribute getAttribute(String namespace, String key,

@@ -17,21 +17,22 @@ package com.chiralbehaviors.phantasm.demo;
 
 import java.util.List;
 
-import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
-import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.annotations.Edge;
 import com.chiralbehaviors.CoRE.annotations.Key;
 import com.chiralbehaviors.CoRE.annotations.State;
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
+import com.chiralbehaviors.CoRE.time.Interval;
 
 /**
  * @author hparry
  *
  */
 @State(workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1")
-public interface Journey extends ScopedPhantasm<Interval>{
+public interface Journey extends ScopedPhantasm<Interval> {
 
-    @Key(namespace = "kernel", name = "HasMember")
+    @Edge(@Key(namespace = "kernel", name = "HasMember"))
     List<Step> getSteps();
 
-    @Key(namespace = "kernel", name = "HasMember")
+    @Edge(@Key(namespace = "kernel", name = "HasMember"))
     void addStep(Step step);
 }

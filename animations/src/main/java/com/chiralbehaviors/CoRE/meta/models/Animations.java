@@ -585,13 +585,13 @@ public class Animations implements Triggers {
                     if (ama.getTextValue() != null
                         && ama.getTextValue().equals(value.getTextValue())) {
                         valid = true;
-                        em.persist(value);
+                        break;
                     }
                 }
                 if (!valid) {
                     throw new IllegalArgumentException(
                                                        String.format("%s is not a valid value for attribute %s",
-                                                                     value.getTextValue(),
+                                                                     value,
                                                                      attribute));
                 }
             }

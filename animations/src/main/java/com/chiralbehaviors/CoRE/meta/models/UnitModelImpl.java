@@ -64,8 +64,8 @@ public class UnitModelImpl
     public void authorize(Aspect<Unit> aspect, Attribute... attributes) {
         UnitNetworkAuthorization auth = new UnitNetworkAuthorization(
                                                                      model.getCurrentPrincipal().getPrincipal());
-        auth.setClassification(aspect.getClassifier());
-        auth.setClassifier(aspect.getClassification());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             UnitAttributeAuthorization authorization = new UnitAttributeAuthorization(

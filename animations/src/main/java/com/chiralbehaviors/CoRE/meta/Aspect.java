@@ -43,12 +43,12 @@ public class Aspect<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
         this.classifier = classifier;
     }
 
-    public Relationship getClassification() {
-        return classifier;
+    public RuleForm getClassification() {
+        return classification;
     }
 
-    public RuleForm getClassifier() {
-        return classification;
+    public Relationship getClassifier() {
+        return classifier;
     }
 
     @Override

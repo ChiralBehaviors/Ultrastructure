@@ -88,24 +88,24 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                             String.format("Cannot obtain workspace for state interface %s",
                                                           stateInterface));
         }
-        List<ScopedFacet> failures = new ArrayList<>();
+        List<String> failures = new ArrayList<>();
         for (ScopedFacet constraint : facets) {
-            RuleForm classification = (RuleForm) constraint.resolveClassifier(scope);
+            RuleForm classification = (RuleForm) constraint.resolveClassification(scope);
             if (classification == null) {
                 throw new IllegalStateException(
-                                                String.format("Cannot obtain classifer %s for %s",
-                                                              constraint.toClassifierString(),
-                                                              stateInterface));
-            }
-            Relationship classifier = (Relationship) constraint.resolveClassification(scope);
-            if (classifier == null) {
-                throw new IllegalStateException(
-                                                String.format("Cannot obtain classifier %s for %s",
+                                                String.format("Cannot obtain classification %s for %s",
                                                               constraint.toClassificationString(),
                                                               stateInterface));
             }
+            Relationship classifier = (Relationship) constraint.resolveClassifier(scope);
+            if (classifier == null) {
+                throw new IllegalStateException(
+                                                String.format("Cannot obtain classifier %s for %s",
+                                                              constraint.toClassifierString(),
+                                                              stateInterface));
+            }
             if (!networked.isAccessible(ruleform, classifier, classification)) {
-                failures.add(constraint);
+                failures.add(constraint.toFacetString());
             }
         }
         if (!failures.isEmpty()) {
@@ -126,8 +126,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         List<Aspect<RuleForm>> specs = new ArrayList<>();
         for (ScopedFacet facet : facets) {
             specs.add(new Aspect<RuleForm>(
-                                           (Relationship) facet.resolveClassification(scope),
-                                           (RuleForm) facet.resolveClassifier(scope)));
+                                           (Relationship) facet.resolveClassifier(scope),
+                                           (RuleForm) facet.resolveClassification(scope)));
         }
         return specs;
     }
@@ -225,6 +225,10 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         } else if (method.getName().startsWith(SET)) {
             processPrimitiveSetter(annotation.namespace(), annotation.name(),
                                    method);
+        } else {
+            throw new IllegalStateException(
+                                            String.format("The method is neither a primitive setter/getter: %s",
+                                                          method.toGenericString()));
         }
     }
 

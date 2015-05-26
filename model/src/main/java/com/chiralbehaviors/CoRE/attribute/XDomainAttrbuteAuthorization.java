@@ -30,6 +30,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -53,6 +54,7 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
 
     private static final long serialVersionUID = 1L;
 
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_attribute")
     private Attribute         authorizedAttribute;

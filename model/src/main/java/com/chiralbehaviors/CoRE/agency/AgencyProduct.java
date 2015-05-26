@@ -31,6 +31,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -57,16 +58,19 @@ public class AgencyProduct extends Ruleform {
     private static final long  serialVersionUID      = 1L;
 
     // bi-directional many-to-one association to Agency
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency             agency;
 
     // bi-directional many-to-one association to Location
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
     private Product            product;
 
     // bi-directional many-to-one association to Relationship
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
     private Relationship       relationship;

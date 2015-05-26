@@ -29,6 +29,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -70,6 +71,7 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
     @JoinColumn(name = "child_relationship")
     private Relationship      childRelationship;
 
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classifier")
     private Relationship      classifier;

@@ -40,7 +40,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
  * @author hhildebrand
  *
  */
-@Table(name = "agency_product_authorization", schema = "ruleform")
+@Table(name = "product_location_authorization", schema = "ruleform")
 @Entity
 public class ProductLocationAuthorization extends
         XDomainNetworkAuthorization<Product, Location> {

@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
@@ -46,12 +47,14 @@ public class AgencyProductAuthorization extends
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "from_parent")
     private Agency            fromParent;
 
     // bi-directional many-to-one association to AgencyProduct
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @NotNull
     @JoinColumn(name = "to_parent")
     private Product           toParent;
 

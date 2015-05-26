@@ -36,11 +36,12 @@ public class StewardTest extends AbstractModelTest {
         em.getTransaction().begin();
         WorkspaceImporter.createWorkspace(this.getClass().getResourceAsStream("/steward-workspace.wsp"),
                                           model);
-        em.getTransaction().commit();
+        em.flush();
     }
 
     @Test
     public void testJourneys() throws InstantiationException {
+
         Journey journey = (Journey) model.construct(Journey.class,
                                                     "my journey", "test");
 

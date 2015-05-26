@@ -87,6 +87,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
                 networkedModel.initialize((RuleForm) form, aspect);
             }
         }
+        model.getEntityManager().flush();
         return wrap(ruleform, model);
     }
 

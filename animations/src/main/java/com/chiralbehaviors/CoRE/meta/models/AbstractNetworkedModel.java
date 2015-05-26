@@ -305,8 +305,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
                                                                       + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
                                                               authorization);
-        query.setParameter("classifier", aspect.getClassification());
-        query.setParameter("classification", aspect.getClassifier());
+        query.setParameter("classifier", aspect.getClassifier());
+        query.setParameter("classification", aspect.getClassification());
         return query.getResultList();
     }
 
@@ -323,8 +323,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
                                                                       + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
                                                               authorization);
-        query.setParameter("classifier", aspect.getClassification());
-        query.setParameter("classification", aspect.getClassifier());
+        query.setParameter("classifier", aspect.getClassifier());
+        query.setParameter("classification", aspect.getClassification());
         query.setParameter("attribute", attribute);
         return query.getResultList();
     }
@@ -354,8 +354,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                       + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX,
                                                               attribute);
         query.setParameter("ruleform", ruleform);
-        query.setParameter("classification", aspect.getClassifier());
-        query.setParameter("classifier", aspect.getClassification());
+        query.setParameter("classifier", aspect.getClassifier());
+        query.setParameter("classification", aspect.getClassification());
         return query.getResultList();
     }
 
@@ -777,9 +777,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public final void initialize(RuleForm ruleform, Aspect<RuleForm> aspect) {
         Agency principal = model.getCurrentPrincipal().getPrincipal();
-        if (getImmediateChildren(aspect.getClassifier(),
-                                 aspect.getClassification()).isEmpty()) {
-            ruleform.link(aspect.getClassification(), aspect.getClassifier(),
+        if (getImmediateChildren(aspect.getClassification(),
+                                 aspect.getClassifier()).isEmpty()) {
+            ruleform.link(aspect.getClassifier(), aspect.getClassification(),
                           principal, principal, em);
         }
         for (AttributeAuth authorization : getAttributeAuthorizations(aspect)) {

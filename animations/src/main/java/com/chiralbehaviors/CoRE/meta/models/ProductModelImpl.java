@@ -75,8 +75,8 @@ public class ProductModelImpl
     public void authorize(Aspect<Product> aspect, Attribute... attributes) {
         ProductNetworkAuthorization auth = new ProductNetworkAuthorization(
                                                                            model.getCurrentPrincipal().getPrincipal());
-        auth.setClassification(aspect.getClassifier());
-        auth.setClassifier(aspect.getClassification());
+        auth.setClassifier(aspect.getClassifier());
+        auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             ProductAttributeAuthorization authorization = new ProductAttributeAuthorization(

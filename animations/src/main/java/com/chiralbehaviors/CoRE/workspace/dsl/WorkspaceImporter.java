@@ -493,8 +493,8 @@ public class WorkspaceImporter {
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
-        workspace.add(authorization);
         em.persist(authorization);
+        workspace.add(authorization);
         ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
         if (classifiedAttributes == null) {
             return;
@@ -1206,25 +1206,22 @@ public class WorkspaceImporter {
 
     @SuppressWarnings("unchecked")
     private <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
-        if (qualifiedName.namespace != null) {
-            T ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
-                                          qualifiedName.member.getText());
-            if (ruleform == null) {
-                throw new InvalidKeyException(
-                                              String.format("Cannot resolve %s:%s",
-                                                            qualifiedName.namespace.getText(),
-                                                            qualifiedName.member.getText()));
-            }
-            return ruleform;
-        }
         T ruleform;
-        if (qualifiedName.member.getText().equals(THIS)) {
+        if (qualifiedName.namespace != null) {
+            ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
+                                        qualifiedName.member.getText());
+            return ruleform;
+        } else if (qualifiedName.member.getText().equals(THIS)) {
             ruleform = (T) workspace.getDefiningProduct();
         } else {
             ruleform = workspace.get(qualifiedName.member.getText());
+        }
+        if (ruleform == null) {
             if (ruleform == null) {
                 throw new InvalidKeyException(
-                                              String.format("Cannot find workspace key: %s",
+                                              String.format("Cannot resolve %s:%s",
+                                                            qualifiedName.namespace == null ? ""
+                                                                                           : qualifiedName.namespace.getText(),
                                                             qualifiedName.member.getText()));
             }
         }

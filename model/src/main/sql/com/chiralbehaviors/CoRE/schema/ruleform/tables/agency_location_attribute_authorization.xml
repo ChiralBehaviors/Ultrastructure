@@ -41,7 +41,7 @@
             baseColumnNames="authorized_attribute" baseTableName="agency_location_attribute_authorization" constraintName="agency_location_attribute_authorization_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="network_authorization" baseTableName="agency_location_attribute_authorization" constraintName="agency_location_attribute_authorization__attribute_fkey"
+            baseColumnNames="network_authorization" baseTableName="agency_location_attribute_authorization" constraintName="agency_location_attribute_authorization_network_auth_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_location_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

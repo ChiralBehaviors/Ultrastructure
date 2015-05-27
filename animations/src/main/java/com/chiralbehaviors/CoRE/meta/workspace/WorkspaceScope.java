@@ -99,11 +99,15 @@ public class WorkspaceScope {
         }
         Workspace workspace = imports.get(namespace);
         if (workspace == null) {
-            throw new IllegalArgumentException(String.format("Namespace %s does not exist", namespace));
+            throw new IllegalArgumentException(
+                                               String.format("Namespace %s does not exist",
+                                                             namespace));
         }
         T member = workspace.get(name);
         if (member == null) {
-            throw new IllegalArgumentException(String.format("Member %s:%s does not exist", namespace, name));
+            throw new IllegalArgumentException(
+                                               String.format("Member %s::%s does not exist",
+                                                             namespace, name));
         }
         return member;
     }

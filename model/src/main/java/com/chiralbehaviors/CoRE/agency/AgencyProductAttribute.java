@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -49,11 +50,13 @@ public class AgencyProductAttribute extends AttributeValue<AgencyProduct> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
     private Agency            agency;
 
     // bi-directional many-to-one association to AgencyProduct
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_product")
     private AgencyProduct     agencyProduct;

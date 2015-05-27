@@ -27,6 +27,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -45,12 +46,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
     private static final long serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_parent")
     private Agency            authorizedParent;
 
-    // bi-directional many-to-one association to Event
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
     private Agency            classification;

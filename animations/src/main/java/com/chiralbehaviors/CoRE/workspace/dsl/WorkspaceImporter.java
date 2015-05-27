@@ -1211,8 +1211,7 @@ public class WorkspaceImporter {
             ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
                                         qualifiedName.member.getText());
             return ruleform;
-        }
-        if (qualifiedName.member.getText().equals(THIS)) {
+        } else if (qualifiedName.member.getText().equals(THIS)) {
             ruleform = (T) workspace.getDefiningProduct();
         } else {
             ruleform = workspace.get(qualifiedName.member.getText());
@@ -1221,7 +1220,8 @@ public class WorkspaceImporter {
             if (ruleform == null) {
                 throw new InvalidKeyException(
                                               String.format("Cannot resolve %s:%s",
-                                                            qualifiedName.namespace.getText(),
+                                                            qualifiedName.namespace == null ? ""
+                                                                                           : qualifiedName.namespace.getText(),
                                                             qualifiedName.member.getText()));
             }
         }

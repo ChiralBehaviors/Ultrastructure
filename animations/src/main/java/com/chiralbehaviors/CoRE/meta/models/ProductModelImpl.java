@@ -46,6 +46,8 @@ import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.chiralbehaviors.CoRE.product.ProductLocation_;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationship;
+import com.chiralbehaviors.CoRE.product.ProductRelationship_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
@@ -139,6 +141,29 @@ public class ProductModelImpl
                                                 "Product -> Product authorizations are modeled with Product Networks");
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#authorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
+    @Override
+    public void authorize(Product ruleform, Relationship relationship,
+                          Relationship authorized) {
+        assert ruleform != null : "ruleform is null";
+        assert relationship != null : "relationshp is null";
+        assert authorized != null : "authorized is null";
+        ProductRelationship a = new ProductRelationship(
+                                                        model.getCurrentPrincipal().getPrincipal());
+        a.setProduct(ruleform);
+        a.setRelationship(relationship);
+        a.setChild(authorized);
+        em.persist(a);
+        ProductRelationship b = new ProductRelationship(
+                                                        model.getCurrentPrincipal().getPrincipal());
+        b.setProduct(ruleform);
+        b.setRelationship(relationship.getInverse());
+        b.setChild(authorized);
+        em.persist(b);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -199,79 +224,6 @@ public class ProductModelImpl
             }
         }
         return product;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedAgencies(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
-     */
-    @Override
-    public List<Agency> getAuthorizedAgencies(Product ruleform,
-                                              Relationship relationship) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Agency> query = cb.createQuery(Agency.class);
-        Root<AgencyProduct> plRoot = query.from(AgencyProduct.class);
-        Path<Agency> path;
-        try {
-            path = plRoot.get(AgencyProduct_.agency);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.product),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(AgencyProduct_.relationship),
-                                                 relationship)));
-        TypedQuery<Agency> q = em.createQuery(query);
-        return q.getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedLocations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
-     */
-    @Override
-    public List<Location> getAuthorizedLocations(Product ruleform,
-                                                 Relationship relationship) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Location> query = cb.createQuery(Location.class);
-        Root<ProductLocation> plRoot = query.from(ProductLocation.class);
-        Path<Location> path;
-        try {
-            path = plRoot.get(ProductLocation_.location);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(ProductLocation_.relationship),
-                                                 relationship)));
-        TypedQuery<Location> q = em.createQuery(query);
-        return q.getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedProducts(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
-     */
-    @Override
-    public List<Product> getAuthorizedProducts(Product ruleform,
-                                               Relationship relationship) {
-        throw new UnsupportedOperationException(
-                                                "Product -> Product authorizations are modeled with Product Networks");
-    }
-
-    @Override
-    public List<ProductNetwork> getInterconnections(Collection<Product> parents,
-                                                    Collection<Relationship> relationships,
-                                                    Collection<Product> children) {
-        if (parents == null || parents.size() == 0 || relationships == null
-            || relationships.size() == 0 || children == null
-            || children.size() == 0) {
-            return null;
-        }
-        TypedQuery<ProductNetwork> query = em.createNamedQuery(ProductNetwork.GET_NETWORKS,
-                                                               ProductNetwork.class);
-        query.setParameter("parents", parents);
-        query.setParameter("relationships", relationships);
-        query.setParameter("children", children);
-        return query.getResultList();
     }
 
     /* (non-Javadoc)
@@ -342,5 +294,125 @@ public class ProductModelImpl
                             Product authorized) {
         throw new UnsupportedOperationException(
                                                 "Product -> Product authorizations are modeled with Product Networks");
+    }
+
+    @Override
+    public void deauthorize(Product ruleform, Relationship relationship,
+                            Relationship authorized) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductRelationship> query = cb.createQuery(ProductRelationship.class);
+        Root<ProductRelationship> plRoot = query.from(ProductRelationship.class);
+        ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
+        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
+                                                   ruleform),
+                                          cb.equal(plRoot.get(ProductRelationship_.relationship),
+                                                   relationshipParam),
+                                          cb.equal(plRoot.get(ProductRelationship_.child),
+                                                   authorized)));
+        TypedQuery<ProductRelationship> q = em.createQuery(query);
+        q.setParameter(relationshipParam, relationship);
+        try {
+            em.remove(q.getSingleResult());
+        } catch (NoResultException e) {
+            return;
+        }
+        q.setParameter(relationshipParam, relationship.getInverse());
+        try {
+            em.remove(q.getSingleResult());
+        } catch (NoResultException e) {
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedAgencies(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
+    @Override
+    public List<Agency> getAuthorizedAgencies(Product ruleform,
+                                              Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Agency> query = cb.createQuery(Agency.class);
+        Root<AgencyProduct> plRoot = query.from(AgencyProduct.class);
+        Path<Agency> path;
+        try {
+            path = plRoot.get(AgencyProduct_.agency);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.product),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(AgencyProduct_.relationship),
+                                                 relationship)));
+        TypedQuery<Agency> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedLocations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
+    @Override
+    public List<Location> getAuthorizedLocations(Product ruleform,
+                                                 Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Location> query = cb.createQuery(Location.class);
+        Root<ProductLocation> plRoot = query.from(ProductLocation.class);
+        Path<Location> path;
+        try {
+            path = plRoot.get(ProductLocation_.location);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(ProductLocation_.relationship),
+                                                 relationship)));
+        TypedQuery<Location> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedProducts(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
+    @Override
+    public List<Product> getAuthorizedProducts(Product ruleform,
+                                               Relationship relationship) {
+        throw new UnsupportedOperationException(
+                                                "Product -> Product authorizations are modeled with Product Networks");
+    }
+
+    @Override
+    public List<Relationship> getAuthorizedRelationships(Product ruleform,
+                                                         Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Relationship> query = cb.createQuery(Relationship.class);
+        Root<ProductRelationship> plRoot = query.from(ProductRelationship.class);
+        Path<Relationship> path;
+        try {
+            path = plRoot.get(ProductRelationship_.child);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(ProductRelationship_.relationship),
+                                                 relationship)));
+        TypedQuery<Relationship> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<ProductNetwork> getInterconnections(Collection<Product> parents,
+                                                    Collection<Relationship> relationships,
+                                                    Collection<Product> children) {
+        if (parents == null || parents.size() == 0 || relationships == null
+            || relationships.size() == 0 || children == null
+            || children.size() == 0) {
+            return null;
+        }
+        TypedQuery<ProductNetwork> query = em.createNamedQuery(ProductNetwork.GET_NETWORKS,
+                                                               ProductNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationships", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 }

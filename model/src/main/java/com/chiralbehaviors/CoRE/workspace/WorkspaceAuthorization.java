@@ -100,6 +100,8 @@ import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationship;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAttribute;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
@@ -131,84 +133,86 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "workspace_authorization", schema = "ruleform")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 public class WorkspaceAuthorization extends Ruleform {
-    public static final String  AGENCY                                   = "Agency";
-    public static final String  AGENCY_ATTRIBUTE                         = "AgencyAttribute";
-    public static final String  AGENCY_ATTRIBUTE_AUTHORIZATION           = "AgencyAttributeAuthorization";
-    public static final String  AGENCY_LOCATION                          = "AgencyLocation";
-    public static final String  AGENCY_LOCATION_ATTRIBUTE                = "AgencyLocationAttribute";
-    public static final String  AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION  = "AgencyLocationAttributeAuthorization";
-    public static final String  AGENCY_LOCATION_AUTHORIZATION            = "AgencyLocationAuthorization";
-    public static final String  AGENCY_NETWORK                           = "AgencyNetwork";
-    public static final String  AGENCY_NETWORK_ATTRIBUTE                 = "AgencyNetworkAttribute";
-    public static final String  AGENCY_NETWORK_AUTHORIZATION             = "AgencyNetworkAuthorization";
-    public static final String  AGENCY_PRODUCT                           = "AgencyProduct";
-    public static final String  AGENCY_PRODUCT_ATTRIBUTE                 = "AgencyProductAttribute";
-    public static final String  AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION   = "AgencyProductAttributeAuthorization";
-    public static final String  AGENCY_PRODUCT_AUTHORIZATION             = "AgencyProductAuthorization";
-    public static final String  ATTRIBUTE                                = "Attribute";
-    public static final String  ATTRIBUTE_META_ATTRIBUTE                 = "AttributeMetaAttribute";
-    public static final String  ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION   = "AttributeMetaAttributeAuthorization";
-    public static final String  ATTRIBUTE_NETWORK                        = "AttributeNetwork";
-    public static final String  ATTRIBUTE_NETWORK_ATTRIBUTE              = "AttributeNetworkAttribute";
-    public static final String  ATTRIBUTE_NETWORK_AUTHORIZATION          = "AttributeNetworkAuthorization";
-    public static final String  DOES_WORKSPACE_AUTH_EXIST                = "workspaceAuthorization.doesAuthExist";
-    public static final String  GET_AUTHORIZATION                        = "workspaceAuthorization.getAuthorization";
-    public static final String  GET_AUTHORIZATIONS_BY_TYPE               = "workspaceAuthorization.getAuthorizationByType";
-    public static final String  GET_WORKSPACE                            = "workspaceAuthorization.getWorkspace";
-    public static final String  INTERVAL                                 = "Interval";
-    public static final String  INTERVAL_ATTRIBUTE                       = "IntervalAttribute";
-    public static final String  INTERVAL_NETWORK                         = "IntervalNetwork";
-    public static final String  INTERVAL_NETWORK_ATTRIBUTE               = "IntervalNetworkAttribute";
-    public static final String  INTERVAL_NETWORK_AUTHORIZATION           = "IntervalNetworkAuthorization";
-    public static final String  JOB                                      = "Job";
-    public static final String  JOB_CHRONOLOGY                           = "JobChronology";
-    public static final String  LOCATION                                 = "Location";
-    public static final String  LOCATION_ATTRIBUTE                       = "LocationAttribute";
-    public static final String  LOCATION_ATTRIBUTE_AUTHORIZATION         = "LocationAttributeAuthorization";
-    public static final String  LOCATION_NETWORK                         = "LocationNetwork";
-    public static final String  LOCATION_NETWORK_ATTRIBUTE               = "LocationNetworkAttribute";
-    public static final String  LOCATION_NETWORK_AUTHORIZATION           = "LocationNetworkAuthorization";
-    public static final String  META_PROTOCOL                            = "MetaProtocol";
-    public static final String  NETWORK_INFERENCE                        = "NetworkInference";
-    public static final String  PRODUCT                                  = "Product";
-    public static final String  PRODUCT_ATTRIBUTE                        = "ProductAttribute";
-    public static final String  PRODUCT_ATTRIBUTE_AUTHORIZATION          = "ProductAttributeAuthorization";
-    public static final String  PRODUCT_CHILD_SEQUENCING_AUTHORIZATION   = "ProductChildSequencingAuthorization";
-    public static final String  PRODUCT_LOCATION                         = "ProductLocation";
-    public static final String  PRODUCT_LOCATION_ATTRIBUTE               = "ProductLocationAttribute";
-    public static final String  PRODUCT_LOCATION_ATTRIBUTE_AUTHORIZATION = "ProductLocationAttributeAuthorization";
-    public static final String  PRODUCT_LOCATION_AUTHORIZATION           = "ProductLocationAuthorization";
-    public static final String  PRODUCT_NETWORK                          = "ProductNetwork";
-    public static final String  PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
-    public static final String  PRODUCT_NETWORK_AUTHORIZATION            = "ProductNetworkAuthorization";
-    public static final String  PRODUCT_PARENT_SEQUENCING_AUTHORIZATION  = "ProductParentSequencingAuthorization";
-    public static final String  PRODUCT_RELATIONSHIP                     = "ProductRelationship";
-    public static final String  PRODUCT_RELATIONSHIP_ATTRIBUTE           = "ProductRelationshipAttribute";
-    public static final String  PRODUCT_SELF_SEQUENCING_AUTHORIZATION    = "ProductSelfSequencingAuthorization";
-    public static final String  PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
-    public static final String  PROTOCOL                                 = "Protocol";
-    public static final String  RELATIONSHIP                             = "Relationship";
-    public static final String  RELATIONSHIP_ATTRIBUTE                   = "RelationshipAttribute";
-    public static final String  RELATIONSHIP_ATTRIBUTE_AUTHORIZATION     = "RelationshipAttributeAuthorization";
-    public static final String  RELATIONSHIP_NETWORK                     = "RelationshipNetwork";
-    public static final String  RELATIONSHIP_NETWORK_ATTRIBUTE           = "RelationshipNetworkAttribute";
-    public static final String  RELATIONSHIP_NETWORK_AUTHORIZATION       = "RelationshipNetworkAuthorization";
-    public static final String  STATUS_CODE                              = "StatusCode";
-    public static final String  STATUS_CODE_ATTRIBUTE                    = "StatusCodeAttribute";
-    public static final String  STATUS_CODE_ATTRIBUTE_AUTHORIZATION      = "StatusCodeAttributeAuthorization";
-    public static final String  STATUS_CODE_NETWORK                      = "StatusCodeNetwork";
-    public static final String  STATUS_CODE_NETWORK_ATTRIBUTE            = "StatusCodeNetworkAttribute";
-    public static final String  STATUS_CODE_SEQUENCING                   = "StatusCodeSequencing";
-    public static final String  STAUTUS_CODE_NETWORK_AUTHORIZATION       = "StatusCodeNetworkAuthorization";
-    public static final String  UNIT                                     = "Unit";
-    public static final String  UNIT_ATTRIBUTE                           = "UnitAttribute";
-    public static final String  UNIT_ATTRIBUTE_AUTHORIZATION             = "UnitAttributeAuthorization";
-    public static final String  UNIT_NETWORK                             = "UnitNetwork";
-    public static final String  UNIT_NETWORK_ATTRIBUTE                   = "UnitNetworkAttribute";
-    public static final String  UNIT_NETWORK_AUTHORIZATION               = "UnitNetworkAuthorization";
-    private static final String INTERVAL_ATTRIBUTE_AUTHORIZATION         = "IntervalAttributeAuthorization";
+    public static final String  AGENCY                                       = "Agency";
+    public static final String  AGENCY_ATTRIBUTE                             = "AgencyAttribute";
+    public static final String  AGENCY_ATTRIBUTE_AUTHORIZATION               = "AgencyAttributeAuthorization";
+    public static final String  AGENCY_LOCATION                              = "AgencyLocation";
+    public static final String  AGENCY_LOCATION_ATTRIBUTE                    = "AgencyLocationAttribute";
+    public static final String  AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION      = "AgencyLocationAttributeAuthorization";
+    public static final String  AGENCY_LOCATION_AUTHORIZATION                = "AgencyLocationAuthorization";
+    public static final String  AGENCY_NETWORK                               = "AgencyNetwork";
+    public static final String  AGENCY_NETWORK_ATTRIBUTE                     = "AgencyNetworkAttribute";
+    public static final String  AGENCY_NETWORK_AUTHORIZATION                 = "AgencyNetworkAuthorization";
+    public static final String  AGENCY_PRODUCT                               = "AgencyProduct";
+    public static final String  AGENCY_PRODUCT_ATTRIBUTE                     = "AgencyProductAttribute";
+    public static final String  AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION       = "AgencyProductAttributeAuthorization";
+    public static final String  AGENCY_PRODUCT_AUTHORIZATION                 = "AgencyProductAuthorization";
+    public static final String  ATTRIBUTE                                    = "Attribute";
+    public static final String  ATTRIBUTE_META_ATTRIBUTE                     = "AttributeMetaAttribute";
+    public static final String  ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION       = "AttributeMetaAttributeAuthorization";
+    public static final String  ATTRIBUTE_NETWORK                            = "AttributeNetwork";
+    public static final String  ATTRIBUTE_NETWORK_ATTRIBUTE                  = "AttributeNetworkAttribute";
+    public static final String  ATTRIBUTE_NETWORK_AUTHORIZATION              = "AttributeNetworkAuthorization";
+    public static final String  DOES_WORKSPACE_AUTH_EXIST                    = "workspaceAuthorization.doesAuthExist";
+    public static final String  GET_AUTHORIZATION                            = "workspaceAuthorization.getAuthorization";
+    public static final String  GET_AUTHORIZATIONS_BY_TYPE                   = "workspaceAuthorization.getAuthorizationByType";
+    public static final String  GET_WORKSPACE                                = "workspaceAuthorization.getWorkspace";
+    public static final String  INTERVAL                                     = "Interval";
+    public static final String  INTERVAL_ATTRIBUTE                           = "IntervalAttribute";
+    public static final String  INTERVAL_NETWORK                             = "IntervalNetwork";
+    public static final String  INTERVAL_NETWORK_ATTRIBUTE                   = "IntervalNetworkAttribute";
+    public static final String  INTERVAL_NETWORK_AUTHORIZATION               = "IntervalNetworkAuthorization";
+    public static final String  JOB                                          = "Job";
+    public static final String  JOB_CHRONOLOGY                               = "JobChronology";
+    public static final String  LOCATION                                     = "Location";
+    public static final String  LOCATION_ATTRIBUTE                           = "LocationAttribute";
+    public static final String  LOCATION_ATTRIBUTE_AUTHORIZATION             = "LocationAttributeAuthorization";
+    public static final String  LOCATION_NETWORK                             = "LocationNetwork";
+    public static final String  LOCATION_NETWORK_ATTRIBUTE                   = "LocationNetworkAttribute";
+    public static final String  LOCATION_NETWORK_AUTHORIZATION               = "LocationNetworkAuthorization";
+    public static final String  META_PROTOCOL                                = "MetaProtocol";
+    public static final String  NETWORK_INFERENCE                            = "NetworkInference";
+    public static final String  PRODUCT                                      = "Product";
+    public static final String  PRODUCT_ATTRIBUTE                            = "ProductAttribute";
+    public static final String  PRODUCT_ATTRIBUTE_AUTHORIZATION              = "ProductAttributeAuthorization";
+    public static final String  PRODUCT_CHILD_SEQUENCING_AUTHORIZATION       = "ProductChildSequencingAuthorization";
+    public static final String  PRODUCT_LOCATION                             = "ProductLocation";
+    public static final String  PRODUCT_LOCATION_ATTRIBUTE                   = "ProductLocationAttribute";
+    public static final String  PRODUCT_LOCATION_ATTRIBUTE_AUTHORIZATION     = "ProductLocationAttributeAuthorization";
+    public static final String  PRODUCT_LOCATION_AUTHORIZATION               = "ProductLocationAuthorization";
+    public static final String  PRODUCT_NETWORK                              = "ProductNetwork";
+    public static final String  PRODUCT_NETWORK_ATTRIBUTE                    = "ProductNetworkAttribute";
+    public static final String  PRODUCT_NETWORK_AUTHORIZATION                = "ProductNetworkAuthorization";
+    public static final String  PRODUCT_PARENT_SEQUENCING_AUTHORIZATION      = "ProductParentSequencingAuthorization";
+    public static final String  PRODUCT_RELATIONSHIP                         = "ProductRelationship";
+    public static final String  PRODUCT_RELATIONSHIP_ATTRIBUTE               = "ProductRelationshipAttribute";
+    public static final String  PRODUCT_RELATIONSHIP_ATTRIBUTE_AUTHORIZATION = "ProductRelationshipAttributeAuthorization";
+    public static final String  PRODUCT_RELATIONSHIP_AUTHORIZATION           = "ProductRelationshipAuthorization";
+    public static final String  PRODUCT_SELF_SEQUENCING_AUTHORIZATION        = "ProductSelfSequencingAuthorization";
+    public static final String  PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION     = "ProductSiblingSequencingAuthorization";
+    public static final String  PROTOCOL                                     = "Protocol";
+    public static final String  RELATIONSHIP                                 = "Relationship";
+    public static final String  RELATIONSHIP_ATTRIBUTE                       = "RelationshipAttribute";
+    public static final String  RELATIONSHIP_ATTRIBUTE_AUTHORIZATION         = "RelationshipAttributeAuthorization";
+    public static final String  RELATIONSHIP_NETWORK                         = "RelationshipNetwork";
+    public static final String  RELATIONSHIP_NETWORK_ATTRIBUTE               = "RelationshipNetworkAttribute";
+    public static final String  RELATIONSHIP_NETWORK_AUTHORIZATION           = "RelationshipNetworkAuthorization";
+    public static final String  STATUS_CODE                                  = "StatusCode";
+    public static final String  STATUS_CODE_ATTRIBUTE                        = "StatusCodeAttribute";
+    public static final String  STATUS_CODE_ATTRIBUTE_AUTHORIZATION          = "StatusCodeAttributeAuthorization";
+    public static final String  STATUS_CODE_NETWORK                          = "StatusCodeNetwork";
+    public static final String  STATUS_CODE_NETWORK_ATTRIBUTE                = "StatusCodeNetworkAttribute";
+    public static final String  STATUS_CODE_SEQUENCING                       = "StatusCodeSequencing";
+    public static final String  STAUTUS_CODE_NETWORK_AUTHORIZATION           = "StatusCodeNetworkAuthorization";
+    public static final String  UNIT                                         = "Unit";
+    public static final String  UNIT_ATTRIBUTE                               = "UnitAttribute";
+    public static final String  UNIT_ATTRIBUTE_AUTHORIZATION                 = "UnitAttributeAuthorization";
+    public static final String  UNIT_NETWORK                                 = "UnitNetwork";
+    public static final String  UNIT_NETWORK_ATTRIBUTE                       = "UnitNetworkAttribute";
+    public static final String  UNIT_NETWORK_AUTHORIZATION                   = "UnitNetworkAuthorization";
+    private static final String INTERVAL_ATTRIBUTE_AUTHORIZATION             = "IntervalAttributeAuthorization";
 
-    private static final long   serialVersionUID                         = 1L;
+    private static final long   serialVersionUID                             = 1L;
 
     public static String getWorkspaceAuthorizationColumnName(Class<?> ruleform) {
         StringBuilder builder = new StringBuilder();
@@ -227,371 +231,381 @@ public class WorkspaceAuthorization extends Ruleform {
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency")
     @JsonIgnore
-    private Agency                                agency;
+    private Agency                                    agency;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_attribute")
     @JsonIgnore
-    private AgencyAttribute                       agencyAttribute;
+    private AgencyAttribute                           agencyAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_attribute_authorization")
     @JsonIgnore
-    private AgencyAttributeAuthorization          agencyAttributeAuthorization;
+    private AgencyAttributeAuthorization              agencyAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location")
     @JsonIgnore
-    private AgencyLocation                        agencyLocation;
+    private AgencyLocation                            agencyLocation;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location_attribute")
     @JsonIgnore
-    private AgencyLocationAttribute               agencyLocationAttribute;
+    private AgencyLocationAttribute                   agencyLocationAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location_attribute_authorization")
     @JsonIgnore
-    private AgencyLocationAttributeAuthorization  agencyLocationAttributeAuthorization;
+    private AgencyLocationAttributeAuthorization      agencyLocationAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location_authorization")
     @JsonIgnore
-    private AgencyLocationAuthorization           agencyLocationAuthorization;
+    private AgencyLocationAuthorization               agencyLocationAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network")
     @JsonIgnore
-    private AgencyNetwork                         agencyNetwork;
+    private AgencyNetwork                             agencyNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network_attribute")
     @JsonIgnore
-    private AgencyNetworkAttribute                agencyNetworkAttribute;
+    private AgencyNetworkAttribute                    agencyNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network_authorization")
     @JsonIgnore
-    private AgencyNetworkAuthorization            agencyNetworkAuthorization;
+    private AgencyNetworkAuthorization                agencyNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product")
     @JsonIgnore
-    private AgencyProduct                         agencyProduct;
+    private AgencyProduct                             agencyProduct;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product_attribute")
     @JsonIgnore
-    private AgencyProductAttribute                agencyProductAttribute;
+    private AgencyProductAttribute                    agencyProductAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product_attribute_authorization")
     @JsonIgnore
-    private AgencyProductAttributeAuthorization   agencyProductAttributeAuthorization;
+    private AgencyProductAttributeAuthorization       agencyProductAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product_authorization")
     @JsonIgnore
-    private AgencyProductAuthorization            agencyProductAuthorization;
+    private AgencyProductAuthorization                agencyProductAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute")
     @JsonIgnore
-    private Attribute                             attribute;
+    private Attribute                                 attribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_meta_attribute")
     @JsonIgnore
-    private AttributeMetaAttribute                attributeMetaAttribute;
+    private AttributeMetaAttribute                    attributeMetaAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attr_meta_attr_auth")
     @JsonIgnore
-    private AttributeMetaAttributeAuthorization   attributeMetaAttributeAuthorization;
+    private AttributeMetaAttributeAuthorization       attributeMetaAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_network")
     @JsonIgnore
-    private AttributeNetwork                      attributeNetwork;
+    private AttributeNetwork                          attributeNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_network_attribute")
     @JsonIgnore
-    private AttributeNetworkAttribute             attributeNetworkAttribute;
+    private AttributeNetworkAttribute                 attributeNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_network_authorization")
     @JsonIgnore
-    private AttributeNetworkAuthorization         attributeNetworkAuthorization;
+    private AttributeNetworkAuthorization             attributeNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "defining_product")
-    private Product                               definingProduct;
+    private Product                                   definingProduct;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval")
     @JsonIgnore
-    private Interval                              interval;
+    private Interval                                  interval;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_attribute")
     @JsonIgnore
-    private IntervalAttribute                     intervalAttribute;
+    private IntervalAttribute                         intervalAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_attribute_authorization")
     @JsonIgnore
-    private IntervalAttributeAuthorization        intervalAttributeAuthorization;
+    private IntervalAttributeAuthorization            intervalAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_network")
     @JsonIgnore
-    private IntervalNetwork                       intervalNetwork;
+    private IntervalNetwork                           intervalNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_network_attribute")
     @JsonIgnore
-    private IntervalNetworkAttribute              intervalNetworkAttribute;
+    private IntervalNetworkAttribute                  intervalNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_network_authorization")
     @JsonIgnore
-    private IntervalNetworkAuthorization          intervalNetworkAuthorization;
+    private IntervalNetworkAuthorization              intervalNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
     @JsonIgnore
-    private Job                                   job;
+    private Job                                       job;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "job_chronology")
     @JsonIgnore
-    private JobChronology                         jobChronology;
+    private JobChronology                             jobChronology;
 
-    private String                                key;
+    private String                                    key;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location")
     @JsonIgnore
-    private Location                              location;
+    private Location                                  location;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_attribute")
     @JsonIgnore
-    private LocationAttribute                     locationAttribute;
+    private LocationAttribute                         locationAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_attribute_authorization")
     @JsonIgnore
-    private LocationAttributeAuthorization        locationAttributeAuthorization;
+    private LocationAttributeAuthorization            locationAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_network")
     @JsonIgnore
-    private LocationNetwork                       locationNetwork;
+    private LocationNetwork                           locationNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_network_attribute")
     @JsonIgnore
-    private LocationNetworkAttribute              locationNetworkAttribute;
+    private LocationNetworkAttribute                  locationNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_network_authorization")
     @JsonIgnore
-    private LocationNetworkAuthorization          locationNetworkAuthorization;
+    private LocationNetworkAuthorization              locationNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "meta_protocol")
     @JsonIgnore
-    private MetaProtocol                          metaProtocol;
+    private MetaProtocol                              metaProtocol;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "network_inference")
     @JsonIgnore
-    private NetworkInference                      networkInference;
+    private NetworkInference                          networkInference;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product")
     @JsonIgnore
-    private Product                               product;
+    private Product                                   product;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_attribute")
     @JsonIgnore
-    private ProductAttribute                      productAttribute;
+    private ProductAttribute                          productAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_attribute_authorization")
     @JsonIgnore
-    private ProductAttributeAuthorization         productAttributeAuthorization;
+    private ProductAttributeAuthorization             productAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_child_sequencing_authorization")
     @JsonIgnore
-    private ProductChildSequencingAuthorization   productChildSequencingAuthorization;
+    private ProductChildSequencingAuthorization       productChildSequencingAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location")
     @JsonIgnore
-    private ProductLocation                       productLocation;
+    private ProductLocation                           productLocation;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location_attribute")
     @JsonIgnore
-    private ProductLocationAttribute              productLocationAttribute;
+    private ProductLocationAttribute                  productLocationAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location_attribute_authorization")
     @JsonIgnore
-    private ProductLocationAttributeAuthorization productLocationAttributeAuthorization;
+    private ProductLocationAttributeAuthorization     productLocationAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location_authorization")
     @JsonIgnore
-    private ProductLocationAuthorization          productLocationAuthorization;
+    private ProductLocationAuthorization              productLocationAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network")
     @JsonIgnore
-    private ProductNetwork                        productNetwork;
+    private ProductNetwork                            productNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network_attribute")
     @JsonIgnore
-    private ProductNetworkAttribute               productNetworkAttribute;
+    private ProductNetworkAttribute                   productNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network_authorization")
     @JsonIgnore
-    private ProductNetworkAuthorization           productNetworkAuthorization;
+    private ProductNetworkAuthorization               productNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_parent_sequencing_authorization")
     @JsonIgnore
-    private ProductParentSequencingAuthorization  productParentSequencingAuthorization;
+    private ProductParentSequencingAuthorization      productParentSequencingAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_relationship")
     @JsonIgnore
-    private ProductRelationship                   productRelationship;
+    private ProductRelationship                       productRelationship;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_relationship_attribute")
     @JsonIgnore
-    private ProductRelationshipAttribute          productRelationshipAttribute;
+    private ProductRelationshipAttribute              productRelationshipAttribute;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_relationship_attribute_authorization")
+    @JsonIgnore
+    private ProductRelationshipAttributeAuthorization productRelationshipAttributeAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_relationship_authorization")
+    @JsonIgnore
+    private ProductRelationshipAuthorization          productRelationshipAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_self_sequencing_authorization")
     @JsonIgnore
-    private ProductSelfSequencingAuthorization    productSelfSequencingAuthorization;
+    private ProductSelfSequencingAuthorization        productSelfSequencingAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_sibling_sequencing_authorization")
     @JsonIgnore
-    private ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization;
+    private ProductSiblingSequencingAuthorization     productSiblingSequencingAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "protocol")
     @JsonIgnore
-    private Protocol                              protocol;
+    private Protocol                                  protocol;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship")
     @JsonIgnore
-    private Relationship                          relationship;
+    private Relationship                              relationship;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_attribute")
     @JsonIgnore
-    private RelationshipAttribute                 relationshipAttribute;
+    private RelationshipAttribute                     relationshipAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_attribute_authorization")
     @JsonIgnore
-    private RelationshipAttributeAuthorization    relationshipAttributeAuthorization;
+    private RelationshipAttributeAuthorization        relationshipAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_network")
     @JsonIgnore
-    private RelationshipNetwork                   relationshipNetwork;
+    private RelationshipNetwork                       relationshipNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_network_attribute")
     @JsonIgnore
-    private RelationshipNetworkAttribute          relationshipNetworkAttribute;
+    private RelationshipNetworkAttribute              relationshipNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_network_authorization")
     @JsonIgnore
-    private RelationshipNetworkAuthorization      relationshipNetworkAuthorization;
+    private RelationshipNetworkAuthorization          relationshipNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
     @JsonIgnore
-    private StatusCode                            statusCode;
+    private StatusCode                                statusCode;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_attribute")
     @JsonIgnore
-    private StatusCodeAttribute                   statusCodeAttribute;
+    private StatusCodeAttribute                       statusCodeAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_attribute_authorization")
     @JsonIgnore
-    private StatusCodeAttributeAuthorization      statusCodeAttributeAuthorization;
+    private StatusCodeAttributeAuthorization          statusCodeAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_network")
     @JsonIgnore
-    private StatusCodeNetwork                     statusCodeNetwork;
+    private StatusCodeNetwork                         statusCodeNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_network_attribute")
     @JsonIgnore
-    private StatusCodeNetworkAttribute            statusCodeNetworkAttribute;
+    private StatusCodeNetworkAttribute                statusCodeNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_network_authorization")
     @JsonIgnore
-    private StatusCodeNetworkAuthorization        statusCodeNetworkAuthorization;
+    private StatusCodeNetworkAuthorization            statusCodeNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_sequencing")
     @JsonIgnore
-    private StatusCodeSequencing                  statusCodeSequencing;
+    private StatusCodeSequencing                      statusCodeSequencing;
 
     @Column(name = "type")
-    private String                                type;
+    private String                                    type;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit")
     @JsonIgnore
-    private Unit                                  unit;
+    private Unit                                      unit;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_attribute")
     @JsonIgnore
-    private UnitAttribute                         unitAttribute;
+    private UnitAttribute                             unitAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_attribute_authorization")
     @JsonIgnore
-    private UnitAttributeAuthorization            unitAttributeAuthorization;
+    private UnitAttributeAuthorization                unitAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_network")
     @JsonIgnore
-    private UnitNetwork                           unitNetwork;
+    private UnitNetwork                               unitNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_network_attribute")
     @JsonIgnore
-    private UnitNetworkAttribute                  unitNetworkAttribute;
+    private UnitNetworkAttribute                      unitNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_network_authorization")
     @JsonIgnore
-    private UnitNetworkAuthorization              unitNetworkAuthorization;
+    private UnitNetworkAuthorization                  unitNetworkAuthorization;
 
     public WorkspaceAuthorization() {
         super();
@@ -625,149 +639,153 @@ public class WorkspaceAuthorization extends Ruleform {
     public <T extends Ruleform> T getEntity() {
         switch (type) {
             case AGENCY:
-                return (T) getAgency();
+                return (T) agency;
             case AGENCY_ATTRIBUTE:
-                return (T) getAgencyAttribute();
+                return (T) agencyAttribute;
             case AGENCY_ATTRIBUTE_AUTHORIZATION:
-                return (T) getAgencyAttributeAuthorization();
+                return (T) agencyAttributeAuthorization;
             case AGENCY_LOCATION:
-                return (T) getAgencyLocation();
+                return (T) agencyLocation;
             case AGENCY_LOCATION_ATTRIBUTE:
-                return (T) getAgencyLocationAttribute();
+                return (T) agencyLocationAttribute;
             case AGENCY_NETWORK:
-                return (T) getAgencyNetwork();
+                return (T) agencyNetwork;
             case AGENCY_NETWORK_ATTRIBUTE:
-                return (T) getAgencyNetworkAttribute();
+                return (T) agencyNetworkAttribute;
             case AGENCY_NETWORK_AUTHORIZATION:
-                return (T) getAgencyNetworkAuthorization();
+                return (T) agencyNetworkAuthorization;
             case AGENCY_PRODUCT:
-                return (T) getAgencyProduct();
+                return (T) agencyProduct;
             case AGENCY_PRODUCT_ATTRIBUTE:
-                return (T) getAgencyProductAttribute();
+                return (T) agencyProductAttribute;
             case ATTRIBUTE:
-                return (T) getAttribute();
+                return (T) attribute;
             case ATTRIBUTE_META_ATTRIBUTE:
-                return (T) getAttributeMetaAttribute();
+                return (T) attributeMetaAttribute;
             case ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION:
-                return (T) getAttributeMetaAttributeAuthorization();
+                return (T) attributeMetaAttributeAuthorization;
             case ATTRIBUTE_NETWORK:
-                return (T) getAttributeNetwork();
+                return (T) attributeNetwork;
             case ATTRIBUTE_NETWORK_ATTRIBUTE:
-                return (T) getAttributeNetworkAttribute();
+                return (T) attributeNetworkAttribute;
             case UNIT:
-                return (T) getUnit();
+                return (T) unit;
             case UNIT_ATTRIBUTE:
-                return (T) getUnitAttribute();
+                return (T) unitAttribute;
             case UNIT_ATTRIBUTE_AUTHORIZATION:
-                return (T) getUnitAttributeAuthorization();
+                return (T) unitAttributeAuthorization;
             case UNIT_NETWORK:
-                return (T) getUnitNetwork();
+                return (T) unitNetwork;
             case UNIT_NETWORK_ATTRIBUTE:
-                return (T) getUnitNetworkAttribute();
+                return (T) unitNetworkAttribute;
             case LOCATION:
-                return (T) getLocation();
+                return (T) location;
             case LOCATION_ATTRIBUTE:
-                return (T) getLocationAttribute();
+                return (T) locationAttribute;
             case LOCATION_ATTRIBUTE_AUTHORIZATION:
-                return (T) getLocationAttributeAuthorization();
+                return (T) locationAttributeAuthorization;
             case LOCATION_NETWORK:
-                return (T) getLocationNetwork();
+                return (T) locationNetwork;
             case LOCATION_NETWORK_ATTRIBUTE:
-                return (T) getLocationNetworkAttribute();
+                return (T) locationNetworkAttribute;
             case LOCATION_NETWORK_AUTHORIZATION:
-                return (T) getLocationNetworkAuthorization();
+                return (T) locationNetworkAuthorization;
             case PRODUCT:
-                return (T) getProduct();
+                return (T) product;
             case PRODUCT_ATTRIBUTE:
-                return (T) getProductAttribute();
+                return (T) productAttribute;
             case PRODUCT_ATTRIBUTE_AUTHORIZATION:
-                return (T) getProductAttributeAuthorization();
+                return (T) productAttributeAuthorization;
             case PRODUCT_NETWORK:
-                return (T) getProductNetwork();
+                return (T) productNetwork;
             case PRODUCT_NETWORK_ATTRIBUTE:
-                return (T) getProductNetworkAttribute();
+                return (T) productNetworkAttribute;
             case PRODUCT_LOCATION:
-                return (T) getProductLocation();
+                return (T) productLocation;
             case PRODUCT_LOCATION_ATTRIBUTE:
-                return (T) getProductLocationAttribute();
+                return (T) productLocationAttribute;
             case PRODUCT_RELATIONSHIP:
-                return (T) getProductRelationship();
+                return (T) productRelationship;
             case PRODUCT_RELATIONSHIP_ATTRIBUTE:
-                return (T) getProductRelationshipAttribute();
+                return (T) productRelationshipAttribute;
+            case PRODUCT_RELATIONSHIP_ATTRIBUTE_AUTHORIZATION:
+                return (T) productRelationshipAttributeAuthorization;
+            case PRODUCT_RELATIONSHIP_AUTHORIZATION:
+                return (T) productRelationshipAuthorization;
             case INTERVAL:
-                return (T) getInterval();
+                return (T) interval;
             case INTERVAL_ATTRIBUTE:
-                return (T) getIntervalAttribute();
+                return (T) intervalAttribute;
             case INTERVAL_ATTRIBUTE_AUTHORIZATION:
-                return (T) getIntervalAttributeAuthorization();
+                return (T) intervalAttributeAuthorization;
             case INTERVAL_NETWORK:
-                return (T) getIntervalNetwork();
+                return (T) intervalNetwork;
             case INTERVAL_NETWORK_ATTRIBUTE:
-                return (T) getIntervalNetworkAttribute();
+                return (T) intervalNetworkAttribute;
             case STATUS_CODE:
-                return (T) getStatusCode();
+                return (T) statusCode;
             case STATUS_CODE_ATTRIBUTE:
-                return (T) getStatusCodeAttribute();
+                return (T) statusCodeAttribute;
             case STATUS_CODE_ATTRIBUTE_AUTHORIZATION:
-                return (T) getStatusCodeAttributeAuthorization();
+                return (T) statusCodeAttributeAuthorization;
             case STATUS_CODE_NETWORK:
-                return (T) getStatusCodeNetwork();
+                return (T) statusCodeNetwork;
             case STATUS_CODE_NETWORK_ATTRIBUTE:
-                return (T) getStatusCodeNetworkAttribute();
+                return (T) statusCodeNetworkAttribute;
             case STATUS_CODE_SEQUENCING:
-                return (T) getStatusCodeSequencing();
+                return (T) statusCodeSequencing;
             case JOB:
-                return (T) getJob();
+                return (T) job;
             case JOB_CHRONOLOGY:
-                return (T) getJobChronology();
+                return (T) jobChronology;
             case META_PROTOCOL:
-                return (T) getMetaProtocol();
+                return (T) metaProtocol;
             case NETWORK_INFERENCE:
-                return (T) getNetworkInference();
+                return (T) networkInference;
             case PRODUCT_CHILD_SEQUENCING_AUTHORIZATION:
-                return (T) getProductChildSequencingAuthorization();
+                return (T) productChildSequencingAuthorization;
             case PRODUCT_PARENT_SEQUENCING_AUTHORIZATION:
-                return (T) getProductParentSequencingAuthorization();
+                return (T) productParentSequencingAuthorization;
             case PRODUCT_SELF_SEQUENCING_AUTHORIZATION:
-                return (T) getProductSelfSequencingAuthorization();
+                return (T) productSelfSequencingAuthorization;
             case PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION:
-                return (T) getProductSiblingSequencingAuthorization();
+                return (T) productSiblingSequencingAuthorization;
             case PROTOCOL:
-                return (T) getProtocol();
+                return (T) protocol;
             case RELATIONSHIP:
-                return (T) getRelationship();
+                return (T) relationship;
             case RELATIONSHIP_ATTRIBUTE:
-                return (T) getRelationshipAttribute();
+                return (T) relationshipAttribute;
             case RELATIONSHIP_ATTRIBUTE_AUTHORIZATION:
-                return (T) getRelationshipAttributeAuthorization();
+                return (T) relationshipAttributeAuthorization;
             case RELATIONSHIP_NETWORK:
-                return (T) getRelationshipNetwork();
+                return (T) relationshipNetwork;
             case RELATIONSHIP_NETWORK_ATTRIBUTE:
-                return (T) getRelationshipNetworkAttribute();
+                return (T) relationshipNetworkAttribute;
             case ATTRIBUTE_NETWORK_AUTHORIZATION:
-                return (T) getAttributeNetworkAuthorization();
+                return (T) attributeNetworkAuthorization;
             case INTERVAL_NETWORK_AUTHORIZATION:
-                return (T) getIntervalNetworkAuthorization();
+                return (T) intervalNetworkAuthorization;
             case PRODUCT_NETWORK_AUTHORIZATION:
-                return (T) getProductNetworkAuthorization();
+                return (T) productNetworkAuthorization;
             case RELATIONSHIP_NETWORK_AUTHORIZATION:
-                return (T) getRelationshipNetworkAuthorization();
+                return (T) relationshipNetworkAuthorization;
             case STAUTUS_CODE_NETWORK_AUTHORIZATION:
-                return (T) getStatusCodeNetworkAuthorization();
+                return (T) statusCodeNetworkAuthorization;
             case UNIT_NETWORK_AUTHORIZATION:
-                return (T) getUnitNetworkAuthorization();
+                return (T) unitNetworkAuthorization;
             case AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION:
-                return (T) getAgencyLocationAttributeAuthorization();
+                return (T) agencyLocationAttributeAuthorization;
             case AGENCY_LOCATION_AUTHORIZATION:
-                return (T) getAgencyLocationAuthorization();
+                return (T) agencyLocationAuthorization;
             case AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION:
-                return (T) getAgencyProductAttributeAuthorization();
+                return (T) agencyProductAttributeAuthorization;
             case AGENCY_PRODUCT_AUTHORIZATION:
-                return (T) getAgencyProductAuthorization();
+                return (T) agencyProductAuthorization;
             case PRODUCT_LOCATION_ATTRIBUTE_AUTHORIZATION:
-                return (T) getProductLocationAttributeAuthorization();
+                return (T) productLocationAttributeAuthorization;
             case PRODUCT_LOCATION_AUTHORIZATION:
-                return (T) getProductLocationAuthorization();
+                return (T) productLocationAuthorization;
 
             default:
                 throw new IllegalStateException(
@@ -913,6 +931,11 @@ public class WorkspaceAuthorization extends Ruleform {
             case PRODUCT_RELATIONSHIP_ATTRIBUTE:
                 setProductRelationshipAttribute((ProductRelationshipAttribute) ruleform);
                 break;
+            case PRODUCT_RELATIONSHIP_ATTRIBUTE_AUTHORIZATION:
+                setProductRelationshipAttributeAuthorization((ProductRelationshipAttributeAuthorization) ruleform);
+                break;
+            case PRODUCT_RELATIONSHIP_AUTHORIZATION:
+                setProductRelationshipAuthorization((ProductRelationshipAuthorization) ruleform);
             case INTERVAL:
                 setInterval((Interval) ruleform);
                 break;
@@ -1030,295 +1053,6 @@ public class WorkspaceAuthorization extends Ruleform {
                                                 String.format("Invalid type: %s",
                                                               ruleform.getClass().getSimpleName()));
         }
-    }
-
-    private Agency getAgency() {
-        return agency;
-    }
-
-    private AgencyAttribute getAgencyAttribute() {
-        return agencyAttribute;
-    }
-
-    @JsonIgnore
-    public AgencyAttributeAuthorization getAgencyAttributeAuthorization() {
-        return agencyAttributeAuthorization;
-    }
-
-    private AgencyLocation getAgencyLocation() {
-        return agencyLocation;
-    }
-
-    private AgencyLocationAttribute getAgencyLocationAttribute() {
-        return agencyLocationAttribute;
-    }
-
-    private AgencyLocationAttributeAuthorization getAgencyLocationAttributeAuthorization() {
-        return agencyLocationAttributeAuthorization;
-    }
-
-    private AgencyLocationAuthorization getAgencyLocationAuthorization() {
-        return agencyLocationAuthorization;
-    }
-
-    private AgencyNetwork getAgencyNetwork() {
-        return agencyNetwork;
-    }
-
-    private AgencyNetworkAttribute getAgencyNetworkAttribute() {
-        return agencyNetworkAttribute;
-    }
-
-    private AgencyNetworkAuthorization getAgencyNetworkAuthorization() {
-        return agencyNetworkAuthorization;
-    }
-
-    private AgencyProduct getAgencyProduct() {
-        return agencyProduct;
-    }
-
-    private AgencyProductAttribute getAgencyProductAttribute() {
-        return agencyProductAttribute;
-    }
-
-    private AgencyProductAttributeAuthorization getAgencyProductAttributeAuthorization() {
-        return agencyProductAttributeAuthorization;
-    }
-
-    private AgencyProductAuthorization getAgencyProductAuthorization() {
-        return agencyProductAuthorization;
-    }
-
-    private Attribute getAttribute() {
-        return attribute;
-    }
-
-    private AttributeMetaAttribute getAttributeMetaAttribute() {
-        return attributeMetaAttribute;
-    }
-
-    private AttributeMetaAttributeAuthorization getAttributeMetaAttributeAuthorization() {
-        return attributeMetaAttributeAuthorization;
-    }
-
-    private AttributeNetwork getAttributeNetwork() {
-        return attributeNetwork;
-    }
-
-    private AttributeNetworkAttribute getAttributeNetworkAttribute() {
-        return attributeNetworkAttribute;
-    }
-
-    private AttributeNetworkAuthorization getAttributeNetworkAuthorization() {
-        return attributeNetworkAuthorization;
-    }
-
-    private Interval getInterval() {
-        return interval;
-    }
-
-    private IntervalAttribute getIntervalAttribute() {
-        return intervalAttribute;
-    }
-
-    private IntervalAttributeAuthorization getIntervalAttributeAuthorization() {
-        return intervalAttributeAuthorization;
-    }
-
-    private IntervalNetwork getIntervalNetwork() {
-        return intervalNetwork;
-    }
-
-    private IntervalNetworkAttribute getIntervalNetworkAttribute() {
-        return intervalNetworkAttribute;
-    }
-
-    private IntervalNetworkAuthorization getIntervalNetworkAuthorization() {
-        return intervalNetworkAuthorization;
-    }
-
-    private Job getJob() {
-        return job;
-    }
-
-    private JobChronology getJobChronology() {
-        return jobChronology;
-    }
-
-    private Location getLocation() {
-        return location;
-    }
-
-    private LocationAttribute getLocationAttribute() {
-        return locationAttribute;
-    }
-
-    private LocationAttributeAuthorization getLocationAttributeAuthorization() {
-        return locationAttributeAuthorization;
-    }
-
-    private LocationNetwork getLocationNetwork() {
-        return locationNetwork;
-    }
-
-    private LocationNetworkAttribute getLocationNetworkAttribute() {
-        return locationNetworkAttribute;
-    }
-
-    private LocationNetworkAuthorization getLocationNetworkAuthorization() {
-        return locationNetworkAuthorization;
-    }
-
-    private MetaProtocol getMetaProtocol() {
-        return metaProtocol;
-    }
-
-    private NetworkInference getNetworkInference() {
-        return networkInference;
-    }
-
-    private Product getProduct() {
-        return product;
-    }
-
-    private ProductAttribute getProductAttribute() {
-        return productAttribute;
-    }
-
-    private ProductAttributeAuthorization getProductAttributeAuthorization() {
-        return productAttributeAuthorization;
-    }
-
-    private ProductChildSequencingAuthorization getProductChildSequencingAuthorization() {
-        return productChildSequencingAuthorization;
-    }
-
-    private ProductLocation getProductLocation() {
-        return productLocation;
-    }
-
-    private ProductLocationAttribute getProductLocationAttribute() {
-        return productLocationAttribute;
-    }
-
-    private ProductLocationAttributeAuthorization getProductLocationAttributeAuthorization() {
-        return productLocationAttributeAuthorization;
-    }
-
-    private ProductLocationAuthorization getProductLocationAuthorization() {
-        return productLocationAuthorization;
-    }
-
-    private ProductNetwork getProductNetwork() {
-        return productNetwork;
-    }
-
-    private ProductNetworkAttribute getProductNetworkAttribute() {
-        return productNetworkAttribute;
-    }
-
-    private ProductNetworkAuthorization getProductNetworkAuthorization() {
-        return productNetworkAuthorization;
-    }
-
-    private ProductParentSequencingAuthorization getProductParentSequencingAuthorization() {
-        return productParentSequencingAuthorization;
-    }
-
-    private ProductRelationship getProductRelationship() {
-        return productRelationship;
-    }
-
-    private ProductRelationshipAttribute getProductRelationshipAttribute() {
-        return productRelationshipAttribute;
-    }
-
-    private ProductSelfSequencingAuthorization getProductSelfSequencingAuthorization() {
-        return productSelfSequencingAuthorization;
-    }
-
-    private ProductSiblingSequencingAuthorization getProductSiblingSequencingAuthorization() {
-        return productSiblingSequencingAuthorization;
-    }
-
-    private Protocol getProtocol() {
-        return protocol;
-    }
-
-    private Relationship getRelationship() {
-        return relationship;
-    }
-
-    private RelationshipAttribute getRelationshipAttribute() {
-        return relationshipAttribute;
-    }
-
-    private RelationshipAttributeAuthorization getRelationshipAttributeAuthorization() {
-        return relationshipAttributeAuthorization;
-    }
-
-    private RelationshipNetwork getRelationshipNetwork() {
-        return relationshipNetwork;
-    }
-
-    private RelationshipNetworkAttribute getRelationshipNetworkAttribute() {
-        return relationshipNetworkAttribute;
-    }
-
-    private RelationshipNetworkAuthorization getRelationshipNetworkAuthorization() {
-        return relationshipNetworkAuthorization;
-    }
-
-    private StatusCode getStatusCode() {
-        return statusCode;
-    }
-
-    private StatusCodeAttribute getStatusCodeAttribute() {
-        return statusCodeAttribute;
-    }
-
-    private StatusCodeAttributeAuthorization getStatusCodeAttributeAuthorization() {
-        return statusCodeAttributeAuthorization;
-    }
-
-    private StatusCodeNetwork getStatusCodeNetwork() {
-        return statusCodeNetwork;
-    }
-
-    private StatusCodeNetworkAttribute getStatusCodeNetworkAttribute() {
-        return statusCodeNetworkAttribute;
-    }
-
-    private StatusCodeNetworkAuthorization getStatusCodeNetworkAuthorization() {
-        return statusCodeNetworkAuthorization;
-    }
-
-    private StatusCodeSequencing getStatusCodeSequencing() {
-        return statusCodeSequencing;
-    }
-
-    private Unit getUnit() {
-        return unit;
-    }
-
-    private UnitAttribute getUnitAttribute() {
-        return unitAttribute;
-    }
-
-    private UnitAttributeAuthorization getUnitAttributeAuthorization() {
-        return unitAttributeAuthorization;
-    }
-
-    private UnitNetwork getUnitNetwork() {
-        return unitNetwork;
-    }
-
-    private UnitNetworkAttribute getUnitNetworkAttribute() {
-        return unitNetworkAttribute;
-    }
-
-    private UnitNetworkAuthorization getUnitNetworkAuthorization() {
-        return unitNetworkAuthorization;
     }
 
     private void setAgency(Agency agency) {
@@ -1569,7 +1303,16 @@ public class WorkspaceAuthorization extends Ruleform {
     private void setProductRelationshipAttribute(ProductRelationshipAttribute entity) {
         type = PRODUCT_RELATIONSHIP_ATTRIBUTE;
         this.productRelationshipAttribute = entity;
+    }
 
+    private void setProductRelationshipAttributeAuthorization(ProductRelationshipAttributeAuthorization entity) {
+        type = PRODUCT_RELATIONSHIP_ATTRIBUTE_AUTHORIZATION;
+        this.productRelationshipAttributeAuthorization = entity;
+    }
+
+    private void setProductRelationshipAuthorization(ProductRelationshipAuthorization entity) {
+        type = PRODUCT_RELATIONSHIP_AUTHORIZATION;
+        this.productRelationshipAuthorization = entity;
     }
 
     private void setProductSelfSequencingAuthorization(ProductSelfSequencingAuthorization productSelfSequencingAuthorization) {

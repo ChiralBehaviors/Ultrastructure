@@ -93,8 +93,10 @@
     <include relativeToChangelogFile="true" file="views/agency_location_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/agency_product_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/product_location_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/product_relationship_authorization.xml" />
     
     <include relativeToChangelogFile="true" file="views/agency_location_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/agency_product_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/product_location_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="views/product_relationship_attribute_authorization.xml" />
 </databaseChangeLog>

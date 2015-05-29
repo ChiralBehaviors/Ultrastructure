@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="product_relationship_attribute_authorization">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="product_relationship_attribute_authorization_pkey" />
+            </column>
+            <column name="network_authorization" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="authorized_attribute" remarks="An Attribute the existential entity is expected to have" type="uuid">
+                <constraints nullable="true" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number"
+                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="boolean_value" type="SMALLINT" />
+            <column name="binary_value" type="BYTEA" />
+            <column name="text_value" type="TEXT" />
+            <column name="integer_value" type="INT4" />
+            <column name="numeric_value" type="numeric" />
+            <column name="timestamp_value" type="TIMESTAMPTZ" />
+            <column name="grouping_agency" type="uuid" />
+            <column name="notes" type="TEXT" />
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="product_relationship_attribute_authorization" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authorized_attribute" baseTableName="product_relationship_attribute_authorization" constraintName="product_relationship_attribute_authorization_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="network_authorization" baseTableName="product_relationship_attribute_authorization" constraintName="product_relationship_attribute_authorization__attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product_relationship_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="product_relationship_attribute_authorization" constraintName="product_relationship_attribute_authorization_grouping_agency_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_relationship_attribute_authorization" constraintName="product_relationship_attribute_authorization_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="network_authorization, authorized_attribute, sequence_number"
+            constraintName="product_relationship_attribute_authorization_unique_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="product_relationship_attribute_authorization" />
+        <createIndex schemaName="ruleform" indexName="product_relationship_attribute_authorization_updated_by_fkey_idx" tableName="product_relationship_attribute_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

@@ -50,6 +50,8 @@
         <class>com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.product.ProductRelationship</class>
         <class>com.chiralbehaviors.CoRE.product.ProductRelationshipAttribute</class>
+        <class>com.chiralbehaviors.CoRE.product.ProductRelationshipAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization</class>
         <class>com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization</class>
         <class>com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization</class>
         <class>com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization</class>

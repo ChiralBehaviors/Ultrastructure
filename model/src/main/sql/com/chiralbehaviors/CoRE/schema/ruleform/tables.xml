@@ -68,7 +68,7 @@
 
     <include relativeToChangelogFile="true" file="tables/product_location.xml" />
     <include relativeToChangelogFile="true" file="tables/product_location_attribute.xml" />
-    
+
     <include relativeToChangelogFile="true" file="tables/product_relationship.xml" />
     <include relativeToChangelogFile="true" file="tables/product_relationship_attribute.xml" />
 
@@ -81,10 +81,12 @@
     <include relativeToChangelogFile="true" file="tables/agency_location_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_product_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_location_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_relationship_authorization.xml" />
 
     <include relativeToChangelogFile="true" file="tables/agency_location_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_product_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_location_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_relationship_attribute_authorization.xml" />
 
     <include relativeToChangelogFile="true" file="tables/status_code_sequencing.xml" />
     <include relativeToChangelogFile="true" file="tables/product_parent_sequencing_authorization.xml" />

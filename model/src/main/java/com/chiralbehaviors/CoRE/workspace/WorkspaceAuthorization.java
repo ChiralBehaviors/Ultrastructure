@@ -98,6 +98,8 @@ import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationship;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
@@ -110,6 +112,8 @@ import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -125,12 +129,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                      + "WHERE auth.id = :id") })
 @Entity
 @Table(name = "workspace_authorization", schema = "ruleform")
+@JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 public class WorkspaceAuthorization extends Ruleform {
     public static final String  AGENCY                                   = "Agency";
     public static final String  AGENCY_ATTRIBUTE                         = "AgencyAttribute";
     public static final String  AGENCY_ATTRIBUTE_AUTHORIZATION           = "AgencyAttributeAuthorization";
     public static final String  AGENCY_LOCATION                          = "AgencyLocation";
-
     public static final String  AGENCY_LOCATION_ATTRIBUTE                = "AgencyLocationAttribute";
     public static final String  AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION  = "AgencyLocationAttributeAuthorization";
     public static final String  AGENCY_LOCATION_AUTHORIZATION            = "AgencyLocationAuthorization";
@@ -178,6 +182,8 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  PRODUCT_NETWORK_ATTRIBUTE                = "ProductNetworkAttribute";
     public static final String  PRODUCT_NETWORK_AUTHORIZATION            = "ProductNetworkAuthorization";
     public static final String  PRODUCT_PARENT_SEQUENCING_AUTHORIZATION  = "ProductParentSequencingAuthorization";
+    public static final String  PRODUCT_RELATIONSHIP                     = "ProductRelationship";
+    public static final String  PRODUCT_RELATIONSHIP_ATTRIBUTE           = "ProductRelationshipAttribute";
     public static final String  PRODUCT_SELF_SEQUENCING_AUTHORIZATION    = "ProductSelfSequencingAuthorization";
     public static final String  PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION = "ProductSiblingSequencingAuthorization";
     public static final String  PROTOCOL                                 = "Protocol";
@@ -220,82 +226,102 @@ public class WorkspaceAuthorization extends Ruleform {
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency")
+    @JsonIgnore
     private Agency                                agency;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_attribute")
+    @JsonIgnore
     private AgencyAttribute                       agencyAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_attribute_authorization")
+    @JsonIgnore
     private AgencyAttributeAuthorization          agencyAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location")
+    @JsonIgnore
     private AgencyLocation                        agencyLocation;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location_attribute")
+    @JsonIgnore
     private AgencyLocationAttribute               agencyLocationAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location_attribute_authorization")
+    @JsonIgnore
     private AgencyLocationAttributeAuthorization  agencyLocationAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_location_authorization")
+    @JsonIgnore
     private AgencyLocationAuthorization           agencyLocationAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network")
+    @JsonIgnore
     private AgencyNetwork                         agencyNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network_attribute")
+    @JsonIgnore
     private AgencyNetworkAttribute                agencyNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_network_authorization")
+    @JsonIgnore
     private AgencyNetworkAuthorization            agencyNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product")
+    @JsonIgnore
     private AgencyProduct                         agencyProduct;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product_attribute")
+    @JsonIgnore
     private AgencyProductAttribute                agencyProductAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product_attribute_authorization")
+    @JsonIgnore
     private AgencyProductAttributeAuthorization   agencyProductAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product_authorization")
+    @JsonIgnore
     private AgencyProductAuthorization            agencyProductAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute")
+    @JsonIgnore
     private Attribute                             attribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_meta_attribute")
+    @JsonIgnore
     private AttributeMetaAttribute                attributeMetaAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attr_meta_attr_auth")
+    @JsonIgnore
     private AttributeMetaAttributeAuthorization   attributeMetaAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_network")
+    @JsonIgnore
     private AttributeNetwork                      attributeNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_network_attribute")
+    @JsonIgnore
     private AttributeNetworkAttribute             attributeNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute_network_authorization")
+    @JsonIgnore
     private AttributeNetworkAuthorization         attributeNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
@@ -304,180 +330,234 @@ public class WorkspaceAuthorization extends Ruleform {
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval")
+    @JsonIgnore
     private Interval                              interval;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_attribute")
+    @JsonIgnore
     private IntervalAttribute                     intervalAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_attribute_authorization")
+    @JsonIgnore
     private IntervalAttributeAuthorization        intervalAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_network")
+    @JsonIgnore
     private IntervalNetwork                       intervalNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_network_attribute")
+    @JsonIgnore
     private IntervalNetworkAttribute              intervalNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "interval_network_authorization")
+    @JsonIgnore
     private IntervalNetworkAuthorization          intervalNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
+    @JsonIgnore
     private Job                                   job;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "job_chronology")
+    @JsonIgnore
     private JobChronology                         jobChronology;
 
     private String                                key;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location")
+    @JsonIgnore
     private Location                              location;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_attribute")
+    @JsonIgnore
     private LocationAttribute                     locationAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_attribute_authorization")
+    @JsonIgnore
     private LocationAttributeAuthorization        locationAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_network")
+    @JsonIgnore
     private LocationNetwork                       locationNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_network_attribute")
+    @JsonIgnore
     private LocationNetworkAttribute              locationNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_network_authorization")
+    @JsonIgnore
     private LocationNetworkAuthorization          locationNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "meta_protocol")
+    @JsonIgnore
     private MetaProtocol                          metaProtocol;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "network_inference")
+    @JsonIgnore
     private NetworkInference                      networkInference;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product")
+    @JsonIgnore
     private Product                               product;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_attribute")
+    @JsonIgnore
     private ProductAttribute                      productAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_attribute_authorization")
+    @JsonIgnore
     private ProductAttributeAuthorization         productAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_child_sequencing_authorization")
+    @JsonIgnore
     private ProductChildSequencingAuthorization   productChildSequencingAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location")
+    @JsonIgnore
     private ProductLocation                       productLocation;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location_attribute")
+    @JsonIgnore
     private ProductLocationAttribute              productLocationAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location_attribute_authorization")
+    @JsonIgnore
     private ProductLocationAttributeAuthorization productLocationAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_location_authorization")
+    @JsonIgnore
     private ProductLocationAuthorization          productLocationAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network")
+    @JsonIgnore
     private ProductNetwork                        productNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network_attribute")
+    @JsonIgnore
     private ProductNetworkAttribute               productNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_network_authorization")
+    @JsonIgnore
     private ProductNetworkAuthorization           productNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_parent_sequencing_authorization")
+    @JsonIgnore
     private ProductParentSequencingAuthorization  productParentSequencingAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "product_relationship")
+    @JsonIgnore
+    private ProductRelationship                   productRelationship;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "product_relationship_attribute")
+    @JsonIgnore
+    private ProductRelationshipAttribute          productRelationshipAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_self_sequencing_authorization")
+    @JsonIgnore
     private ProductSelfSequencingAuthorization    productSelfSequencingAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_sibling_sequencing_authorization")
+    @JsonIgnore
     private ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "protocol")
+    @JsonIgnore
     private Protocol                              protocol;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship")
+    @JsonIgnore
     private Relationship                          relationship;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_attribute")
+    @JsonIgnore
     private RelationshipAttribute                 relationshipAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_attribute_authorization")
+    @JsonIgnore
     private RelationshipAttributeAuthorization    relationshipAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_network")
+    @JsonIgnore
     private RelationshipNetwork                   relationshipNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_network_attribute")
+    @JsonIgnore
     private RelationshipNetworkAttribute          relationshipNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship_network_authorization")
+    @JsonIgnore
     private RelationshipNetworkAuthorization      relationshipNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code")
+    @JsonIgnore
     private StatusCode                            statusCode;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_attribute")
+    @JsonIgnore
     private StatusCodeAttribute                   statusCodeAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_attribute_authorization")
+    @JsonIgnore
     private StatusCodeAttributeAuthorization      statusCodeAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_network")
+    @JsonIgnore
     private StatusCodeNetwork                     statusCodeNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_network_attribute")
+    @JsonIgnore
     private StatusCodeNetworkAttribute            statusCodeNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_network_authorization")
+    @JsonIgnore
     private StatusCodeNetworkAuthorization        statusCodeNetworkAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_code_sequencing")
+    @JsonIgnore
     private StatusCodeSequencing                  statusCodeSequencing;
 
     @Column(name = "type")
@@ -485,26 +565,32 @@ public class WorkspaceAuthorization extends Ruleform {
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit")
+    @JsonIgnore
     private Unit                                  unit;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_attribute")
+    @JsonIgnore
     private UnitAttribute                         unitAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_attribute_authorization")
+    @JsonIgnore
     private UnitAttributeAuthorization            unitAttributeAuthorization;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_network")
+    @JsonIgnore
     private UnitNetwork                           unitNetwork;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_network_attribute")
+    @JsonIgnore
     private UnitNetworkAttribute                  unitNetworkAttribute;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_network_authorization")
+    @JsonIgnore
     private UnitNetworkAuthorization              unitNetworkAuthorization;
 
     public WorkspaceAuthorization() {
@@ -513,7 +599,7 @@ public class WorkspaceAuthorization extends Ruleform {
 
     public WorkspaceAuthorization(Ruleform ruleform, Product definingProduct) {
         super();
-        setEntity(ruleform);
+        setRuleform(ruleform);
         setDefiningProduct(definingProduct);
     }
 
@@ -529,106 +615,7 @@ public class WorkspaceAuthorization extends Ruleform {
         setKey(key);
     }
 
-    @JsonIgnore
-    public Agency getAgency() {
-        return agency;
-    }
-
-    @JsonIgnore
-    public AgencyAttribute getAgencyAttribute() {
-        return agencyAttribute;
-    }
-
-    @JsonIgnore
-    public AgencyAttributeAuthorization getAgencyAttributeAuthorization() {
-        return agencyAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public AgencyLocation getAgencyLocation() {
-        return agencyLocation;
-    }
-
-    @JsonIgnore
-    public AgencyLocationAttribute getAgencyLocationAttribute() {
-        return agencyLocationAttribute;
-    }
-
-    @JsonIgnore
-    public AgencyLocationAttributeAuthorization getAgencyLocationAttributeAuthorization() {
-        return agencyLocationAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public AgencyLocationAuthorization getAgencyLocationAuthorization() {
-        return agencyLocationAuthorization;
-    }
-
-    @JsonIgnore
-    public AgencyNetwork getAgencyNetwork() {
-        return agencyNetwork;
-    }
-
-    @JsonIgnore
-    public AgencyNetworkAttribute getAgencyNetworkAttribute() {
-        return agencyNetworkAttribute;
-    }
-
-    @JsonIgnore
-    public AgencyNetworkAuthorization getAgencyNetworkAuthorization() {
-        return agencyNetworkAuthorization;
-    }
-
-    @JsonIgnore
-    public AgencyProduct getAgencyProduct() {
-        return agencyProduct;
-    }
-
-    @JsonIgnore
-    public AgencyProductAttribute getAgencyProductAttribute() {
-        return agencyProductAttribute;
-    }
-
-    @JsonIgnore
-    public AgencyProductAttributeAuthorization getAgencyProductAttributeAuthorization() {
-        return agencyProductAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public AgencyProductAuthorization getAgencyProductAuthorization() {
-        return agencyProductAuthorization;
-    }
-
-    @JsonIgnore
-    public Attribute getAttribute() {
-        return attribute;
-    }
-
-    @JsonIgnore
-    public AttributeMetaAttribute getAttributeMetaAttribute() {
-        return attributeMetaAttribute;
-    }
-
-    @JsonIgnore
-    public AttributeMetaAttributeAuthorization getAttributeMetaAttributeAuthorization() {
-        return attributeMetaAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public AttributeNetwork getAttributeNetwork() {
-        return attributeNetwork;
-    }
-
-    @JsonIgnore
-    public AttributeNetworkAttribute getAttributeNetworkAttribute() {
-        return attributeNetworkAttribute;
-    }
-
-    @JsonIgnore
-    public AttributeNetworkAuthorization getAttributeNetworkAuthorization() {
-        return attributeNetworkAuthorization;
-    }
-
+    @JsonGetter
     public Product getDefiningProduct() {
         return definingProduct;
     }
@@ -703,6 +690,10 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) getProductLocation();
             case PRODUCT_LOCATION_ATTRIBUTE:
                 return (T) getProductLocationAttribute();
+            case PRODUCT_RELATIONSHIP:
+                return (T) getProductRelationship();
+            case PRODUCT_RELATIONSHIP_ATTRIBUTE:
+                return (T) getProductRelationshipAttribute();
             case INTERVAL:
                 return (T) getInterval();
             case INTERVAL_ATTRIBUTE:
@@ -754,7 +745,7 @@ public class WorkspaceAuthorization extends Ruleform {
             case RELATIONSHIP_NETWORK_ATTRIBUTE:
                 return (T) getRelationshipNetworkAttribute();
             case ATTRIBUTE_NETWORK_AUTHORIZATION:
-                return (T) getAgencyNetworkAuthorization();
+                return (T) getAttributeNetworkAuthorization();
             case INTERVAL_NETWORK_AUTHORIZATION:
                 return (T) getIntervalNetworkAuthorization();
             case PRODUCT_NETWORK_AUTHORIZATION:
@@ -785,193 +776,8 @@ public class WorkspaceAuthorization extends Ruleform {
         }
     }
 
-    @JsonIgnore
-    public Interval getInterval() {
-        return interval;
-    }
-
-    @JsonIgnore
-    public IntervalAttribute getIntervalAttribute() {
-        return intervalAttribute;
-    }
-
-    @JsonIgnore
-    public IntervalAttributeAuthorization getIntervalAttributeAuthorization() {
-        return intervalAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public IntervalNetwork getIntervalNetwork() {
-        return intervalNetwork;
-    }
-
-    @JsonIgnore
-    public IntervalNetworkAttribute getIntervalNetworkAttribute() {
-        return intervalNetworkAttribute;
-    }
-
-    @JsonIgnore
-    public IntervalNetworkAuthorization getIntervalNetworkAuthorization() {
-        return intervalNetworkAuthorization;
-    }
-
-    @JsonIgnore
-    public Job getJob() {
-        return job;
-    }
-
-    @JsonIgnore
-    public JobChronology getJobChronology() {
-        return jobChronology;
-    }
-
     public String getKey() {
         return key;
-    }
-
-    @JsonIgnore
-    public Location getLocation() {
-        return location;
-    }
-
-    @JsonIgnore
-    public LocationAttribute getLocationAttribute() {
-        return locationAttribute;
-    }
-
-    @JsonIgnore
-    public LocationAttributeAuthorization getLocationAttributeAuthorization() {
-        return locationAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public LocationNetwork getLocationNetwork() {
-        return locationNetwork;
-    }
-
-    @JsonIgnore
-    public LocationNetworkAttribute getLocationNetworkAttribute() {
-        return locationNetworkAttribute;
-    }
-
-    @JsonIgnore
-    public LocationNetworkAuthorization getLocationNetworkAuthorization() {
-        return locationNetworkAuthorization;
-    }
-
-    @JsonIgnore
-    public MetaProtocol getMetaProtocol() {
-        return metaProtocol;
-    }
-
-    @JsonIgnore
-    public NetworkInference getNetworkInference() {
-        return networkInference;
-    }
-
-    @JsonIgnore
-    public Product getProduct() {
-        return product;
-    }
-
-    @JsonIgnore
-    public ProductAttribute getProductAttribute() {
-        return productAttribute;
-    }
-
-    @JsonIgnore
-    public ProductAttributeAuthorization getProductAttributeAuthorization() {
-        return productAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public ProductChildSequencingAuthorization getProductChildSequencingAuthorization() {
-        return productChildSequencingAuthorization;
-    }
-
-    @JsonIgnore
-    public ProductLocation getProductLocation() {
-        return productLocation;
-    }
-
-    @JsonIgnore
-    public ProductLocationAttribute getProductLocationAttribute() {
-        return productLocationAttribute;
-    }
-
-    @JsonIgnore
-    public ProductLocationAttributeAuthorization getProductLocationAttributeAuthorization() {
-        return productLocationAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public ProductLocationAuthorization getProductLocationAuthorization() {
-        return productLocationAuthorization;
-    }
-
-    @JsonIgnore
-    public ProductNetwork getProductNetwork() {
-        return productNetwork;
-    }
-
-    @JsonIgnore
-    public ProductNetworkAttribute getProductNetworkAttribute() {
-        return productNetworkAttribute;
-    }
-
-    @JsonIgnore
-    public ProductNetworkAuthorization getProductNetworkAuthorization() {
-        return productNetworkAuthorization;
-    }
-
-    @JsonIgnore
-    public ProductParentSequencingAuthorization getProductParentSequencingAuthorization() {
-        return productParentSequencingAuthorization;
-    }
-
-    @JsonIgnore
-    public ProductSelfSequencingAuthorization getProductSelfSequencingAuthorization() {
-        return productSelfSequencingAuthorization;
-    }
-
-    @JsonIgnore
-    public ProductSiblingSequencingAuthorization getProductSiblingSequencingAuthorization() {
-        return productSiblingSequencingAuthorization;
-    }
-
-    @JsonIgnore
-    public Protocol getProtocol() {
-        return protocol;
-    }
-
-    @JsonIgnore
-    public Relationship getRelationship() {
-        return relationship;
-    }
-
-    @JsonIgnore
-    public RelationshipAttribute getRelationshipAttribute() {
-        return relationshipAttribute;
-    }
-
-    @JsonIgnore
-    public RelationshipAttributeAuthorization getRelationshipAttributeAuthorization() {
-        return relationshipAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public RelationshipNetwork getRelationshipNetwork() {
-        return relationshipNetwork;
-    }
-
-    @JsonIgnore
-    public RelationshipNetworkAttribute getRelationshipNetworkAttribute() {
-        return relationshipNetworkAttribute;
-    }
-
-    @JsonIgnore
-    public RelationshipNetworkAuthorization getRelationshipNetworkAuthorization() {
-        return relationshipNetworkAuthorization;
     }
 
     @JsonGetter
@@ -979,664 +785,899 @@ public class WorkspaceAuthorization extends Ruleform {
         return getEntity();
     }
 
-    @JsonIgnore
-    public StatusCode getStatusCode() {
-        return statusCode;
-    }
-
-    @JsonIgnore
-    public StatusCodeAttribute getStatusCodeAttribute() {
-        return statusCodeAttribute;
-    }
-
-    @JsonIgnore
-    public StatusCodeAttributeAuthorization getStatusCodeAttributeAuthorization() {
-        return statusCodeAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public StatusCodeNetwork getStatusCodeNetwork() {
-        return statusCodeNetwork;
-    }
-
-    @JsonIgnore
-    public StatusCodeNetworkAttribute getStatusCodeNetworkAttribute() {
-        return statusCodeNetworkAttribute;
-    }
-
-    @JsonIgnore
-    public StatusCodeNetworkAuthorization getStatusCodeNetworkAuthorization() {
-        return statusCodeNetworkAuthorization;
-    }
-
-    @JsonIgnore
-    public StatusCodeSequencing getStatusCodeSequencing() {
-        return statusCodeSequencing;
-    }
-
-    @JsonIgnore
     public String getType() {
         return type;
-    }
-
-    @JsonIgnore
-    public Unit getUnit() {
-        return unit;
-    }
-
-    @JsonIgnore
-    public UnitAttribute getUnitAttribute() {
-        return unitAttribute;
-    }
-
-    @JsonIgnore
-    public UnitAttributeAuthorization getUnitAttributeAuthorization() {
-        return unitAttributeAuthorization;
-    }
-
-    @JsonIgnore
-    public UnitNetwork getUnitNetwork() {
-        return unitNetwork;
-    }
-
-    @JsonIgnore
-    public UnitNetworkAttribute getUnitNetworkAttribute() {
-        return unitNetworkAttribute;
-    }
-
-    @JsonIgnore
-    public UnitNetworkAuthorization getUnitNetworkAuthorization() {
-        return unitNetworkAuthorization;
     }
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
      */
     @Override
-    @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
         throw new UnsupportedOperationException(
                                                 "Workspace auth does not recursively refer to workspace auth");
-    }
-
-    public void setAgency(Agency agency) {
-        type = AGENCY;
-        this.agency = agency;
-    }
-
-    public void setAgencyAttribute(AgencyAttribute agencyAttribute) {
-        type = AGENCY_ATTRIBUTE;
-        this.agencyAttribute = agencyAttribute;
-    }
-
-    public void setAgencyAttributeAuthorization(AgencyAttributeAuthorization agencyAttributeAuthorization) {
-        type = AGENCY_ATTRIBUTE_AUTHORIZATION;
-        this.agencyAttributeAuthorization = agencyAttributeAuthorization;
-    }
-
-    public void setAgencyLocation(AgencyLocation agencyLocation) {
-        type = AGENCY_LOCATION;
-        this.agencyLocation = agencyLocation;
-    }
-
-    public void setAgencyLocationAttribute(AgencyLocationAttribute agencyLocationAttribute) {
-        type = AGENCY_LOCATION_ATTRIBUTE;
-        this.agencyLocationAttribute = agencyLocationAttribute;
-    }
-
-    public void setAgencyLocationAttributeAuthorization(AgencyLocationAttributeAuthorization agencyLocationAttributeAuthorization) {
-        type = AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION;
-        this.agencyLocationAttributeAuthorization = agencyLocationAttributeAuthorization;
-    }
-
-    public void setAgencyLocationAuthorization(AgencyLocationAuthorization agencyLocationAuthorization) {
-        type = AGENCY_LOCATION_AUTHORIZATION;
-        this.agencyLocationAuthorization = agencyLocationAuthorization;
-    }
-
-    public void setAgencyNetwork(AgencyNetwork agencyNetwork) {
-        type = AGENCY_NETWORK;
-        this.agencyNetwork = agencyNetwork;
-    }
-
-    public void setAgencyNetworkAttribute(AgencyNetworkAttribute agencyNetworkAttribute) {
-        type = AGENCY_NETWORK_ATTRIBUTE;
-        this.agencyNetworkAttribute = agencyNetworkAttribute;
-    }
-
-    public void setAgencyNetworkAuthorization(AgencyNetworkAuthorization agencyNetworkAuthorization) {
-        type = AGENCY_NETWORK_AUTHORIZATION;
-        this.agencyNetworkAuthorization = agencyNetworkAuthorization;
-    }
-
-    public void setAgencyProduct(AgencyProduct agencyProduct) {
-        type = AGENCY_PRODUCT;
-        this.agencyProduct = agencyProduct;
-    }
-
-    public void setAgencyProductAttribute(AgencyProductAttribute agencyProductAttribute) {
-        type = AGENCY_PRODUCT_ATTRIBUTE;
-        this.agencyProductAttribute = agencyProductAttribute;
-    }
-
-    public void setAgencyProductAttributeAuthorization(AgencyProductAttributeAuthorization agencyProductAttributeAuthorization) {
-        type = AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION;
-        this.agencyProductAttributeAuthorization = agencyProductAttributeAuthorization;
-    }
-
-    public void setAgencyProductAuthorization(AgencyProductAuthorization agencyProductAuthorization) {
-        type = AGENCY_PRODUCT_AUTHORIZATION;
-        this.agencyProductAuthorization = agencyProductAuthorization;
-    }
-
-    public void setAttribute(Attribute attribute) {
-        type = ATTRIBUTE;
-        this.attribute = attribute;
-    }
-
-    public void setAttributeMetaAttribute(AttributeMetaAttribute attributeMetaAttribute) {
-        type = ATTRIBUTE_META_ATTRIBUTE;
-        this.attributeMetaAttribute = attributeMetaAttribute;
-    }
-
-    public void setAttributeMetaAttributeAuthorization(AttributeMetaAttributeAuthorization attributeMetaAttributeAuthorization) {
-        type = ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION;
-        this.attributeMetaAttributeAuthorization = attributeMetaAttributeAuthorization;
-    }
-
-    public void setAttributeNetwork(AttributeNetwork attributeNetwork) {
-        type = ATTRIBUTE_NETWORK;
-        this.attributeNetwork = attributeNetwork;
-    }
-
-    public void setAttributeNetworkAttribute(AttributeNetworkAttribute attributeNetworkAttribute) {
-        type = ATTRIBUTE_NETWORK_ATTRIBUTE;
-        this.attributeNetworkAttribute = attributeNetworkAttribute;
-    }
-
-    public void setAttributeNetworkAuthorization(AttributeNetworkAuthorization attributeNetworkAuthorization) {
-        type = ATTRIBUTE_NETWORK_AUTHORIZATION;
-        this.attributeNetworkAuthorization = attributeNetworkAuthorization;
     }
 
     public void setDefiningProduct(Product definingProduct) {
         this.definingProduct = definingProduct;
     }
 
-    public <T extends Ruleform> void setEntity(T entity) {
-        switch (entity.getClass().getSimpleName()) {
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setRuleform(Ruleform ruleform) {
+        switch (ruleform.getClass().getSimpleName()) {
             case AGENCY:
-                setAgency((Agency) entity);
+                setAgency((Agency) ruleform);
                 break;
             case AGENCY_ATTRIBUTE:
-                setAgencyAttribute((AgencyAttribute) entity);
+                setAgencyAttribute((AgencyAttribute) ruleform);
                 break;
             case AGENCY_ATTRIBUTE_AUTHORIZATION:
-                setAgencyAttributeAuthorization((AgencyAttributeAuthorization) entity);
+                setAgencyAttributeAuthorization((AgencyAttributeAuthorization) ruleform);
                 break;
             case AGENCY_LOCATION:
-                setAgencyLocation((AgencyLocation) entity);
+                setAgencyLocation((AgencyLocation) ruleform);
                 break;
             case AGENCY_LOCATION_ATTRIBUTE:
-                setAgencyLocationAttribute((AgencyLocationAttribute) entity);
+                setAgencyLocationAttribute((AgencyLocationAttribute) ruleform);
                 break;
             case AGENCY_NETWORK:
-                setAgencyNetwork((AgencyNetwork) entity);
+                setAgencyNetwork((AgencyNetwork) ruleform);
                 break;
             case AGENCY_NETWORK_ATTRIBUTE:
-                setAgencyNetworkAttribute((AgencyNetworkAttribute) entity);
+                setAgencyNetworkAttribute((AgencyNetworkAttribute) ruleform);
                 break;
             case AGENCY_NETWORK_AUTHORIZATION:
-                setAgencyNetworkAuthorization((AgencyNetworkAuthorization) entity);
+                setAgencyNetworkAuthorization((AgencyNetworkAuthorization) ruleform);
                 break;
             case AGENCY_PRODUCT:
-                setAgencyProduct((AgencyProduct) entity);
+                setAgencyProduct((AgencyProduct) ruleform);
                 break;
             case AGENCY_PRODUCT_ATTRIBUTE:
-                setAgencyProductAttribute((AgencyProductAttribute) entity);
+                setAgencyProductAttribute((AgencyProductAttribute) ruleform);
                 break;
             case ATTRIBUTE:
-                setAttribute((Attribute) entity);
+                setAttribute((Attribute) ruleform);
                 break;
             case ATTRIBUTE_META_ATTRIBUTE:
-                setAttributeMetaAttribute((AttributeMetaAttribute) entity);
+                setAttributeMetaAttribute((AttributeMetaAttribute) ruleform);
                 break;
             case ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION:
-                setAttributeMetaAttributeAuthorization((AttributeMetaAttributeAuthorization) entity);
+                setAttributeMetaAttributeAuthorization((AttributeMetaAttributeAuthorization) ruleform);
                 break;
             case ATTRIBUTE_NETWORK:
-                setAttributeNetwork((AttributeNetwork) entity);
+                setAttributeNetwork((AttributeNetwork) ruleform);
                 break;
             case ATTRIBUTE_NETWORK_ATTRIBUTE:
-                setAttributeNetworkAttribute((AttributeNetworkAttribute) entity);
+                setAttributeNetworkAttribute((AttributeNetworkAttribute) ruleform);
                 break;
             case UNIT:
-                setUnit((Unit) entity);
+                setUnit((Unit) ruleform);
                 break;
             case UNIT_ATTRIBUTE:
-                setUnitAttribute((UnitAttribute) entity);
+                setUnitAttribute((UnitAttribute) ruleform);
                 break;
             case UNIT_ATTRIBUTE_AUTHORIZATION:
-                setUnitAttributeAuthorization((UnitAttributeAuthorization) entity);
+                setUnitAttributeAuthorization((UnitAttributeAuthorization) ruleform);
                 break;
             case UNIT_NETWORK:
-                setUnitNetwork((UnitNetwork) entity);
+                setUnitNetwork((UnitNetwork) ruleform);
                 break;
             case UNIT_NETWORK_ATTRIBUTE:
-                setUnitNetwork((UnitNetwork) entity);
+                setUnitNetworkAttribute((UnitNetworkAttribute) ruleform);
                 break;
             case LOCATION:
-                setLocation((Location) entity);
+                setLocation((Location) ruleform);
                 break;
             case LOCATION_ATTRIBUTE:
-                setLocationAttribute((LocationAttribute) entity);
+                setLocationAttribute((LocationAttribute) ruleform);
                 break;
             case LOCATION_ATTRIBUTE_AUTHORIZATION:
-                setLocationAttributeAuthorization((LocationAttributeAuthorization) entity);
+                setLocationAttributeAuthorization((LocationAttributeAuthorization) ruleform);
                 break;
             case LOCATION_NETWORK:
-                setLocationNetwork((LocationNetwork) entity);
+                setLocationNetwork((LocationNetwork) ruleform);
                 break;
             case LOCATION_NETWORK_ATTRIBUTE:
-                setLocationNetworkAttribute((LocationNetworkAttribute) entity);
+                setLocationNetworkAttribute((LocationNetworkAttribute) ruleform);
                 break;
             case LOCATION_NETWORK_AUTHORIZATION:
-                setLocationNetworkAuthorization((LocationNetworkAuthorization) entity);
+                setLocationNetworkAuthorization((LocationNetworkAuthorization) ruleform);
                 break;
             case PRODUCT:
-                setProduct((Product) entity);
+                setProduct((Product) ruleform);
                 break;
             case PRODUCT_ATTRIBUTE:
-                setProductAttribute((ProductAttribute) entity);
+                setProductAttribute((ProductAttribute) ruleform);
                 break;
             case PRODUCT_ATTRIBUTE_AUTHORIZATION:
-                setProductAttributeAuthorization((ProductAttributeAuthorization) entity);
+                setProductAttributeAuthorization((ProductAttributeAuthorization) ruleform);
                 break;
             case PRODUCT_NETWORK:
-                setProductNetwork((ProductNetwork) entity);
+                setProductNetwork((ProductNetwork) ruleform);
                 break;
             case PRODUCT_NETWORK_ATTRIBUTE:
-                setProductNetworkAttribute((ProductNetworkAttribute) entity);
+                setProductNetworkAttribute((ProductNetworkAttribute) ruleform);
                 break;
             case PRODUCT_LOCATION:
-                setProductLocation((ProductLocation) entity);
+                setProductLocation((ProductLocation) ruleform);
                 break;
             case PRODUCT_LOCATION_ATTRIBUTE:
-                setProductLocationAttribute((ProductLocationAttribute) entity);
+                setProductLocationAttribute((ProductLocationAttribute) ruleform);
+                break;
+            case PRODUCT_RELATIONSHIP:
+                setProductRelationship((ProductRelationship) ruleform);
+                break;
+            case PRODUCT_RELATIONSHIP_ATTRIBUTE:
+                setProductRelationshipAttribute((ProductRelationshipAttribute) ruleform);
                 break;
             case INTERVAL:
-                setInterval((Interval) entity);
+                setInterval((Interval) ruleform);
                 break;
             case INTERVAL_ATTRIBUTE:
-                setIntervalAttribute((IntervalAttribute) entity);
+                setIntervalAttribute((IntervalAttribute) ruleform);
                 break;
             case INTERVAL_ATTRIBUTE_AUTHORIZATION:
-                setIntervalAttributeAuthorization((IntervalAttributeAuthorization) entity);
+                setIntervalAttributeAuthorization((IntervalAttributeAuthorization) ruleform);
                 break;
             case INTERVAL_NETWORK:
-                setIntervalNetwork((IntervalNetwork) entity);
+                setIntervalNetwork((IntervalNetwork) ruleform);
                 break;
             case INTERVAL_NETWORK_ATTRIBUTE:
-                setIntervalNetworkAttribute((IntervalNetworkAttribute) entity);
+                setIntervalNetworkAttribute((IntervalNetworkAttribute) ruleform);
                 break;
             case STATUS_CODE:
-                setStatusCode((StatusCode) entity);
+                setStatusCode((StatusCode) ruleform);
                 break;
             case STATUS_CODE_ATTRIBUTE:
-                setStatusCodeAttribute((StatusCodeAttribute) entity);
+                setStatusCodeAttribute((StatusCodeAttribute) ruleform);
                 break;
             case STATUS_CODE_ATTRIBUTE_AUTHORIZATION:
-                setStatusCodeAttributeAuthorization((StatusCodeAttributeAuthorization) entity);
+                setStatusCodeAttributeAuthorization((StatusCodeAttributeAuthorization) ruleform);
                 break;
             case STATUS_CODE_NETWORK:
-                setStatusCodeNetwork((StatusCodeNetwork) entity);
+                setStatusCodeNetwork((StatusCodeNetwork) ruleform);
                 break;
             case STATUS_CODE_NETWORK_ATTRIBUTE:
-                setStatusCodeNetworkAttribute((StatusCodeNetworkAttribute) entity);
+                setStatusCodeNetworkAttribute((StatusCodeNetworkAttribute) ruleform);
                 break;
             case STATUS_CODE_SEQUENCING:
-                setStatusCodeSequencing((StatusCodeSequencing) entity);
+                setStatusCodeSequencing((StatusCodeSequencing) ruleform);
                 break;
             case JOB:
-                setJob((Job) entity);
+                setJob((Job) ruleform);
                 break;
             case JOB_CHRONOLOGY:
-                setJobChronology((JobChronology) entity);
+                setJobChronology((JobChronology) ruleform);
                 break;
             case META_PROTOCOL:
-                setMetaProtocol((MetaProtocol) entity);
+                setMetaProtocol((MetaProtocol) ruleform);
                 break;
             case NETWORK_INFERENCE:
-                setNetworkInference((NetworkInference) entity);
+                setNetworkInference((NetworkInference) ruleform);
                 break;
             case PRODUCT_CHILD_SEQUENCING_AUTHORIZATION:
-                setProductChildSequencingAuthorization((ProductChildSequencingAuthorization) entity);
+                setProductChildSequencingAuthorization((ProductChildSequencingAuthorization) ruleform);
                 break;
             case PRODUCT_PARENT_SEQUENCING_AUTHORIZATION:
-                setProductParentSequencingAuthorization((ProductParentSequencingAuthorization) entity);
+                setProductParentSequencingAuthorization((ProductParentSequencingAuthorization) ruleform);
                 break;
             case PRODUCT_SELF_SEQUENCING_AUTHORIZATION:
-                setProductSelfSequencingAuthorization((ProductSelfSequencingAuthorization) entity);
+                setProductSelfSequencingAuthorization((ProductSelfSequencingAuthorization) ruleform);
                 break;
             case PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION:
-                setProductSiblingSequencingAuthorization((ProductSiblingSequencingAuthorization) entity);
+                setProductSiblingSequencingAuthorization((ProductSiblingSequencingAuthorization) ruleform);
                 break;
             case PROTOCOL:
-                setProtocol((Protocol) entity);
+                setProtocol((Protocol) ruleform);
                 break;
             case RELATIONSHIP:
-                setRelationship((Relationship) entity);
+                setRelationship((Relationship) ruleform);
                 break;
             case RELATIONSHIP_ATTRIBUTE:
-                setRelationshipAttribute((RelationshipAttribute) entity);
+                setRelationshipAttribute((RelationshipAttribute) ruleform);
                 break;
             case RELATIONSHIP_ATTRIBUTE_AUTHORIZATION:
-                setRelationshipAttributeAuthorization((RelationshipAttributeAuthorization) entity);
+                setRelationshipAttributeAuthorization((RelationshipAttributeAuthorization) ruleform);
                 break;
             case RELATIONSHIP_NETWORK:
-                setRelationshipNetwork((RelationshipNetwork) entity);
+                setRelationshipNetwork((RelationshipNetwork) ruleform);
                 break;
             case RELATIONSHIP_NETWORK_ATTRIBUTE:
-                setRelationshipNetworkAttribute((RelationshipNetworkAttribute) entity);
+                setRelationshipNetworkAttribute((RelationshipNetworkAttribute) ruleform);
                 break;
             case ATTRIBUTE_NETWORK_AUTHORIZATION:
-                setAttributeNetworkAuthorization((AttributeNetworkAuthorization) entity);
+                setAttributeNetworkAuthorization((AttributeNetworkAuthorization) ruleform);
                 break;
             case INTERVAL_NETWORK_AUTHORIZATION:
-                setIntervalNetworkAuthorization((IntervalNetworkAuthorization) entity);
+                setIntervalNetworkAuthorization((IntervalNetworkAuthorization) ruleform);
                 break;
             case PRODUCT_NETWORK_AUTHORIZATION:
-                setProductNetworkAuthorization((ProductNetworkAuthorization) entity);
+                setProductNetworkAuthorization((ProductNetworkAuthorization) ruleform);
                 break;
             case RELATIONSHIP_NETWORK_AUTHORIZATION:
-                setRelationshipNetworkAuthorization((RelationshipNetworkAuthorization) entity);
+                setRelationshipNetworkAuthorization((RelationshipNetworkAuthorization) ruleform);
                 break;
             case STAUTUS_CODE_NETWORK_AUTHORIZATION:
-                setStatusCodeNetworkAuthorization((StatusCodeNetworkAuthorization) entity);
+                setStatusCodeNetworkAuthorization((StatusCodeNetworkAuthorization) ruleform);
                 break;
             case UNIT_NETWORK_AUTHORIZATION:
-                setUnitNetworkAuthorization((UnitNetworkAuthorization) entity);
+                setUnitNetworkAuthorization((UnitNetworkAuthorization) ruleform);
                 break;
             case AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION:
-                setAgencyLocationAttributeAuthorization((AgencyLocationAttributeAuthorization) entity);
+                setAgencyLocationAttributeAuthorization((AgencyLocationAttributeAuthorization) ruleform);
                 break;
             case AGENCY_LOCATION_AUTHORIZATION:
-                setAgencyLocationAuthorization((AgencyLocationAuthorization) entity);
+                setAgencyLocationAuthorization((AgencyLocationAuthorization) ruleform);
                 break;
             case AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION:
-                setAgencyProductAttributeAuthorization((AgencyProductAttributeAuthorization) entity);
+                setAgencyProductAttributeAuthorization((AgencyProductAttributeAuthorization) ruleform);
                 break;
             case AGENCY_PRODUCT_AUTHORIZATION:
-                setAgencyProductAuthorization((AgencyProductAuthorization) entity);
+                setAgencyProductAuthorization((AgencyProductAuthorization) ruleform);
                 break;
             case PRODUCT_LOCATION_ATTRIBUTE_AUTHORIZATION:
-                setProductLocationAttributeAuthorization((ProductLocationAttributeAuthorization) entity);
+                setProductLocationAttributeAuthorization((ProductLocationAttributeAuthorization) ruleform);
                 break;
             case PRODUCT_LOCATION_AUTHORIZATION:
-                setProductLocationAuthorization((ProductLocationAuthorization) entity);
+                setProductLocationAuthorization((ProductLocationAuthorization) ruleform);
                 break;
 
             default:
                 throw new IllegalStateException(
                                                 String.format("Invalid type: %s",
-                                                              entity.getClass().getSimpleName()));
+                                                              ruleform.getClass().getSimpleName()));
         }
     }
 
-    public void setInterval(Interval interval) {
+    private Agency getAgency() {
+        return agency;
+    }
+
+    private AgencyAttribute getAgencyAttribute() {
+        return agencyAttribute;
+    }
+
+    @JsonIgnore
+    public AgencyAttributeAuthorization getAgencyAttributeAuthorization() {
+        return agencyAttributeAuthorization;
+    }
+
+    private AgencyLocation getAgencyLocation() {
+        return agencyLocation;
+    }
+
+    private AgencyLocationAttribute getAgencyLocationAttribute() {
+        return agencyLocationAttribute;
+    }
+
+    private AgencyLocationAttributeAuthorization getAgencyLocationAttributeAuthorization() {
+        return agencyLocationAttributeAuthorization;
+    }
+
+    private AgencyLocationAuthorization getAgencyLocationAuthorization() {
+        return agencyLocationAuthorization;
+    }
+
+    private AgencyNetwork getAgencyNetwork() {
+        return agencyNetwork;
+    }
+
+    private AgencyNetworkAttribute getAgencyNetworkAttribute() {
+        return agencyNetworkAttribute;
+    }
+
+    private AgencyNetworkAuthorization getAgencyNetworkAuthorization() {
+        return agencyNetworkAuthorization;
+    }
+
+    private AgencyProduct getAgencyProduct() {
+        return agencyProduct;
+    }
+
+    private AgencyProductAttribute getAgencyProductAttribute() {
+        return agencyProductAttribute;
+    }
+
+    private AgencyProductAttributeAuthorization getAgencyProductAttributeAuthorization() {
+        return agencyProductAttributeAuthorization;
+    }
+
+    private AgencyProductAuthorization getAgencyProductAuthorization() {
+        return agencyProductAuthorization;
+    }
+
+    private Attribute getAttribute() {
+        return attribute;
+    }
+
+    private AttributeMetaAttribute getAttributeMetaAttribute() {
+        return attributeMetaAttribute;
+    }
+
+    private AttributeMetaAttributeAuthorization getAttributeMetaAttributeAuthorization() {
+        return attributeMetaAttributeAuthorization;
+    }
+
+    private AttributeNetwork getAttributeNetwork() {
+        return attributeNetwork;
+    }
+
+    private AttributeNetworkAttribute getAttributeNetworkAttribute() {
+        return attributeNetworkAttribute;
+    }
+
+    private AttributeNetworkAuthorization getAttributeNetworkAuthorization() {
+        return attributeNetworkAuthorization;
+    }
+
+    private Interval getInterval() {
+        return interval;
+    }
+
+    private IntervalAttribute getIntervalAttribute() {
+        return intervalAttribute;
+    }
+
+    private IntervalAttributeAuthorization getIntervalAttributeAuthorization() {
+        return intervalAttributeAuthorization;
+    }
+
+    private IntervalNetwork getIntervalNetwork() {
+        return intervalNetwork;
+    }
+
+    private IntervalNetworkAttribute getIntervalNetworkAttribute() {
+        return intervalNetworkAttribute;
+    }
+
+    private IntervalNetworkAuthorization getIntervalNetworkAuthorization() {
+        return intervalNetworkAuthorization;
+    }
+
+    private Job getJob() {
+        return job;
+    }
+
+    private JobChronology getJobChronology() {
+        return jobChronology;
+    }
+
+    private Location getLocation() {
+        return location;
+    }
+
+    private LocationAttribute getLocationAttribute() {
+        return locationAttribute;
+    }
+
+    private LocationAttributeAuthorization getLocationAttributeAuthorization() {
+        return locationAttributeAuthorization;
+    }
+
+    private LocationNetwork getLocationNetwork() {
+        return locationNetwork;
+    }
+
+    private LocationNetworkAttribute getLocationNetworkAttribute() {
+        return locationNetworkAttribute;
+    }
+
+    private LocationNetworkAuthorization getLocationNetworkAuthorization() {
+        return locationNetworkAuthorization;
+    }
+
+    private MetaProtocol getMetaProtocol() {
+        return metaProtocol;
+    }
+
+    private NetworkInference getNetworkInference() {
+        return networkInference;
+    }
+
+    private Product getProduct() {
+        return product;
+    }
+
+    private ProductAttribute getProductAttribute() {
+        return productAttribute;
+    }
+
+    private ProductAttributeAuthorization getProductAttributeAuthorization() {
+        return productAttributeAuthorization;
+    }
+
+    private ProductChildSequencingAuthorization getProductChildSequencingAuthorization() {
+        return productChildSequencingAuthorization;
+    }
+
+    private ProductLocation getProductLocation() {
+        return productLocation;
+    }
+
+    private ProductLocationAttribute getProductLocationAttribute() {
+        return productLocationAttribute;
+    }
+
+    private ProductLocationAttributeAuthorization getProductLocationAttributeAuthorization() {
+        return productLocationAttributeAuthorization;
+    }
+
+    private ProductLocationAuthorization getProductLocationAuthorization() {
+        return productLocationAuthorization;
+    }
+
+    private ProductNetwork getProductNetwork() {
+        return productNetwork;
+    }
+
+    private ProductNetworkAttribute getProductNetworkAttribute() {
+        return productNetworkAttribute;
+    }
+
+    private ProductNetworkAuthorization getProductNetworkAuthorization() {
+        return productNetworkAuthorization;
+    }
+
+    private ProductParentSequencingAuthorization getProductParentSequencingAuthorization() {
+        return productParentSequencingAuthorization;
+    }
+
+    private ProductRelationship getProductRelationship() {
+        return productRelationship;
+    }
+
+    private ProductRelationshipAttribute getProductRelationshipAttribute() {
+        return productRelationshipAttribute;
+    }
+
+    private ProductSelfSequencingAuthorization getProductSelfSequencingAuthorization() {
+        return productSelfSequencingAuthorization;
+    }
+
+    private ProductSiblingSequencingAuthorization getProductSiblingSequencingAuthorization() {
+        return productSiblingSequencingAuthorization;
+    }
+
+    private Protocol getProtocol() {
+        return protocol;
+    }
+
+    private Relationship getRelationship() {
+        return relationship;
+    }
+
+    private RelationshipAttribute getRelationshipAttribute() {
+        return relationshipAttribute;
+    }
+
+    private RelationshipAttributeAuthorization getRelationshipAttributeAuthorization() {
+        return relationshipAttributeAuthorization;
+    }
+
+    private RelationshipNetwork getRelationshipNetwork() {
+        return relationshipNetwork;
+    }
+
+    private RelationshipNetworkAttribute getRelationshipNetworkAttribute() {
+        return relationshipNetworkAttribute;
+    }
+
+    private RelationshipNetworkAuthorization getRelationshipNetworkAuthorization() {
+        return relationshipNetworkAuthorization;
+    }
+
+    private StatusCode getStatusCode() {
+        return statusCode;
+    }
+
+    private StatusCodeAttribute getStatusCodeAttribute() {
+        return statusCodeAttribute;
+    }
+
+    private StatusCodeAttributeAuthorization getStatusCodeAttributeAuthorization() {
+        return statusCodeAttributeAuthorization;
+    }
+
+    private StatusCodeNetwork getStatusCodeNetwork() {
+        return statusCodeNetwork;
+    }
+
+    private StatusCodeNetworkAttribute getStatusCodeNetworkAttribute() {
+        return statusCodeNetworkAttribute;
+    }
+
+    private StatusCodeNetworkAuthorization getStatusCodeNetworkAuthorization() {
+        return statusCodeNetworkAuthorization;
+    }
+
+    private StatusCodeSequencing getStatusCodeSequencing() {
+        return statusCodeSequencing;
+    }
+
+    private Unit getUnit() {
+        return unit;
+    }
+
+    private UnitAttribute getUnitAttribute() {
+        return unitAttribute;
+    }
+
+    private UnitAttributeAuthorization getUnitAttributeAuthorization() {
+        return unitAttributeAuthorization;
+    }
+
+    private UnitNetwork getUnitNetwork() {
+        return unitNetwork;
+    }
+
+    private UnitNetworkAttribute getUnitNetworkAttribute() {
+        return unitNetworkAttribute;
+    }
+
+    private UnitNetworkAuthorization getUnitNetworkAuthorization() {
+        return unitNetworkAuthorization;
+    }
+
+    private void setAgency(Agency agency) {
+        type = AGENCY;
+        this.agency = agency;
+    }
+
+    private void setAgencyAttribute(AgencyAttribute agencyAttribute) {
+        type = AGENCY_ATTRIBUTE;
+        this.agencyAttribute = agencyAttribute;
+    }
+
+    private void setAgencyAttributeAuthorization(AgencyAttributeAuthorization agencyAttributeAuthorization) {
+        type = AGENCY_ATTRIBUTE_AUTHORIZATION;
+        this.agencyAttributeAuthorization = agencyAttributeAuthorization;
+    }
+
+    private void setAgencyLocation(AgencyLocation agencyLocation) {
+        type = AGENCY_LOCATION;
+        this.agencyLocation = agencyLocation;
+    }
+
+    private void setAgencyLocationAttribute(AgencyLocationAttribute agencyLocationAttribute) {
+        type = AGENCY_LOCATION_ATTRIBUTE;
+        this.agencyLocationAttribute = agencyLocationAttribute;
+    }
+
+    private void setAgencyLocationAttributeAuthorization(AgencyLocationAttributeAuthorization agencyLocationAttributeAuthorization) {
+        type = AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION;
+        this.agencyLocationAttributeAuthorization = agencyLocationAttributeAuthorization;
+    }
+
+    private void setAgencyLocationAuthorization(AgencyLocationAuthorization agencyLocationAuthorization) {
+        type = AGENCY_LOCATION_AUTHORIZATION;
+        this.agencyLocationAuthorization = agencyLocationAuthorization;
+    }
+
+    private void setAgencyNetwork(AgencyNetwork agencyNetwork) {
+        type = AGENCY_NETWORK;
+        this.agencyNetwork = agencyNetwork;
+    }
+
+    private void setAgencyNetworkAttribute(AgencyNetworkAttribute agencyNetworkAttribute) {
+        type = AGENCY_NETWORK_ATTRIBUTE;
+        this.agencyNetworkAttribute = agencyNetworkAttribute;
+    }
+
+    private void setAgencyNetworkAuthorization(AgencyNetworkAuthorization agencyNetworkAuthorization) {
+        type = AGENCY_NETWORK_AUTHORIZATION;
+        this.agencyNetworkAuthorization = agencyNetworkAuthorization;
+    }
+
+    private void setAgencyProduct(AgencyProduct agencyProduct) {
+        type = AGENCY_PRODUCT;
+        this.agencyProduct = agencyProduct;
+    }
+
+    private void setAgencyProductAttribute(AgencyProductAttribute agencyProductAttribute) {
+        type = AGENCY_PRODUCT_ATTRIBUTE;
+        this.agencyProductAttribute = agencyProductAttribute;
+    }
+
+    private void setAgencyProductAttributeAuthorization(AgencyProductAttributeAuthorization agencyProductAttributeAuthorization) {
+        type = AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION;
+        this.agencyProductAttributeAuthorization = agencyProductAttributeAuthorization;
+    }
+
+    private void setAgencyProductAuthorization(AgencyProductAuthorization agencyProductAuthorization) {
+        type = AGENCY_PRODUCT_AUTHORIZATION;
+        this.agencyProductAuthorization = agencyProductAuthorization;
+    }
+
+    private void setAttribute(Attribute attribute) {
+        type = ATTRIBUTE;
+        this.attribute = attribute;
+    }
+
+    private void setAttributeMetaAttribute(AttributeMetaAttribute attributeMetaAttribute) {
+        type = ATTRIBUTE_META_ATTRIBUTE;
+        this.attributeMetaAttribute = attributeMetaAttribute;
+    }
+
+    private void setAttributeMetaAttributeAuthorization(AttributeMetaAttributeAuthorization attributeMetaAttributeAuthorization) {
+        type = ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION;
+        this.attributeMetaAttributeAuthorization = attributeMetaAttributeAuthorization;
+    }
+
+    private void setAttributeNetwork(AttributeNetwork attributeNetwork) {
+        type = ATTRIBUTE_NETWORK;
+        this.attributeNetwork = attributeNetwork;
+    }
+
+    private void setAttributeNetworkAttribute(AttributeNetworkAttribute attributeNetworkAttribute) {
+        type = ATTRIBUTE_NETWORK_ATTRIBUTE;
+        this.attributeNetworkAttribute = attributeNetworkAttribute;
+    }
+
+    private void setAttributeNetworkAuthorization(AttributeNetworkAuthorization attributeNetworkAuthorization) {
+        type = ATTRIBUTE_NETWORK_AUTHORIZATION;
+        this.attributeNetworkAuthorization = attributeNetworkAuthorization;
+    }
+
+    private void setInterval(Interval interval) {
         type = INTERVAL;
         this.interval = interval;
     }
 
-    public void setIntervalAttribute(IntervalAttribute intervalAttribute) {
+    private void setIntervalAttribute(IntervalAttribute intervalAttribute) {
         type = INTERVAL_ATTRIBUTE;
         this.intervalAttribute = intervalAttribute;
     }
 
-    public void setIntervalAttributeAuthorization(IntervalAttributeAuthorization intervalAttributeAuthorization) {
+    private void setIntervalAttributeAuthorization(IntervalAttributeAuthorization intervalAttributeAuthorization) {
         type = INTERVAL_ATTRIBUTE_AUTHORIZATION;
         this.intervalAttributeAuthorization = intervalAttributeAuthorization;
     }
 
-    public void setIntervalNetwork(IntervalNetwork intervalNetwork) {
+    private void setIntervalNetwork(IntervalNetwork intervalNetwork) {
         type = INTERVAL_NETWORK;
         this.intervalNetwork = intervalNetwork;
     }
 
-    public void setIntervalNetworkAttribute(IntervalNetworkAttribute intervalNetworkAttribute) {
+    private void setIntervalNetworkAttribute(IntervalNetworkAttribute intervalNetworkAttribute) {
         type = INTERVAL_NETWORK_ATTRIBUTE;
         this.intervalNetworkAttribute = intervalNetworkAttribute;
     }
 
-    public void setIntervalNetworkAuthorization(IntervalNetworkAuthorization intervalNetworkAuthorization) {
+    private void setIntervalNetworkAuthorization(IntervalNetworkAuthorization intervalNetworkAuthorization) {
         type = INTERVAL_NETWORK_AUTHORIZATION;
         this.intervalNetworkAuthorization = intervalNetworkAuthorization;
     }
 
-    public void setJob(Job job) {
+    private void setJob(Job job) {
         type = JOB;
         this.job = job;
     }
 
-    public void setJobChronology(JobChronology jobChronology) {
+    private void setJobChronology(JobChronology jobChronology) {
         type = JOB_CHRONOLOGY;
         this.jobChronology = jobChronology;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public void setLocation(Location location) {
+    private void setLocation(Location location) {
         type = LOCATION;
         this.location = location;
     }
 
-    public void setLocationAttribute(LocationAttribute locationAttribute) {
+    private void setLocationAttribute(LocationAttribute locationAttribute) {
         type = LOCATION_ATTRIBUTE;
         this.locationAttribute = locationAttribute;
     }
 
-    public void setLocationAttributeAuthorization(LocationAttributeAuthorization locationAttributeAuthorization) {
+    private void setLocationAttributeAuthorization(LocationAttributeAuthorization locationAttributeAuthorization) {
         type = LOCATION_ATTRIBUTE_AUTHORIZATION;
         this.locationAttributeAuthorization = locationAttributeAuthorization;
     }
 
-    public void setLocationNetwork(LocationNetwork locationNetwork) {
+    private void setLocationNetwork(LocationNetwork locationNetwork) {
         type = LOCATION_NETWORK;
         this.locationNetwork = locationNetwork;
     }
 
-    public void setLocationNetworkAttribute(LocationNetworkAttribute locationNetworkAttribute) {
+    private void setLocationNetworkAttribute(LocationNetworkAttribute locationNetworkAttribute) {
         type = LOCATION_NETWORK_ATTRIBUTE;
         this.locationNetworkAttribute = locationNetworkAttribute;
     }
 
-    public void setLocationNetworkAuthorization(LocationNetworkAuthorization locationNetworkAuthorization) {
+    private void setLocationNetworkAuthorization(LocationNetworkAuthorization locationNetworkAuthorization) {
         type = LOCATION_NETWORK_AUTHORIZATION;
         this.locationNetworkAuthorization = locationNetworkAuthorization;
     }
 
-    public void setMetaProtocol(MetaProtocol metaProtocol) {
+    private void setMetaProtocol(MetaProtocol metaProtocol) {
         type = META_PROTOCOL;
         this.metaProtocol = metaProtocol;
     }
 
-    public void setNetworkInference(NetworkInference networkInference) {
+    private void setNetworkInference(NetworkInference networkInference) {
         type = NETWORK_INFERENCE;
         this.networkInference = networkInference;
     }
 
-    public void setProduct(Product product) {
+    private void setProduct(Product product) {
         type = PRODUCT;
         this.product = product;
     }
 
-    public void setProductAttribute(ProductAttribute productAttribute) {
+    private void setProductAttribute(ProductAttribute productAttribute) {
         type = PRODUCT_ATTRIBUTE;
         this.productAttribute = productAttribute;
     }
 
-    public void setProductAttributeAuthorization(ProductAttributeAuthorization productAttributeAuthorization) {
+    private void setProductAttributeAuthorization(ProductAttributeAuthorization productAttributeAuthorization) {
         type = PRODUCT_ATTRIBUTE_AUTHORIZATION;
         this.productAttributeAuthorization = productAttributeAuthorization;
     }
 
-    public void setProductChildSequencingAuthorization(ProductChildSequencingAuthorization productChildSequencingAuthorization) {
+    private void setProductChildSequencingAuthorization(ProductChildSequencingAuthorization productChildSequencingAuthorization) {
         type = PRODUCT_CHILD_SEQUENCING_AUTHORIZATION;
         this.productChildSequencingAuthorization = productChildSequencingAuthorization;
     }
 
-    public void setProductLocation(ProductLocation productLocation) {
+    private void setProductLocation(ProductLocation productLocation) {
         type = PRODUCT_LOCATION;
         this.productLocation = productLocation;
     }
 
-    public void setProductLocationAttribute(ProductLocationAttribute productLocationAttribute) {
+    private void setProductLocationAttribute(ProductLocationAttribute productLocationAttribute) {
         type = PRODUCT_LOCATION_ATTRIBUTE;
         this.productLocationAttribute = productLocationAttribute;
     }
 
-    public void setProductLocationAttributeAuthorization(ProductLocationAttributeAuthorization productLocationAttributeAuthorization) {
+    private void setProductLocationAttributeAuthorization(ProductLocationAttributeAuthorization productLocationAttributeAuthorization) {
         type = PRODUCT_LOCATION_ATTRIBUTE_AUTHORIZATION;
         this.productLocationAttributeAuthorization = productLocationAttributeAuthorization;
     }
 
-    public void setProductLocationAuthorization(ProductLocationAuthorization productLocationAuthorization) {
+    private void setProductLocationAuthorization(ProductLocationAuthorization productLocationAuthorization) {
         type = PRODUCT_LOCATION_AUTHORIZATION;
         this.productLocationAuthorization = productLocationAuthorization;
     }
 
-    public void setProductNetwork(ProductNetwork productNetwork) {
+    private void setProductNetwork(ProductNetwork productNetwork) {
         type = PRODUCT_NETWORK;
         this.productNetwork = productNetwork;
     }
 
-    public void setProductNetworkAttribute(ProductNetworkAttribute productNetworkAttribute) {
+    private void setProductNetworkAttribute(ProductNetworkAttribute productNetworkAttribute) {
         type = PRODUCT_NETWORK_ATTRIBUTE;
         this.productNetworkAttribute = productNetworkAttribute;
     }
 
-    public void setProductNetworkAuthorization(ProductNetworkAuthorization productNetworkAuthorization) {
+    private void setProductNetworkAuthorization(ProductNetworkAuthorization productNetworkAuthorization) {
         type = PRODUCT_NETWORK_AUTHORIZATION;
         this.productNetworkAuthorization = productNetworkAuthorization;
     }
 
-    public void setProductParentSequencingAuthorization(ProductParentSequencingAuthorization productParentSequencingAuthorization) {
+    private void setProductParentSequencingAuthorization(ProductParentSequencingAuthorization productParentSequencingAuthorization) {
         type = PRODUCT_PARENT_SEQUENCING_AUTHORIZATION;
         this.productParentSequencingAuthorization = productParentSequencingAuthorization;
     }
 
-    public void setProductSelfSequencingAuthorization(ProductSelfSequencingAuthorization productSelfSequencingAuthorization) {
+    private void setProductRelationship(ProductRelationship entity) {
+        type = PRODUCT_RELATIONSHIP;
+        this.productRelationship = entity;
+    }
+
+    private void setProductRelationshipAttribute(ProductRelationshipAttribute entity) {
+        type = PRODUCT_RELATIONSHIP_ATTRIBUTE;
+        this.productRelationshipAttribute = entity;
+
+    }
+
+    private void setProductSelfSequencingAuthorization(ProductSelfSequencingAuthorization productSelfSequencingAuthorization) {
         type = PRODUCT_SELF_SEQUENCING_AUTHORIZATION;
         this.productSelfSequencingAuthorization = productSelfSequencingAuthorization;
     }
 
-    public void setProductSiblingSequencingAuthorization(ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization) {
+    private void setProductSiblingSequencingAuthorization(ProductSiblingSequencingAuthorization productSiblingSequencingAuthorization) {
         type = PRODUCT_SIBLING_SEQUENCING_AUTHORIZATION;
         this.productSiblingSequencingAuthorization = productSiblingSequencingAuthorization;
     }
 
-    public void setProtocol(Protocol protocol) {
+    private void setProtocol(Protocol protocol) {
         type = PROTOCOL;
         this.protocol = protocol;
     }
 
-    public void setRelationship(Relationship relationship) {
+    private void setRelationship(Relationship relationship) {
         type = RELATIONSHIP;
         this.relationship = relationship;
     }
 
-    public void setRelationshipAttribute(RelationshipAttribute relationshipAttribute) {
+    private void setRelationshipAttribute(RelationshipAttribute relationshipAttribute) {
         type = RELATIONSHIP_ATTRIBUTE;
         this.relationshipAttribute = relationshipAttribute;
     }
 
-    public void setRelationshipAttributeAuthorization(RelationshipAttributeAuthorization relationshipAttributeAuthorization) {
+    private void setRelationshipAttributeAuthorization(RelationshipAttributeAuthorization relationshipAttributeAuthorization) {
         type = RELATIONSHIP_ATTRIBUTE_AUTHORIZATION;
         this.relationshipAttributeAuthorization = relationshipAttributeAuthorization;
     }
 
-    public void setRelationshipNetwork(RelationshipNetwork relationshipNetwork) {
+    private void setRelationshipNetwork(RelationshipNetwork relationshipNetwork) {
         type = RELATIONSHIP_NETWORK;
         this.relationshipNetwork = relationshipNetwork;
     }
 
-    public void setRelationshipNetworkAttribute(RelationshipNetworkAttribute attribute) {
+    private void setRelationshipNetworkAttribute(RelationshipNetworkAttribute attribute) {
         type = RELATIONSHIP_NETWORK_ATTRIBUTE;
         this.relationshipNetworkAttribute = attribute;
     }
 
-    public void setRelationshipNetworkAuthorization(RelationshipNetworkAuthorization relationshipNetworkAuthorization) {
+    private void setRelationshipNetworkAuthorization(RelationshipNetworkAuthorization relationshipNetworkAuthorization) {
         type = RELATIONSHIP_NETWORK_AUTHORIZATION;
         this.relationshipNetworkAuthorization = relationshipNetworkAuthorization;
     }
 
-    public void setRuleform(Ruleform ruleform) {
-        setEntity(ruleform);
-    }
-
-    public void setStatusCode(StatusCode statusCode) {
+    private void setStatusCode(StatusCode statusCode) {
         type = STATUS_CODE;
         this.statusCode = statusCode;
     }
 
-    public void setStatusCodeAttribute(StatusCodeAttribute statusCodeAttribute) {
+    private void setStatusCodeAttribute(StatusCodeAttribute statusCodeAttribute) {
         type = STATUS_CODE_ATTRIBUTE;
         this.statusCodeAttribute = statusCodeAttribute;
     }
 
-    public void setStatusCodeAttributeAuthorization(StatusCodeAttributeAuthorization statusCodeAttributeAuthorization) {
+    private void setStatusCodeAttributeAuthorization(StatusCodeAttributeAuthorization statusCodeAttributeAuthorization) {
         type = STATUS_CODE_ATTRIBUTE_AUTHORIZATION;
         this.statusCodeAttributeAuthorization = statusCodeAttributeAuthorization;
     }
 
-    public void setStatusCodeNetwork(StatusCodeNetwork statusCodeNetwork) {
+    private void setStatusCodeNetwork(StatusCodeNetwork statusCodeNetwork) {
         type = STATUS_CODE_NETWORK;
         this.statusCodeNetwork = statusCodeNetwork;
     }
 
-    public void setStatusCodeNetworkAttribute(StatusCodeNetworkAttribute statusCodeNetworkAttribute) {
+    private void setStatusCodeNetworkAttribute(StatusCodeNetworkAttribute statusCodeNetworkAttribute) {
         type = STATUS_CODE_NETWORK_ATTRIBUTE;
         this.statusCodeNetworkAttribute = statusCodeNetworkAttribute;
     }
 
-    public void setStatusCodeNetworkAuthorization(StatusCodeNetworkAuthorization statusCodeNetworkAuthorization) {
+    private void setStatusCodeNetworkAuthorization(StatusCodeNetworkAuthorization statusCodeNetworkAuthorization) {
         type = STAUTUS_CODE_NETWORK_AUTHORIZATION;
         this.statusCodeNetworkAuthorization = statusCodeNetworkAuthorization;
     }
 
-    public void setStatusCodeSequencing(StatusCodeSequencing statusCodeSequencing) {
+    private void setStatusCodeSequencing(StatusCodeSequencing statusCodeSequencing) {
         type = STATUS_CODE_SEQUENCING;
         this.statusCodeSequencing = statusCodeSequencing;
     }
 
-    public void setUnit(Unit unit) {
+    private void setUnit(Unit unit) {
         type = UNIT;
         this.unit = unit;
     }
 
-    public void setUnitAttribute(UnitAttribute unitAttribute) {
+    private void setUnitAttribute(UnitAttribute unitAttribute) {
         type = UNIT_ATTRIBUTE;
         this.unitAttribute = unitAttribute;
     }
 
-    public void setUnitAttributeAuthorization(UnitAttributeAuthorization unitAttributeAuthorization) {
+    private void setUnitAttributeAuthorization(UnitAttributeAuthorization unitAttributeAuthorization) {
         type = UNIT_ATTRIBUTE_AUTHORIZATION;
         this.unitAttributeAuthorization = unitAttributeAuthorization;
     }
 
-    public void setUnitNetwork(UnitNetwork unitNetwork) {
+    private void setUnitNetwork(UnitNetwork unitNetwork) {
         type = UNIT_NETWORK;
         this.unitNetwork = unitNetwork;
     }
 
-    public void setUnitNetworkAttribute(UnitNetworkAttribute unitNetworkAttribute) {
+    private void setUnitNetworkAttribute(UnitNetworkAttribute unitNetworkAttribute) {
         type = UNIT_NETWORK_ATTRIBUTE;
         this.unitNetworkAttribute = unitNetworkAttribute;
     }
 
-    public void setUnitNetworkAuthorization(UnitNetworkAuthorization unitNetworkAuthorization) {
+    private void setUnitNetworkAuthorization(UnitNetworkAuthorization unitNetworkAuthorization) {
         type = UNIT_NETWORK_AUTHORIZATION;
         this.unitNetworkAuthorization = unitNetworkAuthorization;
     }

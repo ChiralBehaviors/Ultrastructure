@@ -62,7 +62,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         @SuppressWarnings("unchecked")
         @Override
         public T get(int index) {
-            return (T) backingList.get(index).getEntity();
+            return (T) backingList.get(index).getRuleform();
         }
 
         /* (non-Javadoc)
@@ -101,7 +101,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public <T extends Ruleform> void add(T ruleform) {
         WorkspaceAuthorization authorization = new WorkspaceAuthorization();
-        authorization.setEntity(ruleform);
+        authorization.setRuleform(ruleform);
         authorization.setDefiningProduct(getDefiningProduct());
         authorization.setUpdatedBy(ruleform.getUpdatedBy());
         em.persist(authorization);
@@ -242,7 +242,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         cache.put(key, ruleform);
         WorkspaceAuthorization authorization = new WorkspaceAuthorization();
         authorization.setDefiningProduct(getDefiningProduct());
-        authorization.setEntity(ruleform);
+        authorization.setRuleform(ruleform);
         authorization.setKey(key);
         authorization.setUpdatedBy(ruleform.getUpdatedBy());
         em.persist(authorization);

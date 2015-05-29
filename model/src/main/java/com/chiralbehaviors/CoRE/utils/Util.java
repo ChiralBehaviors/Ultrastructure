@@ -140,7 +140,7 @@ public final class Util {
         if (ruleform instanceof WorkspaceAuthorization) {
             WorkspaceAuthorization auth = (WorkspaceAuthorization) ruleform;
             auth.setDefiningProduct(map(em, auth.getDefiningProduct(), mapped));
-            auth.setEntity(map(em, auth.getEntity(), mapped));
+            auth.setRuleform(map(em, auth.getRuleform(), mapped));
             return;
         }
         for (Field field : getInheritedFields(ruleform.getClass())) {

@@ -54,6 +54,8 @@
             <column name="product_network_attribute" type="uuid" />
             <column name="product_location" type="uuid" />
             <column name="product_location_attribute" type="uuid" />
+            <column name="product_relationship" type="uuid" />
+            <column name="product_relationship_attribute" type="uuid" />
             <column name="interval" type="uuid" />
             <column name="interval_attribute" type="uuid" />
             <column name="interval_attribute_authorization" type="uuid" />
@@ -174,6 +176,13 @@
         <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_location_attribute"
             constraintName="workspace_unique_ruleform_constraint31" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="workspace_authorization" />
+            
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_relationship " constraintName="workspace_unique_ruleform_constraint301"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, product_relationship_attribute"
+            constraintName="workspace_unique_ruleform_constraint302" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+            
         <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, interval, interval_attribute "
             constraintName="workspace_unique_ruleform_constraint32" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="workspace_authorization" />
@@ -385,6 +394,15 @@
             baseColumnNames="product_location_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_location_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="product_location_attribute" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_relationship" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_relationship_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product_relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product_relationship_attribute" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_relationship_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product_relationship_attribute" />
+            
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="interval" baseTableName="workspace_authorization" constraintName="workspace_authorization_interval_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
@@ -605,6 +623,8 @@
                 ruleform.null_zero(product_location_attribute) +
                 ruleform.null_zero(product_location_attribute_authorization) +
                 ruleform.null_zero(product_location_authorization) +
+                ruleform.null_zero(product_relationship) +
+                ruleform.null_zero(product_relationship_attribute) +
                 ruleform.null_zero(interval) +
                 ruleform.null_zero(interval_attribute) +
                 ruleform.null_zero(interval_attribute_authorization) +

@@ -68,6 +68,9 @@
 
     <include relativeToChangelogFile="true" file="tables/product_location.xml" />
     <include relativeToChangelogFile="true" file="tables/product_location_attribute.xml" />
+    
+    <include relativeToChangelogFile="true" file="tables/product_relationship.xml" />
+    <include relativeToChangelogFile="true" file="tables/product_relationship_attribute.xml" />
 
     <include relativeToChangelogFile="true" file="tables/agency_product.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_product_attribute.xml" />

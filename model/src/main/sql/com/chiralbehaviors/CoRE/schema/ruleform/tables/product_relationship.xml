@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hparry" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="product_relationship">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="product_relationship_pkey" />
+            </column>
+            <column name="agency" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000001'"/>
+            <column name="product" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="relationship" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="child" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column name="notes" type="TEXT" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="product_relationship" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency" baseTableName="product_relationship" constraintName="product_relationship_agency_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="relationship" baseTableName="product_relationship" constraintName="product_relationship_relationship_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="product" baseTableName="product_relationship" constraintName="product_relationship_product_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="child" baseTableName="product_relationship" constraintName="product_relationship_child_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_relationship" constraintName="product_relationship_updated_by_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency, product, relationship, child" constraintName="product_relationship_agency_key"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_relationship" />
+        <createIndex schemaName="ruleform" indexName="product_relationship_relationship_fkey_idx" tableName="product_relationship" unique="false">
+            <column name="relationship" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_relationship_product_fkey_idx" tableName="product_relationship" unique="false">
+            <column name="product" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_relationship_child_fkey_idx" tableName="product_relationship"
+            unique="false"
+        >
+            <column name="child" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_relationship_updated_by_fkey_idx" tableName="product_relationship" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

@@ -355,11 +355,40 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                      List<Phantasm<Product>> authorized,
                                      WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);
-        List<Product> locations = new ArrayList<>(authorized.size());
+        List<Product> auths = new ArrayList<>(authorized.size());
         for (Phantasm<Product> phantasm : authorized) {
-            locations.add(phantasm.getRuleform());
+            auths.add(phantasm.getRuleform());
         }
-        getNetworkedModel().authorizeProducts(ruleform, relationship, locations);
+        getNetworkedModel().authorizeProducts(ruleform, relationship, auths);
+        return null;
+    }
+
+    /**
+     * @param namespace
+     * @param name
+     * @param phantasm
+     * @return
+     */
+    protected Object addRelationshipAuth(String namespace, String name,
+                                         Phantasm<Relationship> phantasm,
+                                         WorkspaceScope scope) {
+        Relationship relationship = getRelationship(namespace, name, scope);
+        getNetworkedModel().authorize(ruleform, relationship,
+                                      phantasm.getRuleform());
+        return null;
+    }
+
+    protected Object addRelationshipAuths(String namespace,
+                                          String name,
+                                          List<Phantasm<Relationship>> authorized,
+                                          WorkspaceScope scope) {
+        Relationship relationship = getRelationship(namespace, name, scope);
+        List<Relationship> auths = new ArrayList<>(authorized.size());
+        for (Phantasm<Relationship> phantasm : authorized) {
+            auths.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().authorizeRelationships(ruleform, relationship,
+                                                   auths);
         return null;
     }
 
@@ -535,6 +564,23 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return returned;
     }
 
+    @SuppressWarnings("unchecked")
+    protected List<Phantasm<Relationship>> getRelationshipAuths(String namespace,
+                                                                String name,
+                                                                Class<? extends Phantasm<Relationship>> phantasmReturned,
+                                                                WorkspaceScope scope) {
+        Relationship relationship = getRelationship(namespace, name, scope);
+        List<Relationship> queryResult = getNetworkedModel().getAuthorizedRelationships(ruleform,
+                                                                                        relationship);
+        List<Phantasm<Relationship>> returned = new ArrayList<>(
+                                                                queryResult.size());
+        for (Relationship auth : queryResult) {
+            returned.add((Phantasm<Relationship>) model.wrap(phantasmReturned,
+                                                             auth));
+        }
+        return returned;
+    }
+
     protected WorkspaceScope getScope(StateDefinition<RuleForm> definition) {
         return model.getWorkspaceModel().getScoped(definition.getWorkspace());
     }
@@ -590,6 +636,19 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         Relationship relationship = getRelationship(namespace, name, scope);
         Product authorized = getNetworkedModel().getAuthorizedProduct(ruleform,
                                                                       relationship);
+        if (authorized == null) {
+            return null;
+        }
+        return model.wrap(phantasmReturned, authorized);
+    }
+
+    protected Object getSingularRelationshipAuth(String namespace,
+                                                 String name,
+                                                 Class<? extends Phantasm<Relationship>> phantasmReturned,
+                                                 WorkspaceScope scope) {
+        Relationship relationship = getRelationship(namespace, name, scope);
+        Relationship authorized = getNetworkedModel().getAuthorizedRelationship(ruleform,
+                                                                                relationship);
         if (authorized == null) {
             return null;
         }
@@ -728,6 +787,29 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         }
         getNetworkedModel().deauthorizeProducts(ruleform, relationship,
                                                 locations);
+        return null;
+    }
+
+    protected Object removeRelationshipAuth(String namespace, String name,
+                                            Phantasm<Relationship> phantasm,
+                                            WorkspaceScope scope) {
+        Relationship relationship = getRelationship(namespace, name, scope);
+        getNetworkedModel().deauthorize(ruleform, relationship,
+                                        phantasm.getRuleform());
+        return null;
+    }
+
+    protected Object removeRelationshipAuths(String namespace,
+                                             String name,
+                                             List<Phantasm<Relationship>> authorized,
+                                             WorkspaceScope scope) {
+        Relationship relationship = getRelationship(namespace, name, scope);
+        List<Relationship> aut = new ArrayList<>(authorized.size());
+        for (Phantasm<Relationship> phantasm : authorized) {
+            aut.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().deauthorizeRelationships(ruleform, relationship,
+                                                     aut);
         return null;
     }
 
@@ -920,6 +1002,20 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return null;
     }
 
+    protected Object setRelationshipAuths(String namespace,
+                                          String name,
+                                          List<Phantasm<Relationship>> authorized,
+                                          WorkspaceScope scope) {
+        Relationship relationship = getRelationship(namespace, name, scope);
+        List<Relationship> auths = new ArrayList<>(authorized.size());
+        for (Phantasm<Relationship> phantasm : authorized) {
+            auths.add(phantasm.getRuleform());
+        }
+        getNetworkedModel().setAuthorizedRelationships(ruleform, relationship,
+                                                       auths);
+        return null;
+    }
+
     /**
      * @param namespace
      * @param name
@@ -959,6 +1055,16 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
     protected Object setSingularProductAuth(String namespace, String name,
                                             Phantasm<Product> phantasm,
                                             WorkspaceScope scope) {
+        Relationship relationship = getRelationship(namespace, name, scope);
+        getNetworkedModel().authorizeSingular(ruleform, relationship,
+                                              phantasm.getRuleform());
+        return null;
+    }
+
+    protected Object setSingularRelationshipAuth(String namespace,
+                                                 String name,
+                                                 Phantasm<Relationship> phantasm,
+                                                 WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);
         getNetworkedModel().authorizeSingular(ruleform, relationship,
                                               phantasm.getRuleform());

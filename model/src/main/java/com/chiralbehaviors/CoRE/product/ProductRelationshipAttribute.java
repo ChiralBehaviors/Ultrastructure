@@ -5,14 +5,14 @@
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
+ *  it under the terms of the GNU Affero General Public Licenseas published by
  *  the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU Affero General Public Licensefor more details.
  *
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
@@ -46,18 +46,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "product_relationship_attribute", schema = "ruleform")
-public class ProductRelationshipAttribute extends AttributeValue<ProductRelationship> {
-    private static final long serialVersionUID = 1L;
+public class ProductRelationshipAttribute extends
+        AttributeValue<ProductRelationship> {
+    private static final long   serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
-    private Agency            agency;
+    private Agency              agency;
 
     // bi-directional many-to-one association to ProductLocation
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_relationship")
-    private ProductRelationship   productRelationship;
+    private ProductRelationship productRelationship;
 
     public ProductRelationshipAttribute() {
     }
@@ -90,7 +91,7 @@ public class ProductRelationshipAttribute extends AttributeValue<ProductRelation
      * @param updatedBy
      */
     public ProductRelationshipAttribute(Attribute attribute, BigDecimal value,
-                                    Agency updatedBy) {
+                                        Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -100,7 +101,7 @@ public class ProductRelationshipAttribute extends AttributeValue<ProductRelation
      * @param updatedBy
      */
     public ProductRelationshipAttribute(Attribute attribute, boolean value,
-                                    Agency updatedBy) {
+                                        Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -110,7 +111,7 @@ public class ProductRelationshipAttribute extends AttributeValue<ProductRelation
      * @param updatedBy
      */
     public ProductRelationshipAttribute(Attribute attribute, int value,
-                                    Agency updatedBy) {
+                                        Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -120,7 +121,7 @@ public class ProductRelationshipAttribute extends AttributeValue<ProductRelation
      * @param updatedBy
      */
     public ProductRelationshipAttribute(Attribute attribute, String value,
-                                    Agency updatedBy) {
+                                        Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 

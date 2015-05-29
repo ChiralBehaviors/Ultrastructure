@@ -5,14 +5,14 @@
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
+ *  it under the terms of the GNU Affero General Public Licenseas published by
  *  the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  GNU Affero General Public Licensefor more details.
  *
  *  You should have received a copy of the GNU General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
@@ -53,18 +53,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "product_relationship", schema = "ruleform")
 @NamedQueries({ @NamedQuery(name = PRODUCTS_AT_RELATIONSHIP, query = "SELECT n.product "
-                                                                 + "FROM ProductRelationship n "
-                                                                 + "WHERE n.relationship = :relationship "
-                                                                 + "AND n.child = :child"), })
+                                                                     + "FROM ProductRelationship n "
+                                                                     + "WHERE n.relationship = :relationship "
+                                                                     + "AND n.child = :child"), })
 public class ProductRelationship extends Ruleform implements
         Attributable<ProductRelationshipAttribute> {
-    public static final String            PRODUCTS_AT_RELATIONSHIP = "productRelationship.productsAtRelationship";
-    private static final long             serialVersionUID     = 1L;
+    public static final String                PRODUCTS_AT_RELATIONSHIP = "productRelationship.productsAtRelationship";
+    private static final long                 serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
-    private Agency                        agency;
+    private Agency                            agency;
 
     // bi-directional many-to-one association to ProductRelationshipAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productRelationship")
@@ -79,12 +79,12 @@ public class ProductRelationship extends Ruleform implements
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
-    private Product                       product;
+    private Product                           product;
 
     // bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Relationship                  child;
+    private Relationship                      child;
 
     public ProductRelationship() {
     }
@@ -97,8 +97,8 @@ public class ProductRelationship extends Ruleform implements
     }
 
     public ProductRelationship(Agency agency, Product product,
-                           Relationship relationship, Relationship child,
-                           Agency updatedBy) {
+                               Relationship relationship, Relationship child,
+                               Agency updatedBy) {
         super(updatedBy);
         this.product = product;
         this.relationship = relationship;

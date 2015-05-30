@@ -37,10 +37,10 @@ import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -138,8 +138,8 @@ public class Relationship extends
     @JsonIgnore
     private Set<RelationshipAttribute> attributes;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "inverse")
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "inverse", unique = true)
     @JsonIgnore
     private Relationship               inverse;
 

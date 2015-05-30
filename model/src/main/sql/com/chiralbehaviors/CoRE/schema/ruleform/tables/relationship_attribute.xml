@@ -49,9 +49,6 @@
             baseColumnNames="updated_by" baseTableName="relationship_attribute" constraintName="relationship_attribute_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="inverse" baseTableName="relationship" constraintName="relationship_inverse_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addUniqueConstraint schemaName="ruleform" columnNames="relationship, attribute" constraintName="relationship_attribute_relationship_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="relationship_attribute" />
         <createIndex schemaName="ruleform" indexName="relationship_attribute_updated_by_fkey_idx" tableName="relationship_attribute"

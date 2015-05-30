@@ -75,6 +75,8 @@ import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
@@ -565,6 +567,32 @@ public class WorkspaceImporter {
                                                      });
     }
 
+    private void createRelationshipProductAuth(FacetContext facet,
+                                               ConstraintContext constraint) {
+        ProductRelationshipAuthorization authorization = new ProductRelationshipAuthorization(
+                                                                                              model.getCurrentPrincipal().getPrincipal());
+        authorization.setFromParent(resolve(constraint.authorizedParent));
+        authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setToParent(resolve(facet.classification));
+        authorization.setToRelationship(resolve(facet.classifier));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        workspace.add(authorization);
+        em.persist(authorization);
+        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        if (classifiedAttributes == null) {
+            return;
+        }
+        classifiedAttributes.qualifiedName().forEach(attribute -> {
+                                                         ProductRelationshipAttributeAuthorization auth = new ProductRelationshipAttributeAuthorization(
+                                                                                                                                                        model.getCurrentPrincipal().getPrincipal());
+                                                         auth.setAuthorizedAttribute(resolve(attribute));
+                                                         auth.setNetworkAuthorization(authorization);
+                                                         model.getEntityManager().persist(auth);
+                                                         workspace.add(auth);
+                                                     });
+    }
+
     /**
      * @param facet
      * @param constraint
@@ -618,6 +646,32 @@ public class WorkspaceImporter {
         classifiedAttributes.qualifiedName().forEach(attribute -> {
                                                          ProductLocationAttributeAuthorization auth = new ProductLocationAttributeAuthorization(
                                                                                                                                                 model.getCurrentPrincipal().getPrincipal());
+                                                         auth.setAuthorizedAttribute(resolve(attribute));
+                                                         auth.setNetworkAuthorization(authorization);
+                                                         model.getEntityManager().persist(auth);
+                                                         workspace.add(auth);
+                                                     });
+    }
+
+    private void createProductRelationshipAuth(FacetContext facet,
+                                               ConstraintContext constraint) {
+        ProductRelationshipAuthorization authorization = new ProductRelationshipAuthorization(
+                                                                                              model.getCurrentPrincipal().getPrincipal());
+        authorization.setFromParent(resolve(facet.classification));
+        authorization.setFromRelationship(resolve(facet.classifier));
+        authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setToParent(resolve(constraint.authorizedParent));
+        authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        workspace.add(authorization);
+        em.persist(authorization);
+        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        if (classifiedAttributes == null) {
+            return;
+        }
+        classifiedAttributes.qualifiedName().forEach(attribute -> {
+                                                         ProductRelationshipAttributeAuthorization auth = new ProductRelationshipAttributeAuthorization(
+                                                                                                                                                        model.getCurrentPrincipal().getPrincipal());
                                                          auth.setAuthorizedAttribute(resolve(attribute));
                                                          auth.setNetworkAuthorization(authorization);
                                                          model.getEntityManager().persist(auth);
@@ -1119,6 +1173,9 @@ public class WorkspaceImporter {
                                                     } else if (authParentClass.equals(Product.class)) {
                                                         createLocationProductAuth(facet,
                                                                                   constraint);
+                                                    } else if (authParentClass.equals(Relationship.class)) {
+                                                        createRelationshipProductAuth(facet,
+                                                                                      constraint);
                                                     }
                                                 });
     }
@@ -1158,6 +1215,9 @@ public class WorkspaceImporter {
                                                     } else if (authParentClass.equals(Location.class)) {
                                                         createProductLocationAuth(facet,
                                                                                   constraint);
+                                                    } else if (authParentClass.equals(Relationship.class)) {
+                                                        createProductRelationshipAuth(facet,
+                                                                                      constraint);
                                                     }
                                                 });
     }

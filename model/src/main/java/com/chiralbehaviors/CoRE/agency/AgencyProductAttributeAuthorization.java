@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author hhildebrand
@@ -93,7 +94,7 @@ public class AgencyProductAttributeAuthorization extends
      * @see com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization#setNetworkAuthorization(com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization)
      */
     @Override
-    public <T extends XDomainNetworkAuthorization<Agency, Product>> void setNetworkAuthorization(T networkAuthorization) {
+    public <T extends XDomainNetworkAuthorization<Agency, Product>> void setNetworkAuthorization(@JsonProperty("networkAuthorization") T networkAuthorization) {
         this.networkAuthorization = (AgencyProductAuthorization) networkAuthorization;
     }
 

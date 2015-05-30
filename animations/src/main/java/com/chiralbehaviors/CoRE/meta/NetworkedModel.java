@@ -101,6 +101,9 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void authorize(RuleForm ruleform, Relationship relationship,
                    Product authorized);
 
+    void authorize(RuleForm ruleform, Relationship relationship,
+                   Relationship authorized);
+
     void authorizeAgencies(RuleForm ruleform, Relationship relationship,
                            List<Agency> authorized);
 
@@ -110,6 +113,9 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void authorizeProducts(RuleForm ruleform, Relationship relationship,
                            List<Product> authorized);
 
+    void authorizeRelationships(RuleForm ruleform, Relationship relationship,
+                                List<Relationship> authorized);
+
     void authorizeSingular(RuleForm ruleform, Relationship relationship,
                            Agency authorized);
 
@@ -118,6 +124,9 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     void authorizeSingular(RuleForm ruleform, Relationship relationship,
                            Product authorized);
+
+    void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                           Relationship authorized);
 
     /**
      * Create a new instance of the RuleForm based on the provided prototype
@@ -137,6 +146,9 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     void deauthorize(RuleForm ruleform, Relationship relationship,
                      Product authorized);
 
+    void deauthorize(RuleForm ruleform, Relationship relationship,
+                     Relationship authorized);
+
     void deauthorizeAgencies(RuleForm ruleform, Relationship relationship,
                              List<Agency> authorized);
 
@@ -145,6 +157,14 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     void deauthorizeProducts(RuleForm ruleform, Relationship relationship,
                              List<Product> authorized);
+
+    /**
+     * @param ruleform
+     * @param relationship
+     * @param authorized
+     */
+    void deauthorizeRelationships(RuleForm ruleform, Relationship relationship,
+                                  List<Relationship> authorized);
 
     /**
      * @param id
@@ -288,6 +308,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     List<Product> getAuthorizedProducts(RuleForm ruleform,
                                         Relationship relationship);
+
+    Relationship getAuthorizedRelationship(RuleForm ruleform,
+                                           Relationship relationship);
+
+    List<Relationship> getAuthorizedRelationships(RuleForm ruleform,
+                                                  Relationship relationship);
 
     /**
      * Answer the child that is connected to the parent via the relationship
@@ -440,6 +466,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     void setAuthorizedProducts(RuleForm ruleform, Relationship relationship,
                                List<Product> authorized);
+
+    void setAuthorizedRelationships(RuleForm ruleform,
+                                    Relationship relationship,
+                                    List<Relationship> authorized);
 
     /**
      * Sets the child of the immediate relationship defined by the parent and

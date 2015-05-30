@@ -33,8 +33,8 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,36 +43,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author hhildebrand
  *
  */
-@Table(name = "product_location_attribute_authorization", schema = "ruleform")
+@Table(name = "product_relationship_attribute_authorization", schema = "ruleform")
 @Entity
-public class ProductLocationAttributeAuthorization extends
-        XDomainAttrbuteAuthorization<Product, Location> {
+public class ProductRelationshipAttributeAuthorization extends
+        XDomainAttrbuteAuthorization<Product, Relationship> {
 
-    private static final long            serialVersionUID = 1L;
+    private static final long                serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_authorization")
-    private ProductLocationAuthorization networkAuthorization;
+    private ProductRelationshipAuthorization networkAuthorization;
 
-    public ProductLocationAttributeAuthorization() {
+    public ProductRelationshipAttributeAuthorization() {
         super();
     }
 
-    public ProductLocationAttributeAuthorization(Agency updatedBy) {
+    public ProductRelationshipAttributeAuthorization(Agency updatedBy) {
         super(updatedBy);
     }
 
-    public ProductLocationAttributeAuthorization(Attribute authorized,
-                                                 Agency updatedBy) {
+    public ProductRelationshipAttributeAuthorization(Attribute authorized,
+                                                     Agency updatedBy) {
         super(authorized, updatedBy);
     }
 
-    public ProductLocationAttributeAuthorization(UUID id) {
+    public ProductRelationshipAttributeAuthorization(UUID id) {
         super(id);
     }
 
-    public ProductLocationAttributeAuthorization(UUID id, Agency updatedBy) {
+    public ProductRelationshipAttributeAuthorization(UUID id, Agency updatedBy) {
         super(id, updatedBy);
     }
 
@@ -80,7 +80,7 @@ public class ProductLocationAttributeAuthorization extends
      * @see com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization#getNetworkAuthorization()
      */
     @Override
-    public XDomainNetworkAuthorization<Product, Location> getNetworkAuthorization() {
+    public XDomainNetworkAuthorization<Product, Relationship> getNetworkAuthorization() {
         return networkAuthorization;
     }
 
@@ -89,15 +89,15 @@ public class ProductLocationAttributeAuthorization extends
      */
     @Override
     public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productLocationAttributeAuthorization;
+        return WorkspaceAuthorization_.productRelationshipAttributeAuthorization;
     }
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization#setNetworkAuthorization(com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization)
      */
     @Override
-    public <T extends XDomainNetworkAuthorization<Product, Location>> void setNetworkAuthorization(@JsonProperty("networkAuthorization") T auth) {
-        networkAuthorization = (ProductLocationAuthorization) auth;
+    public <T extends XDomainNetworkAuthorization<Product, Relationship>> void setNetworkAuthorization(@JsonProperty("networkAuthorization") T auth) {
+        networkAuthorization = (ProductRelationshipAuthorization) auth;
     }
 
 }

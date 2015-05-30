@@ -314,6 +314,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                      annotation.value().name(),
                                                                      (Phantasm<Product>) arguments[0],
                                                                      scope));
+        } else if (ruleformClass.equals(Relationship.class)) {
+            methods.put(method,
+                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+                         Object[] arguments) -> state.addRelationshipAuth(annotation.value().namespace(),
+                                                                          annotation.value().name(),
+                                                                          (Phantasm<Relationship>) arguments[0],
+                                                                          scope));
         } else {
             throw new IllegalStateException(
                                             String.format("The authorization %s->%s is undefined",
@@ -346,6 +353,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                       annotation.value().name(),
                                                                       (List<Phantasm<Product>>) arguments[0],
                                                                       scope));
+        } else if (ruleformClass.equals(Relationship.class)) {
+            methods.put(method,
+                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+                         Object[] arguments) -> state.addRelationshipAuths(annotation.value().namespace(),
+                                                                           annotation.value().name(),
+                                                                           (List<Phantasm<Relationship>>) arguments[0],
+                                                                           scope));
         } else {
             throw new IllegalStateException(
                                             String.format("The authorization %s->%s is undefined",
@@ -386,6 +400,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                      relationship.name(),
                                                                      (Class<? extends Phantasm<Agency>>) phantasmReturned,
                                                                      scope));
+        } else if (ruleformClass.equals(Relationship.class)) {
+            methods.put(method,
+                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+                         Object[] arguments) -> state.getRelationshipAuths(relationship.namespace(),
+                                                                           relationship.name(),
+                                                                           (Class<? extends Phantasm<Relationship>>) phantasmReturned,
+                                                                           scope));
         } else {
             throw new IllegalStateException(
                                             String.format("No such authorization from Product to %s",
@@ -451,6 +472,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                             value.name(),
                                                                             (Class<? extends Phantasm<Agency>>) phantasmReturned,
                                                                             scope));
+        } else if (ruleformClass.equals(Relationship.class)) {
+            methods.put(method,
+                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+                         Object[] arguments) -> state.getSingularRelationshipAuth(value.namespace(),
+                                                                                  value.name(),
+                                                                                  (Class<? extends Phantasm<Relationship>>) phantasmReturned,
+                                                                                  scope));
         } else {
             throw new IllegalStateException(
                                             String.format("No such authorization from Product to %s",
@@ -600,6 +628,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                         key.name(),
                                                                         (Phantasm<Product>) arguments[0],
                                                                         scope));
+        } else if (ruleformClass.equals(Relationship.class)) {
+            methods.put(method,
+                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+                         Object[] arguments) -> state.removeRelationshipAuth(key.namespace(),
+                                                                             key.name(),
+                                                                             (Phantasm<Relationship>) arguments[0],
+                                                                             scope));
         } else {
             throw new IllegalStateException(
                                             String.format("No such authorization from Product to %s",
@@ -636,6 +671,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                          key.name(),
                                                                          (List<Phantasm<Product>>) arguments[0],
                                                                          scope));
+        } else if (ruleformClass.equals(Relationship.class)) {
+            methods.put(method,
+                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+                         Object[] arguments) -> state.removeRelationshipAuths(key.namespace(),
+                                                                              key.name(),
+                                                                              (List<Phantasm<Relationship>>) arguments[0],
+                                                                              scope));
         } else {
             throw new IllegalStateException(
                                             String.format("No such authorization from Product to %s",
@@ -672,6 +714,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                       annotation.value().name(),
                                                                       (List<Phantasm<Product>>) arguments[0],
                                                                       scope));
+        } else if (ruleformClass.equals(Relationship.class)) {
+            methods.put(method,
+                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+                         Object[] arguments) -> state.setRelationshipAuths(annotation.value().namespace(),
+                                                                           annotation.value().name(),
+                                                                           (List<Phantasm<Relationship>>) arguments[0],
+                                                                           scope));
         } else {
             throw new IllegalStateException(
                                             String.format("The authorization %s->%s is undefined",
@@ -745,6 +794,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                             value.name(),
                                                                             (Phantasm<Agency>) arguments[0],
                                                                             scope));
+        } else if (ruleformClass.equals(Relationship.class)) {
+            methods.put(method,
+                        (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+                         Object[] arguments) -> state.setSingularRelationshipAuth(value.namespace(),
+                                                                                  value.name(),
+                                                                                  (Phantasm<Relationship>) arguments[0],
+                                                                                  scope));
         } else {
             throw new IllegalStateException(
                                             String.format("No such authorization from Product to %s",

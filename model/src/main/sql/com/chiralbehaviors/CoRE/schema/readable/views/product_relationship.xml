@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hparry">
+        <createView viewName="product_relationship" schemaName="readable" replaceIfExists="true"><![CDATA[
+			 SELECT bl.id, res.name AS agency, b.name AS product, rel.name AS relationship, l.name AS child, bl.notes, up.name AS updated_by, bl.version
+			   FROM product_relationship bl
+			   JOIN agency res ON bl.agency = res.id
+			   JOIN product b ON bl.product = b.id
+			   JOIN relationship rel ON bl.relationship = rel.id
+			   JOIN relationship l ON bl.child = l.id
+			   JOIN agency up ON bl.updated_by = up.id
+            ]]>
+        </createView>
+        <rollback>
+            <dropView viewName="readable.product_relationship" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

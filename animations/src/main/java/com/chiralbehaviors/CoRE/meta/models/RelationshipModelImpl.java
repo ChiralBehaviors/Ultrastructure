@@ -23,13 +23,22 @@ package com.chiralbehaviors.CoRE.meta.models;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductRelationship;
+import com.chiralbehaviors.CoRE.product.ProductRelationship_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
@@ -75,6 +84,23 @@ public class RelationshipModelImpl
         }
     }
 
+    @Override
+    public void authorize(Relationship ruleform, Relationship relationship,
+                          Product authorized) {
+        ProductRelationship a = new ProductRelationship(
+                                                        model.getCurrentPrincipal().getPrincipal());
+        a.setProduct(authorized);
+        a.setRelationship(relationship);
+        a.setChild(ruleform);
+        em.persist(a);
+        ProductRelationship b = new ProductRelationship(
+                                                        model.getCurrentPrincipal().getPrincipal());
+        b.setProduct(authorized);
+        b.setRelationship(relationship.getInverse());
+        b.setChild(ruleform);
+        em.persist(b);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -103,6 +129,12 @@ public class RelationshipModelImpl
             clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         }
         return copy;
+    }
+
+    @Override
+    public RelationshipAttribute create(Relationship ruleform,
+                                        Attribute attribute, Agency updatedBy) {
+        return new RelationshipAttribute(ruleform, attribute, updatedBy);
     }
 
     /*
@@ -153,6 +185,53 @@ public class RelationshipModelImpl
         return relationship;
     }
 
+    @Override
+    public void deauthorize(Relationship ruleform, Relationship relationship,
+                            Product authorized) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductRelationship> query = cb.createQuery(ProductRelationship.class);
+        Root<ProductRelationship> plRoot = query.from(ProductRelationship.class);
+        ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
+        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
+                                                   authorized),
+                                          cb.equal(plRoot.get(ProductRelationship_.relationship),
+                                                   relationshipParam),
+                                          cb.equal(plRoot.get(ProductRelationship_.child),
+                                                   ruleform)));
+        TypedQuery<ProductRelationship> q = em.createQuery(query);
+        q.setParameter(relationshipParam, relationship);
+        try {
+            em.remove(q.getSingleResult());
+        } catch (NoResultException e) {
+            return;
+        }
+        q.setParameter(relationshipParam, relationship.getInverse());
+        try {
+            em.remove(q.getSingleResult());
+        } catch (NoResultException e) {
+        }
+    }
+
+    @Override
+    public List<Product> getAuthorizedProducts(Relationship ruleform,
+                                               Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Product> query = cb.createQuery(Product.class);
+        Root<ProductRelationship> plRoot = query.from(ProductRelationship.class);
+        Path<Product> path;
+        try {
+            path = plRoot.get(ProductRelationship_.product);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductRelationship_.child),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(ProductRelationship_.relationship),
+                                                 relationship)));
+        TypedQuery<Product> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
      */
@@ -171,11 +250,5 @@ public class RelationshipModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
-    }
-
-    @Override
-    public RelationshipAttribute create(Relationship ruleform,
-                                        Attribute attribute, Agency updatedBy) {
-        return new RelationshipAttribute(ruleform, attribute, updatedBy);
     }
 }

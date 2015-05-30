@@ -36,6 +36,7 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author hhildebrand
@@ -94,7 +95,7 @@ public class AgencyLocationAttributeAuthorization extends
      * @see com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization#setNetworkAuthorization(com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization)
      */
     @Override
-    public <T extends XDomainNetworkAuthorization<Agency, Location>> void setNetworkAuthorization(T auth) {
+    public <T extends XDomainNetworkAuthorization<Agency, Location>> void setNetworkAuthorization(@JsonProperty("networkAuthorization") T auth) {
         networkAuthorization = (AgencyLocationAuthorization) auth;
     }
 

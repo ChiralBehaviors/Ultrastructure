@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="product_relationship_authorization">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="product_relationship_authorization_pkey" />
+            </column>
+            <column name="from_relationship" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="from_parent" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="to_parent" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="to_relationship" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
+                <constraints nullable="false" />
+            </column>
+            <column name="cardinality" type="SMALLINT" />
+            <column name="connection" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="grouping_agency" type="uuid" />
+            <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
+            <column name="updated_by" remarks="The product that last updated this rule" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="product_relationship_authorization" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="connection" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_connection_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="to_parent" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_to_parent_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="to_relationship" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_to_relationship_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="from_relationship" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_from_parent_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="relationship" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="from_parent" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_from_relationship_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="product" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_grouping_product_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_updated_by_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency" />
+        <addUniqueConstraint schemaName="ruleform"
+            columnNames="from_relationship, from_parent, to_parent, to_relationship, connection, sequence_number" constraintName="product_relationship_unique_key"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_relationship_authorization" />
+        <createIndex schemaName="ruleform" indexName="product_relationship_authorization_updated_by_fkey_idx" tableName="product_relationship_authorization"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

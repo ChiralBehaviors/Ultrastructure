@@ -95,7 +95,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                                                                                      em);
         assertEquals(2, retrieved.size());
         for (WorkspaceAuthorization a : retrieved) {
-            if (a.getAgency() != null) {
+            if (a.getRuleform() instanceof Agency) {
                 assertEquals(pseudoScientist, a.getRuleform());
             } else {
                 assertEquals(aLeak, a.getRuleform());

@@ -3,7 +3,7 @@ Ultrastructure
 
 An implementation of Ultrastructure using PostgreSQL.
 
-See the [Ultrastructure Northwind Demo](http://chiralbehaviors.github.io/Northwind/) for an example of what one has to do to produce an "Ultrastructure Application".
+See the [Ultrastructure Northwind Demo](http://chiralbehaviors.github.io/Northwind/) for an example of a non trivial Ultrastructure application.
 
 Build Status: [![Build Status](https://chiralbehaviors.ci.cloudbees.com/buildStatus/job/Ultrastructure/badge/icon)](https://chiralbehaviors.ci.cloudbees.com/job/Ultrastructure/)
 

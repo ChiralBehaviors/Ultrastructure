@@ -3,6 +3,8 @@ Ultrastructure
 
 An implementation of Ultrastructure using PostgreSQL.
 
+See the [Ultrastructure Northwind Demo](http://chiralbehaviors.github.io/Northwind/) for an example of what one has to do to produce an "Ultrastructure Application".
+
 Build Status: [![Build Status](https://chiralbehaviors.ci.cloudbees.com/buildStatus/job/Ultrastructure/badge/icon)](https://chiralbehaviors.ci.cloudbees.com/job/Ultrastructure/)
 
 The license for this project is the [GNU Affero General Public License](http://www.gnu.org/licenses/agpl-3.0.en.html)

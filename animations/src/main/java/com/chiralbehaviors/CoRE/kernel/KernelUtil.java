@@ -36,6 +36,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 
 /**
  * Repository of immutable kernal rules
@@ -107,7 +108,9 @@ public class KernelUtil {
                                                                     JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
-        mapper.registerModule(new Hibernate4Module());
+        Hibernate4Module module = new Hibernate4Module();
+        module.enable(Feature.FORCE_LAZY_LOADING);
+        mapper.registerModule(module);
         WorkspaceSnapshot workspace = mapper.readValue(is,
                                                        WorkspaceSnapshot.class);
         return workspace;

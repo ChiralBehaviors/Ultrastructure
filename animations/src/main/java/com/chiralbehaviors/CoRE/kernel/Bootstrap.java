@@ -62,6 +62,7 @@ import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 
 /**
  * @author hhildebrand
@@ -226,7 +227,9 @@ public class Bootstrap {
     private void serialize(String fileName) throws IOException {
         ObjectMapper objMapper = new ObjectMapper();
         objMapper.registerModule(new CoREModule());
-        objMapper.registerModule(new Hibernate4Module());
+        Hibernate4Module module = new Hibernate4Module();
+        module.enable(Feature.FORCE_LAZY_LOADING);
+        objMapper.registerModule(module);
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
         em.detach(kernelWorkspace);
         objMapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName),

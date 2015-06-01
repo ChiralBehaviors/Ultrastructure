@@ -283,14 +283,6 @@ public class Job extends AbstractProtocol {
     }
 
     /**
-     * @param sequenceNumber
-     *            the sequenceNumber to set
-     */
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    /**
      * Should ONLY be called from JobModel. You call this yourself, you ain't be
      * logging. We have to make it Public because it ain't in the same package.
      * <p>

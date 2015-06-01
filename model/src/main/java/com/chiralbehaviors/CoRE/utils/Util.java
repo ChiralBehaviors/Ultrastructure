@@ -19,6 +19,11 @@
  */
 package com.chiralbehaviors.CoRE.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -34,13 +39,49 @@ import javax.persistence.JoinColumn;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 
 /**
  * @author hhildebrand
  *
  */
 public final class Util {
+
+    public static <T extends Ruleform> T deserialize(InputStream is,
+                                                     Class<T> clazz)
+                                                                    throws JsonParseException,
+                                                                    JsonMappingException,
+                                                                    IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new CoREModule());
+        mapper.registerModule(new Hibernate4Module());
+        return mapper.readValue(is, clazz);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Ruleform> T sanitize(T ruleform)
+                                                             throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        serialize(ruleform, os);
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+        return (T) deserialize(is, ruleform.getClass());
+    }
+
+    public static void serialize(Ruleform ruleform, OutputStream os)
+                                                                    throws IOException {
+        ObjectMapper objMapper = new ObjectMapper();
+        objMapper.registerModule(new CoREModule());
+        Hibernate4Module module = new Hibernate4Module();
+        module.enable(Feature.FORCE_LAZY_LOADING);
+        objMapper.registerModule(module);
+        objMapper.writerWithDefaultPrettyPrinter().writeValue(os, ruleform);
+    }
 
     public static Map<Ruleform, Ruleform> slice(Ruleform ruleform,
                                                 Predicate<Ruleform> systemDefinition,

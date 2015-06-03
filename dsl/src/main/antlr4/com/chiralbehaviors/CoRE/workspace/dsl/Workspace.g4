@@ -225,8 +225,9 @@ constraint:
     ('get:' inferredGet = 'inferred' | 'immediate')?
     ('method:' methodNaming = 'relationship' | 'entity')?
     ':'
-    authorizedRelationship = qualifiedName '.'
-    authorizedParent = qualifiedName
+    (anyType = ('*Agency' | '*Attribute' | '*Interval' | '*Location' | '*Product' | '*Relationship' | '*StatusCode' | '*Unit')
+    | 
+    (authorizedRelationship = qualifiedName '.' authorizedParent = qualifiedName))
     ('sequence ' sequenceNumber = Number)?
     (LB classifiedAttributes RB)?
     ;

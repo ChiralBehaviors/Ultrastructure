@@ -150,11 +150,11 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
         this.childRelationship = childRelationship;
     }
 
+    abstract public void setClassification(RuleForm classification);
+
     public void setClassifier(Relationship classifier) {
         this.classifier = classifier;
     }
-
-    abstract public void setClassification(RuleForm classification);
 
     public void setGroupingAgency(Agency groupingAgency) {
         this.groupingAgency = groupingAgency;

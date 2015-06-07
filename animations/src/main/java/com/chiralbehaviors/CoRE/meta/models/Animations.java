@@ -86,6 +86,7 @@ public class Animations implements Triggers {
 
     private static final int                                 MAX_JOB_PROCESSING = 10;
 
+    private final Set<AttributeValue<?>>                     attributeValues    = new HashSet<>();
     private final Set<ProductChildSequencingAuthorization>   childSequences     = new HashSet<>();
     private final EntityManager                              em;
     private boolean                                          inferAgencyNetwork;
@@ -102,12 +103,18 @@ public class Animations implements Triggers {
     private final Set<ProductParentSequencingAuthorization>  parentSequences    = new HashSet<>();
     private final Set<ProductSelfSequencingAuthorization>    selfSequences      = new HashSet<>();
     private final Set<ProductSiblingSequencingAuthorization> siblingSequences   = new HashSet<>();
-    private final Set<AttributeValue<?>>                     attributeValues    = new HashSet<>();
 
     public Animations(Model model, EntityManager em) {
         this.model = model;
         this.em = em;
         new AnimationsInterceptor((SessionImpl) em.getDelegate(), this);
+    }
+
+    /**
+     * 
+     */
+    public void begin() {
+        model.flushWorkspaces();
     }
 
     public void commit() throws TriggerException {
@@ -431,6 +438,11 @@ public class Animations implements Triggers {
         modifiedServices.add(scs.getService());
     }
 
+    @Override
+    public <T extends AttributeValue<?>> void persist(T value) {
+        attributeValues.add(value);
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork)
      */
@@ -524,6 +536,10 @@ public class Animations implements Triggers {
         jobs.clear();
     }
 
+    private void validateAttributeValues() {
+        validateEnums();
+    }
+
     private void validateChildSequencing() {
         for (ProductChildSequencingAuthorization pcsa : childSequences) {
 
@@ -536,32 +552,6 @@ public class Animations implements Triggers {
                                                          pcsa), e);
             }
         }
-    }
-
-    private void validateParentSequencing() {
-        for (ProductParentSequencingAuthorization ppsa : parentSequences) {
-            try {
-                model.getJobModel().ensureValidServiceAndStatus(ppsa.getParent(),
-                                                                ppsa.getParentStatusToSet());
-            } catch (SQLException e) {
-                throw new TriggerException("Invalid sequence", e);
-            }
-        }
-    }
-
-    private void validateSelfSequencing() {
-        for (ProductSelfSequencingAuthorization pssa : selfSequences) {
-            try {
-                model.getJobModel().ensureValidServiceAndStatus(pssa.getService(),
-                                                                pssa.getStatusToSet());
-            } catch (SQLException e) {
-                throw new TriggerException("Invalid sequence", e);
-            }
-        }
-    }
-
-    private void validateAttributeValues() {
-        validateEnums();
     }
 
     private void validateEnums() {
@@ -598,6 +588,28 @@ public class Animations implements Triggers {
         }
     }
 
+    private void validateParentSequencing() {
+        for (ProductParentSequencingAuthorization ppsa : parentSequences) {
+            try {
+                model.getJobModel().ensureValidServiceAndStatus(ppsa.getParent(),
+                                                                ppsa.getParentStatusToSet());
+            } catch (SQLException e) {
+                throw new TriggerException("Invalid sequence", e);
+            }
+        }
+    }
+
+    private void validateSelfSequencing() {
+        for (ProductSelfSequencingAuthorization pssa : selfSequences) {
+            try {
+                model.getJobModel().ensureValidServiceAndStatus(pssa.getService(),
+                                                                pssa.getStatusToSet());
+            } catch (SQLException e) {
+                throw new TriggerException("Invalid sequence", e);
+            }
+        }
+    }
+
     private void validateSequenceAuthorizations() {
         validateParentSequencing();
         validateSiblingSequencing();
@@ -614,17 +626,5 @@ public class Animations implements Triggers {
                 throw new TriggerException("Invalid sequence", e);
             }
         }
-    }
-
-    @Override
-    public <T extends AttributeValue<?>> void persist(T value) {
-        attributeValues.add(value);
-    }
-
-    /**
-     * 
-     */
-    public void begin() {
-        model.flushWorkspaces();
     }
 }

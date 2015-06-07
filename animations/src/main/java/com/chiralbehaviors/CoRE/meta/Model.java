@@ -257,6 +257,17 @@ public interface Model {
     void inferNetworks(ExistentialRuleform<?, ?> ruleform);
 
     /**
+     * Lookup the ruleform using the UUID and wrap an instance of a phantasm
+     * using the model
+     * 
+     * @param phantasm
+     * @param uuid
+     * @return
+     */
+    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                                         UUID uuid);
+
+    /**
      * Wrap the ruleform with an instance of a phantasm using the model
      * 
      * @param phantasm

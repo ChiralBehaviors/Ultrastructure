@@ -203,74 +203,6 @@ public class LocationModelImpl
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedAgencies(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
-     */
-    @Override
-    public List<Agency> getAuthorizedAgencies(Location ruleform,
-                                              Relationship relationship) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Agency> query = cb.createQuery(Agency.class);
-        Root<AgencyLocation> plRoot = query.from(AgencyLocation.class);
-        Path<Agency> path;
-        try {
-            path = plRoot.get(AgencyLocation_.agency);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyLocation_.location),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(AgencyLocation_.relationship),
-                                                 relationship)));
-        TypedQuery<Agency> q = em.createQuery(query);
-        return q.getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedLocations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
-     */
-    @Override
-    public List<Location> getAuthorizedLocations(Location ruleform,
-                                                 Relationship relationship) {
-        throw new UnsupportedOperationException(
-                                                "Location -> Location authorizations are modeled with Location Networks");
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedProducts(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
-     */
-    @Override
-    public List<Product> getAuthorizedProducts(Location ruleform,
-                                               Relationship relationship) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Product> query = cb.createQuery(Product.class);
-        Root<ProductLocation> plRoot = query.from(ProductLocation.class);
-        Path<Product> path;
-        try {
-            path = plRoot.get(ProductLocation_.product);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductLocation_.location),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(ProductLocation_.relationship),
-                                                 relationship)));
-        TypedQuery<Product> q = em.createQuery(query);
-        return q.getResultList();
-    }
-
-    @Override
-    public List<LocationNetwork> getInterconnections(Collection<Location> parents,
-                                                     Collection<Relationship> relationships,
-                                                     Collection<Location> children) {
-        TypedQuery<LocationNetwork> query = em.createNamedQuery(LocationNetwork.GET_NETWORKS,
-                                                                LocationNetwork.class);
-        query.setParameter("parents", parents);
-        query.setParameter("relationship", relationships);
-        query.setParameter("children", children);
-        return query.getResultList();
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#deauthorize(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship, com.chiralbehaviors.CoRE.agency.Agency)
      */
     @Override
@@ -338,5 +270,73 @@ public class LocationModelImpl
             em.remove(q.getSingleResult());
         } catch (NoResultException e) {
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedAgencies(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
+    @Override
+    public List<Agency> getAuthorizedAgencies(Location ruleform,
+                                              Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Agency> query = cb.createQuery(Agency.class);
+        Root<AgencyLocation> plRoot = query.from(AgencyLocation.class);
+        Path<Agency> path;
+        try {
+            path = plRoot.get(AgencyLocation_.agency);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyLocation_.location),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(AgencyLocation_.relationship),
+                                                 relationship)));
+        TypedQuery<Agency> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedLocations(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
+    @Override
+    public List<Location> getAuthorizedLocations(Location ruleform,
+                                                 Relationship relationship) {
+        throw new UnsupportedOperationException(
+                                                "Location -> Location authorizations are modeled with Location Networks");
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getAuthorizedProducts(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.relationship.Relationship)
+     */
+    @Override
+    public List<Product> getAuthorizedProducts(Location ruleform,
+                                               Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Product> query = cb.createQuery(Product.class);
+        Root<ProductLocation> plRoot = query.from(ProductLocation.class);
+        Path<Product> path;
+        try {
+            path = plRoot.get(ProductLocation_.product);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductLocation_.location),
+                                                 ruleform),
+                                        cb.equal(plRoot.get(ProductLocation_.relationship),
+                                                 relationship)));
+        TypedQuery<Product> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<LocationNetwork> getInterconnections(Collection<Location> parents,
+                                                     Collection<Relationship> relationships,
+                                                     Collection<Location> children) {
+        TypedQuery<LocationNetwork> query = em.createNamedQuery(LocationNetwork.GET_NETWORKS,
+                                                                LocationNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationship", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 }

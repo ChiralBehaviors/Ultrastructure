@@ -110,6 +110,12 @@ public class StatusCodeModelImpl
         return copy;
     }
 
+    @Override
+    public StatusCodeAttribute create(StatusCode ruleform, Attribute attribute,
+                                      Agency updatedBy) {
+        return new StatusCodeAttribute(ruleform, attribute, updatedBy);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -225,11 +231,5 @@ public class StatusCodeModelImpl
                                                                      StatusCodeSequencing.class);
         query.setParameter("statusCode", parent);
         return query.getResultList();
-    }
-
-    @Override
-    public StatusCodeAttribute create(StatusCode ruleform, Attribute attribute,
-                                      Agency updatedBy) {
-        return new StatusCodeAttribute(ruleform, attribute, updatedBy);
     }
 }

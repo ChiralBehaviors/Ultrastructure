@@ -381,9 +381,8 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
     @Test
     public void testInGroup() {
         em.getTransaction().begin();
-        Relationship classifier = new Relationship(
-                                                       "test group classifier",
-                                                       kernel.getCore());
+        Relationship classifier = new Relationship("test group classifier",
+                                                   kernel.getCore());
         em.persist(classifier);
         Relationship inverse = new Relationship(
                                                 "inverse test group classifier",
@@ -391,8 +390,9 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(inverse);
         classifier.setInverse(inverse);
         inverse.setInverse(classifier);
-        Agency classification = new Agency("test in group agency classification",
-                                       kernel.getCore());
+        Agency classification = new Agency(
+                                           "test in group agency classification",
+                                           kernel.getCore());
         em.persist(classification);
         Aspect<Agency> myAspect = new Aspect<Agency>(classifier, classification);
         @SuppressWarnings("unchecked")
@@ -470,8 +470,8 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
     public void testNotInGroup() {
         em.getTransaction().begin();
         Relationship classifier = new Relationship(
-                                                       "test not in group classifier",
-                                                       kernel.getCore());
+                                                   "test not in group classifier",
+                                                   kernel.getCore());
         em.persist(classifier);
         Relationship inverse = new Relationship(
                                                 "inverse test not in group classifier",
@@ -479,8 +479,9 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(inverse);
         classifier.setInverse(inverse);
         inverse.setInverse(classifier);
-        Agency classification = new Agency("test not in group agency classification",
-                                       kernel.getCore());
+        Agency classification = new Agency(
+                                           "test not in group agency classification",
+                                           kernel.getCore());
         em.persist(classification);
         em.flush();
         List<Agency> notInGroup = model.getAgencyModel().getNotInGroup(classification,

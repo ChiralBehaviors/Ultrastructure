@@ -36,6 +36,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import org.hibernate.annotations.Type;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.json.RuleformIdGenerator;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;

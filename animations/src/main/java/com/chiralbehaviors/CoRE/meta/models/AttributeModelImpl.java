@@ -105,6 +105,12 @@ public class AttributeModelImpl
         return copy;
     }
 
+    @Override
+    public AttributeMetaAttribute create(Attribute ruleform,
+                                         Attribute attribute, Agency updatedBy) {
+        return new AttributeMetaAttribute(ruleform, attribute, updatedBy);
+    }
+
     @SafeVarargs
     @Override
     public final Attribute create(String name, String description,
@@ -124,6 +130,10 @@ public class AttributeModelImpl
         return attribute;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
+     */
+
     @Override
     public List<AttributeNetwork> getInterconnections(Collection<Attribute> parents,
                                                       Collection<Relationship> relationships,
@@ -139,15 +149,5 @@ public class AttributeModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
-     */
-
-    @Override
-    public AttributeMetaAttribute create(Attribute ruleform,
-                                         Attribute attribute, Agency updatedBy) {
-        return new AttributeMetaAttribute(ruleform, attribute, updatedBy);
     }
 }

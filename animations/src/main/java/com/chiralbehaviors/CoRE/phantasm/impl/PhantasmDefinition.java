@@ -39,9 +39,9 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
  *
  */
 public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
-    private final Map<Class<?>, StateDefinition<RuleForm>> facets  = new HashMap<>();
-    private final Map<Method, StateFunction<RuleForm>>     methods = new HashMap<>();
-    private final Class<Phantasm<RuleForm>>                phantasm;
+    private final Class<Phantasm<RuleForm>>        phantasm;
+    final Map<Class<?>, StateDefinition<RuleForm>> facets  = new HashMap<>();
+    final Map<Method, StateFunction<RuleForm>>     methods = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm) {
@@ -97,8 +97,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         }
         PhantasmTwo<RuleForm> doppelgänger = new PhantasmTwo<RuleForm>(
                                                                        (RuleForm) ruleform,
-                                                                       facets,
-                                                                       methods,
+                                                                       this,
                                                                        model);
         Phantasm<?> proxy = (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
                                                                  new Class[] { phantasm },

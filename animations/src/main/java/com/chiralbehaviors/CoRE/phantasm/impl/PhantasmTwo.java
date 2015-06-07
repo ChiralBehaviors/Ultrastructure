@@ -51,18 +51,15 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  */
 public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
         implements InvocationHandler, ScopedPhantasm<RuleForm> {
-    private final Map<Class<?>, StateDefinition<RuleForm>> facets;
-    private final Map<Method, StateFunction<RuleForm>>     methods;
-    private final Model                                    model;
-    private final RuleForm                                 ruleform;
+    private final PhantasmDefinition<RuleForm> definition;
+    private final Model                        model;
+    private final RuleForm                     ruleform;
 
     public PhantasmTwo(RuleForm ruleform,
-                       Map<Class<?>, StateDefinition<RuleForm>> facets,
-                       Map<Method, StateFunction<RuleForm>> methods, Model model) {
+                       PhantasmDefinition<RuleForm> definition, Model model) {
         this.ruleform = ruleform;
-        this.methods = methods;
         this.model = model;
-        this.facets = facets;
+        this.definition = definition;
     }
 
     @Override
@@ -118,9 +115,9 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
                                                                     throws Throwable {
-        StateFunction<RuleForm> function = methods.get(method);
+        StateFunction<RuleForm> function = definition.methods.get(method);
         if (function != null) {
-            StateDefinition<RuleForm> stateDefinition = facets.get(method.getDeclaringClass());
+            StateDefinition<RuleForm> stateDefinition = definition.facets.get(method.getDeclaringClass());
             WorkspaceScope scope = null;
             if (stateDefinition != null) {
                 scope = model.getWorkspaceModel().getScoped(stateDefinition.getWorkspace());

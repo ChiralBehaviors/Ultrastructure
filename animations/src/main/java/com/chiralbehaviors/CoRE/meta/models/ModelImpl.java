@@ -71,6 +71,12 @@ public class ModelImpl implements Model {
 
     private final static ConcurrentMap<Class<?>, PhantasmDefinition<?>> cache = new ConcurrentHashMap<>();
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm) {
+        return cache.computeIfAbsent(phantasm,
+                                     (Class<?> p) -> new PhantasmDefinition(p));
+    }
+
     public static String prefixFor(Class<?> ruleform) {
         String simpleName = ruleform.getSimpleName();
         StringBuilder builder = new StringBuilder(simpleName.length());
@@ -92,6 +98,7 @@ public class ModelImpl implements Model {
     private final RelationshipModel relationshipModel;
     private final StatusCodeModel   statusCodeModel;
     private final UnitModel         unitModel;
+
     private final WorkspaceModel    workspaceModel;
 
     public ModelImpl(EntityManagerFactory emf) {
@@ -118,10 +125,7 @@ public class ModelImpl implements Model {
     @Override
     public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> apply(Phantasm<? extends T> source,
                                                                                                Class<? extends Phantasm<? extends T>> phantasm) {
-        @SuppressWarnings({ "rawtypes" })
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cache.computeIfAbsent(phantasm,
-                                                                                                             (Class<?> p) -> new PhantasmDefinition(
-                                                                                                                                                    p));
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm);
         return (Phantasm<? super T>) definition.construct(source.getRuleform(),
                                                           this,
                                                           getCurrentPrincipal().getPrincipal());
@@ -145,9 +149,7 @@ public class ModelImpl implements Model {
                                                                                String name,
                                                                                String description)
                                                                                                   throws InstantiationException {
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cache.computeIfAbsent(phantasm,
-                                                                                                (Class<?> p) -> new PhantasmDefinition(
-                                                                                                                                       p));
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm);
         ExistentialRuleform<? extends T, ?> ruleform;
         try {
             ruleform = (T) Model.getExistentialRuleformConstructor(phantasm).newInstance(name,
@@ -451,16 +453,27 @@ public class ModelImpl implements Model {
         animations.inferNetworks(ruleform);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                                                UUID uuid) {
+        T ruleform = (T) getEntityManager().find(Model.getExistentialRuleform(phantasm),
+                                                 uuid);
+        if (ruleform == null) {
+            return null;
+        }
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm);
+        return (Phantasm<? super T>) definition.wrap(ruleform, this);
+    }
+
+    @Override
+    @SuppressWarnings({ "unchecked" })
     public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> wrap(Class<? extends Phantasm<? extends T>> phantasm,
                                                                                               ExistentialRuleform<T, ?> ruleform) {
         if (ruleform == null) {
             return null;
         }
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cache.computeIfAbsent(phantasm,
-                                                                                                             (Class<?> p) -> new PhantasmDefinition(
-                                                                                                                                                    p));
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm);
         return (Phantasm<? super T>) definition.wrap(ruleform, this);
     }
 }

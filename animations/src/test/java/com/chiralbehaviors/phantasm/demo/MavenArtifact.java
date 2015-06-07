@@ -43,6 +43,11 @@ public interface MavenArtifact extends Phantasm<Location> {
 
     String getVersion();
 
+    @Instantiation
+    default void initialize() {
+        setType("jar");
+    }
+
     void setArtifactId(String artifactId);
 
     void setClassifier(String classification);
@@ -53,9 +58,4 @@ public interface MavenArtifact extends Phantasm<Location> {
     void setType(String type);
 
     void setVersion(String version);
-
-    @Instantiation
-    default void initialize() {
-        setType("jar");
-    }
 }

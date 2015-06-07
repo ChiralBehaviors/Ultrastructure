@@ -46,7 +46,7 @@ public class ModelTest extends AbstractModelTest {
         Agency classification = new Agency("aspect classifer", kernel.getCore());
         em.persist(classification);
         Relationship classifier = new Relationship("aspect classifier",
-                                                       kernel.getCore());
+                                                   kernel.getCore());
         classifier.setInverse(classifier);
         em.persist(classifier);
 

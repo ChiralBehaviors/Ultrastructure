@@ -44,15 +44,15 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  */
 public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
+    private Agency              anyAgency;
+    private Location            anyLocation;
+    private Product             anyProduct;
+    private Relationship        anyRelationship;
+    private Agency              core;
     private final EntityManager em;
     private final Kernel        kernel;
     private final Model         model;
-    private Agency              core;
     private Product             sameProduct;
-    private Product             anyProduct;
-    private Agency              anyAgency;
-    private Location            anyLocation;
-    private Relationship        anyRelationship;
 
     public OrderProcessingLoader(Model model) throws Exception {
         this.em = model.getEntityManager();

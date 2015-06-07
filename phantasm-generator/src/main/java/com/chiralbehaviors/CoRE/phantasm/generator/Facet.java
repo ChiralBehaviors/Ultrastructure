@@ -190,28 +190,30 @@ public class Facet {
     private void resolveList(ScopedName key, String baseName,
                              String parameterName, String className,
                              boolean inferredGet) {
+        String listClassName = String.format("List<%s>", className);
+        imports.add("java.util.List");
         if (inferredGet) {
             inferredRelationshipGetters.add(new Getter(key,
                                                        String.format("get%ss",
                                                                      baseName),
-                                                       className));
+                                                       listClassName));
             relationshipGetters.add(new Getter(key,
                                                String.format("getImmediate%ss",
                                                              baseName),
-                                               className));
+                                               listClassName));
             relationshipSetters.add(new Setter(key,
                                                String.format("setImmediate%ss",
                                                              baseName),
-                                               className,
+                                               listClassName,
                                                String.format("%ss",
                                                              parameterName)));
         } else {
             relationshipGetters.add(new Getter(key, String.format("get%ss",
                                                                   baseName),
-                                               className));
+                                               listClassName));
             relationshipSetters.add(new Setter(key, String.format("set%ss",
                                                                   baseName),
-                                               className,
+                                               listClassName,
                                                String.format("%ss",
                                                              parameterName)));
         }
@@ -222,17 +224,13 @@ public class Facet {
         relationshipSetters.add(new Setter(key, String.format("remove%s",
                                                               baseName),
                                            className, parameterName));
-
-        imports.add("java.util.List");
-        relationshipSetters.add(new Setter(
-                                           key,
-                                           String.format("add%ss", baseName),
-                                           String.format("List<%s>", className),
+        relationshipSetters.add(new Setter(key, String.format("add%ss",
+                                                              baseName),
+                                           listClassName,
                                            String.format("%ss", parameterName)));
-        relationshipSetters.add(new Setter(
-                                           key,
-                                           String.format("remove%ss", baseName),
-                                           String.format("List<%s>", className),
+        relationshipSetters.add(new Setter(key, String.format("remove%ss",
+                                                              baseName),
+                                           listClassName,
                                            String.format("%ss", parameterName)));
     }
 

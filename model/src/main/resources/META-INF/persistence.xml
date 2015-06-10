@@ -4,7 +4,6 @@
     http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd" version="2.1"
 >
     <persistence-unit name="CoRE" transaction-type="RESOURCE_LOCAL">
-
         <mapping-file>com/chiralbehaviors/CoRE/agency/agencyNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/attribute/attributeNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/attribute/unit/unitNetwork.xml</mapping-file>
@@ -89,5 +88,6 @@
         <class>com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization</class>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
     </persistence-unit>
 </persistence>

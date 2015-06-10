@@ -188,7 +188,7 @@ public interface Model {
     AuthorizedPrincipal getCurrentPrincipal();
 
     /**
-     * Answer the product manager used for this model instance
+     * Answer the entity manager used for this model instance
      *
      * @return
      */

@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE;
 import java.io.Serializable;
 import java.util.UUID;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -57,6 +58,7 @@ import com.fasterxml.uuid.NoArgGenerator;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
+@Cacheable
 abstract public class Ruleform implements Serializable, Cloneable {
     public static final Integer        FALSE                 = Integer.valueOf((byte) 0);
     public static final String         FIND_ALL_SUFFIX       = ".findAll";

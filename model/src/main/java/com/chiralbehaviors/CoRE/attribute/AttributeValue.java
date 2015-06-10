@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Inheritance;
@@ -47,6 +48,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Cacheable(false)
 public abstract class AttributeValue<RuleForm extends Ruleform> extends
         Ruleform {
     public static final String GET_ATTRIBUTE_SUFFIX = ".getAttribute";

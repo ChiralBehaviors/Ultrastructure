@@ -151,6 +151,16 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         return workspace;
     }
 
+    private void classify(Method method) {
+        if (!method.isDefault()) {
+            process(method);
+        } else {
+            if (method.getAnnotation(Instantiation.class) != null) {
+                instantiations.add(method);
+            }
+        }
+    }
+
     /**
      * Construct the map of methods to functions that implement the state
      * defition behavior
@@ -164,19 +174,11 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             facets.add(ScopedFacet.from(stateInterface));
         }
         for (Method method : stateInterface.getDeclaredMethods()) {
-            if (!method.isDefault()) {
-                process(method);
-            } else {
-                if (method.getAnnotation(Instantiation.class) != null) {
-                    instantiations.add(method);
-                }
-            }
+            classify(method);
         }
         for (Class<?> iFace : stateInterface.getInterfaces()) {
             for (Method method : iFace.getDeclaredMethods()) {
-                if (!method.isDefault()) {
-                    process(method);
-                }
+                classify(method);
             }
         }
     }

@@ -190,32 +190,32 @@ public class Facet {
     private void resolveList(ScopedName key, String baseName,
                              String parameterName, String className,
                              boolean inferredGet) {
+        String plural = English.plural(baseName);
+        String pluralParameter = English.plural(parameterName);
         String listClassName = String.format("List<%s>", className);
         imports.add("java.util.List");
         if (inferredGet) {
             inferredRelationshipGetters.add(new Getter(key,
-                                                       String.format("get%ss",
-                                                                     baseName),
+                                                       String.format("get%s",
+                                                                     plural),
                                                        listClassName));
             relationshipGetters.add(new Getter(key,
-                                               String.format("getImmediate%ss",
-                                                             baseName),
+                                               String.format("getImmediate%s",
+                                                             plural),
                                                listClassName));
             relationshipSetters.add(new Setter(key,
-                                               String.format("setImmediate%ss",
-                                                             baseName),
+                                               String.format("setImmediate%s",
+                                                             plural),
                                                listClassName,
-                                               String.format("%ss",
-                                                             parameterName)));
+                                               String.format("%s",
+                                                             pluralParameter)));
         } else {
-            relationshipGetters.add(new Getter(key, String.format("get%ss",
-                                                                  baseName),
+            relationshipGetters.add(new Getter(key, String.format("get%s",
+                                                                  plural),
                                                listClassName));
-            relationshipSetters.add(new Setter(key, String.format("set%ss",
-                                                                  baseName),
-                                               listClassName,
-                                               String.format("%ss",
-                                                             parameterName)));
+            relationshipSetters.add(new Setter(key, String.format("set%s",
+                                                                  plural),
+                                               listClassName, pluralParameter));
         }
 
         relationshipSetters.add(new Setter(key,
@@ -224,14 +224,11 @@ public class Facet {
         relationshipSetters.add(new Setter(key, String.format("remove%s",
                                                               baseName),
                                            className, parameterName));
-        relationshipSetters.add(new Setter(key, String.format("add%ss",
-                                                              baseName),
-                                           listClassName,
-                                           String.format("%ss", parameterName)));
-        relationshipSetters.add(new Setter(key, String.format("remove%ss",
-                                                              baseName),
-                                           listClassName,
-                                           String.format("%ss", parameterName)));
+        relationshipSetters.add(new Setter(key, String.format("add%s", plural),
+                                           listClassName, pluralParameter));
+        relationshipSetters.add(new Setter(key, String.format("remove%s",
+                                                              plural),
+                                           listClassName, pluralParameter));
     }
 
     private void resolveRelationships(WorkspacePresentation presentation,

@@ -123,6 +123,8 @@ public interface Kernel {
 
     Relationship getIsLocationOf();
 
+    Relationship getIsValidatedBy();
+
     Product getKernelWorkspace();
 
     Relationship getLessThan();
@@ -199,14 +201,12 @@ public interface Kernel {
 
     Unit getUnsetUnit();
 
+    Relationship getValidates();
+
     Relationship getVersionOf();
 
     Product getWorkspace();
 
     Relationship getWorkspaceOf();
-
-    Relationship getValidates();
-
-    Relationship getIsValidatedBy();
 
 }

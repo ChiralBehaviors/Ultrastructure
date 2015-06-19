@@ -40,12 +40,6 @@ public class WorkspaceScope {
         this.workspace = workspace;
     }
 
-    @Override
-    public String toString() {
-        return String.format("WorkspaceScope[%s]",
-                             workspace.getDefiningProduct().getName());
-    }
-
     public WorkspaceScope(Workspace workspace) {
         this.workspace = workspace;
     }
@@ -128,6 +122,12 @@ public class WorkspaceScope {
             return;
         }
         imports.remove(key);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("WorkspaceScope[%s]",
+                             workspace.getDefiningProduct().getName());
     }
 
     protected Ruleform localLookup(String key) {

@@ -33,13 +33,13 @@ public interface ScopedFacet {
         return new ScopedFacet() {
 
             @Override
-            public Ruleform resolveClassifier(WorkspaceScope scope) {
-                return scope.lookup("kernel", "IsA");
+            public Ruleform resolveClassification(WorkspaceScope scope) {
+                return scope.lookup(clazz.getSimpleName());
             }
 
             @Override
-            public Ruleform resolveClassification(WorkspaceScope scope) {
-                return scope.lookup(clazz.getSimpleName());
+            public Ruleform resolveClassifier(WorkspaceScope scope) {
+                return scope.lookup("kernel", "IsA");
             }
 
             @Override
@@ -68,16 +68,16 @@ public interface ScopedFacet {
             }
 
             @Override
-            public String toClassifierString() {
-                return String.format("%s:%s", facet.classifier().namespace(),
-                                     facet.classifier().name());
-            }
-
-            @Override
             public String toClassificationString() {
                 return String.format("%s:%s",
                                      facet.classification().namespace(),
                                      facet.classification().name());
+            }
+
+            @Override
+            public String toClassifierString() {
+                return String.format("%s:%s", facet.classifier().namespace(),
+                                     facet.classifier().name());
             }
         };
     }
@@ -86,12 +86,12 @@ public interface ScopedFacet {
 
     Ruleform resolveClassifier(WorkspaceScope scope);
 
+    String toClassificationString();
+
+    String toClassifierString();
+
     default String toFacetString() {
         return String.format("[%s] : [%s]", toClassifierString(),
                              toClassificationString());
     }
-
-    String toClassificationString();
-
-    String toClassifierString();
 }

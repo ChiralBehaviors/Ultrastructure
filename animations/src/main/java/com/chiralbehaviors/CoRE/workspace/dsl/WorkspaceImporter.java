@@ -71,6 +71,7 @@ import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
@@ -266,8 +267,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setToParent(resolve(constraint.authorizedParent));
-        authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
@@ -296,8 +296,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setToParent(resolve(constraint.authorizedParent));
-        authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
@@ -323,8 +322,7 @@ public class WorkspaceImporter {
                                           ConstraintContext constraint) {
         AgencyLocationAuthorization authorization = new AgencyLocationAuthorization(
                                                                                     model.getCurrentPrincipal().getPrincipal());
-        authorization.setFromParent(resolve(constraint.authorizedParent));
-        authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        resolveFrom(constraint, authorization);
         authorization.setConnection(resolve(constraint.childRelationship));
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
@@ -345,6 +343,28 @@ public class WorkspaceImporter {
                                                      });
     }
 
+    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveFrom(ConstraintContext constraint,
+                                                                                                             XDomainNetworkAuthorization<T, ?> authorization) {
+        if (constraint.anyType == null) {
+            authorization.setFromParent(resolve(constraint.authorizedParent));
+            authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        } else {
+            authorization.setFromParent(resolveAnyEntity(constraint.anyType.getText()));
+            authorization.setFromRelationship(model.getKernel().getAnyRelationship());
+        }
+    }
+
+    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveTo(ConstraintContext constraint,
+                                                                                                           XDomainNetworkAuthorization<?, T> authorization) {
+        if (constraint.anyType == null) {
+            authorization.setToParent(resolve(constraint.authorizedParent));
+            authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        } else {
+            authorization.setToParent(resolveAnyEntity(constraint.anyType.getText()));
+            authorization.setToRelationship(model.getKernel().getAnyRelationship());
+        }
+    }
+
     /**
      * @param facet
      * @param constraint
@@ -353,8 +373,7 @@ public class WorkspaceImporter {
                                            ConstraintContext constraint) {
         ProductLocationAuthorization authorization = new ProductLocationAuthorization(
                                                                                       model.getCurrentPrincipal().getPrincipal());
-        authorization.setFromParent(resolve(constraint.authorizedParent));
-        authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        resolveFrom(constraint, authorization);
         authorization.setConnection(resolve(constraint.childRelationship));
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
@@ -382,8 +401,7 @@ public class WorkspaceImporter {
         authorization.setClassification(resolve(facet.classification));
         authorization.setClassifier(resolve(facet.classifier));
         authorization.setChildRelationship(resolve(constraint.childRelationship));
-        authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
-        authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+        resolveAuthorized(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
@@ -408,8 +426,7 @@ public class WorkspaceImporter {
                                          ConstraintContext constraint) {
         AgencyProductAuthorization authorization = new AgencyProductAuthorization(
                                                                                   model.getCurrentPrincipal().getPrincipal());
-        authorization.setFromParent(resolve(constraint.authorizedParent));
-        authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        resolveFrom(constraint, authorization);
         authorization.setConnection(resolve(constraint.childRelationship));
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
@@ -441,8 +458,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setToParent(resolve(constraint.authorizedParent));
-        authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
@@ -467,8 +483,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setToParent(resolve(constraint.authorizedParent));
-        authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
@@ -490,8 +505,7 @@ public class WorkspaceImporter {
                                                ConstraintContext constraint) {
         ProductRelationshipAuthorization authorization = new ProductRelationshipAuthorization(
                                                                                               model.getCurrentPrincipal().getPrincipal());
-        authorization.setFromParent(resolve(constraint.authorizedParent));
-        authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        resolveFrom(constraint, authorization);
         authorization.setConnection(resolve(constraint.childRelationship));
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
@@ -1042,6 +1056,43 @@ public class WorkspaceImporter {
                 throw new IllegalArgumentException(
                                                    String.format("Invalid *Any type: %s",
                                                                  anyType));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> T resolveAnyEntity(String anyType) {
+        switch (anyType) {
+            case "*Agency":
+                return (T) model.getKernel().getAnyAgency();
+            case "*Attribute":
+                return (T) model.getKernel().getAnyAttribute();
+            case "*Interval":
+                return (T) model.getKernel().getAnyInterval();
+            case "*Location":
+                return (T) model.getKernel().getAnyLocation();
+            case "*Product":
+                return (T) model.getKernel().getAnyProduct();
+            case "*Relationship":
+                return (T) model.getKernel().getAnyRelationship();
+            case "*StatusCode":
+                return (T) model.getKernel().getAnyStatusCode();
+            case "*Unit":
+                return (T) model.getKernel().getAnyUnit();
+            default:
+                throw new IllegalArgumentException(
+                                                   String.format("Invalid *Any type: %s",
+                                                                 anyType));
+        }
+    }
+
+    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveAuthorized(ConstraintContext constraint,
+                                                                                                                   NetworkAuthorization<T> authorization) {
+        if (constraint.anyType == null) {
+            authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
+            authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+        } else {
+            authorization.setAuthorizedParent(resolveAnyEntity(constraint.anyType.getText()));
+            authorization.setAuthorizedRelationship(model.getKernel().getAnyRelationship());
         }
     }
 

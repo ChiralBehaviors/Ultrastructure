@@ -42,6 +42,7 @@ public class MappedAttribute {
             } else {
                 if (capitalizeNext) {
                     buff.append(Character.toUpperCase(text.charAt(i)));
+                    capitalizeNext = false;
                 } else {
                     buff.append(text.charAt(i));
                 }

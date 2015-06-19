@@ -73,8 +73,8 @@ public class ProductRelationship extends Ruleform implements
 
     // bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "relationship")
-    private Relationship                      relationship;
+    @JoinColumn(name = "child")
+    private Relationship                      child;
 
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -83,8 +83,8 @@ public class ProductRelationship extends Ruleform implements
 
     // bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "child")
-    private Relationship                      child;
+    @JoinColumn(name = "relationship")
+    private Relationship                      relationship;
 
     public ProductRelationship() {
     }
@@ -122,16 +122,16 @@ public class ProductRelationship extends Ruleform implements
         return attributes;
     }
 
-    public Relationship getRelationship() {
-        return relationship;
+    public Relationship getChild() {
+        return child;
     }
 
     public Product getProduct() {
         return product;
     }
 
-    public Relationship getChild() {
-        return child;
+    public Relationship getRelationship() {
+        return relationship;
     }
 
     /* (non-Javadoc)
@@ -153,15 +153,15 @@ public class ProductRelationship extends Ruleform implements
         this.attributes = (Set<ProductRelationshipAttribute>) attributes;
     }
 
-    public void setRelationship(Relationship relationship) {
-        this.relationship = relationship;
+    public void setChild(Relationship child) {
+        this.child = child;
     }
 
     public void setProduct(Product product) {
         this.product = product;
     }
 
-    public void setChild(Relationship child) {
-        this.child = child;
+    public void setRelationship(Relationship relationship) {
+        this.relationship = relationship;
     }
 }

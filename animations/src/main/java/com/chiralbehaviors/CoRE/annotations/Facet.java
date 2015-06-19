@@ -39,7 +39,7 @@ import java.lang.annotation.Target;
 @Target({ TYPE, FIELD })
 @Retention(RUNTIME)
 public @interface Facet {
-    Key classifier();
-
     Key classification();
+
+    Key classifier();
 }

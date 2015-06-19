@@ -528,13 +528,13 @@ public class Bootstrap {
         return em.find(Unit.class, wko.id());
     }
 
+    void populate(Ruleform ruleform, Agency core, Product kernelWorkspace) {
+        em.persist(new WorkspaceAuthorization(ruleform, kernelWorkspace, core));
+    }
+
     void populate(String key, Ruleform ruleform, Agency core,
                   Product kernelWorkspace) {
         em.persist(new WorkspaceAuthorization(key, ruleform, kernelWorkspace,
                                               core));
-    }
-
-    void populate(Ruleform ruleform, Agency core, Product kernelWorkspace) {
-        em.persist(new WorkspaceAuthorization(ruleform, kernelWorkspace, core));
     }
 }

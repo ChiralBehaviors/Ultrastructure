@@ -48,7 +48,8 @@ public class AuthorizedPrincipal {
      * @param principal
      * @param activeRoles
      */
-    public AuthorizedPrincipal(Agency principal, List<Aspect<Agency>> activeRoles) {
+    public AuthorizedPrincipal(Agency principal,
+                               List<Aspect<Agency>> activeRoles) {
         this.principal = principal;
         this.activeRoles = Collections.unmodifiableList(activeRoles);
     }

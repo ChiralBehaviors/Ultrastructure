@@ -7,7 +7,7 @@
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,44 +18,33 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.phantasm.demo;
+package com.chiralbehaviors.CoRE.meta.workspace;
 
-import com.chiralbehaviors.CoRE.annotations.Instantiation;
+import java.util.List;
+
+import com.chiralbehaviors.CoRE.annotations.Edge;
 import com.chiralbehaviors.CoRE.annotations.Key;
 import com.chiralbehaviors.CoRE.annotations.State;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 
 /**
  * @author hhildebrand
  *
  */
-@State(workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
-public interface MavenArtifact extends Phantasm<Location> {
-    String getArtifactId();
+@State(workspace = Workspace.KERNEL_URN)
+public interface WorkspaceAspect {
+    String getURI();
 
-    String getClassifier();
+    void setURI(String uri);
 
-    String getGroupId();
+    @Edge(@Key(name = "Imports"))
+    List<WorkspaceAspect> getImports();
 
-    @Key(name = "type")
-    String getType();
+    @Edge(@Key(name = "Imports"))
+    void setImports(List<WorkspaceAspect> imports);
 
-    String getVersion();
+    @Edge(@Key(name = "Imports"))
+    void addImport(WorkspaceAspect workspace);
 
-    @Instantiation
-    default void initialize() {
-        setType("jar");
-    }
-
-    void setArtifactId(String artifactId);
-
-    void setClassifier(String classification);
-
-    void setGroupId(String groupId);
-
-    @Key(name = "type")
-    void setType(String type);
-
-    void setVersion(String version);
+    @Edge(@Key(name = "Imports"))
+    void removeImport(WorkspaceAspect workspace);
 }

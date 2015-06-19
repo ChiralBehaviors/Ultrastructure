@@ -222,8 +222,8 @@ networkConstraints: (constraint)+;
 constraint: 
     cardinality = ('zero' | 'one' | 'n')
     childRelationship = qualifiedName
-    ('get:' inferredGet = 'inferred' | 'immediate')?
-    ('method:' methodNaming = 'relationship' | 'entity')?
+    ('get:' inferredGet = ('inferred' | 'immediate'))?
+    ('method:' methodNaming = ('relationship' | 'entity'))?
     ':'
     (anyType = ('*Agency' | '*Attribute' | '*Interval' | '*Location' | '*Product' | '*Relationship' | '*StatusCode' | '*Unit')
     | 

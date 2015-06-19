@@ -129,6 +129,12 @@ public class UnitModelImpl
         return copy;
     }
 
+    @Override
+    public UnitAttribute create(Unit ruleform, Attribute attribute,
+                                Agency updatedBy) {
+        return new UnitAttribute(ruleform, attribute, updatedBy);
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
      */
@@ -147,12 +153,6 @@ public class UnitModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
-    }
-
-    @Override
-    public UnitAttribute create(Unit ruleform, Attribute attribute,
-                                Agency updatedBy) {
-        return new UnitAttribute(ruleform, attribute, updatedBy);
     }
 
 }

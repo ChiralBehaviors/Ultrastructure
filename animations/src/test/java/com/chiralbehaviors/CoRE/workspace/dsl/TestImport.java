@@ -35,7 +35,7 @@ public class TestImport extends AbstractModelTest {
     public void testExampleWorkspace() throws Exception {
         em.getTransaction().begin();
         WorkspaceImporter importer = WorkspaceImporter.createWorkspace(getClass().getResourceAsStream("/thing.wsp"),
-                                                                      model);
+                                                                       model);
         em.flush();
         DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(
                                                                         importer.getWorkspace().getDefiningProduct(),

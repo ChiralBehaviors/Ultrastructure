@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Key {
-    String namespace() default "";
-
     String name();
+
+    String namespace() default "";
 }

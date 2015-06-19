@@ -38,6 +38,7 @@ import static com.chiralbehaviors.CoRE.job.Job.TOP_LEVEL_JOBS;
 
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -130,6 +131,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                + "ORDER BY sc.name ASC") })
 @Entity
 @Table(name = "job", schema = "ruleform")
+@Cacheable(false)
 public class Job extends AbstractProtocol {
     public static final String CHANGE_STATUS                          = "job.changeStatus";
     public static final String CHRONOLOGY                             = "job.chronology";

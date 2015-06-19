@@ -188,7 +188,7 @@ public interface Model {
     AuthorizedPrincipal getCurrentPrincipal();
 
     /**
-     * Answer the product manager used for this model instance
+     * Answer the entity manager used for this model instance
      *
      * @return
      */
@@ -255,6 +255,17 @@ public interface Model {
      * @param ruleform
      */
     void inferNetworks(ExistentialRuleform<?, ?> ruleform);
+
+    /**
+     * Lookup the ruleform using the UUID and wrap an instance of a phantasm
+     * using the model
+     * 
+     * @param phantasm
+     * @param uuid
+     * @return
+     */
+    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                                         UUID uuid);
 
     /**
      * Wrap the ruleform with an instance of a phantasm using the model

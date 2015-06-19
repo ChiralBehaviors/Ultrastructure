@@ -46,6 +46,63 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
 public class AttributeModelTest extends AbstractModelTest {
 
     @Test
+    public void testEnumValues() {
+        Agency core = model.getKernel().getCore();
+        em.getTransaction().begin();
+        Attribute attr = new Attribute("Attribute", "A", ValueType.TEXT, core);
+        em.persist(attr);
+
+        Attribute validValues = new Attribute(
+                                              "ValidValues",
+                                              "Valid enumeration values for this attribute",
+                                              ValueType.TEXT, core);
+        em.persist(validValues);
+
+        AttributeMetaAttribute a = new AttributeMetaAttribute(attr, "a", core);
+        a.setMetaAttribute(validValues);
+        em.persist(a);
+        AttributeMetaAttribute b = new AttributeMetaAttribute(attr, "b", core);
+        b.setMetaAttribute(validValues);
+        b.setSequenceNumber(10);
+        em.persist(b);
+        AttributeMetaAttribute c = new AttributeMetaAttribute(attr, "c", core);
+        c.setSequenceNumber(100);
+        c.setMetaAttribute(validValues);
+        em.persist(c);
+        model.getAttributeModel().link(attr,
+                                       model.getKernel().getIsValidatedBy(),
+                                       validValues, core);
+
+        Product validatedProduct = new Product(
+                                               "ValidatedProduct",
+                                               "A product supertype with validation",
+                                               core);
+        em.persist(validatedProduct);
+
+        Product myProduct = new Product("MyProduct", "my product", core);
+        em.persist(myProduct);
+
+        // set value
+        ProductAttribute attributeValue = new ProductAttribute(
+                                                               attr,
+                                                               "a",
+                                                               model.getKernel().getCore());
+        attributeValue.setProduct(myProduct);
+
+        em.persist(attributeValue);
+        em.flush();
+        attributeValue.setTextValue("aaa");
+        try {
+            em.persist(attributeValue);
+            em.flush();
+            fail();
+        } catch (IllegalArgumentException e) {
+
+        }
+
+    }
+
+    @Test
     public void testSimpleNetworkPropagation() {
         Agency core = model.getKernel().getCore();
         Relationship equals = model.getKernel().getEquals();
@@ -78,64 +135,4 @@ public class AttributeModelTest extends AbstractModelTest {
         assertEquals(2, edges.size());
     }
 
-    @Test
-    public void testEnumValues() {
-        Agency core = model.getKernel().getCore();
-        em.getTransaction().begin();
-        Attribute attr = new Attribute("Attribute", "A", ValueType.TEXT, core);
-        em.persist(attr);
-
-        Attribute validValues = new Attribute(
-                                              "ValidValues",
-                                              "Valid enumeration values for this attribute",
-                                              ValueType.TEXT, core);
-        em.persist(validValues);
-
-        AttributeMetaAttribute a = new AttributeMetaAttribute(attr, "a",
-                                                              core);
-        a.setMetaAttribute(validValues);
-        em.persist(a);
-        AttributeMetaAttribute b = new AttributeMetaAttribute(attr, "b",
-                                                              core);
-        b.setMetaAttribute(validValues);
-        b.setSequenceNumber(10);
-        em.persist(b);
-        AttributeMetaAttribute c = new AttributeMetaAttribute(attr, "c",
-                                                              core);
-        c.setSequenceNumber(100);
-        c.setMetaAttribute(validValues);
-        em.persist(c);
-        model.getAttributeModel().link(attr,
-                                       model.getKernel().getIsValidatedBy(),
-                                       validValues, core);
-        
-        Product validatedProduct = new Product(
-                                               "ValidatedProduct",
-                                               "A product supertype with validation",
-                                               core);
-        em.persist(validatedProduct);
-
-        Product myProduct = new Product("MyProduct", "my product", core);
-        em.persist(myProduct);
-
-        // set value
-        ProductAttribute attributeValue = new ProductAttribute(
-                                                               attr,
-                                                               "a",
-                                                               model.getKernel().getCore());
-        attributeValue.setProduct(myProduct);
-
-        em.persist(attributeValue);
-        em.flush();
-        attributeValue.setTextValue("aaa");
-        try {
-            em.persist(attributeValue);
-            em.flush();
-            fail();
-        } catch (IllegalArgumentException e) {
-
-        }
-
-    }
-    
 }

@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Workspace.g4</title>
+<style type="text/css">
+body { 
+  color: #000;
+  font-family: sans-serif;
+  font-size: 12px;
+  margin: 20px 5px 10px 20px;
+}
+/* resets */
+ul {
+  list-style: none;
+  padding: 0;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+img {
+  border: 0;
+}
+.clear {
+  clear: both;
+}
+.container {
+  position: relative;
+}
+/* Grammar name */
+h1 {
+  font-size: 20px;
+}
+/*Grammar documentation*/
+.gdoc {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+#index {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  overflow: auto;
+}
+#index h2 {
+  margin: 0;
+}
+#index ol {
+  padding-left: 30px;
+  list-style-type: square;
+  color: #364559;
+}
+#index ol li {
+  margin: 2px 0;
+}
+#index ol li a {
+  color: #366199;
+  font-family: monospace;
+}
+#rules {
+  margin-left: 210px;
+  padding-left: 20px;
+  border-left: 1px solid #AAA;
+}
+.rule {
+  margin-bottom: 30px;
+}
+/* Rule name*/
+.rule h3 {
+  color: #364559;
+  background-color: #DADFE6;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 4px 5px;
+  border-bottom: 1px solid #828B99;
+}
+.rule h3 a.topLink {
+  font-family: sans-serif;
+  font-size: 10px;
+  color: #000;
+  margin-left: 20px;
+}
+.rule h3, .rule .ebnf div {
+  font-family: monospace;
+}
+/* Sections: ebnf, railroad*/
+.doc, .ebnf, .railroad {
+  padding-left: 20px;
+}
+.doc h4, .ebnf h4, .railroad h4 {
+  font-size: 12px;
+  margin: 15px 0 10px -20px;
+}
+.ebnf div {
+  background-color: #F7F7F7;
+  border-top: 1px solid #E8E8E8;
+  border-bottom: 1px solid #E8E8E8;
+  padding: 10px 5px;
+}
+.ebnf div .literal {
+  color: #0000FF;
+}
+.ebnf div .keyword {
+  color: #7F0055;
+  font-weight: bold;
+}
+.ebnf div .rule {
+  color: #004084;
+  font-weight: bold;
+}
+.ebnf div .token {
+  font-style:italic;
+}
+.railroad img {
+  display: block;
+}
+footer {
+  float: right;
+}
+</style>
+</head>
+<body>
+<h1><a href="Workspace.g4.html" name="top">Workspace</a></h1>
+<p class="gdoc">Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+
+
+This file is part of Ultrastructure.
+
+ Ultrastructure is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ ULtrastructure is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.</p>
+<div class="container">
+<div id="index">
+<h2>Rules</h2>
+<ol>
+  <li><a href="#workspace">workspace</a></li>
+  <li><a href="#definedAgencies">definedAgencies</a></li>
+  <li><a href="#definedAttributes">definedAttributes</a></li>
+  <li><a href="#definedIntervals">definedIntervals</a></li>
+  <li><a href="#definedLocations">definedLocations</a></li>
+  <li><a href="#definedProducts">definedProducts</a></li>
+  <li><a href="#definedRelationships">definedRelationships</a></li>
+  <li><a href="#definedStatusCodes">definedStatusCodes</a></li>
+  <li><a href="#definedStatusCodeSequencings">definedStatusCodeSequencings</a></li>
+  <li><a href="#definedUnits">definedUnits</a></li>
+  <li><a href="#definedSequencingAuthorizations">definedSequencingAuthorizations</a></li>
+  <li><a href="#definedInferences">definedInferences</a></li>
+  <li><a href="#definedProtocols">definedProtocols</a></li>
+  <li><a href="#definedMetaProtocols">definedMetaProtocols</a></li>
+  <li><a href="#edges">edges</a></li>
+  <li><a href="#facets">facets</a></li>
+  <li><a href="#workspaceDefinition">workspaceDefinition</a></li>
+  <li><a href="#imported">imported</a></li>
+  <li><a href="#importedWorkspace">importedWorkspace</a></li>
+  <li><a href="#statusCodeSequencingSet">statusCodeSequencingSet</a></li>
+  <li><a href="#sequencePair">sequencePair</a></li>
+  <li><a href="#existentialRuleform">existentialRuleform</a></li>
+  <li><a href="#attributedExistentialRuleform">attributedExistentialRuleform</a></li>
+  <li><a href="#attributeRuleform">attributeRuleform</a></li>
+  <li><a href="#unit">unit</a></li>
+  <li><a href="#attributeValue">attributeValue</a></li>
+  <li><a href="#relationshipPair">relationshipPair</a></li>
+  <li><a href="#qualifiedName">qualifiedName</a></li>
+  <li><a href="#edge">edge</a></li>
+  <li><a href="#parentSequencings">parentSequencings</a></li>
+  <li><a href="#parentSequencing">parentSequencing</a></li>
+  <li><a href="#siblingSequencings">siblingSequencings</a></li>
+  <li><a href="#siblingSequencing">siblingSequencing</a></li>
+  <li><a href="#childSequencings">childSequencings</a></li>
+  <li><a href="#childSequencing">childSequencing</a></li>
+  <li><a href="#selfSequencings">selfSequencings</a></li>
+  <li><a href="#selfSequencing">selfSequencing</a></li>
+  <li><a href="#metaProtocol">metaProtocol</a></li>
+  <li><a href="#protocol">protocol</a></li>
+  <li><a href="#matchJob">matchJob</a></li>
+  <li><a href="#childJob">childJob</a></li>
+  <li><a href="#facet">facet</a></li>
+  <li><a href="#classifiedAttributes">classifiedAttributes</a></li>
+  <li><a href="#networkConstraints">networkConstraints</a></li>
+  <li><a href="#constraint">constraint</a></li>
+  <li><a href="#ObjectName">ObjectName</a></li>
+  <li><a href="#QuotedText">QuotedText</a></li>
+  <li><a href="#Boolean">Boolean</a></li>
+  <li><a href="#Number">Number</a></li>
+  <li><a href="#WS">WS</a></li>
+  <li><a href="#NL">NL</a></li>
+  <li><a href="#LB">LB</a></li>
+  <li><a href="#RB">RB</a></li>
+  <li><a href="#SC">SC</a></li>
+</ol>
+</div>
+
+<div id="rules">
+<ul>
+  <li class="rule" id="workspace">
+  <h3>workspace <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">workspace</span> :  <a href="#definition" class="rule">definition</a><span class="operator">=</span><a href="#workspaceDefinition" class="rule">workspaceDefinition</a> <span class="operator">(</span><a href="#imports" class="rule">imports</a><span class="operator">=</span><a href="#imported" class="rule">imported</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#agencies" class="rule">agencies</a> <span class="operator">=</span> <a href="#definedAgencies" class="rule">definedAgencies</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#attributes" class="rule">attributes</a> <span class="operator">=</span> <a href="#definedAttributes" class="rule">definedAttributes</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#intervals" class="rule">intervals</a> <span class="operator">=</span> <a href="#definedIntervals" class="rule">definedIntervals</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#locations" class="rule">locations</a> <span class="operator">=</span> <a href="#definedLocations" class="rule">definedLocations</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#products" class="rule">products</a> <span class="operator">=</span> <a href="#definedProducts" class="rule">definedProducts</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#relationships" class="rule">relationships</a> <span class="operator">=</span> <a href="#definedRelationships" class="rule">definedRelationships</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#statusCodes" class="rule">statusCodes</a> <span class="operator">=</span> <a href="#definedStatusCodes" class="rule">definedStatusCodes</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#statusCodeSequencings" class="rule">statusCodeSequencings</a> <span class="operator">=</span> <a href="#definedStatusCodeSequencings" class="rule">definedStatusCodeSequencings</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#units" class="rule">units</a> <span class="operator">=</span> <a href="#definedUnits" class="rule">definedUnits</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#sequencingAuthorizations" class="rule">sequencingAuthorizations</a> <span class="operator">=</span> <a href="#definedSequencingAuthorizations" class="rule">definedSequencingAuthorizations</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#inferences" class="rule">inferences</a> <span class="operator">=</span> <a href="#definedInferences" class="rule">definedInferences</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#protocols" class="rule">protocols</a> <span class="operator">=</span> <a href="#definedProtocols" class="rule">definedProtocols</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#metaProtocols" class="rule">metaProtocols</a><span class="operator">=</span><a href="#definedMetaProtocols" class="rule">definedMetaProtocols</a><span class="operator">)</span><span class="operator">?</span> <span class="keyword">EOF</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/workspace.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedAgencies">
+  <h3>definedAgencies <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedAgencies</span> :  <span class="literal">'agencies'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#attributedExistentialRuleform" class="rule">attributedExistentialRuleform</a> <a href="#SC" class="token">SC</a><span class="operator">)</span><span class="operator">+</span> <span class="operator">(</span><a href="#edges" class="rule">edges</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#facets" class="rule">facets</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedAgencies.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedAttributes">
+  <h3>definedAttributes <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedAttributes</span> :  <span class="literal">'attributes'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#attributeRuleform" class="rule">attributeRuleform</a> <a href="#SC" class="token">SC</a><span class="operator">)</span><span class="operator">+</span> <span class="operator">(</span><a href="#edges" class="rule">edges</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#facets" class="rule">facets</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedAttributes.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedIntervals">
+  <h3>definedIntervals <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedIntervals</span> :  <span class="literal">'intervals'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#attributedExistentialRuleform" class="rule">attributedExistentialRuleform</a> <a href="#SC" class="token">SC</a><span class="operator">)</span><span class="operator">+</span> <span class="operator">(</span><a href="#edges" class="rule">edges</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#facets" class="rule">facets</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedIntervals.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedLocations">
+  <h3>definedLocations <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedLocations</span> :  <span class="literal">'locations'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#attributedExistentialRuleform" class="rule">attributedExistentialRuleform</a> <a href="#SC" class="token">SC</a><span class="operator">)</span><span class="operator">+</span> <span class="operator">(</span><a href="#edges" class="rule">edges</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#facets" class="rule">facets</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedLocations.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedProducts">
+  <h3>definedProducts <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedProducts</span> :  <span class="literal">'products'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#attributedExistentialRuleform" class="rule">attributedExistentialRuleform</a> <a href="#SC" class="token">SC</a><span class="operator">)</span><span class="operator">+</span> <span class="operator">(</span><a href="#edges" class="rule">edges</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#facets" class="rule">facets</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedProducts.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedRelationships">
+  <h3>definedRelationships <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedRelationships</span> :  <span class="literal">'relationships'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#relationshipPair" class="rule">relationshipPair</a> <a href="#SC" class="token">SC</a><span class="operator">)</span><span class="operator">+</span> <span class="operator">(</span><a href="#edges" class="rule">edges</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#facets" class="rule">facets</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedRelationships.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedStatusCodes">
+  <h3>definedStatusCodes <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedStatusCodes</span> :  <span class="literal">'status codes'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#attributedExistentialRuleform" class="rule">attributedExistentialRuleform</a> <a href="#SC" class="token">SC</a><span class="operator">)</span><span class="operator">+</span> <span class="operator">(</span><a href="#edges" class="rule">edges</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#facets" class="rule">facets</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedStatusCodes.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedStatusCodeSequencings">
+  <h3>definedStatusCodeSequencings <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedStatusCodeSequencings</span> :  <span class="literal">'status code sequencings'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#statusCodeSequencingSet" class="rule">statusCodeSequencingSet</a><span class="operator">)</span><span class="operator">+</span> <span class="operator">(</span><a href="#edges" class="rule">edges</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#facets" class="rule">facets</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedStatusCodeSequencings.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedUnits">
+  <h3>definedUnits <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedUnits</span> :  <span class="literal">'units'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#unit" class="rule">unit</a> <a href="#SC" class="token">SC</a><span class="operator">)</span><span class="operator">+</span> <span class="operator">(</span><a href="#edges" class="rule">edges</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#facets" class="rule">facets</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedUnits.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedSequencingAuthorizations">
+  <h3>definedSequencingAuthorizations <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedSequencingAuthorizations</span> :  <span class="literal">'sequencing auths'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#selfSequencings" class="rule">selfSequencings</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#parentSequencings" class="rule">parentSequencings</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#siblingSequencings" class="rule">siblingSequencings</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#childSequencings" class="rule">childSequencings</a><span class="operator">)</span><span class="operator">?</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedSequencingAuthorizations.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedInferences">
+  <h3>definedInferences <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedInferences</span> :  <span class="literal">'inferences'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#edge" class="rule">edge</a><span class="operator">)</span><span class="operator">+</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedInferences.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedProtocols">
+  <h3>definedProtocols <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedProtocols</span> :  <span class="literal">'protocols'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#protocol" class="rule">protocol</a><span class="operator">)</span><span class="operator">+</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedProtocols.png" />
+  </div>
+  </li>
+  <li class="rule" id="definedMetaProtocols">
+  <h3>definedMetaProtocols <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">definedMetaProtocols</span> :  <span class="literal">'meta protocols'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#metaProtocol" class="rule">metaProtocol</a><span class="operator">)</span><span class="operator">*</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/definedMetaProtocols.png" />
+  </div>
+  </li>
+  <li class="rule" id="edges">
+  <h3>edges <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">edges</span> :  <span class="literal">'edges'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#edge" class="rule">edge</a><span class="operator">)</span><span class="operator">+</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/edges.png" />
+  </div>
+  </li>
+  <li class="rule" id="facets">
+  <h3>facets <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">facets</span> :  <span class="literal">'facets'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#facet" class="rule">facet</a><span class="operator">)</span><span class="operator">+</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/facets.png" />
+  </div>
+  </li>
+  <li class="rule" id="workspaceDefinition">
+  <h3>workspaceDefinition <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">workspaceDefinition</span> :  <span class="literal">'workspace:'</span> <a href="#uri" class="rule">uri</a> <span class="operator">=</span> <a href="#QuotedText" class="token">QuotedText</a> <a href="#name" class="rule">name</a><span class="operator">=</span><a href="#QuotedText" class="token">QuotedText</a> <span class="operator">(</span><a href="#description" class="rule">description</a><span class="operator">=</span><a href="#QuotedText" class="token">QuotedText</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/workspaceDefinition.png" />
+  </div>
+  </li>
+  <li class="rule" id="imported">
+  <h3>imported <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">imported</span> :  <span class="literal">'imports'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#importedWorkspace" class="rule">importedWorkspace</a><span class="operator">)</span><span class="operator">+</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/imported.png" />
+  </div>
+  </li>
+  <li class="rule" id="importedWorkspace">
+  <h3>importedWorkspace <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">importedWorkspace</span> :  <a href="#uri" class="rule">uri</a> <span class="operator">=</span> <a href="#QuotedText" class="token">QuotedText</a> <span class="literal">'as '</span> <a href="#namespace" class="rule">namespace</a> <span class="operator">=</span> <a href="#ObjectName" class="token">ObjectName</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/importedWorkspace.png" />
+  </div>
+  </li>
+  <li class="rule" id="statusCodeSequencingSet">
+  <h3>statusCodeSequencingSet <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">statusCodeSequencingSet</span> :  <a href="#service" class="rule">service</a> <span class="operator">=</span> <a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">':'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#sequencePair" class="rule">sequencePair</a><span class="operator">)</span><span class="operator">+</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/statusCodeSequencingSet.png" />
+  </div>
+  </li>
+  <li class="rule" id="sequencePair">
+  <h3>sequencePair <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">sequencePair</span> :  <a href="#first" class="rule">first</a> <span class="operator">=</span> <a href="#qualifiedName" class="rule">qualifiedName</a> <a href="#second" class="rule">second</a> <span class="operator">=</span> <a href="#qualifiedName" class="rule">qualifiedName</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/sequencePair.png" />
+  </div>
+  </li>
+  <li class="rule" id="existentialRuleform">
+  <h3>existentialRuleform <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">existentialRuleform</span> :  <a href="#workspaceName" class="rule">workspaceName</a> <span class="operator">=</span> <a href="#ObjectName" class="token">ObjectName</a> <span class="literal">'='</span> <a href="#name" class="rule">name</a> <span class="operator">=</span> <a href="#QuotedText" class="token">QuotedText</a> <span class="operator">(</span><a href="#description" class="rule">description</a><span class="operator">=</span><a href="#QuotedText" class="token">QuotedText</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/existentialRuleform.png" />
+  </div>
+  </li>
+  <li class="rule" id="attributedExistentialRuleform">
+  <h3>attributedExistentialRuleform <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">attributedExistentialRuleform</span> :  <a href="#existentialRuleform" class="rule">existentialRuleform</a> <span class="operator">(</span><span class="literal">'attribute values'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#attributeValue" class="rule">attributeValue</a><span class="operator">)</span><span class="operator">+</span> <a href="#RB" class="token">RB</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/attributedExistentialRuleform.png" />
+  </div>
+  </li>
+  <li class="rule" id="attributeRuleform">
+  <h3>attributeRuleform <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">attributeRuleform</span> :  <a href="#existentialRuleform" class="rule">existentialRuleform</a> <span class="operator">(</span><span class="literal">'indexed:'</span> <a href="#indexed" class="rule">indexed</a> <span class="operator">=</span> <span class="operator">(</span><span class="literal">'true'</span> <span class="operator">|</span> <span class="literal">'false'</span><span class="operator">)</span><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'keyed:'</span> <a href="#keyed" class="rule">keyed</a> <span class="operator">=</span> <span class="operator">(</span><span class="literal">'true'</span> <span class="operator">|</span> <span class="literal">'false'</span><span class="operator">)</span><span class="operator">)</span><span class="operator">?</span> <a href="#valueType" class="rule">valueType</a> <span class="operator">=</span> <span class="operator">(</span><span class="literal">'int'</span> <span class="operator">|</span> <span class="literal">'bool'</span> <span class="operator">|</span> <span class="literal">'text'</span> <span class="operator">|</span> <span class="literal">'binary'</span> <span class="operator">|</span> <span class="literal">'numeric'</span> <span class="operator">|</span> <span class="literal">'timestamp'</span><span class="operator">)</span> <span class="operator">(</span><span class="literal">'attribute values'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#attributeValue" class="rule">attributeValue</a><span class="operator">)</span><span class="operator">+</span> <a href="#RB" class="token">RB</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/attributeRuleform.png" />
+  </div>
+  </li>
+  <li class="rule" id="unit">
+  <h3>unit <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">unit</span> :  <a href="#existentialRuleform" class="rule">existentialRuleform</a> <a href="#datatype" class="rule">datatype</a> <span class="operator">=</span> <a href="#ObjectName" class="token">ObjectName</a> <span class="operator">(</span><span class="literal">'enumerated:'</span> <a href="#enumerated" class="rule">enumerated</a> <span class="operator">=</span> <a href="#Boolean" class="token">Boolean</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'min:'</span> <a href="#min" class="rule">min</a> <span class="operator">=</span> <a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'max:'</span> <a href="#max" class="rule">max</a> <span class="operator">=</span> <a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'attribute values'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#attributeValue" class="rule">attributeValue</a><span class="operator">)</span><span class="operator">+</span> <a href="#RB" class="token">RB</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/unit.png" />
+  </div>
+  </li>
+  <li class="rule" id="attributeValue">
+  <h3>attributeValue <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">attributeValue</span> :  <a href="#attribute" class="rule">attribute</a> <span class="operator">=</span> <a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">':'</span> <a href="#value" class="rule">value</a> <span class="operator">=</span> <a href="#QuotedText" class="token">QuotedText</a> <span class="operator">(</span><a href="#sequenceNumber" class="rule">sequenceNumber</a> <span class="operator">=</span> <a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/attributeValue.png" />
+  </div>
+  </li>
+  <li class="rule" id="relationshipPair">
+  <h3>relationshipPair <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">relationshipPair</span> :  <a href="#primary" class="rule">primary</a><span class="operator">=</span><a href="#attributedExistentialRuleform" class="rule">attributedExistentialRuleform</a> <span class="literal">'|'</span> <a href="#inverse" class="rule">inverse</a><span class="operator">=</span><a href="#attributedExistentialRuleform" class="rule">attributedExistentialRuleform</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/relationshipPair.png" />
+  </div>
+  </li>
+  <li class="rule" id="qualifiedName">
+  <h3>qualifiedName <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">qualifiedName</span> :  <span class="operator">(</span><a href="#namespace" class="rule">namespace</a><span class="operator">=</span><a href="#ObjectName" class="token">ObjectName</a> <span class="literal">'::'</span><span class="operator">)</span><span class="operator">?</span> <a href="#member" class="rule">member</a><span class="operator">=</span><a href="#ObjectName" class="token">ObjectName</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/qualifiedName.png" />
+  </div>
+  </li>
+  <li class="rule" id="edge">
+  <h3>edge <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">edge</span> :  <a href="#parent" class="rule">parent</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'.'</span> <a href="#relationship" class="rule">relationship</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'.'</span> <a href="#child" class="rule">child</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/edge.png" />
+  </div>
+  </li>
+  <li class="rule" id="parentSequencings">
+  <h3>parentSequencings <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">parentSequencings</span> :  <span class="literal">'parent'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#parentSequencing" class="rule">parentSequencing</a><span class="operator">)</span><span class="operator">*</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/parentSequencings.png" />
+  </div>
+  </li>
+  <li class="rule" id="parentSequencing">
+  <h3>parentSequencing <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">parentSequencing</span> :  <span class="literal">'service:'</span> <a href="#service" class="rule">service</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'status:'</span> <a href="#status" class="rule">status</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'parent:'</span> <a href="#parent" class="rule">parent</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'next:'</span> <a href="#next" class="rule">next</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="operator">(</span><span class="literal">'replace: '</span> <a href="#replace" class="rule">replace</a><span class="operator">=</span><span class="operator">(</span><span class="literal">'true'</span> <span class="operator">|</span> <span class="literal">'false'</span><span class="operator">)</span><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'activeSiblings:'</span> <a href="#activeSiblings" class="rule">activeSiblings</a><span class="operator">=</span><span class="operator">(</span><span class="literal">'true'</span> <span class="operator">|</span> <span class="literal">'false'</span><span class="operator">)</span><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'sequence:'</span> <a href="#sequenceNumber" class="rule">sequenceNumber</a><span class="operator">=</span><a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/parentSequencing.png" />
+  </div>
+  </li>
+  <li class="rule" id="siblingSequencings">
+  <h3>siblingSequencings <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">siblingSequencings</span> :  <span class="literal">'sibling'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#siblingSequencing" class="rule">siblingSequencing</a><span class="operator">)</span><span class="operator">*</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/siblingSequencings.png" />
+  </div>
+  </li>
+  <li class="rule" id="siblingSequencing">
+  <h3>siblingSequencing <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">siblingSequencing</span> :  <span class="literal">'parent:'</span> <a href="#parent" class="rule">parent</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'status:'</span> <a href="#status" class="rule">status</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'sibling:'</span> <a href="#sibling" class="rule">sibling</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'next:'</span> <a href="#next" class="rule">next</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="operator">(</span><span class="literal">'replace: '</span> <a href="#replace" class="rule">replace</a><span class="operator">=</span><span class="operator">(</span><span class="literal">'true'</span> <span class="operator">|</span> <span class="literal">'false'</span><span class="operator">)</span><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'sequence:'</span> <a href="#sequenceNumber" class="rule">sequenceNumber</a><span class="operator">=</span><a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/siblingSequencing.png" />
+  </div>
+  </li>
+  <li class="rule" id="childSequencings">
+  <h3>childSequencings <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">childSequencings</span> :  <span class="literal">'child'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#childSequencing" class="rule">childSequencing</a><span class="operator">)</span><span class="operator">*</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/childSequencings.png" />
+  </div>
+  </li>
+  <li class="rule" id="childSequencing">
+  <h3>childSequencing <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">childSequencing</span> :  <span class="literal">'parent:'</span> <a href="#parent" class="rule">parent</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'status:'</span> <a href="#status" class="rule">status</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'child:'</span> <a href="#child" class="rule">child</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'next:'</span> <a href="#next" class="rule">next</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="operator">(</span><span class="literal">'replace: '</span> <a href="#replace" class="rule">replace</a><span class="operator">=</span><span class="operator">(</span><span class="literal">'true'</span> <span class="operator">|</span> <span class="literal">'false'</span><span class="operator">)</span><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'sequence:'</span> <a href="#sequenceNumber" class="rule">sequenceNumber</a><span class="operator">=</span><a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/childSequencing.png" />
+  </div>
+  </li>
+  <li class="rule" id="selfSequencings">
+  <h3>selfSequencings <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">selfSequencings</span> :  <span class="literal">'self'</span> <a href="#LB" class="token">LB</a> <span class="operator">(</span><a href="#selfSequencing" class="rule">selfSequencing</a><span class="operator">)</span><span class="operator">*</span> <a href="#RB" class="token">RB</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/selfSequencings.png" />
+  </div>
+  </li>
+  <li class="rule" id="selfSequencing">
+  <h3>selfSequencing <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">selfSequencing</span> :  <span class="literal">'service:'</span> <a href="#service" class="rule">service</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'status:'</span> <a href="#status" class="rule">status</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'next:'</span> <a href="#next" class="rule">next</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a> <span class="operator">(</span><span class="literal">'sequence:'</span> <a href="#sequenceNumber" class="rule">sequenceNumber</a><span class="operator">=</span><a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/selfSequencing.png" />
+  </div>
+  </li>
+  <li class="rule" id="metaProtocol">
+  <h3>metaProtocol <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">metaProtocol</span> :  <span class="operator">(</span><span class="literal">'transform:'</span> <a href="#service" class="rule">service</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span> <span class="operator">(</span><span class="literal">'service:'</span><a href="#serviceType" class="rule">serviceType</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'product:'</span> <a href="#product" class="rule">product</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'from:'</span> <a href="#from" class="rule">from</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'to:'</span> <a href="#to" class="rule">to</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'quantity:'</span> <a href="#quantity" class="rule">quantity</a><span class="operator">=</span><a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'unit:'</span> <a href="#quantityUnit" class="rule">quantityUnit</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'requester:'</span> <a href="#requester" class="rule">requester</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'assign:'</span> <a href="#assignTo" class="rule">assignTo</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'sequence:'</span> <a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'match:'</span> <a href="#match" class="rule">match</a> <span class="operator">=</span> <span class="operator">(</span><span class="literal">'stop'</span> <span class="operator">|</span> <span class="literal">'continue'</span><span class="operator">)</span><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/metaProtocol.png" />
+  </div>
+  </li>
+  <li class="rule" id="protocol">
+  <h3>protocol <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">protocol</span> :  <a href="#matchJob" class="rule">matchJob</a> <span class="literal">'->'</span> <a href="#childJob" class="rule">childJob</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/protocol.png" />
+  </div>
+  </li>
+  <li class="rule" id="matchJob">
+  <h3>matchJob <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">matchJob</span> :  <span class="operator">(</span><span class="literal">'service:'</span> <a href="#service" class="rule">service</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span> <span class="operator">(</span><span class="literal">'product:'</span> <a href="#product" class="rule">product</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'from:'</span> <a href="#from" class="rule">from</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'to:'</span> <a href="#to" class="rule">to</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'quantity:'</span> <a href="#quantity" class="rule">quantity</a><span class="operator">=</span><a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'unit:'</span> <a href="#quantityUnit" class="rule">quantityUnit</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'requester:'</span> <a href="#requester" class="rule">requester</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'assign:'</span> <a href="#assignTo" class="rule">assignTo</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'sequence:'</span> <a href="#sequence" class="rule">sequence</a><span class="operator">=</span><a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/matchJob.png" />
+  </div>
+  </li>
+  <li class="rule" id="childJob">
+  <h3>childJob <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">childJob</span> :  <span class="operator">(</span><span class="literal">'service:'</span> <a href="#service" class="rule">service</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="operator">(</span><span class="literal">'children:'</span> <a href="#childrenRelationship" class="rule">childrenRelationship</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span> <span class="operator">|</span> <span class="operator">(</span><span class="literal">'product:'</span> <a href="#product" class="rule">product</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'from:'</span> <a href="#from" class="rule">from</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'to:'</span> <a href="#to" class="rule">to</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'quantity:'</span> <a href="#quantity" class="rule">quantity</a><span class="operator">=</span><a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'unit:'</span> <span class="operator">(</span><a href="#quantityUnit" class="rule">quantityUnit</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'assign:'</span> <a href="#assignTo" class="rule">assignTo</a><span class="operator">=</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/childJob.png" />
+  </div>
+  </li>
+  <li class="rule" id="facet">
+  <h3>facet <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">facet</span> :  <a href="#classifier" class="rule">classifier</a> <span class="operator">=</span> <a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'.'</span> <a href="#classification" class="rule">classification</a> <span class="operator">=</span> <a href="#qualifiedName" class="rule">qualifiedName</a> <span class="operator">(</span><a href="#LB" class="token">LB</a> <a href="#classifiedAttributes" class="rule">classifiedAttributes</a> <a href="#RB" class="token">RB</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'constraints'</span> <a href="#LB" class="token">LB</a> <a href="#networkConstraints" class="rule">networkConstraints</a> <a href="#RB" class="token">RB</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/facet.png" />
+  </div>
+  </li>
+  <li class="rule" id="classifiedAttributes">
+  <h3>classifiedAttributes <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">classifiedAttributes</span> :  <span class="operator">(</span><a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">+</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/classifiedAttributes.png" />
+  </div>
+  </li>
+  <li class="rule" id="networkConstraints">
+  <h3>networkConstraints <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">networkConstraints</span> :  <span class="operator">(</span><a href="#constraint" class="rule">constraint</a><span class="operator">)</span><span class="operator">+</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/networkConstraints.png" />
+  </div>
+  </li>
+  <li class="rule" id="constraint">
+  <h3>constraint <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">constraint</span> :  <a href="#cardinality" class="rule">cardinality</a> <span class="operator">=</span> <span class="operator">(</span><span class="literal">'zero'</span> <span class="operator">|</span> <span class="literal">'one'</span> <span class="operator">|</span> <span class="literal">'n'</span><span class="operator">)</span> <a href="#childRelationship" class="rule">childRelationship</a> <span class="operator">=</span> <a href="#qualifiedName" class="rule">qualifiedName</a> <span class="operator">(</span><span class="literal">'get:'</span> <a href="#inferredGet" class="rule">inferredGet</a> <span class="operator">=</span> <span class="literal">'inferred'</span> <span class="operator">|</span> <span class="literal">'immediate'</span><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><span class="literal">'method:'</span> <a href="#methodNaming" class="rule">methodNaming</a> <span class="operator">=</span> <span class="literal">'relationship'</span> <span class="operator">|</span> <span class="literal">'entity'</span><span class="operator">)</span><span class="operator">?</span> <span class="literal">':'</span> <span class="operator">(</span><a href="#anyType" class="rule">anyType</a> <span class="operator">=</span> <span class="operator">(</span><span class="literal">'*Agency'</span> <span class="operator">|</span> <span class="literal">'*Attribute'</span> <span class="operator">|</span> <span class="literal">'*Interval'</span> <span class="operator">|</span> <span class="literal">'*Location'</span> <span class="operator">|</span> <span class="literal">'*Product'</span> <span class="operator">|</span> <span class="literal">'*Relationship'</span> <span class="operator">|</span> <span class="literal">'*StatusCode'</span> <span class="operator">|</span> <span class="literal">'*Unit'</span><span class="operator">)</span> <span class="operator">|</span> <span class="operator">(</span><a href="#authorizedRelationship" class="rule">authorizedRelationship</a> <span class="operator">=</span> <a href="#qualifiedName" class="rule">qualifiedName</a> <span class="literal">'.'</span> <a href="#authorizedParent" class="rule">authorizedParent</a> <span class="operator">=</span> <a href="#qualifiedName" class="rule">qualifiedName</a><span class="operator">)</span><span class="operator">)</span> <span class="operator">(</span><span class="literal">'sequence '</span> <a href="#sequenceNumber" class="rule">sequenceNumber</a> <span class="operator">=</span> <a href="#Number" class="token">Number</a><span class="operator">)</span><span class="operator">?</span> <span class="operator">(</span><a href="#LB" class="token">LB</a> <a href="#classifiedAttributes" class="rule">classifiedAttributes</a> <a href="#RB" class="token">RB</a><span class="operator">)</span><span class="operator">?</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/constraint.png" />
+  </div>
+  </li>
+  <li class="rule" id="ObjectName">
+  <h3>ObjectName <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">ObjectName</span> :  <span class="operator">(</span><span class="literal">'A'</span><span class="operator">..</span><span class="literal">'Z'</span> <span class="operator">|</span> <span class="literal">'a'</span><span class="operator">..</span><span class="literal">'z'</span><span class="operator">)</span><span class="operator">(</span><span class="literal">'A'</span><span class="operator">..</span><span class="literal">'Z'</span> <span class="operator">|</span> <span class="literal">'a'</span><span class="operator">..</span><span class="literal">'z'</span> <span class="operator">|</span> <span class="literal">'0'</span><span class="operator">..</span><span class="literal">'9'</span> <span class="operator">|</span> <span class="literal">'_'</span><span class="operator">)</span><span class="operator">+</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/ObjectName.png" />
+  </div>
+  </li>
+  <li class="rule" id="QuotedText">
+  <h3>QuotedText <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">QuotedText</span> :  <span class="literal">'"'</span> <span class="operator">(</span><span class="literal">' '</span> <span class="operator">|</span> <span class="literal">'!'</span> <span class="operator">|</span><span class="literal">'#'</span><span class="operator">..</span> <span class="literal">'~'</span><span class="operator">)</span><span class="operator">+</span> <span class="literal">'"'</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/QuotedText.png" />
+  </div>
+  </li>
+  <li class="rule" id="Boolean">
+  <h3>Boolean <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">Boolean</span> :  <span class="operator">(</span><span class="literal">'true'</span><span class="operator">|</span><span class="literal">'false'</span><span class="operator">)</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/Boolean.png" />
+  </div>
+  </li>
+  <li class="rule" id="Number">
+  <h3>Number <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">Number</span> :  <span class="operator">(</span><span class="literal">'0'</span><span class="operator">..</span><span class="literal">'9'</span><span class="operator">)</span><span class="operator">+</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/Number.png" />
+  </div>
+  </li>
+  <li class="rule" id="WS">
+  <h3>WS <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">WS</span> :  <span class="operator">(</span><span class="literal">' '</span> <span class="operator">|</span> <span class="literal">'\t'</span><span class="operator">)</span><span class="operator">+</span> <span class="operator">-></span> <a href="#skip" class="rule">skip</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/WS.png" />
+  </div>
+  </li>
+  <li class="rule" id="NL">
+  <h3>NL <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">NL</span> :  <span class="operator">(</span><span class="literal">'\r'</span><span class="operator">?</span> <span class="literal">'\n'</span><span class="operator">)</span><span class="operator">+</span> <span class="operator">-></span> <a href="#skip" class="rule">skip</a> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/NL.png" />
+  </div>
+  </li>
+  <li class="rule" id="LB">
+  <h3>LB <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">LB</span> :  <span class="literal">'{'</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/LB.png" />
+  </div>
+  </li>
+  <li class="rule" id="RB">
+  <h3>RB <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">RB</span> :  <span class="literal">'}'</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/RB.png" />
+  </div>
+  </li>
+  <li class="rule" id="SC">
+  <h3>SC <a class="topLink" title="Go to top" href="Workspace.g4.html">Top</a></h3>
+  <div class="doc">
+    <p>
+    </p>
+  </div>
+  <div class="ebnf">
+  <h4>Text notation:</h4>
+  <div>
+    <span class="rule">SC</span> :  <span class="literal">';'</span> ;
+  </div>
+  </div>
+  <div class="railroad">
+  <h4>Visual notation:</h4>
+  <img border="0" src="images/SC.png" />
+  </div>
+  </li>
+</ul>
+</div>
+</div>
+<footer>Generated by: <a href="https://github.com/jknack/antlr4ide">ANTLR 4 IDE</a>. Copyright (c) 2013 <a href="https://twitter.com/edgarespina">Edgar Espina</a></footer>
+</body>
+</html>

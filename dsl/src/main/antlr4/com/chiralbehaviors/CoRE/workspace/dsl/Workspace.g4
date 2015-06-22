@@ -215,6 +215,8 @@ facet:
     '.'
     classification = qualifiedName
     (LB classifiedAttributes RB)?
+    (name = QuotedText)?
+    (description = QuotedText)?
     ('constraints' LB networkConstraints RB)?
     ;
 classifiedAttributes: (qualifiedName)+;

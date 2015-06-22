@@ -116,6 +116,16 @@ public class StatusCodeModelImpl
         return new StatusCodeAttribute(ruleform, attribute, updatedBy);
     }
 
+    @Override
+    public final StatusCode create(String name, String description) {
+        StatusCode statusCode = new StatusCode(
+                                               name,
+                                               description,
+                                               model.getCurrentPrincipal().getPrincipal());
+        em.persist(statusCode);
+        return statusCode;
+    }
+
     /*
      * (non-Javadoc)
      *

@@ -343,28 +343,6 @@ public class WorkspaceImporter {
                                                      });
     }
 
-    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveFrom(ConstraintContext constraint,
-                                                                                                             XDomainNetworkAuthorization<T, ?> authorization) {
-        if (constraint.anyType == null) {
-            authorization.setFromParent(resolve(constraint.authorizedParent));
-            authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
-        } else {
-            authorization.setFromParent(resolveAnyEntity(constraint.anyType.getText()));
-            authorization.setFromRelationship(model.getKernel().getAnyRelationship());
-        }
-    }
-
-    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveTo(ConstraintContext constraint,
-                                                                                                           XDomainNetworkAuthorization<?, T> authorization) {
-        if (constraint.anyType == null) {
-            authorization.setToParent(resolve(constraint.authorizedParent));
-            authorization.setToRelationship(resolve(constraint.authorizedRelationship));
-        } else {
-            authorization.setToParent(resolveAnyEntity(constraint.anyType.getText()));
-            authorization.setToRelationship(model.getKernel().getAnyRelationship());
-        }
-    }
-
     /**
      * @param facet
      * @param constraint
@@ -539,6 +517,25 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
+    private void defineFacets(@SuppressWarnings("rawtypes") NetworkedModel networkedModel,
+                              List<FacetContext> facets) {
+        for (FacetContext facet : facets) {
+            if (facet.name == null && facet.description == null) {
+                continue;
+            }
+            if (facet.classification.namespace == null) {
+                if (scope.lookup(facet.classification.member.getText()) == null) {
+                    @SuppressWarnings("rawtypes")
+                    ExistentialRuleform erf = networkedModel.create(stripQuotes(facet.name.getText()),
+                                                                    facet.description == null ? null
+                                                                                             : stripQuotes(facet.description.getText()));
+                    em.persist(erf);
+                    workspace.put(facet.classification.member.getText(), erf);
+                }
+            }
+        }
+    }
+
     private void intervalFacets() {
         for (FacetContext facet : wsp.getIntervalFacets()) {
             classifiedAttributes(facet,
@@ -575,8 +572,8 @@ public class WorkspaceImporter {
             em.persist(agency);
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           agency);
+            defineFacets(model.getAgencyModel(), wsp.getAgencyFacets());
         }
-
     }
 
     private void loadAttributes() {
@@ -666,6 +663,7 @@ public class WorkspaceImporter {
             em.persist(ruleform);
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
+            defineFacets(model.getIntervalModel(), wsp.getIntervalFacets());
         }
     }
 
@@ -683,6 +681,7 @@ public class WorkspaceImporter {
             em.persist(ruleform);
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
+            defineFacets(model.getLocationModel(), wsp.getLocationFacets());
         }
     }
 
@@ -741,6 +740,7 @@ public class WorkspaceImporter {
             em.persist(ruleform);
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
+            defineFacets(model.getProductModel(), wsp.getProductFacets());
         }
     }
 
@@ -798,7 +798,6 @@ public class WorkspaceImporter {
             workspace.put(ctx.inverse.existentialRuleform().workspaceName.getText(),
                           relA.getInverse());
         }
-
     }
 
     private void loadSelfSequencing() {
@@ -843,6 +842,7 @@ public class WorkspaceImporter {
             em.persist(ruleform);
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
+            defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
         }
     }
 
@@ -1099,6 +1099,28 @@ public class WorkspaceImporter {
     private Class<? extends Ruleform> resolveAuthParent(ConstraintContext constraint) {
         return constraint.anyType == null ? resolve(constraint.authorizedParent).getClass()
                                          : resolveAny(constraint.anyType.getText());
+    }
+
+    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveFrom(ConstraintContext constraint,
+                                                                                                             XDomainNetworkAuthorization<T, ?> authorization) {
+        if (constraint.anyType == null) {
+            authorization.setFromParent(resolve(constraint.authorizedParent));
+            authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
+        } else {
+            authorization.setFromParent(resolveAnyEntity(constraint.anyType.getText()));
+            authorization.setFromRelationship(model.getKernel().getAnyRelationship());
+        }
+    }
+
+    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveTo(ConstraintContext constraint,
+                                                                                                           XDomainNetworkAuthorization<?, T> authorization) {
+        if (constraint.anyType == null) {
+            authorization.setToParent(resolve(constraint.authorizedParent));
+            authorization.setToRelationship(resolve(constraint.authorizedRelationship));
+        } else {
+            authorization.setToParent(resolveAnyEntity(constraint.anyType.getText()));
+            authorization.setToRelationship(model.getKernel().getAnyRelationship());
+        }
     }
 
     /**

@@ -55,6 +55,17 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            The name of the new instance
      * @param description
      *            the description of the new instance
+     * @return the new instance
+     */
+    public RuleForm create(String name, String description);
+
+    /**
+     * Create a new instance with the supplied aspects
+     *
+     * @param name
+     *            The name of the new instance
+     * @param description
+     *            the description of the new instance
      * @param updatedBy
      * @param aspects
      *            - the initial aspects of the instance

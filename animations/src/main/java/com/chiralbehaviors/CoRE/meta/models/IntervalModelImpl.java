@@ -1,5 +1,5 @@
 /**
- * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
+˘ * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
 
  * This file is part of Ultrastructure.
@@ -111,6 +111,16 @@ public class IntervalModelImpl
     public IntervalAttribute create(Interval ruleform, Attribute attribute,
                                     Agency updatedBy) {
         return new IntervalAttribute(ruleform, attribute, updatedBy);
+    }
+
+    @Override
+    public final Interval create(String name, String description) {
+        Interval interval = new Interval(
+                                         name,
+                                         description,
+                                         model.getCurrentPrincipal().getPrincipal());
+        em.persist(interval);
+        return interval;
     }
 
     /* (non-Javadoc)

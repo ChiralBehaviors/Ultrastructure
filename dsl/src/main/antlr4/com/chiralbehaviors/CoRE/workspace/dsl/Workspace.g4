@@ -39,15 +39,15 @@ workspace:
     EOF;
 
 
-definedAgencies: 'agencies' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
+definedAgencies: 'agencies' LB  (attributedExistentialRuleform SC)* (edges)? (facets)? RB;
 definedAttributes: 'attributes' LB  (attributeRuleform SC)+ (edges)? (facets)? RB;
-definedIntervals: 'intervals' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
-definedLocations: 'locations' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
-definedProducts: 'products' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
+definedIntervals: 'intervals' LB  (attributedExistentialRuleform SC)* (edges)? (facets)? RB;
+definedLocations: 'locations' LB  (attributedExistentialRuleform SC)* (edges)? (facets)? RB;
+definedProducts: 'products' LB  (attributedExistentialRuleform SC)* (edges)? (facets)? RB;
 definedRelationships: 'relationships' LB  (relationshipPair SC)+ (edges)? (facets)? RB;
-definedStatusCodes: 'status codes' LB  (attributedExistentialRuleform SC)+ (edges)? (facets)? RB;
+definedStatusCodes: 'status codes' LB  (attributedExistentialRuleform SC)* (edges)? (facets)? RB;
+definedUnits: 'units' LB  (unit SC)*  (edges)? (facets)? RB;
 definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)+ (edges)? (facets)? RB;
-definedUnits: 'units' LB  (unit SC)+  (edges)? (facets)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
 definedInferences: 'inferences' LB (edge)+ RB ;
 definedProtocols: 'protocols' LB (protocol)+ RB;

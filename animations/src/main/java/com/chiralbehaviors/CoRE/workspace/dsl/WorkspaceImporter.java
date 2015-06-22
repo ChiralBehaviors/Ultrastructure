@@ -520,13 +520,11 @@ public class WorkspaceImporter {
     private void defineFacets(@SuppressWarnings("rawtypes") NetworkedModel networkedModel,
                               List<FacetContext> facets) {
         for (FacetContext facet : facets) {
-            if (facet.name == null && facet.description == null) {
-                continue;
-            }
             if (facet.classification.namespace == null) {
                 if (scope.lookup(facet.classification.member.getText()) == null) {
                     @SuppressWarnings("rawtypes")
-                    ExistentialRuleform erf = networkedModel.create(stripQuotes(facet.name.getText()),
+                    ExistentialRuleform erf = networkedModel.create(facet.name == null ? facet.classification.member.getText()
+                                                                                      : stripQuotes(facet.name.getText()),
                                                                     facet.description == null ? null
                                                                                              : stripQuotes(facet.description.getText()));
                     em.persist(erf);
@@ -681,8 +679,8 @@ public class WorkspaceImporter {
             em.persist(ruleform);
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
-            defineFacets(model.getLocationModel(), wsp.getLocationFacets());
         }
+        defineFacets(model.getLocationModel(), wsp.getLocationFacets());
     }
 
     private void loadMetaprotocols() {

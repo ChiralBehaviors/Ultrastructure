@@ -51,6 +51,11 @@ products {
                 n thing2Of get: inferred: kernel::IsA.Thing3
             }
         kernel::IsA.Thing3
+            constraints {
+                one inThing1: *Product 
+                n derivedFrom: kernel::IsA.MavenArtifact 
+                n thing2Of get: inferred: kernel::IsA.Thing3
+            }
     }
 }
 relationships {

@@ -22,6 +22,14 @@ package com.chiralbehaviors.CoRE.phantasm.generator;
 
 import java.util.Map;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 
 /**
@@ -29,15 +37,22 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
  *
  */
 public interface Facet {
+    Facet ANY_AGENCY       = new AnyFacet(Agency.class);
+    Facet ANY_ATTRIBUTE    = new AnyFacet(Attribute.class);
+    Facet ANY_INTERVAL     = new AnyFacet(Interval.class);
+    Facet ANY_LOCATION     = new AnyFacet(Location.class);
+    Facet ANY_PRODUCT      = new AnyFacet(Product.class);
+    Facet ANY_RELATIONSHIP = new AnyFacet(Relationship.class);
+    Facet ANY_STATUS_CODE  = new AnyFacet(StatusCode.class);
+    Facet ANY_UNIT         = new AnyFacet(Unit.class);
 
     String getClassName();
 
+    String getImport();
+
     String getPackageName();
 
-    public abstract String getImport();
-
-    public abstract void resolve(Map<FacetKey, Facet> facets,
-                                 WorkspacePresentation presentation,
-                                 Map<ScopedName, MappedAttribute> mapped);
+    void resolve(Map<FacetKey, Facet> facets, WorkspacePresentation presentation,
+                 Map<ScopedName, MappedAttribute> mapped);
 
 }

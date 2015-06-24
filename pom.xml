@@ -72,6 +72,7 @@
         <module>loader-plugin-test</module>
         <module>phantasm-generator</module>
         <module>phantasm-plugin</module>
+        <module>phantasm-at-rest</module>
     </modules>
 
     <dependencyManagement>

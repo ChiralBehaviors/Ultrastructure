@@ -41,7 +41,7 @@ public class AnyFacet implements Facet {
      */
     @Override
     public String getClassName() {
-        return ruleform.getSimpleName();
+        return String.format("Phantasm<%s>", ruleform.getSimpleName());
     }
 
     /* (non-Javadoc)
@@ -58,6 +58,11 @@ public class AnyFacet implements Facet {
     @Override
     public String getPackageName() {
         return ruleform.getPackage().getName();
+    }
+
+    @Override
+    public String getParameterName() {
+        return String.format("any%s", ruleform.getSimpleName());
     }
 
     /* (non-Javadoc)

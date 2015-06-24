@@ -96,6 +96,11 @@ public class FacetImpl implements Facet {
         return packageName;
     }
 
+    @Override
+    public String getParameterName() {
+        return getClassName();
+    }
+
     public List<Getter> getPrimitiveGetters() {
         return primitiveGetters;
     }
@@ -154,8 +159,9 @@ public class FacetImpl implements Facet {
             baseName = Character.toUpperCase(baseName.charAt(0))
                        + (baseName.length() == 1 ? "" : baseName.substring(1));
         }
-        String parameterName = Character.toLowerCase(className.charAt(0))
-                               + (className.length() == 1 ? "" : className.substring(1));
+        String parameterName = type.getParameterName();
+        parameterName = Character.toLowerCase(parameterName.charAt(0))
+                        + (parameterName.length() == 1 ? "" : parameterName.substring(1));
         switch (cardinality) {
             case ONE: {
                 relationshipGetters.add(new Getter(key, String.format("get%s", baseName), className));

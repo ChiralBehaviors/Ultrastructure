@@ -52,6 +52,8 @@ public interface Facet {
 
     String getPackageName();
 
+    String getParameterName();
+
     void resolve(Map<FacetKey, Facet> facets, WorkspacePresentation presentation,
                  Map<ScopedName, MappedAttribute> mapped);
 

@@ -58,7 +58,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({ @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT " + "  attrValue " + "FROM "
+@NamedQueries({ @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                             + "  attrValue "
+                                                                             + "FROM "
                                                                              + "       AttributeMetaAttribute attrValue, "
                                                                              + "       AttributeMetaAttributeAuthorization auth, "
                                                                              + "       AttributeNetwork network, "
@@ -71,7 +73,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                              + "    AND attrValue.attribute = :ruleform "
                                                                              + "    AND na.classifier = :classifier "
                                                                              + "    AND na.classification= :classification "),
-                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT " + "  auth "
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                   + "  auth "
                                                                                                    + "FROM "
                                                                                                    + "       AttributeMetaAttributeAuthorization auth, "
                                                                                                    + "       AttributeNetworkAuthorization na, "
@@ -88,15 +91,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                                      + "AND auth.networkAuthorization.classification = :classification "
                                                                                      + "AND auth.authorizedAttribute IS NOT NULL"),
                 @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
-                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child " + "FROM AttributeNetwork rn "
-                                                      + "WHERE rn.parent = :p " + "AND rn.relationship = :r"),
+                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                                                      + "FROM AttributeNetwork rn "
+                                                      + "WHERE rn.parent = :p "
+                                                      + "AND rn.relationship = :r"),
                 @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM AttributeNetwork n "
                                                                             + "WHERE n.parent = :attribute "
                                                                             + "AND n.relationship IN :relationships "
                                                                             + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @Entity
 @Table(name = "attribute", schema = "ruleform")
-public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> {
+public class Attribute
+        extends ExistentialRuleform<Attribute, AttributeNetwork> {
     public static final String FIND_BY_NAME                                           = "attribute.findByName";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "attribute"
                                                                                         + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
@@ -116,8 +122,7 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
     private Set<AttributeMetaAttribute> attributes;
 
     @Column(name = "indexed")
-    private int    indexed = FALSE;
-    private String irl;
+    private int indexed = FALSE;
 
     @Column(name = "keyed")
     private int keyed = FALSE;
@@ -184,7 +189,8 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
      * @param updatedBy
      * @param valueType
      */
-    public Attribute(String name, String description, Agency updatedBy, ValueType valueType) {
+    public Attribute(String name, String description, Agency updatedBy,
+                     ValueType valueType) {
         super(name, description, updatedBy);
         setValueType(valueType);
     }
@@ -194,7 +200,8 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
      * @param description
      * @param updatedBy
      */
-    public Attribute(String name, String description, ValueType valueType, Agency updatedBy) {
+    public Attribute(String name, String description, ValueType valueType,
+                     Agency updatedBy) {
         this(name, description, updatedBy);
         this.valueType = valueType;
     }
@@ -281,10 +288,6 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
 
     public boolean getIndexed() {
         return indexed == TRUE;
-    }
-
-    public String getIrl() {
-        return irl;
     }
 
     public boolean getKeyed() {
@@ -381,7 +384,8 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
      */
     @Override
     public boolean isAnyOrSame() {
-        return WellKnownAttribute.ANY.id().equals(getId()) || WellKnownAttribute.SAME.id().equals(getId());
+        return WellKnownAttribute.ANY.id().equals(getId())
+               || WellKnownAttribute.SAME.id().equals(getId());
     }
 
     /* (non-Javadoc)
@@ -414,11 +418,13 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public AttributeNetwork link(Relationship r, Attribute child, Agency updatedBy, Agency inverseSoftware,
+    public AttributeNetwork link(Relationship r, Attribute child,
+                                 Agency updatedBy, Agency inverseSoftware,
                                  EntityManager em) {
         AttributeNetwork link = new AttributeNetwork(this, r, child, updatedBy);
         em.persist(link);
-        AttributeNetwork inverse = new AttributeNetwork(child, r.getInverse(), this, inverseSoftware);
+        AttributeNetwork inverse = new AttributeNetwork(child, r.getInverse(),
+                                                        this, inverseSoftware);
         em.persist(inverse);
         return link;
     }
@@ -431,10 +437,6 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
 
     public void setIndexed(boolean indexed) {
         this.indexed = indexed ? TRUE : FALSE;
-    }
-
-    public void setIrl(String irl) {
-        this.irl = irl;
     }
 
     public void setKeyed(boolean keyed) {

@@ -33,6 +33,7 @@ import javax.ws.rs.core.Response;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -44,7 +45,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author hhildebrand
  *
  */
-@Path("facets/context")
+@Path("json-ld/context")
 public class ContextResource extends TransactionalResource {
 
     public ContextResource(EntityManagerFactory emf) {
@@ -85,17 +86,54 @@ public class ContextResource extends TransactionalResource {
         ObjectNode context = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
         container.set("@context", context);
         for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(aspect)) {
-            context.put(auth.getAuthorizedAttribute().getName(), iriFrom(auth.getAuthorizedAttribute()));
+            String irl = irlFrom(auth.getAuthorizedAttribute());
+            String type = typeFrom(auth.getAuthorizedAttribute());
+            if (type == null) {
+                context.put(auth.getAuthorizedAttribute().getName(), irl);
+            } else {
+                ObjectNode term = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
+                term.put("@id", irl);
+                term.put("@type", irl);
+                context.set(auth.getAuthorizedAttribute().getName(), term);
+            }
         }
-        return context;
+        return container;
     }
 
     /**
      * @param authorizedAttribute
      * @return
      */
-    private String iriFrom(Attribute authorizedAttribute) {
-        // TODO Auto-generated method stub
+    private String typeFrom(Attribute authorizedAttribute) {
+        AttributeValue<Attribute> irl = readOnlyModel.getAttributeModel().getAttributeValue(authorizedAttribute,
+                                                                                            readOnlyModel.getKernel().getIRL());
+        return irl != null ? irl.getTextValue() : null;
+    }
+
+    /**
+     * @param authorizedAttribute
+     * @return
+     */
+    private String irlFrom(Attribute authorizedAttribute) {
+        AttributeValue<Attribute> irl = readOnlyModel.getAttributeModel().getAttributeValue(authorizedAttribute,
+                                                                                            readOnlyModel.getKernel().getIRL());
+        if (irl != null) {
+            return irl.getTextValue();
+        }
+        switch (authorizedAttribute.getValueType()) {
+            case TEXT:
+                return "http://schema.org/text";
+            case BINARY:
+                return "http://schema.org/binary";
+            case BOOLEAN:
+                return "http://schema.org/boolean";
+            case INTEGER:
+                return "http://schema.org/integer";
+            case NUMERIC:
+                return "http://schema.org/numeric";
+            case TIMESTAMP:
+                return "http://schema.org/timestamp";
+        }
         return null;
     }
 }

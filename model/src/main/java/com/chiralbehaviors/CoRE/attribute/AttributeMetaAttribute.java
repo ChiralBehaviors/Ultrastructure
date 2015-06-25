@@ -32,6 +32,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
@@ -58,7 +59,8 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     // bi-directional many-to-one association to Attribute
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "meta_attribute")
-    private Attribute          metaAttribute;
+    @NotNull
+    private Attribute metaAttribute;
 
     public AttributeMetaAttribute() {
     }

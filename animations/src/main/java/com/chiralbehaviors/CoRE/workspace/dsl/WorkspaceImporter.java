@@ -536,8 +536,8 @@ public class WorkspaceImporter {
             em.persist(agency);
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           agency);
-            defineFacets(model.getAgencyModel(), wsp.getAgencyFacets());
         }
+        defineFacets(model.getAgencyModel(), wsp.getAgencyFacets());
     }
 
     private void loadAttributes() {
@@ -641,8 +641,8 @@ public class WorkspaceImporter {
             em.persist(ruleform);
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
-            defineFacets(model.getIntervalModel(), wsp.getIntervalFacets());
         }
+        defineFacets(model.getIntervalModel(), wsp.getIntervalFacets());
     }
 
     private void loadLocationNetworks() {
@@ -715,8 +715,8 @@ public class WorkspaceImporter {
             em.persist(ruleform);
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
-            defineFacets(model.getProductModel(), wsp.getProductFacets());
         }
+        defineFacets(model.getProductModel(), wsp.getProductFacets());
     }
 
     private void loadProtocols() {
@@ -814,8 +814,8 @@ public class WorkspaceImporter {
             em.persist(ruleform);
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
-            defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
         }
+        defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
     }
 
     private void loadStatusCodeSequencings() {

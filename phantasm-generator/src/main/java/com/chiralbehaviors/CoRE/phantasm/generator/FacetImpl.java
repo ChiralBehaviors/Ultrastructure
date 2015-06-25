@@ -149,16 +149,16 @@ public class FacetImpl implements Facet {
         }
         ScopedName key = new ScopedName(constraint.childRelationship);
         Cardinality cardinality = Enum.valueOf(Cardinality.class, constraint.cardinality.getText().toUpperCase());
-        Token methodNaming = constraint.methodNaming;
+        Token methodName = constraint.name;
         String className = type.getClassName();
         String baseName;
-        if (constraint.anyType == null && (methodNaming == null || methodNaming.getText().equals("entity"))) {
-            baseName = className;
+        if (methodName != null) {
+            baseName = methodName.getText();
         } else {
             baseName = constraint.childRelationship.member.getText();
-            baseName = Character.toUpperCase(baseName.charAt(0))
-                       + (baseName.length() == 1 ? "" : baseName.substring(1));
         }
+        baseName = Character.toUpperCase(baseName.charAt(0)) + (baseName.length() == 1 ? "" : baseName.substring(1));
+
         String parameterName = type.getParameterName();
         parameterName = Character.toLowerCase(parameterName.charAt(0))
                         + (parameterName.length() == 1 ? "" : parameterName.substring(1));

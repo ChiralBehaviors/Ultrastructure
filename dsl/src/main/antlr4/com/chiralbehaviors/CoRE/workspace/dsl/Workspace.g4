@@ -225,12 +225,12 @@ constraint:
     cardinality = ('zero' | 'one' | 'n')
     childRelationship = qualifiedName
     ('get:' inferredGet = ('inferred' | 'immediate'))?
-    ('method:' methodNaming = ('relationship' | 'entity'))?
     ':'
     (anyType = ('*Agency' | '*Attribute' | '*Interval' | '*Location' | '*Product' | '*Relationship' | '*StatusCode' | '*Unit')
     | 
     (authorizedRelationship = qualifiedName '.' authorizedParent = qualifiedName))
-    ('sequence ' sequenceNumber = Number)?
+    ('named:' name = ObjectName)?
+    ('sequence:' sequenceNumber = Number)?
     (LB classifiedAttributes RB)?
     ;
 

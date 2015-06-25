@@ -111,6 +111,20 @@ public class AttributeModelImpl
         return new AttributeMetaAttribute(ruleform, attribute, updatedBy);
     }
 
+    @Override
+    public final Attribute create(String name, String description) {
+        Attribute attribute = new Attribute(
+                                            name,
+                                            description,
+                                            model.getCurrentPrincipal().getPrincipal());
+        em.persist(attribute);
+        return attribute;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
+     */
+
     @SafeVarargs
     @Override
     public final Attribute create(String name, String description,
@@ -129,10 +143,6 @@ public class AttributeModelImpl
         }
         return attribute;
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#create(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.attribute.ClassifiedAttributeAuthorization)
-     */
 
     @Override
     public List<AttributeNetwork> getInterconnections(Collection<Attribute> parents,

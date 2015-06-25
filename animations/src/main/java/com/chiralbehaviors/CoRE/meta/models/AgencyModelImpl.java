@@ -174,6 +174,14 @@ public class AgencyModelImpl
         return new AgencyAttribute(ruleform, attribute, updateBy);
     }
 
+    @Override
+    public final Agency create(String name, String description) {
+        Agency agency = new Agency(name, description,
+                                   model.getCurrentPrincipal().getPrincipal());
+        em.persist(agency);
+        return agency;
+    }
+
     /*
      * (non-Javadoc)
      *

@@ -137,6 +137,16 @@ public class RelationshipModelImpl
         return new RelationshipAttribute(ruleform, attribute, updatedBy);
     }
 
+    @Override
+    public final Relationship create(String name, String description) {
+        Relationship relationship = new Relationship(
+                                                     name,
+                                                     description,
+                                                     model.getCurrentPrincipal().getPrincipal());
+        em.persist(relationship);
+        return relationship;
+    }
+
     /*
      * (non-Javadoc)
      *

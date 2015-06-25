@@ -74,12 +74,12 @@ public class PhantasmGenerator {
     }
 
     private Facet constructFacet(FacetContext facet, String ruleformType,
-                                 String uri) {
+                                     String uri) {
         String packageName = configuration.appendTypeToPackage ? String.format("%s.%s",
                                                                                configuration.packageName,
                                                                                ruleformType.toLowerCase())
                                                               : configuration.packageName;
-        return new Facet(packageName, ruleformType, facet, uri);
+        return new FacetImpl(packageName, ruleformType, facet, uri);
     }
 
     private void generate(ST template, File file) {

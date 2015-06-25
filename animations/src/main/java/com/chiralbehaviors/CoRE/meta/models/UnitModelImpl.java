@@ -75,6 +75,14 @@ public class UnitModelImpl
         }
     }
 
+    @Override
+    public final Unit create(String name, String description) {
+        Unit unit = new Unit(name, description,
+                             model.getCurrentPrincipal().getPrincipal());
+        em.persist(unit);
+        return unit;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -154,5 +162,4 @@ public class UnitModelImpl
         query.setParameter("children", children);
         return query.getResultList();
     }
-
 }

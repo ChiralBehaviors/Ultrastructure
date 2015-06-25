@@ -176,6 +176,16 @@ public class LocationModelImpl
         return new LocationAttribute(ruleform, attribute, updatedBy);
     }
 
+    @Override
+    public final Location create(String name, String description) {
+        Location location = new Location(
+                                         name,
+                                         description,
+                                         model.getCurrentPrincipal().getPrincipal());
+        em.persist(location);
+        return location;
+    }
+
     /*
      * (non-Javadoc)
      *

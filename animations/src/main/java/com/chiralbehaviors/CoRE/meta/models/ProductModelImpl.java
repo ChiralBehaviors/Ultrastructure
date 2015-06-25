@@ -200,6 +200,16 @@ public class ProductModelImpl
         return new ProductAttribute(ruleform, attribute, updatedBy);
     }
 
+    @Override
+    public final Product create(String name, String description) {
+        Product product = new Product(
+                                      name,
+                                      description,
+                                      model.getCurrentPrincipal().getPrincipal());
+        em.persist(product);
+        return product;
+    }
+
     /*
      * (non-Javadoc)
      *

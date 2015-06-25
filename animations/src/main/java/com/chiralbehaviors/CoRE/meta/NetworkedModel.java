@@ -45,8 +45,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  */
 public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>> {
 
-    public abstract AttributeType create(RuleForm ruleform,
-                                         Attribute attribute, Agency updatedBy);
+    public abstract AttributeType create(RuleForm ruleform, Attribute attribute, Agency updatedBy);
 
     /**
      * Create a new instance with the supplied aspects
@@ -71,10 +70,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            - the initial aspects of the instance
      * @return the new instance
      */
-    public RuleForm create(String name,
-                           String description,
-                           Aspect<RuleForm> aspect,
-                           Agency updatedBy,
+    public RuleForm create(String name, String description, Aspect<RuleForm> aspect, Agency updatedBy,
                            @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
 
     /**
@@ -83,8 +79,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param attribute
      * @return
      */
-    public List<AttributeType> getAttributeValues(RuleForm ruleform,
-                                                  Attribute attribute);
+    public List<AttributeType> getAttributeValues(RuleForm ruleform, Attribute attribute);
 
     public RuleForm getSingleChild(RuleForm parent, Relationship r);
 
@@ -103,41 +98,29 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     void authorize(Aspect<RuleForm> aspect, Attribute... attributes);
 
-    void authorize(RuleForm ruleform, Relationship relationship,
-                   Agency authorized);
+    void authorize(RuleForm ruleform, Relationship relationship, Agency authorized);
 
-    void authorize(RuleForm ruleform, Relationship relationship,
-                   Location authorized);
+    void authorize(RuleForm ruleform, Relationship relationship, Location authorized);
 
-    void authorize(RuleForm ruleform, Relationship relationship,
-                   Product authorized);
+    void authorize(RuleForm ruleform, Relationship relationship, Product authorized);
 
-    void authorize(RuleForm ruleform, Relationship relationship,
-                   Relationship authorized);
+    void authorize(RuleForm ruleform, Relationship relationship, Relationship authorized);
 
-    void authorizeAgencies(RuleForm ruleform, Relationship relationship,
-                           List<Agency> authorized);
+    void authorizeAgencies(RuleForm ruleform, Relationship relationship, List<Agency> authorized);
 
-    void authorizeLocations(RuleForm ruleform, Relationship relationship,
-                            List<Location> authorized);
+    void authorizeLocations(RuleForm ruleform, Relationship relationship, List<Location> authorized);
 
-    void authorizeProducts(RuleForm ruleform, Relationship relationship,
-                           List<Product> authorized);
+    void authorizeProducts(RuleForm ruleform, Relationship relationship, List<Product> authorized);
 
-    void authorizeRelationships(RuleForm ruleform, Relationship relationship,
-                                List<Relationship> authorized);
+    void authorizeRelationships(RuleForm ruleform, Relationship relationship, List<Relationship> authorized);
 
-    void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                           Agency authorized);
+    void authorizeSingular(RuleForm ruleform, Relationship relationship, Agency authorized);
 
-    void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                           Location authorized);
+    void authorizeSingular(RuleForm ruleform, Relationship relationship, Location authorized);
 
-    void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                           Product authorized);
+    void authorizeSingular(RuleForm ruleform, Relationship relationship, Product authorized);
 
-    void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                           Relationship authorized);
+    void authorizeSingular(RuleForm ruleform, Relationship relationship, Relationship authorized);
 
     /**
      * Create a new instance of the RuleForm based on the provided prototype
@@ -148,34 +131,26 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     RuleForm create(RuleForm prototype);
 
-    void deauthorize(RuleForm ruleform, Relationship relationship,
-                     Agency authorized);
+    void deauthorize(RuleForm ruleform, Relationship relationship, Agency authorized);
 
-    void deauthorize(RuleForm ruleform, Relationship relationship,
-                     Location authorized);
+    void deauthorize(RuleForm ruleform, Relationship relationship, Location authorized);
 
-    void deauthorize(RuleForm ruleform, Relationship relationship,
-                     Product authorized);
+    void deauthorize(RuleForm ruleform, Relationship relationship, Product authorized);
 
-    void deauthorize(RuleForm ruleform, Relationship relationship,
-                     Relationship authorized);
+    void deauthorize(RuleForm ruleform, Relationship relationship, Relationship authorized);
 
-    void deauthorizeAgencies(RuleForm ruleform, Relationship relationship,
-                             List<Agency> authorized);
+    void deauthorizeAgencies(RuleForm ruleform, Relationship relationship, List<Agency> authorized);
 
-    void deauthorizeLocations(RuleForm ruleform, Relationship relationship,
-                              List<Location> authorized);
+    void deauthorizeLocations(RuleForm ruleform, Relationship relationship, List<Location> authorized);
 
-    void deauthorizeProducts(RuleForm ruleform, Relationship relationship,
-                             List<Product> authorized);
+    void deauthorizeProducts(RuleForm ruleform, Relationship relationship, List<Product> authorized);
 
     /**
      * @param ruleform
      * @param relationship
      * @param authorized
      */
-    void deauthorizeRelationships(RuleForm ruleform, Relationship relationship,
-                                  List<Relationship> authorized);
+    void deauthorizeRelationships(RuleForm ruleform, Relationship relationship, List<Relationship> authorized);
 
     /**
      * @param id
@@ -199,8 +174,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            - the grouping Agency
      * @return the List of allowed values for this attribute
      */
-    <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                 Agency groupingAgency);
+    <ValueType> List<ValueType> getAllowedValues(Attribute attribute, Agency groupingAgency);
 
     /**
      * Answer the allowed values for an Attribute, classified by the supplied
@@ -212,8 +186,17 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            - the classifying aspect
      * @return the List of allowed values for this attribute
      */
-    <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                 Aspect<RuleForm> aspect);
+    <ValueType> List<ValueType> getAllowedValues(Attribute attribute, Aspect<RuleForm> aspect);
+
+    /**
+     * Answer the aspect identified by the primary keys
+     * 
+     * @param classifier
+     * @param classification
+     * @return
+     */
+
+    Aspect<RuleForm> getAspect(UUID classifier, UUID classification);
 
     /**
      * Answer the list of attribute authorizations that are classified by the
@@ -232,8 +215,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param attribute
      * @return
      */
-    List<AttributeAuth> getAttributeAuthorizations(Agency groupingAgency,
-                                                   Attribute attribute);
+    List<AttributeAuth> getAttributeAuthorizations(Agency groupingAgency, Attribute attribute);
 
     /**
      * Answer the list of attribute authorizations that are classified by an
@@ -254,8 +236,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param attribute
      * @return
      */
-    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
-                                                   Attribute attribute);
+    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect, Attribute attribute);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -267,8 +248,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            - the classifying agency
      * @return the list of existing attributes authorized by this classifier
      */
-    List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
-                                                  Agency groupingAgency);
+    List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform, Agency groupingAgency);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -280,8 +260,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            - the classifying aspect
      * @return the list of existing attributes authorized by this classifier
      */
-    List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
-                                                  Aspect<RuleForm> aspect);
+    List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform, Aspect<RuleForm> aspect);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -294,37 +273,29 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @return the list of existing attributes for this instance that are
      *         grouped by the given agency
      */
-    List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
-                                               Agency groupingAgency);
+    List<AttributeType> getAttributesGroupedBy(RuleForm ruleform, Agency groupingAgency);
 
     NetworkAttribute<?> getAttributeValue(Network edge, Attribute attribute);
 
-    AttributeValue<RuleForm> getAttributeValue(RuleForm ruleform,
-                                               Attribute attribute);
+    AttributeValue<RuleForm> getAttributeValue(RuleForm ruleform, Attribute attribute);
 
-    NetworkAttribute<?> getAttributeValue(RuleForm parent, Relationship r,
-                                          RuleForm child, Attribute attribute);
+    NetworkAttribute<?> getAttributeValue(RuleForm parent, Relationship r, RuleForm child, Attribute attribute);
 
-    List<Agency> getAuthorizedAgencies(RuleForm ruleform,
-                                       Relationship relationship);
+    List<Agency> getAuthorizedAgencies(RuleForm ruleform, Relationship relationship);
 
     Agency getAuthorizedAgency(RuleForm ruleform, Relationship relationship);
 
     Location getAuthorizedLocation(RuleForm ruleform, Relationship relationship);
 
-    List<Location> getAuthorizedLocations(RuleForm ruleform,
-                                          Relationship relationship);
+    List<Location> getAuthorizedLocations(RuleForm ruleform, Relationship relationship);
 
     Product getAuthorizedProduct(RuleForm ruleform, Relationship relationship);
 
-    List<Product> getAuthorizedProducts(RuleForm ruleform,
-                                        Relationship relationship);
+    List<Product> getAuthorizedProducts(RuleForm ruleform, Relationship relationship);
 
-    Relationship getAuthorizedRelationship(RuleForm ruleform,
-                                           Relationship relationship);
+    Relationship getAuthorizedRelationship(RuleForm ruleform, Relationship relationship);
 
-    List<Relationship> getAuthorizedRelationships(RuleForm ruleform,
-                                                  Relationship relationship);
+    List<Relationship> getAuthorizedRelationships(RuleForm ruleform, Relationship relationship);
 
     /**
      * Answer the child that is connected to the parent via the relationship
@@ -361,8 +332,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param child
      * @return
      */
-    Network getImmediateChildLink(RuleForm parent, Relationship relationship,
-                                  RuleForm child);
+    Network getImmediateChildLink(RuleForm parent, Relationship relationship, RuleForm child);
 
     /**
      *
@@ -370,8 +340,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param relationship
      * @return
      */
-    List<RuleForm> getImmediateChildren(RuleForm parent,
-                                        Relationship relationship);
+    List<RuleForm> getImmediateChildren(RuleForm parent, Relationship relationship);
 
     /**
      *
@@ -379,12 +348,9 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param relationship
      * @return
      */
-    List<Network> getImmediateChildrenLinks(RuleForm parent,
-                                            Relationship relationship);
+    List<Network> getImmediateChildrenLinks(RuleForm parent, Relationship relationship);
 
-    NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
-                                               Relationship relationship,
-                                               RuleForm child);
+    NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent, Relationship relationship, RuleForm child);
 
     /**
      *
@@ -407,8 +373,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<RuleForm> getInGroup(RuleForm parent, Relationship relationship);
 
-    List<Network> getInterconnections(Collection<RuleForm> parents,
-                                      Collection<Relationship> relationships,
+    List<Network> getInterconnections(Collection<RuleForm> parents, Collection<Relationship> relationships,
                                       Collection<RuleForm> children);
 
     /**
@@ -441,8 +406,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param child
      * @return
      */
-    boolean isAccessible(RuleForm parent, Relationship relationship,
-                         RuleForm child);
+    boolean isAccessible(RuleForm parent, Relationship relationship, RuleForm child);
 
     /**
      *
@@ -451,8 +415,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param child
      * @param updatedBy
      */
-    Network link(RuleForm parent, Relationship r, RuleForm child,
-                 Agency updatedBy);
+    Network link(RuleForm parent, Relationship r, RuleForm child, Agency updatedBy);
 
     /**
      * Propagate the network inferences based on the tracked additions,
@@ -469,18 +432,13 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     void setAttributeValue(AttributeType value);
 
-    void setAuthorizedAgencies(RuleForm ruleform, Relationship relationship,
-                               List<Agency> authorized);
+    void setAuthorizedAgencies(RuleForm ruleform, Relationship relationship, List<Agency> authorized);
 
-    void setAuthorizedLocations(RuleForm ruleform, Relationship relationship,
-                                List<Location> authorized);
+    void setAuthorizedLocations(RuleForm ruleform, Relationship relationship, List<Location> authorized);
 
-    void setAuthorizedProducts(RuleForm ruleform, Relationship relationship,
-                               List<Product> authorized);
+    void setAuthorizedProducts(RuleForm ruleform, Relationship relationship, List<Product> authorized);
 
-    void setAuthorizedRelationships(RuleForm ruleform,
-                                    Relationship relationship,
-                                    List<Relationship> authorized);
+    void setAuthorizedRelationships(RuleForm ruleform, Relationship relationship, List<Relationship> authorized);
 
     /**
      * Sets the child of the immediate relationship defined by the parent and
@@ -492,8 +450,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param child
      * @param updatedBy
      */
-    void setImmediateChild(RuleForm parent, Relationship relationship,
-                           RuleForm child, Agency updatedBy);
+    void setImmediateChild(RuleForm parent, Relationship relationship, RuleForm child, Agency updatedBy);
 
     void unlink(RuleForm parent, Relationship r, RuleForm child);
 }

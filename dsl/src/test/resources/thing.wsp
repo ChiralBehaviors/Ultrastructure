@@ -6,7 +6,7 @@
     attributes {
         aliases = "Aliases" "Alias Smith and Jones" indexed: true text;
         discount = "Percentage" "The cut off the top" numeric;
-        URI = "URI" "the Universal Resource Indicator" text;
+        URI = "URI" "the Universal Resource Indicator" irl: "http://schema.org/url"  text;
         
         artifactId = "Artifact ID" "artifact identifier" text;
         classification = "Classifier" "classification" text;

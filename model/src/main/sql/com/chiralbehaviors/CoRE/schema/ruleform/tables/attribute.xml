@@ -16,6 +16,7 @@
             <column name="name" type="TEXT">
                 <constraints nullable="false" />
             </column>
+            <column name="irl" type="TEXT"/>
             <column name="description" type="TEXT" />
             <column name="notes" type="TEXT" />
             <column name="updated_by" type="uuid">

@@ -94,6 +94,7 @@ attributedExistentialRuleform:
     
 attributeRuleform:
     existentialRuleform
+    ('irl:' irl = QuotedText)?
     ('indexed:' indexed = ('true' | 'false'))?
     ('keyed:' keyed = ('true' | 'false'))?
     valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp')

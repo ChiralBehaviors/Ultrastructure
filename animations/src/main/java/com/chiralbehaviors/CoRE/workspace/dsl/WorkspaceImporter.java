@@ -530,6 +530,7 @@ public class WorkspaceImporter {
                                                                                               : stripQuotes(ruleform.existentialRuleform().description.getText()),
                                            model.getCurrentPrincipal().getPrincipal());
             setValueType(attr, ruleform.valueType);
+            attr.setIrl(ruleform.irl != null ? ruleform.irl.getText() : null);
             attr.setIndexed(ruleform.indexed == null ? false : ruleform.indexed.getText().equals("true"));
             attr.setKeyed(ruleform.keyed == null ? false : ruleform.keyed.getText().equals("true"));
             em.persist(attr);

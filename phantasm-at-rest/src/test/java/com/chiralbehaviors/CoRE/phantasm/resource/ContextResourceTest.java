@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author hhildebrand
@@ -66,11 +67,15 @@ public class ContextResourceTest extends AbstractModelTest {
         UriInfo uriInfo = mock(UriInfo.class);
         UriBuilder builder = new JerseyUriBuilder();
         builder.uri("http://Ultrastructure/northwind/");
-        when(uriInfo.getBaseUriBuilder()).thenReturn(builder);
+        UriBuilder builder2 = new JerseyUriBuilder();
+        builder2.uri("http://Ultrastructure/northwind/");
+        when(uriInfo.getBaseUriBuilder()).thenReturn(builder).thenReturn(builder2);
         ContextResource resource = new ContextResource(emf, uriInfo);
         JsonNode context = resource.getProductContext(model.getKernel().getIsA().getId().toString(),
                                                       scope.lookup("Thing2").getId().toString());
         assertNotNull(context);
-        System.out.println(context.toString());
+
+        ObjectMapper objMapper = new ObjectMapper();
+        System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(context));
     }
 }

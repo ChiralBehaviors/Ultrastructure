@@ -53,12 +53,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Path("json-ld/context")
 public class ContextResource extends TransactionalResource {
 
-    private static final String CLASSIFICATION                      = "classification";
-    private static final String CLASSIFIER                          = "classifier";
-    private static final String CONTEXT                             = "@context";
-    private static final String HTTP_ULTRASTRUCTURE_ME_SCHEMA_FACET = "http://ultrastructure.me/schema/facet";
-    private static final String ID                                  = "@id";
-    private static final String TYPE                                = "@type";
+    private static final String CLASSIFICATION = "classification";
+    private static final String CLASSIFIER     = "classifier";
+    private static final String CONTEXT        = "@context";
+    private static final String ID             = "@id";
+    private static final String TYPE           = "@type";
 
     @Context
     private UriInfo uriInfo;
@@ -112,24 +111,24 @@ public class ContextResource extends TransactionalResource {
             } else {
                 ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
                 termDefinition.put(ID, iri);
-                termDefinition.put(TYPE, iri);
+                termDefinition.put(TYPE, type);
                 context.set(term, termDefinition);
             }
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> void addNetworkAuthTerms(Aspect<RuleForm> aspect,
-                                                                                         NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
-                                                                                         ObjectNode context) {
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> void addNetworkAuthTerms(ObjectNode context,
+                                                                                         Aspect<RuleForm> aspect,
+                                                                                         NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
         for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(aspect)) {
             Aspect<RuleForm> childAspect = new Aspect<RuleForm>(auth.getAuthorizedRelationship(),
                                                                 auth.getAuthorizedParent());
             if (auth.getName() != null) {
                 ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-                termDefinition.put(ID, HTTP_ULTRASTRUCTURE_ME_SCHEMA_FACET);
-                termDefinition.put(TYPE,
+                termDefinition.put(ID,
                                    getTypeIri(Product.class.getSimpleName().toLowerCase(),
                                               childAspect));
+                termDefinition.put(TYPE, ID);
                 termDefinition.put(CLASSIFIER,
                                    childAspect.getClassifier().getName());
                 termDefinition.put(CLASSIFICATION,
@@ -145,7 +144,7 @@ public class ContextResource extends TransactionalResource {
         ObjectNode context = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
         container.set(CONTEXT, context);
         addAttributeTerms(context, aspect, networkedModel);
-        addNetworkAuthTerms(aspect, networkedModel, context);
+        addNetworkAuthTerms(context, aspect, networkedModel);
         return container;
     }
 

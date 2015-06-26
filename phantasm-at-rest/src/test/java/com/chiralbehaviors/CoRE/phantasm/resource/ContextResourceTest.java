@@ -21,7 +21,13 @@
 package com.chiralbehaviors.CoRE.phantasm.resource;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+
+import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,10 +62,14 @@ public class ContextResourceTest extends AbstractModelTest {
     }
 
     @Test
-    public void testContext() {
-        ContextResource resource = new ContextResource(emf);
+    public void testContext() throws Exception {
+        UriInfo uriInfo = mock(UriInfo.class);
+        UriBuilder builder = new JerseyUriBuilder();
+        builder.uri("http://Ultrastructure/northwind/");
+        when(uriInfo.getBaseUriBuilder()).thenReturn(builder);
+        ContextResource resource = new ContextResource(emf, uriInfo);
         JsonNode context = resource.getProductContext(model.getKernel().getIsA().getId().toString(),
-                                                      scope.lookup("Thing1").getId().toString());
+                                                      scope.lookup("Thing2").getId().toString());
         assertNotNull(context);
         System.out.println(context.toString());
     }

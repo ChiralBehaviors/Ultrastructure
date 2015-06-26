@@ -45,8 +45,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  * @author hhildebrand
  *
  */
-public class StatusCodeModelImpl
-        extends
+public class StatusCodeModelImpl extends
         AbstractNetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute>
         implements StatusCodeModel {
 
@@ -66,14 +65,12 @@ public class StatusCodeModelImpl
      */
     @Override
     public void authorize(Aspect<StatusCode> aspect, Attribute... attributes) {
-        StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization(
-                                                                                 model.getCurrentPrincipal().getPrincipal());
+        StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
-            StatusCodeAttributeAuthorization authorization = new StatusCodeAttributeAuthorization(
-                                                                                                  attribute,
+            StatusCodeAttributeAuthorization authorization = new StatusCodeAttributeAuthorization(attribute,
                                                                                                   model.getCurrentPrincipal().getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
@@ -94,8 +91,7 @@ public class StatusCodeModelImpl
         em.persist(copy);
         copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (StatusCodeNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(),
-                                     copy,
+            network.getParent().link(network.getRelationship(), copy,
                                      model.getCurrentPrincipal().getPrincipal(),
                                      model.getCurrentPrincipal().getPrincipal(),
                                      em);
@@ -118,9 +114,7 @@ public class StatusCodeModelImpl
 
     @Override
     public final StatusCode create(String name, String description) {
-        StatusCode statusCode = new StatusCode(
-                                               name,
-                                               description,
+        StatusCode statusCode = new StatusCode(name, description,
                                                model.getCurrentPrincipal().getPrincipal());
         em.persist(statusCode);
         return statusCode;
@@ -138,9 +132,7 @@ public class StatusCodeModelImpl
     public final StatusCode create(String name, String description,
                                    Aspect<StatusCode> aspect, Agency updatedBy,
                                    Aspect<StatusCode>... aspects) {
-        StatusCode agency = new StatusCode(
-                                           name,
-                                           description,
+        StatusCode agency = new StatusCode(name, description,
                                            model.getCurrentPrincipal().getPrincipal());
         em.persist(agency);
         initialize(agency, aspect);
@@ -241,5 +233,13 @@ public class StatusCodeModelImpl
                                                                      StatusCodeSequencing.class);
         query.setParameter("statusCode", parent);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetworkAuthClass()
+     */
+    @Override
+    protected Class<?> getNetworkAuthClass() {
+        return StatusCodeNetworkAuthorization.class;
     }
 }

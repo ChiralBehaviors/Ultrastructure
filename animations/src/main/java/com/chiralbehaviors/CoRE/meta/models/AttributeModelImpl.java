@@ -40,8 +40,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  * @author hhildebrand
  *
  */
-public class AttributeModelImpl
-        extends
+public class AttributeModelImpl extends
         AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
         implements AttributeModel {
 
@@ -61,14 +60,12 @@ public class AttributeModelImpl
      */
     @Override
     public void authorize(Aspect<Attribute> aspect, Attribute... attributes) {
-        AttributeNetworkAuthorization auth = new AttributeNetworkAuthorization(
-                                                                               model.getCurrentPrincipal().getPrincipal());
+        AttributeNetworkAuthorization auth = new AttributeNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
-            AttributeMetaAttributeAuthorization authorization = new AttributeMetaAttributeAuthorization(
-                                                                                                        attribute,
+            AttributeMetaAttributeAuthorization authorization = new AttributeMetaAttributeAuthorization(attribute,
                                                                                                         model.getCurrentPrincipal().getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
@@ -89,8 +86,7 @@ public class AttributeModelImpl
         em.persist(copy);
         copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (AttributeNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(),
-                                     copy,
+            network.getParent().link(network.getRelationship(), copy,
                                      model.getCurrentPrincipal().getPrincipal(),
                                      model.getCurrentPrincipal().getPrincipal(),
                                      em);
@@ -107,15 +103,14 @@ public class AttributeModelImpl
 
     @Override
     public AttributeMetaAttribute create(Attribute ruleform,
-                                         Attribute attribute, Agency updatedBy) {
+                                         Attribute attribute,
+                                         Agency updatedBy) {
         return new AttributeMetaAttribute(ruleform, attribute, updatedBy);
     }
 
     @Override
     public final Attribute create(String name, String description) {
-        Attribute attribute = new Attribute(
-                                            name,
-                                            description,
+        Attribute attribute = new Attribute(name, description,
                                             model.getCurrentPrincipal().getPrincipal());
         em.persist(attribute);
         return attribute;
@@ -130,9 +125,7 @@ public class AttributeModelImpl
     public final Attribute create(String name, String description,
                                   Aspect<Attribute> aspect, Agency updatedBy,
                                   Aspect<Attribute>... aspects) {
-        Attribute attribute = new Attribute(
-                                            name,
-                                            description,
+        Attribute attribute = new Attribute(name, description,
                                             model.getCurrentPrincipal().getPrincipal());
         em.persist(attribute);
         initialize(attribute, aspect);
@@ -159,5 +152,13 @@ public class AttributeModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetworkAuthClass()
+     */
+    @Override
+    protected Class<?> getNetworkAuthClass() {
+        return AttributeNetworkAuthorization.class;
     }
 }

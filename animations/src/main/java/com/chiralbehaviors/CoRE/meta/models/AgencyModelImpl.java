@@ -53,8 +53,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  * @author hhildebrand
  *
  */
-public class AgencyModelImpl
-        extends
+public class AgencyModelImpl extends
         AbstractNetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute>
         implements AgencyModel {
 
@@ -71,8 +70,7 @@ public class AgencyModelImpl
     @Override
     public void authorize(Agency ruleform, Relationship relationship,
                           Agency authorized) {
-        throw new UnsupportedOperationException(
-                                                "Agency -> Agency authorizations are modeled with Agency Networks");
+        throw new UnsupportedOperationException("Agency -> Agency authorizations are modeled with Agency Networks");
     }
 
     /* (non-Javadoc)
@@ -81,14 +79,12 @@ public class AgencyModelImpl
     @Override
     public void authorize(Agency ruleform, Relationship relationship,
                           Location authorized) {
-        AgencyLocation a = new AgencyLocation(
-                                              model.getCurrentPrincipal().getPrincipal());
+        AgencyLocation a = new AgencyLocation(model.getCurrentPrincipal().getPrincipal());
         a.setAgency(ruleform);
         a.setRelationship(relationship);
         a.setLocation(authorized);
         em.persist(a);
-        AgencyLocation b = new AgencyLocation(
-                                              model.getCurrentPrincipal().getPrincipal());
+        AgencyLocation b = new AgencyLocation(model.getCurrentPrincipal().getPrincipal());
         b.setAgency(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setLocation(authorized);
@@ -101,14 +97,12 @@ public class AgencyModelImpl
     @Override
     public void authorize(Agency ruleform, Relationship relationship,
                           Product authorized) {
-        AgencyProduct a = new AgencyProduct(
-                                            model.getCurrentPrincipal().getPrincipal());
+        AgencyProduct a = new AgencyProduct(model.getCurrentPrincipal().getPrincipal());
         a.setAgency(ruleform);
         a.setRelationship(relationship);
         a.setProduct(authorized);
         em.persist(a);
-        AgencyProduct b = new AgencyProduct(
-                                            model.getCurrentPrincipal().getPrincipal());
+        AgencyProduct b = new AgencyProduct(model.getCurrentPrincipal().getPrincipal());
         b.setAgency(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setProduct(authorized);
@@ -124,14 +118,12 @@ public class AgencyModelImpl
      */
     @Override
     public void authorize(Aspect<Agency> aspect, Attribute... attributes) {
-        AgencyNetworkAuthorization auth = new AgencyNetworkAuthorization(
-                                                                         model.getCurrentPrincipal().getPrincipal());
+        AgencyNetworkAuthorization auth = new AgencyNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
-            AgencyAttributeAuthorization authorization = new AgencyAttributeAuthorization(
-                                                                                          attribute,
+            AgencyAttributeAuthorization authorization = new AgencyAttributeAuthorization(attribute,
                                                                                           model.getCurrentPrincipal().getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
@@ -152,8 +144,7 @@ public class AgencyModelImpl
         em.persist(copy);
         copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (AgencyNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(),
-                                     copy,
+            network.getParent().link(network.getRelationship(), copy,
                                      model.getCurrentPrincipal().getPrincipal(),
                                      model.getCurrentPrincipal().getPrincipal(),
                                      em);
@@ -212,8 +203,7 @@ public class AgencyModelImpl
     @Override
     public void deauthorize(Agency ruleform, Relationship relationship,
                             Agency authorized) {
-        throw new UnsupportedOperationException(
-                                                "Agency -> Agency authorizations are modeled with Agency Networks");
+        throw new UnsupportedOperationException("Agency -> Agency authorizations are modeled with Agency Networks");
     }
 
     /* (non-Javadoc)
@@ -282,8 +272,7 @@ public class AgencyModelImpl
     @Override
     public List<Agency> getAuthorizedAgencies(Agency ruleform,
                                               Relationship relationship) {
-        throw new UnsupportedOperationException(
-                                                "Agency -> Agency authorizations are modeled with Agency Networks");
+        throw new UnsupportedOperationException("Agency -> Agency authorizations are modeled with Agency Networks");
     }
 
     /* (non-Javadoc)
@@ -347,5 +336,13 @@ public class AgencyModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetworkAuthClass()
+     */
+    @Override
+    protected Class<?> getNetworkAuthClass() {
+        return AgencyNetworkAuthorization.class;
     }
 }

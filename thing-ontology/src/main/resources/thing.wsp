@@ -44,13 +44,13 @@ products {
                 one thing1Of: kernel::IsA.Thing2 named thing2
                 one derivedFrom: kernel::IsA.MavenArtifact named by relationship
             }
-        kernel::IsA.Thing2
+        kernel::IsA.Thing2 {aliases URI properties}
             constraints {
                 one inThing1: kernel::IsA.Thing1
                 n derivedFrom: kernel::IsA.MavenArtifact named by relationship
                 n thing2Of get: inferred: kernel::IsA.Thing3
             }
-        kernel::IsA.Thing3
+        kernel::IsA.Thing3 {aliases URI properties}
             constraints {
                 one inThing1: *Product named superFly
                 n derivedFrom: kernel::IsA.MavenArtifact named by relationship

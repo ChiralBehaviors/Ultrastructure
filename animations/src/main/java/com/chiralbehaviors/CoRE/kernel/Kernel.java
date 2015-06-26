@@ -115,7 +115,7 @@ public interface Kernel {
 
     Relationship getInWorkspace();
 
-    Attribute getIRL();
+    Attribute getIRI();
 
     Relationship getIsA();
 

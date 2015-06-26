@@ -463,11 +463,11 @@ public interface WellKnownObject {
                 }
 
             },
-            IRL() {
+            IRI() {
 
                 @Override
                 public String description() {
-                    return "A special Attribute that stands for the Internationalized Resource Locator";
+                    return "A special Attribute that stands for the Internationalized Resource Indicator";
                 }
 
                 /* (non-Javadoc)
@@ -483,7 +483,7 @@ public interface WellKnownObject {
                  */
                 @Override
                 public String wkoName() {
-                    return WellKnownObject.IRL;
+                    return WellKnownObject.IRI;
                 }
 
             },
@@ -2079,7 +2079,7 @@ public interface WellKnownObject {
     String IN_WORKSPACE              = "in-workspace";
     String INCLUDES                  = "includes";
     String INVERSE_SOFTWARE          = "Inverse Software";
-    String IRL                       = "@id";
+    String IRI                       = "IRI";
     String IS_A                      = "is-a";
     String IS_CONTAINED_IN           = "is-contained-in";
     String IS_EXCEPTION_TO           = "is-exception-to";

@@ -61,5 +61,6 @@ public class ContextResourceTest extends AbstractModelTest {
         JsonNode context = resource.getProductContext(model.getKernel().getIsA().getId().toString(),
                                                       scope.lookup("Thing1").getId().toString());
         assertNotNull(context);
+        System.out.println(context.toString());
     }
 }

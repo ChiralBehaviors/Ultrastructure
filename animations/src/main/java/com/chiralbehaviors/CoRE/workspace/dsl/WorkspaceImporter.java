@@ -111,7 +111,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
  *
  */
 public class WorkspaceImporter {
-
     private static final String STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
     private static final String THIS                          = "this";
 
@@ -122,10 +121,30 @@ public class WorkspaceImporter {
         return importer;
     }
 
-    private final EntityManager         em;
-    private final Model                 model;
-    private WorkspaceScope              scope;
-    private EditableWorkspace           workspace;
+    public static String networkAuthNameOf(ConstraintContext constraint) {
+        if (constraint.name != null) {
+            return constraint.name.getText();
+        } else if (constraint.anyType != null) {
+            return constraint.childRelationship.member.getText();
+        } else if (constraint.methodType != null) {
+            switch (constraint.methodType.getText()) {
+                case "relationship":
+                    return constraint.childRelationship.member.getText();
+                case "entity":
+                    return constraint.authorizedParent.member.getText();
+                default:
+                    throw new IllegalStateException(String.format("Invalid syntax for network authorization name: %s",
+                                                                  constraint.methodType.getText()));
+            }
+        }
+        return constraint.authorizedParent.member.getText();
+    }
+
+    private final EntityManager em;
+    private final Model         model;
+    private WorkspaceScope      scope;
+    private EditableWorkspace   workspace;
+
     private final WorkspacePresentation wsp;
 
     public WorkspaceImporter(InputStream source,
@@ -355,10 +374,9 @@ public class WorkspaceImporter {
                                                                                                                    ConstraintContext constraint,
                                                                                                                    NetworkAuthorization<T> authorization,
                                                                                                                    Function<Agency, AttributeAuthorization<T, Network>> attrAuth) {
-        authorization.setName(constraint.name != null ? constraint.getText()
-                                                      : null);
-        authorization.setClassification(resolve(facet.classification));
+        authorization.setName(networkAuthNameOf(constraint));
         authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
         authorization.setChildRelationship(resolve(constraint.childRelationship));
         resolveAuthorized(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
@@ -568,7 +586,7 @@ public class WorkspaceImporter {
             if (ruleform.irl != null) {
                 AttributeMetaAttribute ama = new AttributeMetaAttribute();
                 ama.setAttribute(attr);
-                ama.setMetaAttribute(model.getKernel().getIRL());
+                ama.setMetaAttribute(model.getKernel().getIRI());
                 ama.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
                 ama.setValueFromString(stripQuotes(ruleform.irl.getText()));
                 workspace.add(ama);
@@ -1048,8 +1066,8 @@ public class WorkspaceImporter {
 
     private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveFrom(ConstraintContext constraint,
                                                                                                              XDomainNetworkAuthorization<T, ?> authorization) {
-        authorization.setName(constraint.name == null ? null
-                                                      : constraint.name.getText());
+
+        authorization.setName(networkAuthNameOf(constraint));
         if (constraint.anyType == null) {
             authorization.setFromParent(resolve(constraint.authorizedParent));
             authorization.setFromRelationship(resolve(constraint.authorizedRelationship));

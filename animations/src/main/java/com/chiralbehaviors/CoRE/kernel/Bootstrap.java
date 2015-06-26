@@ -271,7 +271,7 @@ public class Bootstrap {
                  core, kernelWorkspace);
         populate("NamespaceAttribute", find(WellKnownAttribute.NAMESPACE), core,
                  kernelWorkspace);
-        populate("IRL", find(WellKnownAttribute.IRL), core, kernelWorkspace);
+        populate("IRI", find(WellKnownAttribute.IRI), core, kernelWorkspace);
         populate("JsonldType", find(WellKnownAttribute.JSONLD_TYPE), core,
                  kernelWorkspace);
 

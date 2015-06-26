@@ -41,20 +41,20 @@ products {
     facets {
         kernel::IsA.Thing1 {aliases URI discount properties}
             constraints {
-                one thing1Of: kernel::IsA.Thing2 named: thing2
-                one derivedFrom: kernel::IsA.MavenArtifact
+                one thing1Of: kernel::IsA.Thing2 named thing2
+                one derivedFrom: kernel::IsA.MavenArtifact relationship
             }
         kernel::IsA.Thing2
             constraints {
-                one inThing1: kernel::IsA.Thing1 named: thing1
-                n derivedFrom: kernel::IsA.MavenArtifact 
-                n thing2Of get: inferred: kernel::IsA.Thing3 named: thing3
+                one inThing1: kernel::IsA.Thing1
+                n derivedFrom: kernel::IsA.MavenArtifact relationship
+                n thing2Of get: inferred: kernel::IsA.Thing3
             }
         kernel::IsA.Thing3
             constraints {
-                one inThing1: *Product named: thing1
-                n derivedFrom: kernel::IsA.MavenArtifact 
-                n thing2Of get: inferred: kernel::IsA.Thing2 named: thing2
+                one inThing1: *Product named superFly
+                n derivedFrom: kernel::IsA.MavenArtifact relationship
+                n thing2Of get: inferred: kernel::IsA.Thing2
             }
     }
 }

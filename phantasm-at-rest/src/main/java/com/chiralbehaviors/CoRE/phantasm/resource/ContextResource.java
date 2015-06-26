@@ -86,15 +86,16 @@ public class ContextResource extends TransactionalResource {
         ObjectNode context = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
         container.set("@context", context);
         for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(aspect)) {
-            String irl = irlFrom(auth.getAuthorizedAttribute());
+            String iri = iriFrom(auth.getAuthorizedAttribute());
             String type = typeFrom(auth.getAuthorizedAttribute());
+            String term = auth.getAuthorizedAttribute().getName();
             if (type == null) {
-                context.put(auth.getAuthorizedAttribute().getName(), irl);
+                context.put(term, iri);
             } else {
-                ObjectNode term = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-                term.put("@id", irl);
-                term.put("@type", irl);
-                context.set(auth.getAuthorizedAttribute().getName(), term);
+                ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
+                termDefinition.put("@id", iri);
+                termDefinition.put("@type", iri);
+                context.set(term, termDefinition);
             }
         }
         return container;
@@ -106,7 +107,7 @@ public class ContextResource extends TransactionalResource {
      */
     private String typeFrom(Attribute authorizedAttribute) {
         AttributeValue<Attribute> irl = readOnlyModel.getAttributeModel().getAttributeValue(authorizedAttribute,
-                                                                                            readOnlyModel.getKernel().getIRL());
+                                                                                            readOnlyModel.getKernel().getIRI());
         return irl != null ? irl.getTextValue() : null;
     }
 
@@ -114,11 +115,11 @@ public class ContextResource extends TransactionalResource {
      * @param authorizedAttribute
      * @return
      */
-    private String irlFrom(Attribute authorizedAttribute) {
-        AttributeValue<Attribute> irl = readOnlyModel.getAttributeModel().getAttributeValue(authorizedAttribute,
-                                                                                            readOnlyModel.getKernel().getIRL());
-        if (irl != null) {
-            return irl.getTextValue();
+    private String iriFrom(Attribute authorizedAttribute) {
+        AttributeValue<Attribute> iri = readOnlyModel.getAttributeModel().getAttributeValue(authorizedAttribute,
+                                                                                            readOnlyModel.getKernel().getIRI());
+        if (iri != null) {
+            return iri.getTextValue();
         }
         switch (authorizedAttribute.getValueType()) {
             case TEXT:

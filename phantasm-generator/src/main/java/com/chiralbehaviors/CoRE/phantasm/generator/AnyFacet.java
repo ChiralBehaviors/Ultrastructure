@@ -41,7 +41,7 @@ public class AnyFacet implements Facet {
      */
     @Override
     public String getClassName() {
-        return String.format("Phantasm<%s>", ruleform.getSimpleName());
+        return String.format("ScopedPhantasm<%s>", ruleform.getSimpleName());
     }
 
     /* (non-Javadoc)
@@ -69,7 +69,8 @@ public class AnyFacet implements Facet {
      * @see com.chiralbehaviors.CoRE.phantasm.generator.Facet#resolve(java.util.Map, com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation, java.util.Map)
      */
     @Override
-    public void resolve(Map<FacetKey, Facet> facets, WorkspacePresentation presentation,
+    public void resolve(Map<FacetKey, Facet> facets,
+                        WorkspacePresentation presentation,
                         Map<ScopedName, MappedAttribute> mapped) {
         throw new UnsupportedOperationException("Should never be called");
     }

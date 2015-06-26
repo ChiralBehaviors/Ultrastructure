@@ -231,7 +231,7 @@ constraint:
     (anyType = ('*Agency' | '*Attribute' | '*Interval' | '*Location' | '*Product' | '*Relationship' | '*StatusCode' | '*Unit')
     | 
     (authorizedRelationship = qualifiedName '.' authorizedParent = qualifiedName))
-    (('named' name = ObjectName) | (methodType = ( 'relationship' | 'entity')))?
+    (('named' name = ObjectName) | (methodType = ( 'named by relationship' | 'named by entity')))?
     ('sequence:' sequenceNumber = Number)?
     (LB classifiedAttributes RB)?
     ;

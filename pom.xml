@@ -73,6 +73,7 @@
         <module>phantasm-generator</module>
         <module>phantasm-plugin</module>
         <module>phantasm-at-rest</module>
+        <module>thing-ontology</module>
     </modules>
 
     <dependencyManagement>
@@ -117,6 +118,11 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections-maven</artifactId>
                 <version>0.9.8</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>thing-ontology</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>

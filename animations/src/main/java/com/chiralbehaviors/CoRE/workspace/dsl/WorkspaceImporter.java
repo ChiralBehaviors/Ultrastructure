@@ -128,9 +128,9 @@ public class WorkspaceImporter {
             return constraint.childRelationship.member.getText();
         } else if (constraint.methodType != null) {
             switch (constraint.methodType.getText()) {
-                case "relationship":
+                case "named by relationship":
                     return constraint.childRelationship.member.getText();
-                case "entity":
+                case "named by entity":
                     return constraint.authorizedParent.member.getText();
                 default:
                     throw new IllegalStateException(String.format("Invalid syntax for network authorization name: %s",

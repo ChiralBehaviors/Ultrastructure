@@ -44,6 +44,9 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>phantasm-plugin</artifactId>
+                <version>${project.version}</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -52,7 +55,7 @@
                         </goals>
                         <configuration>
                             <generator>
-                                <resource>${basedir}/src/test/resources/thing.wsp</resource>
+                                <resource>/thing.wsp</resource>
                                 <outputDirectory>${project.build.directory}/generated-test-sources/phantasm</outputDirectory>
                                 <packageName>com.chiralbehaviors.CoRE.phantasm.resource.test</packageName>
                                 <appendTypeToPackage>true</appendTypeToPackage>
@@ -60,8 +63,13 @@
                         </configuration>
                     </execution>
                 </executions>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>phantasm-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.chiralbehaviors.CoRE</groupId>
+                        <artifactId>thing-ontology</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

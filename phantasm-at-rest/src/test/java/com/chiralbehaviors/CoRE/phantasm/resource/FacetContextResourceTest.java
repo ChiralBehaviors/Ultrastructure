@@ -34,6 +34,7 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContextResource;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,8 +67,8 @@ public class FacetContextResourceTest extends AbstractModelTest {
         UriInfo uriInfo = mock(UriInfo.class);
         when(uriInfo.getBaseUriBuilder()).thenReturn(new JerseyUriBuilder().uri("http://Ultrastructure/northwind/")).thenReturn(new JerseyUriBuilder().uri("http://Ultrastructure/northwind/"));
         FacetContextResource resource = new FacetContextResource(emf, uriInfo);
-        JsonNode context = resource.getProductContext(model.getKernel().getIsA().getId().toString(),
-                                                      scope.lookup("Thing2").getId().toString());
+        JsonNode context = resource.getProduct(model.getKernel().getIsA().getId().toString(),
+                                               scope.lookup("Thing2").getId().toString());
         assertNotNull(context);
 
         ObjectMapper objMapper = new ObjectMapper();

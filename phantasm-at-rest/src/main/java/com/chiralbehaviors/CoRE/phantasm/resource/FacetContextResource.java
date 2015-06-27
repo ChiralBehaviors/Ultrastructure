@@ -60,8 +60,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author hhildebrand
  *
  */
-@Path("json-ld/context")
-public class ContextResource extends TransactionalResource {
+@Path("json-ld/facet/context")
+public class FacetContextResource extends TransactionalResource {
 
     private static final String CLASSIFICATION = "classification";
     private static final String CLASSIFIER     = "classifier";
@@ -72,11 +72,11 @@ public class ContextResource extends TransactionalResource {
     @Context
     private UriInfo uriInfo;
 
-    public ContextResource(EntityManagerFactory emf) {
+    public FacetContextResource(EntityManagerFactory emf) {
         super(emf);
     }
 
-    public ContextResource(EntityManagerFactory emf, UriInfo uriInfo) {
+    public FacetContextResource(EntityManagerFactory emf, UriInfo uriInfo) {
         super(emf);
         this.uriInfo = uriInfo;
     }
@@ -220,20 +220,7 @@ public class ContextResource extends TransactionalResource {
                                                                                          Aspect<RuleForm> aspect,
                                                                                          NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
                                                                                          String eeType) {
-        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(aspect)) {
-            Aspect<RuleForm> childAspect = new Aspect<RuleForm>(auth.getAuthorizedRelationship(),
-                                                                auth.getAuthorizedParent());
-            if (auth.getName() != null) {
-                ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-                termDefinition.put(ID, getTypeIri(eeType, childAspect));
-                termDefinition.put(TYPE, ID);
-                termDefinition.put(CLASSIFIER,
-                                   childAspect.getClassifier().getName());
-                termDefinition.put(CLASSIFICATION,
-                                   childAspect.getClassification().getName());
-                context.set(auth.getName(), termDefinition);
-            }
-        }
+
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, ?>> JsonNode buildContext(Aspect<RuleForm> aspect,
@@ -272,7 +259,10 @@ public class ContextResource extends TransactionalResource {
 
     private String getTypeIri(String eeType, Aspect<?> aspect) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
-        URI userUri = ub.path(ContextResource.class).path(aspect.getClassifier().getId().toString()).path(aspect.getClassification().getId().toString()).build();
+        String classifier = aspect.getClassifier().getId().toString();
+        String classification = aspect.getClassification().getId().toString();
+
+        URI userUri = ub.path(FacetContextResource.class).path(classifier).path(classification).build();
         return userUri.toASCIIString();
     }
 

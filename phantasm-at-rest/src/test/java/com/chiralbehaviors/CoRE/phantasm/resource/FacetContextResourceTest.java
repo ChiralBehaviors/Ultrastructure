@@ -24,7 +24,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
@@ -43,14 +42,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author hhildebrand
  *
  */
-public class ContextResourceTest extends AbstractModelTest {
+public class FacetContextResourceTest extends AbstractModelTest {
 
     private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
 
     @BeforeClass
     public static void loadWorkspace() throws Exception {
         em.getTransaction().begin();
-        WorkspaceImporter.createWorkspace(ContextResourceTest.class.getResourceAsStream("/thing.wsp"),
+        WorkspaceImporter.createWorkspace(FacetContextResourceTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
         em.getTransaction().commit();
     }
@@ -65,12 +64,8 @@ public class ContextResourceTest extends AbstractModelTest {
     @Test
     public void testContext() throws Exception {
         UriInfo uriInfo = mock(UriInfo.class);
-        UriBuilder builder = new JerseyUriBuilder();
-        builder.uri("http://Ultrastructure/northwind/");
-        UriBuilder builder2 = new JerseyUriBuilder();
-        builder2.uri("http://Ultrastructure/northwind/");
-        when(uriInfo.getBaseUriBuilder()).thenReturn(builder).thenReturn(builder2);
-        ContextResource resource = new ContextResource(emf, uriInfo);
+        when(uriInfo.getBaseUriBuilder()).thenReturn(new JerseyUriBuilder().uri("http://Ultrastructure/northwind/")).thenReturn(new JerseyUriBuilder().uri("http://Ultrastructure/northwind/"));
+        FacetContextResource resource = new FacetContextResource(emf, uriInfo);
         JsonNode context = resource.getProductContext(model.getKernel().getIsA().getId().toString(),
                                                       scope.lookup("Thing2").getId().toString());
         assertNotNull(context);

@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.impl;
+package com.chiralbehaviors.CoRE.phantasm.java;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;

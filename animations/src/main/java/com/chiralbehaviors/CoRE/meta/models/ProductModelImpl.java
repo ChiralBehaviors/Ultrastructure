@@ -33,6 +33,8 @@ import javax.persistence.criteria.Root;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization_;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct_;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.location.Location;
@@ -43,10 +45,14 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductLocation_;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationship;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductRelationship_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
@@ -407,6 +413,54 @@ public class ProductModelImpl extends
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductAgencyAuths(com.chiralbehaviors.CoRE.meta.Aspect)
+     */
+    @Override
+    public List<AgencyProductAuthorization> getProductAgencyAuths(Aspect<Product> aspect) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AgencyProductAuthorization> query = cb.createQuery(AgencyProductAuthorization.class);
+        Root<AgencyProductAuthorization> networkRoot = query.from(AgencyProductAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.toParent),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get(AgencyProductAuthorization_.toRelationship),
+                                                        aspect.getClassifier())));
+        TypedQuery<AgencyProductAuthorization> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductLocationAuths(com.chiralbehaviors.CoRE.meta.Aspect)
+     */
+    @Override
+    public List<ProductLocationAuthorization> getProductLocationAuths(Aspect<Product> aspect) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductLocationAuthorization> query = cb.createQuery(ProductLocationAuthorization.class);
+        Root<ProductLocationAuthorization> networkRoot = query.from(ProductLocationAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.fromParent),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.fromRelationship),
+                                                        aspect.getClassifier())));
+        TypedQuery<ProductLocationAuthorization> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductRelationshipAuths(com.chiralbehaviors.CoRE.meta.Aspect)
+     */
+    @Override
+    public List<ProductRelationshipAuthorization> getProductRelationshipAuths(Aspect<Product> aspect) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductRelationshipAuthorization> query = cb.createQuery(ProductRelationshipAuthorization.class);
+        Root<ProductRelationshipAuthorization> networkRoot = query.from(ProductRelationshipAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromParent),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromRelationship),
+                                                        aspect.getClassifier())));
+        TypedQuery<ProductRelationshipAuthorization> q = em.createQuery(query);
+        return q.getResultList();
     }
 
     /* (non-Javadoc)

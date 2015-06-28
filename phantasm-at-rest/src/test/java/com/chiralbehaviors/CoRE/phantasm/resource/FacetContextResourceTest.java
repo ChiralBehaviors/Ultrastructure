@@ -65,7 +65,8 @@ public class FacetContextResourceTest extends AbstractModelTest {
     @Test
     public void testContext() throws Exception {
         UriInfo uriInfo = mock(UriInfo.class);
-        when(uriInfo.getBaseUriBuilder()).thenReturn(new JerseyUriBuilder().uri("http://Ultrastructure/northwind/")).thenReturn(new JerseyUriBuilder().uri("http://Ultrastructure/northwind/"));
+        String base = "http://Ultrastructure/northwind/";
+        when(uriInfo.getBaseUriBuilder()).thenReturn(new JerseyUriBuilder().uri(base)).thenReturn(new JerseyUriBuilder().uri(base)).thenReturn(new JerseyUriBuilder().uri(base));
         FacetContextResource resource = new FacetContextResource(emf, uriInfo);
         JsonNode context = resource.getProduct(model.getKernel().getIsA().getId().toString(),
                                                scope.lookup("Thing2").getId().toString());

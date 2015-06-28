@@ -26,14 +26,23 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -43,17 +52,17 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class FacetContextBuilder {
+    public static final String CLASSIFICATION = "classification";
+
+    public static final String CLASSIFIER = "classifier";
+    public static final String CONTEXT    = "@context";
+    public static final String ID         = "@id";
+    public static final String TYPE       = "@type";
+    private final Model        readOnlyModel;
+
     public FacetContextBuilder(Model readOnlyModel) {
         this.readOnlyModel = readOnlyModel;
     }
-
-    public static final String CLASSIFICATION = "classification";
-    public static final String CLASSIFIER     = "classifier";
-    public static final String CONTEXT        = "@context";
-    public static final String ID             = "@id";
-    public static final String TYPE           = "@type";
-
-    private final Model readOnlyModel;
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> JsonNode buildContainer(Aspect<RuleForm> aspect,
                                                                                                                                         UriInfo uriInfo) {
@@ -68,6 +77,27 @@ public class FacetContextBuilder {
                             readOnlyModel.getNetworkedModel(aspect.getClassification()),
                             aspect.getClassification().getClass().getSimpleName().toLowerCase(),
                             uriInfo);
+    }
+
+    private void addAgencyAuthTerms(ObjectNode context, Aspect<Agency> aspect,
+                                    UriInfo uriInfo) {
+        AgencyModel agencyModel = readOnlyModel.getAgencyModel();
+        for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect)) {
+            if (auth.getName() != null) {
+                context.set(auth.getName(),
+                            getTermDefinition(new Aspect<Location>(auth.getToRelationship(),
+                                                                   auth.getToParent()),
+                                              TYPE, uriInfo));
+            }
+        }
+        for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect)) {
+            if (auth.getName() != null) {
+                context.set(auth.getName(),
+                            getTermDefinition(new Aspect<Product>(auth.getToRelationship(),
+                                                                  auth.getToParent()),
+                                              TYPE, uriInfo));
+            }
+        }
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, ?>> void addAttributeTerms(ObjectNode context,
@@ -88,6 +118,27 @@ public class FacetContextBuilder {
         }
     }
 
+    private void addLocationAuthTerms(ObjectNode context,
+                                      Aspect<Location> aspect,
+                                      UriInfo uriInfo) {
+        for (AgencyLocationAuthorization auth : readOnlyModel.getLocationModel().getLocationAgencyAuths(aspect)) {
+            if (auth.getName() != null) {
+                context.set(auth.getName(),
+                            getTermDefinition(new Aspect<Agency>(auth.getFromRelationship(),
+                                                                 auth.getFromParent()),
+                                              TYPE, uriInfo));
+            }
+        }
+        for (ProductLocationAuthorization auth : readOnlyModel.getLocationModel().getLocationProductAuths(aspect)) {
+            if (auth.getName() != null) {
+                context.set(auth.getName(),
+                            getTermDefinition(new Aspect<Product>(auth.getFromRelationship(),
+                                                                  auth.getFromParent()),
+                                              TYPE, uriInfo));
+            }
+        }
+    }
+
     private <RuleForm extends ExistentialRuleform<RuleForm, ?>> void addNetworkAuthTerms(ObjectNode context,
                                                                                          Aspect<RuleForm> aspect,
                                                                                          NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
@@ -97,24 +148,76 @@ public class FacetContextBuilder {
             Aspect<RuleForm> childAspect = new Aspect<RuleForm>(auth.getAuthorizedRelationship(),
                                                                 auth.getAuthorizedParent());
             if (auth.getName() != null) {
-                ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-                termDefinition.put(ID,
-                                   getTypeIri(eeType, childAspect, uriInfo));
-                termDefinition.put(TYPE, ID);
-                termDefinition.put(CLASSIFIER,
-                                   childAspect.getClassifier().getName());
-                termDefinition.put(CLASSIFICATION,
-                                   childAspect.getClassification().getName());
+                ObjectNode termDefinition = getTermDefinition(childAspect,
+                                                              eeType, uriInfo);
                 context.set(auth.getName(), termDefinition);
             }
         }
     }
 
+    private void addProductAuthTerms(ObjectNode context, Aspect<Product> aspect,
+                                     UriInfo uriInfo) {
+        for (AgencyProductAuthorization auth : readOnlyModel.getProductModel().getProductAgencyAuths(aspect)) {
+            if (auth.getName() != null) {
+                context.set(auth.getName(),
+                            getTermDefinition(new Aspect<Agency>(auth.getFromRelationship(),
+                                                                 auth.getFromParent()),
+                                              TYPE, uriInfo));
+            }
+        }
+        for (ProductLocationAuthorization auth : readOnlyModel.getProductModel().getProductLocationAuths(aspect)) {
+            if (auth.getName() != null) {
+                context.set(auth.getName(),
+                            getTermDefinition(new Aspect<Location>(auth.getToRelationship(),
+                                                                   auth.getToParent()),
+                                              TYPE, uriInfo));
+            }
+        }
+        for (ProductRelationshipAuthorization auth : readOnlyModel.getProductModel().getProductRelationshipAuths(aspect)) {
+            if (auth.getName() != null) {
+                context.set(auth.getName(),
+                            getTermDefinition(new Aspect<Relationship>(auth.getToRelationship(),
+                                                                       auth.getToParent()),
+                                              TYPE, uriInfo));
+            }
+        }
+        for (ProductRelationshipAuthorization auth : readOnlyModel.getProductModel().getProductRelationshipAuths(aspect)) {
+            if (auth.getName() != null) {
+                context.set(auth.getName(),
+                            getTermDefinition(new Aspect<Relationship>(auth.getToRelationship(),
+                                                                       auth.getToParent()),
+                                              TYPE, uriInfo));
+            }
+        }
+    }
+
+    private void addRelationshipAuthTerms(ObjectNode context,
+                                          Aspect<Relationship> aspect,
+                                          UriInfo uriInfo) {
+        for (ProductRelationshipAuthorization auth : readOnlyModel.getRelationshipModel().getRelationshipProductAuths(aspect)) {
+            if (auth.getName() != null) {
+                context.set(auth.getName(),
+                            getTermDefinition(new Aspect<Product>(auth.getFromRelationship(),
+                                                                  auth.getFromParent()),
+                                              TYPE, uriInfo));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     private <RuleForm extends ExistentialRuleform<RuleForm, ?>> void addXdomainAuthTerms(ObjectNode context,
                                                                                          Aspect<RuleForm> aspect,
-                                                                                         NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
-                                                                                         String eeType) {
-
+                                                                                         UriInfo uriInfo) {
+        if (aspect.getClassification() instanceof Agency) {
+            addAgencyAuthTerms(context, (Aspect<Agency>) aspect, uriInfo);
+        } else if (aspect.getClassification() instanceof Product) {
+            addProductAuthTerms(context, (Aspect<Product>) aspect, uriInfo);
+        } else if (aspect.getClassification() instanceof Location) {
+            addLocationAuthTerms(context, (Aspect<Location>) aspect, uriInfo);
+        } else if (aspect.getClassification() instanceof Relationship) {
+            addRelationshipAuthTerms(context, (Aspect<Relationship>) aspect,
+                                     uriInfo);
+        }
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, ?>> JsonNode buildContext(Aspect<RuleForm> aspect,
@@ -124,8 +227,20 @@ public class FacetContextBuilder {
         ObjectNode context = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
         addAttributeTerms(context, aspect, networkedModel);
         addNetworkAuthTerms(context, aspect, networkedModel, eeType, uriInfo);
-        addXdomainAuthTerms(context, aspect, networkedModel, eeType);
+        addXdomainAuthTerms(context, aspect, uriInfo);
         return context;
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> ObjectNode getTermDefinition(Aspect<RuleForm> aspect,
+                                                                                             String eeType,
+                                                                                             UriInfo uriInfo) {
+        ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
+        termDefinition.put(ID, getTypeIri(eeType, aspect, uriInfo));
+        termDefinition.put(TYPE, ID);
+        termDefinition.put(CLASSIFIER, aspect.getClassifier().getName());
+        termDefinition.put(CLASSIFICATION,
+                           aspect.getClassification().getName());
+        return termDefinition;
     }
 
     private String getTypeIri(String eeType, Aspect<?> aspect,

@@ -35,10 +35,14 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyLocation;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization_;
 import com.chiralbehaviors.CoRE.agency.AgencyLocation_;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization_;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct_;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -264,6 +268,38 @@ public class AgencyModelImpl extends
             em.remove(q.getSingleResult());
         } catch (NoResultException e) {
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.AgencyModel#getAgencyLocationAuths(com.chiralbehaviors.CoRE.meta.Aspect)
+     */
+    @Override
+    public List<AgencyLocationAuthorization> getAgencyLocationAuths(Aspect<Agency> aspect) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AgencyLocationAuthorization> query = cb.createQuery(AgencyLocationAuthorization.class);
+        Root<AgencyLocationAuthorization> networkRoot = query.from(AgencyLocationAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.fromParent),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get(AgencyLocationAuthorization_.fromRelationship),
+                                                        aspect.getClassifier())));
+        TypedQuery<AgencyLocationAuthorization> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.AgencyModel#getAgencyProductAuths(com.chiralbehaviors.CoRE.meta.Aspect)
+     */
+    @Override
+    public List<AgencyProductAuthorization> getAgencyProductAuths(Aspect<Agency> aspect) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AgencyProductAuthorization> query = cb.createQuery(AgencyProductAuthorization.class);
+        Root<AgencyProductAuthorization> networkRoot = query.from(AgencyProductAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.fromParent),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get(AgencyProductAuthorization_.fromRelationship),
+                                                        aspect.getClassifier())));
+        TypedQuery<AgencyProductAuthorization> q = em.createQuery(query);
+        return q.getResultList();
     }
 
     /* (non-Javadoc)

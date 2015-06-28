@@ -38,6 +38,8 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductRelationship;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductRelationship_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
@@ -247,6 +249,20 @@ public class RelationshipModelImpl extends
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    @Override
+    public List<ProductRelationshipAuthorization> getRelationshipProductAuths(Aspect<Relationship> aspect) {
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductRelationshipAuthorization> query = cb.createQuery(ProductRelationshipAuthorization.class);
+        Root<ProductRelationshipAuthorization> networkRoot = query.from(ProductRelationshipAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.toParent),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get(ProductRelationshipAuthorization_.toRelationship),
+                                                        aspect.getClassifier())));
+        TypedQuery<ProductRelationshipAuthorization> q = em.createQuery(query);
+        return q.getResultList();
     }
 
     /* (non-Javadoc)

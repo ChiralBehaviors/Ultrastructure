@@ -272,6 +272,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setName(networkAuthNameOf(constraint));
         resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
@@ -299,6 +300,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setName(networkAuthNameOf(constraint));
         resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
@@ -327,6 +329,7 @@ public class WorkspaceImporter {
         authorization.setConnection(resolve(constraint.childRelationship));
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
+        authorization.setName(networkAuthNameOf(constraint));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         em.persist(authorization);
         workspace.add(authorization);
@@ -354,6 +357,7 @@ public class WorkspaceImporter {
         authorization.setConnection(resolve(constraint.childRelationship));
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
+        authorization.setName(networkAuthNameOf(constraint));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
@@ -407,6 +411,7 @@ public class WorkspaceImporter {
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        authorization.setName(networkAuthNameOf(constraint));
         workspace.add(authorization);
         em.persist(authorization);
         ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
@@ -432,6 +437,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setName(networkAuthNameOf(constraint));
         resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
@@ -455,6 +461,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
+        authorization.setName(networkAuthNameOf(constraint));
         resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         workspace.add(authorization);
@@ -480,6 +487,7 @@ public class WorkspaceImporter {
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        authorization.setName(networkAuthNameOf(constraint));
         workspace.add(authorization);
         em.persist(authorization);
         ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();

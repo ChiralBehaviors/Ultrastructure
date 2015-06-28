@@ -10,6 +10,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_relationship_authorization_pkey" />
             </column>
+            <column name="name" type="text"/>
             <column name="from_relationship" type="uuid">
                 <constraints nullable="false" />
             </column>

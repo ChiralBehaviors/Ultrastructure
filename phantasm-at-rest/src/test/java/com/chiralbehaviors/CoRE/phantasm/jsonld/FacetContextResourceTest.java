@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.resource;
+package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -34,7 +34,6 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContextBuilder;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContextResource;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -75,7 +74,7 @@ public class FacetContextResourceTest extends AbstractModelTest {
         assertNotNull(container);
         ObjectMapper objMapper = new ObjectMapper();
         System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(container));
-        ObjectNode context = (ObjectNode) container.get(FacetContextBuilder.CONTEXT);
+        ObjectNode context = (ObjectNode) container.get(Constants.CONTEXT);
         assertNotNull(context);
         ObjectNode thing1 = (ObjectNode) context.get("Thing1");
         assertNotNull(thing1);
@@ -83,7 +82,7 @@ public class FacetContextResourceTest extends AbstractModelTest {
         assertNotNull(derivedFrom);
         ObjectNode thing3 = (ObjectNode) context.get("Thing3");
         assertNotNull(thing3);
-        TextNode id = (TextNode) thing1.get(FacetContextBuilder.ID);
+        TextNode id = (TextNode) thing1.get(Constants.ID);
         assertNotNull(id);
     }
 }

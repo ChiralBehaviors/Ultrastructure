@@ -23,9 +23,13 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.utils.Util;
 
@@ -37,6 +41,16 @@ public class TransactionalResource {
     @FunctionalInterface
     public interface Transactionally<T> {
         T exec(Model model) throws SQLException;
+    }
+
+    public static UUID toUuid(String ruleform) {
+        UUID classification;
+        try {
+            classification = UUID.fromString(ruleform);
+        } catch (IllegalArgumentException e) {
+            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
+        }
+        return classification;
     }
 
     private final EntityManagerFactory emf;
@@ -51,12 +65,26 @@ public class TransactionalResource {
         readOnlyModel.getEntityManager().close();
     }
 
+    protected <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(String relationship,
+                                                                                             String ruleform,
+                                                                                             NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        UUID classifier = toUuid(relationship);
+        UUID classification = toUuid(ruleform);
+        try {
+            return networkedModel.getAspect(classifier, classification);
+        } catch (IllegalArgumentException e) {
+            throw new WebApplicationException(e, Response.Status.NOT_FOUND);
+        }
+    }
+
     protected Model getNewModel() {
         return new ModelImpl(emf);
     }
 
     protected UUID insert(final Ruleform ruleform) {
-        return perform((Model model) -> Util.smartMerge(model.getEntityManager(), ruleform, new HashMap<>()).getId());
+        return perform((Model model) -> Util.smartMerge(model.getEntityManager(),
+                                                        ruleform,
+                                                        new HashMap<>()).getId());
     }
 
     protected <T> T perform(Transactionally<T> txn) throws WebApplicationException {

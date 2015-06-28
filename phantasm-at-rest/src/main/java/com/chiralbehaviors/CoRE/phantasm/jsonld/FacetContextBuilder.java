@@ -52,13 +52,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class FacetContextBuilder {
-    public static final String CLASSIFICATION = "classification";
 
-    public static final String CLASSIFIER = "classifier";
-    public static final String CONTEXT    = "@context";
-    public static final String ID         = "@id";
-    public static final String TYPE       = "@type";
-    private final Model        readOnlyModel;
+    private final Model readOnlyModel;
 
     public FacetContextBuilder(Model readOnlyModel) {
         this.readOnlyModel = readOnlyModel;
@@ -67,16 +62,20 @@ public class FacetContextBuilder {
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> JsonNode buildContainer(Aspect<RuleForm> aspect,
                                                                                                                                         UriInfo uriInfo) {
         ObjectNode container = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-        container.set(CONTEXT, buildContext(aspect, uriInfo));
+        container.set(Constants.CONTEXT, buildContext(aspect, uriInfo));
         return container;
     }
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> JsonNode buildContext(Aspect<RuleForm> aspect,
                                                                                                                                       UriInfo uriInfo) {
-        return buildContext(aspect,
-                            readOnlyModel.getNetworkedModel(aspect.getClassification()),
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        ObjectNode context = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
+        addAttributeTerms(context, aspect, networkedModel);
+        addNetworkAuthTerms(context, aspect, networkedModel,
                             aspect.getClassification().getClass().getSimpleName().toLowerCase(),
                             uriInfo);
+        addXdomainAuthTerms(context, aspect, uriInfo);
+        return context;
     }
 
     private void addAgencyAuthTerms(ObjectNode context, Aspect<Agency> aspect,
@@ -87,7 +86,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Location>(auth.getToRelationship(),
                                                                    auth.getToParent()),
-                                              TYPE, uriInfo));
+                                              Constants.TYPE, uriInfo));
             }
         }
         for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect)) {
@@ -95,7 +94,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Product>(auth.getToRelationship(),
                                                                   auth.getToParent()),
-                                              TYPE, uriInfo));
+                                              Constants.TYPE, uriInfo));
             }
         }
     }
@@ -111,8 +110,8 @@ public class FacetContextBuilder {
                 context.put(term, iri);
             } else {
                 ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-                termDefinition.put(ID, iri);
-                termDefinition.put(TYPE, type);
+                termDefinition.put(Constants.ID, iri);
+                termDefinition.put(Constants.TYPE, type);
                 context.set(term, termDefinition);
             }
         }
@@ -126,7 +125,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Agency>(auth.getFromRelationship(),
                                                                  auth.getFromParent()),
-                                              TYPE, uriInfo));
+                                              Constants.TYPE, uriInfo));
             }
         }
         for (ProductLocationAuthorization auth : readOnlyModel.getLocationModel().getLocationProductAuths(aspect)) {
@@ -134,7 +133,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Product>(auth.getFromRelationship(),
                                                                   auth.getFromParent()),
-                                              TYPE, uriInfo));
+                                              Constants.TYPE, uriInfo));
             }
         }
     }
@@ -162,7 +161,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Agency>(auth.getFromRelationship(),
                                                                  auth.getFromParent()),
-                                              TYPE, uriInfo));
+                                              Constants.TYPE, uriInfo));
             }
         }
         for (ProductLocationAuthorization auth : readOnlyModel.getProductModel().getProductLocationAuths(aspect)) {
@@ -170,7 +169,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Location>(auth.getToRelationship(),
                                                                    auth.getToParent()),
-                                              TYPE, uriInfo));
+                                              Constants.TYPE, uriInfo));
             }
         }
         for (ProductRelationshipAuthorization auth : readOnlyModel.getProductModel().getProductRelationshipAuths(aspect)) {
@@ -178,7 +177,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Relationship>(auth.getToRelationship(),
                                                                        auth.getToParent()),
-                                              TYPE, uriInfo));
+                                              Constants.TYPE, uriInfo));
             }
         }
         for (ProductRelationshipAuthorization auth : readOnlyModel.getProductModel().getProductRelationshipAuths(aspect)) {
@@ -186,7 +185,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Relationship>(auth.getToRelationship(),
                                                                        auth.getToParent()),
-                                              TYPE, uriInfo));
+                                              Constants.TYPE, uriInfo));
             }
         }
     }
@@ -199,7 +198,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Product>(auth.getFromRelationship(),
                                                                   auth.getFromParent()),
-                                              TYPE, uriInfo));
+                                              Constants.TYPE, uriInfo));
             }
         }
     }
@@ -220,25 +219,15 @@ public class FacetContextBuilder {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> JsonNode buildContext(Aspect<RuleForm> aspect,
-                                                                                      NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
-                                                                                      String eeType,
-                                                                                      UriInfo uriInfo) {
-        ObjectNode context = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-        addAttributeTerms(context, aspect, networkedModel);
-        addNetworkAuthTerms(context, aspect, networkedModel, eeType, uriInfo);
-        addXdomainAuthTerms(context, aspect, uriInfo);
-        return context;
-    }
-
     private <RuleForm extends ExistentialRuleform<RuleForm, ?>> ObjectNode getTermDefinition(Aspect<RuleForm> aspect,
                                                                                              String eeType,
                                                                                              UriInfo uriInfo) {
         ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-        termDefinition.put(ID, getTypeIri(eeType, aspect, uriInfo));
-        termDefinition.put(TYPE, ID);
-        termDefinition.put(CLASSIFIER, aspect.getClassifier().getName());
-        termDefinition.put(CLASSIFICATION,
+        termDefinition.put(Constants.ID, getTypeIri(eeType, aspect, uriInfo));
+        termDefinition.put(Constants.TYPE, Constants.ID);
+        termDefinition.put(Constants.CLASSIFIER,
+                           aspect.getClassifier().getName());
+        termDefinition.put(Constants.CLASSIFICATION,
                            aspect.getClassification().getName());
         return termDefinition;
     }

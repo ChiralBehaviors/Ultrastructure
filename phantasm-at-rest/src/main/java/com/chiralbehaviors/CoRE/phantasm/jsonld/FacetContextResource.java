@@ -20,21 +20,14 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
-import java.util.UUID;
-
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.meta.Aspect;
-import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -42,6 +35,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 @Path("json-ld/facet/context")
+@Produces({ "application/json", "text/json" })
 public class FacetContextResource extends TransactionalResource {
 
     @Context
@@ -58,7 +52,6 @@ public class FacetContextResource extends TransactionalResource {
         this.uriInfo = uriInfo;
     }
 
-    @Produces({ "application/json", "text/json" })
     @Path("agency/{classifier}/{classification}")
     @GET
     public JsonNode getAgency(@PathParam("classifier") String relationship,
@@ -68,7 +61,6 @@ public class FacetContextResource extends TransactionalResource {
                                       uriInfo);
     }
 
-    @Produces({ "application/json", "text/json" })
     @Path("attribute/{classifier}/{classification}")
     @GET
     public JsonNode getAttribute(@PathParam("classifier") String relationship,
@@ -78,7 +70,6 @@ public class FacetContextResource extends TransactionalResource {
                                       uriInfo);
     }
 
-    @Produces({ "application/json", "text/json" })
     @Path("interval/{classifier}/{classification}")
     @GET
     public JsonNode getInterval(@PathParam("classifier") String relationship,
@@ -88,7 +79,6 @@ public class FacetContextResource extends TransactionalResource {
                                       uriInfo);
     }
 
-    @Produces({ "application/json", "text/json" })
     @Path("location/{classifier}/{classification}")
     @GET
     public JsonNode getLocation(@PathParam("classifier") String relationship,
@@ -98,7 +88,6 @@ public class FacetContextResource extends TransactionalResource {
                                       uriInfo);
     }
 
-    @Produces({ "application/json", "text/json" })
     @Path("product/{classifier}/{classification}")
     @GET
     public JsonNode getProduct(@PathParam("classifier") String relationship,
@@ -108,7 +97,6 @@ public class FacetContextResource extends TransactionalResource {
                                       uriInfo);
     }
 
-    @Produces({ "application/json", "text/json" })
     @Path("relationship/{classifier}/{classification}")
     @GET
     public JsonNode getRelationship(@PathParam("classifier") String relationship,
@@ -118,7 +106,6 @@ public class FacetContextResource extends TransactionalResource {
                                       uriInfo);
     }
 
-    @Produces({ "application/json", "text/json" })
     @Path("statusCode/{classifier}/{classification}")
     @GET
     public JsonNode getStatusCode(@PathParam("classifier") String relationship,
@@ -128,7 +115,6 @@ public class FacetContextResource extends TransactionalResource {
                                       uriInfo);
     }
 
-    @Produces({ "application/json", "text/json" })
     @Path("unit/{classifier}/{classification}")
     @GET
     public JsonNode getUnit(@PathParam("classifier") String relationship,
@@ -136,27 +122,5 @@ public class FacetContextResource extends TransactionalResource {
         return builder.buildContainer(getAspect(relationship, ruleform,
                                                 readOnlyModel.getUnitModel()),
                                       uriInfo);
-    }
-
-    private UUID toUuid(String ruleform) {
-        UUID classification;
-        try {
-            classification = UUID.fromString(ruleform);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
-        }
-        return classification;
-    }
-
-    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(String relationship,
-                                                                                           String ruleform,
-                                                                                           NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        UUID classifier = toUuid(relationship);
-        UUID classification = toUuid(ruleform);
-        try {
-            return networkedModel.getAspect(classifier, classification);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(e, Response.Status.NOT_FOUND);
-        }
     }
 }

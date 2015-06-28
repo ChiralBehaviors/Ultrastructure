@@ -20,14 +20,20 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
+import java.util.List;
+
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.network.Cardinality;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -43,22 +49,33 @@ public class FacetNodeBuilder {
         this.readOnlyModel = readOnlyModel;
     }
 
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> JsonNode buildContainer(Aspect<RuleForm> aspect,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void addTo(RuleForm existential,
+                                                                                                                           Aspect<RuleForm> aspect,
+                                                                                                                           ObjectNode node,
+                                                                                                                           NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
+                                                                                                                           UriInfo uriInfo) {
+        addAttributes(node, existential, aspect, networkedModel);
+        addNetworks(node, existential, aspect, networkedModel,
+                    aspect.getClassification().getClass().getSimpleName().toLowerCase(),
+                    uriInfo);
+        addXdomains(node, existential, aspect, uriInfo);
+    }
+
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> JsonNode buildContainer(RuleForm existential,
+                                                                                                                                        Aspect<RuleForm> aspect,
                                                                                                                                         UriInfo uriInfo) {
         ObjectNode container = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-        container.set(Constants.CONTEXT, buildNode(aspect, uriInfo));
+        container.set(Constants.CONTEXT,
+                      buildNode(existential, aspect, uriInfo));
         return container;
     }
 
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> JsonNode buildNode(Aspect<RuleForm> aspect,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> JsonNode buildNode(RuleForm existential,
+                                                                                                                                   Aspect<RuleForm> aspect,
                                                                                                                                    UriInfo uriInfo) {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
         ObjectNode node = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-        addAttributes(node, aspect, networkedModel);
-        addNetworks(node, aspect, networkedModel,
-                    aspect.getClassification().getClass().getSimpleName().toLowerCase(),
-                    uriInfo);
-        addXdomains(node, aspect, uriInfo);
+        addTo(existential, aspect, node, networkedModel, uriInfo);
 
         return null;
     }
@@ -69,10 +86,14 @@ public class FacetNodeBuilder {
      * @param networkedModel
      */
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void addAttributes(ObjectNode node,
+                                                                                                                                    RuleForm existential,
                                                                                                                                     Aspect<RuleForm> aspect,
                                                                                                                                     NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        // TODO Auto-generated method stub
-
+        for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(aspect)) {
+            String term = auth.getAuthorizedAttribute().getName();
+            node.put(term, networkedModel.getAttributeValue(existential,
+                                                            null).toString());
+        }
     }
 
     /**
@@ -83,12 +104,33 @@ public class FacetNodeBuilder {
      * @param uriInfo
      */
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void addNetworks(ObjectNode node,
+                                                                                                                                  RuleForm existential,
                                                                                                                                   Aspect<RuleForm> aspect,
                                                                                                                                   NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
                                                                                                                                   String lowerCase,
                                                                                                                                   UriInfo uriInfo) {
-        // TODO Auto-generated method stub
+        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(aspect)) {
+            List<RuleForm> children = networkedModel.getChildren(existential,
+                                                                 auth.getChildRelationship());
+            if (auth.getCardinality() == Cardinality.N) {
 
+            } else {
+                ArrayNode childrenNode = node.putArray(lowerCase);
+                children.forEach(child -> {
+                    childrenNode.add(getIri(existential, aspect));
+                });
+            }
+        }
+    }
+
+    /**
+     * @param ruleform
+     * @return
+     */
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> String getIri(RuleForm ruleform,
+                                                                                                                               Aspect<RuleForm> aspect) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
@@ -97,6 +139,7 @@ public class FacetNodeBuilder {
      * @param uriInfo
      */
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void addXdomains(ObjectNode node,
+                                                                                                                                  RuleForm existential,
                                                                                                                                   Aspect<RuleForm> aspect,
                                                                                                                                   UriInfo uriInfo) {
         // TODO Auto-generated method stub

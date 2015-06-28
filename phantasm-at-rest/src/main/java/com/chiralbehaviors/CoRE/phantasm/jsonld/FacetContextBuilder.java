@@ -53,6 +53,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class FacetContextBuilder {
 
+    public static String getTypeIri(Aspect<?> aspect, UriInfo uriInfo) {
+        String eeType = aspect.getClassification().getClass().getSimpleName().toLowerCase();
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        String classifier = aspect.getClassifier().getId().toString();
+        String classification = aspect.getClassification().getId().toString();
+
+        URI userUri = ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification).build();
+        return userUri.toASCIIString();
+    }
+
     private final Model readOnlyModel;
 
     public FacetContextBuilder(Model readOnlyModel) {
@@ -223,23 +233,13 @@ public class FacetContextBuilder {
                                                                                              String eeType,
                                                                                              UriInfo uriInfo) {
         ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
-        termDefinition.put(Constants.ID, getTypeIri(eeType, aspect, uriInfo));
+        termDefinition.put(Constants.ID, getTypeIri(aspect, uriInfo));
         termDefinition.put(Constants.TYPE, Constants.ID);
         termDefinition.put(Constants.CLASSIFIER,
                            aspect.getClassifier().getName());
         termDefinition.put(Constants.CLASSIFICATION,
                            aspect.getClassification().getName());
         return termDefinition;
-    }
-
-    private String getTypeIri(String eeType, Aspect<?> aspect,
-                              UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        String classifier = aspect.getClassifier().getId().toString();
-        String classification = aspect.getClassification().getId().toString();
-
-        URI userUri = ub.path(FacetContextResource.class).path(classifier).path(classification).build();
-        return userUri.toASCIIString();
     }
 
     private String iriFrom(Attribute authorizedAttribute) {

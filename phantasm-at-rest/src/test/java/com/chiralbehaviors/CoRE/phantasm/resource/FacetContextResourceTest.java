@@ -34,10 +34,13 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContextBuilder;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContextResource;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 /**
  * @author hhildebrand
@@ -65,14 +68,22 @@ public class FacetContextResourceTest extends AbstractModelTest {
     @Test
     public void testContext() throws Exception {
         UriInfo uriInfo = mock(UriInfo.class);
-        String base = "http://Ultrastructure/northwind/";
-        when(uriInfo.getBaseUriBuilder()).thenReturn(new JerseyUriBuilder().uri(base)).thenReturn(new JerseyUriBuilder().uri(base)).thenReturn(new JerseyUriBuilder().uri(base));
+        when(uriInfo.getBaseUriBuilder()).thenReturn(new JerseyUriBuilder()).thenReturn(new JerseyUriBuilder()).thenReturn(new JerseyUriBuilder());
         FacetContextResource resource = new FacetContextResource(emf, uriInfo);
-        JsonNode context = resource.getProduct(model.getKernel().getIsA().getId().toString(),
-                                               scope.lookup("Thing2").getId().toString());
-        assertNotNull(context);
-
+        JsonNode container = resource.getProduct(model.getKernel().getIsA().getId().toString(),
+                                                 scope.lookup("Thing2").getId().toString());
+        assertNotNull(container);
         ObjectMapper objMapper = new ObjectMapper();
-        System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(context));
+        System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(container));
+        ObjectNode context = (ObjectNode) container.get(FacetContextBuilder.CONTEXT);
+        assertNotNull(context);
+        ObjectNode thing1 = (ObjectNode) context.get("Thing1");
+        assertNotNull(thing1);
+        ObjectNode derivedFrom = (ObjectNode) context.get("derivedFrom");
+        assertNotNull(derivedFrom);
+        ObjectNode thing3 = (ObjectNode) context.get("Thing3");
+        assertNotNull(thing3);
+        TextNode id = (TextNode) thing1.get(FacetContextBuilder.ID);
+        assertNotNull(id);
     }
 }

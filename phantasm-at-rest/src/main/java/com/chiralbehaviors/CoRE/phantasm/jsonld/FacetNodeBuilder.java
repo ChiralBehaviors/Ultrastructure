@@ -20,8 +20,10 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
+import java.net.URI;
 import java.util.List;
 
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -42,6 +44,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  */
 public class FacetNodeBuilder {
+
+    public static String getIri(ExistentialRuleform<?, ?> existential,
+                                Aspect<?> aspect, UriInfo uriInfo,
+                                boolean immediate) {
+        String eeType = aspect.getClassification().getClass().getSimpleName().toLowerCase();
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        String classifier = aspect.getClassifier().getId().toString();
+        String classification = aspect.getClassification().getId().toString();
+
+        URI userUri = ub.path(FacetNodeResource.class).path(eeType).path(classifier).path(classification).queryParam("immediate",
+                                                                                                                     immediate).build();
+        return userUri.toASCIIString();
+    }
 
     private final Model readOnlyModel;
 
@@ -90,9 +105,9 @@ public class FacetNodeBuilder {
                                                                                                                                     Aspect<RuleForm> aspect,
                                                                                                                                     NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
         for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(aspect)) {
-            String term = auth.getAuthorizedAttribute().getName();
-            node.put(term, networkedModel.getAttributeValue(existential,
-                                                            null).toString());
+            node.put(auth.getAuthorizedAttribute().getName(),
+                     networkedModel.getAttributeValue(existential,
+                                                      null).toString());
         }
     }
 
@@ -110,27 +125,34 @@ public class FacetNodeBuilder {
                                                                                                                                   String lowerCase,
                                                                                                                                   UriInfo uriInfo) {
         for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(aspect)) {
-            List<RuleForm> children = networkedModel.getChildren(existential,
-                                                                 auth.getChildRelationship());
+            if (auth.getName() == null) {
+                continue;
+            }
             if (auth.getCardinality() == Cardinality.N) {
-
-            } else {
-                ArrayNode childrenNode = node.putArray(lowerCase);
-                children.forEach(child -> {
-                    childrenNode.add(getIri(existential, aspect));
-                });
+                ArrayNode childrenNode = node.putArray(auth.getName());
+                networkedModel.getImmediateChildren(existential,
+                                                    auth.getChildRelationship()).forEach(child -> {
+                                                        childrenNode.add(getIri(existential,
+                                                                                aspect,
+                                                                                uriInfo,
+                                                                                true));
+                                                    });
+                networkedModel.getInferredChildren(existential,
+                                                   auth.getChildRelationship()).forEach(child -> {
+                                                       childrenNode.add(getIri(existential,
+                                                                               aspect,
+                                                                               uriInfo,
+                                                                               false));
+                                                   });
+            } else if (auth.getCardinality() == Cardinality.ONE) {
+                List<RuleForm> children = networkedModel.getImmediateChildren(existential,
+                                                                              auth.getChildRelationship());
+                if (!children.isEmpty()) {
+                    node.put(auth.getName(),
+                             getIri(children.get(0), aspect, uriInfo, true));
+                }
             }
         }
-    }
-
-    /**
-     * @param ruleform
-     * @return
-     */
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> String getIri(RuleForm ruleform,
-                                                                                                                               Aspect<RuleForm> aspect) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /**

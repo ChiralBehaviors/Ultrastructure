@@ -756,6 +756,21 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
+    public List<RuleForm> getInferredChildren(RuleForm parent,
+                                              Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<RuleForm> query = cb.createQuery(entity);
+        Root<RuleForm> networkRoot = query.from(entity);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get("parent"),
+                                                        parent),
+                                               cb.equal(networkRoot.get("relationship"),
+                                                        relationship),
+                                               cb.isNotNull(networkRoot.get("inference"))));
+        TypedQuery<RuleForm> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    @Override
     public List<RuleForm> getInGroup(RuleForm parent,
                                      Relationship relationship) {
         /*
@@ -769,6 +784,21 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.where(cb.equal(networkForm.get("relationship"), relationship),
                     cb.notEqual(networkForm.get("child"), parent));
         return em.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        @SuppressWarnings("unchecked")
+        Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();
+        CriteriaQuery<NetworkAuthorization<RuleForm>> query = cb.createQuery(clazz);
+        Root<NetworkAuthorization<RuleForm>> networkRoot = query.from(clazz);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get("classification"),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get("classifier"),
+                                                        aspect.getClassifier())));
+        TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
+        return q.getResultList();
     }
 
     @Override
@@ -1210,21 +1240,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         } catch (NoResultException e) {
             return null;
         }
-    }
-
-    @Override
-    public List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        @SuppressWarnings("unchecked")
-        Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();
-        CriteriaQuery<NetworkAuthorization<RuleForm>> query = cb.createQuery(clazz);
-        Root<NetworkAuthorization<RuleForm>> networkRoot = query.from(clazz);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get("classification"),
-                                                        aspect.getClassification()),
-                                               cb.equal(networkRoot.get("classifier"),
-                                                        aspect.getClassifier())));
-        TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
-        return q.getResultList();
     }
 
     /**

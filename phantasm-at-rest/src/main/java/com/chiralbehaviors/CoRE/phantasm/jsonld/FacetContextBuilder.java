@@ -96,7 +96,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Location>(auth.getToRelationship(),
                                                                    auth.getToParent()),
-                                              Constants.TYPE, uriInfo));
+                                              uriInfo));
             }
         }
         for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect)) {
@@ -104,7 +104,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Product>(auth.getToRelationship(),
                                                                   auth.getToParent()),
-                                              Constants.TYPE, uriInfo));
+                                              uriInfo));
             }
         }
     }
@@ -135,7 +135,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Agency>(auth.getFromRelationship(),
                                                                  auth.getFromParent()),
-                                              Constants.TYPE, uriInfo));
+                                              uriInfo));
             }
         }
         for (ProductLocationAuthorization auth : readOnlyModel.getLocationModel().getLocationProductAuths(aspect)) {
@@ -143,7 +143,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Product>(auth.getFromRelationship(),
                                                                   auth.getFromParent()),
-                                              Constants.TYPE, uriInfo));
+                                              uriInfo));
             }
         }
     }
@@ -158,7 +158,7 @@ public class FacetContextBuilder {
                                                                 auth.getAuthorizedParent());
             if (auth.getName() != null) {
                 ObjectNode termDefinition = getTermDefinition(childAspect,
-                                                              eeType, uriInfo);
+                                                              uriInfo);
                 context.set(auth.getName(), termDefinition);
             }
         }
@@ -171,7 +171,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Agency>(auth.getFromRelationship(),
                                                                  auth.getFromParent()),
-                                              Constants.TYPE, uriInfo));
+                                              uriInfo));
             }
         }
         for (ProductLocationAuthorization auth : readOnlyModel.getProductModel().getProductLocationAuths(aspect)) {
@@ -179,7 +179,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Location>(auth.getToRelationship(),
                                                                    auth.getToParent()),
-                                              Constants.TYPE, uriInfo));
+                                              uriInfo));
             }
         }
         for (ProductRelationshipAuthorization auth : readOnlyModel.getProductModel().getProductRelationshipAuths(aspect)) {
@@ -187,7 +187,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Relationship>(auth.getToRelationship(),
                                                                        auth.getToParent()),
-                                              Constants.TYPE, uriInfo));
+                                              uriInfo));
             }
         }
         for (ProductRelationshipAuthorization auth : readOnlyModel.getProductModel().getProductRelationshipAuths(aspect)) {
@@ -195,7 +195,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Relationship>(auth.getToRelationship(),
                                                                        auth.getToParent()),
-                                              Constants.TYPE, uriInfo));
+                                              uriInfo));
             }
         }
     }
@@ -208,7 +208,7 @@ public class FacetContextBuilder {
                 context.set(auth.getName(),
                             getTermDefinition(new Aspect<Product>(auth.getFromRelationship(),
                                                                   auth.getFromParent()),
-                                              Constants.TYPE, uriInfo));
+                                              uriInfo));
             }
         }
     }
@@ -230,7 +230,6 @@ public class FacetContextBuilder {
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, ?>> ObjectNode getTermDefinition(Aspect<RuleForm> aspect,
-                                                                                             String eeType,
                                                                                              UriInfo uriInfo) {
         ObjectNode termDefinition = new ObjectNode(JsonNodeFactory.withExactBigDecimals(true));
         termDefinition.put(Constants.ID, getTypeIri(aspect, uriInfo));

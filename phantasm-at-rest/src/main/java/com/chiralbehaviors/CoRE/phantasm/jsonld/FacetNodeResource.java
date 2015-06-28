@@ -38,15 +38,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Produces({ "application/json", "text/json" })
 public class FacetNodeResource extends TransactionalResource {
 
-    @Context
-    private UriInfo uriInfo;
-
     @SuppressWarnings("unused")
     private final FacetNodeBuilder builder;
+
+    @Context
+    private UriInfo uriInfo;
 
     public FacetNodeResource(EntityManagerFactory emf) {
         super(emf);
         builder = new FacetNodeBuilder(readOnlyModel);
+    }
+
+    public FacetNodeResource(EntityManagerFactory emf, UriInfo uriInfo) {
+        this(emf);
+        this.uriInfo = uriInfo;
     }
 
     @Path("agency/{classifier}/{classification}")

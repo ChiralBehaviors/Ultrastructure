@@ -45,7 +45,7 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
  * @author hhildebrand
  *
  */
-public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
+public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         extends Aspect<RuleForm>implements JsonSerializable {
     private final RuleForm existential;
     private final Model    model;
@@ -55,7 +55,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
      * @param classifier
      * @param classification
      */
-    public Facet(RuleForm existential, Relationship classifier,
+    public FacetNode(RuleForm existential, Relationship classifier,
                  RuleForm classification, Model model, UriInfo uriInfo) {
         super(classifier, classification);
         this.existential = existential;
@@ -63,7 +63,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         this.uriInfo = uriInfo;
     }
 
-    public Facet(RuleForm existential, Aspect<RuleForm> aspect, Model model,
+    public FacetNode(RuleForm existential, Aspect<RuleForm> aspect, Model model,
                  UriInfo uriInfo) {
         this(existential, aspect.getClassifier(), aspect.getClassification(),
              model, uriInfo);
@@ -71,7 +71,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Facet && super.equals(obj);
+        return obj instanceof FacetNode && super.equals(obj);
     }
 
     public FacetContext<RuleForm, Network> getContext() {

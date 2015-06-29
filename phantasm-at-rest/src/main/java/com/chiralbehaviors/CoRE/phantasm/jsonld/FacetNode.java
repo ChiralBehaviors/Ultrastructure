@@ -28,13 +28,21 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
@@ -51,22 +59,22 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private final Model    model;
     private final UriInfo  uriInfo;
 
+    public FacetNode(RuleForm existential, Aspect<RuleForm> aspect, Model model,
+                     UriInfo uriInfo) {
+        this(existential, aspect.getClassifier(), aspect.getClassification(),
+             model, uriInfo);
+    }
+
     /**
      * @param classifier
      * @param classification
      */
     public FacetNode(RuleForm existential, Relationship classifier,
-                 RuleForm classification, Model model, UriInfo uriInfo) {
+                     RuleForm classification, Model model, UriInfo uriInfo) {
         super(classifier, classification);
         this.existential = existential;
         this.model = model;
         this.uriInfo = uriInfo;
-    }
-
-    public FacetNode(RuleForm existential, Aspect<RuleForm> aspect, Model model,
-                 UriInfo uriInfo) {
-        this(existential, aspect.getClassifier(), aspect.getClassification(),
-             model, uriInfo);
     }
 
     @Override
@@ -125,13 +133,24 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         return getIri(existential, this);
     }
 
-    private String getIri(RuleForm child, Aspect<RuleForm> aspect) {
+    private String getIri(ExistentialRuleform<?, ?> child, Aspect<?> aspect) {
         String eeType = getClassification().getClass().getSimpleName().toLowerCase();
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         String classifier = getClassifier().getId().toString();
         String classification = getClassification().getId().toString();
         URI userUri = ub.path(FacetNodeResource.class).path(eeType).path(child.getId().toString()).path(classifier).path(classification).build();
         return userUri.toASCIIString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void writeAgencyAuths(JsonGenerator gen) throws IOException {
+        AgencyModel agencyModel = model.getAgencyModel();
+        for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths((Aspect<Agency>) this)) {
+            writeTo(auth, gen);
+        }
+        for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths((Aspect<Agency>) this)) {
+            writeTo(auth, gen);
+        }
     }
 
     /**
@@ -146,6 +165,164 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             gen.writeStringField(auth.getAuthorizedAttribute().getName(),
                                  networkedModel.getAttributeValue(existential,
                                                                   auth.getAuthorizedAttribute()).toString());
+        }
+    }
+
+    /**
+     * @param auth
+     * @param gen
+     * @throws IOException
+     */
+    private void writeFrom(AgencyLocationAuthorization auth,
+                           JsonGenerator gen) throws IOException {
+        if (auth.getName() == null) {
+            return;
+        }
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        if (auth.getCardinality() == Cardinality.N) {
+            gen.writeArrayFieldStart(auth.getName());
+            networkedModel.getAuthorizedAgencies(existential,
+                                                 auth.getConnection()).forEach(child -> {
+                                                     try {
+                                                         gen.writeString(getIri(child,
+                                                                                new Aspect<Agency>(auth.getFromRelationship(),
+                                                                                                   auth.getFromParent())));
+                                                     } catch (Exception e) {
+                                                         throw new IllegalStateException(String.format("Error writing facet %s",
+                                                                                                       e));
+                                                     }
+                                                 });
+            gen.writeEndArray();
+        } else if (auth.getCardinality() == Cardinality.ONE) {
+            List<Agency> children = networkedModel.getAuthorizedAgencies(existential,
+                                                                         auth.getConnection());
+            if (!children.isEmpty()) {
+                gen.writeStringField(auth.getName(),
+                                     getIri(children.get(0),
+                                            new Aspect<Agency>(auth.getFromRelationship(),
+                                                               auth.getFromParent())));
+            }
+        }
+    }
+
+    /**
+     * @param auth
+     * @param gen
+     * @throws IOException
+     */
+    private void writeFrom(AgencyProductAuthorization auth,
+                           JsonGenerator gen) throws IOException {
+        if (auth.getName() == null) {
+            return;
+        }
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        if (auth.getCardinality() == Cardinality.N) {
+            gen.writeArrayFieldStart(auth.getName());
+            networkedModel.getAuthorizedAgencies(existential,
+                                                 auth.getConnection()).forEach(child -> {
+                                                     try {
+                                                         gen.writeString(getIri(child,
+                                                                                new Aspect<Agency>(auth.getFromRelationship(),
+                                                                                                   auth.getFromParent())));
+                                                     } catch (Exception e) {
+                                                         throw new IllegalStateException(String.format("Error writing facet %s",
+                                                                                                       e));
+                                                     }
+                                                 });
+            gen.writeEndArray();
+        } else if (auth.getCardinality() == Cardinality.ONE) {
+            List<Agency> children = networkedModel.getAuthorizedAgencies(existential,
+                                                                         auth.getConnection());
+            if (!children.isEmpty()) {
+                gen.writeStringField(auth.getName(),
+                                     getIri(children.get(0),
+                                            new Aspect<Agency>(auth.getFromRelationship(),
+                                                               auth.getFromParent())));
+            }
+        }
+    }
+
+    /**
+     * @param auth
+     * @param gen
+     * @throws IOException
+     */
+    private void writeFrom(ProductLocationAuthorization auth,
+                           JsonGenerator gen) throws IOException {
+        if (auth.getName() == null) {
+            return;
+        }
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        if (auth.getCardinality() == Cardinality.N) {
+            gen.writeArrayFieldStart(auth.getName());
+            networkedModel.getAuthorizedProducts(existential,
+                                                 auth.getConnection()).forEach(child -> {
+                                                     try {
+                                                         gen.writeString(getIri(child,
+                                                                                new Aspect<Product>(auth.getFromRelationship(),
+                                                                                                    auth.getFromParent())));
+                                                     } catch (Exception e) {
+                                                         throw new IllegalStateException(String.format("Error writing facet %s",
+                                                                                                       e));
+                                                     }
+                                                 });
+            gen.writeEndArray();
+        } else if (auth.getCardinality() == Cardinality.ONE) {
+            List<Product> children = networkedModel.getAuthorizedProducts(existential,
+                                                                          auth.getConnection());
+            if (!children.isEmpty()) {
+                gen.writeStringField(auth.getName(),
+                                     getIri(children.get(0),
+                                            new Aspect<Product>(auth.getFromRelationship(),
+                                                                auth.getFromParent())));
+            }
+        }
+    }
+
+    /**
+     * @param auth
+     * @param gen
+     * @throws IOException
+     */
+    private void writeFrom(ProductRelationshipAuthorization auth,
+                           JsonGenerator gen) throws IOException {
+        if (auth.getName() == null) {
+            return;
+        }
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        if (auth.getCardinality() == Cardinality.N) {
+            gen.writeArrayFieldStart(auth.getName());
+            networkedModel.getAuthorizedProducts(existential,
+                                                 auth.getConnection()).forEach(child -> {
+                                                     try {
+                                                         gen.writeString(getIri(child,
+                                                                                new Aspect<Product>(auth.getFromRelationship(),
+                                                                                                    auth.getFromParent())));
+                                                     } catch (Exception e) {
+                                                         throw new IllegalStateException(String.format("Error writing facet %s",
+                                                                                                       e));
+                                                     }
+                                                 });
+            gen.writeEndArray();
+        } else if (auth.getCardinality() == Cardinality.ONE) {
+            List<Product> children = networkedModel.getAuthorizedProducts(existential,
+                                                                          auth.getConnection());
+            if (!children.isEmpty()) {
+                gen.writeStringField(auth.getName(),
+                                     getIri(children.get(0),
+                                            new Aspect<Product>(auth.getFromRelationship(),
+                                                                auth.getFromParent())));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void writeLocationAuths(JsonGenerator gen) throws IOException {
+        for (AgencyLocationAuthorization auth : model.getLocationModel().getLocationAgencyAuths((Aspect<Location>) this)) {
+            writeFrom(auth, gen);
+        }
+        for (ProductLocationAuthorization auth : model.getLocationModel().getLocationProductAuths((Aspect<Location>) this)) {
+            writeFrom(auth, gen);
         }
     }
 
@@ -187,14 +364,189 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private void writeProductAuths(JsonGenerator gen) throws IOException {
+        for (AgencyProductAuthorization auth : model.getProductModel().getProductAgencyAuths((Aspect<Product>) this)) {
+            writeFrom(auth, gen);
+        }
+        for (ProductLocationAuthorization auth : model.getProductModel().getProductLocationAuths((Aspect<Product>) this)) {
+            writeTo(auth, gen);
+        }
+        for (ProductRelationshipAuthorization auth : model.getProductModel().getProductRelationshipAuths((Aspect<Product>) this)) {
+            writeTo(auth, gen);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void writeRelationshipAuths(JsonGenerator gen) throws IOException {
+        for (ProductRelationshipAuthorization auth : model.getRelationshipModel().getRelationshipProductAuths((Aspect<Relationship>) this)) {
+            writeFrom(auth, gen);
+        }
+    }
+
+    /**
+     * @param auth
+     * @param gen
+     * @throws IOException
+     */
+    private void writeTo(AgencyLocationAuthorization auth,
+                         JsonGenerator gen) throws IOException {
+        if (auth.getName() == null) {
+            return;
+        }
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        if (auth.getCardinality() == Cardinality.N) {
+            gen.writeArrayFieldStart(auth.getName());
+            networkedModel.getAuthorizedLocations(existential,
+                                                  auth.getConnection()).forEach(child -> {
+                                                      try {
+                                                          gen.writeString(getIri(child,
+                                                                                 new Aspect<Location>(auth.getToRelationship(),
+                                                                                                      auth.getToParent())));
+                                                      } catch (Exception e) {
+                                                          throw new IllegalStateException(String.format("Error writing facet %s",
+                                                                                                        e));
+                                                      }
+                                                  });
+            gen.writeEndArray();
+        } else if (auth.getCardinality() == Cardinality.ONE) {
+            List<Location> children = networkedModel.getAuthorizedLocations(existential,
+                                                                            auth.getConnection());
+            if (!children.isEmpty()) {
+                gen.writeStringField(auth.getName(),
+                                     getIri(children.get(0),
+                                            new Aspect<Location>(auth.getToRelationship(),
+                                                                 auth.getToParent())));
+            }
+        }
+    }
+
+    /**
+     * @param auth
+     * @param gen
+     * @throws IOException
+     */
+    private void writeTo(AgencyProductAuthorization auth,
+                         JsonGenerator gen) throws IOException {
+        if (auth.getName() == null) {
+            return;
+        }
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        if (auth.getCardinality() == Cardinality.N) {
+            gen.writeArrayFieldStart(auth.getName());
+            networkedModel.getAuthorizedProducts(existential,
+                                                 auth.getConnection()).forEach(child -> {
+                                                     try {
+                                                         gen.writeString(getIri(child,
+                                                                                new Aspect<Product>(auth.getToRelationship(),
+                                                                                                    auth.getToParent())));
+                                                     } catch (Exception e) {
+                                                         throw new IllegalStateException(String.format("Error writing facet %s",
+                                                                                                       e));
+                                                     }
+                                                 });
+            gen.writeEndArray();
+        } else if (auth.getCardinality() == Cardinality.ONE) {
+            List<Product> children = networkedModel.getAuthorizedProducts(existential,
+                                                                          auth.getConnection());
+            if (!children.isEmpty()) {
+                gen.writeStringField(auth.getName(),
+                                     getIri(children.get(0),
+                                            new Aspect<Product>(auth.getToRelationship(),
+                                                                auth.getToParent())));
+            }
+        }
+    }
+
+    /**
+     * @param auth
+     * @param gen
+     * @throws IOException
+     */
+    private void writeTo(ProductLocationAuthorization auth,
+                         JsonGenerator gen) throws IOException {
+        if (auth.getName() == null) {
+            return;
+        }
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        if (auth.getCardinality() == Cardinality.N) {
+            gen.writeArrayFieldStart(auth.getName());
+            networkedModel.getAuthorizedLocations(existential,
+                                                  auth.getConnection()).forEach(child -> {
+                                                      try {
+                                                          gen.writeString(getIri(child,
+                                                                                 new Aspect<Location>(auth.getToRelationship(),
+                                                                                                      auth.getToParent())));
+                                                      } catch (Exception e) {
+                                                          throw new IllegalStateException(String.format("Error writing facet %s",
+                                                                                                        e));
+                                                      }
+                                                  });
+            gen.writeEndArray();
+        } else if (auth.getCardinality() == Cardinality.ONE) {
+            List<Location> children = networkedModel.getAuthorizedLocations(existential,
+                                                                            auth.getConnection());
+            if (!children.isEmpty()) {
+                gen.writeStringField(auth.getName(),
+                                     getIri(children.get(0),
+                                            new Aspect<Location>(auth.getToRelationship(),
+                                                                 auth.getToParent())));
+            }
+        }
+    }
+
+    /**
+     * @param auth
+     * @param gen
+     * @throws IOException
+     */
+    private void writeTo(ProductRelationshipAuthorization auth,
+                         JsonGenerator gen) throws IOException {
+        if (auth.getName() == null) {
+            return;
+        }
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        if (auth.getCardinality() == Cardinality.N) {
+            gen.writeArrayFieldStart(auth.getName());
+            networkedModel.getAuthorizedRelationships(existential,
+                                                      auth.getConnection()).forEach(child -> {
+                                                          try {
+                                                              gen.writeString(getIri(child,
+                                                                                     new Aspect<Relationship>(auth.getToRelationship(),
+                                                                                                              auth.getToParent())));
+                                                          } catch (Exception e) {
+                                                              throw new IllegalStateException(String.format("Error writing facet %s",
+                                                                                                            e));
+                                                          }
+                                                      });
+            gen.writeEndArray();
+        } else if (auth.getCardinality() == Cardinality.ONE) {
+            List<Relationship> children = networkedModel.getAuthorizedRelationships(existential,
+                                                                                    auth.getConnection());
+            if (!children.isEmpty()) {
+                gen.writeStringField(auth.getName(),
+                                     getIri(children.get(0),
+                                            new Aspect<Relationship>(auth.getToRelationship(),
+                                                                     auth.getToParent())));
+            }
+        }
+    }
+
     /**
      * @param networkedModel
      * @param gen
+     * @throws IOException
      */
     private void writeXdAuths(NetworkedModel<RuleForm, Network, ?, ?> networkedModel,
-                              JsonGenerator gen) {
-        // TODO Auto-generated method stub
-
+                              JsonGenerator gen) throws IOException {
+        if (getClassification() instanceof Agency) {
+            writeAgencyAuths(gen);
+        } else if (getClassification() instanceof Product) {
+            writeProductAuths(gen);
+        } else if (getClassification() instanceof Location) {
+            writeLocationAuths(gen);
+        } else if (getClassification() instanceof Relationship) {
+            writeRelationshipAuths(gen);
+        }
     }
-
 }

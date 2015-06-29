@@ -280,6 +280,5 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         } else if (getClassification() instanceof Relationship) {
             writeRelationshipAuthTerms(gen);
         }
-
     }
 }

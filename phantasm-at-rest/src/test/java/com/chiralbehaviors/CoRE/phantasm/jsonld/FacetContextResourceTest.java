@@ -34,12 +34,10 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContextResource;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 
 /**
  * @author hhildebrand
@@ -69,20 +67,10 @@ public class FacetContextResourceTest extends AbstractModelTest {
         UriInfo uriInfo = mock(UriInfo.class);
         when(uriInfo.getBaseUriBuilder()).thenReturn(new JerseyUriBuilder()).thenReturn(new JerseyUriBuilder()).thenReturn(new JerseyUriBuilder());
         FacetContextResource resource = new FacetContextResource(emf, uriInfo);
-        JsonNode container = resource.getProduct(model.getKernel().getIsA().getId().toString(),
-                                                 scope.lookup("Thing2").getId().toString());
+        FacetContext<Product, ProductNetwork> container = resource.getProduct(model.getKernel().getIsA().getId().toString(),
+                                                                              scope.lookup("Thing2").getId().toString());
         assertNotNull(container);
         ObjectMapper objMapper = new ObjectMapper();
         System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(container));
-        ObjectNode context = (ObjectNode) container.get(Constants.CONTEXT);
-        assertNotNull(context);
-        ObjectNode thing1 = (ObjectNode) context.get("Thing1");
-        assertNotNull(thing1);
-        ObjectNode derivedFrom = (ObjectNode) context.get("derivedFrom");
-        assertNotNull(derivedFrom);
-        ObjectNode thing3 = (ObjectNode) context.get("Thing3");
-        assertNotNull(thing3);
-        TextNode id = (TextNode) thing1.get(Constants.ID);
-        assertNotNull(id);
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.jsonld;
+package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import java.sql.SQLException;
 import java.util.HashMap;

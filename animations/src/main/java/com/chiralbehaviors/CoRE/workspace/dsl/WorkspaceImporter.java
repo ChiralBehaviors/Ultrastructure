@@ -146,6 +146,8 @@ public class WorkspaceImporter {
     private EditableWorkspace   workspace;
 
     private final WorkspacePresentation wsp;
+    private String                      workspaceUri;
+    private UUID                        uuid;
 
     public WorkspaceImporter(InputStream source,
                              Model model) throws IOException {
@@ -504,13 +506,14 @@ public class WorkspaceImporter {
     }
 
     private Product createWorkspaceProduct() {
-        String uri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
+        workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
         Token description = wsp.getWorkspaceDefinition().description;
         Product workspaceProduct = new Product(stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
                                                description == null ? null
                                                                    : stripQuotes(description.getText()),
                                                model.getCurrentPrincipal().getPrincipal());
-        workspaceProduct.setId(Workspace.uuidOf(uri));
+        uuid = Workspace.uuidOf(workspaceUri);
+        workspaceProduct.setId(uuid);
         em.persist(workspaceProduct);
         return workspaceProduct;
     }
@@ -591,23 +594,28 @@ public class WorkspaceImporter {
                 workspace.add(ama);
                 em.persist(ama);
             }
-            if (ruleform.irl != null) {
-                AttributeMetaAttribute ama = new AttributeMetaAttribute();
-                ama.setAttribute(attr);
-                ama.setMetaAttribute(model.getKernel().getIRI());
-                ama.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
-                ama.setValueFromString(stripQuotes(ruleform.irl.getText()));
-                workspace.add(ama);
-                em.persist(ama);
+            String iri;
+            if (ruleform.iri != null) {
+                iri = stripQuotes(ruleform.iri.getText());
+            } else {
+                iri = String.format("%s%s#%s", Workspace.URN_UUID, uuid,
+                                    ruleform.existentialRuleform().workspaceName.getText());
             }
+            AttributeMetaAttribute ama = new AttributeMetaAttribute();
+            ama.setAttribute(model.getKernel().getIRI());
+            ama.setMetaAttribute(attr);
+            ama.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+            ama.setTextValue(iri);
+            em.persist(ama);
+            workspace.add(ama);
             if (ruleform.type != null) {
-                AttributeMetaAttribute ama = new AttributeMetaAttribute();
-                ama.setAttribute(attr);
-                ama.setMetaAttribute(model.getKernel().getJsonldType());
+                ama = new AttributeMetaAttribute();
+                ama.setAttribute(model.getKernel().getJsonldType());
+                ama.setMetaAttribute(attr);
                 ama.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
-                ama.setValueFromString(stripQuotes(ruleform.type.getText()));
-                workspace.add(ama);
+                ama.setTextValue(stripQuotes(ruleform.type.getText()));
                 em.persist(ama);
+                workspace.add(ama);
             }
         }
     }

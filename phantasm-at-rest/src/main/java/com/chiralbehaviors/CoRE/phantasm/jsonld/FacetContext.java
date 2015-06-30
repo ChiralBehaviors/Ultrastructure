@@ -38,8 +38,11 @@ import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
@@ -130,24 +133,24 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     private String iriFrom(Attribute authorizedAttribute) {
         AttributeValue<Attribute> iri = model.getAttributeModel().getAttributeValue(authorizedAttribute,
                                                                                     model.getKernel().getIRI());
-        if (iri != null) {
-            return iri.getTextValue();
+        String value = iri.getTextValue();
+        if (value.startsWith(Workspace.URN_UUID)) {
+            UriBuilder ub = uriInfo.getBaseUriBuilder();
+            ub.path(WorkspaceResource.class);
+            try {
+                ub.path(WorkspaceResource.class.getMethod("resolve"));
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            } catch (SecurityException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            ub.path(value.substring(Workspace.URN_UUID.length(),
+                                    Workspace.URN_UUID.length() + 36));
+            ub.fragment(value.substring(Workspace.URN_UUID.length() + 37));
+            return ub.build().toASCIIString();
         }
-        switch (authorizedAttribute.getValueType()) {
-            case TEXT:
-                return "http://schema.org/text";
-            case BINARY:
-                return "http://schema.org/binary";
-            case BOOLEAN:
-                return "http://schema.org/boolean";
-            case INTEGER:
-                return "http://schema.org/integer";
-            case NUMERIC:
-                return "http://schema.org/numeric";
-            case TIMESTAMP:
-                return "http://schema.org/timestamp";
-        }
-        return null;
+        return value;
     }
 
     /**
@@ -155,9 +158,9 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @return
      */
     private String typeFrom(Attribute authorizedAttribute) {
-        AttributeValue<Attribute> irl = model.getAttributeModel().getAttributeValue(authorizedAttribute,
-                                                                                    model.getKernel().getIRI());
-        return irl != null ? irl.getTextValue() : null;
+        AttributeValue<Attribute> type = model.getAttributeModel().getAttributeValue(authorizedAttribute,
+                                                                                     model.getKernel().getJsonldType());
+        return type != null ? type.getTextValue() : null;
     }
 
     @SuppressWarnings("unchecked")

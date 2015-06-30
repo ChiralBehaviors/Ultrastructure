@@ -1,0 +1,9 @@
+jpa:
+    debug: true
+    persistenceUnit: CoRE
+    properties: 
+        javax.persistence.jdbc.user: ${db.login}
+        javax.persistence.jdbc.password: ${db.password}
+        javax.persistence.jdbc.url: jdbc:postgresql://${db.server}:${db.port}/${db.database}
+        javax.persistence.jdbc.driver: org.postgresql.Driver
+        hibernate.cache.use_second_level_cache: true

@@ -94,7 +94,7 @@ attributedExistentialRuleform:
     
 attributeRuleform:
     existentialRuleform
-    ('irl:' irl = QuotedText)?
+    ('iri:' iri = QuotedText)?
     ('type:' type = QuotedText)?
     ('indexed:' indexed = ('true' | 'false'))?
     ('keyed:' keyed = ('true' | 'false'))?

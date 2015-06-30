@@ -41,6 +41,8 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetNodeResource;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
@@ -170,7 +172,7 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                 auth.getAuthorizedAttribute()).getValue();
                 gen.writeStringField(auth.getAuthorizedAttribute().getName(),
                                      value == null ? null : value.toString());
-            } else {
+            } else if (!attributeValues.isEmpty()) {
                 gen.writeArrayFieldStart(auth.getAuthorizedAttribute().getName());
                 for (AttributeValue<RuleForm> attr : attributeValues) {
                     Object value = attr.getValue();

@@ -105,7 +105,7 @@ public class AttributeModelImpl extends
     public AttributeMetaAttribute create(Attribute ruleform,
                                          Attribute attribute,
                                          Agency updatedBy) {
-        return new AttributeMetaAttribute(ruleform, attribute, updatedBy);
+        return new AttributeMetaAttribute(attribute, ruleform, updatedBy);
     }
 
     @Override

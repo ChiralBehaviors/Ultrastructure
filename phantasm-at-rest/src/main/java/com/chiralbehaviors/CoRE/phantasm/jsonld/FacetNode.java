@@ -56,9 +56,23 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
  */
 public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         extends Aspect<RuleForm>implements JsonSerializable {
+    public static String getIri(ExistentialRuleform<?, ?> child,
+                                Aspect<?> aspect, UriInfo uriInfo) {
+        String eeType = aspect.getClassification().getClass().getSimpleName().toLowerCase();
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        String classifier = aspect.getClassifier().getId().toString();
+        String classification = aspect.getClassification().getId().toString();
+        ub.path(FacetNodeResource.class).path(eeType).path(child.getId().toString()).path(classifier).path(classification);
+        ub.fragment(String.format("%s:%s:%s", child.getName(),
+                                  aspect.getClassifier().getName(),
+                                  aspect.getClassification().getName()));
+        return ub.build().toASCIIString();
+    }
+
     private final RuleForm existential;
     private final Model    model;
-    private final UriInfo  uriInfo;
+
+    private final UriInfo uriInfo;
 
     public FacetNode(RuleForm existential, Aspect<RuleForm> aspect, Model model,
                      UriInfo uriInfo) {
@@ -86,6 +100,10 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     public FacetContext<RuleForm, Network> getContext() {
         return new FacetContext<>(getClassifier(), getClassification(), model,
                                   uriInfo);
+    }
+
+    public String getIri() {
+        return getIri(existential, this, uriInfo);
     }
 
     /* (non-Javadoc)
@@ -117,22 +135,6 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         writeAttributes(networkedModel, gen);
         writeNetworkAuths(networkedModel, gen);
         writeXdAuths(networkedModel, gen);
-    }
-
-    private String getIri() {
-        return getIri(existential, this);
-    }
-
-    private String getIri(ExistentialRuleform<?, ?> child, Aspect<?> aspect) {
-        String eeType = getClassification().getClass().getSimpleName().toLowerCase();
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        String classifier = getClassifier().getId().toString();
-        String classification = getClassification().getId().toString();
-        ub.path(FacetNodeResource.class).path(eeType).path(child.getId().toString()).path(classifier).path(classification);
-        ub.fragment(String.format("%s:%s:%s", child.getName(),
-                                  aspect.getClassifier().getName(),
-                                  aspect.getClassification().getName()));
-        return ub.build().toASCIIString();
     }
 
     @SuppressWarnings("unchecked")
@@ -191,7 +193,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      try {
                                                          gen.writeString(getIri(child,
                                                                                 new Aspect<Agency>(auth.getFromRelationship(),
-                                                                                                   auth.getFromParent())));
+                                                                                                   auth.getFromParent()),
+                                                                                uriInfo));
                                                      } catch (Exception e) {
                                                          throw new IllegalStateException(String.format("Error writing facet %s",
                                                                                                        e));
@@ -205,7 +208,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 gen.writeStringField(auth.getName(),
                                      getIri(children.get(0),
                                             new Aspect<Agency>(auth.getFromRelationship(),
-                                                               auth.getFromParent())));
+                                                               auth.getFromParent()),
+                                            uriInfo));
             }
         }
     }
@@ -228,7 +232,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      try {
                                                          gen.writeString(getIri(child,
                                                                                 new Aspect<Agency>(auth.getFromRelationship(),
-                                                                                                   auth.getFromParent())));
+                                                                                                   auth.getFromParent()),
+                                                                                uriInfo));
                                                      } catch (Exception e) {
                                                          throw new IllegalStateException(String.format("Error writing facet %s",
                                                                                                        e));
@@ -242,7 +247,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 gen.writeStringField(auth.getName(),
                                      getIri(children.get(0),
                                             new Aspect<Agency>(auth.getFromRelationship(),
-                                                               auth.getFromParent())));
+                                                               auth.getFromParent()),
+                                            uriInfo));
             }
         }
     }
@@ -265,7 +271,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      try {
                                                          gen.writeString(getIri(child,
                                                                                 new Aspect<Product>(auth.getFromRelationship(),
-                                                                                                    auth.getFromParent())));
+                                                                                                    auth.getFromParent()),
+                                                                                uriInfo));
                                                      } catch (Exception e) {
                                                          throw new IllegalStateException(String.format("Error writing facet %s",
                                                                                                        e));
@@ -279,7 +286,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 gen.writeStringField(auth.getName(),
                                      getIri(children.get(0),
                                             new Aspect<Product>(auth.getFromRelationship(),
-                                                                auth.getFromParent())));
+                                                                auth.getFromParent()),
+                                            uriInfo));
             }
         }
     }
@@ -302,7 +310,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      try {
                                                          gen.writeString(getIri(child,
                                                                                 new Aspect<Product>(auth.getFromRelationship(),
-                                                                                                    auth.getFromParent())));
+                                                                                                    auth.getFromParent()),
+                                                                                uriInfo));
                                                      } catch (Exception e) {
                                                          throw new IllegalStateException(String.format("Error writing facet %s",
                                                                                                        e));
@@ -316,7 +325,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 gen.writeStringField(auth.getName(),
                                      getIri(children.get(0),
                                             new Aspect<Product>(auth.getFromRelationship(),
-                                                                auth.getFromParent())));
+                                                                auth.getFromParent()),
+                                            uriInfo));
             }
         }
     }
@@ -349,7 +359,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                try {
                                                    gen.writeString(getIri(child,
                                                                           new Aspect<RuleForm>(auth.getAuthorizedRelationship(),
-                                                                                               auth.getAuthorizedParent())));
+                                                                                               auth.getAuthorizedParent()),
+                                                                          uriInfo));
                                                } catch (Exception e) {
                                                    throw new IllegalStateException(String.format("Error writing facet %s",
                                                                                                  e));
@@ -363,7 +374,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                     gen.writeStringField(auth.getName(),
                                          getIri(children.get(0),
                                                 new Aspect<RuleForm>(auth.getAuthorizedRelationship(),
-                                                                     auth.getAuthorizedParent())));
+                                                                     auth.getAuthorizedParent()),
+                                                uriInfo));
                 }
             }
         }
@@ -407,7 +419,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                       try {
                                                           gen.writeString(getIri(child,
                                                                                  new Aspect<Location>(auth.getToRelationship(),
-                                                                                                      auth.getToParent())));
+                                                                                                      auth.getToParent()),
+                                                                                 uriInfo));
                                                       } catch (Exception e) {
                                                           throw new IllegalStateException(String.format("Error writing facet %s",
                                                                                                         e));
@@ -421,7 +434,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 gen.writeStringField(auth.getName(),
                                      getIri(children.get(0),
                                             new Aspect<Location>(auth.getToRelationship(),
-                                                                 auth.getToParent())));
+                                                                 auth.getToParent()),
+                                            uriInfo));
             }
         }
     }
@@ -444,7 +458,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      try {
                                                          gen.writeString(getIri(child,
                                                                                 new Aspect<Product>(auth.getToRelationship(),
-                                                                                                    auth.getToParent())));
+                                                                                                    auth.getToParent()),
+                                                                                uriInfo));
                                                      } catch (Exception e) {
                                                          throw new IllegalStateException(String.format("Error writing facet %s",
                                                                                                        e));
@@ -458,7 +473,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 gen.writeStringField(auth.getName(),
                                      getIri(children.get(0),
                                             new Aspect<Product>(auth.getToRelationship(),
-                                                                auth.getToParent())));
+                                                                auth.getToParent()),
+                                            uriInfo));
             }
         }
     }
@@ -481,7 +497,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                       try {
                                                           gen.writeString(getIri(child,
                                                                                  new Aspect<Location>(auth.getToRelationship(),
-                                                                                                      auth.getToParent())));
+                                                                                                      auth.getToParent()),
+                                                                                 uriInfo));
                                                       } catch (Exception e) {
                                                           throw new IllegalStateException(String.format("Error writing facet %s",
                                                                                                         e));
@@ -495,7 +512,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 gen.writeStringField(auth.getName(),
                                      getIri(children.get(0),
                                             new Aspect<Location>(auth.getToRelationship(),
-                                                                 auth.getToParent())));
+                                                                 auth.getToParent()),
+                                            uriInfo));
             }
         }
     }
@@ -518,7 +536,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           try {
                                                               gen.writeString(getIri(child,
                                                                                      new Aspect<Relationship>(auth.getToRelationship(),
-                                                                                                              auth.getToParent())));
+                                                                                                              auth.getToParent()),
+                                                                                     uriInfo));
                                                           } catch (Exception e) {
                                                               throw new IllegalStateException(String.format("Error writing facet %s",
                                                                                                             e));
@@ -532,7 +551,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 gen.writeStringField(auth.getName(),
                                      getIri(children.get(0),
                                             new Aspect<Relationship>(auth.getToRelationship(),
-                                                                     auth.getToParent())));
+                                                                     auth.getToParent()),
+                                            uriInfo));
             }
         }
     }

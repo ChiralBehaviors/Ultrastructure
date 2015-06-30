@@ -18,25 +18,12 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
-
-import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 /**
  * @author hhildebrand
  *
  */
-@Path("json-ld/workspace")
-@Produces({ "application/json", "text/json" })
-public class WorkspaceResource extends TransactionalResource {
-    public WorkspaceResource(EntityManagerFactory emf) {
-        super(emf);
-    }
+public class RuleformNode {
 
-    @Path("resolve")
-    public Object resolve() {
-        return null;
-    }
 }

@@ -6,7 +6,7 @@ imports {
 attributes {
     aliases = "Aliases" "Alias Smith and Jones" indexed: true text;
     discount = "Percentage" "The cut off the top" numeric;
-    URI = "URI" "the Universal Resource Indicator"  iri: "http://schema.org/uri" text;
+    URI = "URI" "the Universal Resource Indicator" text;
     
     artifactId = "Artifact ID" "artifact identifier" text;
     classifier = "Classifier" "classifier" text;

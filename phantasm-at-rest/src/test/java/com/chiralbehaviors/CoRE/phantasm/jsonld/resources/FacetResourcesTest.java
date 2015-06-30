@@ -79,9 +79,8 @@ public class FacetResourcesTest extends AbstractModelTest {
                                                      "IsA").getId().toString(),
                                         scope.lookup("Thing1").getId().toString()));
         Object jsonObject = JsonUtils.fromInputStream(url.openStream());
+        System.out.println("Thing1 facet context");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object compact = JsonLdProcessor.normalize(jsonObject);
-        System.out.println(JsonUtils.toPrettyString(compact));
 
         url = new URL(String.format("http://localhost:%s/json-ld/facet/node/product/%s/%s/%s",
                                     application.getPort(),
@@ -91,9 +90,21 @@ public class FacetResourcesTest extends AbstractModelTest {
                                     scope.lookup("Thing1").getId().toString()));
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
+        System.out.println("Node value of an instance of thing 1");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
-        compact = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
-                                          new JsonLdOptions());
-        System.out.println(JsonUtils.toPrettyString(compact));
+        Object processed = JsonLdProcessor.normalize(jsonObject);
+        System.out.println("Normalized node value of an instance of Thing1");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
+                                            new JsonLdOptions());
+        System.out.println("Compacted node value of an instance of Thing1");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
+                                            new JsonLdOptions());
+        System.out.println("Flattened node value of an instance of Thing1");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
+        System.out.println("Expanded node value of an instance of Thing1");
+        System.out.println(JsonUtils.toPrettyString(processed));
     }
 }

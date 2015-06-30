@@ -594,13 +594,8 @@ public class WorkspaceImporter {
                 workspace.add(ama);
                 em.persist(ama);
             }
-            String iri;
-            if (ruleform.iri != null) {
-                iri = stripQuotes(ruleform.iri.getText());
-            } else {
-                iri = String.format("%s%s#%s", Workspace.URN_UUID, uuid,
-                                    ruleform.existentialRuleform().workspaceName.getText());
-            }
+            String iri = String.format("%s%s#%s", Workspace.URN_UUID, uuid,
+                                       ruleform.existentialRuleform().workspaceName.getText());
             AttributeMetaAttribute ama = new AttributeMetaAttribute();
             ama.setAttribute(model.getKernel().getIRI());
             ama.setMetaAttribute(attr);

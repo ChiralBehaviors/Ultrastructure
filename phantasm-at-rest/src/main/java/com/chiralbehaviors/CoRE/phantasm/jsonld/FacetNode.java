@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.core.UriBuilder;
@@ -41,7 +40,6 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetNodeResource;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
@@ -112,24 +110,13 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     public void writeValue(JsonGenerator gen) throws IOException {
-        gen.writeStringField(Constants.CONTEXT, getContextIri());
+        gen.writeStringField(Constants.CONTEXT,
+                             FacetContext.getContextIri(this, uriInfo));
         gen.writeStringField(Constants.ID, getIri());
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         writeAttributes(networkedModel, gen);
         writeNetworkAuths(networkedModel, gen);
         writeXdAuths(networkedModel, gen);
-    }
-
-    /**
-     * @return
-     */
-    private String getContextIri() {
-        String eeType = getClassification().getClass().getSimpleName().toLowerCase();
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        String classifier = getClassifier().getId().toString();
-        String classification = getClassification().getId().toString();
-        URI userUri = ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification).build();
-        return userUri.toASCIIString();
     }
 
     private String getIri() {
@@ -141,8 +128,11 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         String classifier = getClassifier().getId().toString();
         String classification = getClassification().getId().toString();
-        URI userUri = ub.path(FacetNodeResource.class).path(eeType).path(child.getId().toString()).path(classifier).path(classification).build();
-        return userUri.toASCIIString();
+        ub.path(FacetNodeResource.class).path(eeType).path(child.getId().toString()).path(classifier).path(classification);
+        ub.fragment(String.format("%s:%s:%s", child.getName(),
+                                  aspect.getClassifier().getName(),
+                                  aspect.getClassification().getName()));
+        return ub.build().toASCIIString();
     }
 
     @SuppressWarnings("unchecked")

@@ -25,6 +25,8 @@ import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetNodeResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformNodeResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
 
 import io.dropwizard.Application;
 import io.dropwizard.jetty.HttpConnectorFactory;
@@ -69,6 +71,8 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         emf = Persistence.createEntityManagerFactory(unit, properties);
         environment.jersey().register(new FacetContextResource(emf));
         environment.jersey().register(new FacetNodeResource(emf));
+        environment.jersey().register(new WorkspaceResource(emf));
+        environment.jersey().register(new RuleformNodeResource(emf));
         environment.healthChecks().register("EMF Health",
                                             new EmfHealthCheck(emf));
     }

@@ -21,7 +21,6 @@
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import java.io.IOException;
-import java.net.URI;
 
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -38,11 +37,10 @@ import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformNodeResource;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
@@ -82,13 +80,7 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     }
 
     public String getIri() {
-        String eeType = getClassification().getClass().getSimpleName().toLowerCase();
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        String classifier = getClassifier().getId().toString();
-        String classification = getClassification().getId().toString();
-
-        URI userUri = ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification).build();
-        return userUri.toASCIIString();
+        return getContextIri(this, uriInfo);
     }
 
     /* (non-Javadoc)
@@ -120,37 +112,24 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         serialize(gen, serializers);
     }
 
-    private String getIri(Aspect<?> aspect) {
+    public static String getContextIri(Aspect<?> aspect, UriInfo uriInfo) {
         String eeType = aspect.getClassification().getClass().getSimpleName().toLowerCase();
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         String classifier = aspect.getClassifier().getId().toString();
         String classification = aspect.getClassification().getId().toString();
-
-        URI userUri = ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification).build();
-        return userUri.toASCIIString();
+        ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification);
+        ub.fragment(String.format("%s:%s)", aspect.getClassifier().getName(),
+                                  aspect.getClassification().getName()));
+        return ub.build().toASCIIString();
     }
 
     private String iriFrom(Attribute authorizedAttribute) {
-        AttributeValue<Attribute> iri = model.getAttributeModel().getAttributeValue(authorizedAttribute,
-                                                                                    model.getKernel().getIRI());
-        String value = iri.getTextValue();
-        if (value.startsWith(Workspace.URN_UUID)) {
-            UriBuilder ub = uriInfo.getBaseUriBuilder();
-            ub.path(WorkspaceResource.class);
-            try {
-                ub.path(WorkspaceResource.class.getMethod("resolve"));
-            } catch (NoSuchMethodException e) {
-                throw new IllegalStateException(e);
-            } catch (SecurityException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            ub.path(value.substring(Workspace.URN_UUID.length(),
-                                    Workspace.URN_UUID.length() + 36));
-            ub.fragment(value.substring(Workspace.URN_UUID.length() + 37));
-            return ub.build().toASCIIString();
-        }
-        return value;
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(RuleformNodeResource.class);
+        ub.path(authorizedAttribute.getClass().getSimpleName());
+        ub.path(authorizedAttribute.getId().toString());
+        ub.fragment(authorizedAttribute.getName());
+        return ub.build().toASCIIString();
     }
 
     /**
@@ -260,12 +239,8 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
             return;
         }
         gen.writeObjectFieldStart(term);
-        gen.writeStringField(Constants.ID, getIri(childAspect));
+        gen.writeStringField(Constants.ID, getContextIri(childAspect, uriInfo));
         gen.writeStringField(Constants.TYPE, Constants.ID);
-        gen.writeStringField(Constants.CLASSIFIER,
-                             childAspect.getClassifier().getName());
-        gen.writeStringField(Constants.CLASSIFICATION,
-                             childAspect.getClassification().getName());
         gen.writeEndObject();
     }
 

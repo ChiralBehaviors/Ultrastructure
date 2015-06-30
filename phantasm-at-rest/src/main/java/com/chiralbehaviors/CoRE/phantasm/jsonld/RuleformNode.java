@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import java.io.IOException;
 
+import javax.ws.rs.core.UriInfo;
+
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
@@ -34,10 +36,13 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
  */
 public class RuleformNode implements JsonSerializable {
     @SuppressWarnings("unused")
+    private final UriInfo  uriInfo;
+    @SuppressWarnings("unused")
     private final Ruleform ruleform;
 
-    public RuleformNode(Ruleform ruleform) {
+    public RuleformNode(Ruleform ruleform, UriInfo uriInfo) {
         this.ruleform = ruleform;
+        this.uriInfo = uriInfo;
     }
 
     /* (non-Javadoc)

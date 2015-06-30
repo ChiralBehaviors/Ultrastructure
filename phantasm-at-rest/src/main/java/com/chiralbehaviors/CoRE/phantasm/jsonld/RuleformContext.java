@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,17 +20,49 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
+import java.io.IOException;
+
+import javax.ws.rs.core.UriInfo;
+
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializable;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 
 /**
  * @author hhildebrand
  *
  */
-public class RuleformContext {
+public class RuleformContext implements JsonSerializable {
     @SuppressWarnings("unused")
     private final Class<? extends Ruleform> ruleformClass;
+    @SuppressWarnings("unused")
+    private final UriInfo                   uriInfo;
 
-    public RuleformContext(Class<? extends Ruleform> class1) {
-        this.ruleformClass = class1;
+    public RuleformContext(Class<? extends Ruleform> ruleformClass,
+                           UriInfo uriInfo) {
+        this.ruleformClass = ruleformClass;
+        this.uriInfo = uriInfo;
+    }
+
+    /* (non-Javadoc)
+     * @see com.fasterxml.jackson.databind.JsonSerializable#serialize(com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)
+     */
+    @Override
+    public void serialize(JsonGenerator gen,
+                          SerializerProvider serializers) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.fasterxml.jackson.databind.JsonSerializable#serializeWithType(com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider, com.fasterxml.jackson.databind.jsontype.TypeSerializer)
+     */
+    @Override
+    public void serializeWithType(JsonGenerator gen,
+                                  SerializerProvider serializers,
+                                  TypeSerializer typeSer) throws IOException {
+        serialize(gen, serializers);
     }
 }

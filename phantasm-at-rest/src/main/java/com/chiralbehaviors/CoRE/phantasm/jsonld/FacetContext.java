@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -59,7 +59,19 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         extends Aspect<RuleForm>implements JsonSerializable {
 
-    private final Model   model;
+    public static String getContextIri(Aspect<?> aspect, UriInfo uriInfo) {
+        String eeType = aspect.getClassification().getClass().getSimpleName().toLowerCase();
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        String classifier = aspect.getClassifier().getId().toString();
+        String classification = aspect.getClassification().getId().toString();
+        ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification);
+        ub.fragment(String.format("%s:%s)", aspect.getClassifier().getName(),
+                                  aspect.getClassification().getName()));
+        return ub.build().toASCIIString();
+    }
+
+    private final Model model;
+
     private final UriInfo uriInfo;
 
     public FacetContext(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
@@ -96,12 +108,6 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         gen.writeEndObject();
     }
 
-    public void writeContext(JsonGenerator gen) throws IOException {
-        writeAttributeTerms(gen);
-        writeNetworkAuthTerms(gen);
-        writeXdAuthTerms(gen);
-    }
-
     /* (non-Javadoc)
      * @see com.fasterxml.jackson.databind.JsonSerializable#serializeWithType(com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider, com.fasterxml.jackson.databind.jsontype.TypeSerializer)
      */
@@ -112,15 +118,10 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         serialize(gen, serializers);
     }
 
-    public static String getContextIri(Aspect<?> aspect, UriInfo uriInfo) {
-        String eeType = aspect.getClassification().getClass().getSimpleName().toLowerCase();
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        String classifier = aspect.getClassifier().getId().toString();
-        String classification = aspect.getClassification().getId().toString();
-        ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification);
-        ub.fragment(String.format("%s:%s)", aspect.getClassifier().getName(),
-                                  aspect.getClassification().getName()));
-        return ub.build().toASCIIString();
+    public void writeContext(JsonGenerator gen) throws IOException {
+        writeAttributeTerms(gen);
+        writeNetworkAuthTerms(gen);
+        writeXdAuthTerms(gen);
     }
 
     private String iriFrom(Attribute authorizedAttribute) {

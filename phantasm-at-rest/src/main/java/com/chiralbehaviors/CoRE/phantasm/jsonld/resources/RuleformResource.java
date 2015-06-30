@@ -1,7 +1,6 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -32,6 +31,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
 import org.reflections.Reflections;
 
@@ -49,6 +50,9 @@ public class RuleformResource extends TransactionalResource {
 
     private final Map<String, Class<? extends Ruleform>> entityMap = new HashMap<>();
 
+    @Context
+    private UriInfo uriInfo;
+
     public RuleformResource(EntityManagerFactory emf) {
         super(emf);
         Reflections reflections = new Reflections(Ruleform.class.getPackage().getName());
@@ -59,9 +63,9 @@ public class RuleformResource extends TransactionalResource {
         }
     }
 
-    @GET
-    public Set<String> getRuleformTypes() {
-        return entityMap.keySet();
+    @Path("context/{ruleform-type}")
+    public RuleformContext getContext(@PathParam("ruleform-type") String ruleformType) {
+        return new RuleformContext(entityMap.get(ruleformType), uriInfo);
     }
 
     @Path("node/{ruleform-type}/{uuid}")
@@ -75,11 +79,11 @@ public class RuleformResource extends TransactionalResource {
                                                             ruleformType,
                                                             ruleformId));
         }
-        return new RuleformNode(ruleform);
+        return new RuleformNode(ruleform, uriInfo);
     }
 
-    @Path("context/{ruleform-type}")
-    public RuleformContext getContext(@PathParam("ruleform-type") String ruleformType) {
-        return new RuleformContext(entityMap.get(ruleformType));
+    @GET
+    public Set<String> getRuleformTypes() {
+        return entityMap.keySet();
     }
 }

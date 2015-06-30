@@ -20,10 +20,17 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
+import com.chiralbehaviors.CoRE.Ruleform;
+
 /**
  * @author hhildebrand
  *
  */
 public class RuleformContext {
+    @SuppressWarnings("unused")
+    private final Class<? extends Ruleform> ruleformClass;
 
+    public RuleformContext(Class<? extends Ruleform> class1) {
+        this.ruleformClass = class1;
+    }
 }

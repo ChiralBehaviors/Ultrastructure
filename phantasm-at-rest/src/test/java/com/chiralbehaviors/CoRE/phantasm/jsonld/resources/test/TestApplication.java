@@ -25,7 +25,7 @@ import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetNodeResource;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformNodeResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
 
 import io.dropwizard.Application;
@@ -72,7 +72,7 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         environment.jersey().register(new FacetContextResource(emf));
         environment.jersey().register(new FacetNodeResource(emf));
         environment.jersey().register(new WorkspaceResource(emf));
-        environment.jersey().register(new RuleformNodeResource(emf));
+        environment.jersey().register(new RuleformResource(emf));
         environment.healthChecks().register("EMF Health",
                                             new EmfHealthCheck(emf));
     }

@@ -40,7 +40,7 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformNodeResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
@@ -125,7 +125,7 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
 
     private String iriFrom(Attribute authorizedAttribute) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformNodeResource.class);
+        ub.path(RuleformResource.class);
         ub.path(authorizedAttribute.getClass().getSimpleName());
         ub.path(authorizedAttribute.getId().toString());
         ub.fragment(authorizedAttribute.getName());

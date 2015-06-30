@@ -24,17 +24,20 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 
 import org.reflections.Reflections;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformNode;
 
 /**
  * @author hhildebrand
@@ -42,19 +45,16 @@ import com.chiralbehaviors.CoRE.Ruleform;
  */
 @Path("json-ld/ruleform/node")
 @Produces({ "application/json", "text/json" })
-public class RuleformNodeResource extends TransactionalResource {
+public class RuleformResource extends TransactionalResource {
 
-    private final Map<String, Class<? extends Ruleform>> entityMap = new HashMap<String, Class<? extends Ruleform>>();
+    private final Map<String, Class<? extends Ruleform>> entityMap = new HashMap<>();
 
-    public RuleformNodeResource(EntityManagerFactory emf) {
+    public RuleformResource(EntityManagerFactory emf) {
         super(emf);
         Reflections reflections = new Reflections(Ruleform.class.getPackage().getName());
-        for (@SuppressWarnings("rawtypes")
-        Class<? extends ExistentialRuleform> form : reflections.getSubTypesOf(ExistentialRuleform.class)) {
+        for (Class<? extends Ruleform> form : reflections.getSubTypesOf(Ruleform.class)) {
             if (!Modifier.isAbstract(form.getModifiers())) {
-                Class<?> prev = entityMap.put(form.getSimpleName(), form);
-                assert prev == null : String.format("Found previous mapping %s of: %s",
-                                                    prev, form);
+                entityMap.put(form.getSimpleName(), form);
             }
         }
     }
@@ -64,9 +64,22 @@ public class RuleformNodeResource extends TransactionalResource {
         return entityMap.keySet();
     }
 
-    @Path("{ruleform-type}/{uuid}")
-    public Object resolve(@PathParam("ruleform-type") String ruleformType,
-                          @PathParam("uuid") String ruleformId) {
-        return null;
+    @Path("node/{ruleform-type}/{uuid}")
+    public RuleformNode getNode(@PathParam("ruleform-type") String ruleformType,
+                                @PathParam("uuid") String ruleformId) {
+        UUID uuid = toUuid(ruleformId);
+        Ruleform ruleform = readOnlyModel.getEntityManager().find(entityMap.get(ruleformType),
+                                                                  uuid);
+        if (ruleform == null) {
+            throw new WebApplicationException(String.format("%s:%s does not exist",
+                                                            ruleformType,
+                                                            ruleformId));
+        }
+        return new RuleformNode(ruleform);
+    }
+
+    @Path("context/{ruleform-type}")
+    public RuleformContext getContext(@PathParam("ruleform-type") String ruleformType) {
+        return new RuleformContext(entityMap.get(ruleformType));
     }
 }

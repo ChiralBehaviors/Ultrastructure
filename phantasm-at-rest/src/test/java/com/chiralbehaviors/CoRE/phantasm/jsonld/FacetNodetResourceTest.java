@@ -20,20 +20,26 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.io.IOException;
 
 import javax.ws.rs.core.UriInfo;
 
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author hhildebrand
@@ -43,18 +49,15 @@ public class FacetNodetResourceTest extends AbstractModelTest {
 
     private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
 
-    @BeforeClass
-    public static void loadWorkspace() throws Exception {
+    private WorkspaceScope scope;
+
+    @Before
+    public void getWorkspace() throws IOException {
         em.getTransaction().begin();
         WorkspaceImporter.createWorkspace(FacetNodetResourceTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
         em.getTransaction().commit();
-    }
-
-    private WorkspaceScope scope;
-
-    @Before
-    public void getWorkspace() {
+        em.getTransaction().begin();
         scope = model.getWorkspaceModel().getScoped(Workspace.uuidOf(TEST_SCENARIO_URI));
     }
 
@@ -63,5 +66,21 @@ public class FacetNodetResourceTest extends AbstractModelTest {
         UriInfo uriInfo = mock(UriInfo.class);
         when(uriInfo.getBaseUriBuilder()).thenReturn(new JerseyUriBuilder()).thenReturn(new JerseyUriBuilder()).thenReturn(new JerseyUriBuilder());
         FacetNodeResource resource = new FacetNodeResource(emf, uriInfo);
+        try {
+            Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test",
+                                                     "testy");
+            thing1.setAliases(new String[] { "smith", "jones" });
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            FacetNode<Product, ProductNetwork> facet = resource.getProduct(thing1.getRuleform().getId().toString(),
+                                                                           scope.lookup("kernel",
+                                                                                        "IsA").getId().toString(),
+                                                                           scope.lookup("Thing1").getId().toString());
+            assertNotNull(facet);
+            ObjectMapper objMapper = new ObjectMapper();
+            System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(facet));
+        } finally {
+            resource.close();
+        }
     }
 }

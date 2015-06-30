@@ -32,6 +32,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
@@ -158,13 +159,25 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
      * @param gen
      * @throws IOException
      */
-    private void writeAttributes(NetworkedModel<RuleForm, Network, ?, ?> networkedModel2,
+    private void writeAttributes(NetworkedModel<RuleForm, Network, ?, ?> networkedModel,
                                  JsonGenerator gen) throws IOException {
-        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
-            gen.writeStringField(auth.getAuthorizedAttribute().getName(),
-                                 networkedModel.getAttributeValue(existential,
-                                                                  auth.getAuthorizedAttribute()).toString());
+            @SuppressWarnings("unchecked")
+            List<AttributeValue<RuleForm>> attributeValues = (List<AttributeValue<RuleForm>>) networkedModel.getAttributeValues(existential,
+                                                                                                                                auth.getAuthorizedAttribute());
+            if (attributeValues.size() == 1) {
+                Object value = networkedModel.getAttributeValue(existential,
+                                                                auth.getAuthorizedAttribute()).getValue();
+                gen.writeStringField(auth.getAuthorizedAttribute().getName(),
+                                     value == null ? null : value.toString());
+            } else {
+                gen.writeArrayFieldStart(auth.getAuthorizedAttribute().getName());
+                for (AttributeValue<RuleForm> attr : attributeValues) {
+                    Object value = attr.getValue();
+                    gen.writeString(value == null ? null : value.toString());
+                }
+                gen.writeEndArray();
+            }
         }
     }
 

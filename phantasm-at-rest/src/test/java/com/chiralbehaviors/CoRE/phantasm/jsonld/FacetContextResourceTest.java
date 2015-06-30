@@ -24,11 +24,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+
 import javax.ws.rs.core.UriInfo;
 
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -47,18 +48,15 @@ public class FacetContextResourceTest extends AbstractModelTest {
 
     private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
 
-    @BeforeClass
-    public static void loadWorkspace() throws Exception {
+    private WorkspaceScope scope;
+
+    @Before
+    public void getWorkspace() throws IOException {
         em.getTransaction().begin();
         WorkspaceImporter.createWorkspace(FacetContextResourceTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
         em.getTransaction().commit();
-    }
-
-    private WorkspaceScope scope;
-
-    @Before
-    public void getWorkspace() {
+        em.getTransaction().begin();
         scope = model.getWorkspaceModel().getScoped(Workspace.uuidOf(TEST_SCENARIO_URI));
     }
 
@@ -67,10 +65,14 @@ public class FacetContextResourceTest extends AbstractModelTest {
         UriInfo uriInfo = mock(UriInfo.class);
         when(uriInfo.getBaseUriBuilder()).thenReturn(new JerseyUriBuilder()).thenReturn(new JerseyUriBuilder()).thenReturn(new JerseyUriBuilder());
         FacetContextResource resource = new FacetContextResource(emf, uriInfo);
-        FacetContext<Product, ProductNetwork> container = resource.getProduct(model.getKernel().getIsA().getId().toString(),
-                                                                              scope.lookup("Thing2").getId().toString());
-        assertNotNull(container);
-        ObjectMapper objMapper = new ObjectMapper();
-        System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(container));
+        try {
+            FacetContext<Product, ProductNetwork> context = resource.getProduct(model.getKernel().getIsA().getId().toString(),
+                                                                                scope.lookup("Thing2").getId().toString());
+            assertNotNull(context);
+            ObjectMapper objMapper = new ObjectMapper();
+            System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(context));
+        } finally {
+            resource.close();
+        }
     }
 }

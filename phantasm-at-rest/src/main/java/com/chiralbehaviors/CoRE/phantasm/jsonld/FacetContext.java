@@ -118,6 +118,8 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     }
 
     public void writeContext(JsonGenerator gen) throws IOException {
+        gen.writeStringField("classifier", getClassifier().getName());
+        gen.writeStringField("classification", getClassification().getName());
         writeAttributeTerms(gen);
         writeNetworkAuthTerms(gen);
         writeXdAuthTerms(gen);

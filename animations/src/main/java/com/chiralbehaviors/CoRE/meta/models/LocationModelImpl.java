@@ -349,7 +349,7 @@ public class LocationModelImpl extends
         Root<AgencyLocationAuthorization> networkRoot = query.from(AgencyLocationAuthorization.class);
         query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.toParent),
                                                         aspect.getClassification()),
-                                               cb.equal(networkRoot.get(AgencyLocationAuthorization_.toParent),
+                                               cb.equal(networkRoot.get(AgencyLocationAuthorization_.toRelationship),
                                                         aspect.getClassifier())));
         TypedQuery<AgencyLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();

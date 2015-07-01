@@ -286,6 +286,25 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
+    public List<Aspect<RuleForm>> getAllFacets() {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        @SuppressWarnings("unchecked")
+        Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();
+        CriteriaQuery<NetworkAuthorization<RuleForm>> query = cb.createQuery(clazz);
+        Root<NetworkAuthorization<RuleForm>> networkRoot = query.from(clazz);
+        query.select(networkRoot).where(cb.and(cb.isNull(networkRoot.get("authorizedParent")),
+                                               cb.isNull(networkRoot.get("authorizedRelationship")),
+                                               cb.isNull(networkRoot.get("childRelationship"))));
+        TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
+        List<Aspect<RuleForm>> facets = new ArrayList<>();
+        for (NetworkAuthorization<RuleForm> auth : q.getResultList()) {
+            facets.add(new Aspect<>(auth.getClassifier(),
+                                    auth.getClassification()));
+        }
+        return facets;
+    }
+
+    @Override
     public <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
                                                         Agency groupingAgency) {
         return getAllowedValues(attribute,

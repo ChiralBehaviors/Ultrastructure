@@ -189,6 +189,11 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     List<RuleForm> findAll();
 
     /**
+     * @return the list of aspects representing all facets for the RuleForm
+     */
+    List<Aspect<RuleForm>> getAllFacets();
+
+    /**
      * Answer the allowed values for an Attribute, classified by the supplied
      * aspect
      *

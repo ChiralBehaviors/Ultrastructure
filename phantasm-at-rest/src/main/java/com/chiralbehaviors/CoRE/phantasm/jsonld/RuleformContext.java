@@ -21,11 +21,23 @@
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
@@ -37,16 +49,54 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
  *
  */
 public class RuleformContext implements JsonSerializable {
-    public static String getContextIri(Ruleform ruleform, UriInfo uriInfo) {
+    private static final Map<Class<?>, String> TYPES = new HashMap<>();
+
+    static {
+        // initialize primitive types
+        TYPES.put(String.class, "http://www.w3.org/2001/XMLSchema#text");
+        TYPES.put(Integer.class, "http://www.w3.org/2001/XMLSchema#int");
+        TYPES.put(Integer.TYPE, "http://www.w3.org/2001/XMLSchema#int");
+        TYPES.put(BigDecimal.class, "http://www.w3.org/2001/XMLSchema#number");
+        TYPES.put(Boolean.class, "http://www.w3.org/2001/XMLSchema#boolean");
+        TYPES.put(Boolean.TYPE, "http://www.w3.org/2001/XMLSchema#boolean");
+        TYPES.put(Timestamp.class,
+                  "http://www.w3.org/2001/XMLSchema#date-dateTime");
+        TYPES.put(UUID.class, "http://www.w3.org/2001/XMLSchema#uuid");
+        TYPES.put(ValueType.class, "http://www.w3.org/2001/XMLSchema#text");
+    }
+
+    public static String getContextIri(Class<? extends Ruleform> ruleformClass,
+                                       UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class).path("context").path(ruleform.getClass().getSimpleName());
+        ub.path(RuleformResource.class).path("context").path(ruleformClass.getSimpleName());
         return ub.build().toASCIIString();
     }
 
-    @SuppressWarnings("unused")
+    public static List<Field> getInheritedFields(Class<?> type) {
+        List<Field> fields = new ArrayList<Field>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            for (Field field : c.getDeclaredFields()) {
+                if (field.getName().contains("$")
+                    || Modifier.isStatic(field.getModifiers())
+                    || field.getAnnotation(OneToMany.class) != null) {
+                    continue;
+                }
+                fields.add(field);
+            }
+        }
+        return fields;
+    }
+
+    public static String getTermIri(Class<? extends Ruleform> ruleformClass,
+                                    Field term, UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(RuleformResource.class).path("terms").path(ruleformClass.getSimpleName());
+        ub.fragment(term.getName());
+        return ub.build().toASCIIString();
+    }
+
     private final Class<? extends Ruleform> ruleformClass;
 
-    @SuppressWarnings("unused")
     private final UriInfo uriInfo;
 
     public RuleformContext(Class<? extends Ruleform> ruleformClass,
@@ -61,8 +111,11 @@ public class RuleformContext implements JsonSerializable {
     @Override
     public void serialize(JsonGenerator gen,
                           SerializerProvider serializers) throws IOException {
-        // TODO Auto-generated method stub
-
+        gen.writeStartObject();
+        gen.writeObjectFieldStart(Constants.CONTEXT);
+        writeContext(gen);
+        gen.writeEndObject();
+        gen.writeEndObject();
     }
 
     /* (non-Javadoc)
@@ -73,5 +126,33 @@ public class RuleformContext implements JsonSerializable {
                                   SerializerProvider serializers,
                                   TypeSerializer typeSer) throws IOException {
         serialize(gen, serializers);
+    }
+
+    public void writeContext(JsonGenerator gen) throws IOException {
+        for (Field field : getInheritedFields(ruleformClass)) {
+            if (field.getAnnotation(JoinColumn.class) == null) {
+                writePrimitiveTerm(field, gen);
+            } else {
+                writeRuleformTerm(field, gen);
+            }
+        }
+    }
+
+    private void writePrimitiveTerm(Field field,
+                                    JsonGenerator gen) throws IOException {
+        gen.writeObjectFieldStart(field.getName());
+        gen.writeStringField(Constants.ID,
+                             getTermIri(ruleformClass, field, uriInfo));
+        gen.writeStringField(Constants.TYPE, TYPES.get(field.getType()));
+        gen.writeEndObject();
+    }
+
+    private void writeRuleformTerm(Field field,
+                                   JsonGenerator gen) throws IOException {
+        gen.writeObjectFieldStart(field.getName());
+        gen.writeStringField(Constants.ID,
+                             getTermIri(ruleformClass, field, uriInfo));
+        gen.writeStringField(Constants.TYPE, Constants.ID);
+        gen.writeEndObject();
     }
 }

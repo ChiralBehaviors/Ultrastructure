@@ -21,7 +21,9 @@
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
+import javax.persistence.JoinColumn;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
@@ -51,8 +53,8 @@ public class RuleformNode implements JsonSerializable {
         return ub.build().toASCIIString();
     }
 
-    private final UriInfo  uriInfo;
     private final Ruleform ruleform;
+    private final UriInfo  uriInfo;
 
     public RuleformNode(Ruleform ruleform, UriInfo uriInfo) {
         this.ruleform = ruleform;
@@ -70,16 +72,6 @@ public class RuleformNode implements JsonSerializable {
         gen.writeEndObject();
     }
 
-    /**
-     * @param gen
-     * @throws IOException
-     */
-    private void writeValue(JsonGenerator gen) throws IOException {
-        gen.writeStringField(Constants.CONTEXT,
-                             RuleformContext.getContextIri(ruleform, uriInfo));
-        gen.writeStringField(Constants.ID, getIri(ruleform, uriInfo));
-    }
-
     /* (non-Javadoc)
      * @see com.fasterxml.jackson.databind.JsonSerializable#serializeWithType(com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider, com.fasterxml.jackson.databind.jsontype.TypeSerializer)
      */
@@ -88,5 +80,39 @@ public class RuleformNode implements JsonSerializable {
                                   SerializerProvider serializers,
                                   TypeSerializer typeSer) throws IOException {
         serialize(gen, serializers);
+    }
+
+    /**
+     * @param gen
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     */
+    private void writeValue(JsonGenerator gen) throws IOException {
+        gen.writeStringField(Constants.CONTEXT,
+                             RuleformContext.getContextIri(ruleform.getClass(),
+                                                           uriInfo));
+        for (Field field : RuleformContext.getInheritedFields(ruleform.getClass())) {
+            field.setAccessible(true);
+            if (field.getAnnotation(JoinColumn.class) == null) {
+                field.setAccessible(true);
+                try {
+                    gen.writeStringField(field.getName(),
+                                         field.get(ruleform) == null ? null
+                                                                     : field.get(ruleform).toString());
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    throw new IllegalStateException(e);
+                }
+            } else {
+                Ruleform fk;
+                try {
+                    fk = (Ruleform) field.get(ruleform);
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    throw new IllegalStateException(e);
+                }
+                gen.writeStringField(field.getName(), getIri(fk, uriInfo));
+            }
+        }
+        gen.writeStringField(Constants.ID, getIri(ruleform, uriInfo));
     }
 }

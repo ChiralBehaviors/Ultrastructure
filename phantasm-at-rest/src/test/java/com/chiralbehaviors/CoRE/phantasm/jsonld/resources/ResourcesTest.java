@@ -123,7 +123,43 @@ public class ResourcesTest extends AbstractModelTest {
         URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform",
                                         application.getPort()));
         Object jsonObject = JsonUtils.fromInputStream(url.openStream());
-        System.out.println("Thing1 facet context");
+        System.out.println("Ruleform types:");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
+    }
+
+    @Test
+    public void testRuleformContext() throws Exception {
+        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform/context/Attribute",
+                                        application.getPort()));
+        Object jsonObject = JsonUtils.fromInputStream(url.openStream());
+        System.out.println("Attribute @context");
+        System.out.println(JsonUtils.toPrettyString(jsonObject));
+    }
+
+    @Test
+    public void testRuleformNode() throws Exception {
+        URL url;
+        Object jsonObject;
+        url = new URL(String.format("http://localhost:%s/json-ld/ruleform/node/Attribute/%s",
+                                    application.getPort(),
+                                    scope.lookup("URI").getId().toString()));
+        jsonObject = JsonUtils.fromInputStream(url.openStream());
+        assertNotNull(jsonObject);
+        System.out.println("Node value of an instance of thing 1");
+        System.out.println(JsonUtils.toPrettyString(jsonObject));
+        Object processed = JsonLdProcessor.normalize(jsonObject);
+        System.out.println("Normalized node value of an instance of Thing1");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
+                                            new JsonLdOptions());
+        System.out.println("Compacted node value of an instance of Thing1");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
+                                            new JsonLdOptions());
+        System.out.println("Flattened node value of an instance of Thing1");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
+        System.out.println("Expanded node value of an instance of Thing1");
+        System.out.println(JsonUtils.toPrettyString(processed));
     }
 }

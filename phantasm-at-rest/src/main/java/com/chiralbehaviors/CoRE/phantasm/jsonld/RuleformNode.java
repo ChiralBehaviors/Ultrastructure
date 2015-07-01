@@ -22,9 +22,12 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import java.io.IOException;
 
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -35,9 +38,20 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
  *
  */
 public class RuleformNode implements JsonSerializable {
-    @SuppressWarnings("unused")
+
+    public static String getIri(Ruleform ruleform, UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(RuleformResource.class);
+        ub.path("node");
+        ub.path(ruleform.getClass().getSimpleName());
+        ub.path(ruleform.getId().toString());
+        if (ruleform instanceof ExistentialRuleform) {
+            ub.fragment(((ExistentialRuleform<?, ?>) ruleform).getName());
+        }
+        return ub.build().toASCIIString();
+    }
+
     private final UriInfo  uriInfo;
-    @SuppressWarnings("unused")
     private final Ruleform ruleform;
 
     public RuleformNode(Ruleform ruleform, UriInfo uriInfo) {
@@ -51,8 +65,19 @@ public class RuleformNode implements JsonSerializable {
     @Override
     public void serialize(JsonGenerator gen,
                           SerializerProvider serializers) throws IOException {
-        // TODO Auto-generated method stub
+        gen.writeStartObject();
+        writeValue(gen);
+        gen.writeEndObject();
+    }
 
+    /**
+     * @param gen
+     * @throws IOException
+     */
+    private void writeValue(JsonGenerator gen) throws IOException {
+        gen.writeStringField(Constants.CONTEXT,
+                             RuleformContext.getContextIri(ruleform, uriInfo));
+        gen.writeStringField(Constants.ID, getIri(ruleform, uriInfo));
     }
 
     /* (non-Javadoc)

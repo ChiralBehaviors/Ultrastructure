@@ -20,9 +20,11 @@
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -44,7 +46,7 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformNode;
  * @author hhildebrand
  *
  */
-@Path("json-ld/ruleform/node")
+@Path("json-ld/ruleform")
 @Produces({ "application/json", "text/json" })
 public class RuleformResource extends TransactionalResource {
 
@@ -52,6 +54,8 @@ public class RuleformResource extends TransactionalResource {
 
     @Context
     private UriInfo uriInfo;
+
+    private final ArrayList<String> sortedRuleformTypes;
 
     public RuleformResource(EntityManagerFactory emf) {
         super(emf);
@@ -61,6 +65,8 @@ public class RuleformResource extends TransactionalResource {
                 entityMap.put(form.getSimpleName(), form);
             }
         }
+        sortedRuleformTypes = new ArrayList<>(entityMap.keySet());
+        Collections.sort(sortedRuleformTypes);
     }
 
     @Path("context/{ruleform-type}")
@@ -83,7 +89,7 @@ public class RuleformResource extends TransactionalResource {
     }
 
     @GET
-    public Set<String> getRuleformTypes() {
-        return entityMap.keySet();
+    public List<String> getRuleformTypes() {
+        return sortedRuleformTypes;
     }
 }

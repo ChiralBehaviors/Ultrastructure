@@ -40,7 +40,6 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
@@ -124,15 +123,6 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         writeXdAuthTerms(gen);
     }
 
-    private String iriFrom(Attribute authorizedAttribute) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
-        ub.path(authorizedAttribute.getClass().getSimpleName());
-        ub.path(authorizedAttribute.getId().toString());
-        ub.fragment(authorizedAttribute.getName());
-        return ub.build().toASCIIString();
-    }
-
     /**
      * @param authorizedAttribute
      * @return
@@ -163,7 +153,8 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     private void writeAttributeTerms(JsonGenerator gen) throws IOException {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(getClassification());
         for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
-            String iri = iriFrom(auth.getAuthorizedAttribute());
+            String iri = RuleformNode.getIri(auth.getAuthorizedAttribute(),
+                                             uriInfo);
             String type = typeFrom(auth.getAuthorizedAttribute());
             String term = auth.getAuthorizedAttribute().getName();
             if (type == null) {

@@ -25,8 +25,9 @@ import static org.junit.Assert.assertNotNull;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -43,36 +44,35 @@ import com.github.jsonldjava.utils.JsonUtils;
  * @author hhildebrand
  *
  */
-public class FacetResourcesTest extends AbstractModelTest {
+public class ResourcesTest extends AbstractModelTest {
 
-    private static final String     TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
-    protected WorkspaceScope        scope;
-    protected final TestApplication application       = new TestApplication();
+    private static final String            TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
+    protected final static TestApplication application       = new TestApplication();
 
-    @Before
-    public void initialize() throws Exception {
+    @BeforeClass
+    public static void initialize() throws Exception {
         em.getTransaction().begin();
-        WorkspaceImporter.createWorkspace(FacetResourcesTest.class.getResourceAsStream("/thing.wsp"),
+        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
         em.getTransaction().commit();
-
-        em.getTransaction().begin();
-        scope = model.getWorkspaceModel().getScoped(Workspace.uuidOf(TEST_SCENARIO_URI));
         application.run("server", "target/test-classes/test.yml");
     }
 
-    @After
-    public void shutdown() {
+    @AfterClass
+    public static void shutdown() {
         application.stop();
+    }
+
+    protected WorkspaceScope scope;
+
+    @Before
+    public void loadWorkspace() {
+        em.getTransaction().begin();
+        scope = model.getWorkspaceModel().getScoped(Workspace.uuidOf(TEST_SCENARIO_URI));
     }
 
     @Test
     public void testContext() throws Exception {
-        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test", "testy");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        thing1.setURI("http://example.com");
-        em.getTransaction().commit();
-        em.getTransaction().begin();
         URL url = new URL(String.format("http://localhost:%s/json-ld/facet/context/product/%s/%s",
                                         application.getPort(),
                                         scope.lookup("kernel",
@@ -81,7 +81,17 @@ public class FacetResourcesTest extends AbstractModelTest {
         Object jsonObject = JsonUtils.fromInputStream(url.openStream());
         System.out.println("Thing1 facet context");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
+    }
 
+    @Test
+    public void testNode() throws Exception {
+        URL url;
+        Object jsonObject;
+        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test", "testy");
+        thing1.setAliases(new String[] { "smith", "jones" });
+        thing1.setURI("http://example.com");
+        em.getTransaction().commit();
+        em.getTransaction().begin();
         url = new URL(String.format("http://localhost:%s/json-ld/facet/node/product/%s/%s/%s",
                                     application.getPort(),
                                     thing1.getRuleform().getId(),
@@ -106,5 +116,14 @@ public class FacetResourcesTest extends AbstractModelTest {
         processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
         System.out.println("Expanded node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
+    }
+
+    @Test
+    public void testRuleforms() throws Exception {
+        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform",
+                                        application.getPort()));
+        Object jsonObject = JsonUtils.fromInputStream(url.openStream());
+        System.out.println("Thing1 facet context");
+        System.out.println(JsonUtils.toPrettyString(jsonObject));
     }
 }

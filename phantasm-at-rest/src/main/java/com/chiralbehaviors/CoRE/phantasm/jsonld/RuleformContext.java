@@ -22,9 +22,11 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import java.io.IOException;
 
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -35,10 +37,17 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
  *
  */
 public class RuleformContext implements JsonSerializable {
+    public static String getContextIri(Ruleform ruleform, UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(RuleformResource.class).path("context").path(ruleform.getClass().getSimpleName());
+        return ub.build().toASCIIString();
+    }
+
     @SuppressWarnings("unused")
     private final Class<? extends Ruleform> ruleformClass;
+
     @SuppressWarnings("unused")
-    private final UriInfo                   uriInfo;
+    private final UriInfo uriInfo;
 
     public RuleformContext(Class<? extends Ruleform> ruleformClass,
                            UriInfo uriInfo) {

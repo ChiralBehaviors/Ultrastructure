@@ -64,7 +64,7 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         String classifier = aspect.getClassifier().getId().toString();
         String classification = aspect.getClassification().getId().toString();
         ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification);
-        ub.fragment(String.format("%s:%s)", aspect.getClassifier().getName(),
+        ub.fragment(String.format("%s:%s", aspect.getClassifier().getName(),
                                   aspect.getClassification().getName()));
         return ub.build().toASCIIString();
     }

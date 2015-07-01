@@ -115,6 +115,8 @@ public interface Kernel {
 
     Relationship getInWorkspace();
 
+    Attribute getIRI();
+
     Relationship getIsA();
 
     Relationship getIsContainedIn();
@@ -124,6 +126,8 @@ public interface Kernel {
     Relationship getIsLocationOf();
 
     Relationship getIsValidatedBy();
+
+    Attribute getJsonldType();
 
     Product getKernelWorkspace();
 

@@ -10,6 +10,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_relationship_pkey" />
             </column>
+            <column name="name" type="text"/>
             <column name="agency" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000001'"/>
             <column name="product" type="uuid">
                 <constraints nullable="false" />

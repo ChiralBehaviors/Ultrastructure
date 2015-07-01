@@ -41,8 +41,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  * @author hhildebrand
  *
  */
-public class UnitModelImpl
-        extends
+public class UnitModelImpl extends
         AbstractNetworkedModel<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute>
         implements UnitModel {
 
@@ -62,14 +61,12 @@ public class UnitModelImpl
      */
     @Override
     public void authorize(Aspect<Unit> aspect, Attribute... attributes) {
-        UnitNetworkAuthorization auth = new UnitNetworkAuthorization(
-                                                                     model.getCurrentPrincipal().getPrincipal());
+        UnitNetworkAuthorization auth = new UnitNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
-            UnitAttributeAuthorization authorization = new UnitAttributeAuthorization(
-                                                                                      attribute,
+            UnitAttributeAuthorization authorization = new UnitAttributeAuthorization(attribute,
                                                                                       model.getCurrentPrincipal().getPrincipal());
             em.persist(authorization);
         }
@@ -121,8 +118,7 @@ public class UnitModelImpl
         em.persist(copy);
         copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (UnitNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(),
-                                     copy,
+            network.getParent().link(network.getRelationship(), copy,
                                      model.getCurrentPrincipal().getPrincipal(),
                                      model.getCurrentPrincipal().getPrincipal(),
                                      em);
@@ -161,5 +157,13 @@ public class UnitModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetworkAuthClass()
+     */
+    @Override
+    protected Class<?> getNetworkAuthClass() {
+        return UnitNetworkAuthorization.class;
     }
 }

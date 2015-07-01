@@ -58,63 +58,63 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-                                                                            + "  attrValue "
-                                                                            + "FROM "
-                                                                            + "       AttributeMetaAttribute attrValue, "
-                                                                            + "       AttributeMetaAttributeAuthorization auth, "
-                                                                            + "       AttributeNetwork network, "
-                                                                            + "       AttributeNetworkAuthorization na "
-                                                                            + "WHERE "
-                                                                            + "        auth.networkAuthorization = na "
-                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
-                                                                            + "    AND network.relationship = na.classifier "
-                                                                            + "    AND network.child = na.classification"
-                                                                            + "    AND attrValue.attribute = :ruleform "
-                                                                            + "    AND na.classifier = :classifier "
-                                                                            + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
-                                                                                                  + "  auth "
-                                                                                                  + "FROM "
-                                                                                                  + "       AttributeMetaAttributeAuthorization auth, "
-                                                                                                  + "       AttributeNetworkAuthorization na, "
-                                                                                                  + "       AttributeNetwork network "
-                                                                                                  + "WHERE "
-                                                                                                  + "        auth.networkAuthorization = na "
-                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
-                                                                                                  + "    AND network.relationship = na.classifier "
-                                                                                                  + "    AND network.child = na.classification"
-                                                                                                  + "    AND na.classifier = :classifier "
-                                                                                                  + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from AttributeMetaAttributeAuthorization auth "
-                                                                                    + "WHERE auth.networkAuthorization.classifier = :classifier "
-                                                                                    + "AND auth.networkAuthorization.classification = :classification "
-                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
-               @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
-                                                     + "FROM AttributeNetwork rn "
-                                                     + "WHERE rn.parent = :p "
-                                                     + "AND rn.relationship = :r"),
-               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM AttributeNetwork n "
-                                                                           + "WHERE n.parent = :attribute "
-                                                                           + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+@NamedQueries({ @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                             + "  attrValue "
+                                                                             + "FROM "
+                                                                             + "       AttributeMetaAttribute attrValue, "
+                                                                             + "       AttributeMetaAttributeAuthorization auth, "
+                                                                             + "       AttributeNetwork network, "
+                                                                             + "       AttributeNetworkAuthorization na "
+                                                                             + "WHERE "
+                                                                             + "        auth.networkAuthorization = na "
+                                                                             + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                             + "    AND network.relationship = na.classifier "
+                                                                             + "    AND network.child = na.classification"
+                                                                             + "    AND attrValue.attribute = :ruleform "
+                                                                             + "    AND na.classifier = :classifier "
+                                                                             + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                   + "  auth "
+                                                                                                   + "FROM "
+                                                                                                   + "       AttributeMetaAttributeAuthorization auth, "
+                                                                                                   + "       AttributeNetworkAuthorization na, "
+                                                                                                   + "       AttributeNetwork network "
+                                                                                                   + "WHERE "
+                                                                                                   + "        auth.networkAuthorization = na "
+                                                                                                   + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                   + "    AND network.relationship = na.classifier "
+                                                                                                   + "    AND network.child = na.classification"
+                                                                                                   + "    AND na.classifier = :classifier "
+                                                                                                   + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from AttributeMetaAttributeAuthorization auth "
+                                                                                     + "WHERE auth.networkAuthorization.classifier = :classifier "
+                                                                                     + "AND auth.networkAuthorization.classification = :classification "
+                                                                                     + "AND auth.authorizedAttribute IS NOT NULL"),
+                @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
+                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                                                      + "FROM AttributeNetwork rn "
+                                                      + "WHERE rn.parent = :p "
+                                                      + "AND rn.relationship = :r"),
+                @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM AttributeNetwork n "
+                                                                            + "WHERE n.parent = :attribute "
+                                                                            + "AND n.relationship IN :relationships "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @Entity
 @Table(name = "attribute", schema = "ruleform")
-public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> {
-    public static final String          FIND_BY_NAME                                           = "attribute.findByName";
-    public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "attribute"
-                                                                                                 + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String          FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "attribute"
-                                                                                                 + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-    public static final String          FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "attribute"
-                                                                                                 + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String          GET_CHILD                                              = "attribute"
-                                                                                                 + GET_CHILDREN_SUFFIX;
-    public static final String          GET_CHILD_RULES_BY_RELATIONSHIP                        = "attribute"
-                                                                                                 + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    private static final long           serialVersionUID                                       = 1L;
+public class Attribute
+        extends ExistentialRuleform<Attribute, AttributeNetwork> {
+    public static final String FIND_BY_NAME                                           = "attribute.findByName";
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "attribute"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "attribute"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "attribute"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String GET_CHILD                                              = "attribute"
+                                                                                        + GET_CHILDREN_SUFFIX;
+    public static final String GET_CHILD_RULES_BY_RELATIONSHIP                        = "attribute"
+                                                                                        + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    private static final long  serialVersionUID                                       = 1L;
 
     // bi-directional many-to-one association to AttributeMetaAttribute
     @OneToMany(mappedBy = "attribute")
@@ -122,23 +122,24 @@ public class Attribute extends ExistentialRuleform<Attribute, AttributeNetwork> 
     private Set<AttributeMetaAttribute> attributes;
 
     @Column(name = "indexed")
-    private int                         indexed                                                = FALSE;
+    private int indexed = FALSE;
+
     @Column(name = "keyed")
-    private int                         keyed                                                  = FALSE;
+    private int keyed = FALSE;
 
     // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
-    private Set<AttributeNetwork>       networkByChild;
+    private Set<AttributeNetwork> networkByChild;
 
     // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
-    private Set<AttributeNetwork>       networkByParent;
+    private Set<AttributeNetwork> networkByParent;
 
     @Column(name = "value_type")
     @Enumerated(EnumType.ORDINAL)
-    private ValueType                   valueType;
+    private ValueType valueType;
 
     public Attribute() {
     }

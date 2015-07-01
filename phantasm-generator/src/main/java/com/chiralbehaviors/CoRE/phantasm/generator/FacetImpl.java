@@ -29,6 +29,7 @@ import java.util.Set;
 import org.antlr.v4.runtime.Token;
 
 import com.chiralbehaviors.CoRE.network.Cardinality;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributesContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ConstraintContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
@@ -52,7 +53,8 @@ public class FacetImpl implements Facet {
     private final String       ruleformType;
     private final String       uri;
 
-    public FacetImpl(String packageName, String ruleformType, FacetContext context, String uri) {
+    public FacetImpl(String packageName, String ruleformType,
+                     FacetContext context, String uri) {
         this.packageName = packageName;
         this.context = context;
         this.ruleformType = ruleformType;
@@ -126,19 +128,23 @@ public class FacetImpl implements Facet {
     }
 
     @Override
-    public void resolve(Map<FacetKey, Facet> facets, WorkspacePresentation presentation,
+    public void resolve(Map<FacetKey, Facet> facets,
+                        WorkspacePresentation presentation,
                         Map<ScopedName, MappedAttribute> mapped) {
         resolveAttributes(presentation, mapped);
         resolveRelationships(presentation, facets);
     }
 
-    private void resolve(ConstraintContext constraint, Map<FacetKey, Facet> facets) {
+    private void resolve(ConstraintContext constraint,
+                         Map<FacetKey, Facet> facets) {
         Facet type = null;
         if (constraint.anyType == null) {
-            FacetKey facetKey = new FacetKey(constraint.authorizedRelationship, constraint.authorizedParent);
+            FacetKey facetKey = new FacetKey(constraint.authorizedRelationship,
+                                             constraint.authorizedParent);
             type = facets.get(facetKey);
             if (type == null) {
-                throw new IllegalStateException(String.format("%s refers to non existent facet: %s", getClassName(),
+                throw new IllegalStateException(String.format("%s refers to non existent facet: %s",
+                                                              getClassName(),
                                                               facetKey));
             }
         } else {
@@ -148,24 +154,27 @@ public class FacetImpl implements Facet {
             imports.add(type.getImport());
         }
         ScopedName key = new ScopedName(constraint.childRelationship);
-        Cardinality cardinality = Enum.valueOf(Cardinality.class, constraint.cardinality.getText().toUpperCase());
-        Token methodNaming = constraint.methodNaming;
+        Cardinality cardinality = Enum.valueOf(Cardinality.class,
+                                               constraint.cardinality.getText().toUpperCase());
         String className = type.getClassName();
-        String baseName;
-        if (constraint.anyType == null && (methodNaming == null || methodNaming.getText().equals("entity"))) {
-            baseName = className;
-        } else {
-            baseName = constraint.childRelationship.member.getText();
-            baseName = Character.toUpperCase(baseName.charAt(0))
-                       + (baseName.length() == 1 ? "" : baseName.substring(1));
-        }
+        String baseName = WorkspaceImporter.networkAuthNameOf(constraint);
+        baseName = Character.toUpperCase(baseName.charAt(0))
+                   + (baseName.length() == 1 ? "" : baseName.substring(1));
+
         String parameterName = type.getParameterName();
         parameterName = Character.toLowerCase(parameterName.charAt(0))
-                        + (parameterName.length() == 1 ? "" : parameterName.substring(1));
+                        + (parameterName.length() == 1 ? ""
+                                                       : parameterName.substring(1));
         switch (cardinality) {
             case ONE: {
-                relationshipGetters.add(new Getter(key, String.format("get%s", baseName), className));
-                relationshipSetters.add(new Setter(key, String.format("set%s", baseName), className, parameterName));
+                relationshipGetters.add(new Getter(key,
+                                                   String.format("get%s",
+                                                                 baseName),
+                                                   className));
+                relationshipSetters.add(new Setter(key,
+                                                   String.format("set%s",
+                                                                 baseName),
+                                                   className, parameterName));
                 break;
             }
             case N: {
@@ -202,11 +211,13 @@ public class FacetImpl implements Facet {
             case "*Unit":
                 return ANY_UNIT;
             default:
-                throw new IllegalArgumentException(String.format("%s is not a valid *Any", anyType.getText()));
+                throw new IllegalArgumentException(String.format("%s is not a valid *Any",
+                                                                 anyType.getText()));
         }
     }
 
-    private void resolveAttributes(WorkspacePresentation presentation, Map<ScopedName, MappedAttribute> mapped) {
+    private void resolveAttributes(WorkspacePresentation presentation,
+                                   Map<ScopedName, MappedAttribute> mapped) {
         ClassifiedAttributesContext classifiedAttributes = context.classifiedAttributes();
         if (classifiedAttributes == null) {
             return;
@@ -220,29 +231,52 @@ public class FacetImpl implements Facet {
         });
     }
 
-    private void resolveList(ScopedName key, String baseName, String parameterName, String className,
+    private void resolveList(ScopedName key, String baseName,
+                             String parameterName, String className,
                              boolean inferredGet) {
         String plural = English.plural(baseName);
         String pluralParameter = English.plural(parameterName);
         String listClassName = String.format("List<%s>", className);
         imports.add("java.util.List");
         if (inferredGet) {
-            inferredRelationshipGetters.add(new Getter(key, String.format("get%s", plural), listClassName));
-            relationshipGetters.add(new Getter(key, String.format("getImmediate%s", plural), listClassName));
-            relationshipSetters.add(new Setter(key, String.format("setImmediate%s", plural), listClassName,
-                                               String.format("%s", pluralParameter)));
+            inferredRelationshipGetters.add(new Getter(key,
+                                                       String.format("get%s",
+                                                                     plural),
+                                                       listClassName));
+            relationshipGetters.add(new Getter(key,
+                                               String.format("getImmediate%s",
+                                                             plural),
+                                               listClassName));
+            relationshipSetters.add(new Setter(key,
+                                               String.format("setImmediate%s",
+                                                             plural),
+                                               listClassName,
+                                               String.format("%s",
+                                                             pluralParameter)));
         } else {
-            relationshipGetters.add(new Getter(key, String.format("get%s", plural), listClassName));
-            relationshipSetters.add(new Setter(key, String.format("set%s", plural), listClassName, pluralParameter));
+            relationshipGetters.add(new Getter(key,
+                                               String.format("get%s", plural),
+                                               listClassName));
+            relationshipSetters.add(new Setter(key,
+                                               String.format("set%s", plural),
+                                               listClassName, pluralParameter));
         }
 
-        relationshipSetters.add(new Setter(key, String.format("add%s", baseName), className, parameterName));
-        relationshipSetters.add(new Setter(key, String.format("remove%s", baseName), className, parameterName));
-        relationshipSetters.add(new Setter(key, String.format("add%s", plural), listClassName, pluralParameter));
-        relationshipSetters.add(new Setter(key, String.format("remove%s", plural), listClassName, pluralParameter));
+        relationshipSetters.add(new Setter(key,
+                                           String.format("add%s", baseName),
+                                           className, parameterName));
+        relationshipSetters.add(new Setter(key,
+                                           String.format("remove%s", baseName),
+                                           className, parameterName));
+        relationshipSetters.add(new Setter(key, String.format("add%s", plural),
+                                           listClassName, pluralParameter));
+        relationshipSetters.add(new Setter(key,
+                                           String.format("remove%s", plural),
+                                           listClassName, pluralParameter));
     }
 
-    private void resolveRelationships(WorkspacePresentation presentation, Map<FacetKey, Facet> facets) {
+    private void resolveRelationships(WorkspacePresentation presentation,
+                                      Map<FacetKey, Facet> facets) {
         NetworkConstraintsContext networkConstraints = context.networkConstraints();
         if (networkConstraints == null) {
             return;

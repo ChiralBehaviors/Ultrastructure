@@ -43,12 +43,52 @@ public class Aspect<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
         this.classifier = classifier;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Aspect)) {
+            return false;
+        }
+        Aspect<?> other = (Aspect<?>) obj;
+        if (classification == null) {
+            if (other.classification != null) {
+                return false;
+            }
+        } else if (!classification.equals(other.classification)) {
+            return false;
+        }
+        if (classifier == null) {
+            if (other.classifier != null) {
+                return false;
+            }
+        } else if (!classifier.equals(other.classifier)) {
+            return false;
+        }
+        return true;
+    }
+
     public RuleForm getClassification() {
         return classification;
     }
 
     public Relationship getClassifier() {
         return classifier;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                 + ((classification == null) ? 0 : classification.hashCode());
+        result = prime * result
+                 + ((classifier == null) ? 0 : classifier.hashCode());
+        return result;
     }
 
     @Override

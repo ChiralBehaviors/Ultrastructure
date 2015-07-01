@@ -20,17 +20,22 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
+import java.util.List;
+
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
 
 /**
  * @author hhildebrand
  *
  */
-public interface AgencyModel
-        extends
+public interface AgencyModel extends
         NetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute> {
+    List<AgencyLocationAuthorization> getAgencyLocationAuths(Aspect<Agency> aspect);
 
+    List<AgencyProductAuthorization> getAgencyProductAuths(Aspect<Agency> aspect);
 }

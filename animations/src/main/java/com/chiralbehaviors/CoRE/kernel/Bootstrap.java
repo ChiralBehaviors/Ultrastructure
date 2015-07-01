@@ -146,7 +146,8 @@ public class Bootstrap {
             s.setInt(5, wko.valueType().ordinal());
             s.execute();
         } catch (SQLException e) {
-            throw new SQLException(String.format("Unable to insert %s", wko), e);
+            throw new SQLException(String.format("Unable to insert %s", wko),
+                                   e);
         }
     }
 
@@ -160,7 +161,8 @@ public class Bootstrap {
             s.setObject(4, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
-            throw new SQLException(String.format("Unable to insert %s", wki), e);
+            throw new SQLException(String.format("Unable to insert %s", wki),
+                                   e);
         }
     }
 
@@ -189,7 +191,8 @@ public class Bootstrap {
             s.setObject(4, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
-            throw new SQLException(String.format("Unable to insert %s", wko), e);
+            throw new SQLException(String.format("Unable to insert %s", wko),
+                                   e);
         }
     }
 
@@ -204,7 +207,8 @@ public class Bootstrap {
             s.setObject(5, wko.inverse().id());
             s.execute();
         } catch (SQLException e) {
-            throw new SQLException(String.format("Unable to insert %s", wko), e);
+            throw new SQLException(String.format("Unable to insert %s", wko),
+                                   e);
         }
     }
 
@@ -216,11 +220,12 @@ public class Bootstrap {
             s.setString(2, wko.wkoName());
             s.setString(3, wko.description());
             s.setInt(4, wko == WellKnownStatusCode.UNSET ? Ruleform.TRUE
-                                                        : Ruleform.FALSE);
+                                                         : Ruleform.FALSE);
             s.setObject(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {
-            throw new SQLException(String.format("Unable to insert %s", wko), e);
+            throw new SQLException(String.format("Unable to insert %s", wko),
+                                   e);
         }
     }
 
@@ -233,8 +238,7 @@ public class Bootstrap {
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
         em.detach(kernelWorkspace);
         objMapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName),
-                                                              new WorkspaceSnapshot(
-                                                                                    kernelWorkspace,
+                                                              new WorkspaceSnapshot(kernelWorkspace,
                                                                                     em));
     }
 
@@ -246,8 +250,7 @@ public class Bootstrap {
         ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
                                                core);
 
-        WorkspaceAuthorization netAuth = new WorkspaceAuthorization(
-                                                                    pn,
+        WorkspaceAuthorization netAuth = new WorkspaceAuthorization(pn,
                                                                     kernelWorkspace,
                                                                     core);
         em.persist(netAuth);
@@ -256,16 +259,21 @@ public class Bootstrap {
         populate("CopyAttribute", find(WellKnownAttribute.COPY), core,
                  kernelWorkspace);
         populate("NotApplicableAttribute",
-                 find(WellKnownAttribute.NOT_APPLICABLE), core, kernelWorkspace);
+                 find(WellKnownAttribute.NOT_APPLICABLE), core,
+                 kernelWorkspace);
         populate("SameAttribute", find(WellKnownAttribute.SAME), core,
                  kernelWorkspace);
-        populate("Login", find(WellKnownAttribute.LOGIN), core, kernelWorkspace);
+        populate("Login", find(WellKnownAttribute.LOGIN), core,
+                 kernelWorkspace);
         populate("PasswordHash", find(WellKnownAttribute.PASSWORD_HASH), core,
                  kernelWorkspace);
         populate("PasswordRounds", find(WellKnownAttribute.PASSWORD_ROUNDS),
                  core, kernelWorkspace);
-        populate("NamespaceAttribute", find(WellKnownAttribute.NAMESPACE),
-                 core, kernelWorkspace);
+        populate("NamespaceAttribute", find(WellKnownAttribute.NAMESPACE), core,
+                 kernelWorkspace);
+        populate("IRI", find(WellKnownAttribute.IRI), core, kernelWorkspace);
+        populate("JsonldType", find(WellKnownAttribute.JSONLD_TYPE), core,
+                 kernelWorkspace);
 
         populate("AnyProduct", find(WellKnownProduct.ANY), core,
                  kernelWorkspace);
@@ -325,7 +333,8 @@ public class Bootstrap {
                  core, kernelWorkspace);
         populate("Contains", find(WellKnownRelationship.CONTAINS), core,
                  kernelWorkspace);
-        populate("IsA", find(WellKnownRelationship.IS_A), core, kernelWorkspace);
+        populate("IsA", find(WellKnownRelationship.IS_A), core,
+                 kernelWorkspace);
         populate("Includes", find(WellKnownRelationship.INCLUDES), core,
                  kernelWorkspace);
         populate("HasException", find(WellKnownRelationship.HAS_EXCEPTION),
@@ -334,9 +343,8 @@ public class Bootstrap {
                  core, kernelWorkspace);
         populate("IsLocationOf", find(WellKnownRelationship.IS_LOCATION_OF),
                  core, kernelWorkspace);
-        populate("MapsToLocation",
-                 find(WellKnownRelationship.MAPS_TO_LOCATION), core,
-                 kernelWorkspace);
+        populate("MapsToLocation", find(WellKnownRelationship.MAPS_TO_LOCATION),
+                 core, kernelWorkspace);
         populate("Prototype", find(WellKnownRelationship.PROTOTYPE), core,
                  kernelWorkspace);
         populate("PrototypeOf", find(WellKnownRelationship.PROTOTYPE_OF), core,
@@ -371,9 +379,8 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("HadMember", find(WellKnownRelationship.HAD_MEMBER), core,
                  kernelWorkspace);
-        populate("FormerMemberOf",
-                 find(WellKnownRelationship.FORMER_MEMBER_OF), core,
-                 kernelWorkspace);
+        populate("FormerMemberOf", find(WellKnownRelationship.FORMER_MEMBER_OF),
+                 core, kernelWorkspace);
         populate("NotApplicableRelationship",
                  find(WellKnownRelationship.NOT_APPLICABLE), core,
                  kernelWorkspace);
@@ -426,41 +433,34 @@ public class Bootstrap {
                  core, kernelWorkspace);
         populate("Validates", find(WellKnownRelationship.VALIDATES), core,
                  kernelWorkspace);
-        AgencyNetworkAuthorization loginAuthNet = new AgencyNetworkAuthorization(
-                                                                                 core);
+        AgencyNetworkAuthorization loginAuthNet = new AgencyNetworkAuthorization(core);
         loginAuthNet.setClassifier(find(WellKnownRelationship.IS_A));
         loginAuthNet.setClassification(find(WellKnownAgency.CORE_USER));
-        WorkspaceAuthorization loginAuthNetAuth = new WorkspaceAuthorization(
-                                                                             loginAuthNet,
+        WorkspaceAuthorization loginAuthNetAuth = new WorkspaceAuthorization(loginAuthNet,
                                                                              kernelWorkspace,
                                                                              core);
         em.persist(loginAuthNetAuth);
 
-        AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(
-                                                                                  find(WellKnownAttribute.LOGIN),
+        AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(find(WellKnownAttribute.LOGIN),
                                                                                   core);
         loginAuth.setNetworkAuthorization(loginAuthNet);
         populate(loginAuth, core, kernelWorkspace);
-        AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(
-                                                                                         find(WellKnownAttribute.PASSWORD_HASH),
+        AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(find(WellKnownAttribute.PASSWORD_HASH),
                                                                                          core);
         passwordHashAuth.setNetworkAuthorization(loginAuthNet);
 
         populate(passwordHashAuth, core, kernelWorkspace);
-        AgencyAttributeAuthorization passwordRounds = new AgencyAttributeAuthorization(
-                                                                                       find(WellKnownAttribute.PASSWORD_ROUNDS),
+        AgencyAttributeAuthorization passwordRounds = new AgencyAttributeAuthorization(find(WellKnownAttribute.PASSWORD_ROUNDS),
                                                                                        core);
         passwordRounds.setNetworkAuthorization(loginAuthNet);
 
         populate(passwordRounds, core, kernelWorkspace);
-        AgencyNetwork edge = new AgencyNetwork(
-                                               find(WellKnownAgency.SUPER_USER),
+        AgencyNetwork edge = new AgencyNetwork(find(WellKnownAgency.SUPER_USER),
                                                isA,
                                                find(WellKnownAgency.CORE_USER),
                                                core);
 
-        WorkspaceAuthorization edgeAuth = new WorkspaceAuthorization(
-                                                                     edge,
+        WorkspaceAuthorization edgeAuth = new WorkspaceAuthorization(edge,
                                                                      kernelWorkspace,
                                                                      core);
         em.persist(edgeAuth);

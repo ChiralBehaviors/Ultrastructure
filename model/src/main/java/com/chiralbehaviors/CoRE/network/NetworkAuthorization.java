@@ -56,33 +56,34 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<RuleForm, ?>>
-        extends Ruleform {
+abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<RuleForm, ?>> extends Ruleform {
 
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_relationship")
-    private Relationship      authorizedRelationship;
+    private Relationship authorizedRelationship;
 
-    private Cardinality       cardinality;
+    private Cardinality cardinality;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_relationship")
-    private Relationship      childRelationship;
+    private Relationship childRelationship;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classifier")
-    private Relationship      classifier;
+    private Relationship classifier;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "grouping_agency")
-    private Agency            groupingAgency;
+    private Agency groupingAgency;
+
+    private String name;
 
     @Column(name = "sequence_number")
-    private int               sequenceNumber   = 0;
+    private int sequenceNumber = 0;
 
     public NetworkAuthorization() {
         super();
@@ -162,5 +163,13 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

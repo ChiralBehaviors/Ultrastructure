@@ -254,7 +254,15 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
             return;
         }
         gen.writeObjectFieldStart(term);
-        gen.writeStringField(Constants.ID, getContextIri(childAspect, uriInfo));
+        if (childAspect.getClassifier().isAny()
+            && childAspect.getClassification().isAny()) {
+            gen.writeStringField(Constants.ID,
+                                 RuleformContext.getContextIri(childAspect.getClassification().getClass(),
+                                                               uriInfo));
+        } else {
+            gen.writeStringField(Constants.ID,
+                                 getContextIri(childAspect, uriInfo));
+        }
         gen.writeStringField(Constants.TYPE, Constants.ID);
         gen.writeEndObject();
     }

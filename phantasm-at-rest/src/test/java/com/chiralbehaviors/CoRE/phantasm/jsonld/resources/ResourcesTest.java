@@ -36,6 +36,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test.TestApplication;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -89,8 +90,11 @@ public class ResourcesTest extends AbstractModelTest {
         URL url;
         Object jsonObject;
         Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tester",
+                                                 "testier");
         thing1.setAliases(new String[] { "smith", "jones" });
         thing1.setURI("http://example.com");
+        thing1.setThing2(thing2);
         em.getTransaction().commit();
         em.getTransaction().begin();
         url = new URL(String.format("http://localhost:%s/json-ld/facet/node/product/%s/%s/%s",

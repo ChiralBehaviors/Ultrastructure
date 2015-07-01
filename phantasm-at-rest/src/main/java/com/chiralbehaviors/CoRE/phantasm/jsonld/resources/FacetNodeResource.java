@@ -60,24 +60,24 @@ public class FacetNodeResource extends TransactionalResource {
         this.uriInfo = uriInfo;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Path("{ruleform-type}/{classifier}/{classification}")
     @GET
-    public List<FacetNode<?, ?>> getAllInstances(@PathParam("ruleform-type") String ruleformType,
-                                                 @PathParam("classifier") String relationship,
-                                                 @PathParam("classification") String ruleform) {
-        Aspect aspect = getAspect(ruleformType, relationship, ruleform);
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<FacetNode<RuleForm, Network>> getAllInstances(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                                   @PathParam("classifier") String relationship,
+                                                                                                                                                                   @PathParam("classification") String ruleform) {
+        Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
+                                            ruleform);
         return getFacetInstances(aspect);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Path("{ruleform-type}/{instance}/{classifier}/{classification}")
     @GET
-    public FacetNode<?, ?> getInstance(@PathParam("ruleform-type") String ruleformType,
-                                       @PathParam("instance") String facetInstance,
-                                       @PathParam("classifier") String relationship,
-                                       @PathParam("classification") String ruleform) {
-        Aspect aspect = getAspect(ruleformType, relationship, ruleform);
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetNode<RuleForm, Network> getInstance(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                         @PathParam("instance") String facetInstance,
+                                                                                                                                                         @PathParam("classifier") String relationship,
+                                                                                                                                                         @PathParam("classification") String ruleform) {
+        Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
+                                            ruleform);
         return createFacet(facetInstance, aspect);
     }
 

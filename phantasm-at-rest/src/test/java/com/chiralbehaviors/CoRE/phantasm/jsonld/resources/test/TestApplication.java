@@ -65,8 +65,10 @@ public class TestApplication extends Application<TestServiceConfiguration> {
     @Override
     public void run(TestServiceConfiguration configuration,
                     Environment environment) throws Exception {
-        ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors().get(0)).setPort(0);
-        ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors().get(0)).setPort(0);
+        if (configuration.isRandomPort()) {
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors().get(0)).setPort(0);
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors().get(0)).setPort(0);
+        }
         this.environment = environment;
         environment.lifecycle().addServerLifecycleListener(server -> jettyServer = server);
         JpaConfiguration jpaConfig = configuration.getCrudServiceConfiguration();

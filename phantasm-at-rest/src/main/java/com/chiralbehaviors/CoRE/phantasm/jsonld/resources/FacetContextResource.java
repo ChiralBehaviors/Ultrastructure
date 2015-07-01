@@ -59,27 +59,26 @@ public class FacetContextResource extends TransactionalResource {
         this.uriInfo = uriInfo;
     }
 
-    @SuppressWarnings("unchecked")
     @Path("{ruleform-type}/{classifier}/{classification}")
     @GET
-    public FacetContext<?, ?> getFacet(@PathParam("ruleform-type") String ruleformType,
-                                       @PathParam("classifier") String relationship,
-                                       @PathParam("classification") String ruleform) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetContext<RuleForm, Network> getFacet(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                         @PathParam("classifier") String relationship,
+                                                                                                                                                         @PathParam("classification") String ruleform) {
         return createContext(getAspect(ruleformType, relationship, ruleform));
     }
 
-    @SuppressWarnings("unchecked")
     @Path("{ruleform-type}/{classifier}/{classification}/instances")
     @GET
-    public FacetContext<?, ?> getFacetInstances(@PathParam("ruleform-type") String ruleformType,
-                                                @PathParam("classifier") String relationship,
-                                                @PathParam("classification") String ruleform) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetContext<RuleForm, Network> getFacetInstances(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                                  @PathParam("classifier") String relationship,
+                                                                                                                                                                  @PathParam("classification") String ruleform) {
         return createContext(getAspect(ruleformType, relationship, ruleform));
     }
 
+    @SuppressWarnings("rawtypes")
     @Path("{ruleform-type}")
     @GET
-    public List<FacetContext<?, ?>> getFacets(@PathParam("ruleform-type") String ruleformType) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List getFacets(@PathParam("ruleform-type") String ruleformType) {
         switch (ruleformType) {
             case "Agency":
                 return getFacets(readOnlyModel.getAgencyModel());
@@ -104,13 +103,13 @@ public class FacetContextResource extends TransactionalResource {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetContext<RuleForm, Network> createContext(Aspect<RuleForm> aspect) {
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetContext<RuleForm, Network> createContext(Aspect<?> aspect) {
         return new FacetContext(aspect, readOnlyModel, uriInfo);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<FacetContext<?, ?>> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        List<FacetContext<?, ?>> facets = new ArrayList<>();
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<? extends FacetContext<RuleForm, Network>> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        List<FacetContext<RuleForm, Network>> facets = new ArrayList<>();
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
             facets.add(new FacetContext(aspect, readOnlyModel, uriInfo, true));
         }

@@ -95,6 +95,18 @@ public class RuleformResource extends TransactionalResource {
         return new RuleformNode(ruleform, uriInfo);
     }
 
+    @Path("node/{ruleform-type}")
+    @GET
+    public List<RuleformNode> getInstances(@PathParam("ruleform-type") String ruleformType) {
+        Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
+        if (ruleformClass == null) {
+            throw new WebApplicationException(String.format("%s does not exist",
+                                                            ruleformType));
+        }
+        List<RuleformNode> instances = new ArrayList<>();
+        return instances;
+    }
+
     @GET
     public List<String> getRuleformTypes() {
         return sortedRuleformTypes;

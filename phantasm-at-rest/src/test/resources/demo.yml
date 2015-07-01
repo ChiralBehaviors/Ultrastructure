@@ -1,4 +1,3 @@
-randomPort: true
 jpa:
     debug: true
     persistenceUnit: CoRE

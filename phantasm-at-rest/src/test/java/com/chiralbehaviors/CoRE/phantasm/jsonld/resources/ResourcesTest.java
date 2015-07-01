@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -72,7 +73,7 @@ public class ResourcesTest extends AbstractModelTest {
     }
 
     @Test
-    public void testContext() throws Exception {
+    public void testFacetContext() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/facet/context/product/%s/%s",
                                         application.getPort(),
                                         scope.lookup("kernel",
@@ -84,7 +85,7 @@ public class ResourcesTest extends AbstractModelTest {
     }
 
     @Test
-    public void testNode() throws Exception {
+    public void testFacetNode() throws Exception {
         URL url;
         Object jsonObject;
         Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test", "testy");
@@ -100,7 +101,7 @@ public class ResourcesTest extends AbstractModelTest {
                                     scope.lookup("Thing1").getId().toString()));
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
-        System.out.println("Node value of an instance of thing 1");
+        System.out.println("Node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
         Object processed = JsonLdProcessor.normalize(jsonObject);
         System.out.println("Normalized node value of an instance of Thing1");
@@ -116,15 +117,6 @@ public class ResourcesTest extends AbstractModelTest {
         processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
         System.out.println("Expanded node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
-    }
-
-    @Test
-    public void testRuleforms() throws Exception {
-        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform",
-                                        application.getPort()));
-        Object jsonObject = JsonUtils.fromInputStream(url.openStream());
-        System.out.println("Ruleform types:");
-        System.out.println(JsonUtils.toPrettyString(jsonObject));
     }
 
     @Test
@@ -145,21 +137,40 @@ public class ResourcesTest extends AbstractModelTest {
                                     scope.lookup("URI").getId().toString()));
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
-        System.out.println("Node value of an instance of thing 1");
+        System.out.println("Node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
         Object processed = JsonLdProcessor.normalize(jsonObject);
-        System.out.println("Normalized node value of an instance of Thing1");
+        System.out.println("Normalized node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
                                             new JsonLdOptions());
-        System.out.println("Compacted node value of an instance of Thing1");
+        System.out.println("Compacted node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
                                             new JsonLdOptions());
-        System.out.println("Flattened node value of an instance of Thing1");
+        System.out.println("Flattened node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
-        System.out.println("Expanded node value of an instance of Thing1");
+        System.out.println("Expanded node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
+    }
+
+    @Test
+    public void testRuleforms() throws Exception {
+        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform",
+                                        application.getPort()));
+        Object jsonObject = JsonUtils.fromInputStream(url.openStream());
+        System.out.println("Ruleform types:");
+        System.out.println(JsonUtils.toPrettyString(jsonObject));
+    }
+
+    @Test
+    public void testLookupWorkspace() throws Exception {
+        URL url = new URL(String.format("http://localhost:%s/json-ld/workspace/%s",
+                                        application.getPort(),
+                                        scope.getWorkspace().getDefiningProduct().getId().toString()));
+        Map<?, ?> jsonObject = (Map<?, ?>) JsonUtils.fromInputStream(url.openStream());
+        assertNotNull(jsonObject.get("auths"));
+        assertNotNull(jsonObject.get("frontier"));
     }
 }

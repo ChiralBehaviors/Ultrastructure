@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
-import java.util.Optional;
-
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -35,7 +33,9 @@ import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformNode;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand
@@ -52,25 +52,38 @@ public class WorkspaceResource extends TransactionalResource {
         super(emf);
     }
 
-    @Path("{uuid}/named")
+    @Path("{uuid}/lookup")
     @GET
     public RuleformNode lookup(@PathParam("uuid") String workspaceId,
-                               @QueryParam("namespace") Optional<String> namespace,
-                               @QueryParam("member") Optional<String> member) {
+                               @QueryParam("namespace") String namespace,
+                               @QueryParam("member") String member) {
         WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(toUuid(workspaceId));
         if (scope == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
                                                             workspaceId),
                                               Status.NOT_FOUND);
         }
-        Ruleform resolved = scope.lookup(namespace.get(), member.get());
+        Ruleform resolved = scope.lookup(namespace, member);
         if (resolved == null) {
             throw new WebApplicationException(String.format("%s:%s not found in workspace: %s",
-                                                            namespace.get(),
-                                                            member.get(),
+                                                            namespace, member,
                                                             workspaceId),
                                               Status.NOT_FOUND);
         }
         return new RuleformNode(resolved, uriInfo);
+    }
+
+    @Path("{uuid}")
+    @GET
+    public WorkspaceSnapshot getWorkspace(@PathParam("uuid") String workspaceId) {
+        Product workspace = readOnlyModel.getEntityManager().find(Product.class,
+                                                                  toUuid(workspaceId));
+        if (workspace == null) {
+            throw new WebApplicationException(String.format("Workspace not found: %s",
+                                                            workspaceId),
+                                              Status.NOT_FOUND);
+        }
+        return new WorkspaceSnapshot(workspace,
+                                     readOnlyModel.getEntityManager());
     }
 }

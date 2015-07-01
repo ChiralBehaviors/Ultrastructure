@@ -23,14 +23,19 @@ import javax.persistence.Persistence;
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
 
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetNodeResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 
 import io.dropwizard.Application;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
+import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 /**
@@ -87,5 +92,14 @@ public class TestApplication extends Application<TestServiceConfiguration> {
                 // ignore
             }
         }
+    }
+
+    @Override
+    public void initialize(Bootstrap<TestServiceConfiguration> bootstrap) {
+        ObjectMapper objMapper = bootstrap.getObjectMapper();
+        objMapper.registerModule(new CoREModule());
+        Hibernate4Module module = new Hibernate4Module();
+        module.enable(Feature.FORCE_LAZY_LOADING);
+        objMapper.registerModule(module);
     }
 }

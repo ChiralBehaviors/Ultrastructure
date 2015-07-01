@@ -21,7 +21,9 @@
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
@@ -37,6 +39,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContext;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetNode;
 
@@ -70,9 +73,9 @@ public class FacetContextResource extends TransactionalResource {
 
     @Path("{ruleform-type}/{classifier}/{classification}/instances")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<FacetNode<RuleForm, Network>> getFacetInstances(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                                                     @PathParam("classifier") String relationship,
-                                                                                                                                                                     @PathParam("classification") String ruleform) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacetInstances(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                            @PathParam("classifier") String relationship,
+                                                                                                                                                            @PathParam("classification") String ruleform) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
         return getFacetInstances(aspect);
@@ -82,21 +85,27 @@ public class FacetContextResource extends TransactionalResource {
      * @param aspect
      * @return
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<FacetNode<RuleForm, Network>> getFacetInstances(Aspect<RuleForm> aspect) {
-        List<FacetNode<RuleForm, Network>> facets = new ArrayList<>();
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacetInstances(Aspect<RuleForm> aspect) {
+        List<Map<String, String>> facets = new ArrayList<>();
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
-        for (ExistentialRuleform ruleform : networkedModel.getChildren(aspect.getClassification(),
-                                                                       aspect.getClassifier().getInverse())) {
-            facets.add(new FacetNode(ruleform, aspect, readOnlyModel, uriInfo));
+
+        for (RuleForm ruleform : networkedModel.getChildren(aspect.getClassification(),
+                                                            aspect.getClassifier().getInverse())) {
+            Map<String, String> ctx = new HashMap<>();
+            FacetNode<RuleForm, Network> facet = new FacetNode<>(ruleform,
+                                                                 aspect,
+                                                                 readOnlyModel,
+                                                                 uriInfo);
+            ctx.put(Constants.CONTEXT, facet.getContext().getIri());
+            ctx.put(Constants.ID, facet.getIri());
+            facets.add(ctx);
         }
         return facets;
     }
 
-    @SuppressWarnings("rawtypes")
     @Path("{ruleform-type}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List getFacets(@PathParam("ruleform-type") String ruleformType) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacets(@PathParam("ruleform-type") String ruleformType) {
         switch (ruleformType) {
             case "Agency":
                 return getFacets(readOnlyModel.getAgencyModel());
@@ -126,10 +135,18 @@ public class FacetContextResource extends TransactionalResource {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<? extends FacetContext<RuleForm, Network>> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        List<FacetContext<RuleForm, Network>> facets = new ArrayList<>();
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        List<Map<String, String>> facets = new ArrayList<>();
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
-            facets.add(new FacetContext(aspect, readOnlyModel, uriInfo, true));
+            Map<String, String> ctx = new HashMap<>();
+            FacetContext facetContext = new FacetContext(aspect, readOnlyModel,
+                                                         uriInfo, true);
+            ctx.put("Type Name",
+                    String.format("%s:%s", aspect.getClassifier().getName(),
+                                  aspect.getClassification().getName()));
+            ctx.put(Constants.ID, facetContext.getIri());
+            ctx.put("All Facet Instances", facetContext.getAllInstancesIri());
+            facets.add(ctx);
         }
         return facets;
     }

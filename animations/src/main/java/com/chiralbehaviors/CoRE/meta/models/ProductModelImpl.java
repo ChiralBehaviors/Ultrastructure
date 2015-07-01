@@ -33,6 +33,8 @@ import javax.persistence.criteria.Root;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization_;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct_;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.location.Location;
@@ -43,10 +45,14 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductLocation_;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationship;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductRelationship_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
@@ -54,8 +60,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  * @author hhildebrand
  *
  */
-public class ProductModelImpl
-        extends
+public class ProductModelImpl extends
         AbstractNetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute>
         implements ProductModel {
 
@@ -75,14 +80,12 @@ public class ProductModelImpl
      */
     @Override
     public void authorize(Aspect<Product> aspect, Attribute... attributes) {
-        ProductNetworkAuthorization auth = new ProductNetworkAuthorization(
-                                                                           model.getCurrentPrincipal().getPrincipal());
+        ProductNetworkAuthorization auth = new ProductNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
-            ProductAttributeAuthorization authorization = new ProductAttributeAuthorization(
-                                                                                            attribute,
+            ProductAttributeAuthorization authorization = new ProductAttributeAuthorization(attribute,
                                                                                             model.getCurrentPrincipal().getPrincipal());
             em.persist(authorization);
         }
@@ -94,14 +97,12 @@ public class ProductModelImpl
     @Override
     public void authorize(Product ruleform, Relationship relationship,
                           Agency authorized) {
-        AgencyProduct a = new AgencyProduct(
-                                            model.getCurrentPrincipal().getPrincipal());
+        AgencyProduct a = new AgencyProduct(model.getCurrentPrincipal().getPrincipal());
         a.setAgency(authorized);
         a.setRelationship(relationship);
         a.setProduct(ruleform);
         em.persist(a);
-        AgencyProduct b = new AgencyProduct(
-                                            model.getCurrentPrincipal().getPrincipal());
+        AgencyProduct b = new AgencyProduct(model.getCurrentPrincipal().getPrincipal());
         b.setAgency(authorized);
         b.setRelationship(relationship.getInverse());
         b.setProduct(ruleform);
@@ -117,14 +118,12 @@ public class ProductModelImpl
         assert ruleform != null : "ruleform is null";
         assert relationship != null : "relationshp is null";
         assert authorized != null : "authorized is null";
-        ProductLocation a = new ProductLocation(
-                                                model.getCurrentPrincipal().getPrincipal());
+        ProductLocation a = new ProductLocation(model.getCurrentPrincipal().getPrincipal());
         a.setProduct(ruleform);
         a.setRelationship(relationship);
         a.setLocation(authorized);
         em.persist(a);
-        ProductLocation b = new ProductLocation(
-                                                model.getCurrentPrincipal().getPrincipal());
+        ProductLocation b = new ProductLocation(model.getCurrentPrincipal().getPrincipal());
         b.setProduct(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setLocation(authorized);
@@ -137,8 +136,7 @@ public class ProductModelImpl
     @Override
     public void authorize(Product ruleform, Relationship relationship,
                           Product authorized) {
-        throw new UnsupportedOperationException(
-                                                "Product -> Product authorizations are modeled with Product Networks");
+        throw new UnsupportedOperationException("Product -> Product authorizations are modeled with Product Networks");
     }
 
     /* (non-Javadoc)
@@ -150,14 +148,12 @@ public class ProductModelImpl
         assert ruleform != null : "ruleform is null";
         assert relationship != null : "relationshp is null";
         assert authorized != null : "authorized is null";
-        ProductRelationship a = new ProductRelationship(
-                                                        model.getCurrentPrincipal().getPrincipal());
+        ProductRelationship a = new ProductRelationship(model.getCurrentPrincipal().getPrincipal());
         a.setProduct(ruleform);
         a.setRelationship(relationship);
         a.setChild(authorized);
         em.persist(a);
-        ProductRelationship b = new ProductRelationship(
-                                                        model.getCurrentPrincipal().getPrincipal());
+        ProductRelationship b = new ProductRelationship(model.getCurrentPrincipal().getPrincipal());
         b.setProduct(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setChild(authorized);
@@ -178,8 +174,7 @@ public class ProductModelImpl
         em.persist(copy);
         copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (ProductNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(),
-                                     copy,
+            network.getParent().link(network.getRelationship(), copy,
                                      model.getCurrentPrincipal().getPrincipal(),
                                      model.getCurrentPrincipal().getPrincipal(),
                                      em);
@@ -202,9 +197,7 @@ public class ProductModelImpl
 
     @Override
     public final Product create(String name, String description) {
-        Product product = new Product(
-                                      name,
-                                      description,
+        Product product = new Product(name, description,
                                       model.getCurrentPrincipal().getPrincipal());
         em.persist(product);
         return product;
@@ -222,9 +215,7 @@ public class ProductModelImpl
     final public Product create(String name, String description,
                                 Aspect<Product> aspect, Agency updatedBy,
                                 Aspect<Product>... aspects) {
-        Product product = new Product(
-                                      name,
-                                      description,
+        Product product = new Product(name, description,
                                       model.getCurrentPrincipal().getPrincipal());
         em.persist(product);
         initialize(product, aspect);
@@ -302,8 +293,7 @@ public class ProductModelImpl
     @Override
     public void deauthorize(Product ruleform, Relationship relationship,
                             Product authorized) {
-        throw new UnsupportedOperationException(
-                                                "Product -> Product authorizations are modeled with Product Networks");
+        throw new UnsupportedOperationException("Product -> Product authorizations are modeled with Product Networks");
     }
 
     @Override
@@ -385,8 +375,7 @@ public class ProductModelImpl
     @Override
     public List<Product> getAuthorizedProducts(Product ruleform,
                                                Relationship relationship) {
-        throw new UnsupportedOperationException(
-                                                "Product -> Product authorizations are modeled with Product Networks");
+        throw new UnsupportedOperationException("Product -> Product authorizations are modeled with Product Networks");
     }
 
     @Override
@@ -424,5 +413,61 @@ public class ProductModelImpl
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductAgencyAuths(com.chiralbehaviors.CoRE.meta.Aspect)
+     */
+    @Override
+    public List<AgencyProductAuthorization> getProductAgencyAuths(Aspect<Product> aspect) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AgencyProductAuthorization> query = cb.createQuery(AgencyProductAuthorization.class);
+        Root<AgencyProductAuthorization> networkRoot = query.from(AgencyProductAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.toParent),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get(AgencyProductAuthorization_.toRelationship),
+                                                        aspect.getClassifier())));
+        TypedQuery<AgencyProductAuthorization> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductLocationAuths(com.chiralbehaviors.CoRE.meta.Aspect)
+     */
+    @Override
+    public List<ProductLocationAuthorization> getProductLocationAuths(Aspect<Product> aspect) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductLocationAuthorization> query = cb.createQuery(ProductLocationAuthorization.class);
+        Root<ProductLocationAuthorization> networkRoot = query.from(ProductLocationAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.fromParent),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.fromRelationship),
+                                                        aspect.getClassifier())));
+        TypedQuery<ProductLocationAuthorization> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductRelationshipAuths(com.chiralbehaviors.CoRE.meta.Aspect)
+     */
+    @Override
+    public List<ProductRelationshipAuthorization> getProductRelationshipAuths(Aspect<Product> aspect) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductRelationshipAuthorization> query = cb.createQuery(ProductRelationshipAuthorization.class);
+        Root<ProductRelationshipAuthorization> networkRoot = query.from(ProductRelationshipAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromParent),
+                                                        aspect.getClassification()),
+                                               cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromRelationship),
+                                                        aspect.getClassifier())));
+        TypedQuery<ProductRelationshipAuthorization> q = em.createQuery(query);
+        return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetworkAuthClass()
+     */
+    @Override
+    protected Class<?> getNetworkAuthClass() {
+        return ProductNetworkAuthorization.class;
     }
 }

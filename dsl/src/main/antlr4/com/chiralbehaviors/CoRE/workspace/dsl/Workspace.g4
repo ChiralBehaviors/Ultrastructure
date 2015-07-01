@@ -94,6 +94,7 @@ attributedExistentialRuleform:
     
 attributeRuleform:
     existentialRuleform
+    ('type:' type = QuotedText)?
     ('indexed:' indexed = ('true' | 'false'))?
     ('keyed:' keyed = ('true' | 'false'))?
     valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp')
@@ -225,12 +226,12 @@ constraint:
     cardinality = ('zero' | 'one' | 'n')
     childRelationship = qualifiedName
     ('get:' inferredGet = ('inferred' | 'immediate'))?
-    ('method:' methodNaming = ('relationship' | 'entity'))?
     ':'
     (anyType = ('*Agency' | '*Attribute' | '*Interval' | '*Location' | '*Product' | '*Relationship' | '*StatusCode' | '*Unit')
     | 
     (authorizedRelationship = qualifiedName '.' authorizedParent = qualifiedName))
-    ('sequence ' sequenceNumber = Number)?
+    (('named' name = ObjectName) | (methodType = ( 'named by relationship' | 'named by entity')))?
+    ('sequence:' sequenceNumber = Number)?
     (LB classifiedAttributes RB)?
     ;
 

@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
 import org.hibernate.internal.SessionImpl;
 
@@ -84,10 +83,10 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  */
 public class Animations implements Triggers {
 
-    private static final int                                 MAX_JOB_PROCESSING = 10;
+    private static final int MAX_JOB_PROCESSING = 10;
 
-    private final Set<AttributeValue<?>>                     attributeValues    = new HashSet<>();
-    private final Set<ProductChildSequencingAuthorization>   childSequences     = new HashSet<>();
+    private final Set<AttributeValue<?>>                     attributeValues  = new HashSet<>();
+    private final Set<ProductChildSequencingAuthorization>   childSequences   = new HashSet<>();
     private final EntityManager                              em;
     private boolean                                          inferAgencyNetwork;
     private boolean                                          inferAttributeNetwork;
@@ -97,12 +96,12 @@ public class Animations implements Triggers {
     private boolean                                          inferRelationshipNetwork;
     private boolean                                          inferStatusCodeNetwork;
     private boolean                                          inferUnitNetwork;
-    private final Set<Job>                                   jobs               = new LinkedHashSet<>();
+    private final Set<Job>                                   jobs             = new LinkedHashSet<>();
     private final Model                                      model;
-    private final Set<Product>                               modifiedServices   = new HashSet<>();
-    private final Set<ProductParentSequencingAuthorization>  parentSequences    = new HashSet<>();
-    private final Set<ProductSelfSequencingAuthorization>    selfSequences      = new HashSet<>();
-    private final Set<ProductSiblingSequencingAuthorization> siblingSequences   = new HashSet<>();
+    private final Set<Product>                               modifiedServices = new HashSet<>();
+    private final Set<ProductParentSequencingAuthorization>  parentSequences  = new HashSet<>();
+    private final Set<ProductSelfSequencingAuthorization>    selfSequences    = new HashSet<>();
+    private final Set<ProductSiblingSequencingAuthorization> siblingSequences = new HashSet<>();
 
     public Animations(Model model, EntityManager em) {
         this.model = model;
@@ -263,8 +262,7 @@ public class Animations implements Triggers {
         try {
             model.getJobModel().validateStateGraph(modifiedServices);
         } catch (SQLException e) {
-            throw new TriggerException(
-                                       "StatusCodeSequencing validation failed",
+            throw new TriggerException("StatusCodeSequencing validation failed",
                                        e);
         }
         validateAttributeValues();
@@ -274,8 +272,7 @@ public class Animations implements Triggers {
         Set<Job> processed = new HashSet<>(jobs.size());
         while (!jobs.isEmpty()) {
             if (cycles > MAX_JOB_PROCESSING) {
-                throw new IllegalStateException(
-                                                "Processing more inserted job cycles than the maximum number of itterations allowed");
+                throw new IllegalStateException("Processing more inserted job cycles than the maximum number of itterations allowed");
             }
             cycles++;
             List<Job> inserted = new ArrayList<>(jobs);
@@ -324,8 +321,7 @@ public class Animations implements Triggers {
                 inferUnitNetwork = true;
                 return;
             default:
-                throw new IllegalArgumentException(
-                                                   String.format("Unknown Existential Entity type: %s",
+                throw new IllegalArgumentException(String.format("Unknown Existential Entity type: %s",
                                                                  ruleform));
         }
     }
@@ -547,9 +543,9 @@ public class Animations implements Triggers {
                 model.getJobModel().ensureValidServiceAndStatus(pcsa.getNextChild(),
                                                                 pcsa.getNextChildStatus());
             } catch (SQLException e) {
-                throw new TriggerException(
-                                           String.format("Invalid sequence: %s",
-                                                         pcsa), e);
+                throw new TriggerException(String.format("Invalid sequence: %s",
+                                                         pcsa),
+                                           e);
             }
         }
     }
@@ -560,15 +556,11 @@ public class Animations implements Triggers {
             Attribute validatingAttribute = model.getAttributeModel().getSingleChild(attribute,
                                                                                      model.getKernel().getIsValidatedBy());
             if (validatingAttribute != null) {
-                TypedQuery<AttributeMetaAttribute> query = em.createNamedQuery(AttributeMetaAttribute.GET_ATTRIBUTE,
-                                                                               AttributeMetaAttribute.class);
-                query.setParameter("attribute", validatingAttribute);
-                query.setParameter("ruleform", attribute);
-                List<AttributeMetaAttribute> attrs = query.getResultList();
+                List<AttributeMetaAttribute> attrs = model.getAttributeModel().getAttributeValues(validatingAttribute,
+                                                                                                  attribute);
                 if (attrs == null || attrs.size() == 0) {
-                    throw new IllegalArgumentException(
-                                                       "No valid values for attribute "
-                                                               + attribute.getName());
+                    throw new IllegalArgumentException("No valid values for attribute "
+                                                       + attribute.getName());
                 }
                 boolean valid = false;
                 for (AttributeMetaAttribute ama : attrs) {
@@ -579,8 +571,7 @@ public class Animations implements Triggers {
                     }
                 }
                 if (!valid) {
-                    throw new IllegalArgumentException(
-                                                       String.format("%s is not a valid value for attribute %s",
+                    throw new IllegalArgumentException(String.format("%s is not a valid value for attribute %s",
                                                                      value,
                                                                      attribute));
                 }

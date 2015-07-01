@@ -19,6 +19,9 @@
  */
 package com.chiralbehaviors.CoRE.meta;
 
+import java.util.List;
+
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
@@ -28,8 +31,7 @@ import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
  * @author hhildebrand
  *
  */
-public interface RelationshipModel
-        extends
+public interface RelationshipModel extends
         NetworkedModel<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute> {
 
     /**
@@ -45,4 +47,5 @@ public interface RelationshipModel
     Relationship create(String rel1Name, String rel1Description,
                         String rel2Name, String rel2Description);
 
+    List<ProductRelationshipAuthorization> getRelationshipProductAuths(Aspect<Relationship> aspect);
 }

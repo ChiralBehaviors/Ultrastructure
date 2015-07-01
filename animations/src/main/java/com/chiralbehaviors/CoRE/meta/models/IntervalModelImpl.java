@@ -39,8 +39,7 @@ import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
  * @author hhildebrand
  *
  */
-public class IntervalModelImpl
-        extends
+public class IntervalModelImpl extends
         AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
         implements IntervalModel {
 
@@ -60,14 +59,12 @@ public class IntervalModelImpl
      */
     @Override
     public void authorize(Aspect<Interval> aspect, Attribute... attributes) {
-        IntervalNetworkAuthorization auth = new IntervalNetworkAuthorization(
-                                                                             model.getCurrentPrincipal().getPrincipal());
+        IntervalNetworkAuthorization auth = new IntervalNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
-            IntervalAttributeAuthorization authorization = new IntervalAttributeAuthorization(
-                                                                                              attribute,
+            IntervalAttributeAuthorization authorization = new IntervalAttributeAuthorization(attribute,
                                                                                               model.getCurrentPrincipal().getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
@@ -88,8 +85,7 @@ public class IntervalModelImpl
         em.persist(copy);
         copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
         for (IntervalNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(),
-                                     copy,
+            network.getParent().link(network.getRelationship(), copy,
                                      model.getCurrentPrincipal().getPrincipal(),
                                      model.getCurrentPrincipal().getPrincipal(),
                                      em);
@@ -115,9 +111,7 @@ public class IntervalModelImpl
 
     @Override
     public final Interval create(String name, String description) {
-        Interval interval = new Interval(
-                                         name,
-                                         description,
+        Interval interval = new Interval(name, description,
                                          model.getCurrentPrincipal().getPrincipal());
         em.persist(interval);
         return interval;
@@ -127,14 +121,10 @@ public class IntervalModelImpl
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#create(java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.network.Aspect, com.chiralbehaviors.CoRE.agency.Agency, com.chiralbehaviors.CoRE.network.Aspect[])
      */
     @Override
-    public Interval create(String name,
-                           String description,
-                           Aspect<Interval> aspect,
-                           Agency updatedBy,
+    public Interval create(String name, String description,
+                           Aspect<Interval> aspect, Agency updatedBy,
                            @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
-        Interval agency = new Interval(
-                                       name,
-                                       description,
+        Interval agency = new Interval(name, description,
                                        model.getCurrentPrincipal().getPrincipal());
         em.persist(agency);
         initialize(agency, aspect);
@@ -154,5 +144,13 @@ public class IntervalModelImpl
                                                      Collection<Relationship> relationships,
                                                      Collection<Interval> children) {
         throw new UnsupportedOperationException();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetworkAuthClass()
+     */
+    @Override
+    protected Class<?> getNetworkAuthClass() {
+        return IntervalNetworkAuthorization.class;
     }
 }

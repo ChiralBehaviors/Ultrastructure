@@ -15,7 +15,6 @@ primitiveSetter(setter) ::= <<
 >>
 
 inferredRelationshipGetter(getter) ::= <<
-    @JsonIdentityReference(alwaysAsId = true)
     @Inferred
     @Edge(<key(getter.key)>)
     <getter.returnType> <getter.methodName>();
@@ -23,7 +22,6 @@ inferredRelationshipGetter(getter) ::= <<
 >>
 
 relationshipGetter(getter) ::= <<
-    @JsonIdentityReference(alwaysAsId = true)
     @Edge(<key(getter.key)>)
     <getter.returnType> <getter.methodName>();
 
@@ -41,9 +39,6 @@ facet(facet) ::= <<
  */
 package <facet.packageName>;
 
-import com.chiralbehaviors.CoRE.phantasm.json.PhantasmIdGenerator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.chiralbehaviors.CoRE.annotations.*;
 import com.chiralbehaviors.CoRE.phantasm.*;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -57,7 +52,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 <facet.imports: {dec| import <dec>;<\n>}>
 
 @SuppressWarnings("unused")
-@JsonIdentityInfo(generator = PhantasmIdGenerator.class, property = "id")
 @State(facets = {@Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>)},
        workspace = <facet.uri>)
 public interface <facet.className> extends ScopedPhantasm\<<facet.ruleformType>\> {

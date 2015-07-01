@@ -59,27 +59,29 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
 
     private static final long serialVersionUID = 1L;
 
-    private Cardinality       cardinality;
+    private Cardinality cardinality;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "connection")
-    private Relationship      connection;
+    private Relationship connection;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "from_relationship")
-    private Relationship      fromRelationship;
+    private Relationship fromRelationship;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "grouping_agency")
-    private Agency            groupingAgency;
+    private Agency groupingAgency;
+
+    private String name;
 
     @Column(name = "sequence_number")
-    private int               sequenceNumber   = 0;
+    private int sequenceNumber = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "to_relationship")
-    private Relationship      toRelationship;
+    private Relationship toRelationship;
 
     public XDomainNetworkAuthorization() {
         super();
@@ -157,5 +159,13 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
 
     public void setToRelationship(Relationship toRelationship) {
         this.toRelationship = toRelationship;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

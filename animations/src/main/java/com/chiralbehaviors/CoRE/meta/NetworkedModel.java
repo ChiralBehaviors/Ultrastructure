@@ -32,6 +32,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
@@ -45,8 +46,8 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  */
 public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>> {
 
-    public abstract AttributeType create(RuleForm ruleform,
-                                         Attribute attribute, Agency updatedBy);
+    public abstract AttributeType create(RuleForm ruleform, Attribute attribute,
+                                         Agency updatedBy);
 
     /**
      * Create a new instance with the supplied aspects
@@ -71,10 +72,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *            - the initial aspects of the instance
      * @return the new instance
      */
-    public RuleForm create(String name,
-                           String description,
-                           Aspect<RuleForm> aspect,
-                           Agency updatedBy,
+    public RuleForm create(String name, String description,
+                           Aspect<RuleForm> aspect, Agency updatedBy,
                            @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
 
     /**
@@ -190,6 +189,11 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     List<RuleForm> findAll();
 
     /**
+     * @return the list of aspects representing all facets for the RuleForm
+     */
+    List<Aspect<RuleForm>> getAllFacets();
+
+    /**
      * Answer the allowed values for an Attribute, classified by the supplied
      * aspect
      *
@@ -214,6 +218,16 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
                                                  Aspect<RuleForm> aspect);
+
+    /**
+     * Answer the aspect identified by the primary keys
+     * 
+     * @param classifier
+     * @param classification
+     * @return
+     */
+
+    Aspect<RuleForm> getAspect(UUID classifier, UUID classification);
 
     /**
      * Answer the list of attribute authorizations that are classified by the
@@ -310,7 +324,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     Agency getAuthorizedAgency(RuleForm ruleform, Relationship relationship);
 
-    Location getAuthorizedLocation(RuleForm ruleform, Relationship relationship);
+    Location getAuthorizedLocation(RuleForm ruleform,
+                                   Relationship relationship);
 
     List<Location> getAuthorizedLocations(RuleForm ruleform,
                                           Relationship relationship);
@@ -401,6 +416,16 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     Collection<Relationship> getImmediateRelationships(RuleForm parent);
 
     /**
+     * 
+     * @param parent
+     * @param relationship
+     * @param child
+     * @return
+     */
+    List<RuleForm> getInferredChildren(RuleForm parent,
+                                       Relationship relationship);
+
+    /**
      * @param parent
      * @param relationship
      * @return
@@ -410,6 +435,13 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     List<Network> getInterconnections(Collection<RuleForm> parents,
                                       Collection<Relationship> relationships,
                                       Collection<RuleForm> children);
+
+    /**
+     * 
+     * @param aspect
+     * @return the list of network authorizations for this aspect
+     */
+    List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect);
 
     /**
      *

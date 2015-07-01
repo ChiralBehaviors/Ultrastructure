@@ -38,6 +38,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
+import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
@@ -63,6 +64,7 @@ public class RuleformContext implements JsonSerializable {
                   "http://www.w3.org/2001/XMLSchema#date-dateTime");
         TYPES.put(UUID.class, "http://www.w3.org/2001/XMLSchema#uuid");
         TYPES.put(ValueType.class, "http://www.w3.org/2001/XMLSchema#text");
+        TYPES.put(Cardinality.class, "http://www.w3.org/2001/XMLSchema#text");
     }
 
     public static String getContextIri(Class<? extends Ruleform> ruleformClass,

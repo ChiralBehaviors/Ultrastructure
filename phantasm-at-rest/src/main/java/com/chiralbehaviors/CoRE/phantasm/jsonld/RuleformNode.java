@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 
 import javax.persistence.JoinColumn;
 import javax.ws.rs.core.UriBuilder;
@@ -96,12 +97,24 @@ public class RuleformNode implements JsonSerializable {
             field.setAccessible(true);
             if (field.getAnnotation(JoinColumn.class) == null) {
                 field.setAccessible(true);
+                Object value;
                 try {
-                    gen.writeStringField(field.getName(),
-                                         field.get(ruleform) == null ? null
-                                                                     : field.get(ruleform).toString());
-                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    value = field.get(ruleform);
+                } catch (IllegalAccessException e) {
                     throw new IllegalStateException(e);
+                }
+                if (value == null) {
+
+                } else if (value instanceof String) {
+                    gen.writeStringField(field.getName(), (String) value);
+                } else if (value instanceof Integer) {
+                    gen.writeNumberField(field.getName(), (Integer) value);
+                } else if (value instanceof Boolean) {
+                    gen.writeBooleanField(field.getName(), (Boolean) value);
+                } else if (value instanceof BigDecimal) {
+                    gen.writeNumberField(field.getName(), (BigDecimal) value);
+                } else if (value instanceof byte[]) {
+                    gen.writeBinaryField(field.getName(), (byte[]) value);
                 }
             } else {
                 Ruleform fk;

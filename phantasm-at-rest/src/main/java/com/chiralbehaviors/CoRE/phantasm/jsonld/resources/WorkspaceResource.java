@@ -20,9 +20,22 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
+import java.util.Optional;
+
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformNode;
 
 /**
  * @author hhildebrand
@@ -31,12 +44,33 @@ import javax.ws.rs.Produces;
 @Path("json-ld/workspace")
 @Produces({ "application/json", "text/json" })
 public class WorkspaceResource extends TransactionalResource {
+
+    @Context
+    private UriInfo uriInfo;
+
     public WorkspaceResource(EntityManagerFactory emf) {
         super(emf);
     }
 
-    @Path("resolve")
-    public Object resolve() {
-        return null;
+    @Path("{uuid}/named")
+    @GET
+    public RuleformNode lookup(@PathParam("uuid") String workspaceId,
+                               @QueryParam("namespace") Optional<String> namespace,
+                               @QueryParam("member") Optional<String> member) {
+        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(toUuid(workspaceId));
+        if (scope == null) {
+            throw new WebApplicationException(String.format("Workspace not found: %s",
+                                                            workspaceId),
+                                              Status.NOT_FOUND);
+        }
+        Ruleform resolved = scope.lookup(namespace.get(), member.get());
+        if (resolved == null) {
+            throw new WebApplicationException(String.format("%s:%s not found in workspace: %s",
+                                                            namespace.get(),
+                                                            member.get(),
+                                                            workspaceId),
+                                              Status.NOT_FOUND);
+        }
+        return new RuleformNode(resolved, uriInfo);
     }
 }

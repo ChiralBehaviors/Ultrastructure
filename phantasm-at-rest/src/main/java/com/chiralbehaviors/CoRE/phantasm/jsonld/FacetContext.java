@@ -59,7 +59,7 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         extends Aspect<RuleForm>implements JsonSerializable {
 
     public static String getContextIri(Aspect<?> aspect, UriInfo uriInfo) {
-        String eeType = aspect.getClassification().getClass().getSimpleName().toLowerCase();
+        String eeType = aspect.getClassification().getClass().getSimpleName();
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         String classifier = aspect.getClassifier().getId().toString();
         String classification = aspect.getClassification().getId().toString();
@@ -69,20 +69,27 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         return ub.build().toASCIIString();
     }
 
-    private final Model model;
-
+    private final Model   model;
     private final UriInfo uriInfo;
+    private final boolean writeId;
+
+    public FacetContext(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo,
+                        boolean writeId) {
+        this(aspect.getClassifier(), aspect.getClassification(), model, uriInfo,
+             writeId);
+    }
 
     public FacetContext(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
-        this(aspect.getClassifier(), aspect.getClassification(), model,
-             uriInfo);
+        this(aspect.getClassifier(), aspect.getClassification(), model, uriInfo,
+             false);
     }
 
     public FacetContext(Relationship classifier, RuleForm classification,
-                        Model model, UriInfo uriInfo) {
+                        Model model, UriInfo uriInfo, boolean writeId) {
         super(classifier, classification);
         this.uriInfo = uriInfo;
         this.model = model;
+        this.writeId = writeId;
     }
 
     @Override
@@ -101,6 +108,9 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     public void serialize(JsonGenerator gen,
                           SerializerProvider serializers) throws IOException {
         gen.writeStartObject();
+        if (writeId) {
+            gen.writeStringField(Constants.ID, getIri());
+        }
         gen.writeObjectFieldStart(Constants.CONTEXT);
         writeContext(gen);
         gen.writeEndObject();
@@ -118,8 +128,6 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     }
 
     public void writeContext(JsonGenerator gen) throws IOException {
-        gen.writeStringField("classifier", getClassifier().getName());
-        gen.writeStringField("classification", getClassification().getName());
         writeAttributeTerms(gen);
         writeNetworkAuthTerms(gen);
         writeXdAuthTerms(gen);

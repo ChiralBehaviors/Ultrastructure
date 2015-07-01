@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -29,29 +31,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetNode;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
-import com.chiralbehaviors.CoRE.time.Interval;
-import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand
@@ -73,93 +60,52 @@ public class FacetNodeResource extends TransactionalResource {
         this.uriInfo = uriInfo;
     }
 
-    @Path("agency/{instance}/{classifier}/{classification}")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Path("{ruleform-type}/{classifier}/{classification}")
     @GET
-    public FacetNode<Agency, AgencyNetwork> getAgency(@PathParam("instance") String facetInstance,
-                                                      @PathParam("classifier") String relationship,
-                                                      @PathParam("classification") String ruleform) {
-        return createFacet(facetInstance, relationship, ruleform,
-                           readOnlyModel.getAgencyModel());
+    public List<FacetNode<?, ?>> getAllInstances(@PathParam("ruleform-type") String ruleformType,
+                                                 @PathParam("classifier") String relationship,
+                                                 @PathParam("classification") String ruleform) {
+        Aspect aspect = getAspect(ruleformType, relationship, ruleform);
+        return getFacetInstances(aspect);
     }
 
-    @Path("attribute/{instance}/{classifier}/{classification}")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Path("{ruleform-type}/{instance}/{classifier}/{classification}")
     @GET
-    public FacetNode<Attribute, AttributeNetwork> getAttribute(@PathParam("instance") String facetInstance,
-                                                               @PathParam("classifier") String relationship,
-                                                               @PathParam("classification") String ruleform) {
-        return createFacet(facetInstance, relationship, ruleform,
-                           readOnlyModel.getAttributeModel());
-    }
-
-    @Path("interval/{instance}/{classifier}/{classification}")
-    @GET
-    public FacetNode<Interval, IntervalNetwork> getInterval(@PathParam("instance") String facetInstance,
-                                                            @PathParam("classifier") String relationship,
-                                                            @PathParam("classification") String ruleform) {
-        return createFacet(facetInstance, relationship, ruleform,
-                           readOnlyModel.getIntervalModel());
-    }
-
-    @Path("location/{instance}/{classifier}/{classification}")
-    @GET
-    public FacetNode<Location, LocationNetwork> getLocation(@PathParam("instance") String facetInstance,
-                                                            @PathParam("classifier") String relationship,
-                                                            @PathParam("classification") String ruleform) {
-        return createFacet(facetInstance, relationship, ruleform,
-                           readOnlyModel.getLocationModel());
-    }
-
-    @Path("product/{instance}/{classifier}/{classification}")
-    @GET
-    public FacetNode<Product, ProductNetwork> getProduct(@PathParam("instance") String facetInstance,
-                                                         @PathParam("classifier") String relationship,
-                                                         @PathParam("classification") String ruleform) {
-        return createFacet(facetInstance, relationship, ruleform,
-                           readOnlyModel.getProductModel());
-    }
-
-    @Path("relationship/{instance}/{classifier}/{classification}")
-    @GET
-    public FacetNode<Relationship, RelationshipNetwork> getRelationship(@PathParam("instance") String facetInstance,
-                                                                        @PathParam("classifier") String relationship,
-                                                                        @PathParam("classification") String ruleform) {
-        return createFacet(facetInstance, relationship, ruleform,
-                           readOnlyModel.getRelationshipModel());
-    }
-
-    @Path("statusCode/{instance}/{classifier}/{classification}")
-    @GET
-    public FacetNode<StatusCode, StatusCodeNetwork> getStatusCode(@PathParam("instance") String facetInstance,
-                                                                  @PathParam("classifier") String relationship,
-                                                                  @PathParam("classification") String ruleform) {
-        return createFacet(facetInstance, relationship, ruleform,
-                           readOnlyModel.getStatusCodeModel());
-    }
-
-    @Path("unit/{instance}/{classifier}/{classification}")
-    @GET
-    public FacetNode<Unit, UnitNetwork> getUnit(@PathParam("instance") String facetInstance,
-                                                @PathParam("classifier") String relationship,
-                                                @PathParam("classification") String ruleform) {
-        return createFacet(facetInstance, relationship, ruleform,
-                           readOnlyModel.getUnitModel());
+    public FacetNode<?, ?> getInstance(@PathParam("ruleform-type") String ruleformType,
+                                       @PathParam("instance") String facetInstance,
+                                       @PathParam("classifier") String relationship,
+                                       @PathParam("classification") String ruleform) {
+        Aspect aspect = getAspect(ruleformType, relationship, ruleform);
+        return createFacet(facetInstance, aspect);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetNode<RuleForm, Network> createFacet(String facetInstance,
-                                                                                                                                                          String relationship,
-                                                                                                                                                          String ruleform,
-                                                                                                                                                          NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+                                                                                                                                                          Aspect<RuleForm> aspect) {
         UUID existential = toUuid(facetInstance);
-        UUID classifier = toUuid(relationship);
-        UUID classification = toUuid(ruleform);
-        try {
-            return new FacetNode(networkedModel.find(existential),
-                                 networkedModel.getAspect(classifier,
-                                                          classification),
-                                 readOnlyModel, uriInfo);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(e, Response.Status.NOT_FOUND);
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        RuleForm instance = networkedModel.find(existential);
+        if (instance == null) {
+            throw new WebApplicationException(String.format("node %s is not found [%s:%s] (%s:%s)",
+                                                            Status.NOT_FOUND));
         }
+        return new FacetNode(instance, aspect, readOnlyModel, uriInfo);
+    }
+
+    /**
+     * @param aspect
+     * @return
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<FacetNode<RuleForm, Network>> getFacetInstances(Aspect<RuleForm> aspect) {
+        List<FacetNode<RuleForm, Network>> facets = new ArrayList<>();
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        for (ExistentialRuleform ruleform : networkedModel.getChildren(aspect.getClassification(),
+                                                                       aspect.getClassifier().getInverse())) {
+            facets.add(new FacetNode(ruleform, aspect, readOnlyModel, uriInfo));
+        }
+        return facets;
     }
 }

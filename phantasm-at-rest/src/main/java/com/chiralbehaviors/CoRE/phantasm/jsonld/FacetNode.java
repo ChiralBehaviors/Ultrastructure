@@ -58,7 +58,7 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         extends Aspect<RuleForm>implements JsonSerializable {
     public static String getIri(ExistentialRuleform<?, ?> child,
                                 Aspect<?> aspect, UriInfo uriInfo) {
-        String eeType = aspect.getClassification().getClass().getSimpleName().toLowerCase();
+        String eeType = aspect.getClassification().getClass().getSimpleName();
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         String classifier = aspect.getClassifier().getId().toString();
         String classification = aspect.getClassification().getId().toString();
@@ -98,8 +98,9 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     public FacetContext<RuleForm, Network> getContext() {
-        return new FacetContext<>(getClassifier(), getClassification(), model,
-                                  uriInfo);
+        return new FacetContext<RuleForm, Network>(getClassifier(),
+                                                   getClassification(), model,
+                                                   uriInfo, false);
     }
 
     public String getIri() {

@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -31,6 +32,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.utils.Util;
 
 /**
@@ -54,7 +56,8 @@ public class TransactionalResource {
     }
 
     private final EntityManagerFactory emf;
-    protected final Model              readOnlyModel;
+
+    protected final Model readOnlyModel;
 
     public TransactionalResource(EntityManagerFactory emf) {
         this.emf = emf;
@@ -75,6 +78,33 @@ public class TransactionalResource {
         } catch (IllegalArgumentException e) {
             throw new WebApplicationException(e, Response.Status.NOT_FOUND);
         }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected Aspect getAspect(String ruleformType, String relationship,
+                               String ruleform) {
+        Class<ExistentialRuleform> ruleformClass = (Class<ExistentialRuleform>) RuleformResource.entityMap.get(ruleformType);
+        if (ruleformClass == null) {
+            throw new WebApplicationException(String.format("%s does not exist",
+                                                            ruleformType),
+                                              Status.NOT_FOUND);
+        }
+        Relationship classifier = readOnlyModel.getEntityManager().find(Relationship.class,
+                                                                        toUuid(relationship));
+        if (classifier == null) {
+            throw new WebApplicationException(String.format("classifier does not exist: %s",
+                                                            relationship),
+                                              Status.NOT_FOUND);
+        }
+        ExistentialRuleform classification = readOnlyModel.getEntityManager().find(ruleformClass,
+                                                                                   toUuid(ruleform));
+        if (classification == null) {
+            throw new WebApplicationException(String.format("classification does not exist: %s",
+                                                            ruleform),
+                                              Status.NOT_FOUND);
+        }
+        Aspect aspect = new Aspect(classifier, classification);
+        return aspect;
     }
 
     protected Model getNewModel() {

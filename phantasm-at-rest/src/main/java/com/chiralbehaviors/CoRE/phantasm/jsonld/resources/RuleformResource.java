@@ -50,15 +50,11 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformNode;
 @Produces({ "application/json", "text/json" })
 public class RuleformResource extends TransactionalResource {
 
-    private final Map<String, Class<? extends Ruleform>> entityMap = new HashMap<>();
+    public final static Map<String, Class<? extends Ruleform>> entityMap = new HashMap<>();
 
-    @Context
-    private UriInfo uriInfo;
+    private final static ArrayList<String> sortedRuleformTypes;
 
-    private final ArrayList<String> sortedRuleformTypes;
-
-    public RuleformResource(EntityManagerFactory emf) {
-        super(emf);
+    static {
         Reflections reflections = new Reflections(Ruleform.class.getPackage().getName());
         for (Class<? extends Ruleform> form : reflections.getSubTypesOf(Ruleform.class)) {
             if (!Modifier.isAbstract(form.getModifiers())) {
@@ -67,6 +63,13 @@ public class RuleformResource extends TransactionalResource {
         }
         sortedRuleformTypes = new ArrayList<>(entityMap.keySet());
         Collections.sort(sortedRuleformTypes);
+    }
+
+    @Context
+    private UriInfo uriInfo;
+
+    public RuleformResource(EntityManagerFactory emf) {
+        super(emf);
     }
 
     @Path("context/{ruleform-type}")
@@ -95,5 +98,12 @@ public class RuleformResource extends TransactionalResource {
     @GET
     public List<String> getRuleformTypes() {
         return sortedRuleformTypes;
+    }
+
+    @Path("terms/{ruleform-type}")
+    @GET
+    public Object getTerm(@PathParam("ruleform-type") String ruleformType) {
+        return String.format("{ \"description\" : \"future home for terms of %s\" }",
+                             ruleformType);
     }
 }

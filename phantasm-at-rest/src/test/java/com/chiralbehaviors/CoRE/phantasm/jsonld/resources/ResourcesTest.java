@@ -75,7 +75,7 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testFacetContext() throws Exception {
-        URL url = new URL(String.format("http://localhost:%s/json-ld/facet/context/product/%s/%s",
+        URL url = new URL(String.format("http://localhost:%s/json-ld/facet/context/Product/%s/%s",
                                         application.getPort(),
                                         scope.lookup("kernel",
                                                      "IsA").getId().toString(),
@@ -97,7 +97,7 @@ public class ResourcesTest extends AbstractModelTest {
         thing1.setThing2(thing2);
         em.getTransaction().commit();
         em.getTransaction().begin();
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/node/product/%s/%s/%s",
+        url = new URL(String.format("http://localhost:%s/json-ld/facet/node/Product/%s/%s/%s",
                                     application.getPort(),
                                     thing1.getRuleform().getId(),
                                     scope.lookup("kernel",

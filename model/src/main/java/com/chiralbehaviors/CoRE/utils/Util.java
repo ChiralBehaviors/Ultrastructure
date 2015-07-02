@@ -26,8 +26,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +36,7 @@ import java.util.function.Predicate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -54,10 +55,9 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 public final class Util {
 
     public static <T extends Ruleform> T deserialize(InputStream is,
-                                                     Class<T> clazz)
-                                                                    throws JsonParseException,
-                                                                    JsonMappingException,
-                                                                    IOException {
+                                                     Class<T> clazz) throws JsonParseException,
+                                                                     JsonMappingException,
+                                                                     IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
         mapper.registerModule(new Hibernate4Module());
@@ -65,16 +65,15 @@ public final class Util {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Ruleform> T sanitize(T ruleform)
-                                                             throws IOException {
+    public static <T extends Ruleform> T sanitize(T ruleform) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         serialize(ruleform, os);
         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
         return (T) deserialize(is, ruleform.getClass());
     }
 
-    public static void serialize(Ruleform ruleform, OutputStream os)
-                                                                    throws IOException {
+    public static void serialize(Ruleform ruleform,
+                                 OutputStream os) throws IOException {
         ObjectMapper objMapper = new ObjectMapper();
         objMapper.registerModule(new CoREModule());
         Hibernate4Module module = new Hibernate4Module();
@@ -113,7 +112,14 @@ public final class Util {
     private static List<Field> getInheritedFields(Class<?> type) {
         List<Field> fields = new ArrayList<Field>();
         for (Class<?> c = type; c != null; c = c.getSuperclass()) {
-            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+            for (Field field : c.getDeclaredFields()) {
+                if (field.getName().contains("$")
+                    || Modifier.isStatic(field.getModifiers())
+                    || field.getAnnotation(OneToMany.class) != null) {
+                    continue;
+                }
+                fields.add(field);
+            }
         }
         return fields;
     }
@@ -141,14 +147,14 @@ public final class Util {
         try {
             mappedValue = value.getClass().getConstructor().newInstance();
         } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException(
-                                            String.format("Unable to get no argument constructor on ruleform: %s",
-                                                          value.getClass()), e);
+            throw new IllegalStateException(String.format("Unable to get no argument constructor on ruleform: %s",
+                                                          value.getClass()),
+                                            e);
         } catch (InstantiationException | IllegalAccessException
                 | IllegalArgumentException | InvocationTargetException e) {
-            throw new IllegalStateException(
-                                            String.format("Unable to instantiate copy of ruleform: %s",
-                                                          value.getClass()), e);
+            throw new IllegalStateException(String.format("Unable to instantiate copy of ruleform: %s",
+                                                          value.getClass()),
+                                            e);
         }
 
         // Mapped value has the same id, but null fields for everything else
@@ -195,8 +201,7 @@ public final class Util {
                 if (value != null && !ruleform.equals(value)) {
                     Ruleform mappedValue = map(em, value, mapped);
                     if (mappedValue == null) {
-                        throw new IllegalStateException(
-                                                        String.format("%s mapped to null",
+                        throw new IllegalStateException(String.format("%s mapped to null",
                                                                       value));
                     }
                     if (mappedValue != value) {
@@ -204,13 +209,13 @@ public final class Util {
                     }
                 }
             } catch (IllegalAccessException e) {
-                throw new IllegalStateException(
-                                                String.format("IllegalAccess access foreign key field: %s",
-                                                              field), e);
+                throw new IllegalStateException(String.format("IllegalAccess access foreign key field: %s",
+                                                              field),
+                                                e);
             } catch (IllegalArgumentException e) {
-                throw new IllegalStateException(
-                                                String.format("Illegal mapped value for field: %s",
-                                                              field), e);
+                throw new IllegalStateException(String.format("Illegal mapped value for field: %s",
+                                                              field),
+                                                e);
             }
         }
     }
@@ -231,13 +236,13 @@ public final class Util {
                               map(value, systemDefinition, sliced, traversed));
                 }
             } catch (IllegalAccessException e) {
-                throw new IllegalStateException(
-                                                String.format("IllegalAccess access foreign key field: %s",
-                                                              field), e);
+                throw new IllegalStateException(String.format("IllegalAccess access foreign key field: %s",
+                                                              field),
+                                                e);
             } catch (IllegalArgumentException e) {
-                throw new IllegalStateException(
-                                                String.format("Illegal mapped value for field: %s",
-                                                              field), e);
+                throw new IllegalStateException(String.format("Illegal mapped value for field: %s",
+                                                              field),
+                                                e);
             }
         }
     }

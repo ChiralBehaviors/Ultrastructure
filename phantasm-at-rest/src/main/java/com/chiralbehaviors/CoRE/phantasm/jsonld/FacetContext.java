@@ -73,15 +73,15 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     private final UriInfo uriInfo;
     private final boolean writeId;
 
+    public FacetContext(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
+        this(aspect.getClassifier(), aspect.getClassification(), model, uriInfo,
+             false);
+    }
+
     public FacetContext(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo,
                         boolean writeId) {
         this(aspect.getClassifier(), aspect.getClassification(), model, uriInfo,
              writeId);
-    }
-
-    public FacetContext(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
-        this(aspect.getClassifier(), aspect.getClassification(), model, uriInfo,
-             false);
     }
 
     public FacetContext(Relationship classifier, RuleForm classification,
@@ -95,6 +95,19 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     @Override
     public boolean equals(Object obj) {
         return obj instanceof FacetContext && super.equals(obj);
+    }
+
+    /**
+     * @return
+     */
+    public String getAllInstancesIri() {
+        String eeType = getClassification().getClass().getSimpleName();
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        String classifier = getClassifier().getId().toString();
+        String classification = getClassification().getId().toString();
+        ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification);
+        ub.path("instances");
+        return ub.build().toASCIIString();
     }
 
     public String getIri() {
@@ -241,7 +254,15 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
             return;
         }
         gen.writeObjectFieldStart(term);
-        gen.writeStringField(Constants.ID, getContextIri(childAspect, uriInfo));
+        if (childAspect.getClassifier().isAny()
+            && childAspect.getClassification().isAny()) {
+            gen.writeStringField(Constants.ID,
+                                 RuleformContext.getContextIri(childAspect.getClassification().getClass(),
+                                                               uriInfo));
+        } else {
+            gen.writeStringField(Constants.ID,
+                                 getContextIri(childAspect, uriInfo));
+        }
         gen.writeStringField(Constants.TYPE, Constants.ID);
         gen.writeEndObject();
     }

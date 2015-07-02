@@ -30,6 +30,7 @@ import javax.management.openmbean.InvalidKeyException;
 import javax.persistence.EntityManager;
 
 import org.antlr.v4.runtime.Token;
+import org.jboss.logging.Logger;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -111,6 +112,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
  *
  */
 public class WorkspaceImporter {
+    private final static Logger log                           = Logger.getLogger(WorkspaceImporter.class);
     private static final String STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
     private static final String THIS                          = "this";
 
@@ -246,14 +248,14 @@ public class WorkspaceImporter {
     private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void classifiedAttributes(FacetContext facet,
                                                                                                                       NetworkAuthorization<T> authorization,
                                                                                                                       Function<Agency, AttributeAuthorization<T, Network>> attrAuth) {
-        ClassifiedAttributesContext classifiedAttributes = facet.classifiedAttributes();
-        if (classifiedAttributes == null) {
-            return;
-        }
         authorization.setClassifier(resolve(facet.classifier));
         authorization.setClassification(resolve(facet.classification));
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
+        ClassifiedAttributesContext classifiedAttributes = facet.classifiedAttributes();
+        if (classifiedAttributes == null) {
+            return;
+        }
         classifiedAttributes.qualifiedName().forEach(attribute -> {
             AttributeAuthorization<T, Network> auth = attrAuth.apply(model.getCurrentPrincipal().getPrincipal());
             auth.setNetworkAuthorization(authorization);
@@ -1157,25 +1159,11 @@ public class WorkspaceImporter {
 
     private void unitFacets() {
         for (FacetContext facet : wsp.getUnitFacets()) {
-            unitFacets(facet);
+            classifiedAttributes(facet,
+                                 new UnitNetworkAuthorization(model.getCurrentPrincipal().getPrincipal()),
+                                 unit -> new UnitAttributeAuthorization(model.getCurrentPrincipal().getPrincipal()));
             unitNetworkConstraints(facet);
         }
-    }
-
-    private void unitFacets(FacetContext facet) {
-        UnitNetworkAuthorization authorization = new UnitNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
-        authorization.setClassifier(resolve(facet.classifier));
-        authorization.setClassification(resolve(facet.classification));
-        model.getEntityManager().persist(authorization);
-        workspace.add(authorization);
-        facet.classifiedAttributes().qualifiedName().forEach(attribute -> {
-            UnitAttributeAuthorization auth = new UnitAttributeAuthorization(resolve(attribute),
-                                                                             model.getCurrentPrincipal().getPrincipal());
-            auth.setNetworkAuthorization(authorization);
-            model.getEntityManager().persist(auth);
-            workspace.add(auth);
-
-        });
     }
 
     private void unitNetworkConstraints(FacetContext facet) {

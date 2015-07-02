@@ -30,7 +30,6 @@ import javax.management.openmbean.InvalidKeyException;
 import javax.persistence.EntityManager;
 
 import org.antlr.v4.runtime.Token;
-import org.jboss.logging.Logger;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -112,7 +111,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
  *
  */
 public class WorkspaceImporter {
-    private final static Logger log                           = Logger.getLogger(WorkspaceImporter.class);
     private static final String STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
     private static final String THIS                          = "this";
 

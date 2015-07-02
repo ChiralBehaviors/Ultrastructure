@@ -65,6 +65,8 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
     @JoinColumn(name = "connection")
     private Relationship connection;
 
+    private boolean forward = true;
+
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "from_relationship")
     private Relationship fromRelationship;
@@ -119,6 +121,10 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
         return groupingAgency;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public Integer getSequenceNumber() {
         return sequenceNumber;
     }
@@ -147,6 +153,10 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
         this.groupingAgency = groupingAgency;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
@@ -161,11 +171,11 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
         this.toRelationship = toRelationship;
     }
 
-    public String getName() {
-        return name;
+    public boolean isForward() {
+        return forward;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setForward(boolean forward) {
+        this.forward = forward;
     }
 }

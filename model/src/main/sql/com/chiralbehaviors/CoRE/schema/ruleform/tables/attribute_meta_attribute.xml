@@ -18,7 +18,7 @@
             </column>
             <column name="key" type="TEXT" />
             <column name="numeric_value" type="numeric" />
-            <column name="boolean_value" type="SMALLINT" />
+            <column name="boolean_value" type="boolean" />
             <column name="text_value" type="TEXT" />
             <column name="binary_value" type="BYTEA" />
             <column name="integer_value" type="INT4" />

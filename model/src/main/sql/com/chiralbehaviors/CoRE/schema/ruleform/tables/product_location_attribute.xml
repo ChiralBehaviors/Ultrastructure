@@ -22,7 +22,7 @@
             <column name="key" type="TEXT" />
             <column name="numeric_value" type="numeric" />
             <column name="integer_value" type="INT4" />
-            <column name="boolean_value" type="SMALLINT" />
+            <column name="boolean_value" type="boolean" />
             <column name="text_value" type="TEXT" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />

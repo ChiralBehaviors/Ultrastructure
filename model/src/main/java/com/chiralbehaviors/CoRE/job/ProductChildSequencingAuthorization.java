@@ -47,14 +47,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
-                                                             + "WHERE seq.parent = :service"
-                                                             + "  AND seq.statusCode = :status "
-                                                             + "ORDER BY seq.nextChild, seq.sequenceNumber"),
-               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
-                                                         + " WHERE seq.parent = :service"
-                                                         + " ORDER BY seq.sequenceNumber") })
+@NamedQueries({ @NamedQuery(name = GET_CHILD_ACTIONS, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
+                                                              + "WHERE seq.parent = :service"
+                                                              + "  AND seq.statusCode = :status "
+                                                              + "ORDER BY seq.nextChild, seq.sequenceNumber"),
+                @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductChildSequencingAuthorization AS seq "
+                                                          + " WHERE seq.parent = :service"
+                                                          + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_child_sequencing_authorization", schema = "ruleform")
 public class ProductChildSequencingAuthorization extends Ruleform {
@@ -64,25 +63,25 @@ public class ProductChildSequencingAuthorization extends Ruleform {
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "next_child")
-    private Product            nextChild;
+    private Product nextChild;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "next_child_status")
-    private StatusCode         nextChildStatus;
+    private StatusCode nextChildStatus;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Product            parent;
+    private Product parent;
 
     @Column(name = "replace_product")
-    private Integer            replaceProduct    = FALSE;
+    private boolean replaceProduct = false;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber    = 0;
+    private int sequenceNumber = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
-    private StatusCode         statusCode;
+    private StatusCode statusCode;
 
     /**
      *
@@ -173,7 +172,7 @@ public class ProductChildSequencingAuthorization extends Ruleform {
      * @return the replaceProduct
      */
     public boolean isReplaceProduct() {
-        return replaceProduct.equals(TRUE);
+        return replaceProduct;
     }
 
     @Override
@@ -198,7 +197,7 @@ public class ProductChildSequencingAuthorization extends Ruleform {
      *            the replaceProduct to set
      */
     public void setReplaceProduct(boolean replaceProduct) {
-        this.replaceProduct = replaceProduct ? TRUE : FALSE;
+        this.replaceProduct = replaceProduct;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -214,7 +213,7 @@ public class ProductChildSequencingAuthorization extends Ruleform {
         return String.format("ProductChildSequencingAuthorization [parent=%s, statusCode=%s, nextChild=%s, nextChildStatus=%s, replaceProduct=%s, sequenceNumber=%s]",
                              getParent().getName(), getStatusCode().getName(),
                              getNextChild().getName(),
-                             getNextChildStatus().getName(),
-                             isReplaceProduct(), getSequenceNumber());
+                             getNextChildStatus().getName(), isReplaceProduct(),
+                             getSequenceNumber());
     }
 }

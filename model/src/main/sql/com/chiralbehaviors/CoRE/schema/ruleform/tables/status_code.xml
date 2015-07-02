@@ -15,13 +15,13 @@
             </column>
             <column name="description" remarks="A free-form textual description of a status code" type="TEXT" />
             <column name="notes" remarks="Additional notes regarding usage of the status code" type="TEXT" />
-            <column defaultValueNumeric="1" name="fail_parent"
-                remarks="Setting a job to this status code will trigger a cascading failure up to its parent" type="SMALLINT"
+            <column defaultValueBoolean="true" name="fail_parent"
+                remarks="Setting a job to this status code will trigger a cascading failure up to its parent" type="boolean"
             >
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="1" name="propagate_children"
-                remarks="Setting a job to this status code will trigger the propagation of child (implicit) jobs" type="SMALLINT"
+            <column defaultValueBoolean="true" name="propagate_children"
+                remarks="Setting a job to this status code will trigger the propagation of child (implicit) jobs" type="boolean"
             >
                 <constraints nullable="false" />
             </column>

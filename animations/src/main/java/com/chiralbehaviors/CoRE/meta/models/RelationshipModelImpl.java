@@ -260,7 +260,9 @@ public class RelationshipModelImpl extends
         query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.toParent),
                                                         aspect.getClassification()),
                                                cb.equal(networkRoot.get(ProductRelationshipAuthorization_.toRelationship),
-                                                        aspect.getClassifier())));
+                                                        aspect.getClassifier()),
+                                               cb.equal(networkRoot.get(ProductRelationshipAuthorization_.forward),
+                                                        false)));
         TypedQuery<ProductRelationshipAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }

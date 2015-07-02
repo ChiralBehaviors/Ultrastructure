@@ -22,16 +22,16 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
-            <column defaultValueNumeric="0" name="inheritable" type="SMALLINT">
+            <column defaultValueBoolean="false" name="inheritable" type="boolean">
                 <constraints nullable="false" />
             </column>
             <column name="value_type" type="SMALLINT">
                 <constraints nullable="false" />
             </column>
-            <column name="keyed" type="SMALLINT">
+            <column name="keyed" type="boolean">
                 <constraints nullable="false" />
             </column>
-            <column name="indexed" type="SMALLINT">
+            <column name="indexed" type="boolean">
                 <constraints nullable="false" />
             </column>
         </createTable>

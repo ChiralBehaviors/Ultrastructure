@@ -281,7 +281,9 @@ public class AgencyModelImpl extends
         query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.fromParent),
                                                         aspect.getClassification()),
                                                cb.equal(networkRoot.get(AgencyLocationAuthorization_.fromRelationship),
-                                                        aspect.getClassifier())));
+                                                        aspect.getClassifier()),
+                                               cb.equal(networkRoot.get(AgencyLocationAuthorization_.forward),
+                                                        true)));
         TypedQuery<AgencyLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -297,7 +299,9 @@ public class AgencyModelImpl extends
         query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.fromParent),
                                                         aspect.getClassification()),
                                                cb.equal(networkRoot.get(AgencyProductAuthorization_.fromRelationship),
-                                                        aspect.getClassifier())));
+                                                        aspect.getClassifier()),
+                                               cb.equal(networkRoot.get(AgencyProductAuthorization_.forward),
+                                                        true)));
         TypedQuery<AgencyProductAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }

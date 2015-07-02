@@ -47,46 +47,45 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
-                                                              + " WHERE seq.service = :service"
-                                                              + "   AND seq.statusCode = :status"
-                                                              + " ORDER BY seq.parent, seq.sequenceNumber"),
-               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
-                                                         + " WHERE seq.service = :service"
-                                                         + " ORDER BY seq.sequenceNumber") })
+@NamedQueries({ @NamedQuery(name = GET_PARENT_ACTIONS, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
+                                                               + " WHERE seq.service = :service"
+                                                               + "   AND seq.statusCode = :status"
+                                                               + " ORDER BY seq.parent, seq.sequenceNumber"),
+                @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductParentSequencingAuthorization AS seq"
+                                                          + " WHERE seq.service = :service"
+                                                          + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_parent_sequencing_authorization", schema = "ruleform")
 public class ProductParentSequencingAuthorization extends Ruleform {
-    public static final String GET_PARENT_ACTIONS  = "productParentSequencingAuthorization.getParentActions";
-    public static final String GET_SEQUENCES       = "productParentSequencingAuthorization.getSequences";
+    public static final String GET_PARENT_ACTIONS = "productParentSequencingAuthorization.getParentActions";
+    public static final String GET_SEQUENCES      = "productParentSequencingAuthorization.getSequences";
 
-    private static final long  serialVersionUID    = 1L;
+    private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Product            parent;
+    private Product parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent_status_to_set")
-    private StatusCode         parentStatusToSet;
+    private StatusCode parentStatusToSet;
 
     @Column(name = "replace_product")
-    private Integer            replaceProduct      = FALSE;
+    private boolean replaceProduct = false;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber      = 0;
+    private int sequenceNumber = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
-    private Product            service;
+    private Product service;
 
     @Column(name = "set_if_active_siblings")
-    private Integer            setIfActiveSiblings = TRUE;
+    private boolean setIfActiveSiblings = true;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
-    private StatusCode         statusCode;
+    private StatusCode statusCode;
 
     public ProductParentSequencingAuthorization() {
         super();
@@ -122,7 +121,8 @@ public class ProductParentSequencingAuthorization extends Ruleform {
      * @param notes
      * @param updatedBy
      */
-    public ProductParentSequencingAuthorization(String notes, Agency updatedBy) {
+    public ProductParentSequencingAuthorization(String notes,
+                                                Agency updatedBy) {
         super(notes, updatedBy);
     }
 
@@ -158,7 +158,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     }
 
     public Boolean getSetIfActiveSiblings() {
-        return toBoolean(setIfActiveSiblings);
+        return setIfActiveSiblings;
     }
 
     public StatusCode getStatusCode() {
@@ -178,7 +178,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
      * @return the replaceProduct
      */
     public boolean isReplaceProduct() {
-        return replaceProduct.equals(TRUE);
+        return replaceProduct;
     }
 
     @Override
@@ -199,7 +199,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
      *            the replaceProduct to set
      */
     public void setReplaceProduct(boolean replaceProduct) {
-        this.replaceProduct = replaceProduct ? TRUE : FALSE;
+        this.replaceProduct = replaceProduct;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {
@@ -211,7 +211,7 @@ public class ProductParentSequencingAuthorization extends Ruleform {
     }
 
     public void setSetIfActiveSiblings(Boolean setIfActiveSiblings) {
-        this.setIfActiveSiblings = toInteger(setIfActiveSiblings);
+        this.setIfActiveSiblings = setIfActiveSiblings;
     }
 
     public void setStatusCode(StatusCode statusCode) {

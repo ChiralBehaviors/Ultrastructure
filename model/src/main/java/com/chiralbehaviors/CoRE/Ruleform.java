@@ -60,38 +60,22 @@ import com.fasterxml.uuid.NoArgGenerator;
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 @Cacheable
 abstract public class Ruleform implements Serializable, Cloneable {
-    public static final Integer        FALSE                 = Integer.valueOf((byte) 0);
     public static final String         FIND_ALL_SUFFIX       = ".findAll";
     public static final String         FIND_BY_ID_SUFFIX     = ".findById";
     public static final String         FIND_BY_NAME_SUFFIX   = ".findByName";
     public static final NoArgGenerator GENERATOR             = Generators.timeBasedGenerator();
     public static final String         GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
-    public static final Integer        TRUE                  = Integer.valueOf((byte) 1);
     private static final long          serialVersionUID      = 1L;
-
-    public static Boolean toBoolean(Integer value) {
-        if (value == null) {
-            return null;
-        }
-        return value.equals(Integer.valueOf(0)) ? Boolean.FALSE : Boolean.TRUE;
-    }
-
-    public static Integer toInteger(Boolean value) {
-        if (value == null) {
-            return null;
-        }
-        return value ? TRUE : FALSE;
-    }
 
     @Id
     @Type(type = "pg-uuid")
-    private UUID     id      = GENERATOR.generate();
+    private UUID id = GENERATOR.generate();
 
-    private String   notes;
+    private String notes;
 
     @Version
     @Column(name = "version")
-    private int      version = 0;
+    private int version = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "updated_by")

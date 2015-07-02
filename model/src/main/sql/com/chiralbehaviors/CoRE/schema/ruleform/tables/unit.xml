@@ -23,8 +23,8 @@
             <column name="datatype" remarks="The underlying datatype of a measurement of this kind of Unit" type="TEXT" />
             <column name="min" remarks="If the unit is integer or numeric and has a minimum value, it is stored here." type="numeric" />
             <column name="max" remarks="If the unit is integer or numeric and has a maximum value, it is stored here." type="numeric" />
-            <column defaultValueNumeric="0" name="enumerated"
-                remarks="If the allowable values of the unit constitute an enumerated set, then this should be TRUE." type="SMALLINT" />
+            <column defaultValueBoolean="false" name="enumerated"
+                remarks="If the allowable values of the unit constitute an enumerated set, then this should be TRUE." type="boolean" />
         </createTable>
         <rollback>
             <dropTable tableName="unit" />

@@ -213,14 +213,13 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownStatusCode wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, propagate_children, updated_by, version) VALUES (?, ?, ?, ?, ?, 1)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, propagate_children, updated_by, version) VALUES (?, ?, ?, ?, ?, 0)",
                                                                         wko.tableName()));
         try {
             s.setObject(1, wko.id());
             s.setString(2, wko.wkoName());
             s.setString(3, wko.description());
-            s.setInt(4, wko == WellKnownStatusCode.UNSET ? Ruleform.TRUE
-                                                         : Ruleform.FALSE);
+            s.setBoolean(4, wko == WellKnownStatusCode.UNSET ? true : false);
             s.setObject(5, WellKnownAgency.CORE.id());
             s.execute();
         } catch (SQLException e) {

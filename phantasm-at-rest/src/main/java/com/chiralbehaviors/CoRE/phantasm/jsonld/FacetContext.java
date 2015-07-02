@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
@@ -160,15 +161,21 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     private void writeAgencyAuthTerms(JsonGenerator gen) throws IOException {
         AgencyModel agencyModel = model.getAgencyModel();
         for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths((Aspect<Agency>) this)) {
-            writeTerm(auth.getName(),
-                      new Aspect<Location>(auth.getToRelationship(),
-                                           auth.getToParent()),
+            String term = auth.getName();
+            if (auth.getCardinality() == Cardinality.N) {
+                term = English.plural(term);
+            }
+            writeTerm(term, new Aspect<Location>(auth.getToRelationship(),
+                                                 auth.getToParent()),
                       gen);
         }
         for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths((Aspect<Agency>) this)) {
-            writeTerm(auth.getName(),
-                      new Aspect<Product>(auth.getToRelationship(),
-                                          auth.getToParent()),
+            String term = auth.getName();
+            if (auth.getCardinality() == Cardinality.N) {
+                term = English.plural(term);
+            }
+            writeTerm(term, new Aspect<Product>(auth.getToRelationship(),
+                                                auth.getToParent()),
                       gen);
         }
     }
@@ -194,15 +201,21 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     @SuppressWarnings("unchecked")
     private void writeLocationAuthTerms(JsonGenerator gen) throws IOException {
         for (AgencyLocationAuthorization auth : model.getLocationModel().getLocationAgencyAuths((Aspect<Location>) this)) {
-            writeTerm(auth.getName(),
-                      new Aspect<Agency>(auth.getFromRelationship(),
-                                         auth.getFromParent()),
+            String term = auth.getName();
+            if (auth.getCardinality() == Cardinality.N) {
+                term = English.plural(term);
+            }
+            writeTerm(term, new Aspect<Agency>(auth.getFromRelationship(),
+                                               auth.getFromParent()),
                       gen);
         }
         for (ProductLocationAuthorization auth : model.getLocationModel().getLocationProductAuths((Aspect<Location>) this)) {
-            writeTerm(auth.getName(),
-                      new Aspect<Product>(auth.getFromRelationship(),
-                                          auth.getFromParent()),
+            String term = auth.getName();
+            if (auth.getCardinality() == Cardinality.N) {
+                term = English.plural(term);
+            }
+            writeTerm(term, new Aspect<Product>(auth.getFromRelationship(),
+                                                auth.getFromParent()),
                       gen);
         }
     }
@@ -212,28 +225,41 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this)) {
             Aspect<RuleForm> childAspect = new Aspect<RuleForm>(auth.getAuthorizedRelationship(),
                                                                 auth.getAuthorizedParent());
-            writeTerm(auth.getName(), childAspect, gen);
+            String term = auth.getName();
+            if (auth.getCardinality() == Cardinality.N) {
+                term = English.plural(term);
+            }
+            writeTerm(term, childAspect, gen);
         }
     }
 
     @SuppressWarnings("unchecked")
     private void writeProductAuthTerms(JsonGenerator gen) throws IOException {
         for (AgencyProductAuthorization auth : model.getProductModel().getProductAgencyAuths((Aspect<Product>) this)) {
-            writeTerm(auth.getName(),
-                      new Aspect<Agency>(auth.getFromRelationship(),
-                                         auth.getFromParent()),
+            String term = auth.getName();
+            if (auth.getCardinality() == Cardinality.N) {
+                term = English.plural(term);
+            }
+            writeTerm(term, new Aspect<Agency>(auth.getFromRelationship(),
+                                               auth.getFromParent()),
                       gen);
         }
         for (ProductLocationAuthorization auth : model.getProductModel().getProductLocationAuths((Aspect<Product>) this)) {
-            writeTerm(auth.getName(),
-                      new Aspect<Location>(auth.getToRelationship(),
-                                           auth.getToParent()),
+            String term = auth.getName();
+            if (auth.getCardinality() == Cardinality.N) {
+                term = English.plural(term);
+            }
+            writeTerm(term, new Aspect<Location>(auth.getToRelationship(),
+                                                 auth.getToParent()),
                       gen);
         }
         for (ProductRelationshipAuthorization auth : model.getProductModel().getProductRelationshipAuths((Aspect<Product>) this)) {
-            writeTerm(auth.getName(),
-                      new Aspect<Relationship>(auth.getToRelationship(),
-                                               auth.getToParent()),
+            String term = auth.getName();
+            if (auth.getCardinality() == Cardinality.N) {
+                term = English.plural(term);
+            }
+            writeTerm(term, new Aspect<Relationship>(auth.getToRelationship(),
+                                                     auth.getToParent()),
                       gen);
         }
     }
@@ -241,9 +267,12 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     @SuppressWarnings("unchecked")
     private void writeRelationshipAuthTerms(JsonGenerator gen) throws IOException {
         for (ProductRelationshipAuthorization auth : model.getRelationshipModel().getRelationshipProductAuths((Aspect<Relationship>) this)) {
-            writeTerm(auth.getName(),
-                      new Aspect<Relationship>(auth.getToRelationship(),
-                                               auth.getToParent()),
+            String term = auth.getName();
+            if (auth.getCardinality() == Cardinality.N) {
+                term = English.plural(term);
+            }
+            writeTerm(term, new Aspect<Relationship>(auth.getToRelationship(),
+                                                     auth.getToParent()),
                       gen);
         }
     }

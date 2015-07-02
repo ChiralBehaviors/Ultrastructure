@@ -333,6 +333,7 @@ public class WorkspaceImporter {
         authorization.setToRelationship(resolve(facet.classifier));
         authorization.setName(networkAuthNameOf(constraint));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        authorization.setForward(false);
         em.persist(authorization);
         workspace.add(authorization);
         ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
@@ -361,6 +362,7 @@ public class WorkspaceImporter {
         authorization.setToRelationship(resolve(facet.classifier));
         authorization.setName(networkAuthNameOf(constraint));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
+        authorization.setForward(false);
         workspace.add(authorization);
         em.persist(authorization);
         ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
@@ -414,6 +416,7 @@ public class WorkspaceImporter {
         authorization.setToRelationship(resolve(facet.classifier));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         authorization.setName(networkAuthNameOf(constraint));
+        authorization.setForward(false);
         workspace.add(authorization);
         em.persist(authorization);
         ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
@@ -490,6 +493,7 @@ public class WorkspaceImporter {
         authorization.setToRelationship(resolve(facet.classifier));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText().toUpperCase()));
         authorization.setName(networkAuthNameOf(constraint));
+        authorization.setForward(false);
         workspace.add(authorization);
         em.persist(authorization);
         ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();

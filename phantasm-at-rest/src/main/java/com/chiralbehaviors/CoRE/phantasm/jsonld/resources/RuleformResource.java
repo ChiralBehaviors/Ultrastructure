@@ -39,6 +39,7 @@ import javax.ws.rs.core.UriInfo;
 import org.reflections.Reflections;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformNode;
 
@@ -97,13 +98,20 @@ public class RuleformResource extends TransactionalResource {
 
     @Path("node/{ruleform-type}")
     @GET
-    public List<RuleformNode> getInstances(@PathParam("ruleform-type") String ruleformType) {
+    public List<Map<String, String>> getInstances(@PathParam("ruleform-type") String ruleformType) {
         Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
                                                             ruleformType));
         }
-        List<RuleformNode> instances = new ArrayList<>();
+        List<Map<String, String>> instances = new ArrayList<>();
+        readOnlyModel.findAll(ruleformClass).forEach(rf -> {
+            Map<String, String> map = new HashMap<>();
+            map.put(Constants.CONTEXT,
+                    RuleformContext.getContextIri(rf.getClass(), uriInfo));
+            map.put(Constants.ID, RuleformNode.getIri(rf, uriInfo));
+            instances.add(map);
+        });
         return instances;
     }
 

@@ -51,13 +51,11 @@ public interface Model {
      */
     static Class<?> getExistentialRuleform(Class<?> phantasm) {
         if (!phantasm.isInterface()) {
-            throw new IllegalArgumentException(
-                                               String.format("%s is not an interface",
+            throw new IllegalArgumentException(String.format("%s is not an interface",
                                                              phantasm));
         }
         if (!Phantasm.class.isAssignableFrom(phantasm)) {
-            throw new IllegalArgumentException(
-                                               String.format("%s is not a Phantasm",
+            throw new IllegalArgumentException(String.format("%s is not a Phantasm",
                                                              phantasm));
         }
         return (Class<?>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
@@ -74,8 +72,7 @@ public interface Model {
                                                                                             String.class,
                                                                                             Agency.class);
         } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException(
-                                            "Cannot access or find constructor for ruleform",
+            throw new IllegalStateException("Cannot access or find constructor for ruleform",
                                             e);
         }
     }
@@ -112,8 +109,7 @@ public interface Model {
      */
     <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
                                                                         String name,
-                                                                        String description)
-                                                                                           throws InstantiationException;
+                                                                        String description) throws InstantiationException;
 
     /**
      * Execute the function within in the context of the authenticated
@@ -124,8 +120,8 @@ public interface Model {
      *            -
      * @throws Exception
      */
-    <V> V executeAs(AuthorizedPrincipal principal, Callable<V> function)
-                                                                        throws Exception;
+    <V> V executeAs(AuthorizedPrincipal principal,
+                    Callable<V> function) throws Exception;
 
     /**
      * Find the ruleform instances that match the supplied attribute
@@ -153,7 +149,17 @@ public interface Model {
      * @return the instance corresponding to the supplied id, or null if the
      *         instance does not exist
      */
-    <RuleForm extends Ruleform> RuleForm find(UUID id, Class<RuleForm> ruleform);
+    <RuleForm extends Ruleform> RuleForm find(UUID id,
+                                              Class<RuleForm> ruleform);
+
+    /**
+     * Find all rows of a ruleform. not a smart thing to do, really. will need
+     * to be paged n' probably removed. eventually
+     * 
+     * @param ruleform
+     * @return
+     */
+    <RuleForm extends Ruleform> List<RuleForm> findAll(Class<RuleForm> ruleform);
 
     /**
      * Find all the instances of the RuleForm that have been updated by the

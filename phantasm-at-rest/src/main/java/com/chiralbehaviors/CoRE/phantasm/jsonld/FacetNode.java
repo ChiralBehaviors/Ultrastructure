@@ -204,7 +204,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         if (auth.getCardinality() == Cardinality.N) {
-            gen.writeArrayFieldStart(auth.getName());
+            String term = English.plural(auth.getName());
+            gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedAgencies(existential,
                                                  auth.getConnection()).forEach(child -> {
                                                      try {
@@ -243,7 +244,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         if (auth.getCardinality() == Cardinality.N) {
-            gen.writeArrayFieldStart(auth.getName());
+            String term = English.plural(auth.getName());
+            gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedAgencies(existential,
                                                  auth.getConnection()).forEach(child -> {
                                                      try {
@@ -282,7 +284,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         if (auth.getCardinality() == Cardinality.N) {
-            gen.writeArrayFieldStart(auth.getName());
+            String term = English.plural(auth.getName());
+            gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedProducts(existential,
                                                  auth.getConnection()).forEach(child -> {
                                                      try {
@@ -321,7 +324,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         if (auth.getCardinality() == Cardinality.N) {
-            gen.writeArrayFieldStart(auth.getName());
+            String term = English.plural(auth.getName());
+            gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedProducts(existential,
                                                  auth.getConnection()).forEach(child -> {
                                                      try {
@@ -370,7 +374,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 continue;
             }
             if (auth.getCardinality() == Cardinality.N) {
-                gen.writeArrayFieldStart(auth.getName());
+                String term = English.plural(auth.getName());
+                gen.writeArrayFieldStart(term);
                 networkedModel.getChildren(existential,
                                            auth.getChildRelationship()).forEach(child -> {
                                                try {
@@ -430,7 +435,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         if (auth.getCardinality() == Cardinality.N) {
-            gen.writeArrayFieldStart(auth.getName());
+            String term = English.plural(auth.getName());
+            gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedLocations(existential,
                                                   auth.getConnection()).forEach(child -> {
                                                       try {
@@ -469,7 +475,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         if (auth.getCardinality() == Cardinality.N) {
-            gen.writeArrayFieldStart(auth.getName());
+            String term = English.plural(auth.getName());
+            gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedProducts(existential,
                                                  auth.getConnection()).forEach(child -> {
                                                      try {
@@ -508,7 +515,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         if (auth.getCardinality() == Cardinality.N) {
-            gen.writeArrayFieldStart(auth.getName());
+            String term = English.plural(auth.getName());
+            gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedLocations(existential,
                                                   auth.getConnection()).forEach(child -> {
                                                       try {
@@ -547,7 +555,8 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
         if (auth.getCardinality() == Cardinality.N) {
-            gen.writeArrayFieldStart(auth.getName());
+            String term = English.plural(auth.getName());
+            gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedRelationships(existential,
                                                       auth.getConnection()).forEach(child -> {
                                                           try {

@@ -122,10 +122,10 @@ public class Attribute
     private Set<AttributeMetaAttribute> attributes;
 
     @Column(name = "indexed")
-    private int indexed = FALSE;
+    private boolean indexed = false;
 
     @Column(name = "keyed")
-    private int keyed = FALSE;
+    private boolean keyed = false;
 
     // bi-directional many-to-one association to AttributeNetwork
     @JsonIgnore
@@ -287,11 +287,11 @@ public class Attribute
     }
 
     public boolean getIndexed() {
-        return indexed == TRUE;
+        return indexed;
     }
 
     public boolean getKeyed() {
-        return keyed == TRUE;
+        return keyed;
     }
 
     @Override
@@ -436,11 +436,11 @@ public class Attribute
     }
 
     public void setIndexed(boolean indexed) {
-        this.indexed = indexed ? TRUE : FALSE;
+        this.indexed = indexed;
     }
 
     public void setKeyed(boolean keyed) {
-        this.keyed = keyed ? TRUE : FALSE;
+        this.keyed = keyed;
     }
 
     @Override

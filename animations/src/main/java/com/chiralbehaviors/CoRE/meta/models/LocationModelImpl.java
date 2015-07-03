@@ -350,7 +350,9 @@ public class LocationModelImpl extends
         query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.toParent),
                                                         aspect.getClassification()),
                                                cb.equal(networkRoot.get(AgencyLocationAuthorization_.toRelationship),
-                                                        aspect.getClassifier())));
+                                                        aspect.getClassifier()),
+                                               cb.equal(networkRoot.get(AgencyLocationAuthorization_.forward),
+                                                        false)));
         TypedQuery<AgencyLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -366,7 +368,9 @@ public class LocationModelImpl extends
         query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.toParent),
                                                         aspect.getClassification()),
                                                cb.equal(networkRoot.get(ProductLocationAuthorization_.toRelationship),
-                                                        aspect.getClassifier())));
+                                                        aspect.getClassifier()),
+                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
+                                                        false)));
         TypedQuery<ProductLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }

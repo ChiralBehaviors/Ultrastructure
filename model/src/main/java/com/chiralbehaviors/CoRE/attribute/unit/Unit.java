@@ -56,48 +56,47 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-                                                                            + "  attrValue "
-                                                                            + "FROM "
-                                                                            + "       UnitAttribute attrValue, "
-                                                                            + "       UnitAttributeAuthorization auth, "
-                                                                            + "       UnitNetworkAuthorization na, "
-                                                                            + "       UnitNetwork network "
-                                                                            + "WHERE "
-                                                                            + "        auth.networkAuthorization = na "
-                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
-                                                                            + "    AND network.relationship = na.classifier "
-                                                                            + "    AND network.child = na.classification"
-                                                                            + "    AND attrValue.unitRf = :ruleform "
-                                                                            + "    AND na.classifier = :classifier "
-                                                                            + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
-                                                                                                  + "  auth "
-                                                                                                  + "FROM "
-                                                                                                  + "       IntervalAttributeAuthorization auth, "
-                                                                                                  + "       IntervalNetworkAuthorization na, "
-                                                                                                  + "       IntervalNetwork network "
-                                                                                                  + "WHERE "
-                                                                                                  + "        auth.networkAuthorization = na "
-                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
-                                                                                                  + "    AND network.relationship = na.classifier "
-                                                                                                  + "    AND network.child = na.classification"
-                                                                                                  + "    AND na.classifier = :classifier "
-                                                                                                  + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from UnitAttributeAuthorization auth "
-                                                                                    + "WHERE auth.networkAuthorization.classifier = :classifier "
-                                                                                    + "AND auth.networkAuthorization.classification = :classification "
-                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
-               @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
-                                                     + "FROM UnitNetwork rn "
-                                                     + "WHERE rn.parent = :parent "
-                                                     + "AND rn.relationship = :relationship"),
-               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM UnitNetwork n "
-                                                                           + "WHERE n.parent = :attribute "
-                                                                           + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+@NamedQueries({ @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                             + "  attrValue "
+                                                                             + "FROM "
+                                                                             + "       UnitAttribute attrValue, "
+                                                                             + "       UnitAttributeAuthorization auth, "
+                                                                             + "       UnitNetworkAuthorization na, "
+                                                                             + "       UnitNetwork network "
+                                                                             + "WHERE "
+                                                                             + "        auth.networkAuthorization = na "
+                                                                             + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                             + "    AND network.relationship = na.classifier "
+                                                                             + "    AND network.child = na.classification"
+                                                                             + "    AND attrValue.unitRf = :ruleform "
+                                                                             + "    AND na.classifier = :classifier "
+                                                                             + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                   + "  auth "
+                                                                                                   + "FROM "
+                                                                                                   + "       IntervalAttributeAuthorization auth, "
+                                                                                                   + "       IntervalNetworkAuthorization na, "
+                                                                                                   + "       IntervalNetwork network "
+                                                                                                   + "WHERE "
+                                                                                                   + "        auth.networkAuthorization = na "
+                                                                                                   + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                   + "    AND network.relationship = na.classifier "
+                                                                                                   + "    AND network.child = na.classification"
+                                                                                                   + "    AND na.classifier = :classifier "
+                                                                                                   + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from UnitAttributeAuthorization auth "
+                                                                                     + "WHERE auth.networkAuthorization.classifier = :classifier "
+                                                                                     + "AND auth.networkAuthorization.classification = :classification "
+                                                                                     + "AND auth.authorizedAttribute IS NOT NULL"),
+                @NamedQuery(name = FIND_BY_NAME, query = "select e from Attribute e where e.name = :name"),
+                @NamedQuery(name = GET_CHILD, query = "SELECT rn.child "
+                                                      + "FROM UnitNetwork rn "
+                                                      + "WHERE rn.parent = :parent "
+                                                      + "AND rn.relationship = :relationship"),
+                @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM UnitNetwork n "
+                                                                            + "WHERE n.parent = :attribute "
+                                                                            + "AND n.relationship IN :relationships "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @Entity
 @Table(name = "unit", schema = "ruleform")
 public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
@@ -114,27 +113,27 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
                                                                                         + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
     private static final long  serialVersionUID                                       = 1L;
 
-    private String             abbreviation;
+    private String abbreviation;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "unitRf")
     @JsonIgnore
     private Set<UnitAttribute> attributes;
 
-    private String             datatype;
+    private String datatype;
 
-    private Integer            enumerated                                             = FALSE;
+    private Boolean enumerated = false;
 
-    private BigDecimal         max;
+    private BigDecimal max;
 
-    private BigDecimal         min;
+    private BigDecimal min;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
-    private Set<UnitNetwork>   networkByChild;
+    private Set<UnitNetwork> networkByChild;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
-    private Set<UnitNetwork>   networkByParent;
+    private Set<UnitNetwork> networkByParent;
 
     public Unit() {
     }
@@ -158,7 +157,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
         setDescription(description);
     }
 
-    public Unit(String name, String description, String notes, Agency updatedBy) {
+    public Unit(String name, String description, String notes,
+                Agency updatedBy) {
         super(notes, updatedBy);
         setName(name);
         setDescription(description);
@@ -249,7 +249,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     public Boolean getEnumerated() {
-        return toBoolean(enumerated);
+        return enumerated;
     }
 
     public BigDecimal getMax() {
@@ -422,7 +422,7 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     public void setEnumerated(Boolean enumerated) {
-        this.enumerated = toInteger(enumerated);
+        this.enumerated = enumerated;
     }
 
     public void setMax(BigDecimal max) {

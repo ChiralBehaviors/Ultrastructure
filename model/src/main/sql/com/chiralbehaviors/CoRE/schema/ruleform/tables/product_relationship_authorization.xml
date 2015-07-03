@@ -11,6 +11,9 @@
                 <constraints primaryKey="true" primaryKeyName="product_relationship_authorization_pkey" />
             </column>
             <column name="name" type="text"/>
+            <column name="forward" type="boolean">
+                <constraints nullable="false" />
+            </column>
             <column name="from_relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -26,7 +29,9 @@
             <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
                 <constraints nullable="false" />
             </column>
-            <column name="cardinality" type="SMALLINT" />
+            <column name="cardinality" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
             <column name="connection" type="uuid">
                 <constraints nullable="false" />
             </column>

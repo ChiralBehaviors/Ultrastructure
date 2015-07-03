@@ -29,7 +29,7 @@
             <column name="grouping_agency"
                 remarks="If present, along with 'product_attribute' and 'product_value', used to select an entire grouping of Entities that can be acceptable values"
                 type="uuid" />
-            <column name="boolean_value" type="SMALLINT" />
+            <column name="boolean_value" type="boolean" />
             <column name="binary_value" type="BYTEA" />
             <column name="text_value" remarks="Contains a single acceptable text-value if 'attribute' has a data type of 'text'"
                 type="TEXT" />

@@ -47,43 +47,42 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
-                                                               + " WHERE seq.parent = :parent"
-                                                               + " AND seq.statusCode = :status "
-                                                               + " ORDER BY seq.sequenceNumber"),
-               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
-                                                         + " WHERE seq.parent = :service"
-                                                         + " ORDER BY seq.sequenceNumber") })
+@NamedQueries({ @NamedQuery(name = GET_SIBLING_ACTIONS, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
+                                                                + " WHERE seq.parent = :parent"
+                                                                + " AND seq.statusCode = :status "
+                                                                + " ORDER BY seq.sequenceNumber"),
+                @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductSiblingSequencingAuthorization AS seq "
+                                                          + " WHERE seq.parent = :service"
+                                                          + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_sibling_sequencing_authorization", schema = "ruleform")
 public class ProductSiblingSequencingAuthorization extends Ruleform {
     public static final String GET_SEQUENCES       = "productSequencingAuthorization.getSequences";
     public static final String GET_SIBLING_ACTIONS = "productSequencingAuthorization.getSiblingActions";
 
-    private static final long  serialVersionUID    = 1L;
+    private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "next_sibling")
-    private Product            nextSibling;
+    private Product nextSibling;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "next_sibling_status")
-    private StatusCode         nextSiblingStatus;
+    private StatusCode nextSiblingStatus;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Product            parent;
+    private Product parent;
 
     @Column(name = "replace_product")
-    private Integer            replaceProduct      = FALSE;
+    private boolean replaceProduct = false;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber      = 0;
+    private int sequenceNumber = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
-    private StatusCode         statusCode;
+    private StatusCode statusCode;
 
     public ProductSiblingSequencingAuthorization() {
     }
@@ -118,7 +117,8 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
      * @param notes
      * @param updatedBy
      */
-    public ProductSiblingSequencingAuthorization(String notes, Agency updatedBy) {
+    public ProductSiblingSequencingAuthorization(String notes,
+                                                 Agency updatedBy) {
         super(notes, updatedBy);
     }
 
@@ -170,7 +170,7 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
      * @return the replaceProduct
      */
     public boolean isReplaceProduct() {
-        return replaceProduct.equals(TRUE);
+        return replaceProduct;
     }
 
     @Override
@@ -195,7 +195,7 @@ public class ProductSiblingSequencingAuthorization extends Ruleform {
      *            the replaceProduct to set
      */
     public void setReplaceProduct(boolean replaceProduct) {
-        this.replaceProduct = replaceProduct ? TRUE : FALSE;
+        this.replaceProduct = replaceProduct;
     }
 
     public void setSequenceNumber(Integer sequenceNumber) {

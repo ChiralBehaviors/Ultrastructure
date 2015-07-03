@@ -57,33 +57,33 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_attribute")
-    private Attribute         authorizedAttribute;
+    private Attribute authorizedAttribute;
 
     @Column(name = "binary_value")
-    private byte[]            binaryValue;
+    private byte[] binaryValue;
 
     @Column(name = "boolean_value")
-    private Integer           booleanValue;
+    private Boolean booleanValue;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "grouping_agency")
-    private Agency            groupingAgency;
+    private Agency groupingAgency;
 
     @Column(name = "integer_value")
-    private Integer           integerValue;
+    private Integer integerValue;
 
     @Column(name = "numeric_value")
-    private BigDecimal        numericValue;
+    private BigDecimal numericValue;
 
     @Column(name = "sequence_number")
-    private int               sequenceNumber   = 0;
+    private int sequenceNumber = 0;
 
     @Column(name = "text_value")
-    private String            textValue;
+    private String textValue;
 
     @Column(name = "timestamp_value")
-    private Timestamp         timestampValue;
+    private Timestamp timestampValue;
 
     public XDomainAttrbuteAuthorization() {
         super();
@@ -96,7 +96,8 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
         super(updatedBy);
     }
 
-    public XDomainAttrbuteAuthorization(Attribute authorized, Agency updatedBy) {
+    public XDomainAttrbuteAuthorization(Attribute authorized,
+                                        Agency updatedBy) {
         super(updatedBy);
         authorizedAttribute = authorized;
     }
@@ -132,7 +133,7 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
      * @return the booleanValue
      */
     @JsonIgnore
-    public Integer getBooleanValue() {
+    public Boolean getBooleanValue() {
         return booleanValue;
     }
 
@@ -185,8 +186,7 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
             case TIMESTAMP:
                 return (T) getTimestampValue();
             default:
-                throw new IllegalStateException(
-                                                String.format("Invalid value type: %s",
+                throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               getAuthorizedAttribute().getValueType()));
         }
     }
@@ -208,7 +208,7 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
      *            the booleanValue to set
      */
     public void setBooleanValue(Boolean booleanValue) {
-        this.booleanValue = toInteger(booleanValue);
+        this.booleanValue = booleanValue;
     }
 
     public void setGroupingAgency(Agency agency) {
@@ -262,8 +262,7 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
                 setTimestampValue((Timestamp) value);
                 return;
             default:
-                throw new IllegalStateException(
-                                                String.format("Invalid value type: %s",
+                throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               getAuthorizedAttribute().getValueType()));
         }
     }

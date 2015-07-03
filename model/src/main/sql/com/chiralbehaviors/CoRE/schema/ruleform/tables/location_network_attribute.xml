@@ -24,7 +24,7 @@
             <column name="text_value" remarks="If the Attribute has a text value, it is stored in this column" type="TEXT" />
             <column name="numeric_value" remarks="If the Attribute has a numeric (real) value, it is stored in this column" type="numeric" />
             <column name="integer_value" remarks="If the Attribute has an integer value, it is stored in this column" type="INT4" />
-            <column name="boolean_value" remarks="If the Attribute has a boolean value, it is stored in this column" type="SMALLINT" />
+            <column name="boolean_value" remarks="If the Attribute has a boolean value, it is stored in this column" type="boolean" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
             <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="uuid" />

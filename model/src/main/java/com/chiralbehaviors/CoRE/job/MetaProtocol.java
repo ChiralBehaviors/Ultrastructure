@@ -53,24 +53,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                     + "ORDER BY mp.sequenceNumber") })
 public class MetaProtocol extends Ruleform {
 
-    public static final String FOR_JOB          = "metaprotocol.getForJob";
+    public static final String FOR_JOB = "metaprotocol.getForJob";
 
-    private static final long  serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "assign_to")
-    private Relationship       assignTo;
+    private Relationship assignTo;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_from")
-    private Relationship       deliverFrom;
+    private Relationship deliverFrom;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_to")
-    private Relationship       deliverTo;
+    private Relationship deliverTo;
 
     /**
      * The relationship that transforms the product
@@ -78,7 +78,7 @@ public class MetaProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
-    private Relationship       product;
+    private Relationship product;
 
     /**
      * the relationship that transforms the quantity unit type
@@ -86,7 +86,7 @@ public class MetaProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "quantity_unit")
-    private Relationship       quantityUnit;
+    private Relationship quantityUnit;
 
     /**
      * the relationship that transforms the requesting agency
@@ -94,10 +94,10 @@ public class MetaProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "requester")
-    private Relationship       requester;
+    private Relationship requester;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber   = 0;
+    private int sequenceNumber = 0;
 
     /**
      * The service factor for this rule
@@ -105,7 +105,7 @@ public class MetaProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
-    private Product            service;
+    private Product service;
 
     /**
      * the relationship that transforms the service
@@ -113,13 +113,13 @@ public class MetaProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service_type")
-    private Relationship       serviceType;
+    private Relationship serviceType;
 
     /**
      * Indicates no further transformations should be applied
      */
     @Column(name = "stop_on_match")
-    private Integer            stopOnMatch      = FALSE;
+    private Boolean stopOnMatch = false;
 
     public MetaProtocol() {
     }
@@ -208,7 +208,7 @@ public class MetaProtocol extends Ruleform {
      * @return the stopOnMatch
      */
     public Boolean getStopOnMatch() {
-        return toBoolean(stopOnMatch);
+        return stopOnMatch;
     }
 
     /* (non-Javadoc)
@@ -289,7 +289,7 @@ public class MetaProtocol extends Ruleform {
      *            the stopOnMatch to set
      */
     public void setStopOnMatch(Boolean stopOnMatch) {
-        this.stopOnMatch = toInteger(stopOnMatch);
+        this.stopOnMatch = stopOnMatch;
     }
 
     /* (non-Javadoc)
@@ -299,9 +299,9 @@ public class MetaProtocol extends Ruleform {
     public String toString() {
         return "MetaProtocol [requestingAgency=" + requester.getName()
                + ", service=" + service.getName() + ", serviceType="
-               + serviceType.getName() + ", productOrdered="
-               + product.getName() + ", deliverFrom=" + deliverFrom.getName()
-               + ", deliverTo=" + deliverTo.getName() + ", stopOnMatch="
-               + stopOnMatch + ", sequenceNumber=" + sequenceNumber + "]";
+               + serviceType.getName() + ", productOrdered=" + product.getName()
+               + ", deliverFrom=" + deliverFrom.getName() + ", deliverTo="
+               + deliverTo.getName() + ", stopOnMatch=" + stopOnMatch
+               + ", sequenceNumber=" + sequenceNumber + "]";
     }
 }

@@ -39,7 +39,7 @@
             <column name="quantity_unit" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueNumeric="0" name="stop_on_match" type="SMALLINT" />
+            <column defaultValueBoolean="false" name="stop_on_match" type="boolean" />
             <column name="notes" remarks="Additional notes regarding usage of the metaprotocol" type="TEXT" />
             <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />

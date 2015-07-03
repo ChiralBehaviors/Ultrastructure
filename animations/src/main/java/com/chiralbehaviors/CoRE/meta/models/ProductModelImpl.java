@@ -426,7 +426,9 @@ public class ProductModelImpl extends
         query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.toParent),
                                                         aspect.getClassification()),
                                                cb.equal(networkRoot.get(AgencyProductAuthorization_.toRelationship),
-                                                        aspect.getClassifier())));
+                                                        aspect.getClassifier()),
+                                               cb.equal(networkRoot.get(AgencyProductAuthorization_.forward),
+                                                        false)));
         TypedQuery<AgencyProductAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -442,7 +444,9 @@ public class ProductModelImpl extends
         query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.fromParent),
                                                         aspect.getClassification()),
                                                cb.equal(networkRoot.get(ProductLocationAuthorization_.fromRelationship),
-                                                        aspect.getClassifier())));
+                                                        aspect.getClassifier()),
+                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
+                                                        true)));
         TypedQuery<ProductLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -458,7 +462,9 @@ public class ProductModelImpl extends
         query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromParent),
                                                         aspect.getClassification()),
                                                cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromRelationship),
-                                                        aspect.getClassifier())));
+                                                        aspect.getClassifier()),
+                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
+                                                        true)));
         TypedQuery<ProductRelationshipAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }

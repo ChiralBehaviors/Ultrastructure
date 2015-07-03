@@ -27,7 +27,7 @@
             <column name="next_child" remarks="A child job with an product equal to this can have its status changed" type="uuid" />
             <column name="next_child_status" remarks="The status to set for the child job referred to by &quot;next_child&quot;"
                 type="uuid" />
-            <column name="replace_product" type="SMALLINT">
+            <column name="replace_product" type="boolean">
                 <constraints nullable="false" />
             </column>
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />

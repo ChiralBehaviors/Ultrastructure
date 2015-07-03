@@ -142,9 +142,24 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     }
 
     public void writeContext(JsonGenerator gen) throws IOException {
+        writeRuleformTerms(gen);
         writeAttributeTerms(gen);
         writeNetworkAuthTerms(gen);
         writeXdAuthTerms(gen);
+    }
+
+    /**
+     * @param gen
+     * @throws IOException
+     */
+    private void writeRuleformTerms(JsonGenerator gen) throws IOException {
+        gen.writeStringField("name", "http://www.w3.org/2001/XMLSchema#text");
+        gen.writeStringField("description",
+                             "http://www.w3.org/2001/XMLSchema#text");
+        gen.writeStringField("notes", "http://www.w3.org/2001/XMLSchema#text");
+        gen.writeStringField("updated-by",
+                             RuleformContext.getContextIri(Agency.class,
+                                                           uriInfo));
     }
 
     /**

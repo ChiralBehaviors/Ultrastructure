@@ -81,11 +81,11 @@ public class FacetNodeResource extends TransactionalResource {
                                                                                                                                                          @PathParam("classification") String ruleform) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
-        return createFacet(facetInstance, aspect);
+        return createFacetNode(facetInstance, aspect);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetNode<RuleForm, Network> createFacet(String facetInstance,
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetNode<RuleForm, Network> createFacetNode(String facetInstance,
                                                                                                                                                           Aspect<RuleForm> aspect) {
         UUID existential = toUuid(facetInstance);
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());

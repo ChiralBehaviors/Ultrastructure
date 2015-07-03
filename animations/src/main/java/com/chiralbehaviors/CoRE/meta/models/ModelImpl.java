@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -99,7 +100,7 @@ public class ModelImpl implements Model {
     private final StatusCodeModel   statusCodeModel;
     private final UnitModel         unitModel;
 
-    private final WorkspaceModel    workspaceModel;
+    private final WorkspaceModel workspaceModel;
 
     public ModelImpl(EntityManagerFactory emf) {
         EntityManager entityManager = emf.createEntityManager();
@@ -147,8 +148,7 @@ public class ModelImpl implements Model {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
                                                                                String name,
-                                                                               String description)
-                                                                                                  throws InstantiationException {
+                                                                               String description) throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm);
         ExistentialRuleform<? extends T, ?> ruleform;
         try {
@@ -157,15 +157,13 @@ public class ModelImpl implements Model {
                                                                                          getCurrentPrincipal().getPrincipal());
         } catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
-            InstantiationException ex = new InstantiationException(
-                                                                   String.format("Cannot construct instance of existential ruleform for %s",
+            InstantiationException ex = new InstantiationException(String.format("Cannot construct instance of existential ruleform for %s",
                                                                                  phantasm));
             ex.initCause(e);
             throw ex;
         }
         getEntityManager().persist(ruleform);
-        return (Phantasm<? super T>) definition.construct(ruleform,
-                                                          this,
+        return (Phantasm<? super T>) definition.construct(ruleform, this,
                                                           getCurrentPrincipal().getPrincipal());
     }
 
@@ -173,8 +171,8 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#executeAs(com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal, java.util.concurrent.Callable)
      */
     @Override
-    public <V> V executeAs(AuthorizedPrincipal principal, Callable<V> function)
-                                                                               throws Exception {
+    public <V> V executeAs(AuthorizedPrincipal principal,
+                           Callable<V> function) throws Exception {
         V value = null;
         AuthorizedPrincipal previous = currentPrincipal;
         currentPrincipal = principal;
@@ -271,8 +269,8 @@ public class ModelImpl implements Model {
                                                                       Class<RuleForm> ruleform) {
         try {
             return (RuleForm) em.createNamedQuery(prefixFor(ruleform)
-                                                          + FIND_BY_NAME_SUFFIX).setParameter("name",
-                                                                                              name).getSingleResult();
+                                                  + FIND_BY_NAME_SUFFIX).setParameter("name",
+                                                                                      name).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -289,6 +287,15 @@ public class ModelImpl implements Model {
         return em.find(clazz, id);
     }
 
+    @Override
+    public <RuleForm extends Ruleform> List<RuleForm> findAll(Class<RuleForm> ruleform) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<RuleForm> query = cb.createQuery(ruleform);
+        Root<RuleForm> root = query.from(ruleform);
+        TypedQuery<RuleForm> q = em.createQuery(query.select(root));
+        return q.getResultList();
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -300,8 +307,9 @@ public class ModelImpl implements Model {
     @Override
     public <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(Agency updatedBy,
                                                                     Class<Ruleform> ruleform) {
-        return em.createNamedQuery(prefixFor(ruleform) + FIND_BY_NAME_SUFFIX).setParameter("agency",
-                                                                                           updatedBy).getResultList();
+        return em.createNamedQuery(prefixFor(ruleform)
+                                   + FIND_BY_NAME_SUFFIX).setParameter("agency",
+                                                                       updatedBy).getResultList();
     }
 
     /* (non-Javadoc)
@@ -335,9 +343,8 @@ public class ModelImpl implements Model {
     @Override
     public AuthorizedPrincipal getCurrentPrincipal() {
         AuthorizedPrincipal authorizedPrincipal = currentPrincipal;
-        return authorizedPrincipal == null ? new AuthorizedPrincipal(
-                                                                     kernel.getCoreAnimationSoftware())
-                                          : authorizedPrincipal;
+        return authorizedPrincipal == null ? new AuthorizedPrincipal(kernel.getCoreAnimationSoftware())
+                                           : authorizedPrincipal;
     }
 
     /*
@@ -406,8 +413,7 @@ public class ModelImpl implements Model {
             case "Unit":
                 return (NetworkedModel<RuleForm, Network, ?, ?>) getUnitModel();
             default:
-                throw new IllegalArgumentException(
-                                                   String.format("Not a known existential ruleform: %s",
+                throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
                                                                  ruleform.getClass()));
         }
     }

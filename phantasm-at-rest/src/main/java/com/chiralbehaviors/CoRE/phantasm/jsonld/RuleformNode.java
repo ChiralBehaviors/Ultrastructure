@@ -103,9 +103,7 @@ public class RuleformNode implements JsonSerializable {
                 } catch (IllegalAccessException e) {
                     throw new IllegalStateException(e);
                 }
-                if (value == null) {
-
-                } else if (value instanceof String) {
+                if (value instanceof String) {
                     gen.writeStringField(field.getName(), (String) value);
                 } else if (value instanceof Integer) {
                     gen.writeNumberField(field.getName(), (Integer) value);
@@ -115,6 +113,9 @@ public class RuleformNode implements JsonSerializable {
                     gen.writeNumberField(field.getName(), (BigDecimal) value);
                 } else if (value instanceof byte[]) {
                     gen.writeBinaryField(field.getName(), (byte[]) value);
+                } else {
+                    gen.writeStringField(field.getName(),
+                                         String.valueOf(value));
                 }
             } else {
                 Ruleform fk;

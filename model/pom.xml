@@ -130,7 +130,7 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <phase>generate-resources</phase>
+                        <phase>generate-sources</phase>
                     </execution>
                 </executions>
             </plugin>

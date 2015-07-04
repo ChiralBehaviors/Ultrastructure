@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test;
+package com.chiralbehaviors.CoRE.phantasm.jsonld.health;
 
 import javax.persistence.EntityManagerFactory;
 

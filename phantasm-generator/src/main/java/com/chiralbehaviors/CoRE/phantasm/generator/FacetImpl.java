@@ -29,6 +29,7 @@ import java.util.Set;
 import org.antlr.v4.runtime.Token;
 
 import com.chiralbehaviors.CoRE.network.Cardinality;
+import com.chiralbehaviors.CoRE.utils.English;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributesContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ConstraintContext;

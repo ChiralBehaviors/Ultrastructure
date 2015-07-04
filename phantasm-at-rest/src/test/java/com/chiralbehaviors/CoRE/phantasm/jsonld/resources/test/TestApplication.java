@@ -28,6 +28,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetNodeResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;

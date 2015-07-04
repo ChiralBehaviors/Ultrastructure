@@ -98,9 +98,7 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     public FacetContext<RuleForm, Network> getContext() {
-        return new FacetContext<RuleForm, Network>(getClassifier(),
-                                                   getClassification(), model,
-                                                   uriInfo, false);
+        return new FacetContext<RuleForm, Network>(this, model, uriInfo);
     }
 
     public String getIri() {
@@ -128,17 +126,6 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         serialize(gen, serializers);
     }
 
-    public void writeValue(JsonGenerator gen) throws IOException {
-        gen.writeStringField(Constants.CONTEXT,
-                             FacetContext.getContextIri(this, uriInfo));
-        gen.writeStringField(Constants.ID, getIri());
-        writeRuleformAttributes(gen);
-        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
-        writeAttributes(networkedModel, gen);
-        writeNetworkAuths(networkedModel, gen);
-        writeXdAuths(networkedModel, gen);
-    }
-
     public void writeRuleformAttributes(JsonGenerator gen) throws IOException {
         if (existential.getName() != null) {
             gen.writeStringField("name", existential.getName());
@@ -152,6 +139,17 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         gen.writeStringField("updated-by",
                              RuleformNode.getIri(existential.getUpdatedBy(),
                                                  uriInfo));
+    }
+
+    public void writeValue(JsonGenerator gen) throws IOException {
+        gen.writeStringField(Constants.CONTEXT,
+                             FacetContext.getContextIri(this, uriInfo));
+        gen.writeStringField(Constants.ID, getIri());
+        writeRuleformAttributes(gen);
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        writeAttributes(networkedModel, gen);
+        writeNetworkAuths(networkedModel, gen);
+        writeXdAuths(networkedModel, gen);
     }
 
     @SuppressWarnings("unchecked")
@@ -203,32 +201,23 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             return;
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        Aspect<Agency> aspect = new Aspect<Agency>(auth.getFromRelationship(),
+                                                   auth.getFromParent());
         if (auth.getCardinality() == Cardinality.N) {
             String term = English.plural(auth.getName());
             gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedAgencies(existential,
-                                                 auth.getConnection()).forEach(child -> {
-                                                     try {
-                                                         gen.writeString(getIri(child,
-                                                                                new Aspect<Agency>(auth.getFromRelationship(),
-                                                                                                   auth.getFromParent()),
-                                                                                uriInfo));
-                                                     } catch (Exception e) {
-                                                         throw new IllegalStateException(String.format("Error writing facet %s",
-                                                                                                       e));
-                                                     }
-                                                 });
+                                                 auth.getConnection()).forEach(child -> writeTermValue(term,
+                                                                                                       child,
+                                                                                                       aspect,
+                                                                                                       gen));
             gen.writeEndArray();
         } else if (auth.getCardinality() == Cardinality.ONE) {
-            List<Agency> children = networkedModel.getAuthorizedAgencies(existential,
-                                                                         auth.getConnection());
-            if (!children.isEmpty()) {
-                gen.writeStringField(auth.getName(),
-                                     getIri(children.get(0),
-                                            new Aspect<Agency>(auth.getFromRelationship(),
-                                                               auth.getFromParent()),
-                                            uriInfo));
-            }
+            networkedModel.getAuthorizedAgencies(existential,
+                                                 auth.getConnection()).forEach(child -> writeTerm(auth.getName(),
+                                                                                                  child,
+                                                                                                  aspect,
+                                                                                                  gen));
         }
     }
 
@@ -243,32 +232,23 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             return;
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        Aspect<Agency> aspect = new Aspect<Agency>(auth.getFromRelationship(),
+                                                   auth.getFromParent());
         if (auth.getCardinality() == Cardinality.N) {
             String term = English.plural(auth.getName());
             gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedAgencies(existential,
-                                                 auth.getConnection()).forEach(child -> {
-                                                     try {
-                                                         gen.writeString(getIri(child,
-                                                                                new Aspect<Agency>(auth.getFromRelationship(),
-                                                                                                   auth.getFromParent()),
-                                                                                uriInfo));
-                                                     } catch (Exception e) {
-                                                         throw new IllegalStateException(String.format("Error writing facet %s",
-                                                                                                       e));
-                                                     }
-                                                 });
+                                                 auth.getConnection()).forEach(child -> writeTermValue(term,
+                                                                                                       child,
+                                                                                                       aspect,
+                                                                                                       gen));
             gen.writeEndArray();
         } else if (auth.getCardinality() == Cardinality.ONE) {
-            List<Agency> children = networkedModel.getAuthorizedAgencies(existential,
-                                                                         auth.getConnection());
-            if (!children.isEmpty()) {
-                gen.writeStringField(auth.getName(),
-                                     getIri(children.get(0),
-                                            new Aspect<Agency>(auth.getFromRelationship(),
-                                                               auth.getFromParent()),
-                                            uriInfo));
-            }
+            networkedModel.getAuthorizedAgencies(existential,
+                                                 auth.getConnection()).forEach(child -> writeTerm(auth.getName(),
+                                                                                                  child,
+                                                                                                  aspect,
+                                                                                                  gen));
         }
     }
 
@@ -283,32 +263,23 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             return;
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        Aspect<Product> aspect = new Aspect<Product>(auth.getFromRelationship(),
+                                                     auth.getFromParent());
         if (auth.getCardinality() == Cardinality.N) {
             String term = English.plural(auth.getName());
             gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedProducts(existential,
-                                                 auth.getConnection()).forEach(child -> {
-                                                     try {
-                                                         gen.writeString(getIri(child,
-                                                                                new Aspect<Product>(auth.getFromRelationship(),
-                                                                                                    auth.getFromParent()),
-                                                                                uriInfo));
-                                                     } catch (Exception e) {
-                                                         throw new IllegalStateException(String.format("Error writing facet %s",
-                                                                                                       e));
-                                                     }
-                                                 });
+                                                 auth.getConnection()).forEach(child -> writeTermValue(term,
+                                                                                                       child,
+                                                                                                       aspect,
+                                                                                                       gen));
             gen.writeEndArray();
         } else if (auth.getCardinality() == Cardinality.ONE) {
-            List<Product> children = networkedModel.getAuthorizedProducts(existential,
-                                                                          auth.getConnection());
-            if (!children.isEmpty()) {
-                gen.writeStringField(auth.getName(),
-                                     getIri(children.get(0),
-                                            new Aspect<Product>(auth.getFromRelationship(),
-                                                                auth.getFromParent()),
-                                            uriInfo));
-            }
+            networkedModel.getAuthorizedProducts(existential,
+                                                 auth.getConnection()).forEach(child -> writeTerm(auth.getName(),
+                                                                                                  child,
+                                                                                                  aspect,
+                                                                                                  gen));
         }
     }
 
@@ -323,33 +294,25 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             return;
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        Aspect<Product> aspect = new Aspect<Product>(auth.getFromRelationship(),
+                                                     auth.getFromParent());
         if (auth.getCardinality() == Cardinality.N) {
             String term = English.plural(auth.getName());
             gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedProducts(existential,
-                                                 auth.getConnection()).forEach(child -> {
-                                                     try {
-                                                         gen.writeString(getIri(child,
-                                                                                new Aspect<Product>(auth.getFromRelationship(),
-                                                                                                    auth.getFromParent()),
-                                                                                uriInfo));
-                                                     } catch (Exception e) {
-                                                         throw new IllegalStateException(String.format("Error writing facet %s",
-                                                                                                       e));
-                                                     }
-                                                 });
+                                                 auth.getConnection()).forEach(child -> writeTermValue(term,
+                                                                                                       child,
+                                                                                                       aspect,
+                                                                                                       gen));
             gen.writeEndArray();
         } else if (auth.getCardinality() == Cardinality.ONE) {
-            List<Product> children = networkedModel.getAuthorizedProducts(existential,
-                                                                          auth.getConnection());
-            if (!children.isEmpty()) {
-                gen.writeStringField(auth.getName(),
-                                     getIri(children.get(0),
-                                            new Aspect<Product>(auth.getFromRelationship(),
-                                                                auth.getFromParent()),
-                                            uriInfo));
-            }
+            networkedModel.getAuthorizedProducts(existential,
+                                                 auth.getConnection()).forEach(child -> writeTerm(auth.getName(),
+                                                                                                  child,
+                                                                                                  aspect,
+                                                                                                  gen));
         }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -373,32 +336,23 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             if (auth.getName() == null) {
                 continue;
             }
+            Aspect<RuleForm> aspect = new Aspect<RuleForm>(auth.getAuthorizedRelationship(),
+                                                           auth.getAuthorizedParent());
             if (auth.getCardinality() == Cardinality.N) {
                 String term = English.plural(auth.getName());
                 gen.writeArrayFieldStart(term);
                 networkedModel.getChildren(existential,
-                                           auth.getChildRelationship()).forEach(child -> {
-                                               try {
-                                                   gen.writeString(getIri(child,
-                                                                          new Aspect<RuleForm>(auth.getAuthorizedRelationship(),
-                                                                                               auth.getAuthorizedParent()),
-                                                                          uriInfo));
-                                               } catch (Exception e) {
-                                                   throw new IllegalStateException(String.format("Error writing facet %s",
-                                                                                                 e));
-                                               }
-                                           });
+                                           auth.getChildRelationship()).forEach(child -> writeTermValue(term,
+                                                                                                        child,
+                                                                                                        aspect,
+                                                                                                        gen));
                 gen.writeEndArray();
             } else if (auth.getCardinality() == Cardinality.ONE) {
-                List<RuleForm> children = networkedModel.getImmediateChildren(existential,
-                                                                              auth.getChildRelationship());
-                if (!children.isEmpty()) {
-                    gen.writeStringField(auth.getName(),
-                                         getIri(children.get(0),
-                                                new Aspect<RuleForm>(auth.getAuthorizedRelationship(),
-                                                                     auth.getAuthorizedParent()),
-                                                uriInfo));
-                }
+                networkedModel.getImmediateChildren(existential,
+                                                    auth.getChildRelationship()).forEach(child -> writeTerm(auth.getName(),
+                                                                                                            child,
+                                                                                                            aspect,
+                                                                                                            gen));
             }
         }
     }
@@ -423,6 +377,30 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
     }
 
+    private <RuleForm2 extends ExistentialRuleform<RuleForm2, Network2>, Network2 extends NetworkRuleform<RuleForm2>> void writeTerm(String term,
+                                                                                                                                     RuleForm2 child,
+                                                                                                                                     Aspect<RuleForm2> aspect,
+                                                                                                                                     JsonGenerator gen) {
+        try {
+            gen.writeStringField(term, getIri(child, aspect, uriInfo));
+        } catch (Exception e) {
+            throw new IllegalStateException(String.format("Error writing facet %s",
+                                                          e));
+        }
+    }
+
+    private <RuleForm2 extends ExistentialRuleform<RuleForm2, Network2>, Network2 extends NetworkRuleform<RuleForm2>> void writeTermValue(String term,
+                                                                                                                                          RuleForm2 child,
+                                                                                                                                          Aspect<RuleForm2> aspect,
+                                                                                                                                          JsonGenerator gen) {
+        try {
+            gen.writeString(getIri(child, aspect, uriInfo));
+        } catch (Exception e) {
+            throw new IllegalStateException(String.format("Error writing facet %s",
+                                                          e));
+        }
+    }
+
     /**
      * @param auth
      * @param gen
@@ -434,32 +412,23 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             return;
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        Aspect<Location> aspect = new Aspect<Location>(auth.getToRelationship(),
+                                                       auth.getToParent());
         if (auth.getCardinality() == Cardinality.N) {
             String term = English.plural(auth.getName());
             gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedLocations(existential,
-                                                  auth.getConnection()).forEach(child -> {
-                                                      try {
-                                                          gen.writeString(getIri(child,
-                                                                                 new Aspect<Location>(auth.getToRelationship(),
-                                                                                                      auth.getToParent()),
-                                                                                 uriInfo));
-                                                      } catch (Exception e) {
-                                                          throw new IllegalStateException(String.format("Error writing facet %s",
-                                                                                                        e));
-                                                      }
-                                                  });
+                                                  auth.getConnection()).forEach(child -> writeTermValue(term,
+                                                                                                        child,
+                                                                                                        aspect,
+                                                                                                        gen));
             gen.writeEndArray();
         } else if (auth.getCardinality() == Cardinality.ONE) {
-            List<Location> children = networkedModel.getAuthorizedLocations(existential,
-                                                                            auth.getConnection());
-            if (!children.isEmpty()) {
-                gen.writeStringField(auth.getName(),
-                                     getIri(children.get(0),
-                                            new Aspect<Location>(auth.getToRelationship(),
-                                                                 auth.getToParent()),
-                                            uriInfo));
-            }
+            networkedModel.getAuthorizedLocations(existential,
+                                                  auth.getConnection()).forEach(child -> writeTerm(auth.getName(),
+                                                                                                   child,
+                                                                                                   aspect,
+                                                                                                   gen));
         }
     }
 
@@ -474,32 +443,23 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             return;
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        Aspect<Product> aspect = new Aspect<Product>(auth.getToRelationship(),
+                                                     auth.getToParent());
         if (auth.getCardinality() == Cardinality.N) {
             String term = English.plural(auth.getName());
             gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedProducts(existential,
-                                                 auth.getConnection()).forEach(child -> {
-                                                     try {
-                                                         gen.writeString(getIri(child,
-                                                                                new Aspect<Product>(auth.getToRelationship(),
-                                                                                                    auth.getToParent()),
-                                                                                uriInfo));
-                                                     } catch (Exception e) {
-                                                         throw new IllegalStateException(String.format("Error writing facet %s",
-                                                                                                       e));
-                                                     }
-                                                 });
+                                                 auth.getConnection()).forEach(child -> writeTermValue(term,
+                                                                                                       child,
+                                                                                                       aspect,
+                                                                                                       gen));
             gen.writeEndArray();
         } else if (auth.getCardinality() == Cardinality.ONE) {
-            List<Product> children = networkedModel.getAuthorizedProducts(existential,
-                                                                          auth.getConnection());
-            if (!children.isEmpty()) {
-                gen.writeStringField(auth.getName(),
-                                     getIri(children.get(0),
-                                            new Aspect<Product>(auth.getToRelationship(),
-                                                                auth.getToParent()),
-                                            uriInfo));
-            }
+            networkedModel.getAuthorizedProducts(existential,
+                                                 auth.getConnection()).forEach(child -> writeTerm(auth.getName(),
+                                                                                                  child,
+                                                                                                  aspect,
+                                                                                                  gen));
         }
     }
 
@@ -514,32 +474,23 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             return;
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        Aspect<Location> aspect = new Aspect<Location>(auth.getToRelationship(),
+                                                       auth.getToParent());
         if (auth.getCardinality() == Cardinality.N) {
             String term = English.plural(auth.getName());
             gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedLocations(existential,
-                                                  auth.getConnection()).forEach(child -> {
-                                                      try {
-                                                          gen.writeString(getIri(child,
-                                                                                 new Aspect<Location>(auth.getToRelationship(),
-                                                                                                      auth.getToParent()),
-                                                                                 uriInfo));
-                                                      } catch (Exception e) {
-                                                          throw new IllegalStateException(String.format("Error writing facet %s",
-                                                                                                        e));
-                                                      }
-                                                  });
+                                                  auth.getConnection()).forEach(child -> writeTermValue(term,
+                                                                                                        child,
+                                                                                                        aspect,
+                                                                                                        gen));
             gen.writeEndArray();
         } else if (auth.getCardinality() == Cardinality.ONE) {
-            List<Location> children = networkedModel.getAuthorizedLocations(existential,
-                                                                            auth.getConnection());
-            if (!children.isEmpty()) {
-                gen.writeStringField(auth.getName(),
-                                     getIri(children.get(0),
-                                            new Aspect<Location>(auth.getToRelationship(),
-                                                                 auth.getToParent()),
-                                            uriInfo));
-            }
+            networkedModel.getAuthorizedLocations(existential,
+                                                  auth.getConnection()).forEach(child -> writeTerm(auth.getName(),
+                                                                                                   child,
+                                                                                                   aspect,
+                                                                                                   gen));
         }
     }
 
@@ -554,32 +505,23 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             return;
         }
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);
+        Aspect<Relationship> aspect = new Aspect<>(auth.getToRelationship(),
+                                                   auth.getToParent());
         if (auth.getCardinality() == Cardinality.N) {
             String term = English.plural(auth.getName());
             gen.writeArrayFieldStart(term);
             networkedModel.getAuthorizedRelationships(existential,
-                                                      auth.getConnection()).forEach(child -> {
-                                                          try {
-                                                              gen.writeString(getIri(child,
-                                                                                     new Aspect<Relationship>(auth.getToRelationship(),
-                                                                                                              auth.getToParent()),
-                                                                                     uriInfo));
-                                                          } catch (Exception e) {
-                                                              throw new IllegalStateException(String.format("Error writing facet %s",
-                                                                                                            e));
-                                                          }
-                                                      });
+                                                      auth.getConnection()).forEach(child -> writeTermValue(term,
+                                                                                                            child,
+                                                                                                            aspect,
+                                                                                                            gen));
             gen.writeEndArray();
         } else if (auth.getCardinality() == Cardinality.ONE) {
-            List<Relationship> children = networkedModel.getAuthorizedRelationships(existential,
-                                                                                    auth.getConnection());
-            if (!children.isEmpty()) {
-                gen.writeStringField(auth.getName(),
-                                     getIri(children.get(0),
-                                            new Aspect<Relationship>(auth.getToRelationship(),
-                                                                     auth.getToParent()),
-                                            uriInfo));
-            }
+            networkedModel.getAuthorizedRelationships(existential,
+                                                      auth.getConnection()).forEach(child -> writeTerm(auth.getName(),
+                                                                                                       child,
+                                                                                                       aspect,
+                                                                                                       gen));
         }
     }
 

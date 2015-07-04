@@ -31,6 +31,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response.Status;
@@ -78,15 +79,17 @@ public class FacetNodeResource extends TransactionalResource {
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetNode<RuleForm, Network> getInstance(@PathParam("ruleform-type") String ruleformType,
                                                                                                                                                          @PathParam("instance") String facetInstance,
                                                                                                                                                          @PathParam("classifier") String relationship,
-                                                                                                                                                         @PathParam("classification") String ruleform) {
+                                                                                                                                                         @PathParam("classification") String ruleform,
+                                                                                                                                                         @QueryParam("frame") String frame) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
+        System.out.println(String.format("Frame: %s", frame));
         return createFacetNode(facetInstance, aspect);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> FacetNode<RuleForm, Network> createFacetNode(String facetInstance,
-                                                                                                                                                          Aspect<RuleForm> aspect) {
+                                                                                                                                                              Aspect<RuleForm> aspect) {
         UUID existential = toUuid(facetInstance);
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
         RuleForm instance = networkedModel.find(existential);

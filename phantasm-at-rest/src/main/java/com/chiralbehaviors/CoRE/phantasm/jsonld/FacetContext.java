@@ -165,8 +165,8 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
                              String.format("%s#notes",
                                            RuleformContext.getContextIri(getClassification().getClass(),
                                                                          uriInfo)));
-        gen.writeStringField("updated-by",
-                             String.format("%s#updated-by",
+        gen.writeStringField("updatedBy",
+                             String.format("%s#updatedBy",
                                            RuleformContext.getContextIri(Agency.class,
                                                                          uriInfo)));
     }

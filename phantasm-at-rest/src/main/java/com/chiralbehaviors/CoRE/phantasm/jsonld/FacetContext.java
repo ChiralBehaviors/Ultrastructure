@@ -41,6 +41,7 @@ import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetNodeResource;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
@@ -70,8 +71,22 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         return ub.build().toASCIIString();
     }
 
+    public static String getNodeIri(ExistentialRuleform<?, ?> child,
+                                    Aspect<?> aspect, UriInfo uriInfo) {
+        String eeType = aspect.getClassification().getClass().getSimpleName();
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        String classifier = aspect.getClassifier().getId().toString();
+        String classification = aspect.getClassification().getId().toString();
+        ub.path(FacetNodeResource.class).path(eeType).path(classifier).path(classification).path(child.getId().toString());
+        ub.fragment(String.format("%s:%s:%s", child.getName(),
+                                  aspect.getClassifier().getName(),
+                                  aspect.getClassification().getName()));
+        return ub.build().toASCIIString();
+    }
+
     private final Model   model;
     private final UriInfo uriInfo;
+
     private final boolean writeId;
 
     public FacetContext(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
@@ -106,8 +121,7 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         String classifier = getClassifier().getId().toString();
         String classification = getClassification().getId().toString();
-        ub.path(FacetContextResource.class).path(eeType).path(classifier).path(classification);
-        ub.path("instances");
+        ub.path(FacetNodeResource.class).path(eeType).path(classifier).path(classification);
         return ub.build().toASCIIString();
     }
 
@@ -146,29 +160,6 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         writeAttributeTerms(gen);
         writeNetworkAuthTerms(gen);
         writeXdAuthTerms(gen);
-    }
-
-    /**
-     * @param gen
-     * @throws IOException
-     */
-    private void writeRuleformTerms(JsonGenerator gen) throws IOException {
-        gen.writeStringField("name",
-                             String.format("%s#name",
-                                           RuleformContext.getContextIri(getClassification().getClass(),
-                                                                         uriInfo)));
-        gen.writeStringField("description",
-                             String.format("%s#description",
-                                           RuleformContext.getContextIri(getClassification().getClass(),
-                                                                         uriInfo)));
-        gen.writeStringField("notes",
-                             String.format("%s#notes",
-                                           RuleformContext.getContextIri(getClassification().getClass(),
-                                                                         uriInfo)));
-        gen.writeStringField("updatedBy",
-                             String.format("%s#updatedBy",
-                                           RuleformContext.getContextIri(Agency.class,
-                                                                         uriInfo)));
     }
 
     /**
@@ -299,6 +290,29 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                      auth.getToParent()),
                       gen);
         }
+    }
+
+    /**
+     * @param gen
+     * @throws IOException
+     */
+    private void writeRuleformTerms(JsonGenerator gen) throws IOException {
+        gen.writeStringField("name",
+                             String.format("%s#name",
+                                           RuleformContext.getContextIri(getClassification().getClass(),
+                                                                         uriInfo)));
+        gen.writeStringField("description",
+                             String.format("%s#description",
+                                           RuleformContext.getContextIri(getClassification().getClass(),
+                                                                         uriInfo)));
+        gen.writeStringField("notes",
+                             String.format("%s#notes",
+                                           RuleformContext.getContextIri(getClassification().getClass(),
+                                                                         uriInfo)));
+        gen.writeStringField("updatedBy",
+                             String.format("%s#updatedBy",
+                                           RuleformContext.getContextIri(Agency.class,
+                                                                         uriInfo)));
     }
 
     private void writeTerm(String term, Aspect<?> childAspect,

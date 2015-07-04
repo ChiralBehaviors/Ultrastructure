@@ -41,7 +41,6 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContext;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetNode;
 
 /**
  * @author hhildebrand
@@ -69,38 +68,6 @@ public class FacetContextResource extends TransactionalResource {
                                                                                                                                                          @PathParam("classifier") String relationship,
                                                                                                                                                          @PathParam("classification") String ruleform) {
         return createContext(getAspect(ruleformType, relationship, ruleform));
-    }
-
-    @Path("{ruleform-type}/{classifier}/{classification}/instances")
-    @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacetInstances(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                                            @PathParam("classifier") String relationship,
-                                                                                                                                                            @PathParam("classification") String ruleform) {
-        Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
-                                            ruleform);
-        return getFacetInstances(aspect);
-    }
-
-    /**
-     * @param aspect
-     * @return
-     */
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacetInstances(Aspect<RuleForm> aspect) {
-        List<Map<String, String>> facets = new ArrayList<>();
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
-
-        for (RuleForm ruleform : networkedModel.getChildren(aspect.getClassification(),
-                                                            aspect.getClassifier().getInverse())) {
-            Map<String, String> ctx = new HashMap<>();
-            FacetNode<RuleForm, Network> facet = new FacetNode<>(ruleform,
-                                                                 aspect,
-                                                                 readOnlyModel,
-                                                                 uriInfo);
-            ctx.put(Constants.CONTEXT, facet.getContext().getIri());
-            ctx.put(Constants.ID, facet.getIri());
-            facets.add(ctx);
-        }
-        return facets;
     }
 
     @Path("{ruleform-type}")

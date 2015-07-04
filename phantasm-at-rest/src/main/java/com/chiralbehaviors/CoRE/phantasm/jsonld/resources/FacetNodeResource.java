@@ -44,6 +44,9 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContext;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetNode;
+import com.github.jsonldjava.core.JsonLdError;
+import com.github.jsonldjava.core.JsonLdOptions;
+import com.github.jsonldjava.core.JsonLdProcessor;
 
 /**
  * @author hhildebrand
@@ -84,7 +87,19 @@ public class FacetNodeResource extends TransactionalResource {
                                                                                                                                    @QueryParam("frame") String frame) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
-        return createFacetNode(facetInstance, aspect);
+        Object node = createFacetNode(facetInstance, aspect);
+        if (frame != null) {
+            JsonLdOptions options = new JsonLdOptions();
+            options.setEmbed(true);
+            try {
+                return JsonLdProcessor.frame(node, frame, options);
+            } catch (JsonLdError e) {
+                throw new WebApplicationException(String.format("Invalid frame %s",
+                                                                frame),
+                                                  Status.BAD_REQUEST);
+            }
+        }
+        return node;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

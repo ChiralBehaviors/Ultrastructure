@@ -45,9 +45,6 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContext;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -171,10 +168,7 @@ public class FacetResource extends TransactionalResource {
             JsonLdOptions options = new JsonLdOptions();
             options.setEmbed(true);
             try {
-                ObjectNode graph = new ObjectNode(JsonNodeFactory.instance);
-                ArrayNode array = graph.putArray(Constants.GRAPH);
-                array.addPOJO(node);
-                return JsonLdProcessor.frame(graph, frame, options);
+                return JsonLdProcessor.frame(node, frame, options);
             } catch (JsonLdError e) {
                 throw new WebApplicationException(String.format("Invalid frame %s",
                                                                 frame),

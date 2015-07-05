@@ -24,9 +24,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.AfterClass;
@@ -38,7 +36,6 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test.TestApplication;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
@@ -188,6 +185,11 @@ public class ResourcesTest extends AbstractModelTest {
                                              application.getPort(),
                                              aspect.getClassifier().getId().toString(),
                                              scope.lookup("Thing1").getId().toString())).toExternalForm());
+        properties.put("thing2.type",
+                       new URL(String.format("http://localhost:%s/json-ld/facet/type/Product/%s/%s#is-a:Thing2",
+                                             application.getPort(),
+                                             aspect.getClassifier().getId().toString(),
+                                             scope.lookup("Thing2").getId().toString())).toExternalForm());
         Object frame = JsonUtils.fromInputStream(new ByteArrayInputStream(com.hellblazer.utils.Utils.getDocument(getClass().getResourceAsStream("/thing-frame.jsonld"),
                                                                                                                  properties).getBytes()));
         assertNotNull(frame);
@@ -199,16 +201,12 @@ public class ResourcesTest extends AbstractModelTest {
                                         aspect.getClassification().getId().toString(),
                                         thing1.getRuleform().getId()));
         Object node = JsonUtils.fromInputStream(url.openStream());
-        Map<String, Object> graph = new HashMap<String, Object>();
-        List<Object> nodes = new ArrayList<>();
-        nodes.add(node);
-        graph.put(Constants.GRAPH, nodes);
-        assertNotNull(graph);
+        assertNotNull(node);
         System.out.println("original: ");
-        System.out.println(JsonUtils.toPrettyString(graph));
+        System.out.println(JsonUtils.toPrettyString(node));
         JsonLdOptions opts = new JsonLdOptions();
         opts.setEmbed(true);
-        Map<String, Object> framed = JsonLdProcessor.frame(graph, frame, opts);
+        Map<String, Object> framed = JsonLdProcessor.frame(node, frame, opts);
         System.out.println("framed: ");
         System.out.println(JsonUtils.toPrettyString(framed));
     }

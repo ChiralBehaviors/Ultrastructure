@@ -206,6 +206,7 @@ public class FacetResource extends TransactionalResource {
                     FacetContext.getContextIri(aspect, uriInfo));
             ctx.put(Constants.ID,
                     FacetContext.getNodeIri(ruleform, aspect, uriInfo));
+            ctx.put(Constants.TYPE, FacetContext.getTypeIri(aspect, uriInfo));
             facets.add(ctx);
         }
         return facets;

@@ -261,14 +261,15 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
     private void writeAttributeTerms(JsonGenerator gen) throws IOException {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(getClassification());
         for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
-            String type = model.getAttributeModel().getJsonLdType(auth.getAuthorizedAttribute());
             String term = auth.getAuthorizedAttribute().getName();
             gen.writeObjectFieldStart(term);
             gen.writeStringField(Constants.ID,
                                  getTermIri(this,
                                             auth.getAuthorizedAttribute().getName(),
                                             uriInfo));
-            gen.writeStringField(Constants.TYPE, type);
+            gen.writeStringField(Constants.TYPE,
+                                 RuleformNode.getIri(auth.getAuthorizedAttribute(),
+                                                     uriInfo));
             gen.writeEndObject();
         }
     }

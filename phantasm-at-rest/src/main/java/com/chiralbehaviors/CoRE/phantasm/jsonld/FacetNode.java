@@ -436,6 +436,7 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     private void writeValue(ObjectNode node) {
         node.put(Constants.CONTEXT, FacetContext.getContextIri(this, uriInfo));
+        node.put(Constants.TYPE, FacetContext.getTypeIri(this, uriInfo));
         node.put(Constants.ID, getIri());
         writeRuleformAttributes(node);
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(existential);

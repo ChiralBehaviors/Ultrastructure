@@ -29,8 +29,7 @@ import org.eclipse.jetty.servlets.CrossOriginFilter;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetContextResource;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetNodeResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -95,8 +94,7 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         String unit = jpaConfig.getPersistenceUnit();
         Map<String, String> properties = jpaConfig.getProperties();
         emf = Persistence.createEntityManagerFactory(unit, properties);
-        environment.jersey().register(new FacetContextResource(emf));
-        environment.jersey().register(new FacetNodeResource(emf));
+        environment.jersey().register(new FacetResource(emf));
         environment.jersey().register(new WorkspaceResource(emf));
         environment.jersey().register(new RuleformResource(emf));
         environment.healthChecks().register("EMF Health",

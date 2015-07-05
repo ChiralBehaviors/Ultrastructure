@@ -1,0 +1,4 @@
+{
+  "@context": "${context}",
+  "@type": "${thing1.type}"
+}

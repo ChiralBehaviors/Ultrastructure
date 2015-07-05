@@ -22,8 +22,11 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.AfterClass;
@@ -31,12 +34,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test.TestApplication;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -97,12 +103,12 @@ public class ResourcesTest extends AbstractModelTest {
         thing1.setThing2(thing2);
         em.getTransaction().commit();
         em.getTransaction().begin();
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/node/Product/%s/%s/%s",
+        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
                                     application.getPort(),
-                                    thing1.getRuleform().getId(),
                                     scope.lookup("kernel",
                                                  "IsA").getId().toString(),
-                                    scope.lookup("Thing1").getId().toString()));
+                                    scope.lookup("Thing1").getId().toString(),
+                                    thing1.getRuleform().getId()));
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
         System.out.println("Node value of an instance of Thing1");
@@ -136,7 +142,7 @@ public class ResourcesTest extends AbstractModelTest {
     public void testRuleformNode() throws Exception {
         URL url;
         Object jsonObject;
-        url = new URL(String.format("http://localhost:%s/json-ld/ruleform/node/Attribute/%s",
+        url = new URL(String.format("http://localhost:%s/json-ld/ruleform/Attribute/%s",
                                     application.getPort(),
                                     scope.lookup("URI").getId().toString()));
         jsonObject = JsonUtils.fromInputStream(url.openStream());
@@ -157,6 +163,54 @@ public class ResourcesTest extends AbstractModelTest {
         processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
         System.out.println("Expanded node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
+    }
+
+    @Test
+    public void testFrame() throws Exception {
+        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tester",
+                                                 "testier");
+        thing1.setAliases(new String[] { "smith", "jones" });
+        thing1.setURI("http://example.com");
+        thing1.setThing2(thing2);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        Aspect<Product> aspect = new Aspect<>(scope.lookup("kernel", "IsA"),
+                                              (Product) scope.lookup("Thing1"));
+        Map<String, String> properties = new HashMap<>();
+        properties.put("context",
+                       new URL(String.format("http://localhost:%s/json-ld/facet/context/Product/%s/%s#is-a:Thing1",
+                                             application.getPort(),
+                                             aspect.getClassifier().getId().toString(),
+                                             aspect.getClassification().getId().toString())).toExternalForm());
+        properties.put("thing1.type",
+                       new URL(String.format("http://localhost:%s/json-ld/facet/type/Product/%s/%s#is-a:Thing1",
+                                             application.getPort(),
+                                             aspect.getClassifier().getId().toString(),
+                                             scope.lookup("Thing1").getId().toString())).toExternalForm());
+        Object frame = JsonUtils.fromInputStream(new ByteArrayInputStream(com.hellblazer.utils.Utils.getDocument(getClass().getResourceAsStream("/thing-frame.jsonld"),
+                                                                                                                 properties).getBytes()));
+        assertNotNull(frame);
+        System.out.println("frame: ");
+        System.out.println(JsonUtils.toPrettyString(frame));
+        URL url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
+                                        application.getPort(),
+                                        aspect.getClassifier().getId().toString(),
+                                        aspect.getClassification().getId().toString(),
+                                        thing1.getRuleform().getId()));
+        Object node = JsonUtils.fromInputStream(url.openStream());
+        Map<String, Object> graph = new HashMap<String, Object>();
+        List<Object> nodes = new ArrayList<>();
+        nodes.add(node);
+        graph.put(Constants.GRAPH, nodes);
+        assertNotNull(graph);
+        System.out.println("original: ");
+        System.out.println(JsonUtils.toPrettyString(graph));
+        JsonLdOptions opts = new JsonLdOptions();
+        opts.setEmbed(true);
+        Map<String, Object> framed = JsonLdProcessor.frame(graph, frame, opts);
+        System.out.println("framed: ");
+        System.out.println(JsonUtils.toPrettyString(framed));
     }
 
     @Test

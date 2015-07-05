@@ -101,12 +101,13 @@ public class RuleformContext implements JsonSerializable {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(RuleformResource.class);
         try {
-            ub.path(RuleformResource.class.getMethod("getType", String.class));
+            ub.path(RuleformResource.class.getMethod("getTerm", String.class,
+                                                     String.class));
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Cannot get getType method", e);
         }
         ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
-        ub.fragment(term);
+        ub.resolveTemplate("term", term);
         return ub.build().toASCIIString();
     }
 

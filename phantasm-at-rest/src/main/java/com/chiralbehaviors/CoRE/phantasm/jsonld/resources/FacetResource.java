@@ -153,7 +153,7 @@ public class FacetResource extends TransactionalResource {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
         clazz.put(Constants.ID, FacetContext.getTermIri(aspect, term, uriInfo));
-        clazz.put(Constants.TYPE, "http://ultrastructure.me#ter");
+        clazz.put(Constants.TYPE, "http://ultrastructure.me#term");
         return clazz;
     }
 
@@ -174,7 +174,6 @@ public class FacetResource extends TransactionalResource {
                 ObjectNode graph = new ObjectNode(JsonNodeFactory.instance);
                 ArrayNode array = graph.putArray(Constants.GRAPH);
                 array.addPOJO(node);
-                System.out.println(String.format("processed: %s", graph));
                 return JsonLdProcessor.frame(graph, frame, options);
             } catch (JsonLdError e) {
                 throw new WebApplicationException(String.format("Invalid frame %s",

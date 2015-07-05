@@ -98,17 +98,35 @@ public class RuleformResource extends TransactionalResource {
     @Path("type/{ruleform-type}")
     @GET
     public Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType) {
-        Map<String, Object> clazz = new HashMap<>();
+        Map<String, Object> definition = new HashMap<>();
         Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
                                                             ruleformClass),
                                               Status.NOT_FOUND);
         }
-        clazz.put(Constants.ID,
+        definition.put(Constants.ID,
                   RuleformContext.getTypeIri(ruleformClass, uriInfo));
-        clazz.put(Constants.TYPE, "http://ultrastructure.me#Ruleform");
-        return clazz;
+        definition.put(Constants.TYPE,
+                  String.format("http://ultrastructure.me#%s", ruleformType));
+        return definition;
+    }
+
+    @Path("type/{ruleform-type}/{term}")
+    @GET
+    public Map<String, Object> getTerm(@PathParam("ruleform-type") String ruleformType,
+                                       @PathParam("term") String term) {
+        Map<String, Object> definition = new HashMap<>();
+        Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
+        if (ruleformClass == null) {
+            throw new WebApplicationException(String.format("%s does not exist",
+                                                            ruleformType),
+                                              Status.NOT_FOUND);
+        }
+        definition.put(Constants.ID,
+                  RuleformContext.getTermIri(ruleformClass, term, uriInfo));
+        definition.put(Constants.TYPE, "http://ultrastructure.me#term");
+        return definition;
     }
 
     @Path("{ruleform-type}/{instance}")

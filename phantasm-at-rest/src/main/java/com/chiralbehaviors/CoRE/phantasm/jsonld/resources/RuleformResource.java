@@ -22,9 +22,9 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -53,7 +53,7 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformNode;
 @Produces({ "application/json", "text/json" })
 public class RuleformResource extends TransactionalResource {
 
-    public final static Map<String, Class<? extends Ruleform>> entityMap = new HashMap<>();
+    public final static Map<String, Class<? extends Ruleform>> entityMap = new TreeMap<>();
 
     private final static ArrayList<String> sortedRuleformTypes;
 
@@ -82,7 +82,7 @@ public class RuleformResource extends TransactionalResource {
         ub.path(getClass());
         ub.path("context");
         ub.path("context.jsonld");
-        Map<String, Object> context = new HashMap<>();
+        Map<String, Object> context = new TreeMap<>();
         context.put(Constants.ID, ub.build().toASCIIString());
         return context;
     }
@@ -97,8 +97,8 @@ public class RuleformResource extends TransactionalResource {
 
     @Path("type/{ruleform-type}")
     @GET
-    public Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType) {
-        Map<String, Object> definition = new HashMap<>();
+    public List<Object> getType(@PathParam("ruleform-type") String ruleformType) {
+        Map<String, Object> definition = new TreeMap<>();
         Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
@@ -106,25 +106,29 @@ public class RuleformResource extends TransactionalResource {
                                               Status.NOT_FOUND);
         }
         definition.put(Constants.ID,
-                  RuleformContext.getTypeIri(ruleformClass, uriInfo));
+                       RuleformContext.getTypeIri(ruleformClass, uriInfo));
         definition.put(Constants.TYPE,
-                  String.format("http://ultrastructure.me#%s", ruleformType));
-        return definition;
+                       String.format("http://ultrastructure.me#%s",
+                                     ruleformType));
+        List<Object> type = new ArrayList<>();
+        type.add(new RuleformContext(ruleformClass, uriInfo));
+        type.add(definition);
+        return type;
     }
 
     @Path("type/{ruleform-type}/{term}")
     @GET
     public Map<String, Object> getTerm(@PathParam("ruleform-type") String ruleformType,
                                        @PathParam("term") String term) {
-        Map<String, Object> definition = new HashMap<>();
+        Map<String, Object> definition = new TreeMap<>();
         Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
                                                             ruleformType),
                                               Status.NOT_FOUND);
         }
-        definition.put(Constants.ID,
-                  RuleformContext.getTermIri(ruleformClass, term, uriInfo));
+        definition.put(Constants.ID, RuleformContext.getTermIri(ruleformClass,
+                                                                term, uriInfo));
         definition.put(Constants.TYPE, "http://ultrastructure.me#term");
         return definition;
     }
@@ -154,7 +158,7 @@ public class RuleformResource extends TransactionalResource {
         }
         List<Map<String, String>> instances = new ArrayList<>();
         readOnlyModel.findAll(ruleformClass).forEach(rf -> {
-            Map<String, String> map = new HashMap<>();
+            Map<String, String> map = new TreeMap<>();
             map.put(Constants.CONTEXT,
                     RuleformContext.getContextIri(rf.getClass(), uriInfo));
             map.put(Constants.ID, RuleformNode.getIri(rf, uriInfo));

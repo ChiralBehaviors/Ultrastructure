@@ -79,6 +79,27 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         }
     }
 
+    public static String getAllInstancesIri(@SuppressWarnings("rawtypes") Aspect aspect,
+                                            UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
+        try {
+            ub.path(FacetResource.class.getMethod("getAllInstances",
+                                                  String.class, String.class,
+                                                  String.class));
+            ub.resolveTemplate("ruleform-type",
+                               aspect.getClassification().getClass().getSimpleName());
+            ub.resolveTemplate("classifier",
+                               aspect.getClassifier().getId().toString());
+            ub.resolveTemplate("classification",
+                               aspect.getClassification().getId().toString());
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Unable to get all instances method",
+                                            e);
+        }
+        return ub.build().toASCIIString();
+    }
+
     public static String getContextIri(Aspect<?> aspect, UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
@@ -227,28 +248,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private final Map<String, ProductLocationAuthorization>     productLocationAuths     = new HashMap<>();
     private final Map<String, ProductRelationshipAuthorization> productRelationshipAuths = new HashMap<>();
     private final Map<String, Typed>                            terms                    = new HashMap<>();
-    private final String                                        type;
 
-    public static String getAllInstancesIri(@SuppressWarnings("rawtypes") Aspect aspect,
-                                            UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(FacetResource.class);
-        try {
-            ub.path(FacetResource.class.getMethod("getAllInstances",
-                                                  String.class, String.class,
-                                                  String.class));
-            ub.resolveTemplate("ruleform-type",
-                               aspect.getClassification().getClass().getSimpleName());
-            ub.resolveTemplate("classifier",
-                               aspect.getClassifier().getId().toString());
-            ub.resolveTemplate("classification",
-                               aspect.getClassification().getId().toString());
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Unable to get all instances method",
-                                            e);
-        }
-        return ub.build().toASCIIString();
-    }
+    private final String type;
 
     public Facet(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
         super(aspect.getClassifier(), aspect.getClassification());
@@ -325,7 +326,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             List<AttributeValue<RuleForm>> values = (List<AttributeValue<RuleForm>>) networkedModel.getAttributeValues(instance,
                                                                                                                        entry.getValue());
             if (values.size() == 1) {
-                node.put(entry.getKey(), values.get(0));
+                node.put(entry.getKey(), values.get(0).getValue());
             } else if (!values.isEmpty()) {
                 List<String> array = new ArrayList<>();
                 node.put(entry.getKey(), array);

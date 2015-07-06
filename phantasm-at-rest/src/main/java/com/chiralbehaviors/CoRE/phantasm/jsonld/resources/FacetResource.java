@@ -47,10 +47,7 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetNode;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -142,7 +139,7 @@ public class FacetResource extends TransactionalResource {
                                                                                                                                    @QueryParam("frame") String frame) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
-        ObjectNode node = createFacetNode(facetInstance, aspect);
+        Map<String, Object> node = createFacetNode(facetInstance, aspect);
         try {
             return frame != null ? frame(URLDecoder.decode(frame, "UTF-8"),
                                          node)
@@ -187,8 +184,8 @@ public class FacetResource extends TransactionalResource {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> ObjectNode createFacetNode(String facetInstance,
-                                                                                                                                            Aspect<RuleForm> aspect) {
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> createFacetNode(String facetInstance,
+                                                                                                                                                     Aspect<RuleForm> aspect) {
         UUID existential = toUuid(facetInstance);
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
         RuleForm instance = networkedModel.find(existential);
@@ -196,32 +193,26 @@ public class FacetResource extends TransactionalResource {
             throw new WebApplicationException(String.format("node %s is not found [%s:%s] (%s:%s)",
                                                             Status.NOT_FOUND));
         }
-        return new FacetNode(instance, aspect, readOnlyModel, uriInfo).toNode();
+        return new Facet(aspect, readOnlyModel, uriInfo).toInstance(instance,
+                                                                    readOnlyModel,
+                                                                    uriInfo);
     }
 
     private Map<String, Object> frame(String frameDescription,
-                                      ObjectNode node) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<?, ?> from;
-        try {
-            from = objectMapper.treeToValue(node, Map.class);
-        } catch (JsonProcessingException e) {
-            throw new WebApplicationException("Cannot convert facet instanc eto map",
-                                              Status.INTERNAL_SERVER_ERROR);
-        }
-        JsonLdOptions options = new JsonLdOptions();
-        options.setEmbed(true);
+                                      Map<String, Object> node) {
         Map<?, ?> frame;
         try {
-            frame = objectMapper.readValue(frameDescription.getBytes(),
-                                           Map.class);
+            frame = new ObjectMapper().readValue(frameDescription.getBytes(),
+                                                 Map.class);
         } catch (IOException e) {
             throw new WebApplicationException(String.format("Invalid frame: %s",
                                                             frameDescription),
                                               Status.BAD_REQUEST);
         }
+        JsonLdOptions options = new JsonLdOptions();
+        options.setEmbed(true);
         try {
-            return JsonLdProcessor.frame(from, frame, options);
+            return JsonLdProcessor.frame(node, frame, options);
         } catch (JsonLdError e) {
             throw new WebApplicationException(String.format("Invalid frame %s",
                                                             frame),

@@ -29,8 +29,9 @@ import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
  * @author hhildebrand
  *
  */
-public interface AttributeModel
-        extends
+public interface AttributeModel extends
         NetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute> {
+
+    String getJsonLdType(Attribute attribute);
 
 }

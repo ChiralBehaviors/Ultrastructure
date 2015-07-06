@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
 import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -43,6 +44,13 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
 public class AttributeModelImpl extends
         AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
         implements AttributeModel {
+
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_BINARY    = "http://www.w3.org/2001/XMLSchema#binary";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_BOOLEAN   = "http://www.w3.org/2001/XMLSchema#boolean";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_DATE_TIME = "http://www.w3.org/2001/XMLSchema#dateTime";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_INT       = "http://www.w3.org/2001/XMLSchema#int";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_NUMERIC   = "http://www.w3.org/2001/XMLSchema#numeric";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_TEXT      = "http://www.w3.org/2001/XMLSchema#text";
 
     /**
      * @param em
@@ -152,6 +160,35 @@ public class AttributeModelImpl extends
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.AttributeModel#getJsonLdType(com.chiralbehaviors.CoRE.attribute.Attribute)
+     */
+    @Override
+    public String getJsonLdType(Attribute attribute) {
+        AttributeValue<Attribute> type = getAttributeValue(attribute,
+                                                           model.getKernel().getJsonldType());
+        if (type != null) {
+            return type.getTextValue();
+        }
+        switch (attribute.getValueType()) {
+            case BINARY:
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_BINARY;
+            case BOOLEAN:
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_BOOLEAN;
+            case INTEGER:
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_INT;
+            case NUMERIC:
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_NUMERIC;
+            case TEXT:
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_TEXT;
+            case TIMESTAMP:
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_DATE_TIME;
+            default:
+                throw new IllegalStateException(String.format("invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
     }
 
     /* (non-Javadoc)

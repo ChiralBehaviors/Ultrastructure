@@ -70,7 +70,14 @@ public class RuleformContext implements JsonSerializable {
     public static String getContextIri(Class<? extends Ruleform> ruleformClass,
                                        UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class).path("context").path(ruleformClass.getSimpleName());
+        ub.path(RuleformResource.class);
+        try {
+            ub.path(RuleformResource.class.getMethod("getContext",
+                                                     String.class));
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Cannot get getContext method", e);
+        }
+        ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
         return ub.build().toASCIIString();
     }
 
@@ -90,10 +97,30 @@ public class RuleformContext implements JsonSerializable {
     }
 
     public static String getTermIri(Class<? extends Ruleform> ruleformClass,
-                                    Field term, UriInfo uriInfo) {
+                                    String term, UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class).path("terms").path(ruleformClass.getSimpleName());
-        ub.fragment(term.getName());
+        ub.path(RuleformResource.class);
+        try {
+            ub.path(RuleformResource.class.getMethod("getTerm", String.class,
+                                                     String.class));
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Cannot get getType method", e);
+        }
+        ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
+        ub.resolveTemplate("term", term);
+        return ub.build().toASCIIString();
+    }
+
+    public static String getTypeIri(Class<? extends Ruleform> ruleformClass,
+                                    UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(RuleformResource.class);
+        try {
+            ub.path(RuleformResource.class.getMethod("getType", String.class));
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Cannot get getType method", e);
+        }
+        ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
         return ub.build().toASCIIString();
     }
 
@@ -144,7 +171,8 @@ public class RuleformContext implements JsonSerializable {
                                     JsonGenerator gen) throws IOException {
         gen.writeObjectFieldStart(field.getName());
         gen.writeStringField(Constants.ID,
-                             getTermIri(ruleformClass, field, uriInfo));
+                             getTermIri(ruleformClass, field.getName(),
+                                        uriInfo));
         gen.writeStringField(Constants.TYPE, TYPES.get(field.getType()));
         gen.writeEndObject();
     }
@@ -153,8 +181,10 @@ public class RuleformContext implements JsonSerializable {
                                    JsonGenerator gen) throws IOException {
         gen.writeObjectFieldStart(field.getName());
         gen.writeStringField(Constants.ID,
-                             getTermIri(ruleformClass, field, uriInfo));
+                             getTermIri(ruleformClass, field.getName(),
+                                        uriInfo));
         gen.writeStringField(Constants.TYPE, Constants.ID);
         gen.writeEndObject();
     }
+
 }

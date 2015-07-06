@@ -45,9 +45,16 @@ public class RuleformNode implements JsonSerializable {
     public static String getIri(Ruleform ruleform, UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(RuleformResource.class);
-        ub.path("node");
-        ub.path(ruleform.getClass().getSimpleName());
-        ub.path(ruleform.getId().toString());
+        try {
+            ub.path(RuleformResource.class.getMethod("getInstance",
+                                                     String.class,
+                                                     String.class));
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Cannot get getType method", e);
+        }
+        ub.resolveTemplate("ruleform-type",
+                           ruleform.getClass().getSimpleName());
+        ub.resolveTemplate("instance", ruleform.getId().toString());
         if (ruleform instanceof ExistentialRuleform) {
             ub.fragment(((ExistentialRuleform<?, ?>) ruleform).getName());
         }
@@ -60,6 +67,37 @@ public class RuleformNode implements JsonSerializable {
     public RuleformNode(Ruleform ruleform, UriInfo uriInfo) {
         this.ruleform = ruleform;
         this.uriInfo = uriInfo;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof RuleformNode)) {
+            return false;
+        }
+        RuleformNode other = (RuleformNode) obj;
+        if (ruleform == null) {
+            if (other.ruleform != null) {
+                return false;
+            }
+        } else if (!ruleform.equals(other.ruleform)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                 + ((ruleform == null) ? 0 : ruleform.hashCode());
+        return result;
     }
 
     /* (non-Javadoc)
@@ -93,6 +131,10 @@ public class RuleformNode implements JsonSerializable {
         gen.writeStringField(Constants.CONTEXT,
                              RuleformContext.getContextIri(ruleform.getClass(),
                                                            uriInfo));
+        gen.writeStringField(Constants.ID, getIri(ruleform, uriInfo));
+        gen.writeStringField(Constants.TYPE,
+                             RuleformContext.getTypeIri(ruleform.getClass(),
+                                                        uriInfo));
         for (Field field : RuleformContext.getInheritedFields(ruleform.getClass())) {
             field.setAccessible(true);
             if (field.getAnnotation(JoinColumn.class) == null) {

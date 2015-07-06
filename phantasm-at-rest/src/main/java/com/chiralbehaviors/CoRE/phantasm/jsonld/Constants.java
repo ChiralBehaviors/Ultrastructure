@@ -28,6 +28,7 @@ public class Constants {
     public static final String CLASSIFICATION = "classification";
     public static final String CLASSIFIER     = "classifier";
     public static final String CONTEXT        = "@context";
+    public static final String GRAPH          = "@graph";
     public static final String ID             = "@id";
     public static final String TYPE           = "@type";
 

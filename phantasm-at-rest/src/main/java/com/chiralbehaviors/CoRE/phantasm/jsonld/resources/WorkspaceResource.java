@@ -20,6 +20,10 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -52,6 +56,25 @@ public class WorkspaceResource extends TransactionalResource {
         super(emf);
     }
 
+    @Path("{uuid}")
+    @GET
+    public WorkspaceSnapshot getWorkspace(@PathParam("uuid") String workspaceId) {
+        Product workspace = readOnlyModel.getEntityManager().find(Product.class,
+                                                                  toUuid(workspaceId));
+        if (workspace == null) {
+            throw new WebApplicationException(String.format("Workspace not found: %s",
+                                                            workspaceId),
+                                              Status.NOT_FOUND);
+        }
+        return new WorkspaceSnapshot(workspace,
+                                     readOnlyModel.getEntityManager());
+    }
+
+    @GET
+    public List<UUID> getWorkspaces() {
+        return Collections.emptyList();
+    }
+
     @Path("{uuid}/lookup")
     @GET
     public RuleformNode lookup(@PathParam("uuid") String workspaceId,
@@ -71,19 +94,5 @@ public class WorkspaceResource extends TransactionalResource {
                                               Status.NOT_FOUND);
         }
         return new RuleformNode(resolved, uriInfo);
-    }
-
-    @Path("{uuid}")
-    @GET
-    public WorkspaceSnapshot getWorkspace(@PathParam("uuid") String workspaceId) {
-        Product workspace = readOnlyModel.getEntityManager().find(Product.class,
-                                                                  toUuid(workspaceId));
-        if (workspace == null) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceId),
-                                              Status.NOT_FOUND);
-        }
-        return new WorkspaceSnapshot(workspace,
-                                     readOnlyModel.getEntityManager());
     }
 }

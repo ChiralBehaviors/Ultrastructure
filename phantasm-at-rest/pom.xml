@@ -64,6 +64,10 @@
             <artifactId>jersey-common</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+        	<groupId>io.dropwizard</groupId>
+        	<artifactId>dropwizard-assets</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -1,0 +1,39 @@
+<html>
+
+<head>
+</head>
+
+<body ng-app='MyApp' ng-controller='MasterDetailCtrl'>
+    <h1>HELLO CLEVELAND!</h1>
+    <span style="width: 200px">Please select a customer:</span>
+    <select ng-model="selectedCustomer" ng-change="loadOrders();" ng-options="customer.CustomerID as customer.CompanyName for customer in listOfCustomers" style="width:350px;"></select>
+    <br />
+    <span style="width: 200px">ID of selected customer: </span>
+    <span style="width:80px;border:1px solid #B0B0B0;">{{selectedCustomer}}</span>
+    <br />
+    <br /> This customer has {{listOfOrders.length}} orders.
+    <br />
+    <ul class="cssListOfOrders">
+        <li ng-repeat='order in listOfOrders'>
+            <span class="cssOrderHeader">Order # {{order.OrderID}} ( {{order.OrderDate}} )</span>
+            <ul>
+                <li ng-repeat='product in order.ProductsInBasket'>
+                    <span style="width:25px"> {{product.Quantity}}</span>
+                    <span style="width:15px">x</span>
+                    <span style="width:230px"> {{product.ProductName}} </span>
+                    <span style="width:30px">@</span>
+                    <span style="width:60px"> {{product.UnitPrice | currency}} </span>
+                    <span style="width:30px">=</span>
+                    <span style="width:100px"> {{product.Quantity * product.UnitPrice | currency}} </span>
+
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <span style="color:Red;">{{errorMessage}}</span>
+    <script src="js/bower_components/angular/angular.js" type="text/javascript"></script>
+    <script src="js/app.js"></script>
+    <script src="js/controller.js"></script>
+</body>
+
+</html>

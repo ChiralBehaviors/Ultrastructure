@@ -15,6 +15,13 @@
  */
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test;
 
+import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.jetty.HttpConnectorFactory;
+import io.dropwizard.server.DefaultServerFactory;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+
 import java.util.EnumSet;
 import java.util.Map;
 
@@ -35,12 +42,6 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
-
-import io.dropwizard.Application;
-import io.dropwizard.jetty.HttpConnectorFactory;
-import io.dropwizard.server.DefaultServerFactory;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
 
 /**
  * @author hhildebrand
@@ -121,5 +122,6 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         Hibernate4Module module = new Hibernate4Module();
         module.enable(Feature.FORCE_LAZY_LOADING);
         objMapper.registerModule(module);
+        bootstrap.addBundle(new AssetsBundle("/ui", "/assets"));
     }
 }

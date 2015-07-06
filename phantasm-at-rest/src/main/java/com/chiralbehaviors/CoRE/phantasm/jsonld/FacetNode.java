@@ -105,7 +105,7 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     public String getIri() {
-        return FacetContext.getNodeIri(existential, this, uriInfo);
+        return FacetContext.getNodeIri(this, existential, uriInfo);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private ObjectNode getInstance(Aspect<?> aspect,
                                    ExistentialRuleform child) {
         ObjectNode node = new ObjectNode(JsonNodeFactory.instance);
-        node.put(Constants.ID, FacetContext.getNodeIri(child, aspect, uriInfo));
+        node.put(Constants.ID, FacetContext.getNodeIri(aspect, child, uriInfo));
         node.put(Constants.TYPE, FacetContext.getTypeIri(aspect, uriInfo));
         return node;
     }

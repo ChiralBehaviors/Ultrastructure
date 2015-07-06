@@ -45,6 +45,13 @@ public class AttributeModelImpl extends
         AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
         implements AttributeModel {
 
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_BINARY    = "http://www.w3.org/2001/XMLSchema#binary";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_BOOLEAN   = "http://www.w3.org/2001/XMLSchema#boolean";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_DATE_TIME = "http://www.w3.org/2001/XMLSchema#dateTime";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_INT       = "http://www.w3.org/2001/XMLSchema#int";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_NUMERIC   = "http://www.w3.org/2001/XMLSchema#numeric";
+    public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_TEXT      = "http://www.w3.org/2001/XMLSchema#text";
+
     /**
      * @param em
      */
@@ -156,14 +163,6 @@ public class AttributeModelImpl extends
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetworkAuthClass()
-     */
-    @Override
-    protected Class<?> getNetworkAuthClass() {
-        return AttributeNetworkAuthorization.class;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.AttributeModel#getJsonLdType(com.chiralbehaviors.CoRE.attribute.Attribute)
      */
     @Override
@@ -175,20 +174,28 @@ public class AttributeModelImpl extends
         }
         switch (attribute.getValueType()) {
             case BINARY:
-                return "http://www.w3.org/2001/XMLSchema#binary";
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_BINARY;
             case BOOLEAN:
-                return "http://www.w3.org/2001/XMLSchema#boolean";
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_BOOLEAN;
             case INTEGER:
-                return "http://www.w3.org/2001/XMLSchema#int";
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_INT;
             case NUMERIC:
-                return "http://www.w3.org/2001/XMLSchema#numeric";
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_NUMERIC;
             case TEXT:
-                return "http://www.w3.org/2001/XMLSchema#text";
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_TEXT;
             case TIMESTAMP:
-                return "http://www.w3.org/2001/XMLSchema#dateTime";
+                return HTTP_WWW_W3_ORG_2001_XML_SCHEMA_DATE_TIME;
             default:
                 throw new IllegalStateException(String.format("invalid value type: %s",
                                                               attribute.getValueType()));
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetworkAuthClass()
+     */
+    @Override
+    protected Class<?> getNetworkAuthClass() {
+        return AttributeNetworkAuthorization.class;
     }
 }

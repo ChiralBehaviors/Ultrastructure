@@ -255,18 +255,23 @@ public class FacetResource extends TransactionalResource {
                                                             frameDescription),
                                               Status.BAD_REQUEST);
         }
+        List<Map<String, Object>> graph = traverse(node, frame);
         JsonLdOptions options = new JsonLdOptions();
         options.setEmbed(true);
         try {
-            return JsonLdProcessor.frame(node.toInstance(instance,
-                                                         readOnlyModel,
-                                                         uriInfo),
-                                         frame, options);
+            return JsonLdProcessor.frame(graph, frame, options);
         } catch (JsonLdError e) {
             throw new WebApplicationException(String.format("Invalid frame %s",
                                                             frame),
                                               Status.BAD_REQUEST);
         }
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> traverse(RuleForm instance,
+                                                                                                                                                    Facet<RuleForm, Network> node,
+                                                                                                                                                    Map<?, ?> frame) {
+        // TODO Auto-generated method stub
+        return node.toInstance(instance, readOnlyModel, uriInfo);
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacetInstances(Aspect<RuleForm> aspect) {

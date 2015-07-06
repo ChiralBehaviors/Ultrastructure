@@ -22,10 +22,14 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.ws.rs.core.UriBuilder;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,6 +48,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
+import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
@@ -127,6 +132,33 @@ public class ResourcesTest extends AbstractModelTest {
     }
 
     @Test
+    public void testFrame() throws Exception {
+        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tester",
+                                                 "testier");
+        thing1.setAliases(new String[] { "smith", "jones" });
+        thing1.setURI("http://example.com");
+        thing1.setThing2(thing2);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        URL url = getFramedInstanceUrl(thing1);
+        Object node = JsonUtils.fromInputStream(url.openStream());
+        assertNotNull(node);
+        System.out.println("famed: ");
+        System.out.println(JsonUtils.toPrettyString(node));
+    }
+
+    @Test
+    public void testLookupWorkspace() throws Exception {
+        URL url = new URL(String.format("http://localhost:%s/json-ld/workspace/%s",
+                                        application.getPort(),
+                                        scope.getWorkspace().getDefiningProduct().getId().toString()));
+        Map<?, ?> jsonObject = (Map<?, ?>) JsonUtils.fromInputStream(url.openStream());
+        assertNotNull(jsonObject.get("auths"));
+        assertNotNull(jsonObject.get("frontier"));
+    }
+
+    @Test
     public void testRuleformContext() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform/context/Attribute",
                                         application.getPort()));
@@ -163,15 +195,17 @@ public class ResourcesTest extends AbstractModelTest {
     }
 
     @Test
-    public void testFrame() throws Exception {
-        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tester",
-                                                 "testier");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        thing1.setURI("http://example.com");
-        thing1.setThing2(thing2);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+    public void testRuleforms() throws Exception {
+        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform",
+                                        application.getPort()));
+        Object jsonObject = JsonUtils.fromInputStream(url.openStream());
+        System.out.println("Ruleform types:");
+        System.out.println(JsonUtils.toPrettyString(jsonObject));
+    }
+
+    private URL getFramedInstanceUrl(Thing1 thing1) throws MalformedURLException,
+                                                    NoSuchMethodException,
+                                                    IOException {
         Aspect<Product> aspect = new Aspect<>(scope.lookup("kernel", "IsA"),
                                               (Product) scope.lookup("Thing1"));
         Map<String, String> properties = new HashMap<>();
@@ -190,43 +224,23 @@ public class ResourcesTest extends AbstractModelTest {
                                              application.getPort(),
                                              aspect.getClassifier().getId().toString(),
                                              scope.lookup("Thing2").getId().toString())).toExternalForm());
-        Object frame = JsonUtils.fromInputStream(new ByteArrayInputStream(com.hellblazer.utils.Utils.getDocument(getClass().getResourceAsStream("/thing-frame.jsonld"),
-                                                                                                                 properties).getBytes()));
-        assertNotNull(frame);
-        System.out.println("frame: ");
-        System.out.println(JsonUtils.toPrettyString(frame));
-        URL url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
-                                        application.getPort(),
-                                        aspect.getClassifier().getId().toString(),
-                                        aspect.getClassification().getId().toString(),
-                                        thing1.getRuleform().getId()));
-        Object node = JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(node);
-        System.out.println("original: ");
-        System.out.println(JsonUtils.toPrettyString(node));
-        JsonLdOptions opts = new JsonLdOptions();
-        opts.setEmbed(true);
-        Map<String, Object> framed = JsonLdProcessor.frame(node, frame, opts);
-        System.out.println("framed: ");
-        System.out.println(JsonUtils.toPrettyString(framed));
-    }
-
-    @Test
-    public void testRuleforms() throws Exception {
-        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform",
-                                        application.getPort()));
-        Object jsonObject = JsonUtils.fromInputStream(url.openStream());
-        System.out.println("Ruleform types:");
-        System.out.println(JsonUtils.toPrettyString(jsonObject));
-    }
-
-    @Test
-    public void testLookupWorkspace() throws Exception {
-        URL url = new URL(String.format("http://localhost:%s/json-ld/workspace/%s",
-                                        application.getPort(),
-                                        scope.getWorkspace().getDefiningProduct().getId().toString()));
-        Map<?, ?> jsonObject = (Map<?, ?>) JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(jsonObject.get("auths"));
-        assertNotNull(jsonObject.get("frontier"));
+        UriBuilder builder = UriBuilder.fromUri(String.format("http://localhost:%s",
+                                                              application.getPort()));
+        builder.path(FacetResource.class);
+        builder.path(FacetResource.class.getMethod("getInstance", String.class,
+                                                   String.class, String.class,
+                                                   String.class, String.class));
+        builder.resolveTemplate("ruleform-type", Product.class.getSimpleName());
+        builder.resolveTemplate("classifier",
+                                aspect.getClassifier().getId().toString());
+        builder.resolveTemplate("classification",
+                                aspect.getClassification().getId().toString());
+        builder.resolveTemplate("instance", thing1.getRuleform().getId());
+        builder.queryParam("frame",
+                           URLEncoder.encode(Utils.getDocument(getClass().getResourceAsStream("/thing-frame.jsonld"),
+                                                               properties),
+                                             "UTF-8"));
+        URL url = builder.build().toURL();
+        return url;
     }
 }

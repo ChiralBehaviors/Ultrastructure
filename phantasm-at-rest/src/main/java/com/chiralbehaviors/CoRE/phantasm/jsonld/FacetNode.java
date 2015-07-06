@@ -79,7 +79,25 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof FacetNode && super.equals(obj);
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof FacetNode)) {
+            return false;
+        }
+        @SuppressWarnings("rawtypes")
+        FacetNode other = (FacetNode) obj;
+        if (existential == null) {
+            if (other.existential != null) {
+                return false;
+            }
+        } else if (!existential.equals(other.existential)) {
+            return false;
+        }
+        return true;
     }
 
     public FacetContext<RuleForm, Network> getContext() {
@@ -88,6 +106,15 @@ public class FacetNode<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     public String getIri() {
         return FacetContext.getNodeIri(existential, this, uriInfo);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result
+                 + ((existential == null) ? 0 : existential.hashCode());
+        return result;
     }
 
     public ObjectNode toNode() {

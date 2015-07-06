@@ -69,6 +69,37 @@ public class RuleformNode implements JsonSerializable {
         this.uriInfo = uriInfo;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof RuleformNode)) {
+            return false;
+        }
+        RuleformNode other = (RuleformNode) obj;
+        if (ruleform == null) {
+            if (other.ruleform != null) {
+                return false;
+            }
+        } else if (!ruleform.equals(other.ruleform)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                 + ((ruleform == null) ? 0 : ruleform.hashCode());
+        return result;
+    }
+
     /* (non-Javadoc)
      * @see com.fasterxml.jackson.databind.JsonSerializable#serialize(com.fasterxml.jackson.core.JsonGenerator, com.fasterxml.jackson.databind.SerializerProvider)
      */

@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,8 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContext;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -127,17 +130,17 @@ public class FacetResource extends TransactionalResource {
                                           Status.NOT_FOUND);
     }
 
-    @Path("type/{ruleform-type}/{classifier}/{classification}")
+    @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                            @PathParam("classifier") String relationship,
-                                                                                                                                            @PathParam("classification") String ruleform) {
-        Map<String, Object> clazz = new HashMap<>();
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object getInstance(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                   @PathParam("classifier") String relationship,
+                                                                                                                                   @PathParam("classification") String ruleform,
+                                                                                                                                   @PathParam("instance") String facetInstance,
+                                                                                                                                   @QueryParam("frame") String frame) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
-        clazz.put(Constants.ID, FacetContext.getTypeIri(aspect, uriInfo));
-        clazz.put(Constants.TYPE, "http://ultrastructure.me#Facet");
-        return clazz;
+        Object node = createFacetNode(facetInstance, aspect);
+        return frame != null ? frame(frame, node) : node;
     }
 
     @Path("type/{ruleform-type}/{classifier}/{classification}/{term}")
@@ -154,28 +157,17 @@ public class FacetResource extends TransactionalResource {
         return clazz;
     }
 
-    @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
+    @Path("type/{ruleform-type}/{classifier}/{classification}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object getInstance(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                   @PathParam("classifier") String relationship,
-                                                                                                                                   @PathParam("classification") String ruleform,
-                                                                                                                                   @PathParam("instance") String facetInstance,
-                                                                                                                                   @QueryParam("frame") String frame) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                            @PathParam("classifier") String relationship,
+                                                                                                                                            @PathParam("classification") String ruleform) {
+        Map<String, Object> clazz = new HashMap<>();
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
-        Object node = createFacetNode(facetInstance, aspect);
-        if (frame != null) {
-            JsonLdOptions options = new JsonLdOptions();
-            options.setEmbed(true);
-            try {
-                return JsonLdProcessor.frame(node, frame, options);
-            } catch (JsonLdError e) {
-                throw new WebApplicationException(String.format("Invalid frame %s",
-                                                                frame),
-                                                  Status.BAD_REQUEST);
-            }
-        }
-        return node;
+        clazz.put(Constants.ID, FacetContext.getTypeIri(aspect, uriInfo));
+        clazz.put(Constants.TYPE, "http://ultrastructure.me#Facet");
+        return clazz;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -194,6 +186,27 @@ public class FacetResource extends TransactionalResource {
                                                             Status.NOT_FOUND));
         }
         return new FacetNode(instance, aspect, readOnlyModel, uriInfo).toNode();
+    }
+
+    private Map<String, Object> frame(String frameDescription, Object node) {
+        JsonLdOptions options = new JsonLdOptions();
+        options.setEmbed(true);
+        JsonNode frame;
+        try {
+            frame = new ObjectMapper().readValue(frameDescription.getBytes(),
+                                                 JsonNode.class);
+        } catch (IOException e) {
+            throw new WebApplicationException(String.format("Invalid frame: %s",
+                                                            frameDescription),
+                                              Status.BAD_REQUEST);
+        }
+        try {
+            return JsonLdProcessor.frame(node, frame, options);
+        } catch (JsonLdError e) {
+            throw new WebApplicationException(String.format("Invalid frame %s",
+                                                            frame),
+                                              Status.BAD_REQUEST);
+        }
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacetInstances(Aspect<RuleForm> aspect) {

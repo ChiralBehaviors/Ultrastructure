@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -97,9 +97,8 @@ public class ResourcesTest extends AbstractModelTest {
     public void testFacetNode() throws Exception {
         URL url;
         Object jsonObject;
-        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tester",
-                                                 "testier");
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         thing1.setAliases(new String[] { "smith", "jones" });
         thing1.setURI("http://example.com");
         thing1.setThing2(thing2);
@@ -133,9 +132,8 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testFrame() throws Exception {
-        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tester",
-                                                 "testier");
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         thing1.setAliases(new String[] { "smith", "jones" });
         thing1.setURI("http://example.com");
         thing1.setThing2(thing2);

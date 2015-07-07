@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -255,7 +256,7 @@ public class FacetResource extends TransactionalResource {
                                                             frameDescription),
                                               Status.BAD_REQUEST);
         }
-        List<Map<String, Object>> graph = traverse(node, frame);
+        List<Map<String, Object>> graph = traverse(instance, node, frame);
         JsonLdOptions options = new JsonLdOptions();
         options.setEmbed(true);
         try {
@@ -270,8 +271,7 @@ public class FacetResource extends TransactionalResource {
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> traverse(RuleForm instance,
                                                                                                                                                     Facet<RuleForm, Network> node,
                                                                                                                                                     Map<?, ?> frame) {
-        // TODO Auto-generated method stub
-        return node.toInstance(instance, readOnlyModel, uriInfo);
+        return Arrays.asList(node.toInstance(instance, readOnlyModel, uriInfo));
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacetInstances(Aspect<RuleForm> aspect) {

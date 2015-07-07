@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -62,8 +62,8 @@ public class TestPhantasm extends AbstractModelTest {
     @Test
     public void testDemo() throws Exception {
 
-        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test");
-        Thing2 thing2 = (Thing2) model.construct(Thing2.class, "tasty", "chips");
+        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        Thing2 thing2 = model.construct(Thing2.class, "tasty", "chips");
         assertNotNull(thing1);
         assertEquals(thing1, thing1.doSomethingElse());
         thing1.doSomething("hello");
@@ -94,8 +94,8 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(String.format("got: %s", newProps), properties.size(),
                      newProps.size());
 
-        Thing3 thing3a = (Thing3) model.construct(Thing3.class, "uncle it",
-                                                  "one of my favorite things");
+        Thing3 thing3a = model.construct(Thing3.class, "uncle it",
+                                         "one of my favorite things");
         assertNotNull(thing2.getThing3s());
         assertEquals(0, thing2.getThing3s().size());
         thing2.add(thing3a);
@@ -103,8 +103,8 @@ public class TestPhantasm extends AbstractModelTest {
         thing2.remove(thing3a);
         assertEquals(0, thing2.getThing3s().size());
 
-        Thing3 thing3b = (Thing3) model.construct(Thing3.class, "cousin it",
-                                                  "another one of my favorite things");
+        Thing3 thing3b = model.construct(Thing3.class, "cousin it",
+                                         "another one of my favorite things");
 
         List<Thing3> aFewOfMyFavoriteThings = new ArrayList<>();
         aFewOfMyFavoriteThings.add(thing3a);
@@ -116,9 +116,8 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(0, thing2.getThing3s().size());
 
         assertNull(thing1.getArtifact());
-        MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
-                                                                 "myartifact",
-                                                                 "artifact");
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 "myartifact", "artifact");
         assertEquals("jar", artifact.getType());
         em.flush();
         thing1.setArtifact(artifact);
@@ -133,9 +132,8 @@ public class TestPhantasm extends AbstractModelTest {
         thing2.addArtifacts(Arrays.asList(artifact));
         assertEquals(1, thing2.getArtifacts().size());
 
-        MavenArtifact artifact2 = (MavenArtifact) model.construct(MavenArtifact.class,
-                                                                  "myartifact2",
-                                                                  "artifact2");
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  "myartifact2", "artifact2");
         artifact2.setType("jar");
 
         thing2.setArtifacts(Arrays.asList(artifact2));
@@ -150,9 +148,8 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Test
     public void testEnums() throws Exception {
-        MavenArtifact artifact = (MavenArtifact) model.construct(MavenArtifact.class,
-                                                                 "myartifact",
-                                                                 "artifact");
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 "myartifact", "artifact");
         artifact.setType("jar");
         em.flush();
         artifact.setType("invalid");
@@ -166,7 +163,7 @@ public class TestPhantasm extends AbstractModelTest {
     @Test
     public void testThis() throws InstantiationException {
 
-        Thing1 thing1 = (Thing1) model.construct(Thing1.class, "testy", "test");
+        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
         Product child = model.getProductModel().getChild(thing1.getScope().getWorkspace().getDefiningProduct(),
                                                          model.getKernel().getHasMember());
         assertEquals("Thing1", child.getName());

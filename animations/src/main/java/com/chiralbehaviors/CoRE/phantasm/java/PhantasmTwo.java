@@ -113,8 +113,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
      * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
      */
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args)
-                                                                    throws Throwable {
+    public Object invoke(Object proxy, Method method,
+                         Object[] args) throws Throwable {
         StateFunction<RuleForm> function = definition.methods.get(method);
         if (function != null) {
             StateDefinition<RuleForm> stateDefinition = definition.facets.get(method.getDeclaringClass());
@@ -132,7 +132,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         if (method.getName().equals("equals") && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
             return (args[0] instanceof Phantasm) ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
-                                                : false;
+                                                 : false;
         } else if (method.getName().equals("hashCode") && args.length == 0) {
             return ruleform.hashCode();
         }
@@ -140,8 +140,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
             return method.invoke(this, args);
         } catch (IllegalArgumentException | IllegalAccessException
                 | InvocationTargetException e) {
-            throw new IllegalStateException(
-                                            String.format("Error invoking: %s",
+            throw new IllegalStateException(String.format("Error invoking: %s",
                                                           method.toGenericString()),
                                             e);
         }
@@ -151,10 +150,9 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                    WorkspaceScope scope) {
         Attribute attribute = scope.lookup(namespace, key);
         if (attribute == null) {
-            throw new IllegalStateException(
-                                            String.format("The attribute %s:%s does not exist in the workspace",
+            throw new IllegalStateException(String.format("The attribute %s:%s does not exist in the workspace",
                                                           namespace == null ? ""
-                                                                           : namespace,
+                                                                            : namespace,
                                                           key));
         }
         return attribute;
@@ -168,8 +166,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                          WorkspaceScope scope) {
         Relationship lookup = (Relationship) scope.lookup(namepsace, name);
         if (lookup == null) {
-            throw new IllegalStateException(
-                                            String.format("Unable to find relationship %s:%s",
+            throw new IllegalStateException(String.format("Unable to find relationship %s:%s",
                                                           namepsace, name));
         }
         return lookup;
@@ -229,10 +226,9 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         existing.setValue(newValue);
     }
 
-    private List<Phantasm<? super RuleForm>> wrap(List<RuleForm> queryResult,
-                                                  Class<Phantasm<? extends RuleForm>> phantasm) {
-        List<Phantasm<? super RuleForm>> result = new ArrayList<>(
-                                                                  queryResult.size());
+    private List<Phantasm<RuleForm>> wrap(List<RuleForm> queryResult,
+                                          Class<Phantasm<RuleForm>> phantasm) {
+        List<Phantasm<RuleForm>> result = new ArrayList<>(queryResult.size());
         for (RuleForm ruleform : queryResult) {
             result.add(model.wrap(phantasm, ruleform));
         }
@@ -275,8 +271,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
     protected Object addChild(String namespace, String name, RuleForm child,
                               WorkspaceScope scope) {
         getNetworkedModel().link(ruleform,
-                                 getRelationship(namespace, name, scope),
-                                 child,
+                                 getRelationship(namespace, name, scope), child,
                                  model.getCurrentPrincipal().getPrincipal());
         return null;
     }
@@ -375,8 +370,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return null;
     }
 
-    protected Object addRelationshipAuths(String namespace,
-                                          String name,
+    protected Object addRelationshipAuths(String namespace, String name,
                                           List<Phantasm<Relationship>> authorized,
                                           WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);
@@ -395,7 +389,6 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
      * @param phantasmReturned
      * @return
      */
-    @SuppressWarnings("unchecked")
     protected List<Phantasm<Agency>> getAgencyAuths(String namespace,
                                                     String name,
                                                     Class<? extends Phantasm<Agency>> phantasmReturned,
@@ -405,7 +398,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                                              relationship);
         List<Phantasm<Agency>> returned = new ArrayList<>(queryResult.size());
         for (Agency agency : queryResult) {
-            returned.add((Phantasm<Agency>) model.wrap(phantasmReturned, agency));
+            returned.add((Phantasm<Agency>) model.wrap(phantasmReturned,
+                                                       agency));
         }
         return returned;
     }
@@ -414,8 +408,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                          Class<?> type, WorkspaceScope scope) {
         Attribute attribute = getAttribute(namespace, key, scope);
         if (!attribute.getIndexed()) {
-            throw new IllegalStateException(
-                                            String.format("Attribute %s:%s is not indexed",
+            throw new IllegalStateException(String.format("Attribute %s:%s is not indexed",
                                                           namespace, key));
         }
         AttributeValue<RuleForm>[] attributeValues = getValueArray(attribute);
@@ -439,13 +432,11 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                              WorkspaceScope scope) {
         Attribute attribute = getAttribute(namespace, key, scope);
         if (!attribute.getKeyed()) {
-            throw new IllegalStateException(
-                                            String.format("Attribute %s:%s is not keyed",
+            throw new IllegalStateException(String.format("Attribute %s:%s is not keyed",
                                                           namespace, key));
         }
         Map<String, ?> map = new HashMap<>();
-        for (Map.Entry<String, AttributeValue<RuleForm>> entry : getValueMap(
-                                                                             attribute).entrySet()) {
+        for (Map.Entry<String, AttributeValue<RuleForm>> entry : getValueMap(attribute).entrySet()) {
             map.put(entry.getKey(), entry.getValue().getValue());
         }
         return map;
@@ -459,23 +450,21 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                                                                                        name,
                                                                                                                        scope));
         if (values.size() == 0) {
-            throw new IllegalArgumentException(
-                                               String.format("No such attribute: %s:%s",
+            throw new IllegalArgumentException(String.format("No such attribute: %s:%s",
                                                              namespace == null ? ""
-                                                                              : namespace,
+                                                                               : namespace,
                                                              name));
         } else if (values.size() > 1) {
-            throw new IllegalArgumentException(
-                                               String.format("Multiple values for attribute: %s:%s",
+            throw new IllegalArgumentException(String.format("Multiple values for attribute: %s:%s",
                                                              namespace == null ? ""
-                                                                              : namespace,
+                                                                               : namespace,
                                                              name));
         }
         return values.get(0).getValue();
     }
 
     protected Object getChild(String namespace, String name,
-                              Class<Phantasm<? extends RuleForm>> phantasm,
+                              Class<Phantasm<RuleForm>> phantasm,
                               WorkspaceScope scope) {
         return model.wrap(phantasm,
                           getNetworkedModel().getSingleChild(ruleform,
@@ -484,10 +473,10 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                                              scope)));
     }
 
-    protected List<Phantasm<? super RuleForm>> getChildren(String namespace,
-                                                           String name,
-                                                           Class<Phantasm<? extends RuleForm>> phantasm,
-                                                           WorkspaceScope scope) {
+    protected List<Phantasm<RuleForm>> getChildren(String namespace,
+                                                   String name,
+                                                   Class<Phantasm<RuleForm>> phantasm,
+                                                   WorkspaceScope scope) {
         List<RuleForm> queryResult = getNetworkedModel().getChildren(ruleform,
                                                                      getRelationship(namespace,
                                                                                      name,
@@ -495,9 +484,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return wrap(queryResult, phantasm);
     }
 
-    protected Object getImmediateChild(String namespace,
-                                       String name,
-                                       Class<Phantasm<? extends RuleForm>> phantasm,
+    protected Object getImmediateChild(String namespace, String name,
+                                       Class<Phantasm<RuleForm>> phantasm,
                                        WorkspaceScope scope) {
         return model.wrap(phantasm,
                           getNetworkedModel().getImmediateChild(ruleform,
@@ -506,10 +494,10 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                                                 scope)));
     }
 
-    protected List<Phantasm<? super RuleForm>> getImmediateChildren(String namespace,
-                                                                    String name,
-                                                                    Class<Phantasm<? extends RuleForm>> phantasm,
-                                                                    WorkspaceScope scope) {
+    protected List<Phantasm<RuleForm>> getImmediateChildren(String namespace,
+                                                            String name,
+                                                            Class<Phantasm<RuleForm>> phantasm,
+                                                            WorkspaceScope scope) {
         List<RuleForm> queryResult = getNetworkedModel().getImmediateChildren(ruleform,
                                                                               getRelationship(namespace,
                                                                                               name,
@@ -523,7 +511,6 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
      * @param phantasmReturned
      * @return
      */
-    @SuppressWarnings("unchecked")
     protected List<Phantasm<Location>> getLocationAuths(String namespace,
                                                         String name,
                                                         Class<? extends Phantasm<Location>> phantasmReturned,
@@ -545,7 +532,6 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
      * @param phantasmReturned
      * @return
      */
-    @SuppressWarnings("unchecked")
     protected List<Phantasm<Product>> getProductAuths(String namespace,
                                                       String name,
                                                       Class<? extends Phantasm<Product>> phantasmReturned,
@@ -561,7 +547,6 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return returned;
     }
 
-    @SuppressWarnings("unchecked")
     protected List<Phantasm<Relationship>> getRelationshipAuths(String namespace,
                                                                 String name,
                                                                 Class<? extends Phantasm<Relationship>> phantasmReturned,
@@ -569,8 +554,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         Relationship relationship = getRelationship(namespace, name, scope);
         List<Relationship> queryResult = getNetworkedModel().getAuthorizedRelationships(ruleform,
                                                                                         relationship);
-        List<Phantasm<Relationship>> returned = new ArrayList<>(
-                                                                queryResult.size());
+        List<Phantasm<Relationship>> returned = new ArrayList<>(queryResult.size());
         for (Relationship auth : queryResult) {
             returned.add((Phantasm<Relationship>) model.wrap(phantasmReturned,
                                                              auth));
@@ -588,8 +572,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
      * @param phantasmReturned
      * @return
      */
-    protected Object getSingularAgencyAuth(String namespace,
-                                           String name,
+    protected Object getSingularAgencyAuth(String namespace, String name,
                                            Class<? extends Phantasm<Agency>> phantasmReturned,
                                            WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);
@@ -607,8 +590,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
      * @param phantasmReturned
      * @return
      */
-    protected Object getSingularLocationAuth(String namespace,
-                                             String name,
+    protected Object getSingularLocationAuth(String namespace, String name,
                                              Class<? extends Phantasm<Location>> phantasmReturned,
                                              WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);
@@ -626,8 +608,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
      * @param phantasmReturned
      * @return
      */
-    protected Object getSingularProductAuth(String namespace,
-                                            String name,
+    protected Object getSingularProductAuth(String namespace, String name,
                                             Class<? extends Phantasm<Product>> phantasmReturned,
                                             WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);
@@ -639,8 +620,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return model.wrap(phantasmReturned, authorized);
     }
 
-    protected Object getSingularRelationshipAuth(String namespace,
-                                                 String name,
+    protected Object getSingularRelationshipAuth(String namespace, String name,
                                                  Class<? extends Phantasm<Relationship>> phantasmReturned,
                                                  WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);
@@ -653,12 +633,11 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
     }
 
     protected Object invokeDefault(Object proxy, Method method, Object[] args,
-                                   final Class<?> declaringClass)
-                                                                 throws NoSuchMethodException,
-                                                                 Throwable,
-                                                                 IllegalAccessException,
-                                                                 InstantiationException,
-                                                                 InvocationTargetException {
+                                   final Class<?> declaringClass) throws NoSuchMethodException,
+                                                                  Throwable,
+                                                                  IllegalAccessException,
+                                                                  InstantiationException,
+                                                                  InvocationTargetException {
         Constructor<MethodHandles.Lookup> constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class,
                                                                                                           int.class);
         constructor.setAccessible(true);
@@ -796,8 +775,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return null;
     }
 
-    protected Object removeRelationshipAuths(String namespace,
-                                             String name,
+    protected Object removeRelationshipAuths(String namespace, String name,
                                              List<Phantasm<Relationship>> authorized,
                                              WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);
@@ -833,8 +811,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                        Object[] values, WorkspaceScope scope) {
         Attribute attribute = getAttribute(namespace, key, scope);
         if (!attribute.getIndexed()) {
-            throw new IllegalStateException(
-                                            String.format("Attribute %s:%s is not indexed",
+            throw new IllegalStateException(String.format("Attribute %s:%s is not indexed",
                                                           namespace, key));
         }
         AttributeValue<RuleForm>[] old = getValueArray(attribute);
@@ -877,8 +854,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                      WorkspaceScope scope) {
         Attribute attribute = getAttribute(namespace, key, scope);
         if (!attribute.getKeyed()) {
-            throw new IllegalStateException(
-                                            String.format("Attribute %s:%s is not keyed",
+            throw new IllegalStateException(String.format("Attribute %s:%s is not keyed",
                                                           namespace, key));
         }
         Map<String, AttributeValue<RuleForm>> valueMap = getValueMap(attribute);
@@ -906,16 +882,14 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         List<AttributeValue<?>> values = (List<AttributeValue<?>>) getNetworkedModel().getAttributeValues(ruleform,
                                                                                                           attribute);
         if (values.size() == 0) {
-            throw new IllegalArgumentException(
-                                               String.format("No such attribute: %s:%s",
+            throw new IllegalArgumentException(String.format("No such attribute: %s:%s",
                                                              namespace == null ? ""
-                                                                              : namespace,
+                                                                               : namespace,
                                                              key));
         } else if (values.size() > 1) {
-            throw new IllegalArgumentException(
-                                               String.format("Multiple values for attribute: %s:%s",
+            throw new IllegalArgumentException(String.format("Multiple values for attribute: %s:%s",
                                                              namespace == null ? ""
-                                                                              : namespace,
+                                                                               : namespace,
                                                              key));
         }
         values.get(0).setValue(value);
@@ -934,7 +908,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         RuleForm child = phantasm.getRuleform();
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = getNetworkedModel();
         networkedModel.setImmediateChild(ruleform,
-                                         getRelationship(namespace, name, scope),
+                                         getRelationship(namespace, name,
+                                                         scope),
                                          child,
                                          model.getCurrentPrincipal().getPrincipal());
         return null;
@@ -953,9 +928,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         for (Phantasm<RuleForm> phantasm : arguments) {
             RuleForm child = phantasm.getRuleform();
             NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = getNetworkedModel();
-            networkedModel.setImmediateChild(ruleform,
-                                             relationship,
-                                             child,
+            networkedModel.setImmediateChild(ruleform, relationship, child,
                                              model.getCurrentPrincipal().getPrincipal());
         }
         return null;
@@ -999,8 +972,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return null;
     }
 
-    protected Object setRelationshipAuths(String namespace,
-                                          String name,
+    protected Object setRelationshipAuths(String namespace, String name,
                                           List<Phantasm<Relationship>> authorized,
                                           WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);
@@ -1058,8 +1030,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         return null;
     }
 
-    protected Object setSingularRelationshipAuth(String namespace,
-                                                 String name,
+    protected Object setSingularRelationshipAuth(String namespace, String name,
                                                  Phantasm<Relationship> phantasm,
                                                  WorkspaceScope scope) {
         Relationship relationship = getRelationship(namespace, name, scope);

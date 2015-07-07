@@ -72,10 +72,13 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
 
     @SuppressWarnings("unchecked")
     /**
-     * Constrain the ruleform to have the required facets.  
+     * Constrain the ruleform to have the required facets.
+     * 
      * @param model
      * @param ruleform
-     * @throws ClassCastException - if the ruleform is not classified as required by the facets of this state definition
+     * @throws ClassCastException
+     *             - if the ruleform is not classified as required by the facets
+     *             of this state definition
      */
     public void constrain(Model model, RuleForm ruleform) {
         if (ruleform == null) {
@@ -84,23 +87,20 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
         WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
         if (scope == null) {
-            throw new IllegalStateException(
-                                            String.format("Cannot obtain workspace for state interface %s",
+            throw new IllegalStateException(String.format("Cannot obtain workspace for state interface %s",
                                                           stateInterface));
         }
         List<String> failures = new ArrayList<>();
         for (ScopedFacet constraint : facets) {
             RuleForm classification = (RuleForm) constraint.resolveClassification(scope);
             if (classification == null) {
-                throw new IllegalStateException(
-                                                String.format("Cannot obtain classification %s for %s",
+                throw new IllegalStateException(String.format("Cannot obtain classification %s for %s",
                                                               constraint.toClassificationString(),
                                                               stateInterface));
             }
             Relationship classifier = (Relationship) constraint.resolveClassifier(scope);
             if (classifier == null) {
-                throw new IllegalStateException(
-                                                String.format("Cannot obtain classifier %s for %s",
+                throw new IllegalStateException(String.format("Cannot obtain classifier %s for %s",
                                                               constraint.toClassifierString(),
                                                               stateInterface));
             }
@@ -109,8 +109,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             }
         }
         if (!failures.isEmpty()) {
-            throw new ClassCastException(
-                                         String.format("%s does not have required facets %s of state %s",
+            throw new ClassCastException(String.format("%s does not have required facets %s of state %s",
                                                        ruleform, failures,
                                                        stateInterface));
         }
@@ -125,8 +124,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
         List<Aspect<RuleForm>> specs = new ArrayList<>();
         for (ScopedFacet facet : facets) {
-            specs.add(new Aspect<RuleForm>(
-                                           (Relationship) facet.resolveClassifier(scope),
+            specs.add(new Aspect<RuleForm>((Relationship) facet.resolveClassifier(scope),
                                            (RuleForm) facet.resolveClassification(scope)));
         }
         return specs;
@@ -187,15 +185,14 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     private void getInferred(Method method, Key value,
                              Class<ExistentialRuleform<?, ?>> rulformClass) {
         if (!rulformClass.equals(getRuleformClass())) {
-            throw new IllegalStateException(
-                                            String.format("Use of @Inferred can only be applied to network relationship methods: %s",
+            throw new IllegalStateException(String.format("Use of @Inferred can only be applied to network relationship methods: %s",
                                                           method.toGenericString()));
         }
         methods.put(method,
                     (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
                      Object[] arguments) -> state.getChild(value.namespace(),
                                                            value.name(),
-                                                           (Class<Phantasm<? extends RuleForm>>) method.getReturnType(),
+                                                           (Class<Phantasm<RuleForm>>) method.getReturnType(),
                                                            scope));
     }
 
@@ -212,8 +209,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         } else if (method.getParameterTypes().length == 0
                    && List.class.isAssignableFrom(method.getReturnType())) {
             processGetList(edge, method);
-        } else if (method.getParameterTypes().length == 1
-                   && List.class.isAssignableFrom(method.getParameterTypes()[0])) {
+        } else
+            if (method.getParameterTypes().length == 1
+                && List.class.isAssignableFrom(method.getParameterTypes()[0])) {
             processSetList(edge, method);
         } else {
             processSingular(edge, method);
@@ -228,8 +226,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             processPrimitiveSetter(annotation.namespace(), annotation.name(),
                                    method);
         } else {
-            throw new IllegalStateException(
-                                            String.format("The method is neither a primitive setter/getter: %s",
+            throw new IllegalStateException(String.format("The method is neither a primitive setter/getter: %s",
                                                           method.toGenericString()));
         }
     }
@@ -276,7 +273,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                 processAddAuthorizations(annotation, method, ruleformClass);
             }
 
-        } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
+        } else
+            if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
             Class<? extends Phantasm<?>> returnPhantasm = (Class<? extends Phantasm<?>>) method.getParameterTypes()[0];
             Class<?> ruleformClass = Model.getExistentialRuleform(returnPhantasm);
             if (getRuleformClass().equals(ruleformClass)) {
@@ -324,8 +322,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                           (Phantasm<Relationship>) arguments[0],
                                                                           scope));
         } else {
-            throw new IllegalStateException(
-                                            String.format("The authorization %s->%s is undefined",
+            throw new IllegalStateException(String.format("The authorization %s->%s is undefined",
                                                           getRuleformClass(),
                                                           ruleformClass));
         }
@@ -363,8 +360,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                            (List<Phantasm<Relationship>>) arguments[0],
                                                                            scope));
         } else {
-            throw new IllegalStateException(
-                                            String.format("The authorization %s->%s is undefined",
+            throw new IllegalStateException(String.format("The authorization %s->%s is undefined",
                                                           getRuleformClass(),
                                                           ruleformClass));
         }
@@ -410,8 +406,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                            (Class<? extends Phantasm<Relationship>>) phantasmReturned,
                                                                            scope));
         } else {
-            throw new IllegalStateException(
-                                            String.format("No such authorization from Product to %s",
+            throw new IllegalStateException(String.format("No such authorization from Product to %s",
                                                           ruleformClass.getSimpleName()));
         }
     }
@@ -426,7 +421,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         Class<? extends Phantasm<?>> returnPhantasm = (Class<Phantasm<?>>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
         Class<?> ruleformClass = Model.getExistentialRuleform(returnPhantasm);
         if (getRuleformClass().equals(ruleformClass)) {
-            Class<Phantasm<? extends RuleForm>> phantasm = (Class<Phantasm<? extends RuleForm>>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
+            Class<Phantasm<RuleForm>> phantasm = (Class<Phantasm<RuleForm>>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
             if (method.getAnnotation(Inferred.class) != null) {
                 methods.put(method,
                             (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
@@ -443,8 +438,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                                scope));
             }
         } else {
-            processGetAuthorizations(method, returnPhantasm,
-                                     annotation.value(), ruleformClass);
+            processGetAuthorizations(method, returnPhantasm, annotation.value(),
+                                     ruleformClass);
         }
     }
 
@@ -482,8 +477,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                                   (Class<? extends Phantasm<Relationship>>) phantasmReturned,
                                                                                   scope));
         } else {
-            throw new IllegalStateException(
-                                            String.format("No such authorization from Product to %s",
+            throw new IllegalStateException(String.format("No such authorization from Product to %s",
                                                           ruleformClass.getSimpleName()));
         }
     }
@@ -491,8 +485,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     private void processPrimitiveGetter(String namespace, String name,
                                         Method method) {
         if (method.getParameterCount() != 0) {
-            throw new IllegalStateException(
-                                            String.format("getter method has arguments %s",
+            throw new IllegalStateException(String.format("getter method has arguments %s",
                                                           method.toGenericString()));
         }
         if (method.getReturnType().isArray()) {
@@ -529,8 +522,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     private void processPrimitiveSetter(String namespace, String name,
                                         Method method) {
         if (method.getParameterCount() != 1) {
-            throw new IllegalStateException(
-                                            String.format("setter method does not have a singular argument %s",
+            throw new IllegalStateException(String.format("setter method does not have a singular argument %s",
                                                           method.toGenericString()));
         }
         if (method.getParameterTypes()[0].isArray()) {
@@ -584,7 +576,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                 processRemoveAuthorizations(annotation.value(), method,
                                             ruleformClass);
             }
-        } else if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
+        } else
+            if (Phantasm.class.isAssignableFrom(method.getParameterTypes()[0])) {
             Class<? extends Phantasm<?>> returnPhantasm = (Class<? extends Phantasm<?>>) method.getParameterTypes()[0];
             Class<?> ruleformClass = Model.getExistentialRuleform(returnPhantasm);
             if (getRuleformClass().equals(ruleformClass)) {
@@ -638,8 +631,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                              (Phantasm<Relationship>) arguments[0],
                                                                              scope));
         } else {
-            throw new IllegalStateException(
-                                            String.format("No such authorization from Product to %s",
+            throw new IllegalStateException(String.format("No such authorization from Product to %s",
                                                           ruleformClass.getSimpleName()));
         }
     }
@@ -681,8 +673,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                               (List<Phantasm<Relationship>>) arguments[0],
                                                                               scope));
         } else {
-            throw new IllegalStateException(
-                                            String.format("No such authorization from Product to %s",
+            throw new IllegalStateException(String.format("No such authorization from Product to %s",
                                                           ruleformClass.getSimpleName()));
         }
     }
@@ -724,8 +715,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                            (List<Phantasm<Relationship>>) arguments[0],
                                                                            scope));
         } else {
-            throw new IllegalStateException(
-                                            String.format("The authorization %s->%s is undefined",
+            throw new IllegalStateException(String.format("The authorization %s->%s is undefined",
                                                           getRuleformClass(),
                                                           ruleformClass));
         }
@@ -754,8 +744,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     @SuppressWarnings("unchecked")
     private void processSetSingular(Method method, Key value) {
         if (method.getParameterCount() != 1) {
-            throw new IllegalArgumentException(
-                                               String.format("Not a valid Relationship setter: %s",
+            throw new IllegalArgumentException(String.format("Not a valid Relationship setter: %s",
                                                              method));
         }
         Class<? extends Phantasm<?>> phantasmToSet = (Class<Phantasm<?>>) method.getParameterTypes()[0];
@@ -804,8 +793,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                                                   (Phantasm<Relationship>) arguments[0],
                                                                                   scope));
         } else {
-            throw new IllegalStateException(
-                                            String.format("No such authorization from Product to %s",
+            throw new IllegalStateException(String.format("No such authorization from Product to %s",
                                                           ruleformClass.getSimpleName()));
         }
     }
@@ -828,11 +816,11 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                             (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
                              Object[] arguments) -> state.getImmediateChild(value.namespace(),
                                                                             value.name(),
-                                                                            (Class<Phantasm<? extends RuleForm>>) method.getReturnType(),
+                                                                            (Class<Phantasm<RuleForm>>) method.getReturnType(),
                                                                             scope));
             } else {
-                processGetSingularAuthorization(method, phantasmReturned,
-                                                value, ruleformClass);
+                processGetSingularAuthorization(method, phantasmReturned, value,
+                                                ruleformClass);
             }
         }
     }

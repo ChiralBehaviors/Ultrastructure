@@ -124,21 +124,20 @@ public class ModelImpl implements Model {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> apply(Phantasm<? extends T> source,
-                                                                                               Class<? extends Phantasm<? extends T>> phantasm) {
+    public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Phantasm<? extends T> source,
+                                                                                Class<R> phantasm) {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm);
-        return (Phantasm<? super T>) definition.construct(source.getRuleform(),
-                                                          this,
-                                                          getCurrentPrincipal().getPrincipal());
+        return (R) definition.construct(source.getRuleform(), this,
+                                        getCurrentPrincipal().getPrincipal());
     }
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.Model#cast(com.chiralbehaviors.CoRE.phantasm.Phantasm, java.lang.Class)
      */
     @Override
-    public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> cast(Phantasm<? extends T> source,
-                                                                                              Class<? extends Phantasm<? extends T>> phantasm) {
-        return (Phantasm<? super T>) wrap(phantasm, source.getRuleform());
+    public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
+                                                                               Class<R> phantasm) {
+        return (R) wrap(phantasm, source.getRuleform());
     }
 
     /* (non-Javadoc)
@@ -146,9 +145,9 @@ public class ModelImpl implements Model {
      */
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
-                                                                               String name,
-                                                                               String description) throws InstantiationException {
+    public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R construct(Class<R> phantasm,
+                                                                                    String name,
+                                                                                    String description) throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm);
         ExistentialRuleform<? extends T, ?> ruleform;
         try {
@@ -163,8 +162,8 @@ public class ModelImpl implements Model {
             throw ex;
         }
         getEntityManager().persist(ruleform);
-        return (Phantasm<? super T>) definition.construct(ruleform, this,
-                                                          getCurrentPrincipal().getPrincipal());
+        return (R) definition.construct(ruleform, this,
+                                        getCurrentPrincipal().getPrincipal());
     }
 
     /* (non-Javadoc)
@@ -474,12 +473,12 @@ public class ModelImpl implements Model {
 
     @Override
     @SuppressWarnings({ "unchecked" })
-    public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> wrap(Class<? extends Phantasm<? extends T>> phantasm,
-                                                                                              ExistentialRuleform<T, ?> ruleform) {
+    public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R wrap(Class<R> phantasm,
+                                                                               ExistentialRuleform<T, ?> ruleform) {
         if (ruleform == null) {
             return null;
         }
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm);
-        return (Phantasm<? super T>) definition.wrap(ruleform, this);
+        return (R) definition.wrap(ruleform, this);
     }
 }

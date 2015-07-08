@@ -153,8 +153,10 @@ public class FacetResource extends TransactionalResource {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
         RuleForm instance = networkedModel.find(existential);
         if (instance == null) {
-            throw new WebApplicationException(String.format("node %s is not found [%s:%s] (%s:%s)",
-                                                            Status.NOT_FOUND));
+            throw new WebApplicationException(String.format("node %s is not found %s (%s)",
+                                                            instance, this,
+                                                            aspect),
+                                              Status.NOT_FOUND);
         }
         Facet<RuleForm, Network> node = new Facet<>(aspect, readOnlyModel,
                                                     uriInfo);
@@ -292,12 +294,11 @@ public class FacetResource extends TransactionalResource {
         List<Map<String, String>> facets = new ArrayList<>();
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
             Map<String, String> ctx = new TreeMap<>();
-            ctx.put("Type Name",
+            ctx.put("typeName",
                     String.format("%s:%s", aspect.getClassifier().getName(),
                                   aspect.getClassification().getName()));
             ctx.put(Constants.ID, Facet.getTypeIri(aspect, uriInfo));
-            ctx.put("All Facet Instances",
-                    Facet.getAllInstancesIri(aspect, uriInfo));
+            ctx.put("allInstances", Facet.getAllInstancesIri(aspect, uriInfo));
             facets.add(ctx);
         }
         return facets;

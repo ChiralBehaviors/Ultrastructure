@@ -19,6 +19,7 @@ import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
+import io.dropwizard.servlets.assets.AssetServlet;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -29,6 +30,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
+import javax.servlet.ServletRegistration.Dynamic;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
@@ -42,6 +44,7 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
+import com.google.common.base.Charsets;
 
 /**
  * @author hhildebrand
@@ -84,6 +87,14 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         // Add URL mapping
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true,
                                       "/*");
+        Dynamic dynamic = environment.admin().addServlet("assets",
+                                                         new AssetServlet(
+                                                                          "/ui",
+                                                                          "/assets/",
+                                                                          "index.html",
+                                                                          Charsets.UTF_8));
+        dynamic.addMapping("/assets/*");
+        dynamic.setInitParameter("useFileMappedBuffer", "false");
         if (configuration.isRandomPort()) {
             ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors().get(0)).setPort(0);
             ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors().get(0)).setPort(0);

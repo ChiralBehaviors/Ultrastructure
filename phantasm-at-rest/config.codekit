@@ -11,6 +11,17 @@
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},
+	"\/src\/main\/resources\/ui\/js\/app.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/app.js",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/min\/app-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
 	"\/src\/main\/resources\/ui\/js\/bower_components\/angular\/angular-csp.css": {
 		"fileType": 16,
 		"ignore": 0,
@@ -96,6 +107,222 @@
 		"randomFootnoteNumbers": 0,
 		"useCompatibilityMode": 0
 		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/bower.json": {
+		"fileType": 524288,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/bower.json",
+		"orderOutput": 0,
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/bower-min.json",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/demo\/demo.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/demo\/demo.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/demo\/demo.html": {
+		"fileType": 8192,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/demo\/demo.html",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/demo\/demo.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/demo\/demo.js",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/demo\/min\/demo-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/json-formatter.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/json-formatter.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/json-formatter.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/json-formatter.js",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/min\/json-formatter-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/json-formatter.min.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/json-formatter.min.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/json-formatter.min.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/json-formatter.min.js",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/dist\/min\/json-formatter.min-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/gulpfile.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/gulpfile.js",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/min\/gulpfile-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/index.html": {
+		"fileType": 8192,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/index.html",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/karma.conf.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/karma.conf.js",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/min\/karma.conf-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/package.json": {
+		"fileType": 524288,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/package.json",
+		"orderOutput": 0,
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/package-min.json",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/README.md": {
+		"criticStyle": 0,
+		"enableFootnotes": 1,
+		"enableLabels": 1,
+		"enableSmartQuotes": 1,
+		"escapeLineBreaks": 0,
+		"fileType": 4096,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/README.md",
+		"maskEmailAddresses": 1,
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/README.html",
+		"outputFormat": 0,
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 0,
+		"parseMetadata": 1,
+		"processHTML": 0,
+		"randomFootnoteNumbers": 0,
+		"useCompatibilityMode": 0
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/screenshot.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 33277,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/screenshot.png",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/screenshot.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/json-formatter.html": {
+		"fileType": 8192,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/json-formatter.html",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/json-formatter.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/json-formatter.js",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/min\/json-formatter-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/json-formatter.less": {
+		"allowInsecureImports": 0,
+		"createSourceMap": 0,
+		"disableJavascript": 0,
+		"fileType": 1,
+		"ieCompatibility": 1,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/json-formatter.less",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/css\/json-formatter.css",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 0,
+		"relativeURLS": 0,
+		"shouldRunAutoprefixer": 0,
+		"shouldRunBless": 0,
+		"strictImports": 0,
+		"strictMath": 0,
+		"strictUnits": 0
+		},
+	"\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/recursion-helper.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/recursion-helper.js",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/bower_components\/json-formatter\/src\/min\/recursion-helper-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/src\/main\/resources\/ui\/js\/controller.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/controller.js",
+		"outputAbbreviatedPath": "\/src\/main\/resources\/ui\/js\/min\/controller-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
 	"\/target\/classes\/ui\/index.html": {
 		"fileType": 8192,
 		"ignore": 0,
@@ -104,6 +331,17 @@
 		"outputAbbreviatedPath": "No Output Path",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
+		},
+	"\/target\/classes\/ui\/js\/app.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/target\/classes\/ui\/js\/app.js",
+		"outputAbbreviatedPath": "\/target\/classes\/ui\/js\/min\/app-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
 		},
 	"\/target\/classes\/ui\/js\/bower_components\/angular\/angular-csp.css": {
 		"fileType": 16,
@@ -189,6 +427,17 @@
 		"processHTML": 0,
 		"randomFootnoteNumbers": 0,
 		"useCompatibilityMode": 0
+		},
+	"\/target\/classes\/ui\/js\/controller.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/target\/classes\/ui\/js\/controller.js",
+		"outputAbbreviatedPath": "\/target\/classes\/ui\/js\/min\/controller-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
 		}
 	},
 "hooks": [

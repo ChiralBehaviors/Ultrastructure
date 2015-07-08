@@ -1,31 +1,14 @@
-myApp.controller('MasterDetailCtrl',
+myApp.controller('JsonController',
     function ($scope, $http) {
-        $scope.selectedCustomer = null;
-
-        $scope.listOfOrders = null;
-
-        $http.get('http://www.iNorthwind.com/Service1.svc/getAllCustomers')
+        $scope.test = 'Hello: "World"';
+        $scope.json = null;
+        $http.get('/json-ld/ruleform/context/Product')
             .success(function (data) {
                 console.log('success!');
-                $scope.listOfCustomers = data.GetAllCustomersResult;
-
-                if ($scope.listOfCustomers.length > 0) {
-                    $scope.selectedCustomer = $scope.listOfCustomers[0].CustomerID;
-
-                    $scope.loadOrders();
-                }
+                $scope.json = data;
             })
             .error(function (data, status, headers, config) {
-                $scope.errorMessage = "Couldn't load list of custoemrs, error # " + status;
+                $scope.errorMessage = "Couldn't load json, error # " + status;
             });
 
-        $scope.loadOrders = function () {
-            $http.get('http://www.iNorthwind.com/Service1.svc/getBasketsForCustomer/' + $scope.selectedCustomer)
-                .success(function (data) {
-                    $scope.listOfOrders = data.GetBasketsForCustomerResult;
-                })
-                .error(function (data, status, headers, config) {
-                    $scope.errorMessage = "Couldn't load the list of Orders, error # " + status;
-                });
-        };
     });

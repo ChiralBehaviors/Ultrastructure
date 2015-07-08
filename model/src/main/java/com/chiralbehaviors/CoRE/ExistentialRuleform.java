@@ -27,6 +27,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
@@ -47,8 +48,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
-        extends Ruleform implements Attributable<AttributeValue<RuleForm>>,
-        Phantasm<RuleForm> {
+        extends Ruleform
+        implements Attributable<AttributeValue<RuleForm>>, Phantasm<RuleForm> {
     public static final String DEDUCE_NEW_NETWORK_RULES_SUFFIX                               = ".deduceNewNetworkRules";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX = ".findClassifiedAttributeAuthorizationsForAttribute";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX               = ".findClassifiedAttributeAuthorizations";
@@ -68,10 +69,12 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     public static final String INSERT_NEW_NETWORK_RULES_SUFFIX                               = ".insertNewNetworkRules";
     public static final String USED_RELATIONSHIPS_SUFFIX                                     = ".getUsedRelationships";
 
-    private static final long  serialVersionUID                                              = 1L;
+    private static final long serialVersionUID = 1L;
 
-    private String             description;
-    private String             name;
+    private String description;
+
+    @NotNull
+    private String name;
 
     public ExistentialRuleform() {
     }
@@ -97,7 +100,8 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
         this.description = description;
     }
 
-    public ExistentialRuleform(String name, String description, Agency updatedBy) {
+    public ExistentialRuleform(String name, String description,
+                               Agency updatedBy) {
         this(name, updatedBy);
         this.description = description;
     }

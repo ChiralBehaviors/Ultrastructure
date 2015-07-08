@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -58,7 +59,9 @@ public interface Model {
             throw new IllegalArgumentException(String.format("%s is not a Phantasm",
                                                              phantasm));
         }
-        return (Class<?>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+
+        Type type = ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        return (Class<?>) type;
     }
 
     /**

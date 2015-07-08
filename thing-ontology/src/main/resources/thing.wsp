@@ -43,6 +43,7 @@ products {
             constraints {
                 one thing1Of: kernel::IsA.Thing2 named thing2
                 one derivedFrom: kernel::IsA.MavenArtifact named by relationship
+                one kernel::HasMember: *Product
             }
         kernel::IsA.Thing2 {aliases URI properties}
             constraints {

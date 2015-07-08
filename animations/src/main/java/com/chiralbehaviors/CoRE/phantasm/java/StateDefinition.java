@@ -104,6 +104,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                                               constraint.toClassifierString(),
                                                               stateInterface));
             }
+            if (classifier.isAny() && classification.isAny()) {
+                continue;
+            }
             if (!networked.isAccessible(ruleform, classifier, classification)) {
                 failures.add(constraint.toFacetString());
             }

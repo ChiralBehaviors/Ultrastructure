@@ -68,6 +68,7 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -891,11 +892,20 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     @Override
     public final void initialize(RuleForm ruleform, Aspect<RuleForm> aspect) {
+        initialize(ruleform, aspect, null);
+    }
+
+    @Override
+    public final void initialize(RuleForm ruleform, Aspect<RuleForm> aspect,
+                                 EditableWorkspace workspace) {
         Agency principal = model.getCurrentPrincipal().getPrincipal();
-        if (getImmediateChildren(aspect.getClassification(),
-                                 aspect.getClassifier()).isEmpty()) {
-            ruleform.link(aspect.getClassifier(), aspect.getClassification(),
-                          principal, principal, em);
+        if (getImmediateChildren(ruleform, aspect.getClassifier()).isEmpty()) {
+            Network link = ruleform.link(aspect.getClassifier(),
+                                         aspect.getClassification(), principal,
+                                         principal, em);
+            if (workspace != null) {
+                workspace.add(link);
+            }
         }
         for (AttributeAuth authorization : getAttributeAuthorizations(aspect)) {
             if (!authorization.getAuthorizedAttribute().getKeyed()
@@ -906,6 +916,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                      principal);
                     attribute.setValue(authorization.getValue());
                     em.persist(attribute);
+                    if (workspace != null) {
+                        workspace.add(attribute);
+                    }
                 }
             }
         }

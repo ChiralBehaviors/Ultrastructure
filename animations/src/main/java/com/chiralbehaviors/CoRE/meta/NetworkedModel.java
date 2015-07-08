@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -465,6 +466,16 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param aspect
      */
     void initialize(RuleForm ruleform, Aspect<RuleForm> aspect);
+
+    /**
+     * Initialize the ruleform with the classified attributes for this aspect,
+     * record new objects in workspace
+     * 
+     * @param ruleform
+     * @param aspect
+     */
+    void initialize(RuleForm ruleform, Aspect<RuleForm> aspect,
+                    EditableWorkspace workspace);
 
     /**
      *

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -141,18 +142,29 @@ public class FacetResource extends TransactionalResource {
 
     @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object getInstance(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                   @PathParam("classifier") String relationship,
-                                                                                                                                   @PathParam("classification") String ruleform,
-                                                                                                                                   @PathParam("instance") String facetInstance,
-                                                                                                                                   @QueryParam("frame") String frame) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getInstance(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                @PathParam("classifier") String relationship,
+                                                                                                                                                @PathParam("classification") String ruleform,
+                                                                                                                                                @PathParam("instance") String facetInstance,
+                                                                                                                                                @QueryParam("frame") String frame) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
-        Map<String, Object> node = createFacetNode(facetInstance, aspect);
+        UUID existential = toUuid(facetInstance);
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        RuleForm instance = networkedModel.find(existential);
+        if (instance == null) {
+            throw new WebApplicationException(String.format("node %s is not found %s (%s)",
+                                                            instance, this,
+                                                            aspect),
+                                              Status.NOT_FOUND);
+        }
+        Facet<RuleForm, Network> node = new Facet<>(aspect, readOnlyModel,
+                                                    uriInfo);
         try {
             return frame != null ? frame(URLDecoder.decode(frame, "UTF-8"),
-                                         node)
-                                 : node;
+                                         node, instance)
+                                 : node.toInstance(instance, readOnlyModel,
+                                                   uriInfo);
         } catch (UnsupportedEncodingException e) {
             throw new WebApplicationException(String.format("frame was not encoded correctly: %s",
                                                             frame),
@@ -234,22 +246,9 @@ public class FacetResource extends TransactionalResource {
         return new Facet(aspect, readOnlyModel, uriInfo).toContext();
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> createFacetNode(String facetInstance,
-                                                                                                                                                     Aspect<RuleForm> aspect) {
-        UUID existential = toUuid(facetInstance);
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
-        RuleForm instance = networkedModel.find(existential);
-        if (instance == null) {
-            throw new WebApplicationException(String.format("node %s is not found [%s:%s] (%s:%s)",
-                                                            Status.NOT_FOUND));
-        }
-        Facet facet = new Facet(aspect, readOnlyModel, uriInfo);
-        return facet.toInstance(instance, readOnlyModel, uriInfo);
-    }
-
-    private Map<String, Object> frame(String frameDescription,
-                                      Map<String, Object> node) {
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> frame(String frameDescription,
+                                                                                                                                           Facet<RuleForm, Network> node,
+                                                                                                                                           RuleForm instance) {
         Map<?, ?> frame;
         try {
             frame = new ObjectMapper().readValue(frameDescription.getBytes(),
@@ -259,15 +258,22 @@ public class FacetResource extends TransactionalResource {
                                                             frameDescription),
                                               Status.BAD_REQUEST);
         }
+        List<Map<String, Object>> graph = traverse(instance, node, frame);
         JsonLdOptions options = new JsonLdOptions();
         options.setEmbed(true);
         try {
-            return JsonLdProcessor.frame(node, frame, options);
+            return JsonLdProcessor.frame(graph, frame, options);
         } catch (JsonLdError e) {
             throw new WebApplicationException(String.format("Invalid frame %s",
                                                             frame),
                                               Status.BAD_REQUEST);
         }
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> traverse(RuleForm instance,
+                                                                                                                                                    Facet<RuleForm, Network> node,
+                                                                                                                                                    Map<?, ?> frame) {
+        return Arrays.asList(node.toInstance(instance, readOnlyModel, uriInfo));
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacetInstances(Aspect<RuleForm> aspect) {
@@ -288,12 +294,11 @@ public class FacetResource extends TransactionalResource {
         List<Map<String, String>> facets = new ArrayList<>();
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
             Map<String, String> ctx = new TreeMap<>();
-            ctx.put("Type Name",
+            ctx.put("typeName",
                     String.format("%s:%s", aspect.getClassifier().getName(),
                                   aspect.getClassification().getName()));
             ctx.put(Constants.ID, Facet.getTypeIri(aspect, uriInfo));
-            ctx.put("All Facet Instances",
-                    Facet.getAllInstancesIri(aspect, uriInfo));
+            ctx.put("allInstances", Facet.getAllInstancesIri(aspect, uriInfo));
             facets.add(ctx);
         }
         return facets;

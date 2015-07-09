@@ -24,9 +24,7 @@
             <column name="updated_by" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="('NOW'::text)::timestamp(6) with time zone" name="version" type="TIMESTAMPTZ">
-                <constraints nullable="false" />
-            </column>
+            <column name="version" type="INT4"/>
         </createTable>
         <rollback>
             <dropTable tableName="agency_product" />

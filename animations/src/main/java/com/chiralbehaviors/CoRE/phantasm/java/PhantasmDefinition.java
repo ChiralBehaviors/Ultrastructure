@@ -46,27 +46,23 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     @SuppressWarnings("unchecked")
     public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm) {
         if (!Phantasm.class.isAssignableFrom(phantasm))
-            throw new IllegalArgumentException(
-                                               String.format("Not a Phantasm: %s",
+            throw new IllegalArgumentException(String.format("Not a Phantasm: %s",
                                                              phantasm));
         this.phantasm = phantasm;
         if (phantasm.getAnnotation(State.class) != null) {
-            StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(
-                                                                            phantasm);
+            StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(phantasm);
             facets.put(phantasm, facet);
             methods.putAll(facet.getMethods());
         }
         for (Class<?> iFace : phantasm.getInterfaces()) {
             if (iFace.getAnnotation(State.class) != null) {
-                StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>(
-                                                                                (Class<Phantasm<RuleForm>>) iFace);
+                StateDefinition<RuleForm> facet = new StateDefinition<RuleForm>((Class<Phantasm<RuleForm>>) iFace);
                 facets.put(iFace, facet);
                 methods.putAll(facet.getMethods());
             }
         }
         if (facets.isEmpty()) {
-            throw new IllegalArgumentException(
-                                               String.format("Require at least one @State annotation on a Phantasm: %s",
+            throw new IllegalArgumentException(String.format("Require at least one @State annotation on a Phantasm: %s",
                                                              phantasm));
         }
     }
@@ -84,6 +80,10 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = (NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?>) model.getNetworkedModel(form);
         for (StateDefinition<RuleForm> facet : facets.values()) {
             for (Aspect<RuleForm> aspect : facet.getAspects(model)) {
+                if (aspect.getClassifier().isAny()
+                    || aspect.getClassification().isAny()) {
+                    continue;
+                }
                 networkedModel.initialize((RuleForm) form, aspect);
             }
         }
@@ -95,8 +95,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         for (StateDefinition<RuleForm> facet : facets.values()) {
             facet.constrain(model, (RuleForm) ruleform);
         }
-        PhantasmTwo<RuleForm> doppelgänger = new PhantasmTwo<RuleForm>(
-                                                                       (RuleForm) ruleform,
+        PhantasmTwo<RuleForm> doppelgänger = new PhantasmTwo<RuleForm>((RuleForm) ruleform,
                                                                        this,
                                                                        model);
         Phantasm<?> proxy = (Phantasm<?>) Proxy.newProxyInstance(phantasm.getClassLoader(),
@@ -108,8 +107,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
                     doppelgänger.invokeDefault(proxy, method, new Object[] {},
                                                facet.getStateInterface());
                 } catch (Throwable e) {
-                    throw new IllegalStateException(
-                                                    String.format("Unable to invoke instantiation: %s",
+                    throw new IllegalStateException(String.format("Unable to invoke instantiation: %s",
                                                                   method.toGenericString()),
                                                     e);
                 }

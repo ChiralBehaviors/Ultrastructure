@@ -401,6 +401,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                                            auth.getChildRelationship()).forEach(child -> array.add(getReference(aspect,
                                                                                                                 child,
                                                                                                                 uriInfo)));
+                node.put(entry.getKey(), array);
+
             } else if (auth.getCardinality() == Cardinality.ONE) {
                 networkedModel.getImmediateChildren(instance,
                                                     auth.getChildRelationship()).forEach(child -> node.put(auth.getName(),

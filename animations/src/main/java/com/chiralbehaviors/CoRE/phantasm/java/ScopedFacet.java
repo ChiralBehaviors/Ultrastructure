@@ -69,14 +69,14 @@ public interface ScopedFacet {
 
             @Override
             public String toClassificationString() {
-                return String.format("%s:%s",
+                return String.format("%s::%s",
                                      facet.classification().namespace(),
                                      facet.classification().name());
             }
 
             @Override
             public String toClassifierString() {
-                return String.format("%s:%s", facet.classifier().namespace(),
+                return String.format("%s::%s", facet.classifier().namespace(),
                                      facet.classifier().name());
             }
         };
@@ -91,7 +91,7 @@ public interface ScopedFacet {
     String toClassifierString();
 
     default String toFacetString() {
-        return String.format("[%s] : [%s]", toClassifierString(),
+        return String.format("[%s|%s]", toClassifierString(),
                              toClassificationString());
     }
 }

@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -58,7 +59,9 @@ public interface Model {
             throw new IllegalArgumentException(String.format("%s is not a Phantasm",
                                                              phantasm));
         }
-        return (Class<?>) ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+
+        Type type = ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+        return (Class<?>) type;
     }
 
     /**
@@ -85,8 +88,8 @@ public interface Model {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> apply(Phantasm<? extends T> source,
-                                                                                        Class<? extends Phantasm<? extends T>> phantasm);
+    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Phantasm<? extends T> source,
+                                                                         Class<R> phantasm);
 
     /**
      * Cast the phantasm to another facet
@@ -95,8 +98,8 @@ public interface Model {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> cast(Phantasm<? extends T> source,
-                                                                                       Class<? extends Phantasm<? extends T>> phantasm);
+    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
+                                                                        Class<R> phantasm);
 
     /**
      * Create a new instance of the phantasm's existential ruleform type using
@@ -107,9 +110,9 @@ public interface Model {
      * @return
      * @throws InstantiationException
      */
-    <T extends ExistentialRuleform<T, ?>> Phantasm<? super T> construct(Class<? extends Phantasm<? extends T>> phantasm,
-                                                                        String name,
-                                                                        String description) throws InstantiationException;
+    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R construct(Class<R> phantasm,
+                                                                             String name,
+                                                                             String description) throws InstantiationException;
 
     /**
      * Execute the function within in the context of the authenticated
@@ -280,7 +283,7 @@ public interface Model {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> wrap(Class<? extends Phantasm<? extends T>> phantasm,
-                                                                                       ExistentialRuleform<T, ?> ruleform);
+    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R wrap(Class<R> phantasm,
+                                                                        ExistentialRuleform<T, ?> ruleform);
 
 }

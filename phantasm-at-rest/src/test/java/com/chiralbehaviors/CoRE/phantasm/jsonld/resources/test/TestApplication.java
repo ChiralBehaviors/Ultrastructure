@@ -37,6 +37,7 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
@@ -52,15 +53,25 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         new TestApplication().run(argv);
     }
 
+    private EntityManagerFactory emf;
     private Environment          environment;
     private Server               jettyServer;
-    private EntityManagerFactory emf;
 
     public TestApplication() {
     }
 
     public int getPort() {
         return ((AbstractNetworkConnector) environment.getApplicationContext().getServer().getConnectors()[0]).getLocalPort();
+    }
+
+    @Override
+    public void initialize(Bootstrap<TestServiceConfiguration> bootstrap) {
+        bootstrap.addBundle(new AssetsBundle("/assets", "/assets"));
+        ObjectMapper objMapper = bootstrap.getObjectMapper();
+        objMapper.registerModule(new CoREModule());
+        Hibernate4Module module = new Hibernate4Module();
+        module.enable(Feature.FORCE_LAZY_LOADING);
+        objMapper.registerModule(module);
     }
 
     /* (non-Javadoc)
@@ -111,14 +122,5 @@ public class TestApplication extends Application<TestServiceConfiguration> {
                 // ignore
             }
         }
-    }
-
-    @Override
-    public void initialize(Bootstrap<TestServiceConfiguration> bootstrap) {
-        ObjectMapper objMapper = bootstrap.getObjectMapper();
-        objMapper.registerModule(new CoREModule());
-        Hibernate4Module module = new Hibernate4Module();
-        module.enable(Feature.FORCE_LAZY_LOADING);
-        objMapper.registerModule(module);
     }
 }

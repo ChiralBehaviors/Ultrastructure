@@ -62,6 +62,7 @@ import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
+import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
@@ -720,10 +721,10 @@ public class WorkspaceImporter {
     private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void loadNetworks(List<EdgeContext> edges,
                                                                                                               NetworkedModel<T, ?, ?, ?> networkedModel) {
         for (EdgeContext edge : edges) {
-            workspace.add(networkedModel.link(resolve(edge.parent),
-                                              resolve(edge.relationship),
-                                              resolve(edge.child),
-                                              model.getCurrentPrincipal().getPrincipal()));
+            networkedModel.initialize(resolve(edge.parent),
+                                      new Aspect<T>(resolve(edge.relationship),
+                                                    resolve(edge.child)),
+                                      workspace);
         }
     }
 

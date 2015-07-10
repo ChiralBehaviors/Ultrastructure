@@ -114,11 +114,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         if (cached != null) {
             return cached;
         }
-        WorkspaceScope scope = new WorkspaceScope(
-                                                  null,
-                                                  new DatabaseBackedWorkspace(
-                                                                              definingProduct,
-                                                                              model));
+        WorkspaceScope scope = new DatabaseBackedWorkspace(definingProduct,
+                                                           model).getScope();
         scopes.put(definingProduct.getId(), scope);
         if (!definingProduct.getId().equals(WellKnownProduct.KERNEL_WORKSPACE.id())) { // special handling of kernel ::sigh::
             for (Product workspace : model.getProductModel().getChildren(definingProduct,

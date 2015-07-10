@@ -49,13 +49,11 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class AbstractModelTest {
-    protected static EntityManager em;
-
+    private static boolean                initialized = false;
+    protected static EntityManager        em;
     protected static EntityManagerFactory emf;
-
-    protected static Kernel kernel;
-
-    protected static Model model;
+    protected static Kernel               kernel;
+    protected static Model                model;
 
     @AfterClass
     public static void afterClass() {
@@ -80,9 +78,12 @@ public class AbstractModelTest {
                 em.close();
             }
         }
-        em = getEntityManager();
-        KernelUtil.clearAndLoadKernel(em);
-        em.close();
+        if (initialized == false) {
+            initialized = true;
+            em = getEntityManager();
+            KernelUtil.clearAndLoadKernel(em);
+            em.close();
+        }
         model = new ModelImpl(emf);
         kernel = model.getKernel();
         em = model.getEntityManager();

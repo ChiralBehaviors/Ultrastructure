@@ -41,21 +41,18 @@ public class SmartMergeTest extends DatabaseTest {
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
         em.persist(core);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.flush();
 
-        Relationship massList = new Relationship(
-                                                 "mass-list",
+        Relationship massList = new Relationship("mass-list",
                                                  "A is a member of the mass list B",
                                                  core);
 
-        Relationship massListOf = new Relationship(
-                                                   "mass-list-of",
+        Relationship massListOf = new Relationship("mass-list-of",
                                                    "A is a mass list that has B as a member",
                                                    core, massList);
 
-        Relationship merged = Util.smartMerge(em, massList, new HashMap<>(1024));
-        em.getTransaction().commit();
+        Relationship merged = Util.smartMerge(em, massList,
+                                              new HashMap<>(1024));
         assertEquals(massList, merged);
         assertEquals(massListOf, merged.getInverse());
         assertEquals(core, merged.getUpdatedBy());

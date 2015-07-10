@@ -21,14 +21,12 @@
 package com.chiralbehaviors.CoRE.test;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,7 +37,6 @@ import org.junit.BeforeClass;
  * 
  */
 abstract public class DatabaseTest {
-    private static final String           SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
     protected static Connection           connection;
     protected static EntityManager        em;
     protected static EntityManagerFactory emf;
@@ -60,17 +57,6 @@ abstract public class DatabaseTest {
         emf = Persistence.createEntityManagerFactory("CoRE", properties);
         em = emf.createEntityManager();
         em.getTransaction().begin();
-        connection = em.unwrap(SessionImpl.class).connection();
-        connection.setAutoCommit(false);
-        connection.createStatement().execute("TRUNCATE TABLE ruleform.agency CASCADE");
-        ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
-        while (r.next()) {
-            String table = r.getString("name");
-            String query = String.format("TRUNCATE TABLE %s CASCADE", table);
-            connection.createStatement().execute(query);
-        }
-        r.close();
-        em.getTransaction().commit();
     }
 
     /**

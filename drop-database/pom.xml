@@ -31,9 +31,9 @@
                         <artifactId>sql-maven-plugin</artifactId>
                         <configuration>
                             <driver>org.postgresql.Driver</driver>
-                            <url>jdbc:postgresql://${testing.db.server}:${testing.db.port}/postgres</url>
-                            <username>${testing.db.login}</username>
-                            <password>${testing.db.password}</password>
+                            <url>jdbc:postgresql://${dba.db.server}:${dba.db.port}/${dba.db.database}</url>
+                            <username>${dba.db.login}</username>
+                            <password>${dba.db.password}</password>
                             <autocommit>true</autocommit>
                         </configuration>
                         <dependencies>

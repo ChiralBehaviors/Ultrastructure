@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -32,8 +33,6 @@ import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import org.hibernate.internal.SessionImpl;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.WellKnownObject;
@@ -82,7 +81,7 @@ public class Bootstrap {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         EntityManager em = emf.createEntityManager();
-        Bootstrap bootstrap = new Bootstrap(em);
+        Bootstrap bootstrap = new Bootstrap(em, properties);
         bootstrap.clear();
         em.getTransaction().begin();
         bootstrap.bootstrap();
@@ -95,8 +94,14 @@ public class Bootstrap {
     private final Connection    connection;
     private final EntityManager em;
 
-    public Bootstrap(EntityManager em) throws SQLException {
-        connection = em.unwrap(SessionImpl.class).connection();
+    public Bootstrap(EntityManager em,
+                     Properties properties) throws SQLException {
+        Properties connectionProps = new Properties();
+        connectionProps.put("user", properties.get("dba.username"));
+        connectionProps.put("password", properties.get("dba.password"));
+        connection = DriverManager.getConnection(properties.getProperty("dba.url"),
+                                                 connectionProps);
+        connection.setAutoCommit(false);
         connection.setAutoCommit(false);
         this.em = em;
     }
@@ -132,7 +137,7 @@ public class Bootstrap {
     }
 
     public void clear() throws SQLException {
-        KernelUtil.clear(em);
+        KernelUtil.clear(connection);
     }
 
     public void insert(WellKnownAttribute wko) throws SQLException {

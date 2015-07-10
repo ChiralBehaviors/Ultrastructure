@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.test;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -29,7 +30,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -60,8 +60,12 @@ abstract public class DatabaseTest {
         properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
         emf = Persistence.createEntityManagerFactory("CoRE", properties);
         em = emf.createEntityManager();
-        em.getTransaction().begin();
-        connection = em.unwrap(SessionImpl.class).connection();
+        Properties connectionProps = new Properties();
+        connectionProps.put("user", properties.get("dba.username"));
+        connectionProps.put("password", properties.get("dba.password"));
+        connection = DriverManager.getConnection(properties.getProperty("dba.url"),
+                                                 connectionProps);
+        connection.setAutoCommit(false);
         alterAllTriggers(false);
         ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
         while (r.next()) {
@@ -71,15 +75,16 @@ abstract public class DatabaseTest {
         }
         r.close();
         alterAllTriggers(true);
-        em.getTransaction().commit();
+        connection.commit();
+        connection.close();
     }
 
     protected static void alterAllTriggers(boolean enable) throws SQLException {
         ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
         while (r.next()) {
             String table = r.getString("name");
-            String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
-                                         table, enable ? "ENABLE" : "DISABLE");
+            String query = String.format("ALTER TABLE %s %s TRIGGER ALL", table,
+                                         enable ? "ENABLE" : "DISABLE");
             connection.createStatement().execute(query);
         }
         r.close();
@@ -89,14 +94,18 @@ abstract public class DatabaseTest {
      * Initiates a database transaction.
      */
     protected static void beginTransaction() {
-        em.getTransaction().begin();
+        if (!em.getTransaction().isActive()) {
+            em.getTransaction().begin();
+        }
     }
 
     /**
      * Commits the current transaction, if it is still active.
      */
     protected static final void commitTransaction() {
-        em.getTransaction().commit();
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().commit();
+        }
     }
 
     @After

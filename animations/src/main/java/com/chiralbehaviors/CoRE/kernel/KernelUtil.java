@@ -28,8 +28,6 @@ import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.internal.SessionImpl;
-
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -55,15 +53,18 @@ public class KernelUtil {
 
     public static final String KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
 
-    public static final String SELECT_TABLE              = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    public static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    public static void clear(EntityManager em) throws SQLException {
-        em.getTransaction().begin();
+    public static void loadKernel(EntityManager em) throws IOException {
+        loadKernel(em,
+                   KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE));
+    }
+
+    public static void clear(Connection connection) throws SQLException {
         boolean committed = false;
-        Connection connection = em.unwrap(SessionImpl.class).connection();
         try {
             connection.setAutoCommit(false);
-            alterTriggers(connection, false);
+            // alterTriggers(connection, false);
             ResultSet r = connection.createStatement().executeQuery(KernelUtil.SELECT_TABLE);
             while (r.next()) {
                 String table = r.getString("name");
@@ -71,41 +72,29 @@ public class KernelUtil {
                 connection.createStatement().execute(query);
             }
             r.close();
-            alterTriggers(connection, true);
-            em.getTransaction().commit();
+            // KernelUtil.alterTriggers(connection, true);
+            connection.commit();
             committed = true;
         } finally {
             if (!committed) {
                 connection.rollback();
-                em.getTransaction().rollback();
             }
         }
     }
 
-    public static void clearAndLoadKernel(EntityManager em)
-                                                           throws SQLException,
-                                                           IOException {
-        clear(em);
-        loadKernel(em);
-    }
-
-    public static void loadKernel(EntityManager em) throws IOException {
-        loadKernel(em,
-                   KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE));
-    }
-
-    public static void loadKernel(EntityManager em, InputStream is)
-                                                                   throws IOException {
-        em.getTransaction().begin();
+    public static void loadKernel(EntityManager em,
+                                  InputStream is) throws IOException {
+        if (!em.getTransaction().isActive()) {
+            em.getTransaction().begin();
+        }
         WorkspaceSnapshot workspace = rehydrateKernel(is);
         workspace.retarget(em);
         em.getTransaction().commit();
     }
 
-    private static WorkspaceSnapshot rehydrateKernel(InputStream is)
-                                                                    throws IOException,
-                                                                    JsonParseException,
-                                                                    JsonMappingException {
+    private static WorkspaceSnapshot rehydrateKernel(InputStream is) throws IOException,
+                                                                     JsonParseException,
+                                                                     JsonMappingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
         Hibernate4Module module = new Hibernate4Module();
@@ -116,21 +105,22 @@ public class KernelUtil {
         return workspace;
     }
 
-    static void alterTriggers(Connection connection, boolean enable)
-                                                                    throws SQLException {
-        for (String table : new String[] { "ruleform.agency",
-                "ruleform.product", "ruleform.location" }) {
-            String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
-                                         table, enable ? "ENABLE" : "DISABLE");
-            connection.createStatement().execute(query);
-        }
+    public static void alterTriggers(Connection connection,
+                                     boolean enable) throws SQLException {
         ResultSet r = connection.createStatement().executeQuery(KernelUtil.SELECT_TABLE);
         while (r.next()) {
             String table = r.getString("name");
-            String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
-                                         table, enable ? "ENABLE" : "DISABLE");
+            String query = String.format("ALTER TABLE %s %s TRIGGER ALL", table,
+                                         enable ? "ENABLE" : "DISABLE");
             connection.createStatement().execute(query);
         }
         r.close();
+    }
+
+    public static void clearAndLoadKernel(EntityManager em,
+                                          Connection connection) throws SQLException,
+                                                                 IOException {
+        clear(connection);
+        loadKernel(em);
     }
 }

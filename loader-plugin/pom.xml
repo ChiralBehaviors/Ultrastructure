@@ -78,11 +78,11 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <loader>
-                                        <dbaServer>${testing.db.server}</dbaServer>
-                                        <dbaPort>${testing.db.port}</dbaPort>
-                                        <dbaDb>${testing.db.database}</dbaDb>
-                                        <dbaUsername>${testing.db.login}</dbaUsername>
-                                        <dbaPassword>${testing.db.password}</dbaPassword>
+                                        <dbaServer>${dba.db.server}</dbaServer>
+                                        <dbaPort>${dba.db.port}</dbaPort>
+                                        <dbaDb>${dba.db.database}</dbaDb>
+                                        <dbaUsername>${dba.db.login}</dbaUsername>
+                                        <dbaPassword>${dba.db.password}</dbaPassword>
 
                                         <coreServer>${db.server}</coreServer>
                                         <corePort>${db.port}</corePort>

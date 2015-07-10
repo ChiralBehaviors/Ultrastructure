@@ -24,11 +24,12 @@
 
     <changeSet id="create-database" author="hhildebrand" runInTransaction="false">
         <sql><![CDATA[
-			CREATE ROLE core;
-			ALTER ROLE core WITH SUPERUSER NOINHERIT CREATEROLE NOCREATEDB LOGIN PASSWORD 'password'; --'md5810605c085da5d85eee133466b57fabd';  -- password is "password"
+			CREATE ROLE core WITH NOINHERIT CREATEROLE LOGIN PASSWORD 'password'; --'md5810605c085da5d85eee133466b57fabd';  -- password is "password"
+            
 			COMMENT ON ROLE core IS 'Owning role of the CoRE Ultra-Structure database';
 			ALTER ROLE core SET search_path TO ruleform, public, readable;
-			CREATE DATABASE core OWNER core ENCODING 'UTF8';
+            CREATE DATABASE core ENCODING 'UTF8';
+            ALTER DATABASE core OWNER TO core;
             ]]>
         </sql>
     </changeSet>

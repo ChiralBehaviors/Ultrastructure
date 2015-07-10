@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -33,6 +32,8 @@ import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
+import org.hibernate.internal.SessionImpl;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.WellKnownObject;
@@ -96,18 +97,12 @@ public class Bootstrap {
 
     public Bootstrap(EntityManager em,
                      Properties properties) throws SQLException {
-        Properties connectionProps = new Properties();
-        connectionProps.put("user", properties.get("dba.username"));
-        connectionProps.put("password", properties.get("dba.password"));
-        connection = DriverManager.getConnection(properties.getProperty("dba.url"),
-                                                 connectionProps);
-        connection.setAutoCommit(false);
+        connection = em.unwrap(SessionImpl.class).connection();
         connection.setAutoCommit(false);
         this.em = em;
     }
 
     public void bootstrap() throws SQLException {
-        KernelUtil.alterTriggers(connection, false);
         for (WellKnownAgency wko : WellKnownAgency.values()) {
             insert(wko);
         }
@@ -132,12 +127,11 @@ public class Bootstrap {
         for (WellKnownUnit wko : WellKnownUnit.values()) {
             insert(wko);
         }
-        KernelUtil.alterTriggers(connection, true);
         constructKernelWorkspace();
     }
 
     public void clear() throws SQLException {
-        KernelUtil.clear(connection);
+        KernelUtil.clear(em);
     }
 
     public void insert(WellKnownAttribute wko) throws SQLException {

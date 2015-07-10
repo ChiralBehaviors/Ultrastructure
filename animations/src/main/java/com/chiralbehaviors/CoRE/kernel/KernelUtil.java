@@ -28,6 +28,8 @@ import java.sql.SQLException;
 
 import javax.persistence.EntityManager;
 
+import org.hibernate.internal.SessionImpl;
+
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -60,24 +62,28 @@ public class KernelUtil {
                    KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE));
     }
 
-    public static void clear(Connection connection) throws SQLException {
+    public static void clear(EntityManager em) throws SQLException {
         boolean committed = false;
+        Connection connection = em.unwrap(SessionImpl.class).connection();
+        em.getTransaction().begin();
         try {
             connection.setAutoCommit(false);
-            // alterTriggers(connection, false);
+            connection.createStatement().execute("TRUNCATE TABLE ruleform.agency CASCADE");
             ResultSet r = connection.createStatement().executeQuery(KernelUtil.SELECT_TABLE);
             while (r.next()) {
                 String table = r.getString("name");
-                String query = String.format("DELETE FROM %s", table);
+                String query = String.format("TRUNCATE TABLE %s CASCADE",
+                                             table);
                 connection.createStatement().execute(query);
             }
             r.close();
-            // KernelUtil.alterTriggers(connection, true);
             connection.commit();
+            em.getTransaction().commit();
             committed = true;
         } finally {
             if (!committed) {
                 connection.rollback();
+                em.getTransaction().rollback();
             }
         }
     }
@@ -105,22 +111,9 @@ public class KernelUtil {
         return workspace;
     }
 
-    public static void alterTriggers(Connection connection,
-                                     boolean enable) throws SQLException {
-        ResultSet r = connection.createStatement().executeQuery(KernelUtil.SELECT_TABLE);
-        while (r.next()) {
-            String table = r.getString("name");
-            String query = String.format("ALTER TABLE %s %s TRIGGER ALL", table,
-                                         enable ? "ENABLE" : "DISABLE");
-            connection.createStatement().execute(query);
-        }
-        r.close();
-    }
-
-    public static void clearAndLoadKernel(EntityManager em,
-                                          Connection connection) throws SQLException,
-                                                                 IOException {
-        clear(connection);
+    public static void clearAndLoadKernel(EntityManager em) throws SQLException,
+                                                            IOException {
+        clear(em);
         loadKernel(em);
     }
 }

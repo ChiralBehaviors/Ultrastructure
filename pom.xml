@@ -43,6 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <core.java.login>core_java</core.java.login>
         <core.java.password>password</core.java.password>
+        <superuser.role>SUPERUSER</superuser.role>
 
         <dba.db.database>postgres</dba.db.database>
         <dba.db.server>127.0.0.1</dba.db.server>

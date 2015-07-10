@@ -62,7 +62,7 @@ import com.hellblazer.utils.Tuple;
  */
 public class JobModelTest extends AbstractModelTest {
 
-    private static JobModel        jobModel;
+    private static JobModel jobModel;
 
     private static OrderProcessing scenario;
 
@@ -111,15 +111,13 @@ public class JobModelTest extends AbstractModelTest {
         Product bento = new Product("Tonkatsu Bento Box", kernel.getCore());
         em.persist(bento);
 
-        StatusCodeSequencing sequence = new StatusCodeSequencing(
-                                                                 kiki,
+        StatusCodeSequencing sequence = new StatusCodeSequencing(kiki,
                                                                  startState,
                                                                  delivered,
                                                                  kernel.getCore());
         em.persist(sequence);
 
-        StatusCodeSequencing childSequence = new StatusCodeSequencing(
-                                                                      shipping,
+        StatusCodeSequencing childSequence = new StatusCodeSequencing(shipping,
                                                                       shipState,
                                                                       delivered,
                                                                       kernel.getCore());
@@ -301,8 +299,7 @@ public class JobModelTest extends AbstractModelTest {
                     kernel.getCore(), em);
 
         List<Tuple<StatusCode, StatusCode>> sequencings = new ArrayList<>();
-        sequencings.add(new Tuple<StatusCode, StatusCode>(
-                                                          scenario.getAvailable(),
+        sequencings.add(new Tuple<StatusCode, StatusCode>(scenario.getAvailable(),
                                                           scenario.getCompleted()));
         model.getJobModel().createStatusCodeSequencings(service, sequencings,
                                                         kernel.getCore());
@@ -310,8 +307,7 @@ public class JobModelTest extends AbstractModelTest {
                                                         sequencings,
                                                         kernel.getCore());
 
-        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
-                                                                                           service,
+        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(service,
                                                                                            scenario.getAvailable(),
                                                                                            childService,
                                                                                            scenario.getAvailable(),
@@ -345,43 +341,39 @@ public class JobModelTest extends AbstractModelTest {
     public void testJobChronologyOnStatusUpdate() throws Exception {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
-        alterTriggers(false);
-        try {
-            Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
-                                                              kernel.getCore());
-            order.setAssignTo(scenario.getOrderFullfillment());
-            order.setProduct(scenario.getABC486());
-            order.setDeliverTo(scenario.getRSB225());
-            order.setDeliverFrom(scenario.getFactory1());
-            order.setRequester(scenario.getGeorgetownUniversity());
-            jobModel.changeStatus(order, scenario.getAvailable(),
-                                  kernel.getCore(), "Test transition");
-            em.persist(order);
-            em.flush();
-            em.refresh(order);
-            List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(String.format("Invalid number of chronologies: %s",
-                                       chronologies), 2, chronologies.size());
-            List<String> fieldErrors = verifyChronologyFields(order,
-                                                              chronologies.get(1));
+        Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
+                                                          kernel.getCore());
+        order.setAssignTo(scenario.getOrderFullfillment());
+        order.setProduct(scenario.getABC486());
+        order.setDeliverTo(scenario.getRSB225());
+        order.setDeliverFrom(scenario.getFactory1());
+        order.setRequester(scenario.getGeorgetownUniversity());
+        jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
+                              "Test transition");
+        em.persist(order);
+        em.flush();
+        em.refresh(order);
+        List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
+        assertEquals(String.format("Invalid number of chronologies: %s",
+                                   chronologies),
+                     2, chronologies.size());
+        List<String> fieldErrors = verifyChronologyFields(order,
+                                                          chronologies.get(1));
 
-            assertEquals(fieldErrors.toString(), 0, fieldErrors.size());
-            model.getJobModel().changeStatus(order, scenario.getActive(),
-                                             kernel.getCore(), null);
-            em.flush();
-            chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(3, chronologies.size());
-            for (JobChronology c : chronologies) {
-                fieldErrors = verifyChronologyFields(order, c);
-                if (fieldErrors == null || fieldErrors.size() == 0) {
-                    break;
-                }
+        assertEquals(fieldErrors.toString(), 0, fieldErrors.size());
+        model.getJobModel().changeStatus(order, scenario.getActive(),
+                                         kernel.getCore(), null);
+        em.flush();
+        chronologies = model.getJobModel().getChronologyForJob(order);
+        assertEquals(3, chronologies.size());
+        for (JobChronology c : chronologies) {
+            fieldErrors = verifyChronologyFields(order, c);
+            if (fieldErrors == null || fieldErrors.size() == 0) {
+                break;
             }
-            System.out.println(String.format("Errors: %s", fieldErrors));
-            assertEquals(0, fieldErrors.size());
-        } finally {
-            alterTriggers(true);
         }
+        System.out.println(String.format("Errors: %s", fieldErrors));
+        assertEquals(0, fieldErrors.size());
     }
 
     @Test
@@ -390,7 +382,8 @@ public class JobModelTest extends AbstractModelTest {
         Product pushit = new Product("Pushit Service", null, kernel.getCore());
         em.persist(pushit);
 
-        Product shoveit = new Product("Shoveit Service", null, kernel.getCore());
+        Product shoveit = new Product("Shoveit Service", null,
+                                      kernel.getCore());
         em.persist(shoveit);
 
         Product pullIt = new Product("Pullit Service", null, kernel.getCore());
@@ -411,14 +404,12 @@ public class JobModelTest extends AbstractModelTest {
         p.setChildService(shoveit);
         em.persist(p);
         model.getJobModel().createStatusCodeChain(pushit,
-                                                  new StatusCode[] {
-                                                          pushingMe,
-                                                          shovingMe,
-                                                          scenario.getCompleted() },
+                                                  new StatusCode[] { pushingMe,
+                                                                     shovingMe,
+                                                                     scenario.getCompleted() },
                                                   kernel.getCore());
 
-        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
-                                                                                         pushit,
+        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(pushit,
                                                                                          pushingMe,
                                                                                          shovingMe,
                                                                                          kernel.getCore());
@@ -466,8 +457,10 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(kernel.getAnyAgency(), protocols.get(1).getRequester());
         assertEquals(kernel.getAnyProduct(), protocols.get(0).getProduct());
         assertEquals(kernel.getAnyProduct(), protocols.get(1).getProduct());
-        assertEquals(kernel.getAnyLocation(), protocols.get(0).getDeliverFrom());
-        assertEquals(kernel.getAnyLocation(), protocols.get(1).getDeliverFrom());
+        assertEquals(kernel.getAnyLocation(),
+                     protocols.get(0).getDeliverFrom());
+        assertEquals(kernel.getAnyLocation(),
+                     protocols.get(1).getDeliverFrom());
         assertEquals(kernel.getAnyLocation(), protocols.get(0).getDeliverTo());
         assertEquals(kernel.getAnyLocation(), protocols.get(1).getDeliverTo());
         assertEquals(scenario.getFactory1Agency(),
@@ -475,10 +468,13 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(scenario.getFactory1Agency(),
                      protocols.get(1).getChildAssignTo());
         if (protocols.get(0).getChildService().equals(scenario.getPick())) {
-            assertEquals(scenario.getShip(), protocols.get(1).getChildService());
+            assertEquals(scenario.getShip(),
+                         protocols.get(1).getChildService());
         } else {
-            assertEquals(scenario.getShip(), protocols.get(0).getChildService());
-            assertEquals(scenario.getPick(), protocols.get(1).getChildService());
+            assertEquals(scenario.getShip(),
+                         protocols.get(0).getChildService());
+            assertEquals(scenario.getPick(),
+                         protocols.get(1).getChildService());
         }
 
         job = model.getJobModel().newInitializedJob(scenario.getPrintPurchaseOrder(),
@@ -674,15 +670,13 @@ public class JobModelTest extends AbstractModelTest {
                                                 kernel.getCore());
         em.persist(takingNames);
 
-        StatusCodeSequencing sequence = new StatusCodeSequencing(
-                                                                 service,
+        StatusCodeSequencing sequence = new StatusCodeSequencing(service,
                                                                  kickingAss,
                                                                  takingNames,
                                                                  kernel.getCore());
         em.persist(sequence);
 
-        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
-                                                                                         service,
+        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(service,
                                                                                          kickingAss,
                                                                                          takingNames,
                                                                                          kernel.getCore());
@@ -710,7 +704,8 @@ public class JobModelTest extends AbstractModelTest {
         Product pushit = new Product("Pushit Service", null, kernel.getCore());
         em.persist(pushit);
 
-        Product shoveit = new Product("shoveit Service", null, kernel.getCore());
+        Product shoveit = new Product("shoveit Service", null,
+                                      kernel.getCore());
         em.persist(shoveit);
 
         Product pullit = new Product("Pullit Service", null, kernel.getCore());
@@ -737,26 +732,24 @@ public class JobModelTest extends AbstractModelTest {
 
         model.getJobModel().createStatusCodeChain(pushit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe },
+                                                                     shovingMe },
                                                   kernel.getCore());
         model.getJobModel().createStatusCodeChain(shoveit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe },
+                                                                     shovingMe },
                                                   kernel.getCore());
         model.getJobModel().createStatusCodeChain(pullit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe },
+                                                                     shovingMe },
                                                   kernel.getCore());
 
-        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
-                                                                                           shoveit,
+        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(shoveit,
                                                                                            shovingMe,
                                                                                            pullit,
                                                                                            shovingMe,
                                                                                            kernel.getCore());
         em.persist(auth);
-        ProductParentSequencingAuthorization auth2 = new ProductParentSequencingAuthorization(
-                                                                                              shoveit,
+        ProductParentSequencingAuthorization auth2 = new ProductParentSequencingAuthorization(shoveit,
                                                                                               shovingMe,
                                                                                               pushit,
                                                                                               shovingMe,
@@ -803,10 +796,10 @@ public class JobModelTest extends AbstractModelTest {
      * @throws InvocationTargetException
      */
     private List<String> verifyChronologyFields(Job job,
-                                                JobChronology jobChronology)
-                                                                            throws Exception {
+                                                JobChronology jobChronology) throws Exception {
         String[] fieldsToMatch = new String[] { "status", "requester",
-                "assignTo", "deliverFrom", "deliverTo" };
+                                                "assignTo", "deliverFrom",
+                                                "deliverTo" };
         List<String> unmatchedFields = new LinkedList<>();
         if (!jobChronology.getJob().equals(job)) {
             unmatchedFields.add("job");
@@ -828,9 +821,9 @@ public class JobModelTest extends AbstractModelTest {
                 System.out.println(String.format("%s: job: %s, chronology: %s",
                                                  field,
                                                  jobRf == null ? "null"
-                                                              : jobRf.getName(),
+                                                               : jobRf.getName(),
                                                  chronoRf == null ? "null"
-                                                                 : chronoRf.getName()));
+                                                                  : chronoRf.getName()));
                 unmatchedFields.add(field);
             }
         }

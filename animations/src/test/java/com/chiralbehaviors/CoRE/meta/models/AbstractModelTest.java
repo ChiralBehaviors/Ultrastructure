@@ -24,9 +24,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -52,10 +49,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class AbstractModelTest {
-    private static Connection connection;
-
-    private static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-
     protected static EntityManager em;
 
     protected static EntityManagerFactory emf;
@@ -88,7 +81,7 @@ public class AbstractModelTest {
             }
         }
         em = getEntityManager();
-        KernelUtil.clearAndLoadKernel(em, connection);
+        KernelUtil.clearAndLoadKernel(em);
         em.close();
         model = new ModelImpl(emf);
         kernel = model.getKernel();
@@ -106,12 +99,6 @@ public class AbstractModelTest {
                                              properties.getProperty("javax.persistence.jdbc.url")));
             emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                          properties);
-            Properties connectionProps = new Properties();
-            connectionProps.put("user", properties.get("dba.username"));
-            connectionProps.put("password", properties.get("dba.password"));
-            connection = DriverManager.getConnection(properties.getProperty("dba.url"),
-                                                     connectionProps);
-            connection.setAutoCommit(false);
         }
         EntityManager em = emf.createEntityManager();
         return em;
@@ -132,16 +119,4 @@ public class AbstractModelTest {
             }
         }
     }
-
-    protected void alterTriggers(boolean enable) throws SQLException {
-        ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
-        while (r.next()) {
-            String table = r.getString("name");
-            String query = String.format("ALTER TABLE %s %s TRIGGER ALL", table,
-                                         enable ? "ENABLE" : "DISABLE");
-            connection.createStatement().execute(query);
-        }
-        r.close();
-    }
-
 }

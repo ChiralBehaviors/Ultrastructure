@@ -55,22 +55,20 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     @Override
     public WorkspaceScope createWorkspace(Product definingProduct,
                                           Agency updatedBy) {
-        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(
-                                                                        definingProduct,
+        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
                                                                         model);
         workspace.add(definingProduct);
         workspace.add(model.getProductModel().link(definingProduct,
                                                    model.getKernel().getIsA(),
                                                    model.getKernel().getWorkspace(),
                                                    updatedBy));
-        Aspect<Product> aspect = new Aspect<Product>(
-                                                     model.getKernel().getIsA(),
+        Aspect<Product> aspect = new Aspect<Product>(model.getKernel().getIsA(),
                                                      model.getKernel().getWorkspace());
         model.getProductModel().initialize(definingProduct, aspect);
         model.getProductModel().getAttributesClassifiedBy(definingProduct,
                                                           aspect).forEach(attribute -> {
-                                                                              workspace.add(attribute);
-                                                                          });
+                                                              workspace.add(attribute);
+                                                          });
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         return scope;
@@ -114,11 +112,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         if (cached != null) {
             return cached;
         }
-        WorkspaceScope scope = new WorkspaceScope(
-                                                  null,
-                                                  new DatabaseBackedWorkspace(
-                                                                              definingProduct,
-                                                                              model));
+        WorkspaceScope scope = new DatabaseBackedWorkspace(definingProduct,
+                                                           model).getScope();
         scopes.put(definingProduct.getId(), scope);
         if (!definingProduct.getId().equals(WellKnownProduct.KERNEL_WORKSPACE.id())) { // special handling of kernel ::sigh::
             for (Product workspace : model.getProductModel().getChildren(definingProduct,

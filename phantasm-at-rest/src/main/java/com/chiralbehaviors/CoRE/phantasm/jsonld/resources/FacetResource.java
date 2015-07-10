@@ -46,6 +46,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.models.AttributeModelImpl;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
@@ -89,7 +90,7 @@ public class FacetResource extends TransactionalResource {
 
     @Path("{ruleform-type}/{classifier}/{classification}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getAllInstances(@PathParam("ruleform-type") String ruleformType,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> getAllInstances(@PathParam("ruleform-type") String ruleformType,
                                                                                                                                                           @PathParam("classifier") String relationship,
                                                                                                                                                           @PathParam("classification") String ruleform) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
@@ -118,7 +119,7 @@ public class FacetResource extends TransactionalResource {
 
     @Path("{ruleform-type}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacets(@PathParam("ruleform-type") String ruleformType) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacets(@PathParam("ruleform-type") String ruleformType) {
         switch (ruleformType) {
             case "Agency":
                 return getFacets(readOnlyModel.getAgencyModel());
@@ -256,18 +257,12 @@ public class FacetResource extends TransactionalResource {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> traverse(RuleForm instance,
-                                                                                                                                                    Facet<RuleForm, Network> node,
-                                                                                                                                                    Map<?, ?> frame) {
-        return Arrays.asList(node.toInstance(instance, readOnlyModel, uriInfo));
-    }
-
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacetInstances(Aspect<RuleForm> aspect) {
-        List<Map<String, String>> facets = new ArrayList<>();
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> getFacetInstances(Aspect<RuleForm> aspect) {
+        List<Map<String, Object>> facets = new ArrayList<>();
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
         for (RuleForm ruleform : networkedModel.getChildren(aspect.getClassification(),
                                                             aspect.getClassifier().getInverse())) {
-            Map<String, String> ctx = new TreeMap<>();
+            Map<String, Object> ctx = new TreeMap<>();
             ctx.put(Constants.CONTEXT, Facet.getContextIri(aspect, uriInfo));
             ctx.put(Constants.ID, Facet.getNodeIri(aspect, ruleform, uriInfo));
             ctx.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
@@ -276,10 +271,17 @@ public class FacetResource extends TransactionalResource {
         return facets;
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, String>> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        List<Map<String, String>> facets = new ArrayList<>();
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        Map<String, Object> result = new TreeMap<>();
+        Map<String, Object> terms = new TreeMap<>();
+        terms.put("allInstances", Constants.ID);
+        terms.put("typeName",
+                  AttributeModelImpl.HTTP_WWW_W3_ORG_2001_XML_SCHEMA_TEXT);
+        result.put(Constants.CONTEXT, terms);
+        List<Map<String, Object>> facets = new ArrayList<>();
+        result.put(Constants.GRAPH, facets);
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
-            Map<String, String> ctx = new TreeMap<>();
+            Map<String, Object> ctx = new TreeMap<>();
             ctx.put("typeName",
                     String.format("%s:%s", aspect.getClassifier().getName(),
                                   aspect.getClassification().getName()));
@@ -287,6 +289,12 @@ public class FacetResource extends TransactionalResource {
             ctx.put("allInstances", Facet.getAllInstancesIri(aspect, uriInfo));
             facets.add(ctx);
         }
-        return facets;
+        return result;
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> traverse(RuleForm instance,
+                                                                                                                                                    Facet<RuleForm, Network> node,
+                                                                                                                                                    Map<?, ?> frame) {
+        return Arrays.asList(node.toInstance(instance, readOnlyModel, uriInfo));
     }
 }

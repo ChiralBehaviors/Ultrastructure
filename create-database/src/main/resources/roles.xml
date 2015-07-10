@@ -44,7 +44,6 @@
 
     <changeSet id="6" author="hhildebrand">
         <sql><![CDATA[
-            GRANT CREATE ON DATABASE core TO core;
             GRANT core_users TO core_read_only GRANTED BY ${dba.db.login};
             GRANT core_users TO core_read_write GRANTED BY ${dba.db.login};
             GRANT core_read_write TO core_java GRANTED BY ${dba.db.login};

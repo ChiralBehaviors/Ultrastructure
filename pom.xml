@@ -36,6 +36,7 @@
     </scm>
 
     <properties>
+        <db.context>local</db.context>
         <dropwizard.version>0.8.2</dropwizard.version>
         <postgresql.driver.version>9.4-1201-jdbc41</postgresql.driver.version>
         <jackson.version>2.5.1</jackson.version>
@@ -43,15 +44,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <core.java.login>core_java</core.java.login>
         <core.java.password>password</core.java.password>
+        <superuser.role>SUPERUSER</superuser.role>
 
-        <testing.db.database>postgres</testing.db.database>
-        <testing.db.server>127.0.0.1</testing.db.server>
-        <testing.db.port>5432</testing.db.port>
-        <testing.db.login>postgres</testing.db.login>
-        <testing.db.password>postgres</testing.db.password>
+        <dba.db.database>postgres</dba.db.database>
+        <dba.db.server>127.0.0.1</dba.db.server>
+        <dba.db.port>5432</dba.db.port>
+        <dba.db.login>postgres</dba.db.login>
+        <dba.db.password>postgres</dba.db.password>
 
-        <db.server>${testing.db.server}</db.server>
-        <db.port>${testing.db.port}</db.port>
+        <db.server>${dba.db.server}</db.server>
+        <db.port>${dba.db.port}</db.port>
         <db.database>core</db.database>
         <db.login>core</db.login>
         <db.password>password</db.password>

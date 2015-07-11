@@ -25,10 +25,10 @@
                                 </goals>
                                 <configuration>
                                     <loader>
-                                        <dbaServer>${testing.db.server}</dbaServer>
-                                        <dbaPort>${testing.db.port}</dbaPort>
-                                        <dbaUsername>${testing.db.password}</dbaUsername>
-                                        <dbaPassword>${testing.db.login}</dbaPassword>
+                                        <dbaServer>${dba.db.server}</dbaServer>
+                                        <dbaPort>${dba.db.port}</dbaPort>
+                                        <dbaUsername>${dba.db.password}</dbaUsername>
+                                        <dbaPassword>${dba.db.login}</dbaPassword>
 
                                         <coreServer>${db.server}</coreServer>
                                         <corePort>${db.port}</corePort>

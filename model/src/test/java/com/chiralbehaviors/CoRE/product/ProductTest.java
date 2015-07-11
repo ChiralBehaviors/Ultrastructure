@@ -39,7 +39,6 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
@@ -62,13 +61,13 @@ public class ProductTest extends DatabaseTest {
     public void createEntity() {
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
                                                        Agency.class).setParameter("name",
-                                                                                  "CoRE");
+                                                                                  "CoREd");
         Agency r = query.getSingleResult();
 
         LOG.debug(String.format("Agency: %s", r));
 
         assertNotNull("Agency was null!", r);
-        assertEquals("CoRE", r.getName());
+        assertEquals("CoREd", r.getName());
 
         Product b = new Product();
 
@@ -98,30 +97,26 @@ public class ProductTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        Agency core = new Agency("CoRE");
+        Agency core = new Agency("CoREd");
         core.setUpdatedBy(core);
         em.persist(core);
 
-        Product peptideFoo = new Product(
-                                         "Peptide Foo",
+        Product peptideFoo = new Product("Peptide Foo",
                                          "The Foo peptide is lethal!  Do not eat!",
                                          core);
         em.persist(peptideFoo);
 
-        Product peptideBar = new Product(
-                                         "Peptide Bar",
+        Product peptideBar = new Product("Peptide Bar",
                                          "The Foo peptide is lethal!  Do not eat!",
                                          core);
         em.persist(peptideBar);
 
-        Attribute length = new Attribute(
-                                         "Length",
+        Attribute length = new Attribute("Length",
                                          "Denotes the linear length of a thing",
                                          ValueType.NUMERIC, core);
         em.persist(length);
 
-        Unit aminoAcids = new Unit(
-                                   "Amino Acids",
+        Unit aminoAcids = new Unit("Amino Acids",
                                    "A unit of length for protein primary sequences",
                                    core);
         aminoAcids.setAbbreviation("aa");
@@ -132,18 +127,6 @@ public class ProductTest extends DatabaseTest {
         attribute.setUnit(aminoAcids);
         attribute.setNumericValue(BigDecimal.valueOf(123));
         em.persist(attribute);
-
-        Relationship isA = new Relationship(
-                                            "is a",
-                                            "Taxonomic relationship indicating membership in a group or category.",
-                                            core);
-        em.persist(isA);
-
-        Relationship includes = new Relationship(
-                                                 "includes",
-                                                 "Taxonomic relationship defining membership in a group or category.  In 'A includes B', A is the more general product, while B is some specialization or grouping of A",
-                                                 core, isA);
-        em.persist(includes);
         em.flush();
         em.clear();
     }

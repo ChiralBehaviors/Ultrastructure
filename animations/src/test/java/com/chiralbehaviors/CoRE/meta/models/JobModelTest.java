@@ -36,7 +36,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.After;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -62,19 +62,17 @@ import com.hellblazer.utils.Tuple;
  */
 public class JobModelTest extends AbstractModelTest {
 
-    private static JobModel        jobModel;
+    private JobModel jobModel;
 
     private static OrderProcessing scenario;
 
-    @BeforeClass
-    public static void before() throws Exception {
-        System.out.println("Before");
+    @Before
+    public void before() throws Exception {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         OrderProcessingLoader loader = new OrderProcessingLoader(model);
         loader.load();
         scenario = loader.createWorkspace(model).getAccessor(OrderProcessing.class);
-        txn.commit();
         jobModel = model.getJobModel();
         // model.setLogConfiguration(Utils.getDocument(JobModelTest.class.getResourceAsStream("/test-log-db.xml")));
     }
@@ -89,8 +87,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testDeliverWithoutMetaProtocol() {
-        em.getTransaction().begin();
-
         StatusCode startState = new StatusCode("begin", kernel.getCore());
         // startState.setPropagateChildren(true);
         em.persist(startState);
@@ -111,15 +107,13 @@ public class JobModelTest extends AbstractModelTest {
         Product bento = new Product("Tonkatsu Bento Box", kernel.getCore());
         em.persist(bento);
 
-        StatusCodeSequencing sequence = new StatusCodeSequencing(
-                                                                 kiki,
+        StatusCodeSequencing sequence = new StatusCodeSequencing(kiki,
                                                                  startState,
                                                                  delivered,
                                                                  kernel.getCore());
         em.persist(sequence);
 
-        StatusCodeSequencing childSequence = new StatusCodeSequencing(
-                                                                      shipping,
+        StatusCodeSequencing childSequence = new StatusCodeSequencing(shipping,
                                                                       shipState,
                                                                       delivered,
                                                                       kernel.getCore());
@@ -161,8 +155,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testEuOrder() throws Exception {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
         Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
                                                           kernel.getCore());
         order.setAssignTo(scenario.getOrderFullfillment());
@@ -188,7 +180,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testGenerateJobs() throws Exception {
-        em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(scenario.getDeliver(),
                                                         kernel.getCore());
         job.setAssignTo(scenario.getOrderFullfillment());
@@ -206,8 +197,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testGenerateJobsFromProtocols() throws Exception {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
         Product service = new Product("test service", kernel.getCore());
         em.persist(service);
         MetaProtocol mp = jobModel.newInitializedMetaProtocol(service,
@@ -246,8 +235,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testGetActiveJobs() throws Exception {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
         Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
                                                           kernel.getCore());
         order.setAssignTo(scenario.getOrderFullfillment());
@@ -274,8 +261,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testIteration() throws Exception {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
         Product service = new Product("test service", kernel.getCore());
         em.persist(service);
         Product childService = new Product("child test service",
@@ -301,8 +286,7 @@ public class JobModelTest extends AbstractModelTest {
                     kernel.getCore(), em);
 
         List<Tuple<StatusCode, StatusCode>> sequencings = new ArrayList<>();
-        sequencings.add(new Tuple<StatusCode, StatusCode>(
-                                                          scenario.getAvailable(),
+        sequencings.add(new Tuple<StatusCode, StatusCode>(scenario.getAvailable(),
                                                           scenario.getCompleted()));
         model.getJobModel().createStatusCodeSequencings(service, sequencings,
                                                         kernel.getCore());
@@ -310,8 +294,7 @@ public class JobModelTest extends AbstractModelTest {
                                                         sequencings,
                                                         kernel.getCore());
 
-        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
-                                                                                           service,
+        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(service,
                                                                                            scenario.getAvailable(),
                                                                                            childService,
                                                                                            scenario.getAvailable(),
@@ -343,54 +326,48 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testJobChronologyOnStatusUpdate() throws Exception {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
-        alterTriggers(false);
-        try {
-            Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
-                                                              kernel.getCore());
-            order.setAssignTo(scenario.getOrderFullfillment());
-            order.setProduct(scenario.getABC486());
-            order.setDeliverTo(scenario.getRSB225());
-            order.setDeliverFrom(scenario.getFactory1());
-            order.setRequester(scenario.getGeorgetownUniversity());
-            jobModel.changeStatus(order, scenario.getAvailable(),
-                                  kernel.getCore(), "Test transition");
-            em.persist(order);
-            em.flush();
-            em.refresh(order);
-            List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(String.format("Invalid number of chronologies: %s",
-                                       chronologies), 2, chronologies.size());
-            List<String> fieldErrors = verifyChronologyFields(order,
-                                                              chronologies.get(1));
+        Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
+                                                          kernel.getCore());
+        order.setAssignTo(scenario.getOrderFullfillment());
+        order.setProduct(scenario.getABC486());
+        order.setDeliverTo(scenario.getRSB225());
+        order.setDeliverFrom(scenario.getFactory1());
+        order.setRequester(scenario.getGeorgetownUniversity());
+        jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
+                              "Test transition");
+        em.persist(order);
+        em.flush();
+        em.refresh(order);
+        List<JobChronology> chronologies = model.getJobModel().getChronologyForJob(order);
+        assertEquals(String.format("Invalid number of chronologies: %s",
+                                   chronologies),
+                     2, chronologies.size());
+        List<String> fieldErrors = verifyChronologyFields(order,
+                                                          chronologies.get(1));
 
-            assertEquals(fieldErrors.toString(), 0, fieldErrors.size());
-            model.getJobModel().changeStatus(order, scenario.getActive(),
-                                             kernel.getCore(), null);
-            em.flush();
-            chronologies = model.getJobModel().getChronologyForJob(order);
-            assertEquals(3, chronologies.size());
-            for (JobChronology c : chronologies) {
-                fieldErrors = verifyChronologyFields(order, c);
-                if (fieldErrors == null || fieldErrors.size() == 0) {
-                    break;
-                }
+        assertEquals(fieldErrors.toString(), 0, fieldErrors.size());
+        model.getJobModel().changeStatus(order, scenario.getActive(),
+                                         kernel.getCore(), null);
+        em.flush();
+        chronologies = model.getJobModel().getChronologyForJob(order);
+        assertEquals(3, chronologies.size());
+        for (JobChronology c : chronologies) {
+            fieldErrors = verifyChronologyFields(order, c);
+            if (fieldErrors == null || fieldErrors.size() == 0) {
+                break;
             }
-            System.out.println(String.format("Errors: %s", fieldErrors));
-            assertEquals(0, fieldErrors.size());
-        } finally {
-            alterTriggers(true);
         }
+        System.out.println(String.format("Errors: %s", fieldErrors));
+        assertEquals(0, fieldErrors.size());
     }
 
     @Test
     public void testJobGenerationAndSequencing() throws Exception {
-        em.getTransaction().begin();
         Product pushit = new Product("Pushit Service", null, kernel.getCore());
         em.persist(pushit);
 
-        Product shoveit = new Product("Shoveit Service", null, kernel.getCore());
+        Product shoveit = new Product("Shoveit Service", null,
+                                      kernel.getCore());
         em.persist(shoveit);
 
         Product pullIt = new Product("Pullit Service", null, kernel.getCore());
@@ -411,14 +388,12 @@ public class JobModelTest extends AbstractModelTest {
         p.setChildService(shoveit);
         em.persist(p);
         model.getJobModel().createStatusCodeChain(pushit,
-                                                  new StatusCode[] {
-                                                          pushingMe,
-                                                          shovingMe,
-                                                          scenario.getCompleted() },
+                                                  new StatusCode[] { pushingMe,
+                                                                     shovingMe,
+                                                                     scenario.getCompleted() },
                                                   kernel.getCore());
 
-        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
-                                                                                         pushit,
+        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(pushit,
                                                                                          pushingMe,
                                                                                          shovingMe,
                                                                                          kernel.getCore());
@@ -445,7 +420,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testMetaProtocols() throws Exception {
-        em.getTransaction().begin();
         Job job = model.getJobModel().newInitializedJob(scenario.getDeliver(),
                                                         kernel.getCore());
         job.setAssignTo(scenario.getOrderFullfillment());
@@ -466,8 +440,10 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(kernel.getAnyAgency(), protocols.get(1).getRequester());
         assertEquals(kernel.getAnyProduct(), protocols.get(0).getProduct());
         assertEquals(kernel.getAnyProduct(), protocols.get(1).getProduct());
-        assertEquals(kernel.getAnyLocation(), protocols.get(0).getDeliverFrom());
-        assertEquals(kernel.getAnyLocation(), protocols.get(1).getDeliverFrom());
+        assertEquals(kernel.getAnyLocation(),
+                     protocols.get(0).getDeliverFrom());
+        assertEquals(kernel.getAnyLocation(),
+                     protocols.get(1).getDeliverFrom());
         assertEquals(kernel.getAnyLocation(), protocols.get(0).getDeliverTo());
         assertEquals(kernel.getAnyLocation(), protocols.get(1).getDeliverTo());
         assertEquals(scenario.getFactory1Agency(),
@@ -475,10 +451,13 @@ public class JobModelTest extends AbstractModelTest {
         assertEquals(scenario.getFactory1Agency(),
                      protocols.get(1).getChildAssignTo());
         if (protocols.get(0).getChildService().equals(scenario.getPick())) {
-            assertEquals(scenario.getShip(), protocols.get(1).getChildService());
+            assertEquals(scenario.getShip(),
+                         protocols.get(1).getChildService());
         } else {
-            assertEquals(scenario.getShip(), protocols.get(0).getChildService());
-            assertEquals(scenario.getPick(), protocols.get(1).getChildService());
+            assertEquals(scenario.getShip(),
+                         protocols.get(0).getChildService());
+            assertEquals(scenario.getPick(),
+                         protocols.get(1).getChildService());
         }
 
         job = model.getJobModel().newInitializedJob(scenario.getPrintPurchaseOrder(),
@@ -490,29 +469,15 @@ public class JobModelTest extends AbstractModelTest {
         job.setRequester(scenario.getCarfleurBon());
         jobModel.changeStatus(job, kernel.getUnset(), kernel.getCore(),
                               "Transition from test");
+        em.flush();
         metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         txfm = jobModel.getProtocols(job);
         assertEquals(1, txfm.size());
-
-        List<Job> jobs = jobModel.generateImplicitJobs(job, kernel.getCore());
-        assertEquals(1, jobs.size());
-        Job derived = jobs.get(0);
-        assertEquals(scenario.getFee(), derived.getService());
-        assertEquals(scenario.getABC486(), derived.getProduct());
-        assertEquals(scenario.getBillingComputer(), derived.getAssignTo());
-        assertEquals(scenario.getCarfleurBon(), derived.getRequester());
-        assertEquals(scenario.getRSB225(), derived.getDeliverTo());
-        assertEquals(scenario.getFactory1(), derived.getDeliverFrom());
-        assertEquals(kernel.getUnset(), derived.getStatus());
-        assertEquals(job, derived.getParent());
-        em.getTransaction().rollback();
     }
 
     @Test
     public void testNonExemptOrder() throws Exception {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
         Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
                                                           kernel.getCore());
         order.setAssignTo(scenario.getOrderFullfillment());
@@ -538,8 +503,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testOrder() throws Exception {
-        EntityTransaction txn = em.getTransaction();
-        txn.begin();
         Job order = model.getJobModel().newInitializedJob(scenario.getDeliver(),
                                                           kernel.getCore());
         order.setAssignTo(scenario.getOrderFullfillment());
@@ -662,7 +625,6 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testSelfSequencingAuthorization() {
-        em.getTransaction().begin();
         Product service = new Product("Kick ass", null, kernel.getCore());
         em.persist(service);
 
@@ -674,15 +636,13 @@ public class JobModelTest extends AbstractModelTest {
                                                 kernel.getCore());
         em.persist(takingNames);
 
-        StatusCodeSequencing sequence = new StatusCodeSequencing(
-                                                                 service,
+        StatusCodeSequencing sequence = new StatusCodeSequencing(service,
                                                                  kickingAss,
                                                                  takingNames,
                                                                  kernel.getCore());
         em.persist(sequence);
 
-        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(
-                                                                                         service,
+        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(service,
                                                                                          kickingAss,
                                                                                          takingNames,
                                                                                          kernel.getCore());
@@ -705,12 +665,11 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testTerminateChildrenParent() throws IOException {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-test.xml")));
-        em.getTransaction().begin();
         Product pushit = new Product("Pushit Service", null, kernel.getCore());
         em.persist(pushit);
 
-        Product shoveit = new Product("shoveit Service", null, kernel.getCore());
+        Product shoveit = new Product("shoveit Service", null,
+                                      kernel.getCore());
         em.persist(shoveit);
 
         Product pullit = new Product("Pullit Service", null, kernel.getCore());
@@ -737,26 +696,24 @@ public class JobModelTest extends AbstractModelTest {
 
         model.getJobModel().createStatusCodeChain(pushit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe },
+                                                                     shovingMe },
                                                   kernel.getCore());
         model.getJobModel().createStatusCodeChain(shoveit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe },
+                                                                     shovingMe },
                                                   kernel.getCore());
         model.getJobModel().createStatusCodeChain(pullit,
                                                   new StatusCode[] { pushingMe,
-                                                          shovingMe },
+                                                                     shovingMe },
                                                   kernel.getCore());
 
-        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(
-                                                                                           shoveit,
+        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(shoveit,
                                                                                            shovingMe,
                                                                                            pullit,
                                                                                            shovingMe,
                                                                                            kernel.getCore());
         em.persist(auth);
-        ProductParentSequencingAuthorization auth2 = new ProductParentSequencingAuthorization(
-                                                                                              shoveit,
+        ProductParentSequencingAuthorization auth2 = new ProductParentSequencingAuthorization(shoveit,
                                                                                               shovingMe,
                                                                                               pushit,
                                                                                               shovingMe,
@@ -803,10 +760,10 @@ public class JobModelTest extends AbstractModelTest {
      * @throws InvocationTargetException
      */
     private List<String> verifyChronologyFields(Job job,
-                                                JobChronology jobChronology)
-                                                                            throws Exception {
+                                                JobChronology jobChronology) throws Exception {
         String[] fieldsToMatch = new String[] { "status", "requester",
-                "assignTo", "deliverFrom", "deliverTo" };
+                                                "assignTo", "deliverFrom",
+                                                "deliverTo" };
         List<String> unmatchedFields = new LinkedList<>();
         if (!jobChronology.getJob().equals(job)) {
             unmatchedFields.add("job");
@@ -828,9 +785,9 @@ public class JobModelTest extends AbstractModelTest {
                 System.out.println(String.format("%s: job: %s, chronology: %s",
                                                  field,
                                                  jobRf == null ? "null"
-                                                              : jobRf.getName(),
+                                                               : jobRf.getName(),
                                                  chronoRf == null ? "null"
-                                                                 : chronoRf.getName()));
+                                                                  : chronoRf.getName()));
                 unmatchedFields.add(field);
             }
         }

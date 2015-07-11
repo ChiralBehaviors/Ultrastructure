@@ -36,7 +36,7 @@ public class AgencyTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        Agency core = new Agency("CoRE");
+        Agency core = new Agency("PseudoCore");
         core.setUpdatedBy(core);
         em.persist(core);
 
@@ -51,7 +51,7 @@ public class AgencyTest extends DatabaseTest {
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
                                                        Agency.class);
 
-        query.setParameter("name", "CoRE");
+        query.setParameter("name", "PseudoCore");
         Agency test = query.getSingleResult();
 
         query.setParameter("name", "Foo");

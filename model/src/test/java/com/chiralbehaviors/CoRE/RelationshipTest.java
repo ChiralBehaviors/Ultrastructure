@@ -40,18 +40,16 @@ public class RelationshipTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        Agency core = new Agency("CoRE");
+        Agency core = new Agency("CoREd");
         core.setUpdatedBy(core);
         em.persist(core);
 
-        Relationship massList = new Relationship(
-                                                 "mass-list",
+        Relationship massList = new Relationship("mass-list",
                                                  "A is a member of the mass list B",
                                                  core);
         em.persist(massList);
 
-        Relationship massListOf = new Relationship(
-                                                   "mass-list-of",
+        Relationship massListOf = new Relationship("mass-list-of",
                                                    "A is a mass list that has B as a member",
                                                    core, massList);
         em.persist(massListOf);
@@ -80,7 +78,7 @@ public class RelationshipTest extends DatabaseTest {
     public void testInverseMerge() {
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
                                                        Agency.class);
-        query.setParameter("name", "CoRE");
+        query.setParameter("name", "CoREd");
         Agency core = query.getSingleResult();
 
         Relationship relationship = new Relationship();

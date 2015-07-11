@@ -82,7 +82,7 @@ public class Bootstrap {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         EntityManager em = emf.createEntityManager();
-        Bootstrap bootstrap = new Bootstrap(em);
+        Bootstrap bootstrap = new Bootstrap(em, properties);
         bootstrap.clear();
         em.getTransaction().begin();
         bootstrap.bootstrap();
@@ -95,14 +95,14 @@ public class Bootstrap {
     private final Connection    connection;
     private final EntityManager em;
 
-    public Bootstrap(EntityManager em) throws SQLException {
+    public Bootstrap(EntityManager em,
+                     Properties properties) throws SQLException {
         connection = em.unwrap(SessionImpl.class).connection();
         connection.setAutoCommit(false);
         this.em = em;
     }
 
     public void bootstrap() throws SQLException {
-        KernelUtil.alterTriggers(connection, false);
         for (WellKnownAgency wko : WellKnownAgency.values()) {
             insert(wko);
         }
@@ -127,7 +127,6 @@ public class Bootstrap {
         for (WellKnownUnit wko : WellKnownUnit.values()) {
             insert(wko);
         }
-        KernelUtil.alterTriggers(connection, true);
         constructKernelWorkspace();
     }
 

@@ -21,15 +21,12 @@
 package com.chiralbehaviors.CoRE.test;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,7 +37,6 @@ import org.junit.BeforeClass;
  * 
  */
 abstract public class DatabaseTest {
-    private static final String           SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
     protected static Connection           connection;
     protected static EntityManager        em;
     protected static EntityManagerFactory emf;
@@ -61,42 +57,24 @@ abstract public class DatabaseTest {
         emf = Persistence.createEntityManagerFactory("CoRE", properties);
         em = emf.createEntityManager();
         em.getTransaction().begin();
-        connection = em.unwrap(SessionImpl.class).connection();
-        alterAllTriggers(false);
-        ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
-        while (r.next()) {
-            String table = r.getString("name");
-            String query = String.format("DELETE FROM %s", table);
-            connection.createStatement().execute(query);
-        }
-        r.close();
-        alterAllTriggers(true);
-        em.getTransaction().commit();
-    }
-
-    protected static void alterAllTriggers(boolean enable) throws SQLException {
-        ResultSet r = connection.createStatement().executeQuery(SELECT_TABLE);
-        while (r.next()) {
-            String table = r.getString("name");
-            String query = String.format("ALTER TABLE %s %s TRIGGER ALL",
-                                         table, enable ? "ENABLE" : "DISABLE");
-            connection.createStatement().execute(query);
-        }
-        r.close();
     }
 
     /**
      * Initiates a database transaction.
      */
     protected static void beginTransaction() {
-        em.getTransaction().begin();
+        if (!em.getTransaction().isActive()) {
+            em.getTransaction().begin();
+        }
     }
 
     /**
      * Commits the current transaction, if it is still active.
      */
     protected static final void commitTransaction() {
-        em.getTransaction().commit();
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().commit();
+        }
     }
 
     @After

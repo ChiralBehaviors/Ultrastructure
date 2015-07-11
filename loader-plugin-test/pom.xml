@@ -25,6 +25,7 @@
                                 </goals>
                                 <configuration>
                                     <loader>
+                                        <contexts>${db.context}</contexts>
                                         <dbaServer>${dba.db.server}</dbaServer>
                                         <dbaPort>${dba.db.port}</dbaPort>
                                         <dbaUsername>${dba.db.password}</dbaUsername>

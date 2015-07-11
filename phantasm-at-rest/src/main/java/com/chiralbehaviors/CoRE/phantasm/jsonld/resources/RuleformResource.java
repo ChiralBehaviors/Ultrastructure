@@ -43,7 +43,6 @@ import org.reflections.Reflections;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformNode;
 
 /**
  * @author hhildebrand
@@ -89,31 +88,28 @@ public class RuleformResource extends TransactionalResource {
 
     @Path("context/{ruleform-type}")
     @GET
-    public RuleformContext getContext(@PathParam("ruleform-type") String ruleformType) {
-        RuleformContext ruleformContext = new RuleformContext(entityMap.get(ruleformType),
-                                                              uriInfo);
-        return ruleformContext;
+    public Map<String, Object> getContext(@PathParam("ruleform-type") String ruleformType) {
+        return new RuleformContext(entityMap.get(ruleformType),
+                                   uriInfo).toContext();
     }
 
     @Path("type/{ruleform-type}")
     @GET
-    public List<Object> getType(@PathParam("ruleform-type") String ruleformType) {
-        Map<String, Object> definition = new TreeMap<>();
+    public Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType) {
         Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
                                                             ruleformClass),
                                               Status.NOT_FOUND);
         }
+        Map<String, Object> definition = new RuleformContext(ruleformClass,
+                                                             uriInfo).toContext();
         definition.put(Constants.ID,
                        RuleformContext.getTypeIri(ruleformClass, uriInfo));
         definition.put(Constants.TYPE,
                        String.format("http://ultrastructure.me#%s",
                                      ruleformType));
-        List<Object> type = new ArrayList<>();
-        type.add(new RuleformContext(ruleformClass, uriInfo));
-        type.add(definition);
-        return type;
+        return definition;
     }
 
     @Path("type/{ruleform-type}/{term}")
@@ -135,8 +131,8 @@ public class RuleformResource extends TransactionalResource {
 
     @Path("{ruleform-type}/{instance}")
     @GET
-    public RuleformNode getInstance(@PathParam("ruleform-type") String ruleformType,
-                                    @PathParam("instance") String ruleformId) {
+    public Map<String, Object> getInstance(@PathParam("ruleform-type") String ruleformType,
+                                           @PathParam("instance") String ruleformId) {
         UUID uuid = toUuid(ruleformId);
         Ruleform ruleform = (Ruleform) readOnlyModel.getEntityManager().find(entityMap.get(ruleformType),
                                                                              uuid);
@@ -145,7 +141,8 @@ public class RuleformResource extends TransactionalResource {
                                                             ruleformType,
                                                             ruleformId));
         }
-        return new RuleformNode(ruleform, uriInfo);
+        return new RuleformContext(ruleform.getClass(),
+                                   uriInfo).toNode(ruleform, uriInfo);
     }
 
     @Path("{ruleform-type}")
@@ -161,7 +158,7 @@ public class RuleformResource extends TransactionalResource {
             Map<String, String> map = new TreeMap<>();
             map.put(Constants.CONTEXT,
                     RuleformContext.getContextIri(rf.getClass(), uriInfo));
-            map.put(Constants.ID, RuleformNode.getIri(rf, uriInfo));
+            map.put(Constants.ID, RuleformContext.getIri(rf, uriInfo));
             instances.add(map);
         });
         return instances;

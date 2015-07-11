@@ -38,48 +38,55 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 public class Configuration {
     public static String JDBC_URL = "jdbc:postgresql://%s:%s/%s";
 
-    public static Configuration fromYaml(InputStream yaml)
-                                                          throws JsonParseException,
-                                                          JsonMappingException,
-                                                          IOException {
+    public static Configuration fromYaml(InputStream yaml) throws JsonParseException,
+                                                           JsonMappingException,
+                                                           IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         return mapper.readValue(yaml, Configuration.class);
     }
+
+    /**
+     * The comma seperated list of contexts to use for loading ("local" or
+     * "aws")
+     * 
+     * @parameter
+     */
+    public String contexts = "local";
 
     /**
      * the name the core database
      * 
      * @parameter
      */
-    public String  coreDb       = "core";
+    public String coreDb = "core";
 
     /**
      * the password of the core user
      * 
      * @parameter
      */
-    public String  corePassword;
+    public String corePassword;
 
     /**
      * the port of the core database
      * 
      * @parameter
      */
-    public int     corePort;
+    public int corePort;
 
     /**
      * the server host of the core database
      * 
      * @parameter
      */
-    public String  coreServer;
+    public String coreServer;
 
     /**
      * the core user name
      * 
      * @parameter
      */
-    public String  coreUsername;
+    public String coreUsername;
 
     /**
      * the dba database

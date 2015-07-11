@@ -63,23 +63,6 @@ import com.chiralbehaviors.CoRE.utils.English;
  */
 public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         extends Aspect<RuleForm> {
-    public class Typed {
-        public final String id;
-        public final String type;
-
-        private Typed(String id, String type) {
-            this.id = id;
-            this.type = type;
-        }
-
-        public Map<String, Object> toMap() {
-            Map<String, Object> node = new TreeMap<>();
-            node.put(Constants.ID, id);
-            node.put(Constants.TYPE, type);
-            return node;
-        }
-    }
-
     public static String getAllInstancesIri(@SuppressWarnings("rawtypes") Aspect aspect,
                                             UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();

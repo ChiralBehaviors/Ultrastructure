@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
@@ -38,7 +39,7 @@ import javax.ws.rs.core.UriInfo;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformNode;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
@@ -77,9 +78,9 @@ public class WorkspaceResource extends TransactionalResource {
 
     @Path("{uuid}/lookup")
     @GET
-    public RuleformNode lookup(@PathParam("uuid") String workspaceId,
-                               @QueryParam("namespace") String namespace,
-                               @QueryParam("member") String member) {
+    public Map<String, Object> lookup(@PathParam("uuid") String workspaceId,
+                                      @QueryParam("namespace") String namespace,
+                                      @QueryParam("member") String member) {
         WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(toUuid(workspaceId));
         if (scope == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
@@ -93,6 +94,7 @@ public class WorkspaceResource extends TransactionalResource {
                                                             workspaceId),
                                               Status.NOT_FOUND);
         }
-        return new RuleformNode(resolved, uriInfo);
+        return new RuleformContext(resolved.getClass(),
+                                   uriInfo).toNode(resolved, uriInfo);
     }
 }

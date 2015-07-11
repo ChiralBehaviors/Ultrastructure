@@ -34,18 +34,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.hellblazer.utils.Utils;
+
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
 
 /**
  * @author hhildebrand
@@ -61,8 +61,7 @@ public class Loader {
     private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML = "model/com/chiralbehaviors/CoRE/schema/core.xml";
 
     public static void main(String[] argv) throws Exception {
-        Loader loader = new Loader(
-                                   Configuration.fromYaml(Utils.resolveResource(Loader.class,
+        Loader loader = new Loader(Configuration.fromYaml(Utils.resolveResource(Loader.class,
                                                                                 argv[0])));
         loader.bootstrap();
     }
@@ -92,13 +91,14 @@ public class Loader {
                                configuration.dbaDb));
         execute(connection,
                 Utils.getDocument(getClass().getResourceAsStream(DROP_LIQUIBASE_SQL)));
-        log.info(String.format("Dropping roles in db %s", configuration.coreDb));
+        log.info(String.format("Dropping roles in db %s",
+                               configuration.coreDb));
         execute(connection,
                 Utils.getDocument(getClass().getResourceAsStream(DROP_ROLES_SQL)));
     }
 
-    private void executeWithError(Connection connection, String sqlFile)
-                                                                        throws SQLException {
+    private void executeWithError(Connection connection,
+                                  String sqlFile) throws SQLException {
         StringTokenizer tokes = new StringTokenizer(sqlFile, ";");
         while (tokes.hasMoreTokens()) {
             String line = tokes.nextToken();
@@ -111,8 +111,8 @@ public class Loader {
         }
     }
 
-    private void execute(Connection connection, String sqlFile)
-                                                               throws Exception {
+    private void execute(Connection connection,
+                         String sqlFile) throws Exception {
         StringTokenizer tokes = new StringTokenizer(sqlFile, ";");
         while (tokes.hasMoreTokens()) {
             String line = tokes.nextToken();
@@ -126,17 +126,15 @@ public class Loader {
         }
     }
 
-    private void load(String changeLog, Connection connection) throws Exception {
+    private void load(String changeLog,
+                      Connection connection) throws Exception {
         Liquibase liquibase = null;
         try {
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(
-                                                                                                                   connection));
-            liquibase = new Liquibase(
-                                      changeLog,
-                                      new ClassLoaderResourceAccessor(
-                                                                      getClass().getClassLoader()),
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            liquibase = new Liquibase(changeLog,
+                                      new ClassLoaderResourceAccessor(getClass().getClassLoader()),
                                       database);
-            liquibase.update(Integer.MAX_VALUE, "");
+            liquibase.update(Integer.MAX_VALUE, configuration.contexts);
 
         } finally {
             if (liquibase != null) {

@@ -57,6 +57,7 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
@@ -135,7 +136,7 @@ public class Bootstrap {
     }
 
     public void insert(WellKnownAttribute wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, value_type, keyed, indexed, version) VALUES (?, ?, ?, ?, ?, 0, 0, 1)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, value_type, indexed, keyed, version) VALUES (?, ?, ?, ?, ?, false, false, 1)",
                                                                         wko.tableName()));
         try {
             s.setObject(1, wko.id());
@@ -145,7 +146,8 @@ public class Bootstrap {
             s.setInt(5, wko.valueType().ordinal());
             s.execute();
         } catch (SQLException e) {
-            throw new SQLException(String.format("Unable to insert %s", wko),
+            throw new SQLException(String.format("Unable to insert WKA %s",
+                                                 wko),
                                    e);
         }
     }
@@ -245,13 +247,17 @@ public class Bootstrap {
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
         Product workspace = find(WellKnownProduct.WORKSPACE);
         Relationship isA = find(WellKnownRelationship.IS_A);
+
+        // Kernel workspace isA workspace
         ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
                                                core);
+        populate(pn, core, kernelWorkspace);
 
-        WorkspaceAuthorization netAuth = new WorkspaceAuthorization(pn,
-                                                                    kernelWorkspace,
-                                                                    core);
-        em.persist(netAuth);
+        ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
+        netAuth.setClassification(workspace);
+        netAuth.setClassifier(isA);
+        populate(netAuth, core, workspace);
+
         populate("AnyAttribute", find(WellKnownAttribute.ANY), core,
                  kernelWorkspace);
         populate("CopyAttribute", find(WellKnownAttribute.COPY), core,

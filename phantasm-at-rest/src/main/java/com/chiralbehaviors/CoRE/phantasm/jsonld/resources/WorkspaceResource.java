@@ -20,10 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
@@ -37,6 +35,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
@@ -72,8 +72,11 @@ public class WorkspaceResource extends TransactionalResource {
     }
 
     @GET
-    public List<UUID> getWorkspaces() {
-        return Collections.emptyList();
+    public List<Map<String, Object>> getWorkspaces() {
+        Kernel kernel = readOnlyModel.getKernel();
+        Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
+                                              kernel.getWorkspace());
+        return FacetResource.getFacetInstances(aspect, readOnlyModel, uriInfo);
     }
 
     @Path("{uuid}/lookup")

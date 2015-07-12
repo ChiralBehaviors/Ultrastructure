@@ -37,8 +37,8 @@ import com.fasterxml.uuid.impl.NameBasedGenerator;
  *
  */
 public interface Workspace {
-    final StringArgGenerator   URL_UUID_GENERATOR = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL);
     public static final String KERNEL_URN         = "urn:uuid:00000000-0000-0004-0000-000000000003";
+    final StringArgGenerator   URL_UUID_GENERATOR = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL);
     public static final String URN_UUID           = "urn:uuid:";
 
     static UUID uuidOf(String url) {
@@ -59,6 +59,8 @@ public interface Workspace {
     Product getDefiningProduct();
 
     Map<String, Product> getImports();
+
+    List<String> getKeys();
 
     WorkspaceScope getScope();
 

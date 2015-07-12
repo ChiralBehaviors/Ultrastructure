@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -48,10 +49,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ProductNetworkAttribute extends NetworkAttribute<ProductNetwork> {
     private static final long serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to ProductNetwork
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private ProductNetwork    network;
+    private ProductNetwork network;
 
     public ProductNetworkAttribute() {
     }

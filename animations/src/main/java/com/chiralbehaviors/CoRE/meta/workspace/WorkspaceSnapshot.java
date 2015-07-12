@@ -45,11 +45,10 @@ public class WorkspaceSnapshot {
     public static ArrayList<WorkspaceAuthorization> getAuthorizations(Product definingProduct,
                                                                       EntityManager em) {
         TypedQuery<WorkspaceAuthorization> query = em.createQuery("SELECT auth FROM WorkspaceAuthorization auth "
-                                                                          + "WHERE auth.definingProduct = :product",
+                                                                  + "WHERE auth.definingProduct = :product",
                                                                   WorkspaceAuthorization.class);
         query.setParameter("product", definingProduct);
-        ArrayList<WorkspaceAuthorization> authorizations = new ArrayList<>(
-                                                                           query.getResultList());
+        ArrayList<WorkspaceAuthorization> authorizations = new ArrayList<>(query.getResultList());
         return authorizations;
     }
 
@@ -65,7 +64,7 @@ public class WorkspaceSnapshot {
 
     public WorkspaceSnapshot(List<WorkspaceAuthorization> auths) {
         this.auths = auths;
-        Set<UUID> included = new OaHashSet<UUID>(1024);
+        Set<UUID> included = new OaHashSet<>(1024);
         for (WorkspaceAuthorization auth : auths) {
             included.add(auth.getRuleform().getId());
         }

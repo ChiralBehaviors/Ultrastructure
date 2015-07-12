@@ -31,6 +31,7 @@ import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_WORK
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -266,7 +267,8 @@ public class WorkspaceAuthorization extends Ruleform {
     @JsonIgnore
     private AgencyNetwork agencyNetwork;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "agency_network_attribute")
     @JsonIgnore
     private AgencyNetworkAttribute agencyNetworkAttribute;
@@ -1050,6 +1052,12 @@ public class WorkspaceAuthorization extends Ruleform {
         }
     }
 
+    @Override
+    public String toString() {
+        return String.format("WorkspaceAuthorization [getRuleform()=%s]",
+                             getRuleform());
+    }
+
     private void setAgency(Agency agency) {
         type = AGENCY;
         this.agency = agency;
@@ -1419,5 +1427,4 @@ public class WorkspaceAuthorization extends Ruleform {
         type = UNIT_NETWORK_AUTHORIZATION;
         this.unitNetworkAuthorization = unitNetworkAuthorization;
     }
-
 }

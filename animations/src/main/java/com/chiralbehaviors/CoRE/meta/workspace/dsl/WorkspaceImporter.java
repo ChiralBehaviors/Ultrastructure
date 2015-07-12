@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.workspace.dsl;
+package com.chiralbehaviors.CoRE.meta.workspace.dsl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -118,7 +118,7 @@ public class WorkspaceImporter {
     public static WorkspaceImporter createWorkspace(InputStream source,
                                                     Model model) throws IOException {
         WorkspaceImporter importer = new WorkspaceImporter(source, model);
-        importer.loadWorkspace();
+        importer.createWorkspace();
         return importer;
     }
 
@@ -144,11 +144,11 @@ public class WorkspaceImporter {
     private final EntityManager em;
     private final Model         model;
     private WorkspaceScope      scope;
-    private EditableWorkspace   workspace;
+    private UUID                uuid;
 
-    private final WorkspacePresentation wsp;
+    private EditableWorkspace           workspace;
     private String                      workspaceUri;
-    private UUID                        uuid;
+    private final WorkspacePresentation wsp;
 
     public WorkspaceImporter(InputStream source,
                              Model model) throws IOException {
@@ -161,30 +161,22 @@ public class WorkspaceImporter {
         this.em = model.getEntityManager();
     }
 
-    public Workspace getWorkspace() {
+    public Workspace addToWorkspace() {
+        scope = model.getWorkspaceModel().getScoped(getWorkspaceProduct());
+        workspace = (EditableWorkspace) scope.getWorkspace();
+        loadWorkspace();
         return workspace;
     }
 
-    public Workspace loadWorkspace() {
+    public Workspace createWorkspace() {
         scope = model.getWorkspaceModel().createWorkspace(createWorkspaceProduct(),
                                                           model.getCurrentPrincipal().getPrincipal());
         workspace = (EditableWorkspace) scope.getWorkspace();
-        processImports();
-        loadRelationships();
-        loadAgencies();
-        loadAttributes();
-        loadLocations();
-        loadProducts();
-        loadStatusCodes();
-        loadStatusCodeSequencings();
-        loadUnits();
-        loadIntervals();
-        loadEdges();
-        loadFacets();
-        loadSequencingAuths();
-        loadInferences();
-        loadProtocols();
-        loadMetaprotocols();
+        loadWorkspace();
+        return workspace;
+    }
+
+    public Workspace getWorkspace() {
         return workspace;
     }
 
@@ -521,6 +513,17 @@ public class WorkspaceImporter {
         workspaceProduct.setId(uuid);
         em.persist(workspaceProduct);
         return workspaceProduct;
+    }
+
+    private Product getWorkspaceProduct() {
+        workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
+        uuid = Workspace.uuidOf(workspaceUri);
+        Product product = model.getProductModel().find(uuid);
+        if (product == null) {
+            throw new IllegalArgumentException(String.format("Unknown workspace: %s",
+                                                             workspaceUri));
+        }
+        return product;
     }
 
     private void defineFacets(@SuppressWarnings("rawtypes") NetworkedModel networkedModel,
@@ -890,6 +893,25 @@ public class WorkspaceImporter {
             workspace.put(unit.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
+    }
+
+    private void loadWorkspace() {
+        processImports();
+        loadRelationships();
+        loadAgencies();
+        loadAttributes();
+        loadLocations();
+        loadProducts();
+        loadStatusCodes();
+        loadStatusCodeSequencings();
+        loadUnits();
+        loadIntervals();
+        loadEdges();
+        loadFacets();
+        loadSequencingAuths();
+        loadInferences();
+        loadProtocols();
+        loadMetaprotocols();
     }
 
     private void locationFacets() {

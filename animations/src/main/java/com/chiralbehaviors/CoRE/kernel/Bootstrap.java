@@ -46,15 +46,14 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
@@ -103,7 +102,7 @@ public class Bootstrap {
         this.em = em;
     }
 
-    public void bootstrap() throws SQLException {
+    public void bootstrap() throws SQLException, IOException {
         for (WellKnownAgency wko : WellKnownAgency.values()) {
             insert(wko);
         }
@@ -135,7 +134,109 @@ public class Bootstrap {
         KernelUtil.clear(em);
     }
 
-    public void insert(WellKnownAttribute wko) throws SQLException {
+    private void constructKernelWorkspace() throws IOException, SQLException {
+        Agency core = find(WellKnownAgency.CORE);
+        Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
+        Product workspace = find(WellKnownProduct.WORKSPACE);
+        Relationship isA = find(WellKnownRelationship.IS_A);
+
+        createKernelWorkspace(core, kernelWorkspace, workspace, isA);
+
+        populateAgencies(core, kernelWorkspace);
+        populateAttributes(core, kernelWorkspace);
+        populateIntervals(core, kernelWorkspace);
+        populateLocations(core, kernelWorkspace);
+        populateProducts(core, kernelWorkspace);
+        populateRelationships(core, kernelWorkspace);
+        populateStatusCodes(core, kernelWorkspace);
+        populateUnits(core, kernelWorkspace);
+        connection.commit();
+        em.getTransaction().commit();
+        ModelImpl model = new ModelImpl(em.getEntityManagerFactory());
+        model.getEntityManager().getTransaction().begin();
+        new WorkspaceImporter(getClass().getResourceAsStream("/kernel.wsp"),
+                              model).addToWorkspace();
+        model.getEntityManager().getTransaction().commit();
+        model.getEntityManager().close();
+        em.getTransaction().begin();
+    }
+
+    private void createKernelWorkspace(Agency core, Product kernelWorkspace,
+                                       Product workspace, Relationship isA) {
+        // Kernel workspace isA workspace
+        ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
+                                               core);
+        populate(pn, core, kernelWorkspace);
+
+        ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
+        netAuth.setClassification(workspace);
+        netAuth.setClassifier(isA);
+        populate(netAuth, core, workspace);
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link Agency} corresponding to the well known object
+     */
+    private Agency find(WellKnownAgency wko) {
+        return em.find(Agency.class, wko.id());
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link Attribute} corresponding to the well known object
+     */
+    private Attribute find(WellKnownAttribute wko) {
+        return em.find(Attribute.class, wko.id());
+    }
+
+    private Interval find(WellKnownInterval wko) {
+        return em.find(Interval.class, wko.id());
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link Location} corresponding to the well known object
+     */
+    private Location find(WellKnownLocation wko) {
+        return em.find(Location.class, wko.id());
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link Product} corresponding to the well known object
+     */
+    private Product find(WellKnownProduct wko) {
+        return em.find(Product.class, wko.id());
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link Relationship} corresponding to the well known object
+     */
+    private Relationship find(WellKnownRelationship wko) {
+        return em.find(Relationship.class, wko.id());
+    }
+
+    /**
+     *
+     * @param wko
+     * @return the {@link StatusCode} corresponding to the well known object
+     */
+    private StatusCode find(WellKnownStatusCode wko) {
+        return em.find(StatusCode.class, wko.id());
+    }
+
+    private Unit find(WellKnownUnit wko) {
+        return em.find(Unit.class, wko.id());
+    }
+
+    private void insert(WellKnownAttribute wko) throws SQLException {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, value_type, indexed, keyed, version) VALUES (?, ?, ?, ?, ?, false, false, 1)",
                                                                         wko.tableName()));
         try {
@@ -152,7 +253,7 @@ public class Bootstrap {
         }
     }
 
-    public void insert(WellKnownInterval wki) throws SQLException {
+    private void insert(WellKnownInterval wki) throws SQLException {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, 1)",
                                                                         wki.tableName()));
         try {
@@ -167,7 +268,7 @@ public class Bootstrap {
         }
     }
 
-    public void insert(WellKnownLocation wkl) throws SQLException {
+    private void insert(WellKnownLocation wkl) throws SQLException {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, 1)",
                                                                         wkl.tableName()));
         try {
@@ -182,7 +283,7 @@ public class Bootstrap {
         }
     }
 
-    public void insert(WellKnownObject wko) throws SQLException {
+    private void insert(WellKnownObject wko) throws SQLException {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, 1)",
                                                                         wko.tableName()));
         try {
@@ -197,7 +298,7 @@ public class Bootstrap {
         }
     }
 
-    public void insert(WellKnownRelationship wko) throws SQLException {
+    private void insert(WellKnownRelationship wko) throws SQLException {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, inverse, version) VALUES (?, ?, ?, ?, ?, 1)",
                                                                         wko.tableName()));
         try {
@@ -213,7 +314,7 @@ public class Bootstrap {
         }
     }
 
-    public void insert(WellKnownStatusCode wko) throws SQLException {
+    private void insert(WellKnownStatusCode wko) throws SQLException {
         PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, propagate_children, updated_by, version) VALUES (?, ?, ?, ?, ?, 0)",
                                                                         wko.tableName()));
         try {
@@ -229,78 +330,18 @@ public class Bootstrap {
         }
     }
 
-    private void serialize(String fileName) throws IOException {
-        ObjectMapper objMapper = new ObjectMapper();
-        objMapper.registerModule(new CoREModule());
-        Hibernate4Module module = new Hibernate4Module();
-        module.enable(Feature.FORCE_LAZY_LOADING);
-        objMapper.registerModule(module);
-        Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
-        em.detach(kernelWorkspace);
-        objMapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName),
-                                                              new WorkspaceSnapshot(kernelWorkspace,
-                                                                                    em));
+    private void populate(Ruleform ruleform, Agency core,
+                          Product kernelWorkspace) {
+        em.persist(new WorkspaceAuthorization(ruleform, kernelWorkspace, core));
     }
 
-    protected void constructKernelWorkspace() {
-        Agency core = find(WellKnownAgency.CORE);
-        Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
-        Product workspace = find(WellKnownProduct.WORKSPACE);
-        Relationship isA = find(WellKnownRelationship.IS_A);
+    private void populate(String key, Ruleform ruleform, Agency core,
+                          Product kernelWorkspace) {
+        em.persist(new WorkspaceAuthorization(key, ruleform, kernelWorkspace,
+                                              core));
+    }
 
-        // Kernel workspace isA workspace
-        ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
-                                               core);
-        populate(pn, core, kernelWorkspace);
-
-        ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
-        netAuth.setClassification(workspace);
-        netAuth.setClassifier(isA);
-        populate(netAuth, core, workspace);
-
-        populate("AnyAttribute", find(WellKnownAttribute.ANY), core,
-                 kernelWorkspace);
-        populate("CopyAttribute", find(WellKnownAttribute.COPY), core,
-                 kernelWorkspace);
-        populate("NotApplicableAttribute",
-                 find(WellKnownAttribute.NOT_APPLICABLE), core,
-                 kernelWorkspace);
-        populate("SameAttribute", find(WellKnownAttribute.SAME), core,
-                 kernelWorkspace);
-        populate("Login", find(WellKnownAttribute.LOGIN), core,
-                 kernelWorkspace);
-        populate("PasswordHash", find(WellKnownAttribute.PASSWORD_HASH), core,
-                 kernelWorkspace);
-        populate("PasswordRounds", find(WellKnownAttribute.PASSWORD_ROUNDS),
-                 core, kernelWorkspace);
-        populate("NamespaceAttribute", find(WellKnownAttribute.NAMESPACE), core,
-                 kernelWorkspace);
-        populate("IRI", find(WellKnownAttribute.IRI), core, kernelWorkspace);
-        populate("JsonldType", find(WellKnownAttribute.JSONLD_TYPE), core,
-                 kernelWorkspace);
-
-        populate("AnyProduct", find(WellKnownProduct.ANY), core,
-                 kernelWorkspace);
-        populate("CopyProduct", find(WellKnownProduct.COPY), core,
-                 kernelWorkspace);
-        populate("SameProduct", find(WellKnownProduct.SAME), core,
-                 kernelWorkspace);
-        populate("NotApplicableProduct", find(WellKnownProduct.NOT_APPLICABLE),
-                 core, kernelWorkspace);
-        populate("Workspace", find(WellKnownProduct.WORKSPACE), core,
-                 kernelWorkspace);
-        populate("KernelWorkspace", find(WellKnownProduct.KERNEL_WORKSPACE),
-                 core, kernelWorkspace);
-
-        populate("AnyLocation", find(WellKnownLocation.ANY), core,
-                 kernelWorkspace);
-        populate("CopyLocation", find(WellKnownLocation.COPY), core,
-                 kernelWorkspace);
-        populate("NotApplicableLocation",
-                 find(WellKnownLocation.NOT_APPLICABLE), core, kernelWorkspace);
-        populate("SameLocation", find(WellKnownLocation.SAME), core,
-                 kernelWorkspace);
-
+    private void populateAgencies(Agency core, Product kernelWorkspace) {
         populate("CoreUser", find(WellKnownAgency.CORE_USER), core,
                  kernelWorkspace);
         populate("AnyAgency", find(WellKnownAgency.ANY), core, kernelWorkspace);
@@ -326,7 +367,69 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("NotApplicableAgency", find(WellKnownAgency.NOT_APPLICABLE),
                  core, kernelWorkspace);
+    }
 
+    private void populateAttributes(Agency core, Product kernelWorkspace) {
+        populate("AnyAttribute", find(WellKnownAttribute.ANY), core,
+                 kernelWorkspace);
+        populate("CopyAttribute", find(WellKnownAttribute.COPY), core,
+                 kernelWorkspace);
+        populate("NotApplicableAttribute",
+                 find(WellKnownAttribute.NOT_APPLICABLE), core,
+                 kernelWorkspace);
+        populate("SameAttribute", find(WellKnownAttribute.SAME), core,
+                 kernelWorkspace);
+        populate("Login", find(WellKnownAttribute.LOGIN), core,
+                 kernelWorkspace);
+        populate("PasswordHash", find(WellKnownAttribute.PASSWORD_HASH), core,
+                 kernelWorkspace);
+        populate("PasswordRounds", find(WellKnownAttribute.PASSWORD_ROUNDS),
+                 core, kernelWorkspace);
+        populate("Namespace", find(WellKnownAttribute.NAMESPACE), core,
+                 kernelWorkspace);
+        populate("IRI", find(WellKnownAttribute.IRI), core, kernelWorkspace);
+        populate("JsonldType", find(WellKnownAttribute.JSONLD_TYPE), core,
+                 kernelWorkspace);
+    }
+
+    private void populateIntervals(Agency core, Product kernelWorkspace) {
+        populate("AnyInterval", find(WellKnownInterval.ANY), core,
+                 kernelWorkspace);
+        populate("CopyInterval", find(WellKnownInterval.COPY), core,
+                 kernelWorkspace);
+        populate("SameInterval", find(WellKnownInterval.SAME), core,
+                 kernelWorkspace);
+        populate("NotApplicableInterval",
+                 find(WellKnownInterval.NOT_APPLICABLE), core, kernelWorkspace);
+    }
+
+    private void populateLocations(Agency core, Product kernelWorkspace) {
+        populate("AnyLocation", find(WellKnownLocation.ANY), core,
+                 kernelWorkspace);
+        populate("CopyLocation", find(WellKnownLocation.COPY), core,
+                 kernelWorkspace);
+        populate("NotApplicableLocation",
+                 find(WellKnownLocation.NOT_APPLICABLE), core, kernelWorkspace);
+        populate("SameLocation", find(WellKnownLocation.SAME), core,
+                 kernelWorkspace);
+    }
+
+    private void populateProducts(Agency core, Product kernelWorkspace) {
+        populate("AnyProduct", find(WellKnownProduct.ANY), core,
+                 kernelWorkspace);
+        populate("CopyProduct", find(WellKnownProduct.COPY), core,
+                 kernelWorkspace);
+        populate("SameProduct", find(WellKnownProduct.SAME), core,
+                 kernelWorkspace);
+        populate("NotApplicableProduct", find(WellKnownProduct.NOT_APPLICABLE),
+                 core, kernelWorkspace);
+        populate("Workspace", find(WellKnownProduct.WORKSPACE), core,
+                 kernelWorkspace);
+        populate("KernelWorkspace", find(WellKnownProduct.KERNEL_WORKSPACE),
+                 core, kernelWorkspace);
+    }
+
+    private void populateRelationships(Agency core, Product kernelWorkspace) {
         populate("AnyRelationship", find(WellKnownRelationship.ANY), core,
                  kernelWorkspace);
         populate("CopyRelationship", find(WellKnownRelationship.COPY), core,
@@ -396,7 +499,13 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("ImportedBy", find(WellKnownRelationship.IMPORTED_BY), core,
                  kernelWorkspace);
+        populate("IsValidatedBy", find(WellKnownRelationship.IS_VALIDATED_BY),
+                 core, kernelWorkspace);
+        populate("Validates", find(WellKnownRelationship.VALIDATES), core,
+                 kernelWorkspace);
+    }
 
+    private void populateStatusCodes(Agency core, Product kernelWorkspace) {
         populate("Unset", find(WellKnownStatusCode.UNSET), core,
                  kernelWorkspace);
         populate("AnyStatusCode", find(WellKnownStatusCode.ANY), core,
@@ -408,7 +517,9 @@ public class Bootstrap {
         populate("NotApplicableStatusCode",
                  find(WellKnownStatusCode.NOT_APPLICABLE), core,
                  kernelWorkspace);
+    }
 
+    private void populateUnits(Agency core, Product kernelWorkspace) {
         populate("UnsetUnit", find(WellKnownUnit.UNSET), core, kernelWorkspace);
         populate("AnyUnit", find(WellKnownUnit.ANY), core, kernelWorkspace);
         populate("CopyUnit", find(WellKnownUnit.COPY), core, kernelWorkspace);
@@ -424,121 +535,17 @@ public class Bootstrap {
         populate("Seconds", find(WellKnownUnit.SECONDS), core, kernelWorkspace);
         populate("Hours", find(WellKnownUnit.HOURS), core, kernelWorkspace);
         populate("Days", find(WellKnownUnit.DAYS), core, kernelWorkspace);
-
-        populate("AnyInterval", find(WellKnownInterval.ANY), core,
-                 kernelWorkspace);
-        populate("CopyInterval", find(WellKnownInterval.COPY), core,
-                 kernelWorkspace);
-        populate("SameInterval", find(WellKnownInterval.SAME), core,
-                 kernelWorkspace);
-        populate("NotApplicableInterval",
-                 find(WellKnownInterval.NOT_APPLICABLE), core, kernelWorkspace);
-        populate("IsValidatedBy", find(WellKnownRelationship.IS_VALIDATED_BY),
-                 core, kernelWorkspace);
-        populate("Validates", find(WellKnownRelationship.VALIDATES), core,
-                 kernelWorkspace);
-        AgencyNetworkAuthorization loginAuthNet = new AgencyNetworkAuthorization(core);
-        loginAuthNet.setClassifier(find(WellKnownRelationship.IS_A));
-        loginAuthNet.setClassification(find(WellKnownAgency.CORE_USER));
-        WorkspaceAuthorization loginAuthNetAuth = new WorkspaceAuthorization(loginAuthNet,
-                                                                             kernelWorkspace,
-                                                                             core);
-        em.persist(loginAuthNetAuth);
-
-        AgencyAttributeAuthorization loginAuth = new AgencyAttributeAuthorization(find(WellKnownAttribute.LOGIN),
-                                                                                  core);
-        loginAuth.setNetworkAuthorization(loginAuthNet);
-        populate(loginAuth, core, kernelWorkspace);
-        AgencyAttributeAuthorization passwordHashAuth = new AgencyAttributeAuthorization(find(WellKnownAttribute.PASSWORD_HASH),
-                                                                                         core);
-        passwordHashAuth.setNetworkAuthorization(loginAuthNet);
-
-        populate(passwordHashAuth, core, kernelWorkspace);
-        AgencyAttributeAuthorization passwordRounds = new AgencyAttributeAuthorization(find(WellKnownAttribute.PASSWORD_ROUNDS),
-                                                                                       core);
-        passwordRounds.setNetworkAuthorization(loginAuthNet);
-
-        populate(passwordRounds, core, kernelWorkspace);
-        AgencyNetwork edge = new AgencyNetwork(find(WellKnownAgency.SUPER_USER),
-                                               isA,
-                                               find(WellKnownAgency.CORE_USER),
-                                               core);
-
-        WorkspaceAuthorization edgeAuth = new WorkspaceAuthorization(edge,
-                                                                     kernelWorkspace,
-                                                                     core);
-        em.persist(edgeAuth);
     }
 
-    /**
-     *
-     * @param wko
-     * @return the {@link Agency} corresponding to the well known object
-     */
-    Agency find(WellKnownAgency wko) {
-        return em.find(Agency.class, wko.id());
-    }
-
-    /**
-     *
-     * @param wko
-     * @return the {@link Attribute} corresponding to the well known object
-     */
-    Attribute find(WellKnownAttribute wko) {
-        return em.find(Attribute.class, wko.id());
-    }
-
-    Interval find(WellKnownInterval wko) {
-        return em.find(Interval.class, wko.id());
-    }
-
-    /**
-     *
-     * @param wko
-     * @return the {@link Location} corresponding to the well known object
-     */
-    Location find(WellKnownLocation wko) {
-        return em.find(Location.class, wko.id());
-    }
-
-    /**
-     *
-     * @param wko
-     * @return the {@link Product} corresponding to the well known object
-     */
-    Product find(WellKnownProduct wko) {
-        return em.find(Product.class, wko.id());
-    }
-
-    /**
-     *
-     * @param wko
-     * @return the {@link Relationship} corresponding to the well known object
-     */
-    Relationship find(WellKnownRelationship wko) {
-        return em.find(Relationship.class, wko.id());
-    }
-
-    /**
-     *
-     * @param wko
-     * @return the {@link StatusCode} corresponding to the well known object
-     */
-    StatusCode find(WellKnownStatusCode wko) {
-        return em.find(StatusCode.class, wko.id());
-    }
-
-    Unit find(WellKnownUnit wko) {
-        return em.find(Unit.class, wko.id());
-    }
-
-    void populate(Ruleform ruleform, Agency core, Product kernelWorkspace) {
-        em.persist(new WorkspaceAuthorization(ruleform, kernelWorkspace, core));
-    }
-
-    void populate(String key, Ruleform ruleform, Agency core,
-                  Product kernelWorkspace) {
-        em.persist(new WorkspaceAuthorization(key, ruleform, kernelWorkspace,
-                                              core));
+    private void serialize(String fileName) throws IOException {
+        ObjectMapper objMapper = new ObjectMapper();
+        objMapper.registerModule(new CoREModule());
+        Hibernate4Module module = new Hibernate4Module();
+        module.enable(Feature.FORCE_LAZY_LOADING);
+        objMapper.registerModule(module);
+        Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
+        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(kernelWorkspace, em);
+        objMapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName),
+                                                              snapshot);
     }
 }

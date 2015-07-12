@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -35,12 +36,16 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 
 /**
  * @author hhildebrand
@@ -60,15 +65,26 @@ public class WorkspaceResource extends TransactionalResource {
     @Path("{uuid}")
     @GET
     public WorkspaceSnapshot getWorkspace(@PathParam("uuid") String workspaceId) {
-        Product workspace = readOnlyModel.getEntityManager().find(Product.class,
-                                                                  toUuid(workspaceId));
+        EntityManager em = readOnlyModel.getEntityManager();
+        Product workspace = em.find(Product.class, toUuid(workspaceId));
         if (workspace == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
                                                             workspaceId),
                                               Status.NOT_FOUND);
         }
-        return new WorkspaceSnapshot(workspace,
-                                     readOnlyModel.getEntityManager());
+        try {
+            WorkspaceSnapshot snapshot = new WorkspaceSnapshot(workspace, em);
+            ObjectMapper objMapper = new ObjectMapper();
+            objMapper.registerModule(new CoREModule());
+            Hibernate4Module module = new Hibernate4Module();
+            module.enable(Feature.FORCE_LAZY_LOADING);
+            objMapper.registerModule(module);
+            System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(snapshot));
+            return snapshot;
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @GET

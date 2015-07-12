@@ -5,158 +5,154 @@
  */
 package com.chiralbehaviors.CoRE.json;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
+import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyLocation;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProduct;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAttribute;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAttributeAuthorization;
+import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAttribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
+import com.chiralbehaviors.CoRE.job.Job;
+import com.chiralbehaviors.CoRE.job.JobChronology;
+import com.chiralbehaviors.CoRE.job.MetaProtocol;
+import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAttribute;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationAttribute;
+import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.location.LocationNetworkAttribute;
+import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
+import com.chiralbehaviors.CoRE.network.NetworkInference;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductAttribute;
+import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductLocation;
+import com.chiralbehaviors.CoRE.product.ProductLocationAttribute;
+import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
+import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductRelationship;
+import com.chiralbehaviors.CoRE.product.ProductRelationshipAttribute;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
+import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAttribute;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
+import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.time.IntervalAttribute;
+import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
+import com.chiralbehaviors.CoRE.time.IntervalNetwork;
+import com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute;
+import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAttribute;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAttribute;
-import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.JobChronology;
-import com.chiralbehaviors.CoRE.time.IntervalAttribute;
-import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
-import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.location.LocationAttribute;
-import com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute;
-import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
-import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.agency.AgencyProductAttribute;
-import com.chiralbehaviors.CoRE.product.ProductLocationAttribute;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyLocation;
-import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
-import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
-import com.chiralbehaviors.CoRE.product.ProductRelationshipAttribute;
-import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyLocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.product.ProductRelationship;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAttribute;
-import com.chiralbehaviors.CoRE.product.ProductAttribute;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.agency.AgencyProduct;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductLocation;
-import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute;
-import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.time.Interval;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute;
-import com.chiralbehaviors.CoRE.location.LocationNetworkAttribute;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.location.LocationNetwork;
-import com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute;
-import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyProductAttributeAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.time.IntervalNetwork;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({
-               @Type(value = ProductChildSequencingAuthorization.class, name = "productchildsequencingauthorization"),
-               @Type(value = StatusCode.class, name = "statuscode"),
-               @Type(value = StatusCodeNetwork.class, name = "statuscodenetwork"),
-               @Type(value = ProductAttributeAuthorization.class, name = "productattributeauthorization"),
-               @Type(value = IntervalNetworkAuthorization.class, name = "intervalnetworkauthorization"),
-               @Type(value = NetworkInference.class, name = "networkinference"),
-               @Type(value = AgencyLocationAttributeAuthorization.class, name = "agencylocationattributeauthorization"),
-               @Type(value = UnitNetworkAttribute.class, name = "unitnetworkattribute"),
-               @Type(value = RelationshipAttributeAuthorization.class, name = "relationshipattributeauthorization"),
-               @Type(value = LocationAttributeAuthorization.class, name = "locationattributeauthorization"),
-               @Type(value = AgencyProduct.class, name = "agencyproduct"),
-               @Type(value = AttributeMetaAttribute.class, name = "attributemetaattribute"),
-               @Type(value = Interval.class, name = "interval"),
-               @Type(value = RelationshipNetworkAuthorization.class, name = "relationshipnetworkauthorization"),
-               @Type(value = WorkspaceAuthorization.class, name = "workspaceauthorization"),
-               @Type(value = JobChronology.class, name = "jobchronology"),
-               @Type(value = IntervalNetwork.class, name = "intervalnetwork"),
-               @Type(value = IntervalAttribute.class, name = "intervalattribute"),
-               @Type(value = AttributeMetaAttributeAuthorization.class, name = "attributemetaattributeauthorization"),
-               @Type(value = StatusCodeNetworkAuthorization.class, name = "statuscodenetworkauthorization"),
-               @Type(value = ProductRelationshipAttribute.class, name = "productrelationshipattribute"),
-               @Type(value = StatusCodeAttribute.class, name = "statuscodeattribute"),
-               @Type(value = StatusCodeAttributeAuthorization.class, name = "statuscodeattributeauthorization"),
-               @Type(value = UnitNetwork.class, name = "unitnetwork"),
-               @Type(value = Job.class, name = "job"),
-               @Type(value = RelationshipNetwork.class, name = "relationshipnetwork"),
-               @Type(value = ProductParentSequencingAuthorization.class, name = "productparentsequencingauthorization"),
-               @Type(value = LocationNetworkAttribute.class, name = "locationnetworkattribute"),
-               @Type(value = AgencyNetworkAuthorization.class, name = "agencynetworkauthorization"),
-               @Type(value = StatusCodeNetworkAttribute.class, name = "statuscodenetworkattribute"),
-               @Type(value = ProductNetworkAuthorization.class, name = "productnetworkauthorization"),
-               @Type(value = ProductLocationAttribute.class, name = "productlocationattribute"),
-               @Type(value = UnitAttribute.class, name = "unitattribute"),
-               @Type(value = AgencyNetwork.class, name = "agencynetwork"),
-               @Type(value = AgencyLocationAttribute.class, name = "agencylocationattribute"),
-               @Type(value = AgencyProductAuthorization.class, name = "agencyproductauthorization"),
-               @Type(value = Protocol.class, name = "protocol"),
-               @Type(value = Product.class, name = "product"),
-               @Type(value = ProductRelationship.class, name = "productrelationship"),
-               @Type(value = Attribute.class, name = "attribute"),
-               @Type(value = RelationshipAttribute.class, name = "relationshipattribute"),
-               @Type(value = UnitAttributeAuthorization.class, name = "unitattributeauthorization"),
-               @Type(value = ProductLocationAttributeAuthorization.class, name = "productlocationattributeauthorization"),
-               @Type(value = AttributeNetwork.class, name = "attributenetwork"),
-               @Type(value = IntervalNetworkAttribute.class, name = "intervalnetworkattribute"),
-               @Type(value = AttributeNetworkAttribute.class, name = "attributenetworkattribute"),
-               @Type(value = ProductNetwork.class, name = "productnetwork"),
-               @Type(value = MetaProtocol.class, name = "metaprotocol"),
-               @Type(value = LocationAttribute.class, name = "locationattribute"),
-               @Type(value = LocationNetwork.class, name = "locationnetwork"),
-               @Type(value = ProductAttribute.class, name = "productattribute"),
-               @Type(value = Location.class, name = "location"),
-               @Type(value = AgencyLocation.class, name = "agencylocation"),
-               @Type(value = AgencyAttribute.class, name = "agencyattribute"),
-               @Type(value = UnitNetworkAuthorization.class, name = "unitnetworkauthorization"),
-               @Type(value = Relationship.class, name = "relationship"),
-               @Type(value = IntervalAttributeAuthorization.class, name = "intervalattributeauthorization"),
-               @Type(value = AgencyProductAttribute.class, name = "agencyproductattribute"),
-               @Type(value = ProductLocation.class, name = "productlocation"),
-               @Type(value = Unit.class, name = "unit"),
-               @Type(value = AgencyLocationAuthorization.class, name = "agencylocationauthorization"),
-               @Type(value = ProductNetworkAttribute.class, name = "productnetworkattribute"),
-               @Type(value = RelationshipNetworkAttribute.class, name = "relationshipnetworkattribute"),
-               @Type(value = AgencyProductAttributeAuthorization.class, name = "agencyproductattributeauthorization"),
-               @Type(value = AgencyNetworkAttribute.class, name = "agencynetworkattribute"),
-               @Type(value = ProductSiblingSequencingAuthorization.class, name = "productsiblingsequencingauthorization"),
-               @Type(value = StatusCodeSequencing.class, name = "statuscodesequencing"),
-               @Type(value = ProductSelfSequencingAuthorization.class, name = "productselfsequencingauthorization"),
-               @Type(value = LocationNetworkAuthorization.class, name = "locationnetworkauthorization"),
-               @Type(value = AttributeNetworkAuthorization.class, name = "attributenetworkauthorization"),
-               @Type(value = Agency.class, name = "agency"),
-               @Type(value = AgencyAttributeAuthorization.class, name = "agencyattributeauthorization"),
-               @Type(value = ProductLocationAuthorization.class, name = "productlocationauthorization"),
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
+@JsonSubTypes({ @Type(value = ProductChildSequencingAuthorization.class),
+                @Type(value = StatusCode.class),
+                @Type(value = StatusCodeNetwork.class),
+                @Type(value = ProductAttributeAuthorization.class),
+                @Type(value = IntervalNetworkAuthorization.class),
+                @Type(value = NetworkInference.class),
+                @Type(value = AgencyLocationAttributeAuthorization.class),
+                @Type(value = UnitNetworkAttribute.class),
+                @Type(value = RelationshipAttributeAuthorization.class),
+                @Type(value = LocationAttributeAuthorization.class),
+                @Type(value = AgencyProduct.class),
+                @Type(value = AttributeMetaAttribute.class),
+                @Type(value = Interval.class),
+                @Type(value = RelationshipNetworkAuthorization.class),
+                @Type(value = WorkspaceAuthorization.class),
+                @Type(value = JobChronology.class),
+                @Type(value = IntervalNetwork.class),
+                @Type(value = IntervalAttribute.class),
+                @Type(value = AttributeMetaAttributeAuthorization.class),
+                @Type(value = StatusCodeNetworkAuthorization.class),
+                @Type(value = ProductRelationshipAttribute.class),
+                @Type(value = StatusCodeAttribute.class),
+                @Type(value = StatusCodeAttributeAuthorization.class),
+                @Type(value = UnitNetwork.class), @Type(value = Job.class),
+                @Type(value = RelationshipNetwork.class),
+                @Type(value = ProductParentSequencingAuthorization.class),
+                @Type(value = LocationNetworkAttribute.class),
+                @Type(value = AgencyNetworkAuthorization.class),
+                @Type(value = StatusCodeNetworkAttribute.class),
+                @Type(value = ProductNetworkAuthorization.class),
+                @Type(value = ProductLocationAttribute.class),
+                @Type(value = UnitAttribute.class),
+                @Type(value = AgencyNetwork.class),
+                @Type(value = AgencyLocationAttribute.class),
+                @Type(value = AgencyProductAuthorization.class),
+                @Type(value = Protocol.class), @Type(value = Product.class),
+                @Type(value = ProductRelationship.class),
+                @Type(value = Attribute.class),
+                @Type(value = RelationshipAttribute.class),
+                @Type(value = UnitAttributeAuthorization.class),
+                @Type(value = ProductLocationAttributeAuthorization.class),
+                @Type(value = AttributeNetwork.class),
+                @Type(value = IntervalNetworkAttribute.class),
+                @Type(value = AttributeNetworkAttribute.class),
+                @Type(value = ProductNetwork.class),
+                @Type(value = MetaProtocol.class),
+                @Type(value = LocationAttribute.class),
+                @Type(value = LocationNetwork.class),
+                @Type(value = ProductAttribute.class),
+                @Type(value = Location.class),
+                @Type(value = AgencyLocation.class),
+                @Type(value = AgencyAttribute.class),
+                @Type(value = UnitNetworkAuthorization.class),
+                @Type(value = Relationship.class),
+                @Type(value = IntervalAttributeAuthorization.class),
+                @Type(value = AgencyProductAttribute.class),
+                @Type(value = ProductLocation.class), @Type(value = Unit.class),
+                @Type(value = AgencyLocationAuthorization.class),
+                @Type(value = ProductNetworkAttribute.class),
+                @Type(value = RelationshipNetworkAttribute.class),
+                @Type(value = AgencyProductAttributeAuthorization.class),
+                @Type(value = AgencyNetworkAttribute.class),
+                @Type(value = ProductSiblingSequencingAuthorization.class),
+                @Type(value = StatusCodeSequencing.class),
+                @Type(value = ProductSelfSequencingAuthorization.class),
+                @Type(value = LocationNetworkAuthorization.class),
+                @Type(value = AttributeNetworkAuthorization.class),
+                @Type(value = Agency.class),
+                @Type(value = AgencyAttributeAuthorization.class),
+                @Type(value = ProductLocationAuthorization.class),
 
 })
 public abstract class PolymorphicRuleformMixin {

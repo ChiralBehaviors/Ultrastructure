@@ -126,7 +126,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                 model.getKernel().getImports(),
                                                 workspace, updatedBy);
         ProductNetworkAttribute attribute = new ProductNetworkAttribute(
-                                                                        model.getKernel().getNamespaceAttribute(),
+                                                                        model.getKernel().getNamespace(),
                                                                         namespace,
                                                                         updatedBy);
         attribute.setNetwork(link);
@@ -210,7 +210,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         for (ProductNetwork link : model.getProductModel().getImmediateChildrenLinks(getDefiningProduct(),
                                                                                      model.getKernel().getImports())) {
             NetworkAttribute<?> attribute = model.getProductModel().getAttributeValue(link,
-                                                                                      model.getKernel().getNamespaceAttribute());
+                                                                                      model.getKernel().getNamespace());
             if (attribute == null) {
                 throw new IllegalStateException(
                                                 String.format("Import has no namespace attribute defined: %s",

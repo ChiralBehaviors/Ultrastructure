@@ -177,7 +177,14 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
     @SuppressWarnings("unchecked")
     @JsonGetter
     public <T> T getValue() {
-        switch (getAuthorizedAttribute().getValueType()) {
+        Attribute attribute = getAuthorizedAttribute();
+        if (attribute == null) {
+            attribute = getAuthorizedNetworkAttribute();
+        }
+        if (attribute.getValueType() == null) {
+            return null; // Hack for serializing frontier of workspace
+        }
+        switch (attribute.getValueType()) {
             case BINARY:
                 return (T) getBinaryValue();
             case BOOLEAN:
@@ -192,7 +199,7 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
                 return (T) getTimestampValue();
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
-                                                              getAuthorizedAttribute().getValueType()));
+                                                              attribute.getValueType()));
         }
     }
 
@@ -251,7 +258,11 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
     }
 
     public void setValue(Object value) {
-        switch (getAuthorizedAttribute().getValueType()) {
+        Attribute attribute = getAuthorizedAttribute();
+        if (attribute == null) {
+            attribute = getAuthorizedNetworkAttribute();
+        }
+        switch (attribute.getValueType()) {
             case BINARY:
                 setBinaryValue((byte[]) value);
                 return;
@@ -272,7 +283,7 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
                 return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
-                                                              getAuthorizedAttribute().getValueType()));
+                                                              attribute.getValueType()));
         }
     }
 }

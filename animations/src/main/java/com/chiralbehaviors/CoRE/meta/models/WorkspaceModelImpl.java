@@ -29,6 +29,7 @@ import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
@@ -58,17 +59,10 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
                                                                         model);
         workspace.add(definingProduct);
-        workspace.add(model.getProductModel().link(definingProduct,
-                                                   model.getKernel().getIsA(),
-                                                   model.getKernel().getWorkspace(),
-                                                   updatedBy));
-        Aspect<Product> aspect = new Aspect<Product>(model.getKernel().getIsA(),
-                                                     model.getKernel().getWorkspace());
+        Kernel kernel = model.getKernel();
+        Aspect<Product> aspect = new Aspect<Product>(kernel.getIsA(),
+                                                     kernel.getWorkspace());
         model.getProductModel().initialize(definingProduct, aspect);
-        model.getProductModel().getAttributesClassifiedBy(definingProduct,
-                                                          aspect).forEach(attribute -> {
-                                                              workspace.add(attribute);
-                                                          });
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         return scope;

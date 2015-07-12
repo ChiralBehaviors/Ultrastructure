@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.workspace.dsl;
+package com.chiralbehaviors.CoRE.meta.workspace.dsl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +31,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceLexer;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;

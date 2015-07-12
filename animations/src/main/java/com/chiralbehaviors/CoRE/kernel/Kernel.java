@@ -147,7 +147,7 @@ public interface Kernel {
 
     Unit getMinutes();
 
-    Attribute getNamespaceAttribute();
+    Attribute getNamespace();
 
     Unit getNanoseconds();
 
@@ -172,6 +172,8 @@ public interface Kernel {
     Relationship getOwns();
 
     Attribute getPasswordHash();
+
+    Attribute getPasswordRounds();
 
     Agency getPropagationSoftware();
 

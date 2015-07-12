@@ -32,8 +32,8 @@ import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 import com.hellblazer.utils.Utils;
 
 /**

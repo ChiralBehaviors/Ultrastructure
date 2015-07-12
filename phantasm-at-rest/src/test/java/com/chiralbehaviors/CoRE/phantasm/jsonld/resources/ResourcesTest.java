@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -40,11 +41,11 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test.TestApplication;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
@@ -226,8 +227,8 @@ public class ResourcesTest extends AbstractModelTest {
                                                               application.getPort()));
         builder.path(FacetResource.class);
         builder.path(FacetResource.class.getMethod("getInstance", String.class,
-                                                   String.class, String.class,
-                                                   String.class, String.class));
+                                                   UUID.class, UUID.class,
+                                                   UUID.class, String.class));
         builder.resolveTemplate("ruleform-type", Product.class.getSimpleName());
         builder.resolveTemplate("classifier",
                                 aspect.getClassifier().getId().toString());

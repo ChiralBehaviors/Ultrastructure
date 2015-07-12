@@ -22,8 +22,8 @@ package com.chiralbehaviors.CoRE.phantasm.generator;
 
 import java.util.Map;
 
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.any.AnyAgency;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspacePresentation;
 
 /**
  * @author hhildebrand

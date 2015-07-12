@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.meta.workspace;
 
 import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,13 +112,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#addImport(com.chiralbehaviors.CoRE.product.Product)
      */
     @Override
-    public void addImport(String namespace, Product workspace, Agency updatedBy) {
+    public void addImport(String namespace, Product workspace,
+                          Agency updatedBy) {
         ProductModel productModel = model.getProductModel();
         if (!productModel.isAccessible(getDefiningProduct(),
                                        model.getKernel().getIsA(),
                                        model.getKernel().getWorkspace())) {
-            throw new IllegalArgumentException(
-                                               String.format("Import is not classified as a Workspace: %s",
+            throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }
         scope.add(namespace,
@@ -125,8 +126,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         ProductNetwork link = productModel.link(getDefiningProduct(),
                                                 model.getKernel().getImports(),
                                                 workspace, updatedBy);
-        ProductNetworkAttribute attribute = new ProductNetworkAttribute(
-                                                                        model.getKernel().getNamespaceAttribute(),
+        ProductNetworkAttribute attribute = new ProductNetworkAttribute(model.getKernel().getNamespace(),
                                                                         namespace,
                                                                         updatedBy);
         attribute.setNetwork(link);
@@ -210,15 +210,29 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         for (ProductNetwork link : model.getProductModel().getImmediateChildrenLinks(getDefiningProduct(),
                                                                                      model.getKernel().getImports())) {
             NetworkAttribute<?> attribute = model.getProductModel().getAttributeValue(link,
-                                                                                      model.getKernel().getNamespaceAttribute());
+                                                                                      model.getKernel().getNamespace());
             if (attribute == null) {
-                throw new IllegalStateException(
-                                                String.format("Import has no namespace attribute defined: %s",
+                throw new IllegalStateException(String.format("Import has no namespace attribute defined: %s",
                                                               link));
             }
             imports.put(attribute.getValue(), link.getChild());
         }
         return imports;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#getKeys()
+     */
+    @Override
+    public List<String> getKeys() {
+        List<String> keys = new ArrayList<>();
+        for (WorkspaceAuthorization auth : WorkspaceSnapshot.getAuthorizations(getDefiningProduct(),
+                                                                               em)) {
+            if (auth.getKey() != null) {
+                keys.add(auth.getKey());
+            }
+        }
+        return keys;
     }
 
     /* (non-Javadoc)
@@ -257,8 +271,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         if (!productModel.isAccessible(getDefiningProduct(),
                                        model.getKernel().getIsA(),
                                        model.getKernel().getWorkspace())) {
-            throw new IllegalArgumentException(
-                                               String.format("Import is not classified as a Workspace: %s",
+            throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }
         scope.remove(model.getWorkspaceModel().getScoped(workspace).getWorkspace());

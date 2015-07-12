@@ -38,8 +38,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.phantasm.demo.MavenArtifact;
 import com.chiralbehaviors.phantasm.demo.Thing1;
 import com.chiralbehaviors.phantasm.demo.Thing2;

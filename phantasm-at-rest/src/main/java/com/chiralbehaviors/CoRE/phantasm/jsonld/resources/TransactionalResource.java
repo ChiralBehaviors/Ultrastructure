@@ -46,16 +46,6 @@ public class TransactionalResource {
         T exec(Model model) throws SQLException;
     }
 
-    public static UUID toUuid(String ruleform) {
-        UUID classification;
-        try {
-            classification = UUID.fromString(ruleform);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(e, Response.Status.BAD_REQUEST);
-        }
-        return classification;
-    }
-
     private final EntityManagerFactory emf;
 
     protected final Model readOnlyModel;
@@ -69,11 +59,9 @@ public class TransactionalResource {
         readOnlyModel.getEntityManager().close();
     }
 
-    protected <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(String relationship,
-                                                                                             String ruleform,
+    protected <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(UUID classifier,
+                                                                                             UUID classification,
                                                                                              NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        UUID classifier = toUuid(relationship);
-        UUID classification = toUuid(ruleform);
         try {
             return networkedModel.getAspect(classifier, classification);
         } catch (IllegalArgumentException e) {
@@ -83,8 +71,8 @@ public class TransactionalResource {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Aspect<RuleForm> getAspect(String ruleformType,
-                                                                                                                                              String relationship,
-                                                                                                                                              String ruleform) {
+                                                                                                                                              UUID relationship,
+                                                                                                                                              UUID ruleform) {
         Class<ExistentialRuleform> ruleformClass = (Class<ExistentialRuleform>) RuleformResource.entityMap.get(ruleformType);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
@@ -92,14 +80,14 @@ public class TransactionalResource {
                                               Status.NOT_FOUND);
         }
         Relationship classifier = readOnlyModel.getEntityManager().find(Relationship.class,
-                                                                        toUuid(relationship));
+                                                                        relationship);
         if (classifier == null) {
             throw new WebApplicationException(String.format("classifier does not exist: %s",
                                                             relationship),
                                               Status.NOT_FOUND);
         }
         ExistentialRuleform classification = readOnlyModel.getEntityManager().find(ruleformClass,
-                                                                                   toUuid(ruleform));
+                                                                                   ruleform);
         if (classification == null) {
             throw new WebApplicationException(String.format("classification does not exist: %s",
                                                             ruleform),

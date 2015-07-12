@@ -1,0 +1,25 @@
+workspace: "urn:uuid:00000000-0000-0004-0000-000000000003" 
+           "Ultrastructure Kernel Workspace" 
+           "The Kernel Ontology for Ultrastructure"
+           
+agencies {
+    edges {
+        SuperUser.IsA.CoreUser
+    }
+    facets {
+        IsA.CoreUser { Login PasswordRounds PasswordHash }
+    }
+}
+
+products {
+    edges {
+        KernelWorkspace.IsA.Workspace
+    }
+    facets {
+        IsA.Workspace { IRI }
+            constraints {
+                n Imports: IsA.Workspace  named by relationship 
+                    { Namespace }
+            }
+    }
+}

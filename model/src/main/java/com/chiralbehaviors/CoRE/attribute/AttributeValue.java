@@ -32,6 +32,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Triggers;
@@ -55,7 +56,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
 
     private static final long serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to Attribute
+    @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attribute")
     private Attribute attribute;
@@ -227,14 +228,18 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         return timestampValue;
     }
 
-    @JsonIgnore
     public Unit getUnit() {
         return unit;
     }
 
     @SuppressWarnings("unchecked")
+    @JsonGetter
     public <T> T getValue() {
-        switch (getAttribute().getValueType()) {
+        ValueType valueType = getAttribute().getValueType();
+        if (valueType == null) {
+            return null; // Done for frontier traversal on workspace serialization
+        }
+        switch (valueType) {
             case BINARY:
                 return (T) getBinaryValue();
             case BOOLEAN:
@@ -249,7 +254,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
                 return (T) getTimestampValue();
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
-                                                              getAttribute().getValueType()));
+                                                              valueType));
         }
     }
 

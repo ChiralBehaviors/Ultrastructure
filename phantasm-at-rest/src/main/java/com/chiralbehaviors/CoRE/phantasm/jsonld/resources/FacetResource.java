@@ -51,6 +51,7 @@ import com.chiralbehaviors.CoRE.meta.models.AttributeModelImpl;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
@@ -108,8 +109,8 @@ public class FacetResource extends TransactionalResource {
     @Path("{ruleform-type}/{classifier}/{classification}")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> getAllInstances(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                                          @PathParam("classifier") String relationship,
-                                                                                                                                                          @PathParam("classification") String ruleform) {
+                                                                                                                                                          @PathParam("classifier") UUID relationship,
+                                                                                                                                                          @PathParam("classification") UUID ruleform) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
         return getFacetInstances(aspect, readOnlyModel, uriInfo);
@@ -129,8 +130,8 @@ public class FacetResource extends TransactionalResource {
     @Path("context/{ruleform-type}/{classifier}/{classification}")
     @GET
     public Map<String, Object> getContext(@PathParam("ruleform-type") String ruleformType,
-                                          @PathParam("classifier") String relationship,
-                                          @PathParam("classification") String ruleform) {
+                                          @PathParam("classifier") UUID relationship,
+                                          @PathParam("classification") UUID ruleform) {
         return createContext(getAspect(ruleformType, relationship, ruleform));
     }
 
@@ -163,13 +164,12 @@ public class FacetResource extends TransactionalResource {
     @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getInstance(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                                @PathParam("classifier") String relationship,
-                                                                                                                                                @PathParam("classification") String ruleform,
-                                                                                                                                                @PathParam("instance") String facetInstance,
+                                                                                                                                                @PathParam("classifier") UUID relationship,
+                                                                                                                                                @PathParam("classification") UUID ruleform,
+                                                                                                                                                @PathParam("instance") UUID existential,
                                                                                                                                                 @QueryParam("frame") String frame) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
-        UUID existential = toUuid(facetInstance);
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
         RuleForm instance = networkedModel.find(existential);
         if (instance == null) {
@@ -195,8 +195,8 @@ public class FacetResource extends TransactionalResource {
     @Path("term/{ruleform-type}/{classifier}/{classification}/{term}")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getTerm(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                            @PathParam("classifier") String relationship,
-                                                                                                                                            @PathParam("classification") String ruleform,
+                                                                                                                                            @PathParam("classifier") UUID relationship,
+                                                                                                                                            @PathParam("classification") UUID ruleform,
                                                                                                                                             @PathParam("term") String term,
                                                                                                                                             @QueryParam("instance") String facetInstance) {
         if (facetInstance != null) {
@@ -214,7 +214,8 @@ public class FacetResource extends TransactionalResource {
         clazz.put(Constants.ID, Facet.getTermIri(aspect, term, uriInfo));
         Attribute attribute = facet.getAttribute(term);
         if (attribute != null) {
-            clazz.put(Constants.TYPE, Facet.getIri(attribute, uriInfo));
+            clazz.put(Constants.TYPE,
+                      RuleformContext.getIri(attribute, uriInfo));
         } else if (facet.getTerm(term) != null) {
             Aspect<?> targetAspect = facet.getTerm(term);
             clazz.put(Constants.TYPE, Facet.getTypeIri(targetAspect, uriInfo));
@@ -232,8 +233,8 @@ public class FacetResource extends TransactionalResource {
     @Path("type/{ruleform-type}/{classifier}/{classification}")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                            @PathParam("classifier") String relationship,
-                                                                                                                                            @PathParam("classification") String ruleform) {
+                                                                                                                                            @PathParam("classifier") UUID relationship,
+                                                                                                                                            @PathParam("classification") UUID ruleform) {
 
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);

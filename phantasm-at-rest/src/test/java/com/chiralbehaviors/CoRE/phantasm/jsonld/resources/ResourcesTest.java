@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.ws.rs.core.UriBuilder;
 
@@ -226,8 +227,8 @@ public class ResourcesTest extends AbstractModelTest {
                                                               application.getPort()));
         builder.path(FacetResource.class);
         builder.path(FacetResource.class.getMethod("getInstance", String.class,
-                                                   String.class, String.class,
-                                                   String.class, String.class));
+                                                   UUID.class, UUID.class,
+                                                   UUID.class, String.class));
         builder.resolveTemplate("ruleform-type", Product.class.getSimpleName());
         builder.resolveTemplate("classifier",
                                 aspect.getClassifier().getId().toString());

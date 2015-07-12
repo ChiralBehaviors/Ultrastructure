@@ -192,8 +192,7 @@ public class RuleformContext {
         ub.path(RuleformResource.class);
         try {
             ub.path(RuleformResource.class.getMethod("getInstance",
-                                                     String.class,
-                                                     String.class));
+                                                     String.class, UUID.class));
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Cannot get getType method", e);
         }

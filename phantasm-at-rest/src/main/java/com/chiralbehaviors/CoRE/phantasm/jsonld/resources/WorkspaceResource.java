@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -29,23 +30,18 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 
 /**
  * @author hhildebrand
@@ -64,27 +60,15 @@ public class WorkspaceResource extends TransactionalResource {
 
     @Path("{uuid}")
     @GET
-    public WorkspaceSnapshot getWorkspace(@PathParam("uuid") String workspaceId) {
+    public WorkspaceSnapshot getWorkspace(@PathParam("uuid") UUID workspaceId) {
         EntityManager em = readOnlyModel.getEntityManager();
-        Product workspace = em.find(Product.class, toUuid(workspaceId));
+        Product workspace = em.find(Product.class, workspaceId);
         if (workspace == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
                                                             workspaceId),
                                               Status.NOT_FOUND);
         }
-        try {
-            WorkspaceSnapshot snapshot = new WorkspaceSnapshot(workspace, em);
-            ObjectMapper objMapper = new ObjectMapper();
-            objMapper.registerModule(new CoREModule());
-            Hibernate4Module module = new Hibernate4Module();
-            module.enable(Feature.FORCE_LAZY_LOADING);
-            objMapper.registerModule(module);
-            System.out.println(objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(snapshot));
-            return snapshot;
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        return null;
+        return new WorkspaceSnapshot(workspace, em);
     }
 
     @GET
@@ -95,21 +79,20 @@ public class WorkspaceResource extends TransactionalResource {
         return FacetResource.getFacetInstances(aspect, readOnlyModel, uriInfo);
     }
 
-    @Path("{uuid}/lookup")
+    @Path("{uuid}/lookup/{member}")
     @GET
-    public Map<String, Object> lookup(@PathParam("uuid") String workspaceId,
-                                      @QueryParam("namespace") String namespace,
-                                      @QueryParam("member") String member) {
-        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(toUuid(workspaceId));
+    public Map<String, Object> lookup(@PathParam("uuid") UUID workspaceId,
+                                      @PathParam("member") String member) {
+        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceId);
         if (scope == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
                                                             workspaceId),
                                               Status.NOT_FOUND);
         }
-        Ruleform resolved = scope.lookup(namespace, member);
+        Ruleform resolved = scope.lookup(member);
         if (resolved == null) {
-            throw new WebApplicationException(String.format("%s:%s not found in workspace: %s",
-                                                            namespace, member,
+            throw new WebApplicationException(String.format("%s not found in workspace: %s",
+                                                            member,
                                                             workspaceId),
                                               Status.NOT_FOUND);
         }

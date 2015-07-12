@@ -44,6 +44,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.NoArgGenerator;
@@ -58,6 +60,7 @@ import com.fasterxml.uuid.NoArgGenerator;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(getterVisibility = Visibility.PUBLIC_ONLY)
+@JsonInclude(Include.NON_NULL)
 @Cacheable
 abstract public class Ruleform implements Serializable, Cloneable {
     public static final String         FIND_ALL_SUFFIX       = ".findAll";

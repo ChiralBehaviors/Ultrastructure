@@ -146,6 +146,7 @@ public final class Util {
         // This value is not in the system and has not been traversed, create a mapped value that stands for an exit from the system
         try {
             mappedValue = value.getClass().getConstructor().newInstance();
+            mappedValue.setNotes("Mapped frontier stand in");
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException(String.format("Unable to get no argument constructor on ruleform: %s",
                                                           value.getClass()),

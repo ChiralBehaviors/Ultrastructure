@@ -133,7 +133,8 @@ public class RuleformContext {
     private final Map<String, Typed> terms = new TreeMap<>();
 
     public Map<String, Object> toNode(Ruleform instance, UriInfo uriInfo) {
-        Map<String, Object> object = toContext();
+        Map<String, Object> object = new TreeMap<>();
+        object.put(Constants.CONTEXT, getContextIri(ruleformClass, uriInfo));
         object.put(Constants.ID, getIri(instance, uriInfo));
         object.put(Constants.TYPE,
                    RuleformContext.getTypeIri(instance.getClass(), uriInfo));

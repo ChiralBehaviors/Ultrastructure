@@ -25,11 +25,11 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld;
  *
  */
 public class Constants {
-    public static final String CLASSIFICATION = "classification";
-    public static final String CLASSIFIER     = "classifier";
-    public static final String CONTEXT        = "@context";
-    public static final String GRAPH          = "@graph";
-    public static final String ID             = "@id";
-    public static final String TYPE           = "@type";
+    public static final String CONTAINER = "@container";
+    public static final String CONTEXT   = "@context";
+    public static final String GRAPH     = "@graph";
+    public static final String ID        = "@id";
+    public static final String INDEX     = "@index";
+    public static final String TYPE      = "@type";
 
 }

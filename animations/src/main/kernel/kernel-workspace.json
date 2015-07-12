@@ -1,15 +1,13 @@
 {
   "auths" : [ {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-404c0287-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "404c0287-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e146f075-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e146f075-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : {
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-000000000003",
       "id" : "00000000-0000-0000-0000-000000000003",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The CoRE Ultra-Structure system",
@@ -19,27 +17,22 @@
       "@type" : "Product",
       "@id" : "Product-00000000-0000-0004-0000-000000000003",
       "id" : "00000000-0000-0004-0000-000000000003",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The defining product of the Kernel workspace",
       "name" : "kernelWorkspace"
     },
-    "key" : null,
     "type" : "ProductNetwork",
     "ruleform" : {
       "@type" : "ProductNetwork",
-      "@id" : "ProductNetwork-404c0286-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "404c0286-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "ProductNetwork-e146f074-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e146f074-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
-      "inference" : null,
       "relationship" : {
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000013",
         "id" : "00000000-0000-0005-0000-000000000013",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A is a B",
@@ -48,35 +41,28 @@
           "@type" : "Relationship",
           "@id" : "Relationship-00000000-0000-0005-0000-000000000012",
           "id" : "00000000-0000-0005-0000-000000000012",
-          "notes" : null,
           "version" : 1,
           "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
           "description" : "A includes B",
           "name" : "includes",
-          "inverse" : "Relationship-00000000-0000-0005-0000-000000000013",
-          "operator" : null
-        },
-        "operator" : null
+          "inverse" : "Relationship-00000000-0000-0005-0000-000000000013"
+        }
       },
       "child" : {
         "@type" : "Product",
         "@id" : "Product-00000000-0000-0004-0000-000000000006",
         "id" : "00000000-0000-0004-0000-000000000006",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "Special product that parents the network of objects that make a workspace",
         "name" : "Workspace"
       },
-      "parent" : "Product-00000000-0000-0004-0000-000000000003",
-      "premise1" : null,
-      "premise2" : null
+      "parent" : "Product-00000000-0000-0004-0000-000000000003"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-404fac0b-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "404fac0b-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e149af99-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e149af99-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -86,7 +72,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-000000000006",
       "id" : "00000000-0000-0000-0000-000000000006",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "Users allowed to log into the CoRE system",
@@ -94,9 +79,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4050213d-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4050213d-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e149fdbb-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e149fdbb-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -106,7 +90,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-000000000001",
       "id" : "00000000-0000-0000-0000-000000000001",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Agency that stands for any agency",
@@ -114,9 +97,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4050966f-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4050966f-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14a4bdd-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14a4bdd-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -126,7 +108,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-000000000002",
       "id" : "00000000-0000-0000-0000-000000000002",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Agency that stands for copy agency",
@@ -134,9 +115,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4050bd80-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4050bd80-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14a72ee-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14a72ee-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -145,9 +125,8 @@
     "ruleform" : "Agency-00000000-0000-0000-0000-000000000003"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40510ba2-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40510ba2-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14ac110-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14ac110-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -157,7 +136,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-000000000004",
       "id" : "00000000-0000-0000-0000-000000000004",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "General software component of the CoRE Ultra-Structure system",
@@ -165,9 +143,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405180d4-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405180d4-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14b0f32-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14b0f32-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -177,7 +154,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-000000000009",
       "id" : "00000000-0000-0000-0000-000000000009",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "Animation procedure that performs logical deduction on network ruleforms",
@@ -185,9 +161,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4051f606-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4051f606-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14bab74-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14bab74-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -197,7 +172,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-00000000000b",
       "id" : "00000000-0000-0000-0000-00000000000b",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "Privileged agencys that have special meaning in the CoRE System",
@@ -205,9 +179,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40526b38-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40526b38-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14c20a6-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14c20a6-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -217,7 +190,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-000000000005",
       "id" : "00000000-0000-0000-0000-000000000005",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The animation proceedure that implements the CoRE meta model behavior",
@@ -225,9 +197,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4052b95a-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4052b95a-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14c95d8-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14c95d8-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -237,7 +208,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-00000000000c",
       "id" : "00000000-0000-0000-0000-00000000000c",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The god user that we can actually use to authenticate and log into the system",
@@ -245,9 +215,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40532e8c-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40532e8c-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14ce3fa-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14ce3fa-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -257,7 +226,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-000000000007",
       "id" : "00000000-0000-0000-0000-000000000007",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The process that creates inverse network relationships",
@@ -265,9 +233,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4053a3be-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4053a3be-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14d592c-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14d592c-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -277,7 +244,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-00000000000a",
       "id" : "00000000-0000-0000-0000-00000000000a",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "Special relationship used in metarule tables to indicate that no network transformation should be performed",
@@ -285,9 +251,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4053f1e0-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4053f1e0-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14da74e-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14da74e-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -297,7 +262,6 @@
       "@type" : "Agency",
       "@id" : "Agency-00000000-0000-0000-0000-000000000008",
       "id" : "00000000-0000-0000-0000-000000000008",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Agency that stands for 'not applicable'",
@@ -305,9 +269,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40548e22-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40548e22-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14e1c80-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14e1c80-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -317,7 +280,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-000000000001",
       "id" : "00000000-0000-0001-0000-000000000001",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Attribute that stands for any attribute",
@@ -328,9 +290,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40550354-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40550354-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14e91b2-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14e91b2-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -340,7 +301,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-000000000002",
       "id" : "00000000-0000-0001-0000-000000000002",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Attribute that stands for the copy attribute",
@@ -351,9 +311,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40555176-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40555176-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14f06e4-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14f06e4-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -363,7 +322,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-000000000005",
       "id" : "00000000-0000-0001-0000-000000000005",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Attribute that stands for 'not applicable'",
@@ -374,9 +332,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40559f98-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40559f98-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14f7c16-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14f7c16-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -386,7 +343,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-000000000009",
       "id" : "00000000-0000-0001-0000-000000000009",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Attribute that stands for the same attribute",
@@ -397,9 +353,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405614ca-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405614ca-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e14ff148-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e14ff148-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -409,7 +364,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-000000000003",
       "id" : "00000000-0000-0001-0000-000000000003",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The Attribute that contains the CoRE login name of the agency",
@@ -420,9 +374,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405662ec-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405662ec-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1503f6a-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1503f6a-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -432,7 +385,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-000000000007",
       "id" : "00000000-0000-0001-0000-000000000007",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The Attribute that contains the password hash of the CoRE user",
@@ -443,9 +395,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4056d81e-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4056d81e-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e150dbac-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e150dbac-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -455,7 +406,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-000000000008",
       "id" : "00000000-0000-0001-0000-000000000008",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The Attribute that contains the required rounds for password hash of the CoRE user",
@@ -466,9 +416,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40572640-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40572640-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15129ce-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15129ce-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -478,7 +427,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-000000000004",
       "id" : "00000000-0000-0001-0000-000000000004",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Attribute that stands for the namespace attribute",
@@ -489,9 +437,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40579b72-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40579b72-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1519f00-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1519f00-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -501,7 +448,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-00000000000a",
       "id" : "00000000-0000-0001-0000-00000000000a",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Attribute that stands for the Internationalized Resource Indicator",
@@ -512,9 +458,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405885d4-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405885d4-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1521432-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1521432-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -524,7 +469,6 @@
       "@type" : "Attribute",
       "@id" : "Attribute-00000000-0000-0001-0000-00000000000b",
       "id" : "00000000-0000-0001-0000-00000000000b",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Attribute that stands for the JSON-LD @type",
@@ -535,9 +479,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4058fb06-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4058fb06-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1528964-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1528964-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -547,7 +490,6 @@
       "@type" : "Interval",
       "@id" : "Interval-00000000-0000-0002-0000-000000000001",
       "id" : "00000000-0000-0002-0000-000000000001",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Interval that stands for any interval",
@@ -555,9 +497,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40597038-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40597038-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e152fe96-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e152fe96-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -567,7 +508,6 @@
       "@type" : "Interval",
       "@id" : "Interval-00000000-0000-0002-0000-000000000002",
       "id" : "00000000-0000-0002-0000-000000000002",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Interval that stands for copy interval",
@@ -575,9 +515,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4059be5a-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4059be5a-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15373c8-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15373c8-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -587,7 +526,6 @@
       "@type" : "Interval",
       "@id" : "Interval-00000000-0000-0002-0000-000000000004",
       "id" : "00000000-0000-0002-0000-000000000004",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Interval that stands for the same interval",
@@ -595,9 +533,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405a338c-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405a338c-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e153c1ea-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e153c1ea-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -607,7 +544,6 @@
       "@type" : "Interval",
       "@id" : "Interval-00000000-0000-0002-0000-000000000003",
       "id" : "00000000-0000-0002-0000-000000000003",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Interval that stands for 'not applicable'",
@@ -615,9 +551,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405acfce-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405acfce-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e154371c-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e154371c-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -627,7 +562,6 @@
       "@type" : "Location",
       "@id" : "Location-00000000-0000-0003-0000-000000000001",
       "id" : "00000000-0000-0003-0000-000000000001",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "This is used in protocol rules to indicate that any Location will satisfy the conditions for that rule",
@@ -635,9 +569,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405b4500-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405b4500-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e154d35e-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e154d35e-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -647,7 +580,6 @@
       "@type" : "Location",
       "@id" : "Location-00000000-0000-0003-0000-000000000002",
       "id" : "00000000-0000-0003-0000-000000000002",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Location that stands for copy location",
@@ -655,9 +587,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405bba32-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405bba32-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1554890-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1554890-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -667,7 +598,6 @@
       "@type" : "Location",
       "@id" : "Location-00000000-0000-0003-0000-000000000003",
       "id" : "00000000-0000-0003-0000-000000000003",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Location that stands for 'not applicable'",
@@ -675,9 +605,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405c2f64-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405c2f64-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15596b2-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15596b2-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -687,7 +616,6 @@
       "@type" : "Location",
       "@id" : "Location-00000000-0000-0003-0000-000000000004",
       "id" : "00000000-0000-0003-0000-000000000004",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Location that stands for the same location",
@@ -695,9 +623,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405c7d86-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405c7d86-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1560be4-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1560be4-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -707,7 +634,6 @@
       "@type" : "Product",
       "@id" : "Product-00000000-0000-0004-0000-000000000001",
       "id" : "00000000-0000-0004-0000-000000000001",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Product that stands for any product",
@@ -715,9 +641,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405cf2b8-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405cf2b8-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1568116-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1568116-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -727,7 +652,6 @@
       "@type" : "Product",
       "@id" : "Product-00000000-0000-0004-0000-000000000002",
       "id" : "00000000-0000-0004-0000-000000000002",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Product that stands for copy product",
@@ -735,9 +659,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405d40da-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405d40da-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e156cf38-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e156cf38-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -747,7 +670,6 @@
       "@type" : "Product",
       "@id" : "Product-00000000-0000-0004-0000-000000000005",
       "id" : "00000000-0000-0004-0000-000000000005",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "Special product that stands for the same product supplied",
@@ -755,9 +677,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405db60c-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405db60c-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1571d5a-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1571d5a-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -767,7 +688,6 @@
       "@type" : "Product",
       "@id" : "Product-00000000-0000-0004-0000-000000000004",
       "id" : "00000000-0000-0004-0000-000000000004",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "Special product that stands for 'not applicable'",
@@ -775,9 +695,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405db60d-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405db60d-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e157446b-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e157446b-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -786,9 +705,8 @@
     "ruleform" : "Product-00000000-0000-0004-0000-000000000006"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405db60e-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405db60e-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e157446c-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e157446c-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -797,9 +715,8 @@
     "ruleform" : "Product-00000000-0000-0004-0000-000000000003"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405e5250-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405e5250-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e157e0ae-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e157e0ae-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -809,19 +726,16 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000001",
       "id" : "00000000-0000-0005-0000-000000000001",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Relationship that stands for any relationship",
       "name" : "(ANY)",
-      "inverse" : "Relationship-00000000-0000-0005-0000-000000000001",
-      "operator" : null
+      "inverse" : "Relationship-00000000-0000-0005-0000-000000000001"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405eee92-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405eee92-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e158a400-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e158a400-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -831,19 +745,16 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000003",
       "id" : "00000000-0000-0005-0000-000000000003",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The well known Relationship copy that represents the copy relationship",
       "name" : "(COPY)",
-      "inverse" : "Relationship-00000000-0000-0005-0000-000000000003",
-      "operator" : null
+      "inverse" : "Relationship-00000000-0000-0005-0000-000000000003"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-405f8ad4-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "405f8ad4-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1594042-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1594042-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -853,19 +764,16 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000021",
       "id" : "00000000-0000-0005-0000-000000000021",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "Special relationship used in metarule tables to indicate that no network transformation should be performed",
       "name" : "(SAME)",
-      "inverse" : "Relationship-00000000-0000-0005-0000-000000000021",
-      "operator" : null
+      "inverse" : "Relationship-00000000-0000-0005-0000-000000000021"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40602717-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40602717-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e159dc85-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e159dc85-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -875,7 +783,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000014",
       "id" : "00000000-0000-0005-0000-000000000014",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A is contained in B",
@@ -884,21 +791,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000002",
         "id" : "00000000-0000-0005-0000-000000000002",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A contains B",
         "name" : "contains",
-        "inverse" : "Relationship-00000000-0000-0005-0000-000000000014",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-000000000014"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40602718-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40602718-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e159dc86-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e159dc86-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -907,9 +810,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000002"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40604e29-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40604e29-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e159dc87-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e159dc87-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -918,9 +820,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000013"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40604e2a-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40604e2a-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15a0398-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15a0398-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -929,9 +830,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000012"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4060ea6d-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4060ea6d-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15a9fdb-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15a9fdb-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -941,7 +841,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-00000000000b",
       "id" : "00000000-0000-0005-0000-00000000000b",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A has exception B",
@@ -950,21 +849,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000015",
         "id" : "00000000-0000-0005-0000-000000000015",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A is exception to B",
         "name" : "is-exception-to",
-        "inverse" : "Relationship-00000000-0000-0005-0000-00000000000b",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-00000000000b"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4061117e-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4061117e-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15a9fdc-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15a9fdc-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -973,9 +868,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000015"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4061acc1-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4061acc1-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15b632f-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15b632f-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -985,7 +879,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000016",
       "id" : "00000000-0000-0005-0000-000000000016",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A is the location of B",
@@ -994,21 +887,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-00000000001a",
         "id" : "00000000-0000-0005-0000-00000000001a",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A maps to location B",
         "name" : "maps-to-location",
-        "inverse" : "Relationship-00000000-0000-0005-0000-000000000016",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-000000000016"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4061d3d2-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4061d3d2-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15b6330-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15b6330-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1017,9 +906,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000001a"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40627015-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40627015-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15c2683-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15c2683-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1029,7 +917,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-00000000001f",
       "id" : "00000000-0000-0005-0000-00000000001f",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A's prototype is B",
@@ -1038,21 +925,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000020",
         "id" : "00000000-0000-0005-0000-000000000020",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A is the prototype of B",
         "name" : "prototype-of",
-        "inverse" : "Relationship-00000000-0000-0005-0000-00000000001f",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-00000000001f"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40627016-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40627016-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15c2684-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15c2684-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1061,9 +944,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000020"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40630c59-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40630c59-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15cc2c7-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15cc2c7-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1073,7 +955,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000008",
       "id" : "00000000-0000-0005-0000-000000000008",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A > B",
@@ -1082,21 +963,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000018",
         "id" : "00000000-0000-0005-0000-000000000018",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A < B",
         "name" : "<",
-        "inverse" : "Relationship-00000000-0000-0005-0000-000000000008",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-000000000008"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40630c5a-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40630c5a-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15ce9d8-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15ce9d8-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1105,9 +982,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000018"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4063a89c-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4063a89c-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15d861a-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15d861a-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1117,19 +993,16 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000006",
       "id" : "00000000-0000-0005-0000-000000000006",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A equals B",
       "name" : "=",
-      "inverse" : "Relationship-00000000-0000-0005-0000-000000000006",
-      "operator" : null
+      "inverse" : "Relationship-00000000-0000-0005-0000-000000000006"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406444df-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406444df-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15e496d-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15e496d-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1139,7 +1012,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000019",
       "id" : "00000000-0000-0005-0000-000000000019",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A <= B",
@@ -1148,21 +1020,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000009",
         "id" : "00000000-0000-0005-0000-000000000009",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A >= B",
         "name" : ">=",
-        "inverse" : "Relationship-00000000-0000-0005-0000-000000000019",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-000000000019"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40646bf0-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40646bf0-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15e496e-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15e496e-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1171,9 +1039,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000009"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40650833-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40650833-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15ee5b1-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15ee5b1-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1183,7 +1050,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000004",
       "id" : "00000000-0000-0005-0000-000000000004",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A developed B",
@@ -1192,21 +1058,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000005",
         "id" : "00000000-0000-0005-0000-000000000005",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A is developed by B",
         "name" : "developed-by",
-        "inverse" : "Relationship-00000000-0000-0005-0000-000000000004",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-000000000004"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40652f44-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40652f44-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15ee5b2-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15ee5b2-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1215,9 +1077,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000005"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4065cb87-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4065cb87-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15fa905-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15fa905-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1227,7 +1088,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000023",
       "id" : "00000000-0000-0005-0000-000000000023",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A is a version of B",
@@ -1236,21 +1096,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-00000000000e",
         "id" : "00000000-0000-0005-0000-00000000000e",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A has version B",
         "name" : "has-version",
-        "inverse" : "Relationship-00000000-0000-0005-0000-000000000023",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-000000000023"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4065cb88-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4065cb88-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e15fa906-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e15fa906-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1259,9 +1115,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000000e"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406667cb-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406667cb-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1604549-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1604549-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1271,7 +1126,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-00000000000d",
       "id" : "00000000-0000-0005-0000-00000000000d",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A has member B",
@@ -1280,21 +1134,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-00000000001b",
         "id" : "00000000-0000-0005-0000-00000000001b",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A is a member of B",
         "name" : "member-of",
-        "inverse" : "Relationship-00000000-0000-0005-0000-00000000000d",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-00000000000d"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40668edc-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40668edc-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e160454a-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e160454a-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1303,9 +1153,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000001b"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4067040f-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4067040f-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e160e18d-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e160e18d-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1315,7 +1164,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-00000000000f",
       "id" : "00000000-0000-0005-0000-00000000000f",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A is the head of B",
@@ -1324,21 +1172,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-00000000000c",
         "id" : "00000000-0000-0005-0000-00000000000c",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "The leader of A is B",
         "name" : "has-head",
-        "inverse" : "Relationship-00000000-0000-0005-0000-00000000000f",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-00000000000f"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40672b20-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40672b20-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e160e18e-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e160e18e-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1347,9 +1191,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000000c"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4067c763-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4067c763-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e161cbf1-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e161cbf1-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1359,7 +1202,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-00000000000a",
       "id" : "00000000-0000-0005-0000-00000000000a",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A had member B",
@@ -1368,21 +1210,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000007",
         "id" : "00000000-0000-0005-0000-000000000007",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A is a former member of B",
         "name" : "former-member-of",
-        "inverse" : "Relationship-00000000-0000-0005-0000-00000000000a",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-00000000000a"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4067ee74-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4067ee74-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e161cbf2-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e161cbf2-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1391,9 +1229,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000007"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406863a6-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406863a6-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1626834-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1626834-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1403,19 +1240,16 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-00000000001c",
       "id" : "00000000-0000-0005-0000-00000000001c",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A is not applicable to B",
       "name" : "(N/A)",
-      "inverse" : "Relationship-00000000-0000-0005-0000-00000000001c",
-      "operator" : null
+      "inverse" : "Relationship-00000000-0000-0005-0000-00000000001c"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4068ffe9-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4068ffe9-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e162dd67-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e162dd67-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1425,7 +1259,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-00000000001d",
       "id" : "00000000-0000-0005-0000-00000000001d",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A is owned by B",
@@ -1434,21 +1267,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-00000000001e",
         "id" : "00000000-0000-0005-0000-00000000001e",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A owns B",
         "name" : "owns",
-        "inverse" : "Relationship-00000000-0000-0005-0000-00000000001d",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-00000000001d"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4068ffea-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4068ffea-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1630478-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1630478-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1457,9 +1286,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-00000000001e"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4069c33d-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4069c33d-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e163a0bb-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e163a0bb-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1469,7 +1297,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000011",
       "id" : "00000000-0000-0005-0000-000000000011",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A imports B",
@@ -1478,21 +1305,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000010",
         "id" : "00000000-0000-0005-0000-000000000010",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A is imported by B",
         "name" : "imported by",
-        "inverse" : "Relationship-00000000-0000-0005-0000-000000000011",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-000000000011"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4069ea4e-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4069ea4e-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e163a0bc-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e163a0bc-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1501,9 +1324,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000010"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406a8691-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406a8691-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1643cff-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1643cff-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1513,7 +1335,6 @@
       "@type" : "Relationship",
       "@id" : "Relationship-00000000-0000-0005-0000-000000000017",
       "id" : "00000000-0000-0005-0000-000000000017",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A is validated by B",
@@ -1522,21 +1343,17 @@
         "@type" : "Relationship",
         "@id" : "Relationship-00000000-0000-0005-0000-000000000022",
         "id" : "00000000-0000-0005-0000-000000000022",
-        "notes" : null,
         "version" : 1,
         "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
         "description" : "A is the location of B",
         "name" : "validates",
-        "inverse" : "Relationship-00000000-0000-0005-0000-000000000017",
-        "operator" : null
-      },
-      "operator" : null
+        "inverse" : "Relationship-00000000-0000-0005-0000-000000000017"
+      }
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406a8692-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406a8692-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1643d00-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1643d00-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1545,9 +1362,8 @@
     "ruleform" : "Relationship-00000000-0000-0005-0000-000000000022"
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406b22d4-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406b22d4-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e164d942-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e164d942-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1557,7 +1373,6 @@
       "@type" : "StatusCode",
       "@id" : "StatusCode-00000000-0000-0006-0000-000000000005",
       "id" : "00000000-0000-0006-0000-000000000005",
-      "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The status code which indicates the status code is not set",
@@ -1567,9 +1382,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406b9806-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406b9806-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1654e74-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1654e74-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1579,7 +1393,6 @@
       "@type" : "StatusCode",
       "@id" : "StatusCode-00000000-0000-0006-0000-000000000001",
       "id" : "00000000-0000-0006-0000-000000000001",
-      "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Status Code that stands for any status code",
@@ -1589,9 +1402,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406be628-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406be628-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e165c3a6-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e165c3a6-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1601,7 +1413,6 @@
       "@type" : "StatusCode",
       "@id" : "StatusCode-00000000-0000-0006-0000-000000000002",
       "id" : "00000000-0000-0006-0000-000000000002",
-      "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special StatusCode that stands for copy status code",
@@ -1611,9 +1422,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406c5b5a-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406c5b5a-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e16611c8-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e16611c8-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1623,7 +1433,6 @@
       "@type" : "StatusCode",
       "@id" : "StatusCode-00000000-0000-0006-0000-000000000004",
       "id" : "00000000-0000-0006-0000-000000000004",
-      "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special StatusCode that stands for the same status code",
@@ -1633,9 +1442,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406cd08c-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406cd08c-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e16686fa-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e16686fa-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1645,7 +1453,6 @@
       "@type" : "StatusCode",
       "@id" : "StatusCode-00000000-0000-0006-0000-000000000003",
       "id" : "00000000-0000-0006-0000-000000000003",
-      "notes" : null,
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special StatusCode that stands for 'not applicable'",
@@ -1655,9 +1462,8 @@
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406d6cce-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406d6cce-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e167233c-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e167233c-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1667,22 +1473,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-00000000000c",
       "id" : "00000000-0000-0007-0000-00000000000c",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The undefined unit",
       "name" : "(UNSET)",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406de200-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406de200-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e167986e-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e167986e-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1692,22 +1492,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-000000000001",
       "id" : "00000000-0000-0007-0000-000000000001",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Unit that stands for any unit",
       "name" : "(ANY)",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406e3022-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406e3022-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1680da0-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1680da0-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1717,22 +1511,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-000000000002",
       "id" : "00000000-0000-0007-0000-000000000002",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Unit that stands for copy unit",
       "name" : "(COPY)",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406ea554-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406ea554-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e16882d2-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e16882d2-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1742,22 +1530,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-00000000000a",
       "id" : "00000000-0000-0007-0000-00000000000a",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Unit that stands for the same unit",
       "name" : "(SAME)",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406f1a86-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406f1a86-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e168f804-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e168f804-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1767,22 +1549,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-000000000009",
       "id" : "00000000-0000-0007-0000-000000000009",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "A special Unit that stands for 'not applicable'",
       "name" : "(N/A)",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-406f8fb8-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "406f8fb8-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e1696d36-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e1696d36-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1792,22 +1568,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-000000000008",
       "id" : "00000000-0000-0007-0000-000000000008",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The time unit Nanoseconds",
       "name" : "Nanoseconds",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-407004ea-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "407004ea-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e169e268-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e169e268-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1817,22 +1587,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-000000000005",
       "id" : "00000000-0000-0007-0000-000000000005",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The time unit Microseconds",
       "name" : "Microseconds",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40707a1c-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40707a1c-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e16a579a-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e16a579a-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1842,22 +1606,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-000000000006",
       "id" : "00000000-0000-0007-0000-000000000006",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The time unit Milliseconds",
       "name" : "Milliseonds",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4070ef4e-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4070ef4e-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e16aa5bc-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e16aa5bc-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1867,22 +1625,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-00000000000b",
       "id" : "00000000-0000-0007-0000-00000000000b",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The time unit Seconds",
       "name" : "Seconds",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40713d70-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40713d70-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e16b1aee-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e16b1aee-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1892,22 +1644,16 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-000000000004",
       "id" : "00000000-0000-0007-0000-000000000004",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The time unit Hours",
       "name" : "Hours",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4071b2a2-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4071b2a2-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e16b9020-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e16b9020-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
@@ -1917,241 +1663,178 @@
       "@type" : "Unit",
       "@id" : "Unit-00000000-0000-0007-0000-000000000003",
       "id" : "00000000-0000-0007-0000-000000000003",
-      "notes" : null,
       "version" : 1,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000003",
       "description" : "The time unit Minutes",
       "name" : "days",
-      "abbreviation" : null,
-      "datatype" : null,
-      "enumerated" : false,
-      "max" : null,
-      "min" : null
+      "enumerated" : false
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40ecfd32-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40ecfd32-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e20a8f50-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e20a8f50-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : null,
     "type" : "AgencyNetwork",
     "ruleform" : {
       "@type" : "AgencyNetwork",
-      "@id" : "AgencyNetwork-40ecfd30-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "40ecfd30-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "AgencyNetwork-e20a8f4e-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e20a8f4e-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
-      "inference" : null,
       "relationship" : "Relationship-00000000-0000-0005-0000-000000000013",
       "child" : "Agency-00000000-0000-0000-0000-000000000006",
-      "parent" : "Agency-00000000-0000-0000-0000-00000000000c",
-      "premise1" : null,
-      "premise2" : null
+      "parent" : "Agency-00000000-0000-0000-0000-00000000000c"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40f27b75-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40f27b75-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e212ccb3-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e212ccb3-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : null,
     "type" : "AgencyNetworkAuthorization",
     "ruleform" : {
       "@type" : "AgencyNetworkAuthorization",
-      "@id" : "AgencyNetworkAuthorization-40f0cdc4-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "40f0cdc4-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "AgencyNetworkAuthorization-e2105bb2-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e2105bb2-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
-      "authorizedRelationship" : null,
-      "cardinality" : null,
-      "childRelationship" : null,
       "classifier" : "Relationship-00000000-0000-0005-0000-000000000013",
-      "groupingAgency" : null,
-      "name" : null,
       "sequenceNumber" : 0,
-      "authorizedParent" : null,
       "classification" : "Agency-00000000-0000-0000-0000-000000000006"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40f47749-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40f47749-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e215d9f7-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e215d9f7-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : null,
     "type" : "AgencyAttributeAuthorization",
     "ruleform" : {
       "@type" : "AgencyAttributeAuthorization",
-      "@id" : "AgencyAttributeAuthorization-40f2a286-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "40f2a286-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "AgencyAttributeAuthorization-e2131ad4-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e2131ad4-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
       "authorizedAttribute" : "Attribute-00000000-0000-0001-0000-000000000003",
-      "authorizedNetworkAttribute" : null,
-      "groupingAgency" : null,
       "sequenceNumber" : 0,
-      "networkAuthorization" : "AgencyNetworkAuthorization-40f0cdc4-283c-11e5-8c1b-3f95122b23e4",
-      "value" : null
+      "networkAuthorization" : "AgencyNetworkAuthorization-e2105bb2-28c1-11e5-9eab-736a4a0ee0d8"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40f6731d-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40f6731d-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e218e73b-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e218e73b-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : null,
     "type" : "AgencyAttributeAuthorization",
     "ruleform" : {
       "@type" : "AgencyAttributeAuthorization",
-      "@id" : "AgencyAttributeAuthorization-40f4774a-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "40f4774a-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "AgencyAttributeAuthorization-e215d9f8-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e215d9f8-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
       "authorizedAttribute" : "Attribute-00000000-0000-0001-0000-000000000008",
-      "authorizedNetworkAttribute" : null,
-      "groupingAgency" : null,
       "sequenceNumber" : 0,
-      "networkAuthorization" : "AgencyNetworkAuthorization-40f0cdc4-283c-11e5-8c1b-3f95122b23e4",
-      "value" : null
+      "networkAuthorization" : "AgencyNetworkAuthorization-e2105bb2-28c1-11e5-9eab-736a4a0ee0d8"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40f820d1-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40f820d1-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e21b583f-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e21b583f-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : null,
     "type" : "AgencyAttributeAuthorization",
     "ruleform" : {
       "@type" : "AgencyAttributeAuthorization",
-      "@id" : "AgencyAttributeAuthorization-40f6731e-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "40f6731e-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "AgencyAttributeAuthorization-e218e73c-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e218e73c-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
       "authorizedAttribute" : "Attribute-00000000-0000-0001-0000-000000000007",
-      "authorizedNetworkAttribute" : null,
-      "groupingAgency" : null,
       "sequenceNumber" : 0,
-      "networkAuthorization" : "AgencyNetworkAuthorization-40f0cdc4-283c-11e5-8c1b-3f95122b23e4",
-      "value" : null
+      "networkAuthorization" : "AgencyNetworkAuthorization-e2105bb2-28c1-11e5-9eab-736a4a0ee0d8"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40f847e3-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40f847e3-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e21ba661-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e21ba661-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : null,
     "type" : "ProductNetworkAuthorization",
     "ruleform" : {
       "@type" : "ProductNetworkAuthorization",
-      "@id" : "ProductNetworkAuthorization-40f820d2-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "40f820d2-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "ProductNetworkAuthorization-e21b7f50-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e21b7f50-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
-      "authorizedRelationship" : null,
-      "cardinality" : null,
-      "childRelationship" : null,
       "classifier" : "Relationship-00000000-0000-0005-0000-000000000013",
-      "groupingAgency" : null,
-      "name" : null,
       "sequenceNumber" : 0,
-      "authorizedParent" : null,
       "classification" : "Product-00000000-0000-0004-0000-000000000006"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40fb7c37-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40fb7c37-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e21f4fe5-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e21f4fe5-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : null,
     "type" : "ProductAttributeAuthorization",
     "ruleform" : {
       "@type" : "ProductAttributeAuthorization",
-      "@id" : "ProductAttributeAuthorization-40f86ef4-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "40f86ef4-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "ProductAttributeAuthorization-e21ba662-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e21ba662-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
       "authorizedAttribute" : "Attribute-00000000-0000-0001-0000-00000000000a",
-      "authorizedNetworkAttribute" : null,
-      "groupingAgency" : null,
       "sequenceNumber" : 0,
-      "networkAuthorization" : "ProductNetworkAuthorization-40f820d2-283c-11e5-8c1b-3f95122b23e4",
-      "value" : null
+      "networkAuthorization" : "ProductNetworkAuthorization-e21b7f50-28c1-11e5-9eab-736a4a0ee0d8"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-40fe626c-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "40fe626c-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e222ab4a-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e222ab4a-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : null,
     "type" : "ProductNetworkAuthorization",
     "ruleform" : {
       "@type" : "ProductNetworkAuthorization",
-      "@id" : "ProductNetworkAuthorization-40fba348-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "40fba348-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "ProductNetworkAuthorization-e21f9e06-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e21f9e06-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
       "authorizedRelationship" : "Relationship-00000000-0000-0005-0000-000000000013",
       "cardinality" : "N",
       "childRelationship" : "Relationship-00000000-0000-0005-0000-000000000011",
       "classifier" : "Relationship-00000000-0000-0005-0000-000000000013",
-      "groupingAgency" : null,
-      "name" : "Imports",
+      "name" : "import",
       "sequenceNumber" : 0,
       "authorizedParent" : "Product-00000000-0000-0004-0000-000000000006",
       "classification" : "Product-00000000-0000-0004-0000-000000000006"
     }
   }, {
     "@type" : "WorkspaceAuthorization",
-    "@id" : "WorkspaceAuthorization-4100d370-283c-11e5-8c1b-3f95122b23e4",
-    "id" : "4100d370-283c-11e5-8c1b-3f95122b23e4",
-    "notes" : null,
+    "@id" : "WorkspaceAuthorization-e225df9e-28c1-11e5-9eab-736a4a0ee0d8",
+    "id" : "e225df9e-28c1-11e5-9eab-736a4a0ee0d8",
     "version" : 0,
     "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
     "definingProduct" : "Product-00000000-0000-0004-0000-000000000003",
-    "key" : null,
     "type" : "ProductAttributeAuthorization",
     "ruleform" : {
       "@type" : "ProductAttributeAuthorization",
-      "@id" : "ProductAttributeAuthorization-40fe897d-283c-11e5-8c1b-3f95122b23e4",
-      "id" : "40fe897d-283c-11e5-8c1b-3f95122b23e4",
-      "notes" : null,
+      "@id" : "ProductAttributeAuthorization-e222f96b-28c1-11e5-9eab-736a4a0ee0d8",
+      "id" : "e222f96b-28c1-11e5-9eab-736a4a0ee0d8",
       "version" : 0,
       "updatedBy" : "Agency-00000000-0000-0000-0000-000000000004",
-      "authorizedAttribute" : null,
       "authorizedNetworkAttribute" : "Attribute-00000000-0000-0001-0000-000000000004",
-      "groupingAgency" : null,
       "sequenceNumber" : 0,
-      "networkAuthorization" : "ProductNetworkAuthorization-40fba348-283c-11e5-8c1b-3f95122b23e4",
-      "value" : null
+      "networkAuthorization" : "ProductNetworkAuthorization-e21f9e06-28c1-11e5-9eab-736a4a0ee0d8"
     }
   } ],
   "frontier" : [ ]

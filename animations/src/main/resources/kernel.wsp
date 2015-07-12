@@ -18,7 +18,7 @@ products {
     facets {
         IsA.Workspace { IRI }
             constraints {
-                n Imports: IsA.Workspace  named by relationship 
+                n Imports: IsA.Workspace  named import 
                     { Namespace }
             }
     }

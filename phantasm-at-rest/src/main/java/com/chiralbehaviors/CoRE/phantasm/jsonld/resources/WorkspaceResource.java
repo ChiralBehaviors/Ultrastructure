@@ -57,6 +57,9 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Produces({ "application/json", "text/json" })
 public class WorkspaceResource extends TransactionalResource {
 
+    private static final String KEYS             = "keys";
+    private static final String DEFINING_PRODUCT = "definingProduct";
+
     public static String keysIri(UUID definingProduct, UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(WorkspaceResource.class);
@@ -109,7 +112,7 @@ public class WorkspaceResource extends TransactionalResource {
 
     @Path("{uuid}/key")
     @GET
-    public Map<String, String> getKeys(@PathParam("uuid") UUID workspaceId) {
+    public Map<String, Object> getKeys(@PathParam("uuid") UUID workspaceId) {
         WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceId);
         if (scope == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
@@ -120,7 +123,16 @@ public class WorkspaceResource extends TransactionalResource {
         for (String key : scope.getWorkspace().getKeys()) {
             keys.put(key, lookupIri(workspaceId, key, uriInfo));
         }
-        return keys;
+        Map<String, Object> context = new TreeMap<>();
+        Map<String, Object> keyTerm = new TreeMap<>();
+        keyTerm.put(Constants.ID, keysIri(workspaceId, uriInfo));
+        keyTerm.put(Constants.TYPE, Constants.ID);
+        keyTerm.put(Constants.CONTAINER, Constants.INDEX);
+        context.put("keys", keyTerm);
+        Map<String, Object> returned = new TreeMap<>();
+        returned.put(Constants.CONTEXT, context);
+        returned.put(KEYS, keys);
+        return returned;
     }
 
     @Path("{uuid}")
@@ -137,10 +149,15 @@ public class WorkspaceResource extends TransactionalResource {
     }
 
     @GET
-    public List<Map<String, Object>> getWorkspaces() {
+    public Map<String, Object> getWorkspaces() {
         Kernel kernel = readOnlyModel.getKernel();
         Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
                                               kernel.getWorkspace());
+        Map<String, Object> returned = new TreeMap<>();
+        Map<String, Object> context = new TreeMap<>();
+        context.put(KEYS, Constants.ID);
+        context.put(DEFINING_PRODUCT, Constants.ID);
+        returned.put(Constants.CONTEXT, context);
         List<Map<String, Object>> facets = new ArrayList<>();
         NetworkedModel<Product, ?, ?, ?> networkedModel = readOnlyModel.getProductModel();
         for (Product definingProduct : networkedModel.getChildren(aspect.getClassification(),
@@ -152,11 +169,12 @@ public class WorkspaceResource extends TransactionalResource {
             Map<String, Object> wsp = new TreeMap<>();
             wsp.put(Constants.ID,
                     workspaceIri(definingProduct.getId(), uriInfo));
-            wsp.put("keys", keysIri(definingProduct.getId(), uriInfo));
-            wsp.put("definingProduct", ctx);
+            wsp.put(KEYS, keysIri(definingProduct.getId(), uriInfo));
+            wsp.put(DEFINING_PRODUCT, ctx);
             facets.add(wsp);
         }
-        return facets;
+        returned.put(Constants.GRAPH, facets);
+        return returned;
     }
 
     @Path("{uuid}/key/{member}")

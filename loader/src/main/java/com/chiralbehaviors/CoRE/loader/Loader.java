@@ -38,7 +38,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Utils;
 
 import liquibase.Liquibase;
@@ -58,7 +60,7 @@ public class Loader {
     private static final String DROP_LIQUIBASE_SQL                              = "/drop-liquibase.sql";
     private static final String DROP_ROLES_SQL                                  = "/drop-roles.sql";
     private static final Logger log                                             = LoggerFactory.getLogger(Loader.class);
-    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML = "model/com/chiralbehaviors/CoRE/schema/core.xml";
+    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML = "sql/com/chiralbehaviors/CoRE/schema/core.xml";
 
     public static void main(String[] argv) throws Exception {
         Loader loader = new Loader(Configuration.fromYaml(Utils.resolveResource(Loader.class,
@@ -170,7 +172,10 @@ public class Loader {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         EntityManager em = emf.createEntityManager();
-        KernelUtil.loadKernel(em);
+        if (em.find(Product.class,
+                    WellKnownProduct.KERNEL_WORKSPACE.id()) == null) {
+            KernelUtil.loadKernel(em);
+        }
         em.close();
         emf.close();
         log.info("Bootstrapping complete");

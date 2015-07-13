@@ -16,7 +16,7 @@
     <properties>
         <model.jar.name>model</model.jar.name>
         <model.jar.file>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</model.jar.file>
-        <main.sql>${project.basedir}/src/main/sql</main.sql>
+        <main.sql>sql</main.sql>
         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
         <jdbc.url>jdbc:postgresql://${db.server}:${db.port}/core</jdbc.url>
         <jdbc.driver>org.postgresql.Driver</jdbc.driver>
@@ -161,6 +161,9 @@
                                 <resource>
                                     <directory>${project.build.directory}/generated-resources/queries</directory>
                                 </resource>
+                                <resource>
+                                    <directory>sql</directory>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
@@ -233,7 +236,7 @@
                             <url>${jdbc.url}</url>
                             <username>${db.login}</username>
                             <password>${db.password}</password>
-                            <changeLogFile>${main.sql}/com/chiralbehaviors/CoRE/schema/core.xml</changeLogFile>
+                            <changeLogFile>sql/com/chiralbehaviors/CoRE/schema/core.xml</changeLogFile>
                             <verbose>false</verbose>
                         </configuration>
                         <executions>

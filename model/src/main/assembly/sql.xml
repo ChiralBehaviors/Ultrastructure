@@ -9,11 +9,11 @@
     <baseDirectory>${basedir/src/main/sql</baseDirectory>
     <fileSets>
         <fileSet>
-            <directory>${basedir}/src/main/sql</directory>
+            <directory>${basedir}/sql</directory>
             <includes>
                 <include>**/*.xml</include>
             </includes>
-            <outputDirectory>/model</outputDirectory>
+            <outputDirectory>/sql</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>

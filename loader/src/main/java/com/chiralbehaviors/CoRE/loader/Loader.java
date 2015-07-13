@@ -58,7 +58,7 @@ public class Loader {
     private static final String DROP_LIQUIBASE_SQL                              = "/drop-liquibase.sql";
     private static final String DROP_ROLES_SQL                                  = "/drop-roles.sql";
     private static final Logger log                                             = LoggerFactory.getLogger(Loader.class);
-    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML = "model/com/chiralbehaviors/CoRE/schema/core.xml";
+    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML = "sql/com/chiralbehaviors/CoRE/schema/core.xml";
 
     public static void main(String[] argv) throws Exception {
         Loader loader = new Loader(Configuration.fromYaml(Utils.resolveResource(Loader.class,

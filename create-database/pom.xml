@@ -32,7 +32,7 @@
                                     <url>jdbc:postgresql://${dba.db.server}:${dba.db.port}/${dba.db.database}</url>
                                     <username>${dba.db.login}</username>
                                     <password>${dba.db.password}</password>
-                                    <changeLogFile>${project.build.outputDirectory}/create-database.xml</changeLogFile>
+                                    <changeLogFile>create-database.xml</changeLogFile>
                                     <contexts>${db.context}</contexts>
                                     <verbose>false</verbose>
                                 </configuration>

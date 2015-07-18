@@ -1,0 +1,51 @@
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/tsunami/v1" 
+           "Tsunami" 
+           "Ultrstructure ontology for phantasm based UI"
+imports {
+    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+}
+
+attributes {
+    TemplateText = "Template Text" "Template text used to generate content" text;
+}
+
+products {
+    Application = "Application" "A single page html application";
+    Route = "Route" "The route of a single page html application";
+    Scope = "Variable Scope" "A scope for variables";
+    Variable = "Variable" "A variable in a scope";
+    Template = "Template" "A template for generating content";
+    Controller = "Controller" "The controller of MVC";
+    
+    facets {
+        kernel::IsA.Application
+            constraints {
+                one HasScope: kernel::IsA.Scope named variableScope
+            }
+        kernel::IsA.Route
+            constraints {
+                one HasTemplate: kernel::IsA.Template 
+                one HasController: kernel::IsA.Controller
+            }
+        kernel::IsA.Scope
+            constraints {
+                n HasVariable: kernel::IsA.Variable
+            }
+        kernel::IsA.Variable
+            constraints {
+                one HasScope: kernel::IsA.Scope named definingScope
+            }
+        kernel::IsA.Template { TemplateText }
+            constraints {
+                n HasVariable: kernel::IsA.Variable
+            }
+        kernel::IsA.Controller { TemplateText }
+    }
+}
+
+relationships {
+    HasTemplate = "Has Template" "A has template B" | TemplateOf = "Template Of" "A is a template of B";
+    HasController = "Has Controller" "A has controller B" | ControllerOf = "Controller Of" "A is a controller of B";
+    HasScope = "Has Scope" "A has scope B" | ScopeOf = "Scope Of" "A is a scope of B";
+    HasVariable = "Has Variable" "A has variable B" | VariableOf = "Variable Of" "A is a variable of B";
+}

@@ -74,6 +74,7 @@
         <module>phantasm-plugin</module>
         <module>phantasm-at-rest</module>
         <module>thing-ontology</module>
+        <module>tsunami</module>
     </modules>
 
     <dependencyManagement>

@@ -6,6 +6,7 @@ imports {
 }
 
 attributes {
+    TemplateText = "Template Text" "Template text used to generate content" text;
 }
 
 products {
@@ -17,31 +18,34 @@ products {
     Controller = "Controller" "The controller of MVC";
     
     facets {
-        kernel::IsA Application
+        kernel::IsA.Application
             constraints {
-                one HasScope: kernel.IsA.Scope
+                one HasScope: kernel::IsA.Scope named variableScope
             }
-        kernel::IsA Route
+        kernel::IsA.Route
             constraints {
                 one HasTemplate: kernel::IsA.Template 
                 one HasController: kernel::IsA.Controller
             }
-        kernel::IsA Scope
+        kernel::IsA.Scope
             constraints {
                 n HasVariable: kernel::IsA.Variable
             }
-        kernel::IsA Variable
-        kernel::IsA Template
+        kernel::IsA.Variable
+            constraints {
+                one HasScope: kernel::IsA.Scope named definingScope
+            }
+        kernel::IsA.Template { TemplateText }
             constraints {
                 n HasVariable: kernel::IsA.Variable
             }
-        kernel::IsA Controller
+        kernel::IsA.Controller { TemplateText }
     }
 }
 
 relationships {
-    HasTemplate = "Has Template" "A has template B" : TemplateOf = "Template Of" "A is a template of B";
-    HasController = "Has Controller" "A has controller B" : ControllerOf = "Controller Of" "A is a controller of B";
-    HasScope = "Has Scope" "A has scope B" : ScopeOf = "Scope Of" "A is a scope of B";
-    HasVariable = "Has Variable" "A has variable B" : VariableOf = "Variable Of" "A is a variable of B";
+    HasTemplate = "Has Template" "A has template B" | TemplateOf = "Template Of" "A is a template of B";
+    HasController = "Has Controller" "A has controller B" | ControllerOf = "Controller Of" "A is a controller of B";
+    HasScope = "Has Scope" "A has scope B" | ScopeOf = "Scope Of" "A is a scope of B";
+    HasVariable = "Has Variable" "A has variable B" | VariableOf = "Variable Of" "A is a variable of B";
 }

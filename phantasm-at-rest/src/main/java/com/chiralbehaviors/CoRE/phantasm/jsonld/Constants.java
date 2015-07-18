@@ -31,5 +31,6 @@ public class Constants {
     public static final String ID        = "@id";
     public static final String INDEX     = "@index";
     public static final String TYPE      = "@type";
+    static final String TERM = "@term";
 
 }

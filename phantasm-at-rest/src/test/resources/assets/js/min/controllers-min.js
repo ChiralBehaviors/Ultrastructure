@@ -1,0 +1,1 @@
+var ultraBrowserControllers=angular.module("ultraBrowserControllers",[]);ultraBrowserControllers.controller("PhoneListCtrl",["$scope","$http",function(o,r){r.get("phones/phones.json").success(function(r){o.phones=r}),o.orderProp="age"}]),ultraBrowserControllers.controller("PhoneDetailCtrl",["$scope","$routeParams",function(o,r){o.phoneId=r.phoneId}]);

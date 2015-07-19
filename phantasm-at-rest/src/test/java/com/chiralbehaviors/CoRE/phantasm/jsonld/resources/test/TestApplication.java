@@ -15,17 +15,13 @@
  */
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test;
 
-import java.util.EnumSet;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
@@ -80,20 +76,6 @@ public class TestApplication extends Application<TestServiceConfiguration> {
     @Override
     public void run(TestServiceConfiguration configuration,
                     Environment environment) throws Exception {
-        // Enable CORS headers for Angular JS
-        final FilterRegistration.Dynamic cors = environment.servlets().addFilter("CORS",
-                                                                                 CrossOriginFilter.class);
-
-        // Configure CORS parameters
-        cors.setInitParameter("allowedOrigins", "*");
-        cors.setInitParameter("allowedHeaders",
-                              "X-Requested-With,Content-Type,Accept,Origin");
-        cors.setInitParameter("allowedMethods",
-                              "OPTIONS,GET,PUT,POST,DELETE,HEAD");
-
-        // Add URL mapping
-        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true,
-                                      "/*");
         if (configuration.isRandomPort()) {
             ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors().get(0)).setPort(0);
             ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors().get(0)).setPort(0);

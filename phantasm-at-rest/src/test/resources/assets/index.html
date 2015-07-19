@@ -1,18 +1,14 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
-<html>
+<html ng-app="ultra-browser">
 <head>
-<title></title>
+<title>US Browser</title>
+<link rel="stylesheet"
+	href="bower_components/bootstrap/dist/css/bootstrap.css">
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-jsonld/dist/angular-jsonld.js"></script>
+  <script src="js/controllers.js"></script>
 </head>
-
 <body>
-	<h1>Foo bar</h1>
-
-
-
-	<hr>
-	<address></address>
-	<!-- hhmts start -->
-	Last modified: Tue Jul 7 21:14:14 PDT 2015
-	<!-- hhmts end -->
+  <div ng-view></div>
 </body>
 </html>

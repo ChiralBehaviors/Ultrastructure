@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,7 +44,11 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
@@ -52,6 +57,9 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.time.Interval;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
@@ -61,7 +69,7 @@ import com.github.jsonldjava.core.JsonLdProcessor;
  * @author hhildebrand
  *
  */
-@Path("json-ld/facet/")
+@Path("json-ld/facet")
 @Produces({ "application/json", "text/json" })
 public class FacetResource extends TransactionalResource {
 
@@ -104,6 +112,23 @@ public class FacetResource extends TransactionalResource {
     public FacetResource(EntityManagerFactory emf, UriInfo uriInfo) {
         this(emf);
         this.uriInfo = uriInfo;
+    }
+
+    @GET
+    public Map<String, String> getFacetRuleforms() {
+        Map<String, String> ruleforms = new HashMap<String, String>();
+        ruleforms.put("Agency", Facet.getFacetsIri(uriInfo, Agency.class));
+        ruleforms.put("Attribute",
+                      Facet.getFacetsIri(uriInfo, Attribute.class));
+        ruleforms.put("Interval", Facet.getFacetsIri(uriInfo, Interval.class));
+        ruleforms.put("Location", Facet.getFacetsIri(uriInfo, Location.class));
+        ruleforms.put("Product", Facet.getFacetsIri(uriInfo, Product.class));
+        ruleforms.put("Relationship",
+                      Facet.getFacetsIri(uriInfo, Relationship.class));
+        ruleforms.put("Status Code",
+                      Facet.getFacetsIri(uriInfo, StatusCode.class));
+        ruleforms.put("Unit", Facet.getFacetsIri(uriInfo, Unit.class));
+        return ruleforms;
     }
 
     @Path("{ruleform-type}/{classifier}/{classification}")

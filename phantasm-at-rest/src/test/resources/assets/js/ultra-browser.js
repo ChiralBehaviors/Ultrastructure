@@ -1,20 +1,22 @@
-var ultraBrowser = angular.module('ultraBrowser', [
+var usBrowser = angular.module('usBrowser', [
   'ngRoute',
-  'ultraBrowserControllers'
+  'usBrowserControllers'
 ]);
 
-ultraBrowser.config(['$routeProvider',
+usBrowser.config(['$routeProvider',
                     function($routeProvider) {
                       $routeProvider.
-                        when('/phones', {
-                          templateUrl: 'partials/phone-list.html',
-                          controller: 'PhoneListCtrl'
+                        when('/json-ld/facet', {
+                          templateUrl: 'partials/facet-ruleforms.html',
+                          controller: 'FacetRuleformsListCtrl'
                         }).
-                        when('/phones/:phoneId', {
-                          templateUrl: 'partials/phone-detail.html',
-                          controller: 'PhoneDetailCtrl'
+                        when('/json-ld/facet/:ruleform', {
+                          templateUrl: 'partials/all-facet-instances.html',
+                          controller: 'FacetListCtrl'
                         }).
-                        otherwise({
-                          redirectTo: '/phones'
-                        });
+                        when('/json-ld/facet/:ruleform/:instance', {
+                          templateUrl: 'partials/facet-detail.html',
+                          controller: 'FacetDetailCtrl'
+                        })
+                        $routeProvider.otherwise({redirectTo: '/json-ld/facet'});
                     }]);

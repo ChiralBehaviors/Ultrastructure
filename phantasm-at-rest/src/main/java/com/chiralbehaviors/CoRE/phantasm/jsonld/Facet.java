@@ -35,7 +35,6 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
@@ -67,8 +66,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         extends Aspect<RuleForm> {
     public static String getAllInstancesIri(@SuppressWarnings("rawtypes") Aspect aspect,
                                             UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(FacetResource.class);
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getAllInstances",
                                                   String.class, UUID.class,
@@ -87,8 +85,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     public static String getContextIri(Aspect<?> aspect, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(FacetResource.class);
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getContext", String.class,
                                                   UUID.class, UUID.class));
@@ -107,11 +104,21 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build().toASCIIString();
     }
 
+    public static String getFacetsIri(UriInfo uriInfo, Class<?> ruleform) {
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+        try {
+            ub.path(FacetResource.class.getMethod("getFacets", String.class));
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Unable to getFacets", e);
+        }
+        ub.resolveTemplate("ruleform-type", ruleform.getSimpleName());
+        return ub.build().toASCIIString();
+    }
+
     public static String getNodeIri(Aspect<?> aspect,
                                     ExistentialRuleform<?, ?> child,
                                     UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(FacetResource.class);
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getInstance", String.class,
                                                   UUID.class, UUID.class,
@@ -135,8 +142,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     public static String getTermIri(Aspect<?> aspect, String term,
                                     UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(FacetResource.class);
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getTerm", String.class,
                                                   UUID.class, UUID.class,
@@ -155,8 +161,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     public static String getTypeIri(Aspect<?> aspect, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(FacetResource.class);
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getType", String.class,
                                                   UUID.class, UUID.class));
@@ -173,10 +178,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         ub.fragment(String.format("%s:%s", aspect.getClassifier().getName(),
                                   aspect.getClassification().getName()));
         return ub.build().toASCIIString();
-    }
-
-    public static String getTypeIri(Ruleform instance, UriInfo uriInfo) {
-        return RuleformContext.getTypeIri(instance.getClass(), uriInfo);
     }
 
     private final Map<String, XDomainNetworkAuthorization<Agency, Location>>      agencyLocationAuths      = new TreeMap<>();
@@ -197,6 +198,82 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         collectRuleformAttributes(model, uriInfo);
         collectAttributes(model, uriInfo);
         collectChildren(model, uriInfo);
+    }
+
+    public Attribute getAttribute(String term) {
+        Attribute attribute = attributes.get(term);
+        return attribute;
+    }
+
+    public Map<String, Object> getPropertyReference(String property) {
+        return terms.get(property).toMap();
+    }
+
+    public Typed getRuleformTerm(String term) {
+        if ("name".equals(term) || "description".equals(term)
+            || "notes".equals(term) || "updatedBy".equals(term)) {
+            return terms.get(term);
+        }
+        return null;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public Aspect<?> getTerm(String term) {
+        for (Entry<String, NetworkAuthorization<RuleForm>> entry : networkAuths.entrySet()) {
+            if (entry.getKey().equals(term)) {
+                return new Aspect(entry.getValue().getAuthorizedRelationship(),
+                                  entry.getValue().getAuthorizedParent());
+            }
+        }
+        for (Entry<String, XDomainNetworkAuthorization<Agency, Location>> entry : agencyLocationAuths.entrySet()) {
+            if (entry.getKey().equals(term)) {
+                XDomainNetworkAuthorization<?, ?> auth = entry.getValue();
+                if (auth.isForward()) {
+                    return new Aspect(auth.getToRelationship(),
+                                      auth.getToParent());
+                } else {
+                    return new Aspect(auth.getFromRelationship(),
+                                      auth.getFromParent());
+                }
+            }
+        }
+        for (Entry<String, XDomainNetworkAuthorization<Agency, Product>> entry : agencyProductAuths.entrySet()) {
+            if (entry.getKey().equals(term)) {
+                XDomainNetworkAuthorization<?, ?> auth = entry.getValue();
+                if (auth.isForward()) {
+                    return new Aspect(auth.getToRelationship(),
+                                      auth.getToParent());
+                } else {
+                    return new Aspect(auth.getFromRelationship(),
+                                      auth.getFromParent());
+                }
+            }
+        }
+        for (Entry<String, XDomainNetworkAuthorization<Product, Location>> entry : productLocationAuths.entrySet()) {
+            if (entry.getKey().equals(term)) {
+                XDomainNetworkAuthorization<?, ?> auth = entry.getValue();
+                if (auth.isForward()) {
+                    return new Aspect(auth.getToRelationship(),
+                                      auth.getToParent());
+                } else {
+                    return new Aspect(auth.getFromRelationship(),
+                                      auth.getFromParent());
+                }
+            }
+        }
+        for (Entry<String, XDomainNetworkAuthorization<Product, Relationship>> entry : productRelationshipAuths.entrySet()) {
+            if (entry.getKey().equals(term)) {
+                XDomainNetworkAuthorization<?, ?> auth = entry.getValue();
+                if (auth.isForward()) {
+                    return new Aspect(auth.getToRelationship(),
+                                      auth.getToParent());
+                } else {
+                    return new Aspect(auth.getFromRelationship(),
+                                      auth.getFromParent());
+                }
+            }
+        }
+        return null;
     }
 
     public Map<String, Object> toContext() {
@@ -449,7 +526,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         Map<String, String> ref = new TreeMap<>();
         Agency updatedBy = instance.getUpdatedBy();
         ref.put(Constants.ID, getIri(updatedBy, uriInfo));
-        ref.put(Constants.TYPE, getTypeIri(updatedBy, uriInfo));
+        ref.put(Constants.TYPE,
+                RuleformContext.getTypeIri(updatedBy.getClass(), uriInfo));
         node.put("updated-by", ref);
     }
 
@@ -649,81 +727,5 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         node.put(Constants.ID, getNodeIri(aspect, child, uriInfo));
         node.put(Constants.TYPE, getTypeIri(aspect, uriInfo));
         return node;
-    }
-
-    public Attribute getAttribute(String term) {
-        Attribute attribute = attributes.get(term);
-        return attribute;
-    }
-
-    public Typed getRuleformTerm(String term) {
-        if ("name".equals(term) || "description".equals(term)
-            || "notes".equals(term) || "updatedBy".equals(term)) {
-            return terms.get(term);
-        }
-        return null;
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Aspect<?> getTerm(String term) {
-        for (Entry<String, NetworkAuthorization<RuleForm>> entry : networkAuths.entrySet()) {
-            if (entry.getKey().equals(term)) {
-                return new Aspect(entry.getValue().getAuthorizedRelationship(),
-                                  entry.getValue().getAuthorizedParent());
-            }
-        }
-        for (Entry<String, XDomainNetworkAuthorization<Agency, Location>> entry : agencyLocationAuths.entrySet()) {
-            if (entry.getKey().equals(term)) {
-                XDomainNetworkAuthorization<?, ?> auth = entry.getValue();
-                if (auth.isForward()) {
-                    return new Aspect(auth.getToRelationship(),
-                                      auth.getToParent());
-                } else {
-                    return new Aspect(auth.getFromRelationship(),
-                                      auth.getFromParent());
-                }
-            }
-        }
-        for (Entry<String, XDomainNetworkAuthorization<Agency, Product>> entry : agencyProductAuths.entrySet()) {
-            if (entry.getKey().equals(term)) {
-                XDomainNetworkAuthorization<?, ?> auth = entry.getValue();
-                if (auth.isForward()) {
-                    return new Aspect(auth.getToRelationship(),
-                                      auth.getToParent());
-                } else {
-                    return new Aspect(auth.getFromRelationship(),
-                                      auth.getFromParent());
-                }
-            }
-        }
-        for (Entry<String, XDomainNetworkAuthorization<Product, Location>> entry : productLocationAuths.entrySet()) {
-            if (entry.getKey().equals(term)) {
-                XDomainNetworkAuthorization<?, ?> auth = entry.getValue();
-                if (auth.isForward()) {
-                    return new Aspect(auth.getToRelationship(),
-                                      auth.getToParent());
-                } else {
-                    return new Aspect(auth.getFromRelationship(),
-                                      auth.getFromParent());
-                }
-            }
-        }
-        for (Entry<String, XDomainNetworkAuthorization<Product, Relationship>> entry : productRelationshipAuths.entrySet()) {
-            if (entry.getKey().equals(term)) {
-                XDomainNetworkAuthorization<?, ?> auth = entry.getValue();
-                if (auth.isForward()) {
-                    return new Aspect(auth.getToRelationship(),
-                                      auth.getToParent());
-                } else {
-                    return new Aspect(auth.getFromRelationship(),
-                                      auth.getFromParent());
-                }
-            }
-        }
-        return null;
-    }
-
-    public Map<String, Object> getPropertyReference(String property) {
-        return terms.get(property).toMap();
     }
 }

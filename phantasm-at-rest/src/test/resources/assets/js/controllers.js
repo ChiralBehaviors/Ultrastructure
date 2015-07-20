@@ -1,15 +1,22 @@
-var ultraBrowserControllers = angular.module('ultraBrowserControllers', []);
+var usBrowserControllers = angular.module('usBrowserControllers', []);
 
-ultraBrowserControllers.controller('PhoneListCtrl', ['$scope', '$http',
-  function ($scope, $http) {
-    $http.get('phones/phones.json').success(function(data) {
-      $scope.phones = data;
+usBrowserControllers.controller('FacetListCtrl', ['$scope', '$http','$routeParams', 
+  function ($scope, $http, $routeParams) {
+    $http.get('/json-ld/facet/' + $routeParams.ruleform).success(function(data) {
+      $scope.facets = data;
     });
-
-    $scope.orderProp = 'age';
   }]);
 
-ultraBrowserControllers.controller('PhoneDetailCtrl', ['$scope', '$routeParams',
-  function($scope, $routeParams) {
-    $scope.phoneId = $routeParams.phoneId;
+usBrowserControllers.controller('FacetRuleformsListCtrl', ['$scope', '$http',
+  function ($scope, $http) {
+    $http.get('/json-ld/facet').success(function(data) {
+      $scope.facetRuleforms = data;
+    });
+  }]);
+
+usBrowserControllers.controller('FacetDetailCtrl', ['$scope', '$http','$routeParams', 
+  function ($scope, $http, $routeParams) {
+    $http.get('/json-ld/facet/$routeParams.ruleform/$routeParams.instance').success(function(data) {
+      $scope.facet = data;
+    });
   }]);

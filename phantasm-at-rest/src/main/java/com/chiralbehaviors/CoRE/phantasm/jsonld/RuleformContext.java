@@ -67,8 +67,7 @@ public class RuleformContext {
 
     public static String getContextIri(Class<? extends Ruleform> ruleformClass,
                                        UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
+        UriBuilder ub = UriBuilder.fromResource(RuleformResource.class);
         try {
             ub.path(RuleformResource.class.getMethod("getContext",
                                                      String.class));
@@ -96,8 +95,7 @@ public class RuleformContext {
 
     public static String getTermIri(Class<? extends Ruleform> ruleformClass,
                                     String term, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
+        UriBuilder ub = UriBuilder.fromResource(RuleformResource.class);
         try {
             ub.path(RuleformResource.class.getMethod("getTerm", String.class,
                                                      String.class));
@@ -111,8 +109,7 @@ public class RuleformContext {
 
     public static String getTypeIri(Class<? extends Ruleform> ruleformClass,
                                     UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
+        UriBuilder ub = UriBuilder.fromResource(RuleformResource.class);
         try {
             ub.path(RuleformResource.class.getMethod("getType", String.class));
         } catch (NoSuchMethodException | SecurityException e) {

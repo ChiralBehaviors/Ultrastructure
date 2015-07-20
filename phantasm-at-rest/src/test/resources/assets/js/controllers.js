@@ -37,10 +37,10 @@ usBrowserControllers.controller('FacetDetailCtrl', [
 			$http.get(
 					'/json-ld/facet/' + $routeParams.ruleform + '/'
 							+ $routeParams.classifier + '/'
-							+ $routeParams.classfication + '/'
-							+ $routeParams.instance).success(function(data) {
-				$scope.facet = data;
-			});
+							+ $routeParams.classification).success(
+					function(data) {
+						$scope.facet = data;
+					});
 		} ]);
 
 usBrowserControllers.controller('FacetInstanceDetailCtrl', [
@@ -50,6 +50,8 @@ usBrowserControllers.controller('FacetInstanceDetailCtrl', [
 		function($scope, $http, $routeParams) {
 			$http.get(
 					'/json-ld/facet/' + $routeParams.ruleform + '/'
+							+ $routeParams.classifier + '/'
+							+ $routeParams.classification + '/'
 							+ $routeParams.instance).success(function(data) {
 				$scope.facet = data;
 			});

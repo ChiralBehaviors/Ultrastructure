@@ -6,11 +6,11 @@ usBrowser.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'partials/facet-ruleforms.html',
 		controller : 'FacetRuleformsListCtrl'
 	}).when('/json-ld/facet/:ruleform', {
-		templateUrl : 'partials/all-facets.html',
+		templateUrl : 'partials/facets.html',
 		controller : 'FacetListCtrl'
 	}).when('/json-ld/facet/:ruleform/:classifier/:classification', {
-		templateUrl : 'partials/facet-detail.html',
-		controller : 'FacetDetailCtrl'
+		templateUrl : 'partials/facet-instances.html',
+		controller : 'FacetInstancesListCtrl'
 	}).when('/json-ld/facet/:ruleform/:classifier/:classification/:instance', {
 		templateUrl : 'partials/facet-instance-detail.html',
 		controller : 'FacetInstanceDetailCtrl'

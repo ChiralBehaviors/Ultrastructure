@@ -5,9 +5,12 @@ usBrowserControllers.controller('FacetInstancesListCtrl', [
 		'$http',
 		'$routeParams',
 		function($scope, $http, $routeParams) {
-			$http.get('/json-ld/facet/' + $routeParams.ruleform).success(
+			$http.get(
+					'/json-ld/facet/' + $routeParams.ruleform + '/'
+							+ $routeParams.classifier + '/'
+							+ $routeParams.classification).success(
 					function(data) {
-						$scope.facets = data['@graph'];
+						$scope.facetInstances = data;
 					});
 		} ]);
 

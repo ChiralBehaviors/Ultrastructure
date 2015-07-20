@@ -90,8 +90,7 @@ public class FacetResource extends TransactionalResource {
     }
 
     public static String getTypeContextIri(UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(FacetResource.class);
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getContext"));
         } catch (NoSuchMethodException | SecurityException e) {

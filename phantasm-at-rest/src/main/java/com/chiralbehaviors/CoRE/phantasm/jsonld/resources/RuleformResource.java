@@ -77,8 +77,7 @@ public class RuleformResource extends TransactionalResource {
     @Path("context")
     @GET
     public Map<String, Object> getContext() {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(getClass());
+        UriBuilder ub = UriBuilder.fromResource(getClass());
         ub.path("context");
         ub.path("context.jsonld");
         Map<String, Object> context = new TreeMap<>();

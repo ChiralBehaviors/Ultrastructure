@@ -93,6 +93,23 @@ public class RuleformContext {
         return fields;
     }
 
+    public static String getIri(Ruleform ruleform, UriInfo uriInfo) {
+        UriBuilder ub = UriBuilder.fromResource(RuleformResource.class);
+        try {
+            ub.path(RuleformResource.class.getMethod("getInstance",
+                                                     String.class, UUID.class));
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Cannot get getType method", e);
+        }
+        ub.resolveTemplate("ruleform-type",
+                           ruleform.getClass().getSimpleName());
+        ub.resolveTemplate("instance", ruleform.getId().toString());
+        if (ruleform instanceof ExistentialRuleform) {
+            ub.fragment(((ExistentialRuleform<?, ?>) ruleform).getName());
+        }
+        return ub.build().toASCIIString();
+    }
+
     public static String getTermIri(Class<? extends Ruleform> ruleformClass,
                                     String term, UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(RuleformResource.class);
@@ -121,13 +138,23 @@ public class RuleformContext {
 
     private final Class<? extends Ruleform> ruleformClass;
 
+    private final Map<String, Typed> terms = new TreeMap<>();
+
     public RuleformContext(Class<? extends Ruleform> ruleformClass,
                            UriInfo uriInfo) {
         this.ruleformClass = ruleformClass;
         gatherTerms(uriInfo);
     }
 
-    private final Map<String, Typed> terms = new TreeMap<>();
+    public Map<String, Object> toContext() {
+        Map<String, Object> context = new TreeMap<>();
+        Map<String, Object> t = new TreeMap<>();
+        context.put(Constants.CONTEXT, t);
+        for (Entry<String, Typed> entry : terms.entrySet()) {
+            t.put(entry.getKey(), entry.getValue().toMap());
+        }
+        return context;
+    }
 
     public Map<String, Object> toNode(Ruleform instance, UriInfo uriInfo) {
         Map<String, Object> object = new TreeMap<>();
@@ -159,16 +186,6 @@ public class RuleformContext {
         return object;
     }
 
-    public Map<String, Object> toContext() {
-        Map<String, Object> context = new TreeMap<>();
-        Map<String, Object> t = new TreeMap<>();
-        context.put(Constants.CONTEXT, t);
-        for (Entry<String, Typed> entry : terms.entrySet()) {
-            t.put(entry.getKey(), entry.getValue().toMap());
-        }
-        return context;
-    }
-
     private void gatherTerms(UriInfo uriInfo) {
         for (Field field : getInheritedFields(ruleformClass)) {
             if (field.getAnnotation(JoinColumn.class) == null) {
@@ -183,23 +200,5 @@ public class RuleformContext {
                                     Constants.ID));
             }
         }
-    }
-
-    public static String getIri(Ruleform ruleform, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
-        try {
-            ub.path(RuleformResource.class.getMethod("getInstance",
-                                                     String.class, UUID.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot get getType method", e);
-        }
-        ub.resolveTemplate("ruleform-type",
-                           ruleform.getClass().getSimpleName());
-        ub.resolveTemplate("instance", ruleform.getId().toString());
-        if (ruleform instanceof ExistentialRuleform) {
-            ub.fragment(((ExistentialRuleform<?, ?>) ruleform).getName());
-        }
-        return ub.build().toASCIIString();
     }
 }

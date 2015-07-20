@@ -61,8 +61,7 @@ public class WorkspaceResource extends TransactionalResource {
     private static final String DEFINING_PRODUCT = "definingProduct";
 
     public static String keysIri(UUID definingProduct, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(WorkspaceResource.class);
+        UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
             ub.path(WorkspaceResource.class.getMethod("getKeys", UUID.class));
             ub.resolveTemplate("uuid", definingProduct);
@@ -75,8 +74,7 @@ public class WorkspaceResource extends TransactionalResource {
 
     public static String lookupIri(UUID definingProduct, String key,
                                    UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(WorkspaceResource.class);
+        UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
             ub.path(WorkspaceResource.class.getMethod("lookup", UUID.class,
                                                       String.class));
@@ -90,8 +88,7 @@ public class WorkspaceResource extends TransactionalResource {
     }
 
     public static String workspaceIri(UUID definingProduct, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(WorkspaceResource.class);
+        UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
             ub.path(WorkspaceResource.class.getMethod("getWorkspace",
                                                       UUID.class));

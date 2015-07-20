@@ -10,11 +10,14 @@ usBrowserControllers.controller('FacetInstancesListCtrl', [
 							+ $routeParams.classifier + '/'
 							+ $routeParams.classification).success(
 					function(data) {
-						for ( var key in data) {
-							if (data.hasOwnProperty(key)) {
-								var parser = document.createElement('a');
-								parser.href = data[key]; 
-								data[key] = parser.pathname;
+						for ( var idx in data) {
+							var obj = data[idx];
+							for (key in obj) {
+								if (obj.hasOwnProperty(key)) {
+									var parser = document.createElement('a');
+									parser.href = obj[key];
+									obj[key] = parser.pathname;
+								}
 							}
 						}
 						$scope.facetInstances = data;
@@ -37,7 +40,7 @@ usBrowserControllers.controller('FacetRuleformsListCtrl', [ '$scope', '$http',
 			$http.get('/json-ld/facet').success(function(data) {
 				for ( var key in data) {
 					var parser = document.createElement('a');
-					parser.href = data[key]; 
+					parser.href = data[key];
 					data[key] = parser.pathname;
 				}
 				$scope.facetRuleforms = data;

@@ -56,6 +56,36 @@ usBrowserControllers.controller('FacetInstanceDetailCtrl', [
 							+ $routeParams.classifier + '/'
 							+ $routeParams.classification + '/'
 							+ $routeParams.instance).success(function(data) {
-				$scope.facet = data;
+				$scope.facetInstance = data;
 			});
 		} ]);
+
+usBrowserControllers.controller('menuCtrl', function($scope, $http) {
+	var urlRegEx = /^https?:\/\//
+	$scope.type = function(thing) {
+		switch (typeof thing) {
+		case "object":
+			if (Object.prototype.toString.call(thing) === "[object Array]") {
+				return 'array'
+			} else if (thing == null) {
+				return 'null'
+			} else {
+				return 'hash'
+			}
+		case "string":
+			if (urlRegEx.test(thing)) {
+				return "url"
+			} else {
+				return "string"
+			}
+		default:
+			return typeof thing
+		}
+	}
+
+	$http.get("data.json").then(function(response) {
+		$scope.value = response.data
+	});
+
+	window.sc = $scope
+});

@@ -1,6 +1,0 @@
-<div class="container-fluid">
-    <ul class="facet-instances">
-        <li ng-repeat="term in instance"><a
-            href="#{{facetInstance['@id']}}">{{facetInstance['@type']}}</a></li>
-    </ul>
-</div>

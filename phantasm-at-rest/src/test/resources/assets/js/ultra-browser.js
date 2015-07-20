@@ -1,5 +1,5 @@
 var usBrowser = angular.module('usBrowser',
-		[ 'ngRoute', 'usBrowserControllers' ]);
+		[ 'ngRoute', 'usBrowserControllers', 'jsonFormatter' ]);
 
 usBrowser.config([ '$routeProvider', function($routeProvider) {
 	$routeProvider.when('/json-ld/facet', {

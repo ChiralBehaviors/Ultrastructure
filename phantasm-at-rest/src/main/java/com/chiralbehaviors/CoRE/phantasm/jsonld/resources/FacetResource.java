@@ -50,7 +50,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Aspect;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.models.AttributeModelImpl;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -72,22 +71,6 @@ import com.github.jsonldjava.core.JsonLdProcessor;
 @Path("json-ld/facet")
 @Produces({ "application/json", "text/json" })
 public class FacetResource extends TransactionalResource {
-
-    public static <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> getFacetInstances(Aspect<RuleForm> aspect,
-                                                                                                                                                                   Model model,
-                                                                                                                                                                   UriInfo uriInfo) {
-        List<Map<String, Object>> facets = new ArrayList<>();
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(aspect.getClassification());
-        for (RuleForm ruleform : networkedModel.getChildren(aspect.getClassification(),
-                                                            aspect.getClassifier().getInverse())) {
-            Map<String, Object> ctx = new TreeMap<>();
-            ctx.put(Constants.CONTEXT, Facet.getContextIri(aspect, uriInfo));
-            ctx.put(Constants.ID, Facet.getNodeIri(aspect, ruleform, uriInfo));
-            ctx.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
-            facets.add(ctx);
-        }
-        return facets;
-    }
 
     public static String getTypeContextIri(UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
@@ -137,7 +120,17 @@ public class FacetResource extends TransactionalResource {
                                                                                                                                                           @PathParam("classification") UUID ruleform) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
-        return getFacetInstances(aspect, readOnlyModel, uriInfo);
+        List<Map<String, Object>> facets = new ArrayList<>();
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        for (RuleForm ruleform1 : networkedModel.getChildren(aspect.getClassification(),
+                                                             aspect.getClassifier().getInverse())) {
+            Map<String, Object> ctx = new TreeMap<>();
+            ctx.put(Constants.CONTEXT, Facet.getContextIri(aspect, uriInfo));
+            ctx.put(Constants.ID, Facet.getNodeIri(aspect, ruleform1, uriInfo));
+            ctx.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
+            facets.add(ctx);
+        }
+        return facets;
     }
 
     @Path("context")

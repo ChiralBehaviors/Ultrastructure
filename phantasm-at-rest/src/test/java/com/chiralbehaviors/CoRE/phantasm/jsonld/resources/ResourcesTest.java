@@ -105,6 +105,8 @@ public class ResourcesTest extends AbstractModelTest {
         thing1.setThing2(thing2);
         em.getTransaction().commit();
         em.getTransaction().begin();
+        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/",
+                                                                application.getPort()));
         url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
                                     application.getPort(),
                                     scope.lookup("kernel",
@@ -115,18 +117,18 @@ public class ResourcesTest extends AbstractModelTest {
         assertNotNull(jsonObject);
         System.out.println("Node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object processed = JsonLdProcessor.normalize(jsonObject);
+        Object processed = JsonLdProcessor.normalize(jsonObject, options);
         System.out.println("Normalized node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
-                                            new JsonLdOptions());
+                                            options);
         System.out.println("Compacted node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
-                                            new JsonLdOptions());
+                                            options);
         System.out.println("Flattened node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
+        processed = JsonLdProcessor.expand(jsonObject, options);
         System.out.println("Expanded node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
     }
@@ -175,20 +177,22 @@ public class ResourcesTest extends AbstractModelTest {
                                     scope.lookup("URI").getId().toString()));
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
+        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/",
+                                                                application.getPort()));
         System.out.println("Node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object processed = JsonLdProcessor.normalize(jsonObject);
+        Object processed = JsonLdProcessor.normalize(jsonObject, options);
         System.out.println("Normalized node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
-                                            new JsonLdOptions());
+                                            options);
         System.out.println("Compacted node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
-                                            new JsonLdOptions());
+                                            options);
         System.out.println("Flattened node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
+        processed = JsonLdProcessor.expand(jsonObject, options);
         System.out.println("Expanded node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
     }

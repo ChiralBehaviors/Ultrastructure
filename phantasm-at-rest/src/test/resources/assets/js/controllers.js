@@ -10,6 +10,13 @@ usBrowserControllers.controller('FacetInstancesListCtrl', [
 							+ $routeParams.classifier + '/'
 							+ $routeParams.classification).success(
 					function(data) {
+						for ( var key in data) {
+							if (data.hasOwnProperty(key)) {
+								var parser = document.createElement('a');
+								parser.href = data[key]; 
+								data[key] = parser.pathname;
+							}
+						}
 						$scope.facetInstances = data;
 					});
 		} ]);
@@ -28,6 +35,11 @@ usBrowserControllers.controller('FacetListCtrl', [
 usBrowserControllers.controller('FacetRuleformsListCtrl', [ '$scope', '$http',
 		function($scope, $http) {
 			$http.get('/json-ld/facet').success(function(data) {
+				for ( var key in data) {
+					var parser = document.createElement('a');
+					parser.href = data[key]; 
+					data[key] = parser.pathname;
+				}
 				$scope.facetRuleforms = data;
 			});
 		} ]);
@@ -59,33 +71,3 @@ usBrowserControllers.controller('FacetInstanceDetailCtrl', [
 				$scope.facetInstance = data;
 			});
 		} ]);
-
-usBrowserControllers.controller('menuCtrl', function($scope, $http) {
-	var urlRegEx = /^https?:\/\//
-	$scope.type = function(thing) {
-		switch (typeof thing) {
-		case "object":
-			if (Object.prototype.toString.call(thing) === "[object Array]") {
-				return 'array'
-			} else if (thing == null) {
-				return 'null'
-			} else {
-				return 'hash'
-			}
-		case "string":
-			if (urlRegEx.test(thing)) {
-				return "url"
-			} else {
-				return "string"
-			}
-		default:
-			return typeof thing
-		}
-	}
-
-	$http.get("data.json").then(function(response) {
-		$scope.value = response.data
-	});
-
-	window.sc = $scope
-});

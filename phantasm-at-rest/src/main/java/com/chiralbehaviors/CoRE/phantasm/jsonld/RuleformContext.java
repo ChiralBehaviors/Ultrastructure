@@ -67,7 +67,8 @@ public class RuleformContext {
 
     public static String getContextIri(Class<? extends Ruleform> ruleformClass,
                                        UriInfo uriInfo) {
-        UriBuilder ub = UriBuilder.fromResource(RuleformResource.class);
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(RuleformResource.class);
         try {
             ub.path(RuleformResource.class.getMethod("getContext",
                                                      String.class));
@@ -94,7 +95,8 @@ public class RuleformContext {
     }
 
     public static String getIri(Ruleform ruleform, UriInfo uriInfo) {
-        UriBuilder ub = UriBuilder.fromResource(RuleformResource.class);
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(RuleformResource.class);
         try {
             ub.path(RuleformResource.class.getMethod("getInstance",
                                                      String.class, UUID.class));
@@ -112,7 +114,8 @@ public class RuleformContext {
 
     public static String getTermIri(Class<? extends Ruleform> ruleformClass,
                                     String term, UriInfo uriInfo) {
-        UriBuilder ub = UriBuilder.fromResource(RuleformResource.class);
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(RuleformResource.class);
         try {
             ub.path(RuleformResource.class.getMethod("getTerm", String.class,
                                                      String.class));
@@ -126,7 +129,8 @@ public class RuleformContext {
 
     public static String getTypeIri(Class<? extends Ruleform> ruleformClass,
                                     UriInfo uriInfo) {
-        UriBuilder ub = UriBuilder.fromResource(RuleformResource.class);
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(RuleformResource.class);
         try {
             ub.path(RuleformResource.class.getMethod("getType", String.class));
         } catch (NoSuchMethodException | SecurityException e) {
@@ -146,7 +150,7 @@ public class RuleformContext {
         gatherTerms(uriInfo);
     }
 
-    public Map<String, Object> toContext() {
+    public Map<String, Object> toContext(UriInfo uriInfo) {
         Map<String, Object> context = new TreeMap<>();
         Map<String, Object> t = new TreeMap<>();
         context.put(Constants.CONTEXT, t);

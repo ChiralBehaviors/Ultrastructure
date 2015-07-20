@@ -89,7 +89,7 @@ public class RuleformResource extends TransactionalResource {
     @GET
     public Map<String, Object> getContext(@PathParam("ruleform-type") String ruleformType) {
         return new RuleformContext(entityMap.get(ruleformType),
-                                   uriInfo).toContext();
+                                   uriInfo).toContext(uriInfo);
     }
 
     @Path("type/{ruleform-type}")
@@ -102,7 +102,7 @@ public class RuleformResource extends TransactionalResource {
                                               Status.NOT_FOUND);
         }
         Map<String, Object> definition = new RuleformContext(ruleformClass,
-                                                             uriInfo).toContext();
+                                                             uriInfo).toContext(uriInfo);
         definition.put(Constants.ID,
                        RuleformContext.getTypeIri(ruleformClass, uriInfo));
         definition.put(Constants.TYPE,

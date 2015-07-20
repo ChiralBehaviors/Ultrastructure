@@ -85,7 +85,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     public static String getContextIri(Aspect<?> aspect, UriInfo uriInfo) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getContext", String.class,
                                                   UUID.class, UUID.class));
@@ -105,7 +106,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     public static String getFacetsIri(UriInfo uriInfo, Class<?> ruleform) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getFacets", String.class));
         } catch (NoSuchMethodException | SecurityException e) {
@@ -118,7 +120,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     public static String getNodeIri(Aspect<?> aspect,
                                     ExistentialRuleform<?, ?> child,
                                     UriInfo uriInfo) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getInstance", String.class,
                                                   UUID.class, UUID.class,
@@ -142,7 +145,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     public static String getTermIri(Aspect<?> aspect, String term,
                                     UriInfo uriInfo) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getTerm", String.class,
                                                   UUID.class, UUID.class,
@@ -161,7 +165,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     public static String getTypeIri(Aspect<?> aspect, UriInfo uriInfo) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getType", String.class,
                                                   UUID.class, UUID.class));
@@ -278,7 +283,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     public Map<String, Object> toContext() {
         Map<String, Object> object = new TreeMap<>();
-        Map<String, Map<String, Object>> context = new TreeMap<>();
+        Map<String, Object> context = new TreeMap<>();
         object.put(Constants.CONTEXT, context);
         for (Map.Entry<String, Typed> term : terms.entrySet()) {
             context.put(term.getKey(), term.getValue().toMap());

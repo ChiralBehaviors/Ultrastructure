@@ -1,11 +1,19 @@
 var usBrowserControllers = angular.module('usBrowserControllers', []);
 
+function isObject(obj) {
+	return obj === Object(obj);
+}
+
+var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+
 function relativize(data) {
-	var r = new RegExp('^(?:[a-z]+:)?//', 'i');
 	for ( var key in data) {
-		if (data.hasOwnProperty(key) && r.test(data[key])) {
+		var prop = data[key];
+		if (isObject(prop)) {
+			relativize(prop);
+		} else if (r.test(prop)) {
 			var parser = document.createElement('a');
-			parser.href = data[key];
+			parser.href = prop;
 			data[key] = parser.pathname;
 		}
 	}
@@ -19,14 +27,13 @@ usBrowserControllers.controller('FacetInstancesListCtrl', [
 			$http.get(
 					'/json-ld/facet/' + $routeParams.ruleform + '/'
 							+ $routeParams.classifier + '/'
-							+ $routeParams.classification)
-					.success(
-							function(data) { 
-								for ( var idx in data) {
-									relativize(data[idx]); 
-								}
-								$scope.facetInstances = data;
-							});
+							+ $routeParams.classification).success(
+					function(data) {
+						for ( var idx in data) {
+							relativize(data[idx]);
+						}
+						$scope.facetInstances = data;
+					});
 		} ]);
 
 usBrowserControllers.controller('FacetListCtrl', [
@@ -72,6 +79,7 @@ usBrowserControllers.controller('FacetInstanceDetailCtrl', [
 							+ $routeParams.classifier + '/'
 							+ $routeParams.classification + '/'
 							+ $routeParams.instance).success(function(data) {
+				relativize(data);
 				$scope.facetInstance = data;
 			});
 		} ]);

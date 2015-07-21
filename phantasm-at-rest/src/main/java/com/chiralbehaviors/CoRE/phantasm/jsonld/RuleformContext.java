@@ -164,6 +164,8 @@ public class RuleformContext {
         Map<String, Object> object = new TreeMap<>();
         object.put(Constants.CONTEXT, getContextIri(ruleformClass, uriInfo));
         object.put(Constants.ID, getIri(instance, uriInfo));
+        object.put(Constants.TYPENAME,
+                   String.format("%s %s", instance.getClass().getSimpleName()));
         object.put(Constants.TYPE,
                    RuleformContext.getTypeIri(instance.getClass(), uriInfo));
         for (Field field : RuleformContext.getInheritedFields(instance.getClass())) {

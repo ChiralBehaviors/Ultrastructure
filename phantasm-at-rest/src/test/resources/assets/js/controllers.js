@@ -1,5 +1,16 @@
 var usBrowserControllers = angular.module('usBrowserControllers', []);
 
+function relativize(data) {
+	var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+	for ( var key in data) {
+		if (data.hasOwnProperty(key) && r.test(data[key])) {
+			var parser = document.createElement('a');
+			parser.href = data[key];
+			data[key] = parser.pathname;
+		}
+	}
+}
+
 usBrowserControllers.controller('FacetInstancesListCtrl', [
 		'$scope',
 		'$http',
@@ -8,20 +19,14 @@ usBrowserControllers.controller('FacetInstancesListCtrl', [
 			$http.get(
 					'/json-ld/facet/' + $routeParams.ruleform + '/'
 							+ $routeParams.classifier + '/'
-							+ $routeParams.classification).success(
-					function(data) {
-						for ( var idx in data) {
-							var obj = data[idx];
-							for (key in obj) {
-								if (obj.hasOwnProperty(key)) {
-									var parser = document.createElement('a');
-									parser.href = obj[key];
-									obj[key] = parser.pathname;
+							+ $routeParams.classification)
+					.success(
+							function(data) { 
+								for ( var idx in data) {
+									relativize(data[idx]); 
 								}
-							}
-						}
-						$scope.facetInstances = data;
-					});
+								$scope.facetInstances = data;
+							});
 		} ]);
 
 usBrowserControllers.controller('FacetListCtrl', [
@@ -38,11 +43,7 @@ usBrowserControllers.controller('FacetListCtrl', [
 usBrowserControllers.controller('FacetRuleformsListCtrl', [ '$scope', '$http',
 		function($scope, $http) {
 			$http.get('/json-ld/facet').success(function(data) {
-				for ( var key in data) {
-					var parser = document.createElement('a');
-					parser.href = data[key];
-					data[key] = parser.pathname;
-				}
+				relativize(data);
 				$scope.facetRuleforms = data;
 			});
 		} ]);

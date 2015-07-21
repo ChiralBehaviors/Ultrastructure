@@ -716,6 +716,9 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private void fillIn(RuleForm instance, Map<String, Object> node,
                         Model model, UriInfo uriInfo) {
         node.put(Constants.CONTEXT, context);
+        node.put(Constants.TYPENAME,
+                 String.format("%s %s", getClassifier().getName(),
+                               getClassification().getName()));
         node.put(Constants.TYPE, type);
         node.put(Constants.ID, getIri(instance, uriInfo));
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);

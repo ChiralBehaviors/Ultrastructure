@@ -100,8 +100,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                            aspect.getClassifier().getId().toString());
         ub.resolveTemplate("classification",
                            aspect.getClassification().getId().toString());
-        ub.fragment(String.format("%s:%s", aspect.getClassifier().getName(),
-                                  aspect.getClassification().getName()));
         return ub.build().toASCIIString();
     }
 
@@ -137,9 +135,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         ub.resolveTemplate("classification",
                            aspect.getClassification().getId().toString());
         ub.resolveTemplate("instance", child.getId().toString());
-        ub.fragment(String.format("%s:%s:%s", child.getName(),
-                                  aspect.getClassifier().getName(),
-                                  aspect.getClassification().getName()));
         return ub.build().toASCIIString();
     }
 
@@ -150,7 +145,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         try {
             ub.path(FacetResource.class.getMethod("getTerm", String.class,
                                                   UUID.class, UUID.class,
-                                                  String.class, String.class));
+                                                  String.class));
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("error getting getTerm method", e);
         }
@@ -180,8 +175,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                            aspect.getClassifier().getId().toString());
         ub.resolveTemplate("classification",
                            aspect.getClassification().getId().toString());
-        ub.fragment(String.format("%s:%s", aspect.getClassifier().getName(),
-                                  aspect.getClassification().getName()));
         return ub.build().toASCIIString();
     }
 
@@ -205,9 +198,29 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         collectChildren(model, uriInfo);
     }
 
+    public XDomainNetworkAuthorization<Agency, Location> getAgencyLocationAuth(String property) {
+        return agencyLocationAuths.get(property);
+    }
+
+    public XDomainNetworkAuthorization<Agency, Product> getAgencyProductAuth(String property) {
+        return agencyProductAuths.get(property);
+    }
+
     public Attribute getAttribute(String term) {
         Attribute attribute = attributes.get(term);
         return attribute;
+    }
+
+    public NetworkAuthorization<RuleForm> getNetworkAuth(String property) {
+        return networkAuths.get(property);
+    }
+
+    public XDomainNetworkAuthorization<Product, Location> getProductLocationAuth(String property) {
+        return productLocationAuths.get(property);
+    }
+
+    public XDomainNetworkAuthorization<Product, Relationship> getProductRelationshipAuth(String property) {
+        return productRelationshipAuths.get(property);
     }
 
     public Map<String, Object> getPropertyReference(String property) {
@@ -291,10 +304,12 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return object;
     }
 
-    public Map<String, Object> toInstance(RuleForm instance, Model model,
-                                          UriInfo uriInfo) {
+    @SuppressWarnings("unchecked")
+    public <RF extends ExistentialRuleform<RF, NetWork>, NetWork extends NetworkRuleform<RF>> Map<String, Object> toInstance(RF instance,
+                                                                                                                             Model model,
+                                                                                                                             UriInfo uriInfo) {
         Map<String, Object> node = new TreeMap<>();
-        fillIn(instance, node, model, uriInfo);
+        fillIn((RuleForm) instance, node, model, uriInfo);
         return node;
     }
 

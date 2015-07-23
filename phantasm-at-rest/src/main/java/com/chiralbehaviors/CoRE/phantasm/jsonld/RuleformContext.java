@@ -37,7 +37,6 @@ import javax.persistence.OneToMany;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.network.Cardinality;
@@ -106,9 +105,6 @@ public class RuleformContext {
         ub.resolveTemplate("ruleform-type",
                            ruleform.getClass().getSimpleName());
         ub.resolveTemplate("instance", ruleform.getId().toString());
-        if (ruleform instanceof ExistentialRuleform) {
-            ub.fragment(((ExistentialRuleform<?, ?>) ruleform).getName());
-        }
         return ub.build().toASCIIString();
     }
 

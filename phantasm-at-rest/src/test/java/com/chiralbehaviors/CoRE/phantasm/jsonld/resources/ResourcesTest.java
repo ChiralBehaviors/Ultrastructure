@@ -134,22 +134,6 @@ public class ResourcesTest extends AbstractModelTest {
     }
 
     @Test
-    public void testFrame() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        thing1.setURI("http://example.com");
-        thing1.setThing2(thing2);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-        URL url = getFramedInstanceUrl(thing1);
-        Object node = JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(node);
-        System.out.println("famed: ");
-        System.out.println(JsonUtils.toPrettyString(node));
-    }
-
-    @Test
     public void testLookupWorkspace() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/workspace/%s",
                                         application.getPort(),

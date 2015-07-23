@@ -20,11 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,10 +59,6 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.time.Interval;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jsonldjava.core.JsonLdError;
-import com.github.jsonldjava.core.JsonLdOptions;
-import com.github.jsonldjava.core.JsonLdProcessor;
 
 /**
  * @author hhildebrand
@@ -117,7 +109,8 @@ public class FacetResource extends TransactionalResource {
                                   aspect.getClassification().getName()));
             ctx.put("name", ruleform.getName());
             ctx.put(Constants.CONTEXT, Facet.getContextIri(aspect, uriInfo));
-            ctx.put(Constants.ID, Facet.getNodeIri(aspect, ruleform, uriInfo));
+            ctx.put(Constants.ID,
+                    Facet.getInstanceIri(aspect, ruleform, uriInfo));
             ctx.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
             facets.add(ctx);
         }
@@ -203,8 +196,7 @@ public class FacetResource extends TransactionalResource {
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getInstance(@PathParam("ruleform-type") String ruleformType,
                                                                                                                                                 @PathParam("classifier") UUID relationship,
                                                                                                                                                 @PathParam("classification") UUID ruleform,
-                                                                                                                                                @PathParam("instance") UUID existential,
-                                                                                                                                                @QueryParam("frame") String frame) {
+                                                                                                                                                @PathParam("instance") UUID existential) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
@@ -215,19 +207,9 @@ public class FacetResource extends TransactionalResource {
                                                             aspect),
                                               Status.NOT_FOUND);
         }
-        Facet<RuleForm, Network> node = new Facet<>(aspect, readOnlyModel,
-                                                    uriInfo);
-        if (frame != null) {
-            try {
-                return frame(URLDecoder.decode(frame, "UTF-8"), node, instance);
-            } catch (UnsupportedEncodingException e) {
-                throw new WebApplicationException(String.format("frame was not encoded correctly: %s",
-                                                                frame),
-                                                  Status.BAD_REQUEST);
-            }
-        } else {
-            return node.toInstance(instance, readOnlyModel, uriInfo);
-        }
+        return new Facet<>(aspect, readOnlyModel, uriInfo).toInstance(instance,
+                                                                      readOnlyModel,
+                                                                      uriInfo);
     }
 
     @Path("{ruleform-type}/{classifier}/{classification}/{instance}/{traversal:.+}")
@@ -306,30 +288,6 @@ public class FacetResource extends TransactionalResource {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Map<String, Object> createContext(Aspect<?> aspect) {
         return new Facet(aspect, readOnlyModel, uriInfo).toContext();
-    }
-
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> frame(String frameDescription,
-                                                                                                                                           Facet<RuleForm, Network> node,
-                                                                                                                                           RuleForm instance) {
-        Map<?, ?> frame;
-        try {
-            frame = new ObjectMapper().readValue(frameDescription.getBytes(),
-                                                 Map.class);
-        } catch (IOException e) {
-            throw new WebApplicationException(String.format("Invalid frame: %s",
-                                                            frameDescription),
-                                              Status.BAD_REQUEST);
-        }
-        List<Map<String, Object>> graph = traverse(instance, node, frame);
-        JsonLdOptions options = new JsonLdOptions();
-        options.setEmbed(true);
-        try {
-            return JsonLdProcessor.frame(graph, frame, options);
-        } catch (JsonLdError e) {
-            throw new WebApplicationException(String.format("Invalid frame %s",
-                                                            frame),
-                                              Status.BAD_REQUEST);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -684,11 +642,5 @@ public class FacetResource extends TransactionalResource {
                                                         facet.getClassifier(),
                                                         facet.getClassification()),
                                           Status.NOT_FOUND);
-    }
-
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> traverse(RuleForm instance,
-                                                                                                                                                    Facet<RuleForm, Network> node,
-                                                                                                                                                    Map<?, ?> frame) {
-        return Arrays.asList(node.toInstance(instance, readOnlyModel, uriInfo));
     }
 }

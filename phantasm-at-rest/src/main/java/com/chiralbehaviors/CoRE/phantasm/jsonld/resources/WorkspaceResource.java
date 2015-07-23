@@ -172,7 +172,7 @@ public class WorkspaceResource extends TransactionalResource {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<?> aspect = new Aspect((Relationship) relationship,
                                       (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getNodeIri(aspect,
+        return Response.seeOther(Facet.getInstanceIri(aspect,
                                                   (ExistentialRuleform<?, ?>) instance,
                                                   uriInfo)).build();
     }
@@ -253,7 +253,7 @@ public class WorkspaceResource extends TransactionalResource {
                                                                   aspect.getClassifier().getInverse())) {
             Map<String, Object> ctx = new TreeMap<>();
             ctx.put(Constants.ID,
-                    Facet.getNodeIri(aspect, definingProduct, uriInfo));
+                    Facet.getInstanceIri(aspect, definingProduct, uriInfo));
             ctx.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
             Map<String, Object> wsp = new TreeMap<>();
             wsp.put(Constants.ID,

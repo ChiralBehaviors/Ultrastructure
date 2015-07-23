@@ -142,15 +142,15 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
-    public static URI getNodeIri(Aspect<?> aspect,
-                                 ExistentialRuleform<?, ?> child,
-                                 UriInfo uriInfo) {
+    public static URI getInstanceIri(Aspect<?> aspect,
+                                     ExistentialRuleform<?, ?> child,
+                                     UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getInstance", String.class,
                                                   UUID.class, UUID.class,
-                                                  UUID.class, String.class));
+                                                  UUID.class));
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Cannot retrieve getInstance method",
                                             e);
@@ -786,7 +786,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                                              UriInfo uriInfo) {
         Map<String, String> node = new TreeMap<>();
         node.put(Constants.ID,
-                 getNodeIri(aspect, child, uriInfo).toASCIIString());
+                 getInstanceIri(aspect, child, uriInfo).toASCIIString());
         node.put(Constants.TYPE, getTypeIri(aspect, uriInfo).toASCIIString());
         return node;
     }

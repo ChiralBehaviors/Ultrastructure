@@ -305,9 +305,9 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     @SuppressWarnings("unchecked")
-    public <RF extends ExistentialRuleform<RF, NetWork>, NetWork extends NetworkRuleform<RF>> Map<String, Object> toInstance(RF instance,
-                                                                                                                             Model model,
-                                                                                                                             UriInfo uriInfo) {
+    public <RF extends ExistentialRuleform<RF, ?>> Map<String, Object> toInstance(RF instance,
+                                                                                  Model model,
+                                                                                  UriInfo uriInfo) {
         Map<String, Object> node = new TreeMap<>();
         fillIn((RuleForm) instance, node, model, uriInfo);
         return node;

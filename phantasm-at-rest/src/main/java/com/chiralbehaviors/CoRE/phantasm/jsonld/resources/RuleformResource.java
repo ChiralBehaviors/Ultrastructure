@@ -156,7 +156,8 @@ public class RuleformResource extends TransactionalResource {
             Map<String, String> map = new TreeMap<>();
             map.put(Constants.CONTEXT,
                     RuleformContext.getContextIri(rf.getClass(), uriInfo));
-            map.put(Constants.ID, RuleformContext.getIri(rf, uriInfo));
+            map.put(Constants.ID,
+                    RuleformContext.getIri(rf, uriInfo).toASCIIString());
             instances.add(map);
         });
         return instances;

@@ -146,17 +146,29 @@ public class FacetResource extends TransactionalResource {
     @GET
     public Map<String, String> getFacetRuleforms() {
         Map<String, String> ruleforms = new HashMap<String, String>();
-        ruleforms.put("Agency", Facet.getFacetsIri(uriInfo, Agency.class));
+        ruleforms.put("Agency",
+                      Facet.getFacetsIri(uriInfo,
+                                         Agency.class).toASCIIString());
         ruleforms.put("Attribute",
-                      Facet.getFacetsIri(uriInfo, Attribute.class));
-        ruleforms.put("Interval", Facet.getFacetsIri(uriInfo, Interval.class));
-        ruleforms.put("Location", Facet.getFacetsIri(uriInfo, Location.class));
-        ruleforms.put("Product", Facet.getFacetsIri(uriInfo, Product.class));
+                      Facet.getFacetsIri(uriInfo,
+                                         Attribute.class).toASCIIString());
+        ruleforms.put("Interval",
+                      Facet.getFacetsIri(uriInfo,
+                                         Interval.class).toASCIIString());
+        ruleforms.put("Location",
+                      Facet.getFacetsIri(uriInfo,
+                                         Location.class).toASCIIString());
+        ruleforms.put("Product",
+                      Facet.getFacetsIri(uriInfo,
+                                         Product.class).toASCIIString());
         ruleforms.put("Relationship",
-                      Facet.getFacetsIri(uriInfo, Relationship.class));
+                      Facet.getFacetsIri(uriInfo,
+                                         Relationship.class).toASCIIString());
         ruleforms.put("Status Code",
-                      Facet.getFacetsIri(uriInfo, StatusCode.class));
-        ruleforms.put("Unit", Facet.getFacetsIri(uriInfo, Unit.class));
+                      Facet.getFacetsIri(uriInfo,
+                                         StatusCode.class).toASCIIString());
+        ruleforms.put("Unit",
+                      Facet.getFacetsIri(uriInfo, Unit.class).toASCIIString());
         return ruleforms;
     }
 

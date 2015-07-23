@@ -23,6 +23,8 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,21 +49,35 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
  *
  */
 public class RuleformContext {
-    private static final Map<Class<?>, String> TYPES = new HashMap<>();
+    private static final Map<Class<?>, URI> TYPES = new HashMap<>();
 
     static {
         // initialize primitive types
-        TYPES.put(String.class, "http://www.w3.org/2001/XMLSchema#text");
-        TYPES.put(Integer.class, "http://www.w3.org/2001/XMLSchema#int");
-        TYPES.put(Integer.TYPE, "http://www.w3.org/2001/XMLSchema#int");
-        TYPES.put(BigDecimal.class, "http://www.w3.org/2001/XMLSchema#number");
-        TYPES.put(Boolean.class, "http://www.w3.org/2001/XMLSchema#boolean");
-        TYPES.put(Boolean.TYPE, "http://www.w3.org/2001/XMLSchema#boolean");
-        TYPES.put(Timestamp.class,
-                  "http://www.w3.org/2001/XMLSchema#date-dateTime");
-        TYPES.put(UUID.class, "http://www.w3.org/2001/XMLSchema#uuid");
-        TYPES.put(ValueType.class, "http://www.w3.org/2001/XMLSchema#text");
-        TYPES.put(Cardinality.class, "http://www.w3.org/2001/XMLSchema#text");
+        try {
+            TYPES.put(String.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#text"));
+            TYPES.put(Integer.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#int"));
+            TYPES.put(Integer.TYPE,
+                      new URI("http://www.w3.org/2001/XMLSchema#int"));
+            TYPES.put(BigDecimal.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#number"));
+            TYPES.put(Boolean.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#boolean"));
+            TYPES.put(Boolean.TYPE,
+                      new URI("http://www.w3.org/2001/XMLSchema#boolean"));
+            TYPES.put(Timestamp.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#date-dateTime"));
+            TYPES.put(UUID.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#uuid"));
+            TYPES.put(ValueType.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#text"));
+            TYPES.put(Cardinality.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#text"));
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public static String getContextIri(Class<? extends Ruleform> ruleformClass,
@@ -93,7 +109,7 @@ public class RuleformContext {
         return fields;
     }
 
-    public static String getIri(Ruleform ruleform, UriInfo uriInfo) {
+    public static URI getIri(Ruleform ruleform, UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(RuleformResource.class);
         try {
@@ -105,11 +121,11 @@ public class RuleformContext {
         ub.resolveTemplate("ruleform-type",
                            ruleform.getClass().getSimpleName());
         ub.resolveTemplate("instance", ruleform.getId().toString());
-        return ub.build().toASCIIString();
+        return ub.build();
     }
 
-    public static String getTermIri(Class<? extends Ruleform> ruleformClass,
-                                    String term, UriInfo uriInfo) {
+    public static URI getTermIri(Class<? extends Ruleform> ruleformClass,
+                                 String term, UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(RuleformResource.class);
         try {
@@ -120,11 +136,11 @@ public class RuleformContext {
         }
         ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
         ub.resolveTemplate("term", term);
-        return ub.build().toASCIIString();
+        return ub.build();
     }
 
-    public static String getTypeIri(Class<? extends Ruleform> ruleformClass,
-                                    UriInfo uriInfo) {
+    public static URI getTypeIri(Class<? extends Ruleform> ruleformClass,
+                                 UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(RuleformResource.class);
         try {
@@ -133,7 +149,7 @@ public class RuleformContext {
             throw new IllegalStateException("Cannot get getType method", e);
         }
         ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
-        return ub.build().toASCIIString();
+        return ub.build();
     }
 
     private final Class<? extends Ruleform> ruleformClass;

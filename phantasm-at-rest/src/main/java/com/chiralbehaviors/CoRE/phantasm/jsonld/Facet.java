@@ -235,6 +235,16 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return null;
     }
 
+    public Map<String, Object> getShort() {
+        Map<String, Object> shorty = new TreeMap<>();
+        shorty.put(Constants.CONTEXT, context);
+        shorty.put(Constants.TYPE, type);
+        shorty.put(Constants.TYPENAME,
+                   String.format("%s %s", getClassifier().getName(),
+                                 getClassification().getName()));
+        return shorty;
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Aspect<?> getTerm(String term) {
         for (Entry<String, NetworkAuthorization<RuleForm>> entry : networkAuths.entrySet()) {

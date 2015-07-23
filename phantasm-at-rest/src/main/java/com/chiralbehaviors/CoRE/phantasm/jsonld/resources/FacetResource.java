@@ -220,12 +220,12 @@ public class FacetResource extends TransactionalResource {
 
     @Path("{ruleform-type}/{classifier}/{classification}/{instance}/{traversal:.+}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object select(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                              @PathParam("classifier") UUID relationship,
-                                                                                                                              @PathParam("classification") UUID ruleform,
-                                                                                                                              @PathParam("instance") UUID existential,
-                                                                                                                              @PathParam("traversal") List<PathSegment> traversal,
-                                                                                                                              @QueryParam("frame") String frame) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> select(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                           @PathParam("classifier") UUID relationship,
+                                                                                                                                           @PathParam("classification") UUID ruleform,
+                                                                                                                                           @PathParam("instance") UUID existential,
+                                                                                                                                           @PathParam("traversal") List<PathSegment> traversal,
+                                                                                                                                           @QueryParam("frame") String frame) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
@@ -238,9 +238,11 @@ public class FacetResource extends TransactionalResource {
         }
         Facet<RuleForm, Network> node = new Facet<>(aspect, readOnlyModel,
                                                     uriInfo);
-        Object value = getProperty(node, instance, traversal, networkedModel,
-                                   uriInfo);
-        return value;
+        Map<String, Object> object = node.getShort();
+        object.put(traversal.get(0).getPath(),
+                   getProperty(node, instance, traversal, networkedModel,
+                               uriInfo));
+        return object;
     }
 
     @Path("term/{ruleform-type}/{classifier}/{classification}/{term}")
@@ -340,7 +342,7 @@ public class FacetResource extends TransactionalResource {
                     result.add(childFacet.toInstance(child, readOnlyModel,
                                                      uriInfo));
                 } else {
-                    Map<String, Object> object = new TreeMap<String, Object>();
+                    Map<String, Object> object = childFacet.getShort();
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getLocationModel(),
@@ -359,7 +361,7 @@ public class FacetResource extends TransactionalResource {
                     result.add(childFacet.toInstance(child, readOnlyModel,
                                                      uriInfo));
                 } else {
-                    Map<String, Object> object = new TreeMap<String, Object>();
+                    Map<String, Object> object = childFacet.getShort();
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getAgencyModel(),
@@ -397,7 +399,7 @@ public class FacetResource extends TransactionalResource {
                     result.add(childFacet.toInstance(child, readOnlyModel,
                                                      uriInfo));
                 } else {
-                    Map<String, Object> object = new TreeMap<String, Object>();
+                    Map<String, Object> object = childFacet.getShort();
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getProductModel(),
@@ -416,7 +418,7 @@ public class FacetResource extends TransactionalResource {
                     result.add(childFacet.toInstance(child, readOnlyModel,
                                                      uriInfo));
                 } else {
-                    Map<String, Object> object = new TreeMap<String, Object>();
+                    Map<String, Object> object = childFacet.getShort();
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getAgencyModel(),
@@ -468,7 +470,7 @@ public class FacetResource extends TransactionalResource {
                     result.add(childFacet.toInstance(child, readOnlyModel,
                                                      uriInfo));
                 } else {
-                    Map<String, Object> object = new TreeMap<String, Object>();
+                    Map<String, Object> object = childFacet.getShort();
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            networkedModel, uriInfo));
@@ -485,7 +487,7 @@ public class FacetResource extends TransactionalResource {
                                                                       readOnlyModel,
                                                                       uriInfo);
             } else {
-                Map<String, Object> object = new TreeMap<String, Object>();
+                Map<String, Object> object = childFacet.getShort();
                 object.put(traversal.get(0).getPath(),
                            getProperty(childFacet, immediateChild, traversal,
                                        networkedModel, uriInfo));
@@ -535,7 +537,7 @@ public class FacetResource extends TransactionalResource {
                     result.add(childFacet.toInstance(child, readOnlyModel,
                                                      uriInfo));
                 } else {
-                    Map<String, Object> object = new TreeMap<String, Object>();
+                    Map<String, Object> object = childFacet.getShort();
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getLocationModel(),
@@ -554,7 +556,7 @@ public class FacetResource extends TransactionalResource {
                     result.add(childFacet.toInstance(child, readOnlyModel,
                                                      uriInfo));
                 } else {
-                    Map<String, Object> object = new TreeMap<String, Object>();
+                    Map<String, Object> object = childFacet.getShort();
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getProductModel(),
@@ -592,7 +594,7 @@ public class FacetResource extends TransactionalResource {
                     result.add(childFacet.toInstance(child, readOnlyModel,
                                                      uriInfo));
                 } else {
-                    Map<String, Object> object = new TreeMap<String, Object>();
+                    Map<String, Object> object = childFacet.getShort();
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getRelationshipModel(),
@@ -611,7 +613,7 @@ public class FacetResource extends TransactionalResource {
                     result.add(childFacet.toInstance(child, readOnlyModel,
                                                      uriInfo));
                 } else {
-                    Map<String, Object> object = new TreeMap<String, Object>();
+                    Map<String, Object> object = childFacet.getShort();
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getProductModel(),

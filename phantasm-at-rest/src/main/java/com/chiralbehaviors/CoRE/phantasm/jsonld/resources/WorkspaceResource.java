@@ -20,9 +20,11 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -34,24 +36,21 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.PathSegment;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand
@@ -76,8 +75,8 @@ public class WorkspaceResource extends TransactionalResource {
         return ub.build().toASCIIString();
     }
 
-    public static String lookupIri(UUID definingProduct, String key,
-                                   UriInfo uriInfo) {
+    public static URI lookupIri(UUID definingProduct, String key,
+                                UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
             ub.path(WorkspaceResource.class.getMethod("lookup", UUID.class,
@@ -88,10 +87,20 @@ public class WorkspaceResource extends TransactionalResource {
             throw new IllegalStateException("Unable to get all instances method",
                                             e);
         }
-        return ub.build().toASCIIString();
+        return ub.build();
     }
 
-    public static String workspaceIri(UUID definingProduct, UriInfo uriInfo) {
+    public static UUID toUUID(String workspace) {
+        UUID workspaceUUID;
+        try {
+            workspaceUUID = UUID.fromString(workspace);
+        } catch (IllegalArgumentException e) {
+            workspaceUUID = Workspace.uuidOf(workspace);
+        }
+        return workspaceUUID;
+    }
+
+    public static URI workspaceIri(UUID definingProduct, UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
             ub.path(WorkspaceResource.class.getMethod("getWorkspace",
@@ -101,7 +110,7 @@ public class WorkspaceResource extends TransactionalResource {
             throw new IllegalStateException("Unable to get all instances method",
                                             e);
         }
-        return ub.build().toASCIIString();
+        return ub.build();
     }
 
     @Context
@@ -111,75 +120,10 @@ public class WorkspaceResource extends TransactionalResource {
         super(emf);
     }
 
-    @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}")
-
+    @Path("{workspace}/key")
     @GET
-    public Response getAllInstances(@PathParam("workspace") UUID workspace,
-                                    @PathParam("ruleform-type") String ruleformType,
-                                    @PathParam("classifier") String classifier,
-                                    @PathParam("classification") String classification) {
-        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
-        if (scope == null) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspace),
-                                              Status.NOT_FOUND);
-        }
-        Ruleform relationship = scope.lookup(classifier);
-        Ruleform ruleform = scope.lookup(classification);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getAllInstancesIri(aspect,
-                                                          uriInfo)).build();
-    }
-
-    @Path("{workspace}/facet/context/{ruleform-type}/{classifier}/{classification}")
-    @GET
-    public Response getContext(@PathParam("workspace") UUID workspace,
-                               @PathParam("ruleform-type") String ruleformType,
-                               @PathParam("classifier") String classifier,
-                               @PathParam("classification") String classification) {
-        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
-        if (scope == null) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspace),
-                                              Status.NOT_FOUND);
-        }
-        Ruleform relationship = scope.lookup(classifier);
-        Ruleform ruleform = scope.lookup(classification);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getContextIri(aspect, uriInfo)).build();
-    }
-
-    @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}/{instance}")
-    @GET
-    public Response getInstance(@PathParam("workspace") UUID workspace,
-                                @PathParam("ruleform-type") String ruleformType,
-                                @PathParam("classifier") String classifier,
-                                @PathParam("classification") String classification,
-                                @PathParam("instance") String existential) {
-        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
-        if (scope == null) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspace),
-                                              Status.NOT_FOUND);
-        }
-        Ruleform relationship = scope.lookup(classifier);
-        Ruleform ruleform = scope.lookup(classification);
-        Ruleform instance = scope.lookup(existential);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getInstanceIri(aspect,
-                                                  (ExistentialRuleform<?, ?>) instance,
-                                                  uriInfo)).build();
-    }
-
-    @Path("{uuid}/key")
-    @GET
-    public Map<String, Object> getKeys(@PathParam("uuid") UUID workspaceId) {
+    public Map<String, Object> getKeys(@PathParam("workspace") String workspace) {
+        UUID workspaceId = toUUID(workspace);
         WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceId);
         if (scope == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
@@ -188,7 +132,7 @@ public class WorkspaceResource extends TransactionalResource {
         }
         Map<String, String> keys = new TreeMap<>();
         for (String key : scope.getWorkspace().getKeys()) {
-            keys.put(key, lookupIri(workspaceId, key, uriInfo));
+            keys.put(key, lookupIri(workspaceId, key, uriInfo).toASCIIString());
         }
         Map<String, Object> context = new TreeMap<>();
         Map<String, Object> keyTerm = new TreeMap<>();
@@ -202,31 +146,10 @@ public class WorkspaceResource extends TransactionalResource {
         return returned;
     }
 
-    @Path("{workspace}/facet/term/{ruleform-type}/{classifier}/{classification}/{term}")
+    @Path("{workspace}")
     @GET
-    public Response getTerm(@PathParam("workspace") UUID workspace,
-                            @PathParam("ruleform-type") String ruleformType,
-                            @PathParam("classifier") String classifier,
-                            @PathParam("classification") String classification,
-                            @PathParam("term") String term) {
-        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
-        if (scope == null) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspace),
-                                              Status.NOT_FOUND);
-        }
-        Ruleform relationship = scope.lookup(classifier);
-        Ruleform ruleform = scope.lookup(classification);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getTermIri(aspect, term,
-                                                  uriInfo)).build();
-    }
-
-    @Path("{uuid}")
-    @GET
-    public WorkspaceSnapshot getWorkspace(@PathParam("uuid") UUID workspaceId) {
+    public WorkspaceSnapshot getWorkspace(@PathParam("workspace") String wsp) {
+        UUID workspaceId = toUUID(wsp);
         EntityManager em = readOnlyModel.getEntityManager();
         Product workspace = em.find(Product.class, workspaceId);
         if (workspace == null) {
@@ -266,10 +189,11 @@ public class WorkspaceResource extends TransactionalResource {
         return returned;
     }
 
-    @Path("{uuid}/key/{member}")
+    @Path("{workspace}/key/{member}")
     @GET
-    public Map<String, Object> lookup(@PathParam("uuid") UUID workspaceId,
+    public Map<String, Object> lookup(@PathParam("workspace") String workspace,
                                       @PathParam("member") String member) {
+        UUID workspaceId = toUUID(workspace);
         WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceId);
         if (scope == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
@@ -287,11 +211,12 @@ public class WorkspaceResource extends TransactionalResource {
                                    uriInfo).toNode(resolved, uriInfo);
     }
 
-    @Path("{uuid}/key/{namespace}/{member}")
+    @Path("{workspace}/key/{namespace}/{member}")
     @GET
-    public Map<String, Object> lookup(@PathParam("uuid") UUID workspaceId,
+    public Map<String, Object> lookup(@PathParam("workspace") String workspace,
                                       @PathParam("namespace") String namespace,
                                       @PathParam("member") String member) {
+        UUID workspaceId = toUUID(workspace);
         WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceId);
         if (scope == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
@@ -309,29 +234,34 @@ public class WorkspaceResource extends TransactionalResource {
                                    uriInfo).toNode(resolved, uriInfo);
     }
 
-    @Path("{uuid}/facet/{ruleform-type}/{classifier}/{classification}/{instance}/{traversal:.+}")
+    @Path("translate/{uri}")
     @GET
-    public Response select(@PathParam("workspace") UUID workspace,
-                           @PathParam("ruleform-type") String ruleformType,
-                           @PathParam("classifier") String classifier,
-                           @PathParam("classification") String classfication,
-                           @PathParam("instance") String existential,
-                           @PathParam("traversal") List<PathSegment> traversal) {
-        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
-        if (scope == null) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspace),
-                                              Status.NOT_FOUND);
+    public UUID translate(@PathParam("uri") String uri) {
+        return Workspace.uuidOf(uri);
+    }
+
+    public static Ruleform resolve(String qualifiedName, WorkspaceScope scope) {
+        StringTokenizer key = new StringTokenizer(qualifiedName, "|");
+        if (key.countTokens() == 1) {
+            Ruleform resolved = scope.lookup(key.nextToken());
+            if (resolved == null) {
+                throw new WebApplicationException(String.format("The workspace key [%s] is not defined in %s",
+                                                                qualifiedName,
+                                                                scope));
+            }
+            return resolved;
+        } else if (key.countTokens() == 2) {
+            Ruleform resolved = scope.lookup(key.nextToken(), key.nextToken());
+            if (resolved == null) {
+                throw new WebApplicationException(String.format("The workspace key [%s] is not defined in %s",
+                                                                qualifiedName,
+                                                                scope));
+            }
+            return resolved;
+        } else {
+            throw new WebApplicationException(String.format("The workspace key [%s] is not defined in %s",
+                                                            qualifiedName,
+                                                            scope));
         }
-        Ruleform relationship = scope.lookup(classifier);
-        Ruleform ruleform = scope.lookup(classfication);
-        Ruleform instance = scope.lookup(existential);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getSelectIri(aspect,
-                                                    (ExistentialRuleform<?, ?>) instance,
-                                                    traversal,
-                                                    uriInfo)).build();
     }
 }

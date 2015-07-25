@@ -25,6 +25,7 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld;
  *
  */
 public class Constants {
+    public static final String BASE      = "@base";
     public static final String CONTAINER = "@container";
     public static final String CONTEXT   = "@context";
     public static final String GRAPH     = "@graph";

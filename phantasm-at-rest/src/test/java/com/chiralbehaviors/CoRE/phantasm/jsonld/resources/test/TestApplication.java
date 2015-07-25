@@ -27,6 +27,7 @@ import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
@@ -90,6 +91,7 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         environment.jersey().register(new FacetResource(emf));
         environment.jersey().register(new WorkspaceResource(emf));
         environment.jersey().register(new RuleformResource(emf));
+        environment.jersey().register(new WorkspaceMediatedResource(emf));
         environment.healthChecks().register("EMF Health",
                                             new EmfHealthCheck(emf));
     }

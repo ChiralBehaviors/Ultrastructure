@@ -9,49 +9,49 @@ phantasm.factory("Facet", [ "Restangular", function(Restangular) {
 	return service;
 } ]);
 
-phantasm.factory("WorkspaceFacet", [ "Restangular", function(Restangular) {
-	var service = Restangular.service("workspace-mediated/facet");
+phantasm.factory("WorkspaceMediated", [ "Restangular", function(Restangular) {
+	var service = Restangular.service("workspace-mediated");
 	return service;
 } ]);
 
-phantasm
-		.service("Phantasm",
-				[
-						"Facet",
-						function(Facet) {
-							this.facetInstance = function(ruleform, classifier,
-									classification, instance) {
-								return this.facet(ruleform, classifier,
-										classification).one(instance);
-							};
-							this.facet = function(ruleform, classifier,
-									classification) {
-								return Facet.one(ruleform).one(classifier).one(
-										classification);
-							};
-							this.facetInstances = function(ruleform,
-									classifier, classification) {
-								return this.facet(ruleform, classifier,
-										classification).one("instances");
-							};
-						} ]);
-
-phantasm.service("WorkspacePhantasm", [
-		"WorkspaceFacet",
-		function(WorkspaceFacet) {
-			this.facetInstance = function(workspace, ruleform, classifier,
+phantasm.factory("Phantasm", [
+		"Facet",
+		function(Facet) {
+			var phantasm = {};
+			phantasm.facetInstance = function(ruleform, classifier,
 					classification, instance) {
+				return this.facet(ruleform, classifier, classification).one(
+						instance);
+			};
+			phantasm.facet = function(ruleform, classifier, classification) {
+				return Facet.one(ruleform).one(classifier).one(classification);
+			};
+			phantasm.facetInstances = function(ruleform, classifier,
+					classification) {
+				return this.facet(ruleform, classifier, classification).one(
+						"instances");
+			};
+			return phantasm;
+		} ]);
+
+phantasm.factory("WorkspacePhantasm", [
+		"WorkspaceMediated",
+		function(WorkspaceMediated) {
+			var workspacePhantasm = {};
+			workspacePhantasm.facetInstance = function(workspace, ruleform,
+					classifier, classification, instance) {
 				return this.facet(workspace, ruleform, classifier,
 						classification).one(instance);
 			};
-			this.facet = function(workspace, ruleform, classifier,
+			workspacePhantasm.facet = function(workspace, ruleform, classifier,
 					classification) {
-				return WorkspaceFacet.one(ruleform).one(classifier).one(
-						classification);
+				return WorkspaceMediated.one(workspace).one("facet").one(
+						ruleform).one(classifier).one(classification);
 			};
-			this.facetInstances = function(workspace, ruleform, classifier,
-					classification, instance) {
+			workspacePhantasm.facetInstances = function(workspace, ruleform,
+					classifier, classification) {
 				return this.facet(workspace, ruleform, classifier,
 						classification).one("instances");
 			};
+			return workspacePhantasm;
 		} ]);

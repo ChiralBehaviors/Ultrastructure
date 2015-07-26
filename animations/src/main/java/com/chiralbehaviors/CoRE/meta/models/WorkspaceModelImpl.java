@@ -122,7 +122,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     public WorkspaceScope getScoped(UUID definingProduct) {
         Product product = em.find(Product.class, definingProduct);
         if (product == null) {
-            throw new IllegalStateException("Defining Product is null");
+            throw new IllegalArgumentException(String.format("Defining Product %s does not exist",
+                                                             definingProduct));
         }
         return getScoped(product);
     }

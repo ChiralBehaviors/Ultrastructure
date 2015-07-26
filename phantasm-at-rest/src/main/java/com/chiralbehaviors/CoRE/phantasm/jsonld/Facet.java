@@ -65,22 +65,11 @@ import com.chiralbehaviors.CoRE.utils.English;
  */
 public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         extends Aspect<RuleForm> {
-    public static URI getAllInstancesBaseIri(Class<?> ruleformType) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
-        ub.path(ruleformType.getSimpleName());
-        return ub.build();
-    }
 
-    public static URI getAllInstancesBaseIri(Class<?> ruleformType,
-                                             String term) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
-        ub.path(ruleformType.getSimpleName());
-        ub.fragment(term);
-        return ub.build();
-    }
-
-    public static URI getAllInstancesIri(@SuppressWarnings("rawtypes") Aspect aspect) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+    public static URI getAllInstancesIri(@SuppressWarnings("rawtypes") Aspect aspect,
+                                         UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getAllInstances",
                                                   String.class, UUID.class,
@@ -117,20 +106,9 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
-    public static URI getFacetsBaseIri(UriInfo uriInfo) {
+    public static URI getFacetsIri(Class<?> ruleform, UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
-        try {
-            ub.path(FacetResource.class.getMethod("getFacets", String.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Unable to getFacets", e);
-        }
-        ub.resolveTemplate("ruleform-type", "");
-        return ub.build();
-    }
-
-    public static URI getFacetsIri(Class<?> ruleform) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getFacets", String.class));
         } catch (NoSuchMethodException | SecurityException e) {
@@ -140,10 +118,35 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
+    public static URI getInstanceIri(Aspect<?> aspect,
+                                     ExistentialRuleform<?, ?> child,
+                                     UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
+        try {
+            ub.path(FacetResource.class.getMethod("getInstance", String.class,
+                                                  UUID.class, UUID.class,
+                                                  UUID.class));
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Cannot retrieve getInstance method",
+                                            e);
+        }
+        ub.resolveTemplate("ruleform-type",
+                           aspect.getClassification().getClass().getSimpleName());
+        ub.resolveTemplate("classifier",
+                           aspect.getClassifier().getId().toString());
+        ub.resolveTemplate("classification",
+                           aspect.getClassification().getId().toString());
+        ub.resolveTemplate("instance", child.getId().toString());
+        return ub.build();
+    }
+
     public static URI getSelectIri(Aspect<?> aspect,
                                    ExistentialRuleform<?, ?> instance,
-                                   List<PathSegment> traversal) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+                                   List<PathSegment> traversal,
+                                   UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("select", String.class,
                                                   UUID.class, UUID.class,
@@ -164,56 +167,10 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
-    public static URI getInstanceBaseIri(Aspect<?> aspect) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
-        try {
-            ub.path(FacetResource.class.getMethod("getInstance", String.class,
-                                                  UUID.class, UUID.class,
-                                                  UUID.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot retrieve getInstance method",
-                                            e);
-        }
-        ub.resolveTemplate("ruleform-type",
-                           aspect.getClassification().getClass().getSimpleName());
-        ub.resolveTemplate("classifier",
-                           aspect.getClassifier().getId().toString());
-        ub.resolveTemplate("classification",
-                           aspect.getClassification().getId().toString());
-        ub.resolveTemplate("instance", "");
-        return ub.build();
-    }
-
-    public static URI getInstanceIri(Aspect<?> aspect,
-                                     ExistentialRuleform<?, ?> child) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
-        try {
-            ub.path(FacetResource.class.getMethod("getInstance", String.class,
-                                                  UUID.class, UUID.class,
-                                                  UUID.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot retrieve getInstance method",
-                                            e);
-        }
-        ub.resolveTemplate("ruleform-type",
-                           aspect.getClassification().getClass().getSimpleName());
-        ub.resolveTemplate("classifier",
-                           aspect.getClassifier().getId().toString());
-        ub.resolveTemplate("classification",
-                           aspect.getClassification().getId().toString());
-        ub.resolveTemplate("instance", child.getId().toString());
-        return ub.build();
-    }
-
-    public static String getTermPath(Aspect<?> aspect, String term) {
-        return String.format("term/%s/%s/%s/%s",
-                             aspect.getClassification().getClass().getSimpleName(),
-                             aspect.getClassifier().getId(),
-                             aspect.getClassification().getId(), term);
-    }
-
-    public static URI getTermIri(Aspect<?> aspect, String term) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+    public static URI getTermIri(Aspect<?> aspect, String term,
+                                 UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getTerm", String.class,
                                                   UUID.class, UUID.class,
@@ -231,13 +188,19 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
-    public static URI getTypeIri(Aspect<?> aspect) {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+    public static String getTypeName(@SuppressWarnings("rawtypes") Aspect aspect) {
+        return String.format("%s:%s", aspect.getClassifier().getName(),
+                             aspect.getClassification().getName());
+    }
+
+    public static URI getTypeIri(Aspect<?> aspect, UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         try {
-            ub.path(FacetResource.class.getMethod("getType", String.class,
+            ub.path(FacetResource.class.getMethod("getFacet", String.class,
                                                   UUID.class, UUID.class));
         } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot get getFacetType method",
+            throw new IllegalStateException("Cannot retrieve getFacet method",
                                             e);
         }
         ub.resolveTemplate("ruleform-type",
@@ -249,7 +212,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
-    private final Map<String, XDomainNetworkAuthorization<Agency, Location>>      agencyLocationAuths      = new TreeMap<>();
+    private final Map<String, XDomainNetworkAuthorization<Agency, Location>> agencyLocationAuths = new TreeMap<>();
+
     private final Map<String, XDomainNetworkAuthorization<Agency, Product>>       agencyProductAuths       = new TreeMap<>();
     private final Map<String, Attribute>                                          attributes               = new TreeMap<>();
     private final String                                                          context;
@@ -257,16 +221,15 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private final Map<String, XDomainNetworkAuthorization<Product, Location>>     productLocationAuths     = new TreeMap<>();
     private final Map<String, XDomainNetworkAuthorization<Product, Relationship>> productRelationshipAuths = new TreeMap<>();
     private final Map<String, Typed>                                              terms                    = new TreeMap<>();
-
-    private final String type;
+    private final String                                                          type;
 
     public Facet(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
         super(aspect.getClassifier(), aspect.getClassification());
         context = getContextIri(this, uriInfo).toASCIIString();
-        type = getTypeIri(this).toASCIIString();
         collectRuleformAttributes(model, uriInfo);
         collectAttributes(model, uriInfo);
         collectChildren(model, uriInfo);
+        type = getTypeIri(aspect, uriInfo).toASCIIString();
     }
 
     public XDomainNetworkAuthorization<Agency, Location> getAgencyLocationAuth(String property) {
@@ -280,6 +243,10 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     public Attribute getAttribute(String term) {
         Attribute attribute = attributes.get(term);
         return attribute;
+    }
+
+    public String getId(RuleForm ruleform, UriInfo uriInfo) {
+        return getInstanceIri(this, ruleform, uriInfo).toASCIIString();
     }
 
     public NetworkAuthorization<RuleForm> getNetworkAuth(String property) {
@@ -309,10 +276,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     public Map<String, Object> getShort() {
         Map<String, Object> shorty = new TreeMap<>();
         shorty.put(Constants.CONTEXT, context);
-        shorty.put(Constants.TYPE, type);
-        shorty.put(Constants.TYPENAME,
-                   String.format("%s %s", getClassifier().getName(),
-                                 getClassification().getName()));
+        shorty.put(Constants.TYPE, getTypeId());
+        shorty.put(Constants.TYPENAME, getTypeName());
         return shorty;
     }
 
@@ -375,11 +340,26 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return null;
     }
 
+    public Map<String, Object> getType() {
+        Map<String, Object> ctx = new TreeMap<>();
+        ctx.put(Constants.TYPENAME, getTypeName());
+        ctx.put(Constants.ID, getTypeId());
+        return ctx;
+    }
+
+    public String getTypeId() {
+        return type;
+    }
+
+    public String getTypeName() {
+        return String.format("%s:%s", getClassifier().getName(),
+                             getClassification().getName());
+    }
+
     public Map<String, Object> toContext(UriInfo uriInfo) {
         Map<String, Object> object = new TreeMap<>();
         Map<String, Object> context = new TreeMap<>();
         object.put(Constants.CONTEXT, context);
-        context.put(Constants.BASE, getFacetsBaseIri(uriInfo));
         for (Map.Entry<String, Typed> term : terms.entrySet()) {
             context.put(term.getKey(), term.getValue().toMap());
         }
@@ -390,8 +370,14 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     public <RF extends ExistentialRuleform<RF, ?>> Map<String, Object> toInstance(RF instance,
                                                                                   Model model,
                                                                                   UriInfo uriInfo) {
-        Map<String, Object> node = new TreeMap<>();
-        fillIn((RuleForm) instance, node, model, uriInfo);
+        RuleForm instance1 = (RuleForm) instance;
+        Map<String, Object> node = getShort();
+        node.put(Constants.ID, getId(instance1, uriInfo));
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance1);
+        addRuleformAttributes(instance1, node, uriInfo);
+        addAttributes(instance1, networkedModel, node, uriInfo);
+        addNetworkAuths(instance1, networkedModel, node, uriInfo);
+        addXdAuths(instance1, model, node, uriInfo);
         return node;
     }
 
@@ -675,8 +661,9 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             String term = auth.getAuthorizedAttribute().getName();
             attributes.put(term, auth.getAuthorizedAttribute());
             terms.put(term,
-                      new Typed(getTermPath(this,
-                                            auth.getAuthorizedAttribute().getName()),
+                      new Typed(getTermIri(this,
+                                           auth.getAuthorizedAttribute().getName(),
+                                           uriInfo),
                                 getIri(auth.getAuthorizedAttribute(),
                                        uriInfo)));
         }
@@ -721,7 +708,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                 term = English.plural(term);
             }
             networkAuths.put(term, auth);
-            terms.put(term, new Typed(getTermPath(this, term), Constants.ID));
+            terms.put(term,
+                      new Typed(getTermIri(this, term, uriInfo), Constants.ID));
         }
     }
 
@@ -775,12 +763,15 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             throw new IllegalStateException(String.format("Cannot create URI: %s",
                                                           AttributeModelImpl.HTTP_WWW_W3_ORG_2001_XML_SCHEMA_TEXT));
         }
-        terms.put("name", new Typed(getTermPath(this, "name"), textType));
+        terms.put("name",
+                  new Typed(getTermIri(this, "name", uriInfo), textType));
         terms.put("description",
-                  new Typed(getTermPath(this, "description"), textType));
-        terms.put("notes", new Typed(getTermPath(this, "notes"), textType));
+                  new Typed(getTermIri(this, "description", uriInfo),
+                            textType));
+        terms.put("notes",
+                  new Typed(getTermIri(this, "notes", uriInfo), textType));
         terms.put("updatedBy",
-                  new Typed(getTermPath(this, "updatedBy"),
+                  new Typed(getTermIri(this, "updatedBy", uriInfo),
                             RuleformContext.getTypeIri(Agency.class, uriInfo)));
     }
 
@@ -788,7 +779,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         if (term == null) {
             return;
         }
-        terms.put(term, new Typed(getTermPath(this, term), Constants.ID));
+        terms.put(term,
+                  new Typed(getTermIri(this, term, uriInfo), Constants.ID));
     }
 
     private void collectXdAuths(Model model,
@@ -805,27 +797,16 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         }
     }
 
-    private void fillIn(RuleForm instance, Map<String, Object> node,
-                        Model model, UriInfo uriInfo) {
-        node.put(Constants.CONTEXT, context);
-        node.put(Constants.TYPENAME,
-                 String.format("%s %s", getClassifier().getName(),
-                               getClassification().getName()));
-        node.put(Constants.TYPE, type);
-        node.put(Constants.ID, getIri(instance, uriInfo));
-        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        addRuleformAttributes(instance, node, uriInfo);
-        addAttributes(instance, networkedModel, node, uriInfo);
-        addNetworkAuths(instance, networkedModel, node, uriInfo);
-        addXdAuths(instance, model, node, uriInfo);
-    }
-
     private Map<String, String> getReference(Aspect<?> aspect,
                                              @SuppressWarnings("rawtypes") ExistentialRuleform child,
                                              UriInfo uriInfo) {
-        Map<String, String> node = new TreeMap<>();
-        node.put(Constants.ID, getInstanceIri(aspect, child).toASCIIString());
-        node.put(Constants.TYPE, getTypeIri(aspect).toASCIIString());
-        return node;
+        Map<String, String> shorty = new TreeMap<>();
+        shorty.put(Constants.CONTEXT,
+                   getContextIri(aspect, uriInfo).toASCIIString());
+        shorty.put(Constants.TYPE, getTypeIri(aspect, uriInfo).toASCIIString());
+        shorty.put(Constants.TYPENAME, getTypeName(aspect));
+        shorty.put(Constants.ID,
+                   getInstanceIri(aspect, child, uriInfo).toASCIIString());
+        return shorty;
     }
 }

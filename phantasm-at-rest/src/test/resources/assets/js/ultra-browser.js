@@ -8,7 +8,7 @@ usBrowser.config([ '$routeProvider', function($routeProvider) {
 	}).when('/facet/:ruleform', {
 		templateUrl : 'partials/facets.html',
 		controller : 'FacetListCtrl'
-	}).when('/facet/:ruleform/:classifier/:classification', {
+	}).when('/facet/:ruleform/:classifier/:classification/instances', {
 		templateUrl : 'partials/facet-instances.html',
 		controller : 'FacetInstancesListCtrl'
 	}).when('/facet/:ruleform/:classifier/:classification/:instance', {

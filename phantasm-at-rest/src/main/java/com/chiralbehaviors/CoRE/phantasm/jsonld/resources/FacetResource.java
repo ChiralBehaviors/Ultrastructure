@@ -111,26 +111,22 @@ public class FacetResource extends TransactionalResource {
         Map<String, Object> returned = new TreeMap<>();
 
         returned.put(Constants.CONTEXT, context);
-        returned.put(Constants.ID, Facet.getAllInstancesIri(aspect));
+        returned.put(Constants.ID, Facet.getAllInstancesIri(aspect, uriInfo));
         returned.put(Constants.TYPENAME,
                      String.format("%s:%s", aspect.getClassifier().getName(),
                                    aspect.getClassification().getName()));
-        returned.put(Constants.BASE, Facet.getInstanceBaseIri(aspect));
 
         List<Map<String, Object>> facets = new ArrayList<>();
         returned.put("instances", facets);
 
+        Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
+                                                     uriInfo);
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
         for (RuleForm ruleform : networkedModel.getChildren(aspect.getClassification(),
                                                             aspect.getClassifier().getInverse())) {
-            Map<String, Object> ctx = new TreeMap<>();
+            Map<String, Object> ctx = facet.getShort();
             ctx.put("name", ruleform.getName());
-            ctx.put(Constants.ID,
-                    String.format("%s/%s/%s/%s", ruleformType,
-                                  aspect.getClassifier().getId(),
-                                  aspect.getClassification().getId(),
-                                  ruleform.getId().toString()));
-            ctx.put(Constants.TYPE, Facet.getTypeIri(aspect));
+            ctx.put(Constants.ID, facet.getId(ruleform, uriInfo));
             facets.add(ctx);
         }
         return returned;
@@ -173,7 +169,6 @@ public class FacetResource extends TransactionalResource {
         keyTerm.put(Constants.TYPE, Constants.ID);
         keyTerm.put(Constants.CONTAINER, Constants.LIST);
         context.put("ruleforms", keyTerm);
-        context.put(Constants.BASE, Facet.getFacetsBaseIri(uriInfo));
         Map<String, Object> returned = new TreeMap<>();
         returned.put(Constants.CONTEXT, context);
         returned.put(Constants.ID, facetResourceIri(uriInfo));
@@ -267,14 +262,14 @@ public class FacetResource extends TransactionalResource {
         Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
                                                      uriInfo);
         Map<String, Object> clazz = new TreeMap<>();
-        clazz.put(Constants.ID, Facet.getTermIri(aspect, term));
+        clazz.put(Constants.ID, Facet.getTermIri(aspect, term, uriInfo));
         Attribute attribute = facet.getAttribute(term);
         if (attribute != null) {
             clazz.put(Constants.TYPE,
                       RuleformContext.getIri(attribute, uriInfo));
         } else if (facet.getTerm(term) != null) {
             Aspect<?> targetAspect = facet.getTerm(term);
-            clazz.put(Constants.TYPE, Facet.getTypeIri(targetAspect));
+            clazz.put(Constants.TYPE, Facet.getTypeIri(targetAspect, uriInfo));
 
         } else if (facet.getRuleformTerm(term) != null) {
             clazz.put(Constants.TYPE, facet.getRuleformTerm(term).type);
@@ -286,18 +281,18 @@ public class FacetResource extends TransactionalResource {
         return clazz;
     }
 
-    @Path("type/{ruleform-type}/{classifier}/{classification}")
+    @Path("{ruleform-type}/{classifier}/{classification}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                            @PathParam("classifier") UUID relationship,
-                                                                                                                                            @PathParam("classification") UUID ruleform) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacet(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                             @PathParam("classifier") UUID relationship,
+                                                                                                                                             @PathParam("classification") UUID ruleform) {
 
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
         Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
                                                      uriInfo);
         Map<String, Object> type = facet.toContext(uriInfo);
-        type.put(Constants.ID, Facet.getTypeIri(aspect));
+        type.put(Constants.ID, Facet.getTypeIri(aspect, uriInfo));
         type.put(Constants.TYPE, "http://ultrastructure.me#Facet");
         return type;
     }
@@ -502,28 +497,20 @@ public class FacetResource extends TransactionalResource {
         instancesTerm.put(Constants.TYPE, Constants.ID);
         context.put("instances", instancesTerm);
 
-        context.put(Constants.BASE, facetResourceIri(uriInfo));
         Map<String, Object> returned = new TreeMap<>();
 
         returned.put(Constants.CONTEXT, context);
-        returned.put(Constants.ID, clazz.getSimpleName());
+        returned.put(Constants.ID, Facet.getFacetsIri(clazz, uriInfo));
 
         List<Map<String, Object>> facets = new ArrayList<>();
         returned.put("facets", facets);
 
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
-            Map<String, Object> ctx = new TreeMap<>();
-            ctx.put(Constants.TYPENAME,
-                    String.format("%s:%s", aspect.getClassifier().getName(),
-                                  aspect.getClassification().getName()));
-            ctx.put(Constants.ID,
-                    String.format("type/%s/%s/%s", clazz.getSimpleName(),
-                                  aspect.getClassifier().getId(),
-                                  aspect.getClassification().getId()));
-            ctx.put("instances",
-                    String.format("%s/%s/%s", clazz.getSimpleName(),
-                                  aspect.getClassifier().getId(),
-                                  aspect.getClassification().getId()));
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            Facet<RuleForm, ?> facet = new Facet(aspect, readOnlyModel,
+                                                 uriInfo);
+            Map<String, Object> ctx = facet.getType();
+            ctx.put("instances", Facet.getAllInstancesIri(aspect, uriInfo));
             facets.add(ctx);
         }
 

@@ -96,7 +96,7 @@ public class ResourcesTest extends AbstractModelTest {
         thing1.setThing2(thing2);
         em.getTransaction().commit();
         em.getTransaction().begin();
-        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/",
+        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
                                                                 application.getPort()));
         url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
                                     application.getPort(),

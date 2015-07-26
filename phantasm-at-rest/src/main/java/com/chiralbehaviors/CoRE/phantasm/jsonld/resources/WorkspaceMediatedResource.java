@@ -76,7 +76,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<?> aspect = new Aspect((Relationship) relationship,
                                       (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getAllInstancesIri(aspect)).build();
+        return Response.seeOther(Facet.getAllInstancesIri(aspect, uriInfo)).build();
     }
 
     @Path("{workspace}/facet/context/{ruleform-type}/{classifier}/{classification}")
@@ -124,7 +124,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         ExistentialRuleform instance = readOnlyModel.getNetworkedModel((ExistentialRuleform) ruleform).find(existential);
         return Response.seeOther(Facet.getInstanceIri(aspect,
-                                                      (ExistentialRuleform<?, ?>) instance)).build();
+                                                      (ExistentialRuleform<?, ?>) instance, uriInfo)).build();
     }
 
     @Path("{workspace}/facet/term/{ruleform-type}/{classifier}/{classification}/{term}")
@@ -147,7 +147,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<?> aspect = new Aspect((Relationship) relationship,
                                       (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getTermIri(aspect, term)).build();
+        return Response.seeOther(Facet.getTermIri(aspect, term, uriInfo)).build();
     }
 
     @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}/{instance}/{traversal:.+}")
@@ -174,6 +174,6 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                                       (ExistentialRuleform) ruleform);
         return Response.seeOther(Facet.getSelectIri(aspect,
                                                     (ExistentialRuleform<?, ?>) instance,
-                                                    traversal)).build();
+                                                    traversal, uriInfo)).build();
     }
 }

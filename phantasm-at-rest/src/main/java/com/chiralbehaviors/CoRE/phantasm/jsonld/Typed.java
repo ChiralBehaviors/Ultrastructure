@@ -28,14 +28,24 @@ public class Typed {
     public final String id;
     public final String type;
 
-    public Typed(URI id, URI type) {
-        this.id = id.toASCIIString();
+    public Typed(String id, String type) {
+        this.id = id;
+        this.type = type;
+    }
+
+    public Typed(String id, URI type) {
+        this.id = id;
         this.type = type.toASCIIString();
     }
 
     public Typed(URI id, String type) {
         this.id = id.toASCIIString();
         this.type = type;
+    }
+
+    public Typed(URI id, URI type) {
+        this.id = id.toASCIIString();
+        this.type = type.toASCIIString();
     }
 
     public Map<String, Object> toMap() {

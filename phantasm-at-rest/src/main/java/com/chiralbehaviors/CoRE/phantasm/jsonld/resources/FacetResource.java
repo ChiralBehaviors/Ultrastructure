@@ -173,7 +173,7 @@ public class FacetResource extends TransactionalResource {
         keyTerm.put(Constants.TYPE, Constants.ID);
         keyTerm.put(Constants.CONTAINER, Constants.LIST);
         context.put("ruleforms", keyTerm);
-        context.put(Constants.BASE, Facet.getFacetsBaseIri());
+        context.put(Constants.BASE, Facet.getFacetsBaseIri(uriInfo));
         Map<String, Object> returned = new TreeMap<>();
         returned.put(Constants.CONTEXT, context);
         returned.put(Constants.ID, facetResourceIri(uriInfo));
@@ -296,7 +296,7 @@ public class FacetResource extends TransactionalResource {
                                             ruleform);
         Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
                                                      uriInfo);
-        Map<String, Object> type = facet.toContext();
+        Map<String, Object> type = facet.toContext(uriInfo);
         type.put(Constants.ID, Facet.getTypeIri(aspect));
         type.put(Constants.TYPE, "http://ultrastructure.me#Facet");
         return type;
@@ -304,7 +304,7 @@ public class FacetResource extends TransactionalResource {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Map<String, Object> createContext(Aspect<?> aspect) {
-        return new Facet(aspect, readOnlyModel, uriInfo).toContext();
+        return new Facet(aspect, readOnlyModel, uriInfo).toContext(uriInfo);
     }
 
     @SuppressWarnings("unchecked")

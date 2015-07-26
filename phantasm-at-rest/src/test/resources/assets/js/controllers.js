@@ -1,4 +1,4 @@
-var usBrowserControllers = angular.module('usBrowserControllers', []);
+var usBrowserControllers = angular.module('usBrowserControllers', ["phantasm"]);
 
 usBrowserControllers.controller('FacetInstancesListCtrl', [
 		'$scope',

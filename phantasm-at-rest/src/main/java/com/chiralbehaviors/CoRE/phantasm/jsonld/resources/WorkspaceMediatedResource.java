@@ -98,7 +98,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<?> aspect = new Aspect((Relationship) relationship,
                                       (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getContextIri(aspect)).build();
+        return Response.seeOther(Facet.getContextIri(aspect, uriInfo)).build();
     }
 
     @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}/{instance}")

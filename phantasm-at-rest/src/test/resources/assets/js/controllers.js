@@ -1,11 +1,12 @@
-var usBrowserControllers = angular.module('usBrowserControllers', ["phantasm"]);
+var usBrowserControllers = angular.module('usBrowserControllers',
+		[ "phantasm" ]);
 
 usBrowserControllers.controller('FacetInstancesListCtrl', [
 		'$scope',
-		'Facet',
+		'Phantasm',
 		'$routeParams',
-		function($scope, Facet, $routeParams) {
-			Facet.one($routeParams.ruleform).one($routeParams.classifier).one(
+		function($scope, Phantasm, $routeParams) {
+			Phantasm.facet($routeParams.ruleform, $routeParams.classifier,
 					$routeParams.classification).get().then(function(data) {
 				$scope.facetInstances = data.instances;
 			});
@@ -27,11 +28,12 @@ usBrowserControllers.controller('FacetRuleformsListCtrl', [ '$scope', 'Facet',
 
 usBrowserControllers.controller('FacetInstanceDetailCtrl', [
 		'$scope',
-		'Facet',
+		'Phantasm',
 		'$routeParams',
-		function($scope, Facet, $routeParams) {
-			Facet.one($routeParams.ruleform).one($routeParams.classifier).one($routeParams.classification).one($routeParams.instance)
-					.get().then(function(data) {
-						$scope.facetInstance = data;
-					});
+		function($scope, Phantasm, $routeParams) {
+			Phantasm.facetInstance($routeParams.ruleform,
+					$routeParams.classifier, $routeParams.classification,
+					$routeParams.instance).get().then(function(data) {
+				$scope.facetInstance = data.plain();
+			});
 		} ]);

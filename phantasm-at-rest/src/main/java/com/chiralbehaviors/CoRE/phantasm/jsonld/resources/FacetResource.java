@@ -20,8 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
+import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -44,8 +44,6 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
@@ -58,7 +56,6 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.time.Interval;
 
 /**
  * @author hhildebrand
@@ -68,7 +65,7 @@ import com.chiralbehaviors.CoRE.time.Interval;
 @Produces({ "application/json", "text/json" })
 public class FacetResource extends TransactionalResource {
 
-    public static String getTypeContextIri(UriInfo uriInfo) {
+    public static URI getTypeContextIri() {
         UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getContext"));
@@ -76,8 +73,12 @@ public class FacetResource extends TransactionalResource {
             throw new IllegalStateException("Unable to retrieve getContext method",
                                             e);
         }
-        String ctxtUrl = ub.build().toASCIIString();
-        return ctxtUrl;
+        return ub.build();
+    }
+
+    public static URI facetResourceIri() {
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+        return ub.build();
     }
 
     @Context
@@ -99,34 +100,48 @@ public class FacetResource extends TransactionalResource {
                                                                                                                                                     @PathParam("classification") UUID classification) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, classifier,
                                             classification);
-        Map<String, Object> result = new TreeMap<>();
-        result.put(Constants.CONTEXT, Facet.getContextIri(aspect, uriInfo));
-        result.put(Constants.TYPENAME,
-                   String.format("%s:%s", aspect.getClassifier().getName(),
-                                 aspect.getClassification().getName()));
-        result.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
-        result.put(Constants.BASE, Facet.getInstanceBaseIri(aspect, uriInfo));
+
+        Map<String, Object> context = new TreeMap<>();
+        Map<String, Object> keyTerm = new TreeMap<>();
+        keyTerm.put(Constants.ID, facetResourceIri());
+        keyTerm.put(Constants.TYPE, Constants.ID);
+        keyTerm.put(Constants.CONTAINER, Constants.LIST);
+        context.put("instances", keyTerm);
+        Map<String, Object> returned = new TreeMap<>();
+
+        returned.put(Constants.CONTEXT, context);
+        returned.put(Constants.ID, Facet.getAllInstancesIri(aspect));
+        returned.put(Constants.TYPENAME,
+                     String.format("%s:%s", aspect.getClassifier().getName(),
+                                   aspect.getClassification().getName()));
+        returned.put(Constants.BASE, Facet.getInstanceBaseIri(aspect));
+
         List<Map<String, Object>> facets = new ArrayList<>();
-        result.put(Constants.GRAPH, facets);
+        returned.put("instances", facets);
+
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
         for (RuleForm ruleform : networkedModel.getChildren(aspect.getClassification(),
                                                             aspect.getClassifier().getInverse())) {
             Map<String, Object> ctx = new TreeMap<>();
             ctx.put("name", ruleform.getName());
-            ctx.put(Constants.ID, ruleform.getId().toString());
+            ctx.put(Constants.ID,
+                    String.format("%s/%s/%s/%s", ruleformType,
+                                  aspect.getClassifier().getId(),
+                                  aspect.getClassification().getId(),
+                                  ruleform.getId().toString()));
+            ctx.put(Constants.TYPE, Facet.getTypeIri(aspect));
             facets.add(ctx);
         }
-        return result;
+        return returned;
     }
 
     @Path("context")
     @GET
     public Map<String, Object> getContext() {
-        String ctxtUrl = getTypeContextIri(uriInfo);
         Map<String, Object> node = new TreeMap<>();
         Map<String, Object> context = new TreeMap<>();
         node.put(Constants.CONTEXT, context);
-        context.put(Constants.ID, ctxtUrl);
+        context.put(Constants.ID, getTypeContextIri().toASCIIString());
         return node;
     }
 
@@ -139,54 +154,53 @@ public class FacetResource extends TransactionalResource {
     }
 
     @GET
-    public Map<String, String> getFacetRuleforms() {
-        Map<String, String> ruleforms = new HashMap<String, String>();
-        ruleforms.put("Agency",
-                      Facet.getFacetsIri(uriInfo,
-                                         Agency.class).toASCIIString());
-        ruleforms.put("Attribute",
-                      Facet.getFacetsIri(uriInfo,
-                                         Attribute.class).toASCIIString());
-        ruleforms.put("Interval",
-                      Facet.getFacetsIri(uriInfo,
-                                         Interval.class).toASCIIString());
-        ruleforms.put("Location",
-                      Facet.getFacetsIri(uriInfo,
-                                         Location.class).toASCIIString());
-        ruleforms.put("Product",
-                      Facet.getFacetsIri(uriInfo,
-                                         Product.class).toASCIIString());
-        ruleforms.put("Relationship",
-                      Facet.getFacetsIri(uriInfo,
-                                         Relationship.class).toASCIIString());
-        ruleforms.put("Status Code",
-                      Facet.getFacetsIri(uriInfo,
-                                         StatusCode.class).toASCIIString());
-        ruleforms.put("Unit",
-                      Facet.getFacetsIri(uriInfo, Unit.class).toASCIIString());
-        return ruleforms;
+    public Map<String, Object> getFacetRuleforms() {
+
+        List<String> ruleforms = new ArrayList<>();
+        ruleforms.add("Agency");
+        ruleforms.add("Attribute");
+        ruleforms.add("Interval");
+        ruleforms.add("Location");
+        ruleforms.add("Product");
+        ruleforms.add("Relationship");
+        ruleforms.add("Status Code");
+        ruleforms.add("Unit");
+
+        Map<String, Object> context = new TreeMap<>();
+        Map<String, Object> keyTerm = new TreeMap<>();
+        keyTerm.put(Constants.ID, facetResourceIri());
+        keyTerm.put(Constants.TYPE, Constants.ID);
+        keyTerm.put(Constants.CONTAINER, Constants.LIST);
+        context.put("ruleforms", keyTerm);
+        context.put(Constants.BASE, Facet.getFacetsBaseIri());
+        Map<String, Object> returned = new TreeMap<>();
+        returned.put(Constants.CONTEXT, context);
+        returned.put(Constants.ID, facetResourceIri());
+        returned.put("ruleforms", ruleforms);
+        return returned;
     }
 
     @Path("{ruleform-type}")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacets(@PathParam("ruleform-type") String ruleformType) {
+        Class<?> clazz = RuleformResource.entityMap.get(ruleformType);
         switch (ruleformType) {
             case "Agency":
-                return getFacets(readOnlyModel.getAgencyModel());
+                return getFacets(readOnlyModel.getAgencyModel(), clazz);
             case "Attribute":
-                return getFacets(readOnlyModel.getAttributeModel());
+                return getFacets(readOnlyModel.getAttributeModel(), clazz);
             case "Interval":
-                return getFacets(readOnlyModel.getIntervalModel());
+                return getFacets(readOnlyModel.getIntervalModel(), clazz);
             case "Location":
-                return getFacets(readOnlyModel.getLocationModel());
+                return getFacets(readOnlyModel.getLocationModel(), clazz);
             case "Product":
-                return getFacets(readOnlyModel.getProductModel());
+                return getFacets(readOnlyModel.getProductModel(), clazz);
             case "Relationship":
-                return getFacets(readOnlyModel.getRelationshipModel());
+                return getFacets(readOnlyModel.getRelationshipModel(), clazz);
             case "StatusCode":
-                return getFacets(readOnlyModel.getStatusCodeModel());
+                return getFacets(readOnlyModel.getStatusCodeModel(), clazz);
             case "Unit":
-                return getFacets(readOnlyModel.getAgencyModel());
+                return getFacets(readOnlyModel.getAgencyModel(), clazz);
         }
         throw new WebApplicationException(String.format("%s does not exist",
                                                         ruleformType),
@@ -252,14 +266,14 @@ public class FacetResource extends TransactionalResource {
         Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
                                                      uriInfo);
         Map<String, Object> clazz = new TreeMap<>();
-        clazz.put(Constants.ID, Facet.getTermIri(aspect, term, uriInfo));
+        clazz.put(Constants.ID, Facet.getTermIri(aspect, term));
         Attribute attribute = facet.getAttribute(term);
         if (attribute != null) {
             clazz.put(Constants.TYPE,
                       RuleformContext.getIri(attribute, uriInfo));
         } else if (facet.getTerm(term) != null) {
             Aspect<?> targetAspect = facet.getTerm(term);
-            clazz.put(Constants.TYPE, Facet.getTypeIri(targetAspect, uriInfo));
+            clazz.put(Constants.TYPE, Facet.getTypeIri(targetAspect));
 
         } else if (facet.getRuleformTerm(term) != null) {
             clazz.put(Constants.TYPE, facet.getRuleformTerm(term).type);
@@ -282,7 +296,7 @@ public class FacetResource extends TransactionalResource {
         Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
                                                      uriInfo);
         Map<String, Object> type = facet.toContext();
-        type.put(Constants.ID, Facet.getTypeIri(aspect, uriInfo));
+        type.put(Constants.ID, Facet.getTypeIri(aspect));
         type.put(Constants.TYPE, "http://ultrastructure.me#Facet");
         return type;
     }
@@ -469,23 +483,39 @@ public class FacetResource extends TransactionalResource {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Map<String, Object> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        Map<String, Object> result = new TreeMap<>();
-        Map<String, Object> terms = new TreeMap<>();
-        terms.put("allInstances", Constants.ID);
-        result.put(Constants.CONTEXT, terms);
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Map<String, Object> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
+                                                                                              Class<?> clazz) {
+
+        Map<String, Object> context = new TreeMap<>();
+        Map<String, Object> keyTerm = new TreeMap<>();
+        keyTerm.put(Constants.ID, facetResourceIri());
+        keyTerm.put(Constants.TYPE, Constants.ID);
+        keyTerm.put(Constants.CONTAINER, Constants.LIST);
+        context.put("facets", keyTerm);
+        context.put(Constants.BASE, facetResourceIri());
+        Map<String, Object> returned = new TreeMap<>();
+
+        returned.put(Constants.CONTEXT, context);
+        returned.put(Constants.ID, Facet.getFacetsIri(clazz));
+        returned.put(Constants.BASE, Facet.getAllInstancesBaseIri(clazz));
+
         List<Map<String, Object>> facets = new ArrayList<>();
-        result.put(Constants.GRAPH, facets);
+        returned.put("facets", facets);
+
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
             Map<String, Object> ctx = new TreeMap<>();
             ctx.put(Constants.TYPENAME,
                     String.format("%s:%s", aspect.getClassifier().getName(),
                                   aspect.getClassification().getName()));
-            ctx.put(Constants.ID, Facet.getTypeIri(aspect, uriInfo));
-            ctx.put("allInstances", Facet.getAllInstancesIri(aspect, uriInfo));
+            ctx.put(Constants.ID, Facet.getTypeIri(aspect));
+            ctx.put("allInstances",
+                    String.format("%s/%s/%s", clazz.getSimpleName(),
+                                  aspect.getClassifier().getId(),
+                                  aspect.getClassification().getId()));
             facets.add(ctx);
         }
-        return result;
+
+        return returned;
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Object getProductLocationProperty(RuleForm instance,

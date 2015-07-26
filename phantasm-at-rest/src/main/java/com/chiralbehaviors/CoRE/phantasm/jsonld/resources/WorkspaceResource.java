@@ -176,8 +176,8 @@ public class WorkspaceResource extends TransactionalResource {
                                                                   aspect.getClassifier().getInverse())) {
             Map<String, Object> ctx = new TreeMap<>();
             ctx.put(Constants.ID,
-                    Facet.getInstanceIri(aspect, definingProduct, uriInfo));
-            ctx.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
+                    Facet.getInstanceIri(aspect, definingProduct));
+            ctx.put(Constants.TYPE, Facet.getTypeIri(aspect));
             Map<String, Object> wsp = new TreeMap<>();
             wsp.put(Constants.ID,
                     workspaceIri(definingProduct.getId(), uriInfo));

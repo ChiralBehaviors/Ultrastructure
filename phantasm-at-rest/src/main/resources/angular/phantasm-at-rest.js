@@ -14,18 +14,27 @@ phantasm.factory("WorkspaceFacet", [ "Restangular", function(Restangular) {
 	return service;
 } ]);
 
-phantasm.service("Phantasm", [
-		"Facet",
-		function(Facet) {
-			this.facetInstance = function(ruleform, classifier, classification,
-					instance) {
-				return this.facet(ruleform, classifier, classification).one(
-						instance);
-			};
-			this.facet = function(ruleform, classifier, classification) {
-				return Facet.one(ruleform).one(classifier).one(classification);
-			};
-		} ]);
+phantasm
+		.service("Phantasm",
+				[
+						"Facet",
+						function(Facet) {
+							this.facetInstance = function(ruleform, classifier,
+									classification, instance) {
+								return this.facet(ruleform, classifier,
+										classification).one(instance);
+							};
+							this.facet = function(ruleform, classifier,
+									classification) {
+								return Facet.one(ruleform).one(classifier).one(
+										classification);
+							};
+							this.facetInstances = function(ruleform,
+									classifier, classification) {
+								return this.facet(ruleform, classifier,
+										classification).one("instances");
+							};
+						} ]);
 
 phantasm.service("WorkspacePhantasm", [
 		"WorkspaceFacet",
@@ -39,5 +48,10 @@ phantasm.service("WorkspacePhantasm", [
 					classification) {
 				return WorkspaceFacet.one(ruleform).one(classifier).one(
 						classification);
+			};
+			this.facetInstances = function(workspace, ruleform, classifier,
+					classification, instance) {
+				return this.facet(workspace, ruleform, classifier,
+						classification).one("instances");
 			};
 		} ]);

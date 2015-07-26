@@ -94,7 +94,7 @@ public class FacetResource extends TransactionalResource {
         this.uriInfo = uriInfo;
     }
 
-    @Path("{ruleform-type}/{classifier}/{classification}")
+    @Path("{ruleform-type}/{classifier}/{classification}/instances")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getAllInstances(@PathParam("ruleform-type") String ruleformType,
                                                                                                                                                     @PathParam("classifier") UUID classifier,

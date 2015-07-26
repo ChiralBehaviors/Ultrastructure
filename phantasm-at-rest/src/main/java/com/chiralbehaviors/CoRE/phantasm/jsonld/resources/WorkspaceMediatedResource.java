@@ -57,7 +57,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         super(emf);
     }
 
-    @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}")
+    @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}/instances")
     @GET
     public Response getAllInstances(@PathParam("workspace") String workspace,
                                     @PathParam("ruleform-type") String ruleformType,

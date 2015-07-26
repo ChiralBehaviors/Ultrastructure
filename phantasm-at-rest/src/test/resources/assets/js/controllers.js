@@ -6,7 +6,7 @@ usBrowserControllers.controller('FacetInstancesListCtrl', [
 		'Phantasm',
 		'$routeParams',
 		function($scope, Phantasm, $routeParams) {
-			Phantasm.facet($routeParams.ruleform, $routeParams.classifier,
+			Phantasm.facetInstances($routeParams.ruleform, $routeParams.classifier,
 					$routeParams.classification).get().then(function(data) {
 				$scope.facetInstances = data.instances;
 			});

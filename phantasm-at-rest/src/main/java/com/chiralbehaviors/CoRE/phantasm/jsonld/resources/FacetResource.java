@@ -76,8 +76,9 @@ public class FacetResource extends TransactionalResource {
         return ub.build();
     }
 
-    public static URI facetResourceIri() {
-        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+    public static URI facetResourceIri(UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
         return ub.build();
     }
 
@@ -103,7 +104,7 @@ public class FacetResource extends TransactionalResource {
 
         Map<String, Object> context = new TreeMap<>();
         Map<String, Object> keyTerm = new TreeMap<>();
-        keyTerm.put(Constants.ID, facetResourceIri());
+        keyTerm.put(Constants.ID, facetResourceIri(uriInfo));
         keyTerm.put(Constants.TYPE, Constants.ID);
         keyTerm.put(Constants.CONTAINER, Constants.LIST);
         context.put("instances", keyTerm);
@@ -168,14 +169,14 @@ public class FacetResource extends TransactionalResource {
 
         Map<String, Object> context = new TreeMap<>();
         Map<String, Object> keyTerm = new TreeMap<>();
-        keyTerm.put(Constants.ID, facetResourceIri());
+        keyTerm.put(Constants.ID, facetResourceIri(uriInfo));
         keyTerm.put(Constants.TYPE, Constants.ID);
         keyTerm.put(Constants.CONTAINER, Constants.LIST);
         context.put("ruleforms", keyTerm);
         context.put(Constants.BASE, Facet.getFacetsBaseIri());
         Map<String, Object> returned = new TreeMap<>();
         returned.put(Constants.CONTEXT, context);
-        returned.put(Constants.ID, facetResourceIri());
+        returned.put(Constants.ID, facetResourceIri(uriInfo));
         returned.put("ruleforms", ruleforms);
         return returned;
     }
@@ -487,17 +488,25 @@ public class FacetResource extends TransactionalResource {
                                                                                               Class<?> clazz) {
 
         Map<String, Object> context = new TreeMap<>();
-        Map<String, Object> keyTerm = new TreeMap<>();
-        keyTerm.put(Constants.ID, facetResourceIri());
-        keyTerm.put(Constants.TYPE, Constants.ID);
-        keyTerm.put(Constants.CONTAINER, Constants.LIST);
-        context.put("facets", keyTerm);
-        context.put(Constants.BASE, facetResourceIri());
+        Map<String, Object> facetsTerm = new TreeMap<>();
+        facetsTerm.put(Constants.ID,
+                       String.format("%s#%s", clazz.getSimpleName(), "facets"));
+        facetsTerm.put(Constants.TYPE, Constants.ID);
+        facetsTerm.put(Constants.CONTAINER, Constants.LIST);
+        context.put("facets", facetsTerm);
+
+        Map<String, Object> instancesTerm = new TreeMap<>();
+        instancesTerm.put(Constants.ID,
+                          String.format("%s#%s", clazz.getSimpleName(),
+                                        "instances"));
+        instancesTerm.put(Constants.TYPE, Constants.ID);
+        context.put("instances", instancesTerm);
+
+        context.put(Constants.BASE, facetResourceIri(uriInfo));
         Map<String, Object> returned = new TreeMap<>();
 
         returned.put(Constants.CONTEXT, context);
-        returned.put(Constants.ID, Facet.getFacetsIri(clazz));
-        returned.put(Constants.BASE, Facet.getAllInstancesBaseIri(clazz));
+        returned.put(Constants.ID, clazz.getSimpleName());
 
         List<Map<String, Object>> facets = new ArrayList<>();
         returned.put("facets", facets);
@@ -507,8 +516,11 @@ public class FacetResource extends TransactionalResource {
             ctx.put(Constants.TYPENAME,
                     String.format("%s:%s", aspect.getClassifier().getName(),
                                   aspect.getClassification().getName()));
-            ctx.put(Constants.ID, Facet.getTypeIri(aspect));
-            ctx.put("allInstances",
+            ctx.put(Constants.ID,
+                    String.format("type/%s/%s/%s", clazz.getSimpleName(),
+                                  aspect.getClassifier().getId(),
+                                  aspect.getClassification().getId()));
+            ctx.put("instances",
                     String.format("%s/%s/%s", clazz.getSimpleName(),
                                   aspect.getClassifier().getId(),
                                   aspect.getClassification().getId()));

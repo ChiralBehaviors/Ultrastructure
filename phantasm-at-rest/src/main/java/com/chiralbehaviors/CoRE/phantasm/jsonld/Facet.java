@@ -67,17 +67,15 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         extends Aspect<RuleForm> {
     public static URI getAllInstancesBaseIri(Class<?> ruleformType) {
         UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
-        try {
-            ub.path(FacetResource.class.getMethod("getAllInstances",
-                                                  String.class, UUID.class,
-                                                  UUID.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Unable to get all instances method",
-                                            e);
-        }
-        ub.resolveTemplate("ruleform-type", ruleformType.getSimpleName());
-        ub.resolveTemplate("classifier", "");
-        ub.resolveTemplate("classification", "");
+        ub.path(ruleformType.getSimpleName());
+        return ub.build();
+    }
+
+    public static URI getAllInstancesBaseIri(Class<?> ruleformType,
+                                             String term) {
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
+        ub.path(ruleformType.getSimpleName());
+        ub.fragment(term);
         return ub.build();
     }
 

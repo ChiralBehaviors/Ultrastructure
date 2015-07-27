@@ -121,6 +121,17 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     public static URI getInstanceIri(Aspect<?> aspect,
                                      ExistentialRuleform<?, ?> child,
                                      UriInfo uriInfo) {
+        return getInstanceIri(aspect, child.getId(), uriInfo);
+    }
+
+    /**
+     * @param aspect
+     * @param instance
+     * @param uriInfo
+     * @return
+     */
+    public static URI getInstanceIri(Aspect<?> aspect, UUID instance,
+                                     UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
         try {
@@ -137,12 +148,11 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                            aspect.getClassifier().getId().toString());
         ub.resolveTemplate("classification",
                            aspect.getClassification().getId().toString());
-        ub.resolveTemplate("instance", child.getId().toString());
+        ub.resolveTemplate("instance", instance);
         return ub.build();
     }
 
-    public static URI getSelectIri(Aspect<?> aspect,
-                                   ExistentialRuleform<?, ?> instance,
+    public static URI getSelectIri(Aspect<?> aspect, UUID instance,
                                    List<PathSegment> traversal,
                                    UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
@@ -162,8 +172,11 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                            aspect.getClassifier().getId().toString());
         ub.resolveTemplate("classification",
                            aspect.getClassification().getId().toString());
-        ub.resolveTemplate("instance", instance.getId().toString());
-        ub.resolveTemplate("traversal", traversal);
+        ub.resolveTemplate("instance", instance);
+        ub.resolveTemplate("traversal", "");
+        for (PathSegment segment : traversal) {
+            ub.path(segment.getPath());
+        }
         return ub.build();
     }
 
@@ -188,11 +201,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
-    public static String getTypeName(@SuppressWarnings("rawtypes") Aspect aspect) {
-        return String.format("%s:%s", aspect.getClassifier().getName(),
-                             aspect.getClassification().getName());
-    }
-
     public static URI getTypeIri(Aspect<?> aspect, UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
@@ -212,8 +220,12 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
-    private final Map<String, XDomainNetworkAuthorization<Agency, Location>> agencyLocationAuths = new TreeMap<>();
+    public static String getTypeName(@SuppressWarnings("rawtypes") Aspect aspect) {
+        return String.format("%s:%s", aspect.getClassifier().getName(),
+                             aspect.getClassification().getName());
+    }
 
+    private final Map<String, XDomainNetworkAuthorization<Agency, Location>>      agencyLocationAuths      = new TreeMap<>();
     private final Map<String, XDomainNetworkAuthorization<Agency, Product>>       agencyProductAuths       = new TreeMap<>();
     private final Map<String, Attribute>                                          attributes               = new TreeMap<>();
     private final String                                                          context;
@@ -221,7 +233,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private final Map<String, XDomainNetworkAuthorization<Product, Location>>     productLocationAuths     = new TreeMap<>();
     private final Map<String, XDomainNetworkAuthorization<Product, Relationship>> productRelationshipAuths = new TreeMap<>();
     private final Map<String, Typed>                                              terms                    = new TreeMap<>();
-    private final String                                                          type;
+
+    private final String type;
 
     public Facet(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
         super(aspect.getClassifier(), aspect.getClassification());

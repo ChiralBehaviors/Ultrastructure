@@ -112,7 +112,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                                 @PathParam("ruleform-type") String ruleformType,
                                 @PathParam("classifier") String classifier,
                                 @PathParam("classification") String classification,
-                                @PathParam("instance") UUID existential) {
+                                @PathParam("instance") UUID instance) {
         UUID workspaceUUID;
         workspaceUUID = WorkspaceResource.toUUID(workspace);
         WorkspaceScope scope;
@@ -128,10 +128,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<?> aspect = new Aspect((Relationship) relationship,
                                       (ExistentialRuleform) ruleform);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        ExistentialRuleform instance = readOnlyModel.getNetworkedModel((ExistentialRuleform) ruleform).find(existential);
-        return Response.seeOther(Facet.getInstanceIri(aspect,
-                                                      (ExistentialRuleform<?, ?>) instance,
+        return Response.seeOther(Facet.getInstanceIri(aspect, instance,
                                                       uriInfo)).build();
     }
 
@@ -167,7 +164,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                            @PathParam("ruleform-type") String ruleformType,
                            @PathParam("classifier") String classifier,
                            @PathParam("classification") String classification,
-                           @PathParam("instance") String existential,
+                           @PathParam("instance") UUID instance,
                            @PathParam("traversal") List<PathSegment> traversal) {
         UUID workspaceUUID;
         workspaceUUID = WorkspaceResource.toUUID(workspace);
@@ -181,13 +178,10 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         }
         Ruleform relationship = WorkspaceResource.resolve(classifier, scope);
         Ruleform ruleform = WorkspaceResource.resolve(classification, scope);
-        Ruleform instance = WorkspaceResource.resolve(existential, scope);
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<?> aspect = new Aspect((Relationship) relationship,
                                       (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getSelectIri(aspect,
-                                                    (ExistentialRuleform<?, ?>) instance,
-                                                    traversal,
+        return Response.seeOther(Facet.getSelectIri(aspect, instance, traversal,
                                                     uriInfo)).build();
     }
 }

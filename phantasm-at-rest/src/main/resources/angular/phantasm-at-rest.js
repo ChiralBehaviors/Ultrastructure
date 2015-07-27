@@ -15,6 +15,10 @@ phantasm.factory("WorkspaceMediated", [ "Restangular", function(Restangular) {
 } ]);
 
 phantasm.service("PhantasmRelative", function() {
+	this.translateIdToFacetInstance = function(inst) {
+		inst["@id"] = this.instance(inst["@id"]);
+	};
+
 	this.facet = function(path) {
 		var split = path.split('/');
 		var newPath = '';
@@ -78,16 +82,16 @@ phantasm.factory("Phantasm", [
 			var phantasm = {};
 			phantasm.facetInstance = function(ruleform, classifier,
 					classification, instance) {
-				return this.facet(ruleform, classifier, classification).one(
-						instance);
+				var facet = this.facet(ruleform, classifier, classification);
+				return facet.one(instance);
 			};
 			phantasm.facet = function(ruleform, classifier, classification) {
 				return Facet.one(ruleform).one(classifier).one(classification);
 			};
 			phantasm.facetInstances = function(ruleform, classifier,
 					classification) {
-				return this.facet(ruleform, classifier, classification).one(
-						"instances");
+				var facet = this.facet(ruleform, classifier, classification);
+				return facet.one("instances");
 			};
 			return phantasm;
 		} ]);
@@ -96,20 +100,31 @@ phantasm.factory("WorkspacePhantasm", [
 		"WorkspaceMediated",
 		function(WorkspaceMediated) {
 			var workspacePhantasm = {};
-			workspacePhantasm.facetInstance = function(workspace, ruleform,
-					classifier, classification, instance) {
-				return this.facet(workspace, ruleform, classifier,
-						classification).one(instance);
-			};
 			workspacePhantasm.facet = function(workspace, ruleform, classifier,
 					classification) {
 				return WorkspaceMediated.one(workspace).one("facet").one(
 						ruleform).one(classifier).one(classification);
 			};
+			workspacePhantasm.facetInstance = function(workspace, ruleform,
+					classifier, classification, instance) {
+				var facet = this.facet(workspace, ruleform, classifier,
+						classification);
+				return facet.one(instance);
+			};
 			workspacePhantasm.facetInstances = function(workspace, ruleform,
 					classifier, classification) {
-				return this.facet(workspace, ruleform, classifier,
-						classification).one("instances");
+				var facet = this.facet(workspace, ruleform, classifier,
+						classification);
+				return facet.one("instances");
+			};
+			workspacePhantasm.select = function(workspace, ruleform,
+					classifier, classification, instance, selection) {
+				var selectionPath = this.facetInstance(workspace, ruleform,
+						classifier, classification, instance);
+				angular.forEach(selection, function(element, i) {
+					selectionPath = selectionPath.one(element);
+				});
+				return selectionPath;
 			};
 			return workspacePhantasm;
 		} ]);

@@ -43,6 +43,7 @@ import org.reflections.Reflections;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author hhildebrand
@@ -74,6 +75,7 @@ public class RuleformResource extends TransactionalResource {
         super(emf);
     }
 
+    @Timed
     @Path("context")
     @GET
     public Map<String, Object> getContext() {
@@ -85,6 +87,7 @@ public class RuleformResource extends TransactionalResource {
         return context;
     }
 
+    @Timed
     @Path("context/{ruleform-type}")
     @GET
     public Map<String, Object> getContext(@PathParam("ruleform-type") String ruleformType) {
@@ -92,6 +95,7 @@ public class RuleformResource extends TransactionalResource {
                                    uriInfo).toContext(uriInfo);
     }
 
+    @Timed
     @Path("type/{ruleform-type}")
     @GET
     public Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType) {
@@ -111,6 +115,7 @@ public class RuleformResource extends TransactionalResource {
         return definition;
     }
 
+    @Timed
     @Path("type/{ruleform-type}/{term}")
     @GET
     public Map<String, Object> getTerm(@PathParam("ruleform-type") String ruleformType,
@@ -128,6 +133,7 @@ public class RuleformResource extends TransactionalResource {
         return definition;
     }
 
+    @Timed
     @Path("{ruleform-type}/{instance}")
     @GET
     public Map<String, Object> getInstance(@PathParam("ruleform-type") String ruleformType,
@@ -143,6 +149,7 @@ public class RuleformResource extends TransactionalResource {
                                    uriInfo).toNode(ruleform, uriInfo);
     }
 
+    @Timed
     @Path("{ruleform-type}")
     @GET
     public List<Map<String, String>> getInstances(@PathParam("ruleform-type") String ruleformType) {
@@ -163,6 +170,7 @@ public class RuleformResource extends TransactionalResource {
         return instances;
     }
 
+    @Timed
     @GET
     public List<String> getRuleformTypes() {
         return sortedRuleformTypes;

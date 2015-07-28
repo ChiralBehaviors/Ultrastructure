@@ -22,8 +22,10 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
 import static com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext.getIri;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
@@ -73,7 +74,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         try {
             ub.path(FacetResource.class.getMethod("getAllInstances",
                                                   String.class, UUID.class,
-                                                  UUID.class));
+                                                  UUID.class, List.class));
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Unable to get all instances method",
                                             e);
@@ -124,20 +125,19 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return getInstanceIri(aspect, child.getId(), uriInfo);
     }
 
-    /**
-     * @param aspect
-     * @param instance
-     * @param uriInfo
-     * @return
-     */
     public static URI getInstanceIri(Aspect<?> aspect, UUID instance,
                                      UriInfo uriInfo) {
+        return getInstanceIri(aspect, instance, uriInfo, null);
+    }
+
+    public static URI getInstanceIri(Aspect<?> aspect, UUID instance,
+                                     UriInfo uriInfo, List<String> selection) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getInstance", String.class,
                                                   UUID.class, UUID.class,
-                                                  UUID.class));
+                                                  UUID.class, List.class));
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Cannot retrieve getInstance method",
                                             e);
@@ -149,33 +149,17 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         ub.resolveTemplate("classification",
                            aspect.getClassification().getId().toString());
         ub.resolveTemplate("instance", instance);
-        return ub.build();
-    }
-
-    public static URI getSelectIri(Aspect<?> aspect, UUID instance,
-                                   List<PathSegment> traversal,
-                                   UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(FacetResource.class);
-        try {
-            ub.path(FacetResource.class.getMethod("select", String.class,
-                                                  UUID.class, UUID.class,
-                                                  UUID.class, List.class,
-                                                  String.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot retrieve getInstance method",
-                                            e);
-        }
-        ub.resolveTemplate("ruleform-type",
-                           aspect.getClassification().getClass().getSimpleName());
-        ub.resolveTemplate("classifier",
-                           aspect.getClassifier().getId().toString());
-        ub.resolveTemplate("classification",
-                           aspect.getClassification().getId().toString());
-        ub.resolveTemplate("instance", instance);
-        ub.resolveTemplate("traversal", "");
-        for (PathSegment segment : traversal) {
-            ub.path(segment.getPath());
+        if (selection != null && !selection.isEmpty()) {
+            String[] elements = new String[selection.size()];
+            int i = 0;
+            for (String element : selection) {
+                try {
+                    elements[i++] = URLEncoder.encode(element, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+            ub.queryParam("select", (Object[]) elements);
         }
         return ub.build();
     }
@@ -294,6 +278,12 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return shorty;
     }
 
+    public Map<String, Object> getShort(RuleForm instance, UriInfo uriInfo) {
+        Map<String, Object> shorty = getShort();
+        shorty.put(Constants.ID, getInstanceIri(this, instance, uriInfo));
+        return shorty;
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Aspect<?> getTerm(String term) {
         for (Entry<String, NetworkAuthorization<RuleForm>> entry : networkAuths.entrySet()) {
@@ -392,6 +382,18 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         addNetworkAuths(instance1, networkedModel, node, uriInfo);
         addXdAuths(instance1, model, node, uriInfo);
         return node;
+    }
+
+    /**
+     * @param ruleform
+     *            TODO
+     * @param selection
+     * @return
+     */
+    public Map<String, Object> toReference(RuleForm ruleform,
+                                           String[] selection) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     private void addAgencyAuths(RuleForm instance, Map<String, Object> node,

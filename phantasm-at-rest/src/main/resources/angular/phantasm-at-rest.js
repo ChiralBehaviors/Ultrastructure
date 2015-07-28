@@ -117,14 +117,5 @@ phantasm.factory("WorkspacePhantasm", [
 						classification);
 				return facet.one("instances");
 			};
-			workspacePhantasm.select = function(workspace, ruleform,
-					classifier, classification, instance, selection) {
-				var selectionPath = this.facetInstance(workspace, ruleform,
-						classifier, classification, instance);
-				angular.forEach(selection, function(element, i) {
-					selectionPath = selectionPath.one(element);
-				});
-				return selectionPath;
-			};
 			return workspacePhantasm;
 		} ]);

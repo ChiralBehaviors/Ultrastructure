@@ -125,6 +125,87 @@ public class ResourcesTest extends AbstractModelTest {
     }
 
     @Test
+    public void testSelect() throws Exception {
+        URL url;
+        Object jsonObject;
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        thing1.setAliases(new String[] { "smith", "jones" });
+        thing1.setURI("http://example.com");
+        thing2.setThing1(thing1);
+        thing1.setThing2(thing2);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
+                                                                application.getPort()));
+        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s?select=thing2/thing1/URI",
+                                    application.getPort(),
+                                    scope.lookup("kernel",
+                                                 "IsA").getId().toString(),
+                                    scope.lookup("Thing1").getId().toString(),
+                                    thing1.getRuleform().getId()));
+
+        jsonObject = JsonUtils.fromInputStream(url.openStream());
+        assertNotNull(jsonObject);
+        System.out.println("Node value of selection");
+        System.out.println(JsonUtils.toPrettyString(jsonObject));
+        Object processed = JsonLdProcessor.normalize(jsonObject, options);
+        System.out.println("Normalized node value selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
+                                            options);
+        System.out.println("Compacted node value of selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
+                                            options);
+        System.out.println("Flattened node value of selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.expand(jsonObject, options);
+        System.out.println("Expanded node value of selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+    }
+
+    @Test
+    public void testInstancesSelect() throws Exception {
+        URL url;
+        Object jsonObject;
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        thing1.setAliases(new String[] { "smith", "jones" });
+        thing1.setURI("http://example.com");
+        thing2.setThing1(thing1);
+        thing1.setThing2(thing2);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
+                                                                application.getPort()));
+        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/instances?select=thing2/thing1/URI",
+                                    application.getPort(),
+                                    scope.lookup("kernel",
+                                                 "IsA").getId().toString(),
+                                    scope.lookup("Thing1").getId().toString()));
+
+        jsonObject = JsonUtils.fromInputStream(url.openStream());
+        assertNotNull(jsonObject);
+        System.out.println("Node value of instances selection");
+        System.out.println(JsonUtils.toPrettyString(jsonObject));
+        Object processed = JsonLdProcessor.normalize(jsonObject, options);
+        System.out.println("Normalized node value instances selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
+                                            options);
+        System.out.println("Compacted node value of instances selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
+                                            options);
+        System.out.println("Flattened node value of instances selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.expand(jsonObject, options);
+        System.out.println("Expanded node value of instances selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+    }
+
+    @Test
     public void testLookupWorkspace() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/workspace/%s",
                                         application.getPort(),

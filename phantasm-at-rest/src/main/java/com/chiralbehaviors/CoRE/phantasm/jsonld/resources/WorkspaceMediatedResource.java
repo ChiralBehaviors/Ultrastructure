@@ -28,9 +28,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -41,6 +41,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author hhildebrand
@@ -57,6 +58,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         super(emf);
     }
 
+    @Timed
     @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}/instances")
     @GET
     public Response getAllInstances(@PathParam("workspace") String workspace,
@@ -82,6 +84,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                                                           uriInfo)).build();
     }
 
+    @Timed
     @Path("{workspace}/facet/context/{ruleform-type}/{classifier}/{classification}")
     @GET
     public Response getContext(@PathParam("workspace") String workspace,
@@ -106,13 +109,15 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         return Response.seeOther(Facet.getContextIri(aspect, uriInfo)).build();
     }
 
+    @Timed
     @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}/{instance}")
     @GET
     public Response getInstance(@PathParam("workspace") String workspace,
                                 @PathParam("ruleform-type") String ruleformType,
                                 @PathParam("classifier") String classifier,
                                 @PathParam("classification") String classification,
-                                @PathParam("instance") UUID instance) {
+                                @PathParam("instance") UUID instance,
+                                @QueryParam("select") List<String> selection) {
         UUID workspaceUUID;
         workspaceUUID = WorkspaceResource.toUUID(workspace);
         WorkspaceScope scope;
@@ -128,10 +133,11 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<?> aspect = new Aspect((Relationship) relationship,
                                       (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getInstanceIri(aspect, instance,
-                                                      uriInfo)).build();
+        return Response.seeOther(Facet.getInstanceIri(aspect, instance, uriInfo,
+                                                      selection)).build();
     }
 
+    @Timed
     @Path("{workspace}/facet/term/{ruleform-type}/{classifier}/{classification}/{term}")
     @GET
     public Response getTerm(@PathParam("workspace") String workspace,
@@ -156,32 +162,5 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                                       (ExistentialRuleform) ruleform);
         return Response.seeOther(Facet.getTermIri(aspect, term,
                                                   uriInfo)).build();
-    }
-
-    @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}/{instance}/{traversal:.+}")
-    @GET
-    public Response select(@PathParam("workspace") String workspace,
-                           @PathParam("ruleform-type") String ruleformType,
-                           @PathParam("classifier") String classifier,
-                           @PathParam("classification") String classification,
-                           @PathParam("instance") UUID instance,
-                           @PathParam("traversal") List<PathSegment> traversal) {
-        UUID workspaceUUID;
-        workspaceUUID = WorkspaceResource.toUUID(workspace);
-        WorkspaceScope scope;
-        try {
-            scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceUUID);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceUUID),
-                                              Status.NOT_FOUND);
-        }
-        Ruleform relationship = WorkspaceResource.resolve(classifier, scope);
-        Ruleform ruleform = WorkspaceResource.resolve(classification, scope);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getSelectIri(aspect, instance, traversal,
-                                                    uriInfo)).build();
     }
 }

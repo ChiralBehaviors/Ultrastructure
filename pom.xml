@@ -84,6 +84,11 @@
                 <version>3.1.1</version>
             </dependency>
             <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-annotation</artifactId>
+                <version>3.1.1</version>
+            </dependency>
+            <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
                 <version>3.18.1-GA</version>

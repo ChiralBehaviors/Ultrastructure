@@ -51,6 +51,7 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author hhildebrand
@@ -120,6 +121,7 @@ public class WorkspaceResource extends TransactionalResource {
         super(emf);
     }
 
+    @Timed
     @Path("{workspace}/key")
     @GET
     public Map<String, Object> getKeys(@PathParam("workspace") UUID workspace) {
@@ -147,6 +149,7 @@ public class WorkspaceResource extends TransactionalResource {
         return returned;
     }
 
+    @Timed
     @Path("{workspace}")
     @GET
     public WorkspaceSnapshot getWorkspace(@PathParam("workspace") UUID wsp) {
@@ -160,6 +163,7 @@ public class WorkspaceResource extends TransactionalResource {
         return new WorkspaceSnapshot(workspace, em);
     }
 
+    @Timed
     @GET
     public Map<String, Object> getWorkspaces() {
         Kernel kernel = readOnlyModel.getKernel();
@@ -189,6 +193,7 @@ public class WorkspaceResource extends TransactionalResource {
         return returned;
     }
 
+    @Timed
     @Path("{workspace}/key/{member}")
     @GET
     public Map<String, Object> lookup(@PathParam("workspace") UUID workspace,
@@ -211,6 +216,7 @@ public class WorkspaceResource extends TransactionalResource {
                                    uriInfo).toNode(resolved, uriInfo);
     }
 
+    @Timed
     @Path("{workspace}/key/{namespace}/{member}")
     @GET
     public Map<String, Object> lookup(@PathParam("workspace") UUID workspace,
@@ -235,6 +241,7 @@ public class WorkspaceResource extends TransactionalResource {
                                    uriInfo).toNode(resolved, uriInfo);
     }
 
+    @Timed
     @Path("translate/{uri}")
     @GET
     public UUID translate(@PathParam("uri") String uri) {

@@ -138,7 +138,7 @@ public class ResourcesTest extends AbstractModelTest {
         em.getTransaction().begin();
         JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
                                                                 application.getPort()));
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s?select=thing2/thing1/URI",
+        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s?select=thing2/thing1/URI;a=Aliases",
                                     application.getPort(),
                                     scope.lookup("kernel",
                                                  "IsA").getId().toString(),
@@ -179,7 +179,7 @@ public class ResourcesTest extends AbstractModelTest {
         em.getTransaction().begin();
         JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
                                                                 application.getPort()));
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/instances?select=thing2/thing1/URI",
+        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/instances?select=;a=URI",
                                     application.getPort(),
                                     scope.lookup("kernel",
                                                  "IsA").getId().toString(),

@@ -24,11 +24,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -41,6 +38,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response.Status;
@@ -285,21 +283,20 @@ public class FacetResource extends TransactionalResource {
         return clazz;
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> traverse(RuleForm instance,
-                                                                                                                                              List<String> selection,
-                                                                                                                                              Facet<RuleForm, Network> node,
-                                                                                                                                              NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        if (selection == null || selection.isEmpty()) {
-            return node.toInstance(instance, readOnlyModel, uriInfo);
-        } else {
-            Map<String, Object> object = node.getShort(instance, uriInfo);
-            for (String query : selection) {
-                List<PathSegment> traversal = selectFrom(query);
-                object.put(traversal.get(0).getPath(),
-                           getProperty(node, instance, traversal,
-                                       networkedModel, uriInfo));
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void additionalAttributes(ExistentialRuleform instance, Facet node,
+                                      NetworkedModel networkedModel,
+                                      Map<String, Object> object,
+                                      MultivaluedMap<String, String> parameters) {
+        if (!parameters.containsKey("a")) {
+            return;
+        }
+        for (String property : parameters.get("a")) {
+            Attribute attribute = node.getAttribute(property);
+            if (attribute != null) {
+                object.put(property,
+                           getAttribute(instance, attribute, networkedModel));
             }
-            return object;
         }
     }
 
@@ -318,6 +315,8 @@ public class FacetResource extends TransactionalResource {
                                                  : new Aspect<>(auth.getFromRelationship(),
                                                                 auth.getFromParent());
 
+        MultivaluedMap<String, String> parameters = traversal.isEmpty() ? new MultivaluedHashMap<>()
+                                                                        : traversal.get(0).getMatrixParameters();
         List<Object> result = new ArrayList<>();
         if (auth.isForward()) {
             @SuppressWarnings("rawtypes")
@@ -335,6 +334,8 @@ public class FacetResource extends TransactionalResource {
                                            readOnlyModel.getLocationModel(),
                                            uriInfo));
                     result.add(object);
+                    additionalAttributes(child, childFacet, networkedModel,
+                                         object, parameters);
                 }
             }
         } else {
@@ -354,6 +355,8 @@ public class FacetResource extends TransactionalResource {
                                            readOnlyModel.getAgencyModel(),
                                            uriInfo));
                     result.add(object);
+                    additionalAttributes(child, childFacet, networkedModel,
+                                         object, parameters);
                 }
             }
         }
@@ -374,6 +377,8 @@ public class FacetResource extends TransactionalResource {
                                                         : new Aspect(auth.getFromRelationship(),
                                                                      auth.getFromParent());
 
+        MultivaluedMap<String, String> parameters = traversal.isEmpty() ? new MultivaluedHashMap<>()
+                                                                        : traversal.get(0).getMatrixParameters();
         List<Object> result = new ArrayList<>();
         if (auth.isForward()) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -391,6 +396,8 @@ public class FacetResource extends TransactionalResource {
                                            readOnlyModel.getProductModel(),
                                            uriInfo));
                     result.add(object);
+                    additionalAttributes(child, childFacet, networkedModel,
+                                         object, parameters);
                 }
             }
         } else {
@@ -410,6 +417,8 @@ public class FacetResource extends TransactionalResource {
                                            readOnlyModel.getAgencyModel(),
                                            uriInfo));
                     result.add(object);
+                    additionalAttributes(child, childFacet, networkedModel,
+                                         object, parameters);
                 }
             }
         }
@@ -447,6 +456,8 @@ public class FacetResource extends TransactionalResource {
         @SuppressWarnings({ "rawtypes", "unchecked" })
         Facet<RuleForm, ?> childFacet = new Facet(childAspect, readOnlyModel,
                                                   uriInfo);
+        MultivaluedMap<String, String> parameters = traversal.isEmpty() ? new MultivaluedHashMap<>()
+                                                                        : traversal.get(0).getMatrixParameters();
         if (auth.getCardinality() == Cardinality.N) {
             List<Object> result = new ArrayList<>();
             // TODO handle infered as well as immediate
@@ -461,6 +472,8 @@ public class FacetResource extends TransactionalResource {
                                getProperty(childFacet, child, traversal,
                                            networkedModel, uriInfo));
                     result.add(object);
+                    additionalAttributes(child, childFacet, networkedModel,
+                                         object, parameters);
                 }
             }
             return result;
@@ -477,6 +490,8 @@ public class FacetResource extends TransactionalResource {
                 object.put(traversal.get(0).getPath(),
                            getProperty(childFacet, immediateChild, traversal,
                                        networkedModel, uriInfo));
+                additionalAttributes(immediateChild, childFacet, networkedModel,
+                                     object, parameters);
                 return object;
             }
 
@@ -530,6 +545,8 @@ public class FacetResource extends TransactionalResource {
                                                  : new Aspect<>(auth.getFromRelationship(),
                                                                 auth.getFromParent());
 
+        MultivaluedMap<String, String> parameters = traversal.isEmpty() ? new MultivaluedHashMap<>()
+                                                                        : traversal.get(0).getMatrixParameters();
         List<Object> result = new ArrayList<>();
         if (auth.isForward()) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -547,6 +564,8 @@ public class FacetResource extends TransactionalResource {
                                            readOnlyModel.getLocationModel(),
                                            uriInfo));
                     result.add(object);
+                    additionalAttributes(child, childFacet, networkedModel,
+                                         object, parameters);
                 }
             }
         } else {
@@ -566,6 +585,8 @@ public class FacetResource extends TransactionalResource {
                                            readOnlyModel.getProductModel(),
                                            uriInfo));
                     result.add(object);
+                    additionalAttributes(child, childFacet, networkedModel,
+                                         object, parameters);
                 }
             }
         }
@@ -585,6 +606,8 @@ public class FacetResource extends TransactionalResource {
                                                  : new Aspect<>(auth.getFromRelationship(),
                                                                 auth.getFromParent());
 
+        MultivaluedMap<String, String> parameters = traversal.isEmpty() ? new MultivaluedHashMap<>()
+                                                                        : traversal.get(0).getMatrixParameters();
         List<Object> result = new ArrayList<>();
         if (auth.isForward()) {
             @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -603,6 +626,8 @@ public class FacetResource extends TransactionalResource {
                                            readOnlyModel.getRelationshipModel(),
                                            uriInfo));
                     result.add(object);
+                    additionalAttributes(child, childFacet, networkedModel,
+                                         object, parameters);
                 }
             }
         } else {
@@ -622,6 +647,8 @@ public class FacetResource extends TransactionalResource {
                                            readOnlyModel.getProductModel(),
                                            uriInfo));
                     result.add(object);
+                    additionalAttributes(child, childFacet, networkedModel,
+                                         object, parameters);
                 }
             }
         }
@@ -635,38 +662,38 @@ public class FacetResource extends TransactionalResource {
     private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Object getProperty(Facet<RuleForm, ?> facet,
                                                                                    RuleForm instance,
                                                                                    List<PathSegment> traversal,
-                                                                                   NetworkedModel<RuleForm, ?, ?, ?> locationModel,
+                                                                                   NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
                                                                                    UriInfo uriInfo) {
         String property = traversal.get(0).getPath();
         traversal = traversal.subList(1, traversal.size());
         Attribute attribute = facet.getAttribute(property);
         if (attribute != null) {
-            return getAttribute(instance, attribute, locationModel);
+            return getAttribute(instance, attribute, networkedModel);
         }
         NetworkAuthorization<RuleForm> auth = facet.getNetworkAuth(property);
         if (auth != null) {
-            return getChild(instance, auth, traversal, locationModel);
+            return getChild(instance, auth, traversal, networkedModel);
         }
         XDomainNetworkAuthorization<Agency, Location> agencyLocationAuth = facet.getAgencyLocationAuth(property);
         if (agencyLocationAuth != null) {
             return getAgencyLocationProperty(instance, agencyLocationAuth,
-                                             traversal, locationModel);
+                                             traversal, networkedModel);
         }
         XDomainNetworkAuthorization<Agency, Product> agencyProductAuth = facet.getAgencyProductAuth(property);
         if (agencyProductAuth != null) {
             return getAgencyProductProperty(instance, agencyProductAuth,
-                                            traversal, locationModel);
+                                            traversal, networkedModel);
         }
         XDomainNetworkAuthorization<Product, Location> productLocationAuth = facet.getProductLocationAuth(property);
         if (productLocationAuth != null) {
             return getProductLocationProperty(instance, productLocationAuth,
-                                              traversal, locationModel);
+                                              traversal, networkedModel);
         }
         XDomainNetworkAuthorization<Product, Relationship> productRelationshipAuth = facet.getProductRelationshipAuth(property);
         if (productRelationshipAuth != null) {
             return getProductRelationshipProperty(instance,
                                                   productRelationshipAuth,
-                                                  traversal, locationModel);
+                                                  traversal, networkedModel);
         }
         throw new WebApplicationException(String.format("%s is not a property of %s:%s",
                                                         property,
@@ -688,112 +715,56 @@ public class FacetResource extends TransactionalResource {
             if (segment.isEmpty()) {
                 continue;
             }
+            MultivaluedHashMap<String, String> matrixParams = new MultivaluedHashMap<String, String>(0);
+            String path;
+            if (segment.contains(";")) {
+                StringTokenizer split = new StringTokenizer(segment, ";");
+                path = segment.startsWith(";") ? "" : split.nextToken();
+                while (split.hasMoreTokens()) {
+                    String[] param = split.nextToken().split("=");
+                    matrixParams.computeIfAbsent(param[0],
+                                                 key -> new ArrayList<>(1)).add(param[1]);
+                }
+            } else {
+                path = segment;
+            }
             selection.add(new PathSegment() {
 
                 @Override
                 public MultivaluedMap<String, String> getMatrixParameters() {
-                    // TODO parse matrix params
-                    return new MultivaluedMap<String, String>() {
-
-                        @Override
-                        public int size() {
-                            return 0;
-                        }
-
-                        @Override
-                        public boolean isEmpty() {
-                            return true;
-                        }
-
-                        @Override
-                        public boolean containsKey(Object key) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean containsValue(Object value) {
-                            return false;
-                        }
-
-                        @Override
-                        public List<String> get(Object key) {
-                            return null;
-                        }
-
-                        @Override
-                        public List<String> put(String key,
-                                                List<String> value) {
-                            return null;
-                        }
-
-                        @Override
-                        public List<String> remove(Object key) {
-                            return null;
-                        }
-
-                        @Override
-                        public void putAll(Map<? extends String, ? extends List<String>> m) {
-                        }
-
-                        @Override
-                        public void clear() {
-                        }
-
-                        @Override
-                        public Set<String> keySet() {
-                            return Collections.emptySet();
-                        }
-
-                        @Override
-                        public Collection<List<String>> values() {
-                            return Collections.emptyList();
-                        }
-
-                        @Override
-                        public Set<java.util.Map.Entry<String, List<String>>> entrySet() {
-                            return Collections.emptySet();
-                        }
-
-                        @Override
-                        public void putSingle(String key, String value) {
-                        }
-
-                        @Override
-                        public void add(String key, String value) {
-
-                        }
-
-                        @Override
-                        public String getFirst(String key) {
-                            return null;
-                        }
-
-                        @Override
-                        public void addAll(String key, String... newValues) {
-                        }
-
-                        @Override
-                        public void addAll(String key, List<String> valueList) {
-                        }
-
-                        @Override
-                        public void addFirst(String key, String value) {
-                        }
-
-                        @Override
-                        public boolean equalsIgnoreValueOrder(MultivaluedMap<String, String> otherMap) {
-                            return false;
-                        }
-                    };
+                    return matrixParams;
                 }
 
                 @Override
                 public String getPath() {
-                    return segment;
+                    return path;
                 }
             });
         }
 
         return selection;
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> traverse(RuleForm instance,
+                                                                                                                                              List<String> selection,
+                                                                                                                                              Facet<RuleForm, Network> node,
+                                                                                                                                              NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        if (selection == null || selection.isEmpty()) {
+            return node.toInstance(instance, readOnlyModel, uriInfo);
+        } else {
+            Map<String, Object> object = node.getShort(instance, uriInfo);
+            for (String query : selection) {
+                List<PathSegment> traversal = selectFrom(query);
+                MultivaluedMap<String, String> parameters = traversal.get(0).getMatrixParameters();
+                if (!traversal.get(0).getPath().isEmpty()) {
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(node, instance, traversal,
+                                           networkedModel, uriInfo));
+                }
+                additionalAttributes(instance, node, networkedModel, object,
+                                     parameters);
+            }
+            return object;
+        }
     }
 }

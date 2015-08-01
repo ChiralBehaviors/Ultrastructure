@@ -1,6 +1,6 @@
 <div class="container-fluid">
 	<ul class="facet-instances">
-		<li ng-repeat="facetInstance in facetInstances"><a
-			href="#/facet/{{facetInstance['@id']}}">{{facetInstance.name}}</a></li>
+		<li ng-repeat="instance in facetInstances"><a
+			href="#/facet/{{facet}}/{{instance['@id']}}">{{instance.name}}</a></li>
 	</ul>
 </div>

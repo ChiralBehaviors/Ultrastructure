@@ -140,7 +140,7 @@ public class FacetResource extends TransactionalResource {
         return node;
     }
 
-    @Path("context/{ruleform-type}/{classifier}/{classification}")
+    @Path("{ruleform-type}/{classifier}/{classification}/context")
     @GET
     public Map<String, Object> getContext(@PathParam("ruleform-type") String ruleformType,
                                           @PathParam("classifier") UUID relationship,
@@ -160,7 +160,7 @@ public class FacetResource extends TransactionalResource {
         Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
                                                      uriInfo);
         Map<String, Object> type = facet.toContext(uriInfo);
-        type.put(Constants.ID, Constants.FACET);
+        type.put(Constants.ID, "");
         type.put(Constants.TYPE, "http://ultrastructure.me#Facet");
         return type;
     }
@@ -240,7 +240,10 @@ public class FacetResource extends TransactionalResource {
         }
         Facet<RuleForm, Network> node = new Facet<>(aspect, readOnlyModel,
                                                     uriInfo);
-        return traverse(instance, selection, node, networkedModel);
+        Map<String, Object> object = traverse(instance, selection, node,
+                                              networkedModel);
+        object.put(Constants.CONTEXT, Facet.getContextIri(node, uriInfo));
+        return object;
     }
 
     @Timed
@@ -262,7 +265,8 @@ public class FacetResource extends TransactionalResource {
                       RuleformContext.getIri(attribute, uriInfo));
         } else if (facet.getTerm(term) != null) {
             Aspect<?> targetAspect = facet.getTerm(term);
-            clazz.put(Constants.TYPE, Facet.getFacetIri(targetAspect, uriInfo));
+            clazz.put(Constants.TYPE,
+                      Facet.getFullFacetIri(targetAspect, uriInfo));
 
         } else if (facet.getRuleformTerm(term) != null) {
             clazz.put(Constants.TYPE, facet.getRuleformTerm(term).type);
@@ -510,19 +514,8 @@ public class FacetResource extends TransactionalResource {
                                                                                               Class<?> clazz) {
 
         Map<String, Object> context = new TreeMap<>();
-        Map<String, Object> facetsTerm = new TreeMap<>();
-        facetsTerm.put(Constants.ID,
-                       String.format("%s#%s", clazz.getSimpleName(), "facets"));
-        facetsTerm.put(Constants.TYPE, Constants.ID);
-        facetsTerm.put(Constants.CONTAINER, Constants.LIST);
-        context.put("facets", facetsTerm);
-
-        Map<String, Object> instancesTerm = new TreeMap<>();
-        instancesTerm.put(Constants.ID,
-                          String.format("%s#%s", clazz.getSimpleName(),
-                                        "instances"));
-        instancesTerm.put(Constants.TYPE, Constants.ID);
-        context.put("instances", instancesTerm);
+        context.put(Constants.VOCAB,
+                    uriInfo.getBaseUriBuilder().path(FacetResource.class).build());
 
         Map<String, Object> returned = new TreeMap<>();
 
@@ -530,16 +523,16 @@ public class FacetResource extends TransactionalResource {
         returned.put(Constants.ID, Facet.getFacetsIri(clazz, uriInfo));
 
         List<Map<String, Object>> facets = new ArrayList<>();
-        returned.put("facets", facets);
+        returned.put(Constants.GRAPH, facets);
 
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
             @SuppressWarnings({ "rawtypes", "unchecked" })
             Facet<RuleForm, ?> facet = new Facet(aspect, readOnlyModel,
                                                  uriInfo);
-            Map<String, Object> ctx = facet.getShort();
-            ctx.put("instances",
-                    String.format("%s:/instances", Constants.FACET));
-            facets.add(ctx);
+            Map<String, Object> obj = new TreeMap<>();
+            obj.put(Constants.ID, Facet.getFacetIri(aspect));
+            obj.put(Constants.TYPENAME, facet.getTypeName());
+            facets.add(obj);
         }
 
         return returned;
@@ -778,7 +771,7 @@ public class FacetResource extends TransactionalResource {
         if (selection == null || selection.isEmpty()) {
             return node.toCompactInstance(instance, readOnlyModel, uriInfo);
         } else {
-            Map<String, Object> object = node.getMicro(instance, uriInfo);
+            Map<String, Object> object = node.getShort(instance, uriInfo);
             for (String query : selection) {
                 List<PathSegment> traversal = selectFrom(query);
                 MultivaluedMap<String, String> parameters = traversal.get(0).getMatrixParameters();

@@ -54,6 +54,7 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetResource;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
@@ -107,7 +108,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
-    public static URI getFacetIri(Aspect<?> aspect, UriInfo uriInfo) {
+    public static URI getFullFacetIri(Aspect<?> aspect, UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
         try {
@@ -124,6 +125,13 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         ub.resolveTemplate("classification",
                            aspect.getClassification().getId().toString());
         return ub.build();
+    }
+
+    public static String getFacetIri(Aspect<?> aspect) {
+        return String.format("%s/%s/%s",
+                             aspect.getClassification().getClass().getSimpleName(),
+                             aspect.getClassifier().getId().toString(),
+                             aspect.getClassification().getId().toString());
     }
 
     public static URI getFacetsIri(Class<?> ruleform, UriInfo uriInfo) {
@@ -213,7 +221,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     public static String getTermIri(Aspect<?> aspect, String term,
                                     UriInfo uriInfo) {
-        return String.format("%s:/term/%s", Constants.FACET, term);
+        return String.format("term/%s", term);
     }
 
     public static String getTypeName(@SuppressWarnings("rawtypes") Aspect aspect) {
@@ -253,7 +261,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     public String getId(RuleForm ruleform, UriInfo uriInfo) {
-        return String.format("%s:%s", Constants.FACET, ruleform.getId());
+        return String.format("%s", ruleform.getId());
     }
 
     public NetworkAuthorization<RuleForm> getNetworkAuth(String property) {
@@ -290,8 +298,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     public Map<String, Object> getShort(RuleForm instance, UriInfo uriInfo) {
         Map<String, Object> shorty = getShort();
-        shorty.put(Constants.ID,
-                   String.format("%s:%s", Constants.FACET, instance.getId()));
+        shorty.put(Constants.ID, getId(instance, uriInfo));
         return shorty;
     }
 
@@ -299,8 +306,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         Map<String, Object> shorty = getShort();
         shorty.remove(Constants.TYPE);
         shorty.remove(Constants.CONTEXT);
-        shorty.put(Constants.ID,
-                   String.format("%s:%s", Constants.FACET, instance.getId()));
+        shorty.put(Constants.ID, getId(instance, uriInfo));
         return shorty;
     }
 
@@ -364,7 +370,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     public String getTypeId() {
-        return Constants.FACET;
+        return "";
     }
 
     public String getTypeName() {
@@ -376,26 +382,14 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         Map<String, Object> object = new TreeMap<>();
         Map<String, Object> context = new TreeMap<>();
         object.put(Constants.CONTEXT, context);
-        context.put(Constants.FACET, getFacetIri(this, uriInfo));
+        context.put(Constants.VOCAB,
+                    getFullFacetIri(this, uriInfo).toASCIIString() + "/");
+        context.put(Constants.RULEFORM,
+                    RuleformResource.getRuleformIri(uriInfo));
         for (Map.Entry<String, Typed> term : terms.entrySet()) {
             context.put(term.getKey(), term.getValue().toMap());
         }
         return object;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <RF extends ExistentialRuleform<RF, ?>> Map<String, Object> toInstance(RF instance,
-                                                                                  Model model,
-                                                                                  UriInfo uriInfo) {
-        RuleForm instance1 = (RuleForm) instance;
-        Map<String, Object> node = getShort();
-        node.put(Constants.ID, getId(instance1, uriInfo));
-        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance1);
-        addRuleformAttributes(instance1, node, uriInfo);
-        addAttributes(instance1, networkedModel, node, uriInfo);
-        addNetworkAuths(node, instance1, networkedModel, model, uriInfo);
-        addXdAuths(instance1, model, node, uriInfo);
-        return node;
     }
 
     @SuppressWarnings("unchecked")

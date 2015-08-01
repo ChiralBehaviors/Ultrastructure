@@ -1,45 +1,28 @@
-var browserControllers = angular.module('browserControllers',
-		[ "phantasm" ]);
+var browserControllers = angular.module('browserControllers', [ "phantasm" ]);
 
-browserControllers
-		.controller(
-				'FacetInstancesListCtrl',
-				[
-						'$scope',
-						'Phantasm',
-						'PhantasmRelative',
-						'$routeParams',
-						function($scope, Phantasm, PhantasmRelative,
-								$routeParams) {
-							Phantasm
-									.facetInstances($routeParams.ruleform,
-											$routeParams.classifier,
-											$routeParams.classification)
-									.get()
-									.then(
-											function(data) {
-												for ( var i in data.instances) {
-													data.instances[i]["@id"] = PhantasmRelative
-															.fullyQualifiedInstance(data.instances[i]["@id"]);
-												}
-												$scope.facetInstances = data.instances;
-											});
-						} ]);
-
-browserControllers.controller('FacetListCtrl', [
+browserControllers.controller('FacetInstancesListCtrl', [
 		'$scope',
-		'Facet',
+		'Phantasm',
 		'PhantasmRelative',
 		'$routeParams',
+		function($scope, Phantasm, PhantasmRelative, $routeParams) {
+			Phantasm.facetInstances($routeParams.ruleform,
+					$routeParams.classifier, $routeParams.classification).get()
+					.then(
+							function(data) {
+								$scope.facet = $routeParams.ruleform + "/"
+										+ $routeParams.classifier + "/"
+										+ $routeParams.classification;
+								$scope.facetInstances = data["@graph"];
+							});
+		} ]);
+
+browserControllers.controller('FacetListCtrl', [ '$scope', 'Facet',
+		'PhantasmRelative', '$routeParams',
 		function($scope, Facet, PhantasmRelative, $routeParams) {
-			Facet.one($routeParams.ruleform).get().then(
-					function(data) {
-						for (var i = 0; i < data.facets.length; i++) {
-							data.facets[i].instances = PhantasmRelative
-									.facetInstances(data.facets[i].instances);
-						}
-						$scope.facets = data.facets;
-					});
+			Facet.one($routeParams.ruleform).get().then(function(data) {
+				$scope.facets = data["@graph"];
+			});
 		} ]);
 
 browserControllers.controller('FacetRuleformsListCtrl', [ '$scope', 'Facet',

@@ -76,7 +76,7 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testFacetContext() throws Exception {
-        URL url = new URL(String.format("http://localhost:%s/json-ld/facet/context/Product/%s/%s",
+        URL url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/context",
                                         application.getPort(),
                                         scope.lookup("kernel",
                                                      "IsA").getId().toString(),

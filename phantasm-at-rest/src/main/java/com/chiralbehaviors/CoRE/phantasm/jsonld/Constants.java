@@ -28,7 +28,6 @@ public class Constants {
     public static final String BASE      = "@base";
     public static final String CONTAINER = "@container";
     public static final String CONTEXT   = "@context";
-    public static final String FACET     = "@facet";
     public static final String GRAPH     = "@graph";
     public static final String ID        = "@id";
     public static final String INDEX     = "@index";
@@ -36,5 +35,6 @@ public class Constants {
     public static final String RULEFORM  = "@ruleform";
     public static final String TYPE      = "@type";
     public static final String TYPENAME  = "@typeName";
+    public static final String VOCAB     = "@vocab";
 
 }

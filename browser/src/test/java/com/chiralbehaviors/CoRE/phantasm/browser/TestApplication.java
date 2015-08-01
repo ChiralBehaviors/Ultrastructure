@@ -24,7 +24,6 @@ import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.JpaConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;

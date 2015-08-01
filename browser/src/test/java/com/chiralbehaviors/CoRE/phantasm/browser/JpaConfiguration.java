@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.phantasm.jsonld;
+package com.chiralbehaviors.CoRE.phantasm.browser;
 
 import io.dropwizard.Configuration;
 

@@ -220,6 +220,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return String.format("%s:%s", aspect.getClassifier().getName(),
                              aspect.getClassification().getName());
     }
+
     private final Map<String, XDomainNetworkAuthorization<Agency, Location>>      agencyLocationAuths      = new TreeMap<>();
     private final Map<String, XDomainNetworkAuthorization<Agency, Product>>       agencyProductAuths       = new TreeMap<>();
     private final Map<String, Attribute>                                          attributes               = new TreeMap<>();
@@ -228,7 +229,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private final Map<String, XDomainNetworkAuthorization<Product, Location>>     productLocationAuths     = new TreeMap<>();
     private final Map<String, XDomainNetworkAuthorization<Product, Relationship>> productRelationshipAuths = new TreeMap<>();
 
-    private final Map<String, Typed>                                              terms                    = new TreeMap<>();
+    private final Map<String, Typed> terms = new TreeMap<>();
 
     public Facet(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
         super(aspect.getClassifier(), aspect.getClassification());
@@ -289,6 +290,15 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     public Map<String, Object> getShort(RuleForm instance, UriInfo uriInfo) {
         Map<String, Object> shorty = getShort();
+        shorty.put(Constants.ID,
+                   String.format("%s:%s", Constants.FACET, instance.getId()));
+        return shorty;
+    }
+
+    public Map<String, Object> getMicro(RuleForm instance, UriInfo uriInfo) {
+        Map<String, Object> shorty = getShort();
+        shorty.remove(Constants.TYPE);
+        shorty.remove(Constants.CONTEXT);
         shorty.put(Constants.ID,
                    String.format("%s:%s", Constants.FACET, instance.getId()));
         return shorty;
@@ -379,6 +389,21 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                                                                                   UriInfo uriInfo) {
         RuleForm instance1 = (RuleForm) instance;
         Map<String, Object> node = getShort();
+        node.put(Constants.ID, getId(instance1, uriInfo));
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance1);
+        addRuleformAttributes(instance1, node, uriInfo);
+        addAttributes(instance1, networkedModel, node, uriInfo);
+        addNetworkAuths(node, instance1, networkedModel, model, uriInfo);
+        addXdAuths(instance1, model, node, uriInfo);
+        return node;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <RF extends ExistentialRuleform<RF, ?>> Map<String, Object> toCompactInstance(RF instance,
+                                                                                         Model model,
+                                                                                         UriInfo uriInfo) {
+        RuleForm instance1 = (RuleForm) instance;
+        Map<String, Object> node = new TreeMap<>();
         node.put(Constants.ID, getId(instance1, uriInfo));
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance1);
         addRuleformAttributes(instance1, node, uriInfo);

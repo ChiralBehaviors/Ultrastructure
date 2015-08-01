@@ -17,7 +17,6 @@ package com.chiralbehaviors.CoRE.phantasm.browser;
 
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.phantasm.jsonld.JpaConfiguration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.dropwizard.Configuration;

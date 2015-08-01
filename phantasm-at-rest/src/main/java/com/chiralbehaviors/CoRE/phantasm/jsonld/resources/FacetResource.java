@@ -111,22 +111,13 @@ public class FacetResource extends TransactionalResource {
         Aspect<RuleForm> aspect = getAspect(ruleformType, classifier,
                                             classification);
 
-        Map<String, Object> context = new TreeMap<>();
-        Map<String, Object> keyTerm = new TreeMap<>();
-        keyTerm.put(Constants.ID, facetResourceIri(uriInfo));
-        keyTerm.put(Constants.TYPE, Constants.ID);
-        keyTerm.put(Constants.CONTAINER, Constants.LIST);
-        context.put("instances", keyTerm);
         Map<String, Object> returned = new TreeMap<>();
 
-        returned.put(Constants.CONTEXT, context);
+        returned.put(Constants.CONTEXT, Facet.getContextIri(aspect, uriInfo));
         returned.put(Constants.ID, Facet.getAllInstancesIri(aspect, uriInfo));
-        returned.put(Constants.TYPENAME,
-                     String.format("%s:%s", aspect.getClassifier().getName(),
-                                   aspect.getClassification().getName()));
 
         List<Map<String, Object>> facets = new ArrayList<>();
-        returned.put("instances", facets);
+        returned.put(Constants.GRAPH, facets);
 
         Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
                                                      uriInfo);
@@ -481,7 +472,7 @@ public class FacetResource extends TransactionalResource {
             for (RuleForm child : networkedModel.getImmediateChildren(instance,
                                                                       auth.getChildRelationship())) {
                 if (traversal.isEmpty()) {
-                    result.add(childFacet.getShort(child, uriInfo));
+                    result.add(childFacet.getMicro(child, uriInfo));
                 } else {
                     Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
                                                                                            uriInfo);
@@ -785,9 +776,9 @@ public class FacetResource extends TransactionalResource {
                                                                                                                                               Facet<RuleForm, Network> node,
                                                                                                                                               NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
         if (selection == null || selection.isEmpty()) {
-            return node.toInstance(instance, readOnlyModel, uriInfo);
+            return node.toCompactInstance(instance, readOnlyModel, uriInfo);
         } else {
-            Map<String, Object> object = node.getShort(instance, uriInfo);
+            Map<String, Object> object = node.getMicro(instance, uriInfo);
             for (String query : selection) {
                 List<PathSegment> traversal = selectFrom(query);
                 MultivaluedMap<String, String> parameters = traversal.get(0).getMatrixParameters();

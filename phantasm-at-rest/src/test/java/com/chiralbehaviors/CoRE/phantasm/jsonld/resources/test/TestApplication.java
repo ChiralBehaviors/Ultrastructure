@@ -32,7 +32,6 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.Application;
-import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
@@ -61,10 +60,6 @@ public class TestApplication extends Application<TestServiceConfiguration> {
 
     @Override
     public void initialize(Bootstrap<TestServiceConfiguration> bootstrap) {
-        bootstrap.addBundle(new AssetsBundle("/angular", "/angular", null,
-                                             "phantasm"));
-        bootstrap.addBundle(new AssetsBundle("/assets", "/assets", null,
-                                             "browser"));
         ObjectMapper objMapper = bootstrap.getObjectMapper();
         objMapper.registerModule(new CoREModule());
     }

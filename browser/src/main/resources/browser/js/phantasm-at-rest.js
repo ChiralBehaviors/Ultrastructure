@@ -14,68 +14,6 @@ phantasm.factory("WorkspaceMediated", [ "Restangular", function(Restangular) {
 	return service;
 } ]);
 
-phantasm.service("PhantasmRelative", function() {
-	this.translateIdToFacetInstance = function(inst) {
-		inst["@id"] = this.instance(inst["@id"]);
-	};
-
-	this.facet = function(path) {
-		var split = path.split('/');
-		var newPath = '';
-		var slice = split.slice(split.length - 3, split.length);
-		for ( var i in slice) {
-			if (i > 0) {
-				newPath = newPath + '/' + slice[i];
-			} else {
-				newPath = slice[i];
-			}
-		}
-		return newPath;
-	};
-	this.instance = function(path) {
-		return path.substr(path.lastIndexOf('/') + 1);
-	};
-	this.facetInstance = function(path) {
-		var split = path.split('/');
-		var newPath = '';
-		var slice = split.slice(split.length - 3, split.length);
-		for ( var i in slice) {
-			if (i > 0) {
-				newPath = newPath + '/' + slice[i];
-			} else {
-				newPath = slice[i];
-			}
-		}
-		return newPath;
-	};
-	this.fullyQualifiedInstance = function(path) {
-		var split = path.split('/');
-		var newPath = '';
-		var slice = split.slice(split.length - 4, split.length);
-		for ( var i in slice) {
-			if (i > 0) {
-				newPath = newPath + '/' + slice[i];
-			} else {
-				newPath = slice[i];
-			}
-		}
-		return newPath;
-	};
-	this.facetInstances = function(path) {
-		var split = path.split('/');
-		var newPath = '';
-		var slice = split.slice(split.length - 4, split.length);
-		for ( var i in slice) {
-			if (i > 0) {
-				newPath = newPath + '/' + slice[i];
-			} else {
-				newPath = slice[i];
-			}
-		}
-		return newPath;
-	};
-});
-
 phantasm.factory("Phantasm", [
 		"Facet",
 		function(Facet) {

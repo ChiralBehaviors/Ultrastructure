@@ -3,9 +3,8 @@ var browserControllers = angular.module('browserControllers', [ "phantasm" ]);
 browserControllers.controller('FacetInstancesListCtrl', [
 		'$scope',
 		'Phantasm',
-		'PhantasmRelative',
 		'$routeParams',
-		function($scope, Phantasm, PhantasmRelative, $routeParams) {
+		function($scope, Phantasm, $routeParams) {
 			Phantasm.facetInstances($routeParams.ruleform,
 					$routeParams.classifier, $routeParams.classification).get()
 					.then(
@@ -18,8 +17,7 @@ browserControllers.controller('FacetInstancesListCtrl', [
 		} ]);
 
 browserControllers.controller('FacetListCtrl', [ '$scope', 'Facet',
-		'PhantasmRelative', '$routeParams',
-		function($scope, Facet, PhantasmRelative, $routeParams) {
+		'$routeParams', function($scope, Facet, $routeParams) {
 			Facet.one($routeParams.ruleform).get().then(function(data) {
 				$scope.facets = data["@graph"];
 			});

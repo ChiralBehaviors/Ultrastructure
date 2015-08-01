@@ -299,6 +299,9 @@ public class FacetResource extends TransactionalResource {
                 case "description":
                     object.put(property, instance.getDescription());
                     break;
+                case "notes":
+                    object.put(property, instance.getNotes());
+                    break;
                 default: {
                     Attribute attribute = facet.getAttribute(property);
                     if (attribute != null) {

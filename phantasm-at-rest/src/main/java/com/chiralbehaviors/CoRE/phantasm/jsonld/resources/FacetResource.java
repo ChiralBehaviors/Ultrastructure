@@ -169,7 +169,7 @@ public class FacetResource extends TransactionalResource {
         Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
                                                      uriInfo);
         Map<String, Object> type = facet.toContext(uriInfo);
-        type.put(Constants.ID, Facet.getTypeIri(aspect, uriInfo));
+        type.put(Constants.ID, Constants.FACET);
         type.put(Constants.TYPE, "http://ultrastructure.me#Facet");
         return type;
     }
@@ -253,7 +253,7 @@ public class FacetResource extends TransactionalResource {
     }
 
     @Timed
-    @Path("term/{ruleform-type}/{classifier}/{classification}/{term}")
+    @Path("{ruleform-type}/{classifier}/{classification}/term/{term}")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getTerm(@PathParam("ruleform-type") String ruleformType,
                                                                                                                                             @PathParam("classifier") UUID relationship,
@@ -271,7 +271,7 @@ public class FacetResource extends TransactionalResource {
                       RuleformContext.getIri(attribute, uriInfo));
         } else if (facet.getTerm(term) != null) {
             Aspect<?> targetAspect = facet.getTerm(term);
-            clazz.put(Constants.TYPE, Facet.getTypeIri(targetAspect, uriInfo));
+            clazz.put(Constants.TYPE, Facet.getFacetIri(targetAspect, uriInfo));
 
         } else if (facet.getRuleformTerm(term) != null) {
             clazz.put(Constants.TYPE, facet.getRuleformTerm(term).type);
@@ -545,8 +545,9 @@ public class FacetResource extends TransactionalResource {
             @SuppressWarnings({ "rawtypes", "unchecked" })
             Facet<RuleForm, ?> facet = new Facet(aspect, readOnlyModel,
                                                  uriInfo);
-            Map<String, Object> ctx = facet.getType();
-            ctx.put("instances", Facet.getAllInstancesIri(aspect, uriInfo));
+            Map<String, Object> ctx = facet.getShort();
+            ctx.put("instances",
+                    String.format("%s:/instances", Constants.FACET));
             facets.add(ctx);
         }
 

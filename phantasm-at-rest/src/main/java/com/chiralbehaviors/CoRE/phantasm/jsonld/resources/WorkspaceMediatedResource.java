@@ -160,7 +160,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<?> aspect = new Aspect((Relationship) relationship,
                                       (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getTermIri(aspect, term,
-                                                  uriInfo)).build();
+        return Response.seeOther(Facet.getFullTermIri(aspect, term,
+                                                      uriInfo)).build();
     }
 }

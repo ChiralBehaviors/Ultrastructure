@@ -181,7 +181,7 @@ public class WorkspaceResource extends TransactionalResource {
             Map<String, Object> ctx = new TreeMap<>();
             ctx.put(Constants.ID,
                     Facet.getInstanceIri(aspect, definingProduct, uriInfo));
-            ctx.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
+            ctx.put(Constants.TYPE, Facet.getFacetIri(aspect, uriInfo));
             Map<String, Object> wsp = new TreeMap<>();
             wsp.put(Constants.ID,
                     workspaceIri(definingProduct.getId(), uriInfo));

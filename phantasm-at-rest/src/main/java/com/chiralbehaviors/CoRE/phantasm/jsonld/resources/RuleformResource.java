@@ -20,6 +20,7 @@
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import java.lang.reflect.Modifier;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -163,8 +164,7 @@ public class RuleformResource extends TransactionalResource {
             Map<String, String> map = new TreeMap<>();
             map.put(Constants.CONTEXT,
                     RuleformContext.getContextIri(rf.getClass(), uriInfo));
-            map.put(Constants.ID,
-                    RuleformContext.getIri(rf, uriInfo).toASCIIString());
+            map.put(Constants.ID, RuleformContext.getIri(rf, uriInfo));
             instances.add(map);
         });
         return instances;
@@ -174,5 +174,9 @@ public class RuleformResource extends TransactionalResource {
     @GET
     public List<String> getRuleformTypes() {
         return sortedRuleformTypes;
+    }
+
+    public static URI getRuleformIri(UriInfo uriInfo) {
+        return uriInfo.getBaseUriBuilder().path(RuleformResource.class).build();
     }
 }

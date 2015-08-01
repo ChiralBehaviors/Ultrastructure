@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test.TestApplication;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
@@ -85,10 +86,11 @@ public class ResourcesTest extends AbstractModelTest {
         System.out.println(JsonUtils.toPrettyString(jsonObject));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testFacetNode() throws Exception {
         URL url;
-        Object jsonObject;
+        Map<String, Object> jsonObject;
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         thing1.setAliases(new String[] { "smith", "jones" });
@@ -96,27 +98,27 @@ public class ResourcesTest extends AbstractModelTest {
         thing1.setThing2(thing2);
         em.getTransaction().commit();
         em.getTransaction().begin();
-        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
-                                                                application.getPort()));
+        JsonLdOptions options = new JsonLdOptions();
         url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
                                     application.getPort(),
                                     scope.lookup("kernel",
                                                  "IsA").getId().toString(),
                                     scope.lookup("Thing1").getId().toString(),
                                     thing1.getRuleform().getId()));
-        jsonObject = JsonUtils.fromInputStream(url.openStream());
+        jsonObject = (Map<String, Object>) JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
         System.out.println("Node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object processed = JsonLdProcessor.normalize(jsonObject, options);
-        System.out.println("Normalized node value of an instance of Thing1");
+        Object processed;
+        URL contextUrl = new URL((String) jsonObject.get(Constants.CONTEXT));
+        Map<String, Object> context = (Map<String, Object>) JsonUtils.fromInputStream(contextUrl.openStream());
+        processed = JsonLdProcessor.normalize(jsonObject, options);
+        System.out.println("Normalized node value selection");
         System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
-                                            options);
+        processed = JsonLdProcessor.compact(jsonObject, context, options);
         System.out.println("Compacted node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
-                                            options);
+        processed = JsonLdProcessor.flatten(jsonObject, context, options);
         System.out.println("Flattened node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.expand(jsonObject, options);

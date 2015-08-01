@@ -109,47 +109,22 @@ public class RuleformContext {
         return fields;
     }
 
-    public static URI getIri(Ruleform ruleform, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
-        try {
-            ub.path(RuleformResource.class.getMethod("getInstance",
-                                                     String.class, UUID.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot get getType method", e);
-        }
-        ub.resolveTemplate("ruleform-type",
-                           ruleform.getClass().getSimpleName());
-        ub.resolveTemplate("instance", ruleform.getId().toString());
-        return ub.build();
+    public static String getIri(Ruleform ruleform, UriInfo uriInfo) {
+        return String.format("%s:/%s/%s", Constants.RULEFORM,
+                             ruleform.getClass().getSimpleName(),
+                             ruleform.getId());
     }
 
-    public static URI getTermIri(Class<? extends Ruleform> ruleformClass,
-                                 String term, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
-        try {
-            ub.path(RuleformResource.class.getMethod("getTerm", String.class,
-                                                     String.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot get getType method", e);
-        }
-        ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
-        ub.resolveTemplate("term", term);
-        return ub.build();
+    public static String getTermIri(Class<? extends Ruleform> ruleformClass,
+                                    String term, UriInfo uriInfo) {
+        return String.format("%s:/%s/%s", Constants.RULEFORM,
+                             ruleformClass.getSimpleName(), term);
     }
 
-    public static URI getTypeIri(Class<? extends Ruleform> ruleformClass,
-                                 UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
-        try {
-            ub.path(RuleformResource.class.getMethod("getType", String.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot get getType method", e);
-        }
-        ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
-        return ub.build();
+    public static String getTypeIri(Class<? extends Ruleform> ruleformClass,
+                                    UriInfo uriInfo) {
+        return String.format("%s:%s", Constants.RULEFORM,
+                             ruleformClass.getSimpleName());
     }
 
     private final Class<? extends Ruleform> ruleformClass;
@@ -166,6 +141,8 @@ public class RuleformContext {
         Map<String, Object> context = new TreeMap<>();
         Map<String, Object> t = new TreeMap<>();
         context.put(Constants.CONTEXT, t);
+        context.put(Constants.RULEFORM,
+                    RuleformResource.getRuleformIri(uriInfo));
         for (Entry<String, Typed> entry : terms.entrySet()) {
             t.put(entry.getKey(), entry.getValue().toMap());
         }

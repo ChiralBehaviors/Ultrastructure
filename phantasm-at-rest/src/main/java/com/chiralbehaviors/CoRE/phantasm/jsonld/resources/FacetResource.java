@@ -31,7 +31,9 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -41,6 +43,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -99,6 +102,39 @@ public class FacetResource extends TransactionalResource {
     public FacetResource(EntityManagerFactory emf, UriInfo uriInfo) {
         this(emf);
         this.uriInfo = uriInfo;
+    }
+
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
+    @POST
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Response apply(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                               @PathParam("classifier") UUID relationship,
+                                                                                                                               @PathParam("classification") UUID ruleform,
+                                                                                                                               @PathParam("instance") UUID existential,
+                                                                                                                               @QueryParam("select") List<String> selection) {
+        Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
+                                            ruleform);
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        RuleForm instance = networkedModel.find(existential);
+        networkedModel.initialize(instance, aspect);
+        return Response.ok().build();
+    }
+
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
+    @DELETE
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Response delete(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                @PathParam("classifier") UUID relationship,
+                                                                                                                                @PathParam("classification") UUID ruleform,
+                                                                                                                                @PathParam("instance") UUID existential,
+                                                                                                                                @QueryParam("select") List<String> selection) {
+        Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
+                                            ruleform);
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        RuleForm instance = networkedModel.find(existential);
+        networkedModel.unlink(instance, aspect.getClassifier(),
+                              aspect.getClassification());
+        return Response.ok().build();
     }
 
     @Timed

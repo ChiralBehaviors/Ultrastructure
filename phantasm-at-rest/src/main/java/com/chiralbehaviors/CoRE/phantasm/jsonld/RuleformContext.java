@@ -74,14 +74,15 @@ public class RuleformContext {
                       new URI("http://www.w3.org/2001/XMLSchema#text"));
             TYPES.put(Cardinality.class,
                       new URI("http://www.w3.org/2001/XMLSchema#text"));
+            TYPES.put(new byte[0].getClass(),
+                      new URI("http://www.w3.org/2001/XMLSchema#byteArray"));
         } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new IllegalStateException();
         }
     }
 
-    public static String getContextIri(Class<? extends Ruleform> ruleformClass,
-                                       UriInfo uriInfo) {
+    public static URI getContextIri(Class<? extends Ruleform> ruleformClass,
+                                    UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(RuleformResource.class);
         try {
@@ -90,8 +91,8 @@ public class RuleformContext {
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Cannot get getContext method", e);
         }
-        ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
-        return ub.build().toASCIIString();
+        ub.resolveTemplate("ruleform", ruleformClass.getSimpleName());
+        return ub.build();
     }
 
     public static List<Field> getInheritedFields(Class<?> type) {
@@ -109,20 +110,16 @@ public class RuleformContext {
         return fields;
     }
 
-    public static String getIri(Ruleform ruleform, UriInfo uriInfo) {
-        return String.format("%s:/%s/%s", Constants.RULEFORM,
-                             ruleform.getClass().getSimpleName(),
-                             ruleform.getId());
+    public static String getIri(Ruleform ruleform) {
+        return String.format("%s:%s", Constants.RULEFORM, ruleform.getId());
     }
 
     public static String getTermIri(Class<? extends Ruleform> ruleformClass,
-                                    String term, UriInfo uriInfo) {
-        return String.format("%s:/%s/%s", Constants.RULEFORM,
-                             ruleformClass.getSimpleName(), term);
+                                    String term) {
+        return String.format("%s:term/%s", Constants.RULEFORM, term);
     }
 
-    public static String getTypeIri(Class<? extends Ruleform> ruleformClass,
-                                    UriInfo uriInfo) {
+    public static String getTypeIri(Class<? extends Ruleform> ruleformClass) {
         return String.format("%s:%s", Constants.RULEFORM,
                              ruleformClass.getSimpleName());
     }
@@ -141,8 +138,11 @@ public class RuleformContext {
         Map<String, Object> context = new TreeMap<>();
         Map<String, Object> t = new TreeMap<>();
         context.put(Constants.CONTEXT, t);
-        context.put(Constants.RULEFORM,
-                    RuleformResource.getRuleformIri(uriInfo));
+        t.put(Constants.VOCAB,
+              uriInfo.getBaseUriBuilder().path(RuleformResource.class).build().toASCIIString()
+                               + "/");
+        t.put(Constants.RULEFORM,
+              String.format("%s/", ruleformClass.getSimpleName()));
         for (Entry<String, Typed> entry : terms.entrySet()) {
             t.put(entry.getKey(), entry.getValue().toMap());
         }
@@ -150,12 +150,7 @@ public class RuleformContext {
     }
 
     public Map<String, Object> toNode(Ruleform instance, UriInfo uriInfo) {
-        Map<String, Object> object = new TreeMap<>();
-        object.put(Constants.CONTEXT, getContextIri(ruleformClass, uriInfo));
-        object.put(Constants.ID, getIri(instance, uriInfo));
-        object.put(Constants.TYPENAME, instance.getClass().getSimpleName());
-        object.put(Constants.TYPE,
-                   RuleformContext.getTypeIri(instance.getClass(), uriInfo));
+        Map<String, Object> object = getShort(instance, uriInfo);
         for (Field field : RuleformContext.getInheritedFields(instance.getClass())) {
             field.setAccessible(true);
             if (field.getAnnotation(JoinColumn.class) == null) {
@@ -166,7 +161,9 @@ public class RuleformContext {
                 } catch (IllegalAccessException e) {
                     throw new IllegalStateException(e);
                 }
-                object.put(field.getName(), value);
+                if (value != null) {
+                    object.put(field.getName(), value);
+                }
             } else {
                 Ruleform fk;
                 try {
@@ -174,9 +171,23 @@ public class RuleformContext {
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     throw new IllegalStateException(e);
                 }
-                object.put(field.getName(), getIri(fk, uriInfo));
+                if (fk != null) {
+                    RuleformContext fkContext = new RuleformContext(fk.getClass(),
+                                                                    uriInfo);
+                    object.put(field.getName(),
+                               fkContext.getShort(fk, uriInfo));
+                }
             }
         }
+        return object;
+    }
+
+    public Map<String, Object> getShort(Ruleform instance, UriInfo uriInfo) {
+        Map<String, Object> object = new TreeMap<>();
+        object.put(Constants.CONTEXT, getContextIri(ruleformClass, uriInfo));
+        object.put(Constants.TYPENAME, instance.getClass().getSimpleName());
+        object.put(Constants.TYPE, Constants.RULEFORM);
+        object.put(Constants.ID, getIri(instance));
         return object;
     }
 
@@ -184,13 +195,11 @@ public class RuleformContext {
         for (Field field : getInheritedFields(ruleformClass)) {
             if (field.getAnnotation(JoinColumn.class) == null) {
                 terms.put(field.getName(),
-                          new Typed(getTermIri(ruleformClass, field.getName(),
-                                               uriInfo),
+                          new Typed(getTermIri(ruleformClass, field.getName()),
                                     TYPES.get(field.getType())));
             } else {
                 terms.put(field.getName(),
-                          new Typed(getTermIri(ruleformClass, field.getName(),
-                                               uriInfo),
+                          new Typed(getTermIri(ruleformClass, field.getName()),
                                     Constants.ID));
             }
         }

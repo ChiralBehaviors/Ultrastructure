@@ -70,7 +70,6 @@ import com.codahale.metrics.annotation.Timed;
  * @author hhildebrand
  *
  */
-@Timed
 @Path("json-ld/facet")
 @Produces({ "application/json", "text/json" })
 public class FacetResource extends TransactionalResource {
@@ -202,6 +201,18 @@ public class FacetResource extends TransactionalResource {
     }
 
     @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/@facet:{instance}")
+    @GET
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacetQualifiedInstance(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                              @PathParam("classifier") UUID relationship,
+                                                                                                                                                              @PathParam("classification") UUID ruleform,
+                                                                                                                                                              @PathParam("instance") UUID existential,
+                                                                                                                                                              @QueryParam("select") List<String> selection) {
+        return getInstance(ruleformType, relationship, ruleform, existential,
+                           selection);
+    }
+
+    @Timed
     @GET
     public Map<String, Object> getFacetRuleforms() {
 
@@ -285,22 +296,14 @@ public class FacetResource extends TransactionalResource {
     }
 
     @Timed
-    @Path("{ruleform-type}/{classifier}/{classification}/@facet:{instance}")
+    @Path("{ruleform-type}/{classifier}/{classification}/@ruleform:{instance}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getQualifiedInstance(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                                         @PathParam("classifier") UUID relationship,
-                                                                                                                                                         @PathParam("classification") UUID ruleform,
-                                                                                                                                                         @PathParam("instance") String existential,
-                                                                                                                                                         @QueryParam("select") List<String> selection) {
-        UUID instance;
-        try {
-            instance = UUID.fromString(existential);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(String.format("Invalid instance uuid: %s",
-                                                            existential),
-                                              Status.BAD_REQUEST);
-        }
-        return getInstance(ruleformType, relationship, ruleform, instance,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getRuleformQualifiedInstance(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                                 @PathParam("classifier") UUID relationship,
+                                                                                                                                                                 @PathParam("classification") UUID ruleform,
+                                                                                                                                                                 @PathParam("instance") UUID existential,
+                                                                                                                                                                 @QueryParam("select") List<String> selection) {
+        return getInstance(ruleformType, relationship, ruleform, existential,
                            selection);
     }
 
@@ -319,8 +322,7 @@ public class FacetResource extends TransactionalResource {
         clazz.put(Constants.ID, Facet.getTermIri(aspect, term, uriInfo));
         Attribute attribute = facet.getAttribute(term);
         if (attribute != null) {
-            clazz.put(Constants.TYPE,
-                      RuleformContext.getIri(attribute, uriInfo));
+            clazz.put(Constants.TYPE, RuleformContext.getIri(attribute));
         } else if (facet.getTerm(term) != null) {
             Aspect<?> targetAspect = facet.getTerm(term);
             clazz.put(Constants.TYPE,
@@ -354,6 +356,12 @@ public class FacetResource extends TransactionalResource {
                     break;
                 case "notes":
                     object.put(property, instance.getNotes());
+                    break;
+                case "updatedBy":
+                    object.put(property,
+                               new RuleformContext(Agency.class,
+                                                   uriInfo).getShort(instance.getUpdatedBy(),
+                                                                     uriInfo));
                     break;
                 default: {
                     Attribute attribute = facet.getAttribute(property);
@@ -733,6 +741,12 @@ public class FacetResource extends TransactionalResource {
                 return instance.getName();
             case "description":
                 return instance.getDescription();
+            case "notes":
+                return instance.getNotes();
+            case "updatedBy":
+                return new RuleformContext(Agency.class,
+                                           uriInfo).getShort(instance.getUpdatedBy(),
+                                                             uriInfo);
         }
         Attribute attribute = facet.getAttribute(property);
         if (attribute != null) {

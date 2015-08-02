@@ -61,6 +61,7 @@ public class TestApplication extends Application<TestServiceConfiguration> {
 
     @Override
     public void initialize(Bootstrap<TestServiceConfiguration> bootstrap) {
+        bootstrap.addBundle(new AssetsBundle("/angular/phantasm-at-rest.js"));
         bootstrap.addBundle(new AssetsBundle("/browser", "/browser", null,
                                              "ultrastructure-browser"));
         ObjectMapper objMapper = bootstrap.getObjectMapper();

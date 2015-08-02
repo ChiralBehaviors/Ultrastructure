@@ -75,6 +75,7 @@
         <module>phantasm-at-rest</module>
         <module>thing-ontology</module>
         <module>browser</module>
+        <module>tasks</module>
     </modules>
 
     <dependencyManagement>

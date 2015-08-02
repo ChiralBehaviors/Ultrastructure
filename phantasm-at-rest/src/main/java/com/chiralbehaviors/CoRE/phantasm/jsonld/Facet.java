@@ -409,18 +409,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return node;
     }
 
-    /**
-     * @param ruleform
-     *            TODO
-     * @param selection
-     * @return
-     */
-    public Map<String, Object> toReference(RuleForm ruleform,
-                                           String[] selection) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     private void addAgencyAuths(RuleForm instance, Map<String, Object> node,
                                 Model model, UriInfo uriInfo) {
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
@@ -534,13 +522,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         }
     }
 
-    /**
-     * @param node
-     * @param networkedModel
-     * @param model
-     *            TODO
-     * @param uriInfo
-     */
     private void addNetworkAuths(Map<String, Object> node, RuleForm instance,
                                  NetworkedModel<RuleForm, Network, ?, ?> networkedModel,
                                  Model model, UriInfo uriInfo) {
@@ -671,11 +652,11 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         if (instance.getNotes() != null) {
             node.put("notes", instance.getNotes());
         }
-        Map<String, String> ref = new TreeMap<>();
+        Map<String, Object> ref = new TreeMap<>();
         Agency updatedBy = instance.getUpdatedBy();
-        ref.put(Constants.ID, getIri(updatedBy, uriInfo));
         ref.put(Constants.TYPE,
-                RuleformContext.getTypeIri(updatedBy.getClass(), uriInfo));
+                new RuleformContext(Agency.class, uriInfo).getShort(updatedBy,
+                                                                    uriInfo));
         node.put("updated-by", ref);
     }
 
@@ -723,8 +704,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                       new Typed(getTermIri(this,
                                            auth.getAuthorizedAttribute().getName(),
                                            uriInfo),
-                                getIri(auth.getAuthorizedAttribute(),
-                                       uriInfo)));
+                                getIri(auth.getAuthorizedAttribute())));
         }
     }
 
@@ -831,7 +811,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                   new Typed(getTermIri(this, "notes", uriInfo), textType));
         terms.put("updatedBy",
                   new Typed(getTermIri(this, "updatedBy", uriInfo),
-                            String.format("%s:/%s", Constants.RULEFORM,
+                            String.format("%s:%s", Constants.RULEFORM,
                                           Agency.class.getSimpleName())));
     }
 

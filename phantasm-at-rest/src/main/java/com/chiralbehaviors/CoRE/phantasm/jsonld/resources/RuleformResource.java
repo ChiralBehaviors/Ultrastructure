@@ -20,7 +20,6 @@
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import java.lang.reflect.Modifier;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,12 +28,15 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -51,12 +53,13 @@ import com.codahale.metrics.annotation.Timed;
  *
  */
 @Path("json-ld/ruleform")
-@Produces({ "application/json", "text/json" })
+@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+@Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class RuleformResource extends TransactionalResource {
 
     public final static Map<String, Class<? extends Ruleform>> entityMap = new TreeMap<>();
 
-    private final static ArrayList<String> sortedRuleformTypes;
+    private final static ArrayList<String> sortedRuleforms;
 
     static {
         Reflections reflections = new Reflections(Ruleform.class.getPackage().getName());
@@ -65,8 +68,13 @@ public class RuleformResource extends TransactionalResource {
                 entityMap.put(form.getSimpleName(), form);
             }
         }
-        sortedRuleformTypes = new ArrayList<>(entityMap.keySet());
-        Collections.sort(sortedRuleformTypes);
+        sortedRuleforms = new ArrayList<>(entityMap.keySet());
+        Collections.sort(sortedRuleforms);
+    }
+
+    public static String getRuleformIri(UriInfo uriInfo) {
+        return uriInfo.getBaseUriBuilder().path(RuleformResource.class).build().toASCIIString()
+               + "/";
     }
 
     @Context
@@ -74,6 +82,14 @@ public class RuleformResource extends TransactionalResource {
 
     public RuleformResource(EntityManagerFactory emf) {
         super(emf);
+    }
+
+    @Timed
+    @Path("{ruleform}")
+    @POST
+    public Map<String, Object> create(@PathParam("ruleform") String ruleform,
+                                      Map<String, Object> instance) {
+        return null;
     }
 
     @Timed
@@ -89,94 +105,108 @@ public class RuleformResource extends TransactionalResource {
     }
 
     @Timed
-    @Path("context/{ruleform-type}")
+    @Path("{ruleform}/context")
     @GET
-    public Map<String, Object> getContext(@PathParam("ruleform-type") String ruleformType) {
-        return new RuleformContext(entityMap.get(ruleformType),
+    public Map<String, Object> getContext(@PathParam("ruleform") String ruleform) {
+        return new RuleformContext(entityMap.get(ruleform),
                                    uriInfo).toContext(uriInfo);
     }
 
     @Timed
-    @Path("type/{ruleform-type}")
+    @Path("{ruleform}/@facet:{instance}")
     @GET
-    public Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType) {
-        Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
-        if (ruleformClass == null) {
-            throw new WebApplicationException(String.format("%s does not exist",
-                                                            ruleformClass),
-                                              Status.NOT_FOUND);
-        }
-        Map<String, Object> definition = new RuleformContext(ruleformClass,
-                                                             uriInfo).toContext(uriInfo);
-        definition.put(Constants.ID,
-                       RuleformContext.getTypeIri(ruleformClass, uriInfo));
-        definition.put(Constants.TYPE,
-                       String.format("http://ultrastructure.me#%s",
-                                     ruleformType));
-        return definition;
+    public Map<String, Object> getFacetQualifiedInstance(@PathParam("ruleform") String ruleform,
+                                                         @PathParam("instance") UUID instance) {
+        return getInstance(ruleform, instance);
     }
 
     @Timed
-    @Path("type/{ruleform-type}/{term}")
+    @Path("{ruleform}/{instance}")
     @GET
-    public Map<String, Object> getTerm(@PathParam("ruleform-type") String ruleformType,
-                                       @PathParam("term") String term) {
-        Map<String, Object> definition = new TreeMap<>();
-        Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
-        if (ruleformClass == null) {
-            throw new WebApplicationException(String.format("%s does not exist",
-                                                            ruleformType),
-                                              Status.NOT_FOUND);
-        }
-        definition.put(Constants.ID, RuleformContext.getTermIri(ruleformClass,
-                                                                term, uriInfo));
-        definition.put(Constants.TYPE, "http://ultrastructure.me#term");
-        return definition;
-    }
-
-    @Timed
-    @Path("{ruleform-type}/{instance}")
-    @GET
-    public Map<String, Object> getInstance(@PathParam("ruleform-type") String ruleformType,
-                                           @PathParam("instance") UUID uuid) {
-        Ruleform ruleform = (Ruleform) readOnlyModel.getEntityManager().find(entityMap.get(ruleformType),
-                                                                             uuid);
-        if (ruleform == null) {
+    public Map<String, Object> getInstance(@PathParam("ruleform") String ruleform,
+                                           @PathParam("instance") UUID instance) {
+        Ruleform ruleformInstance = (Ruleform) readOnlyModel.getEntityManager().find(entityMap.get(ruleform),
+                                                                                     instance);
+        if (ruleformInstance == null) {
             throw new WebApplicationException(String.format("%s:%s does not exist",
-                                                            ruleformType,
-                                                            uuid));
+                                                            ruleform,
+                                                            instance));
         }
-        return new RuleformContext(ruleform.getClass(),
-                                   uriInfo).toNode(ruleform, uriInfo);
+        return new RuleformContext(ruleformInstance.getClass(),
+                                   uriInfo).toNode(ruleformInstance, uriInfo);
     }
 
     @Timed
-    @Path("{ruleform-type}")
+    @Path("{ruleform}/instances")
     @GET
-    public List<Map<String, String>> getInstances(@PathParam("ruleform-type") String ruleformType) {
-        Class<? extends Ruleform> ruleformClass = entityMap.get(ruleformType);
+    public List<Map<String, String>> getInstances(@PathParam("ruleform") String ruleform) {
+        Class<? extends Ruleform> ruleformClass = entityMap.get(ruleform);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
-                                                            ruleformType));
+                                                            ruleform));
         }
         List<Map<String, String>> instances = new ArrayList<>();
         readOnlyModel.findAll(ruleformClass).forEach(rf -> {
             Map<String, String> map = new TreeMap<>();
             map.put(Constants.CONTEXT,
-                    RuleformContext.getContextIri(rf.getClass(), uriInfo));
-            map.put(Constants.ID, RuleformContext.getIri(rf, uriInfo));
+                    RuleformContext.getContextIri(rf.getClass(),
+                                                  uriInfo).toASCIIString());
+            map.put(Constants.ID, RuleformContext.getIri(rf));
             instances.add(map);
         });
         return instances;
     }
 
     @Timed
+    @Path("{ruleform}")
     @GET
-    public List<String> getRuleformTypes() {
-        return sortedRuleformTypes;
+    public List<Map<String, String>> getRuleform(@PathParam("ruleform") String ruleform) {
+        Class<? extends Ruleform> ruleformClass = entityMap.get(ruleform);
+        if (ruleformClass == null) {
+            throw new WebApplicationException(String.format("%s does not exist",
+                                                            ruleform));
+        }
+        List<Map<String, String>> instances = new ArrayList<>();
+        readOnlyModel.findAll(ruleformClass).forEach(rf -> {
+            Map<String, String> map = new TreeMap<>();
+            map.put(Constants.CONTEXT,
+                    RuleformContext.getContextIri(rf.getClass(),
+                                                  uriInfo).toASCIIString());
+            map.put(Constants.ID, RuleformContext.getIri(rf));
+            instances.add(map);
+        });
+        return instances;
     }
 
-    public static URI getRuleformIri(UriInfo uriInfo) {
-        return uriInfo.getBaseUriBuilder().path(RuleformResource.class).build();
+    @Timed
+    @Path("{ruleform}/@ruleform:{instance}")
+    @GET
+    public Map<String, Object> getRuleformQualifiedInstance(@PathParam("ruleform") String ruleform,
+                                                            @PathParam("instance") UUID instance) {
+        return getInstance(ruleform, instance);
+    }
+
+    @Timed
+    @GET
+    public List<String> getRuleforms() {
+        return sortedRuleforms;
+    }
+
+    @Timed
+    @Path("{ruleform}/term/{term}")
+    @GET
+    public Map<String, Object> getTerm(@PathParam("ruleform") String ruleform,
+                                       @PathParam("term") String term) {
+        Map<String, Object> definition = new TreeMap<>();
+        Class<? extends Ruleform> ruleformClass = entityMap.get(ruleform);
+        if (ruleformClass == null) {
+            throw new WebApplicationException(String.format("%s does not exist",
+                                                            ruleform),
+                                              Status.NOT_FOUND);
+        }
+        definition.put(Constants.ID,
+                       RuleformContext.getTermIri(ruleformClass, term));
+        definition.put(Constants.TYPE, "http://ultrastructure.me#term");
+        return definition;
     }
 }

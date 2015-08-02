@@ -243,7 +243,29 @@ public class FacetResource extends TransactionalResource {
         Map<String, Object> object = traverse(instance, selection, node,
                                               networkedModel);
         object.put(Constants.CONTEXT, Facet.getContextIri(node, uriInfo));
+        object.put(Constants.TYPE, Constants.FACET);
+        object.put(Constants.TYPENAME, node.getTypeName());
         return object;
+    }
+
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/@facet:{instance}")
+    @GET
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getQualifiedInstance(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                         @PathParam("classifier") UUID relationship,
+                                                                                                                                                         @PathParam("classification") UUID ruleform,
+                                                                                                                                                         @PathParam("instance") String existential,
+                                                                                                                                                         @QueryParam("select") List<String> selection) {
+        UUID instance;
+        try {
+            instance = UUID.fromString(existential);
+        } catch (IllegalArgumentException e) {
+            throw new WebApplicationException(String.format("Invalid instance uuid: %s",
+                                                            existential),
+                                              Status.BAD_REQUEST);
+        }
+        return getInstance(ruleformType, relationship, ruleform, instance,
+                           selection);
     }
 
     @Timed

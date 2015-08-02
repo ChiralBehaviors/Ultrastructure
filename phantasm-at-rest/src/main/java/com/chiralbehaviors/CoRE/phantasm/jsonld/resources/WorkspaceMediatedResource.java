@@ -116,7 +116,7 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                                 @PathParam("ruleform-type") String ruleformType,
                                 @PathParam("classifier") String classifier,
                                 @PathParam("classification") String classification,
-                                @PathParam("instance") UUID instance,
+                                @PathParam("instance") String instance,
                                 @QueryParam("select") List<String> selection) {
         UUID workspaceUUID;
         workspaceUUID = WorkspaceResource.toUUID(workspace);

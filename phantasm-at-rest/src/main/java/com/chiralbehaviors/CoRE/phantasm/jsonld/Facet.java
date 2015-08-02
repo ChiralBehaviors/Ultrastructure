@@ -182,10 +182,10 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     public static URI getInstanceIri(Aspect<?> aspect, UUID instance,
                                      UriInfo uriInfo) {
-        return getInstanceIri(aspect, instance, uriInfo, null);
+        return getInstanceIri(aspect, instance.toString(), uriInfo, null);
     }
 
-    public static URI getInstanceIri(Aspect<?> aspect, UUID instance,
+    public static URI getInstanceIri(Aspect<?> aspect, String instance,
                                      UriInfo uriInfo, List<String> selection) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
@@ -221,7 +221,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     public static String getTermIri(Aspect<?> aspect, String term,
                                     UriInfo uriInfo) {
-        return String.format("term/%s", term);
+        return String.format("%s:term/%s", Constants.FACET, term);
     }
 
     public static String getTypeName(@SuppressWarnings("rawtypes") Aspect aspect) {
@@ -261,7 +261,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     public String getId(RuleForm ruleform, UriInfo uriInfo) {
-        return String.format("%s", ruleform.getId());
+        return String.format("%s:%s", Constants.FACET, ruleform.getId());
     }
 
     public NetworkAuthorization<RuleForm> getNetworkAuth(String property) {
@@ -370,7 +370,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     }
 
     public String getTypeId() {
-        return "";
+        return Constants.FACET;
     }
 
     public String getTypeName() {
@@ -383,7 +383,9 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         Map<String, Object> context = new TreeMap<>();
         object.put(Constants.CONTEXT, context);
         context.put(Constants.VOCAB,
-                    getFullFacetIri(this, uriInfo).toASCIIString() + "/");
+                    uriInfo.getBaseUriBuilder().path(FacetResource.class).build().toASCIIString()
+                                     + "/");
+        context.put(Constants.FACET, getFacetIri(this));
         context.put(Constants.RULEFORM,
                     RuleformResource.getRuleformIri(uriInfo));
         for (Map.Entry<String, Typed> term : terms.entrySet()) {

@@ -71,3 +71,52 @@ browserControllers.controller('RuleformInstancesListCtrl', [
 						$scope.ruleformInstances = data;
 					});
 		} ]);
+
+browserControllers.controller('FacetController', [
+		'$scope',
+		'Facet',
+		'$routeParams',
+		function($scope, RoutedFacet, $routeParams) {
+			$scope.listOfFacets = null;
+			$scope.selectedFacet = null;
+			$scope.selectedInstance = null;
+			Facet.one($routeParams.ruleform).getList().then(function(data) {
+				$scope.listOfFacets = data['@graph'];
+
+				if ($scope.listOfFacets.length > 0) {
+					$scope.selectedFacet = $scope.listOfFacets[0]["@id"];
+					$scope.loadInstances();
+				}
+			});
+
+			$scope.selectFacet = function(val) {
+				$scope.selectedFacet = val["@id"];
+				$scope.loadInstances();
+			};
+
+			$scope.loadInstances = function() {
+				$scope.listOfInstances = null;
+				$scope.selectedInstance = null;
+				Facet.one($routeParams.ruleform).all($scope.selectedFacet).one(
+						"instances").get().then(function(data) {
+					$scope.instances = data['@graph'];
+
+					if ($scope.instances.length > 0) {
+						$scope.selectedInstance = $scope.instances[0]["@id"];
+						$scope.loadInstance();
+					}
+				});
+			};
+
+			$scope.selectInstance = function(val) {
+				$scope.selectedInstance = val["@id"];
+				$scope.loadInstance();
+			};
+
+			$scope.loadInstance = function() {
+				Facet.one($routeParams.ruleform).all($scope.selectedFacet).one(
+						$scope.selectedInstance).get().then(function(data) {
+					$scope.instances = data['@graph'];
+				});
+			};
+		} ]);

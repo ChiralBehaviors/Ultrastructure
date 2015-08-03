@@ -219,7 +219,7 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testRuleformContext() throws Exception {
-        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform/context/Attribute",
+        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform/Attribute/context",
                                         application.getPort()));
         Object jsonObject = JsonUtils.fromInputStream(url.openStream());
         System.out.println("Attribute @context");

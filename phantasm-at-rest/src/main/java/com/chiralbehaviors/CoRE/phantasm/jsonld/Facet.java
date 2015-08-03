@@ -652,12 +652,10 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         if (instance.getNotes() != null) {
             node.put("notes", instance.getNotes());
         }
-        Map<String, Object> ref = new TreeMap<>();
         Agency updatedBy = instance.getUpdatedBy();
-        ref.put(Constants.TYPE,
-                new RuleformContext(Agency.class, uriInfo).getShort(updatedBy,
-                                                                    uriInfo));
-        node.put("updated-by", ref);
+        node.put("updated-by",
+                 new RuleformContext(Agency.class, uriInfo).getShort(updatedBy,
+                                                                     uriInfo));
     }
 
     private void addXdAuths(RuleForm instance, Model model,

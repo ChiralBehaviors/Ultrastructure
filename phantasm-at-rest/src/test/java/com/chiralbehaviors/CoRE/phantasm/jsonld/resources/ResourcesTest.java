@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test.TestApplication;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.github.jsonldjava.core.JsonLdOptions;
@@ -136,11 +137,15 @@ public class ResourcesTest extends AbstractModelTest {
         thing1.setURI("http://example.com");
         thing2.setThing1(thing1);
         thing1.setThing2(thing2);
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 "myartifact", "artifact");
+        artifact.setType("jar");
+        thing2.addDerivedFrom(artifact);
         em.getTransaction().commit();
         em.getTransaction().begin();
         JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
                                                                 application.getPort()));
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s?select=thing2/thing1;a=description;a=name;a=URI;a=Aliases",
+        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s?select=thing2/derivedFroms;a=description;a=name",
                                     application.getPort(),
                                     scope.lookup("kernel",
                                                  "IsA").getId().toString(),

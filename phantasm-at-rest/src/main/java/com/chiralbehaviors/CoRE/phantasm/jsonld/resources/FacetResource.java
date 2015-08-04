@@ -400,20 +400,20 @@ public class FacetResource extends TransactionalResource {
                                                       readOnlyModel, uriInfo);
             for (Location child : networkedModel.getAuthorizedLocations(instance,
                                                                         auth.getConnection())) {
-                if (traversal.isEmpty()) {
-                    result.add(childFacet.getShort(child, uriInfo));
-                } else {
-                    Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
-                                                                                           uriInfo);
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getLocationModel(),
                                            uriInfo));
-                    result.add(object);
-                    additionalAttributes(child, childFacet,
-                                         readOnlyModel.getLocationModel(),
-                                         object, parameters);
                 }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getLocationModel(), object,
+                                     parameters);
             }
         } else {
             List<Agency> children = networkedModel.getAuthorizedAgencies(instance,
@@ -422,20 +422,20 @@ public class FacetResource extends TransactionalResource {
             Facet<Agency, ?> childFacet = new Facet(childAspect, readOnlyModel,
                                                     uriInfo);
             for (Agency child : children) {
-                if (traversal.isEmpty()) {
-                    result.add(childFacet.getShort(child, uriInfo));
-                } else {
-                    Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
-                                                                                           uriInfo);
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getAgencyModel(),
                                            uriInfo));
-                    result.add(object);
-                    additionalAttributes(child, childFacet,
-                                         readOnlyModel.getAgencyModel(), object,
-                                         parameters);
                 }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getAgencyModel(), object,
+                                     parameters);
             }
         }
         if (auth.getCardinality() == Cardinality.N) {
@@ -463,20 +463,20 @@ public class FacetResource extends TransactionalResource {
                                                      uriInfo);
             for (Product child : networkedModel.getAuthorizedProducts(instance,
                                                                       auth.getConnection())) {
-                if (traversal.isEmpty()) {
-                    result.add(childFacet.getShort(child, uriInfo));
-                } else {
-                    Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
-                                                                                           uriInfo);
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getProductModel(),
                                            uriInfo));
-                    result.add(object);
-                    additionalAttributes(child, childFacet,
-                                         readOnlyModel.getProductModel(),
-                                         object, parameters);
                 }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getProductModel(), object,
+                                     parameters);
             }
         } else {
             List<Agency> children = networkedModel.getAuthorizedAgencies(instance,
@@ -485,20 +485,20 @@ public class FacetResource extends TransactionalResource {
             Facet<Agency, ?> childFacet = new Facet(childAspect, readOnlyModel,
                                                     uriInfo);
             for (Agency child : children) {
-                if (traversal.isEmpty()) {
-                    result.add(childFacet.getShort(child, uriInfo));
-                } else {
-                    Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
-                                                                                           uriInfo);
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getAgencyModel(),
                                            uriInfo));
-                    result.add(object);
-                    additionalAttributes(child, childFacet,
-                                         readOnlyModel.getAgencyModel(), object,
-                                         parameters);
                 }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getAgencyModel(), object,
+                                     parameters);
             }
         }
         if (auth.getCardinality() == Cardinality.N) {
@@ -541,39 +541,40 @@ public class FacetResource extends TransactionalResource {
             // TODO handle inferred as well as immediate
             for (RuleForm child : networkedModel.getImmediateChildren(instance,
                                                                       auth.getChildRelationship())) {
-                if (traversal.isEmpty()) {
-                    result.add(childFacet.getMicro(child, uriInfo));
-                } else {
-                    Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
-                                                                                           uriInfo);
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            networkedModel, uriInfo));
-                    result.add(object);
-                    additionalAttributes(child, childFacet, networkedModel,
-                                         object, parameters);
                 }
+                result.add(object);
+                additionalAttributes(child, childFacet, networkedModel, object,
+                                     parameters);
             }
             return result;
         } else {
             RuleForm immediateChild = networkedModel.getImmediateChild(instance,
                                                                        auth.getChildRelationship());
-            if (traversal.isEmpty()) {
-                Map<String, Object> object = childFacet.getShort(immediateChild,
-                                                                 uriInfo);
-                additionalAttributes(immediateChild, childFacet, networkedModel,
-                                     object, parameters);
-                return immediateChild == null ? null : object;
-            } else {
-                Map<String, Object> object = (Map<String, Object>) childFacet.getShort(immediateChild,
-                                                                                       uriInfo);
+            if (immediateChild == null) {
+                return null;
+            }
+            Map<String, Object> object = childFacet.getShort(immediateChild,
+                                                             uriInfo);
+            if (!traversal.isEmpty()) {
+                object = (Map<String, Object>) childFacet.getShort(immediateChild,
+                                                                   uriInfo);
                 object.put(traversal.get(0).getPath(),
                            getProperty(childFacet, immediateChild, traversal,
                                        networkedModel, uriInfo));
                 additionalAttributes(immediateChild, childFacet, networkedModel,
                                      object, parameters);
-                return object;
             }
+            additionalAttributes(immediateChild, childFacet, networkedModel,
+                                 object, parameters);
+            return object;
 
         }
     }
@@ -622,20 +623,20 @@ public class FacetResource extends TransactionalResource {
                                                       readOnlyModel, uriInfo);
             for (Location child : networkedModel.getAuthorizedLocations(instance,
                                                                         auth.getConnection())) {
-                if (traversal.isEmpty()) {
-                    result.add(childFacet.getShort(child, uriInfo));
-                } else {
-                    Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
-                                                                                           uriInfo);
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getLocationModel(),
                                            uriInfo));
-                    result.add(object);
-                    additionalAttributes(child, childFacet,
-                                         readOnlyModel.getLocationModel(),
-                                         object, parameters);
                 }
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getLocationModel(), object,
+                                     parameters);
+                result.add(object);
             }
         } else {
             @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -644,20 +645,20 @@ public class FacetResource extends TransactionalResource {
             List<Product> children = networkedModel.getAuthorizedProducts(instance,
                                                                           auth.getConnection());
             for (Product child : children) {
-                if (traversal.isEmpty()) {
-                    result.add(childFacet.getShort(child, uriInfo));
-                } else {
-                    Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
-                                                                                           uriInfo);
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getProductModel(),
                                            uriInfo));
-                    result.add(object);
-                    additionalAttributes(child, childFacet,
-                                         readOnlyModel.getProductModel(),
-                                         object, parameters);
                 }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getProductModel(), object,
+                                     parameters);
             }
         }
         if (auth.getCardinality() == Cardinality.N) {
@@ -684,20 +685,20 @@ public class FacetResource extends TransactionalResource {
                                                           uriInfo);
             for (Relationship child : networkedModel.getAuthorizedRelationships(instance,
                                                                                 auth.getConnection())) {
-                if (traversal.isEmpty()) {
-                    result.add(childFacet.getShort(child, uriInfo));
-                } else {
-                    Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
-                                                                                           uriInfo);
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getRelationshipModel(),
                                            uriInfo));
-                    result.add(object);
-                    additionalAttributes(child, childFacet,
-                                         readOnlyModel.getRelationshipModel(),
-                                         object, parameters);
                 }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getRelationshipModel(),
+                                     object, parameters);
             }
         } else {
             List<Product> children = networkedModel.getAuthorizedProducts(instance,
@@ -706,20 +707,20 @@ public class FacetResource extends TransactionalResource {
             Facet<Product, ?> childFacet = new Facet(childAspect, readOnlyModel,
                                                      uriInfo);
             for (Product child : children) {
-                if (traversal.isEmpty()) {
-                    result.add(childFacet.getShort(child, uriInfo));
-                } else {
-                    Map<String, Object> object = (Map<String, Object>) childFacet.getShort(child,
-                                                                                           uriInfo);
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
                     object.put(traversal.get(0).getPath(),
                                getProperty(childFacet, child, traversal,
                                            readOnlyModel.getProductModel(),
                                            uriInfo));
-                    result.add(object);
-                    additionalAttributes(child, childFacet,
-                                         readOnlyModel.getProductModel(),
-                                         object, parameters);
                 }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getProductModel(), object,
+                                     parameters);
             }
         }
         if (auth.getCardinality() == Cardinality.N) {

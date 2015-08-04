@@ -538,7 +538,7 @@ public class FacetResource extends TransactionalResource {
                                                   uriInfo);
         if (auth.getCardinality() == Cardinality.N) {
             List<Object> result = new ArrayList<>();
-            // TODO handle infered as well as immediate
+            // TODO handle inferred as well as immediate
             for (RuleForm child : networkedModel.getImmediateChildren(instance,
                                                                       auth.getChildRelationship())) {
                 if (traversal.isEmpty()) {
@@ -559,9 +559,11 @@ public class FacetResource extends TransactionalResource {
             RuleForm immediateChild = networkedModel.getImmediateChild(instance,
                                                                        auth.getChildRelationship());
             if (traversal.isEmpty()) {
-                return immediateChild == null ? null
-                                              : childFacet.getShort(immediateChild,
-                                                                    uriInfo);
+                Map<String, Object> object = childFacet.getShort(immediateChild,
+                                                                 uriInfo);
+                additionalAttributes(immediateChild, childFacet, networkedModel,
+                                     object, parameters);
+                return immediateChild == null ? null : object;
             } else {
                 Map<String, Object> object = (Map<String, Object>) childFacet.getShort(immediateChild,
                                                                                        uriInfo);
@@ -735,7 +737,7 @@ public class FacetResource extends TransactionalResource {
         String property = traversal.get(0).getPath();
         MultivaluedMap<String, String> parameters = traversal.isEmpty() ? new MultivaluedHashMap<>()
                                                                         : traversal.get(0).getMatrixParameters();
-        traversal = traversal.subList(1, traversal.size());
+        List<PathSegment> next = traversal.subList(1, traversal.size());
         switch (property) {
             case "name":
                 return instance.getName();
@@ -754,32 +756,31 @@ public class FacetResource extends TransactionalResource {
         }
         NetworkAuthorization<RuleForm> auth = facet.getNetworkAuth(property);
         if (auth != null) {
-            return getChild(instance, parameters, auth, traversal,
-                            networkedModel);
+            return getChild(instance, parameters, auth, next, networkedModel);
         }
         XDomainNetworkAuthorization<Agency, Location> agencyLocationAuth = facet.getAgencyLocationAuth(property);
         if (agencyLocationAuth != null) {
             return getAgencyLocationProperty(instance, parameters,
-                                             agencyLocationAuth, traversal,
+                                             agencyLocationAuth, next,
                                              networkedModel);
         }
         XDomainNetworkAuthorization<Agency, Product> agencyProductAuth = facet.getAgencyProductAuth(property);
         if (agencyProductAuth != null) {
             return getAgencyProductProperty(instance, parameters,
-                                            agencyProductAuth, traversal,
+                                            agencyProductAuth, next,
                                             networkedModel);
         }
         XDomainNetworkAuthorization<Product, Location> productLocationAuth = facet.getProductLocationAuth(property);
         if (productLocationAuth != null) {
             return getProductLocationProperty(instance, parameters,
-                                              productLocationAuth, traversal,
+                                              productLocationAuth, next,
                                               networkedModel);
         }
         XDomainNetworkAuthorization<Product, Relationship> productRelationshipAuth = facet.getProductRelationshipAuth(property);
         if (productRelationshipAuth != null) {
             return getProductRelationshipProperty(instance, parameters,
-                                                  productRelationshipAuth,
-                                                  traversal, networkedModel);
+                                                  productRelationshipAuth, next,
+                                                  networkedModel);
         }
         throw new WebApplicationException(String.format("%s is not a property of %s:%s",
                                                         property,

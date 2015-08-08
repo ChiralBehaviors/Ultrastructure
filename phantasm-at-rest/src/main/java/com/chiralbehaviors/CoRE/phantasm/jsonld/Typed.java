@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -30,6 +31,21 @@ public class Typed {
     public Typed(String id, String type) {
         this.id = id;
         this.type = type;
+    }
+
+    public Typed(String id, URI type) {
+        this.id = id;
+        this.type = type.toASCIIString();
+    }
+
+    public Typed(URI id, String type) {
+        this.id = id.toASCIIString();
+        this.type = type;
+    }
+
+    public Typed(URI id, URI type) {
+        this.id = id.toASCIIString();
+        this.type = type.toASCIIString();
     }
 
     public Map<String, Object> toMap() {

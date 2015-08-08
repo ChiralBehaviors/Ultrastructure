@@ -22,34 +22,27 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-import javax.ws.rs.core.UriBuilder;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test.TestApplication;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
-import com.hellblazer.utils.Utils;
 
 /**
  * @author hhildebrand
@@ -84,7 +77,7 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testFacetContext() throws Exception {
-        URL url = new URL(String.format("http://localhost:%s/json-ld/facet/context/Product/%s/%s",
+        URL url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/context",
                                         application.getPort(),
                                         scope.lookup("kernel",
                                                      "IsA").getId().toString(),
@@ -94,10 +87,11 @@ public class ResourcesTest extends AbstractModelTest {
         System.out.println(JsonUtils.toPrettyString(jsonObject));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testFacetNode() throws Exception {
         URL url;
-        Object jsonObject;
+        Map<String, Object> jsonObject;
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         thing1.setAliases(new String[] { "smith", "jones" });
@@ -105,46 +99,117 @@ public class ResourcesTest extends AbstractModelTest {
         thing1.setThing2(thing2);
         em.getTransaction().commit();
         em.getTransaction().begin();
+        JsonLdOptions options = new JsonLdOptions();
         url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
                                     application.getPort(),
                                     scope.lookup("kernel",
                                                  "IsA").getId().toString(),
                                     scope.lookup("Thing1").getId().toString(),
                                     thing1.getRuleform().getId()));
-        jsonObject = JsonUtils.fromInputStream(url.openStream());
+        jsonObject = (Map<String, Object>) JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
         System.out.println("Node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object processed = JsonLdProcessor.normalize(jsonObject);
-        System.out.println("Normalized node value of an instance of Thing1");
+        Object processed;
+        URL contextUrl = new URL((String) jsonObject.get(Constants.CONTEXT));
+        Map<String, Object> context = (Map<String, Object>) JsonUtils.fromInputStream(contextUrl.openStream());
+        processed = JsonLdProcessor.normalize(jsonObject, options);
+        System.out.println("Normalized node value selection");
         System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
-                                            new JsonLdOptions());
+        processed = JsonLdProcessor.compact(jsonObject, context, options);
         System.out.println("Compacted node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
-                                            new JsonLdOptions());
+        processed = JsonLdProcessor.flatten(jsonObject, context, options);
         System.out.println("Flattened node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
+        processed = JsonLdProcessor.expand(jsonObject, options);
         System.out.println("Expanded node value of an instance of Thing1");
         System.out.println(JsonUtils.toPrettyString(processed));
     }
 
     @Test
-    public void testFrame() throws Exception {
+    public void testSelect() throws Exception {
+        URL url;
+        Object jsonObject;
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         thing1.setAliases(new String[] { "smith", "jones" });
         thing1.setURI("http://example.com");
+        thing2.setThing1(thing1);
+        thing1.setThing2(thing2);
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 "myartifact", "artifact");
+        artifact.setType("jar");
+        thing2.addDerivedFrom(artifact);
+        em.getTransaction().commit();
+        em.getTransaction().begin();
+        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
+                                                                application.getPort()));
+        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s?select=thing2/derivedFroms;a=description;a=name",
+                                    application.getPort(),
+                                    scope.lookup("kernel",
+                                                 "IsA").getId().toString(),
+                                    scope.lookup("Thing1").getId().toString(),
+                                    thing1.getRuleform().getId()));
+
+        jsonObject = JsonUtils.fromInputStream(url.openStream());
+        assertNotNull(jsonObject);
+        System.out.println("Node value of selection");
+        System.out.println(JsonUtils.toPrettyString(jsonObject));
+        Object processed = JsonLdProcessor.normalize(jsonObject, options);
+        System.out.println("Normalized node value selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
+                                            options);
+        System.out.println("Compacted node value of selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
+                                            options);
+        System.out.println("Flattened node value of selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.expand(jsonObject, options);
+        System.out.println("Expanded node value of selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+    }
+
+    @Test
+    public void testInstancesSelect() throws Exception {
+        URL url;
+        Object jsonObject;
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        thing1.setAliases(new String[] { "smith", "jones" });
+        thing1.setURI("http://example.com");
+        thing2.setThing1(thing1);
         thing1.setThing2(thing2);
         em.getTransaction().commit();
         em.getTransaction().begin();
-        URL url = getFramedInstanceUrl(thing1);
-        Object node = JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(node);
-        System.out.println("famed: ");
-        System.out.println(JsonUtils.toPrettyString(node));
+        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
+                                                                application.getPort()));
+        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/instances?select=;a=URI",
+                                    application.getPort(),
+                                    scope.lookup("kernel",
+                                                 "IsA").getId().toString(),
+                                    scope.lookup("Thing1").getId().toString()));
+
+        jsonObject = JsonUtils.fromInputStream(url.openStream());
+        assertNotNull(jsonObject);
+        System.out.println("Node value of instances selection");
+        System.out.println(JsonUtils.toPrettyString(jsonObject));
+        Object processed = JsonLdProcessor.normalize(jsonObject, options);
+        System.out.println("Normalized node value instances selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
+                                            options);
+        System.out.println("Compacted node value of instances selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
+                                            options);
+        System.out.println("Flattened node value of instances selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
+        processed = JsonLdProcessor.expand(jsonObject, options);
+        System.out.println("Expanded node value of instances selection");
+        System.out.println(JsonUtils.toPrettyString(processed));
     }
 
     @Test
@@ -159,7 +224,7 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testRuleformContext() throws Exception {
-        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform/context/Attribute",
+        URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform/Attribute/context",
                                         application.getPort()));
         Object jsonObject = JsonUtils.fromInputStream(url.openStream());
         System.out.println("Attribute @context");
@@ -175,20 +240,22 @@ public class ResourcesTest extends AbstractModelTest {
                                     scope.lookup("URI").getId().toString()));
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
+        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/",
+                                                                application.getPort()));
         System.out.println("Node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object processed = JsonLdProcessor.normalize(jsonObject);
+        Object processed = JsonLdProcessor.normalize(jsonObject, options);
         System.out.println("Normalized node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
-                                            new JsonLdOptions());
+                                            options);
         System.out.println("Compacted node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
         processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
-                                            new JsonLdOptions());
+                                            options);
         System.out.println("Flattened node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.expand(jsonObject, new JsonLdOptions());
+        processed = JsonLdProcessor.expand(jsonObject, options);
         System.out.println("Expanded node value of an attribute");
         System.out.println(JsonUtils.toPrettyString(processed));
     }
@@ -200,46 +267,5 @@ public class ResourcesTest extends AbstractModelTest {
         Object jsonObject = JsonUtils.fromInputStream(url.openStream());
         System.out.println("Ruleform types:");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
-    }
-
-    private URL getFramedInstanceUrl(Thing1 thing1) throws MalformedURLException,
-                                                    NoSuchMethodException,
-                                                    IOException {
-        Aspect<Product> aspect = new Aspect<>(scope.lookup("kernel", "IsA"),
-                                              (Product) scope.lookup("Thing1"));
-        Map<String, String> properties = new HashMap<>();
-        properties.put("context",
-                       new URL(String.format("http://localhost:%s/json-ld/facet/context/Product/%s/%s#is-a:Thing1",
-                                             application.getPort(),
-                                             aspect.getClassifier().getId().toString(),
-                                             aspect.getClassification().getId().toString())).toExternalForm());
-        properties.put("thing1.type",
-                       new URL(String.format("http://localhost:%s/json-ld/facet/type/Product/%s/%s#is-a:Thing1",
-                                             application.getPort(),
-                                             aspect.getClassifier().getId().toString(),
-                                             scope.lookup("Thing1").getId().toString())).toExternalForm());
-        properties.put("thing2.type",
-                       new URL(String.format("http://localhost:%s/json-ld/facet/type/Product/%s/%s#is-a:Thing2",
-                                             application.getPort(),
-                                             aspect.getClassifier().getId().toString(),
-                                             scope.lookup("Thing2").getId().toString())).toExternalForm());
-        UriBuilder builder = UriBuilder.fromUri(String.format("http://localhost:%s",
-                                                              application.getPort()));
-        builder.path(FacetResource.class);
-        builder.path(FacetResource.class.getMethod("getInstance", String.class,
-                                                   UUID.class, UUID.class,
-                                                   UUID.class, String.class));
-        builder.resolveTemplate("ruleform-type", Product.class.getSimpleName());
-        builder.resolveTemplate("classifier",
-                                aspect.getClassifier().getId().toString());
-        builder.resolveTemplate("classification",
-                                aspect.getClassification().getId().toString());
-        builder.resolveTemplate("instance", thing1.getRuleform().getId());
-        builder.queryParam("frame",
-                           URLEncoder.encode(Utils.getDocument(getClass().getResourceAsStream("/thing-frame.jsonld"),
-                                                               properties),
-                                             "UTF-8"));
-        URL url = builder.build().toURL();
-        return url;
     }
 }

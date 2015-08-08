@@ -19,6 +19,7 @@
  */
 package com.chiralbehaviors.CoRE.meta.workspace.dsl;
 
+import java.beans.Introspector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -123,22 +124,27 @@ public class WorkspaceImporter {
     }
 
     public static String networkAuthNameOf(ConstraintContext constraint) {
+        String name;
         if (constraint.name != null) {
-            return constraint.name.getText();
+            name = constraint.name.getText();
         } else if (constraint.anyType != null) {
-            return constraint.childRelationship.member.getText();
+            name = constraint.childRelationship.member.getText();
         } else if (constraint.methodType != null) {
             switch (constraint.methodType.getText()) {
                 case "named by relationship":
-                    return constraint.childRelationship.member.getText();
+                    name = constraint.childRelationship.member.getText();
+                    break;
                 case "named by entity":
-                    return constraint.authorizedParent.member.getText();
+                    name = constraint.authorizedParent.member.getText();
+                    break;
                 default:
                     throw new IllegalStateException(String.format("Invalid syntax for network authorization name: %s",
                                                                   constraint.methodType.getText()));
             }
+        } else {
+            name = constraint.authorizedParent.member.getText();
         }
-        return constraint.authorizedParent.member.getText();
+        return Introspector.decapitalize(name);
     }
 
     private final EntityManager em;

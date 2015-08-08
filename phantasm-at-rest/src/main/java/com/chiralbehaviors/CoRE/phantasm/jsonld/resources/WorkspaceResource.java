@@ -20,9 +20,11 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -42,12 +44,14 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author hhildebrand
@@ -57,12 +61,11 @@ import com.chiralbehaviors.CoRE.product.Product;
 @Produces({ "application/json", "text/json" })
 public class WorkspaceResource extends TransactionalResource {
 
-    private static final String KEYS             = "keys";
     private static final String DEFINING_PRODUCT = "definingProduct";
+    private static final String KEYS             = "keys";
 
     public static String keysIri(UUID definingProduct, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(WorkspaceResource.class);
+        UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
             ub.path(WorkspaceResource.class.getMethod("getKeys", UUID.class));
             ub.resolveTemplate("uuid", definingProduct);
@@ -73,10 +76,9 @@ public class WorkspaceResource extends TransactionalResource {
         return ub.build().toASCIIString();
     }
 
-    public static String lookupIri(UUID definingProduct, String key,
-                                   UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(WorkspaceResource.class);
+    public static URI lookupIri(UUID definingProduct, String key,
+                                UriInfo uriInfo) {
+        UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
             ub.path(WorkspaceResource.class.getMethod("lookup", UUID.class,
                                                       String.class));
@@ -86,12 +88,21 @@ public class WorkspaceResource extends TransactionalResource {
             throw new IllegalStateException("Unable to get all instances method",
                                             e);
         }
-        return ub.build().toASCIIString();
+        return ub.build();
     }
 
-    public static String workspaceIri(UUID definingProduct, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(WorkspaceResource.class);
+    public static UUID toUUID(String workspace) {
+        UUID workspaceUUID;
+        try {
+            workspaceUUID = UUID.fromString(workspace);
+        } catch (IllegalArgumentException e) {
+            workspaceUUID = Workspace.uuidOf(workspace);
+        }
+        return workspaceUUID;
+    }
+
+    public static URI workspaceIri(UUID definingProduct, UriInfo uriInfo) {
+        UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
             ub.path(WorkspaceResource.class.getMethod("getWorkspace",
                                                       UUID.class));
@@ -100,7 +111,7 @@ public class WorkspaceResource extends TransactionalResource {
             throw new IllegalStateException("Unable to get all instances method",
                                             e);
         }
-        return ub.build().toASCIIString();
+        return ub.build();
     }
 
     @Context
@@ -110,22 +121,25 @@ public class WorkspaceResource extends TransactionalResource {
         super(emf);
     }
 
-    @Path("{uuid}/key")
+    @Timed
+    @Path("{workspace}/key")
     @GET
-    public Map<String, Object> getKeys(@PathParam("uuid") UUID workspaceId) {
-        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceId);
-        if (scope == null) {
+    public Map<String, Object> getKeys(@PathParam("workspace") UUID workspace) {
+        WorkspaceScope scope;
+        try {
+            scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
+        } catch (IllegalArgumentException e) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceId),
+                                                            workspace),
                                               Status.NOT_FOUND);
         }
         Map<String, String> keys = new TreeMap<>();
         for (String key : scope.getWorkspace().getKeys()) {
-            keys.put(key, lookupIri(workspaceId, key, uriInfo));
+            keys.put(key, lookupIri(workspace, key, uriInfo).toASCIIString());
         }
         Map<String, Object> context = new TreeMap<>();
         Map<String, Object> keyTerm = new TreeMap<>();
-        keyTerm.put(Constants.ID, keysIri(workspaceId, uriInfo));
+        keyTerm.put(Constants.ID, keysIri(workspace, uriInfo));
         keyTerm.put(Constants.TYPE, Constants.ID);
         keyTerm.put(Constants.CONTAINER, Constants.INDEX);
         context.put("keys", keyTerm);
@@ -135,19 +149,21 @@ public class WorkspaceResource extends TransactionalResource {
         return returned;
     }
 
-    @Path("{uuid}")
+    @Timed
+    @Path("{workspace}")
     @GET
-    public WorkspaceSnapshot getWorkspace(@PathParam("uuid") UUID workspaceId) {
+    public WorkspaceSnapshot getWorkspace(@PathParam("workspace") UUID wsp) {
         EntityManager em = readOnlyModel.getEntityManager();
-        Product workspace = em.find(Product.class, workspaceId);
+        Product workspace = em.find(Product.class, wsp);
         if (workspace == null) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceId),
+                                                            wsp),
                                               Status.NOT_FOUND);
         }
         return new WorkspaceSnapshot(workspace, em);
     }
 
+    @Timed
     @GET
     public Map<String, Object> getWorkspaces() {
         Kernel kernel = readOnlyModel.getKernel();
@@ -164,8 +180,8 @@ public class WorkspaceResource extends TransactionalResource {
                                                                   aspect.getClassifier().getInverse())) {
             Map<String, Object> ctx = new TreeMap<>();
             ctx.put(Constants.ID,
-                    Facet.getNodeIri(aspect, definingProduct, uriInfo));
-            ctx.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
+                    Facet.getInstanceIri(aspect, definingProduct, uriInfo));
+            ctx.put(Constants.TYPE, Facet.getFullFacetIri(aspect, uriInfo));
             Map<String, Object> wsp = new TreeMap<>();
             wsp.put(Constants.ID,
                     workspaceIri(definingProduct.getId(), uriInfo));
@@ -177,46 +193,83 @@ public class WorkspaceResource extends TransactionalResource {
         return returned;
     }
 
-    @Path("{uuid}/key/{member}")
+    @Timed
+    @Path("{workspace}/key/{member}")
     @GET
-    public Map<String, Object> lookup(@PathParam("uuid") UUID workspaceId,
+    public Map<String, Object> lookup(@PathParam("workspace") UUID workspace,
                                       @PathParam("member") String member) {
-        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceId);
-        if (scope == null) {
+        WorkspaceScope scope;
+        try {
+            scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
+        } catch (IllegalArgumentException e) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceId),
+                                                            workspace),
                                               Status.NOT_FOUND);
         }
         Ruleform resolved = scope.lookup(member);
         if (resolved == null) {
             throw new WebApplicationException(String.format("%s not found in workspace: %s",
-                                                            member,
-                                                            workspaceId),
+                                                            member, workspace),
                                               Status.NOT_FOUND);
         }
         return new RuleformContext(resolved.getClass(),
                                    uriInfo).toNode(resolved, uriInfo);
     }
 
-    @Path("{uuid}/key/{namespace}/{member}")
+    @Timed
+    @Path("{workspace}/key/{namespace}/{member}")
     @GET
-    public Map<String, Object> lookup(@PathParam("uuid") UUID workspaceId,
+    public Map<String, Object> lookup(@PathParam("workspace") UUID workspace,
                                       @PathParam("namespace") String namespace,
                                       @PathParam("member") String member) {
-        WorkspaceScope scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceId);
-        if (scope == null) {
+        WorkspaceScope scope;
+        try {
+            scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
+        } catch (IllegalArgumentException e) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceId),
+                                                            workspace),
                                               Status.NOT_FOUND);
         }
         Ruleform resolved = scope.lookup(namespace, member);
         if (resolved == null) {
             throw new WebApplicationException(String.format("%s:%s not found in workspace: %s",
                                                             namespace, member,
-                                                            workspaceId),
+                                                            workspace),
                                               Status.NOT_FOUND);
         }
         return new RuleformContext(resolved.getClass(),
                                    uriInfo).toNode(resolved, uriInfo);
+    }
+
+    @Timed
+    @Path("translate/{uri}")
+    @GET
+    public UUID translate(@PathParam("uri") String uri) {
+        return Workspace.uuidOf(uri);
+    }
+
+    public static Ruleform resolve(String qualifiedName, WorkspaceScope scope) {
+        StringTokenizer key = new StringTokenizer(qualifiedName, "|");
+        if (key.countTokens() == 1) {
+            Ruleform resolved = scope.lookup(key.nextToken());
+            if (resolved == null) {
+                throw new WebApplicationException(String.format("The workspace key [%s] is not defined in %s",
+                                                                qualifiedName,
+                                                                scope));
+            }
+            return resolved;
+        } else if (key.countTokens() == 2) {
+            Ruleform resolved = scope.lookup(key.nextToken(), key.nextToken());
+            if (resolved == null) {
+                throw new WebApplicationException(String.format("The workspace key [%s] is not defined in %s",
+                                                                qualifiedName,
+                                                                scope));
+            }
+            return resolved;
+        } else {
+            throw new WebApplicationException(String.format("The workspace key [%s] is not defined in %s",
+                                                            qualifiedName,
+                                                            scope));
+        }
     }
 }

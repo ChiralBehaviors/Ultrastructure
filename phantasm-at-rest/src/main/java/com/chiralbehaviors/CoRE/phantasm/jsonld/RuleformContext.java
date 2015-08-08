@@ -23,6 +23,8 @@ package com.chiralbehaviors.CoRE.phantasm.jsonld;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +39,6 @@ import javax.persistence.OneToMany;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.network.Cardinality;
@@ -48,25 +49,40 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
  *
  */
 public class RuleformContext {
-    private static final Map<Class<?>, String> TYPES = new HashMap<>();
+    private static final Map<Class<?>, URI> TYPES = new HashMap<>();
 
     static {
         // initialize primitive types
-        TYPES.put(String.class, "http://www.w3.org/2001/XMLSchema#text");
-        TYPES.put(Integer.class, "http://www.w3.org/2001/XMLSchema#int");
-        TYPES.put(Integer.TYPE, "http://www.w3.org/2001/XMLSchema#int");
-        TYPES.put(BigDecimal.class, "http://www.w3.org/2001/XMLSchema#number");
-        TYPES.put(Boolean.class, "http://www.w3.org/2001/XMLSchema#boolean");
-        TYPES.put(Boolean.TYPE, "http://www.w3.org/2001/XMLSchema#boolean");
-        TYPES.put(Timestamp.class,
-                  "http://www.w3.org/2001/XMLSchema#date-dateTime");
-        TYPES.put(UUID.class, "http://www.w3.org/2001/XMLSchema#uuid");
-        TYPES.put(ValueType.class, "http://www.w3.org/2001/XMLSchema#text");
-        TYPES.put(Cardinality.class, "http://www.w3.org/2001/XMLSchema#text");
+        try {
+            TYPES.put(String.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#text"));
+            TYPES.put(Integer.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#int"));
+            TYPES.put(Integer.TYPE,
+                      new URI("http://www.w3.org/2001/XMLSchema#int"));
+            TYPES.put(BigDecimal.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#number"));
+            TYPES.put(Boolean.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#boolean"));
+            TYPES.put(Boolean.TYPE,
+                      new URI("http://www.w3.org/2001/XMLSchema#boolean"));
+            TYPES.put(Timestamp.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#date-dateTime"));
+            TYPES.put(UUID.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#uuid"));
+            TYPES.put(ValueType.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#text"));
+            TYPES.put(Cardinality.class,
+                      new URI("http://www.w3.org/2001/XMLSchema#text"));
+            TYPES.put(new byte[0].getClass(),
+                      new URI("http://www.w3.org/2001/XMLSchema#byteArray"));
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException();
+        }
     }
 
-    public static String getContextIri(Class<? extends Ruleform> ruleformClass,
-                                       UriInfo uriInfo) {
+    public static URI getContextIri(Class<? extends Ruleform> ruleformClass,
+                                    UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(RuleformResource.class);
         try {
@@ -75,8 +91,8 @@ public class RuleformContext {
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Cannot get getContext method", e);
         }
-        ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
-        return ub.build().toASCIIString();
+        ub.resolveTemplate("ruleform", ruleformClass.getSimpleName());
+        return ub.build();
     }
 
     public static List<Field> getInheritedFields(Class<?> type) {
@@ -94,35 +110,23 @@ public class RuleformContext {
         return fields;
     }
 
-    public static String getTermIri(Class<? extends Ruleform> ruleformClass,
-                                    String term, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
-        try {
-            ub.path(RuleformResource.class.getMethod("getTerm", String.class,
-                                                     String.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot get getType method", e);
-        }
-        ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
-        ub.resolveTemplate("term", term);
-        return ub.build().toASCIIString();
+    public static String getIri(Ruleform ruleform) {
+        return String.format("%s:%s", Constants.RULEFORM, ruleform.getId());
     }
 
-    public static String getTypeIri(Class<? extends Ruleform> ruleformClass,
-                                    UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
-        try {
-            ub.path(RuleformResource.class.getMethod("getType", String.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot get getType method", e);
-        }
-        ub.resolveTemplate("ruleform-type", ruleformClass.getSimpleName());
-        return ub.build().toASCIIString();
+    public static String getTermIri(Class<? extends Ruleform> ruleformClass,
+                                    String term) {
+        return String.format("%s:term/%s", Constants.RULEFORM, term);
+    }
+
+    public static String getTypeIri(Class<? extends Ruleform> ruleformClass) {
+        return String.format("%s:%s", Constants.RULEFORM,
+                             ruleformClass.getSimpleName());
     }
 
     private final Class<? extends Ruleform> ruleformClass;
+
+    private final Map<String, Typed> terms = new TreeMap<>();
 
     public RuleformContext(Class<? extends Ruleform> ruleformClass,
                            UriInfo uriInfo) {
@@ -130,14 +134,23 @@ public class RuleformContext {
         gatherTerms(uriInfo);
     }
 
-    private final Map<String, Typed> terms = new TreeMap<>();
+    public Map<String, Object> toContext(UriInfo uriInfo) {
+        Map<String, Object> context = new TreeMap<>();
+        Map<String, Object> t = new TreeMap<>();
+        context.put(Constants.CONTEXT, t);
+        t.put(Constants.VOCAB,
+              uriInfo.getBaseUriBuilder().path(RuleformResource.class).build().toASCIIString()
+                               + "/");
+        t.put(Constants.RULEFORM,
+              String.format("%s/", ruleformClass.getSimpleName()));
+        for (Entry<String, Typed> entry : terms.entrySet()) {
+            t.put(entry.getKey(), entry.getValue().toMap());
+        }
+        return context;
+    }
 
     public Map<String, Object> toNode(Ruleform instance, UriInfo uriInfo) {
-        Map<String, Object> object = new TreeMap<>();
-        object.put(Constants.CONTEXT, getContextIri(ruleformClass, uriInfo));
-        object.put(Constants.ID, getIri(instance, uriInfo));
-        object.put(Constants.TYPE,
-                   RuleformContext.getTypeIri(instance.getClass(), uriInfo));
+        Map<String, Object> object = getShort(instance, uriInfo);
         for (Field field : RuleformContext.getInheritedFields(instance.getClass())) {
             field.setAccessible(true);
             if (field.getAnnotation(JoinColumn.class) == null) {
@@ -148,7 +161,9 @@ public class RuleformContext {
                 } catch (IllegalAccessException e) {
                     throw new IllegalStateException(e);
                 }
-                object.put(field.getName(), value);
+                if (value != null) {
+                    object.put(field.getName(), value);
+                }
             } else {
                 Ruleform fk;
                 try {
@@ -156,53 +171,37 @@ public class RuleformContext {
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     throw new IllegalStateException(e);
                 }
-                object.put(field.getName(), getIri(fk, uriInfo));
+                if (fk != null) {
+                    RuleformContext fkContext = new RuleformContext(fk.getClass(),
+                                                                    uriInfo);
+                    object.put(field.getName(),
+                               fkContext.getShort(fk, uriInfo));
+                }
             }
         }
         return object;
     }
 
-    public Map<String, Object> toContext() {
-        Map<String, Object> context = new TreeMap<>();
-        Map<String, Object> t = new TreeMap<>();
-        context.put(Constants.CONTEXT, t);
-        for (Entry<String, Typed> entry : terms.entrySet()) {
-            t.put(entry.getKey(), entry.getValue().toMap());
-        }
-        return context;
+    public Map<String, Object> getShort(Ruleform instance, UriInfo uriInfo) {
+        Map<String, Object> object = new TreeMap<>();
+        object.put(Constants.CONTEXT, getContextIri(ruleformClass, uriInfo));
+        object.put(Constants.TYPENAME, instance.getClass().getSimpleName());
+        object.put(Constants.TYPE, Constants.RULEFORM);
+        object.put(Constants.ID, getIri(instance));
+        return object;
     }
 
     private void gatherTerms(UriInfo uriInfo) {
         for (Field field : getInheritedFields(ruleformClass)) {
             if (field.getAnnotation(JoinColumn.class) == null) {
                 terms.put(field.getName(),
-                          new Typed(getTermIri(ruleformClass, field.getName(),
-                                               uriInfo),
+                          new Typed(getTermIri(ruleformClass, field.getName()),
                                     TYPES.get(field.getType())));
             } else {
                 terms.put(field.getName(),
-                          new Typed(getTermIri(ruleformClass, field.getName(),
-                                               uriInfo),
+                          new Typed(getTermIri(ruleformClass, field.getName()),
                                     Constants.ID));
             }
         }
-    }
-
-    public static String getIri(Ruleform ruleform, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(RuleformResource.class);
-        try {
-            ub.path(RuleformResource.class.getMethod("getInstance",
-                                                     String.class, UUID.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot get getType method", e);
-        }
-        ub.resolveTemplate("ruleform-type",
-                           ruleform.getClass().getSimpleName());
-        ub.resolveTemplate("instance", ruleform.getId().toString());
-        if (ruleform instanceof ExistentialRuleform) {
-            ub.fragment(((ExistentialRuleform<?, ?>) ruleform).getName());
-        }
-        return ub.build().toASCIIString();
     }
 }

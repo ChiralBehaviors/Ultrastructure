@@ -74,13 +74,24 @@
         <module>phantasm-plugin</module>
         <module>phantasm-at-rest</module>
         <module>thing-ontology</module>
+        <module>browser</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.chiralbehaviors.CoRE</groupId>
+                <artifactId>phantasm-at-rest</artifactId>
+                <version>2.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-healthchecks</artifactId>
+                <version>3.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard.metrics</groupId>
+                <artifactId>metrics-annotation</artifactId>
                 <version>3.1.1</version>
             </dependency>
             <dependency>

@@ -82,7 +82,7 @@ public class Bootstrap {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
         EntityManager em = emf.createEntityManager();
-        Bootstrap bootstrap = new Bootstrap(em, properties);
+        Bootstrap bootstrap = new Bootstrap(em);
         bootstrap.clear();
         em.getTransaction().begin();
         bootstrap.bootstrap();
@@ -95,8 +95,7 @@ public class Bootstrap {
     private final Connection    connection;
     private final EntityManager em;
 
-    public Bootstrap(EntityManager em,
-                     Properties properties) throws SQLException {
+    public Bootstrap(EntityManager em) throws SQLException {
         connection = em.unwrap(SessionImpl.class).connection();
         connection.setAutoCommit(false);
         this.em = em;

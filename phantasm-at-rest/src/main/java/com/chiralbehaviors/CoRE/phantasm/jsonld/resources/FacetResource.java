@@ -20,78 +20,75 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Aspect;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
-import com.chiralbehaviors.CoRE.meta.models.AttributeModelImpl;
+import com.chiralbehaviors.CoRE.network.Cardinality;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jsonldjava.core.JsonLdError;
-import com.github.jsonldjava.core.JsonLdOptions;
-import com.github.jsonldjava.core.JsonLdProcessor;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.codahale.metrics.annotation.Timed;
 
 /**
  * @author hhildebrand
  *
  */
-@Path("json-ld/facet/")
+@Path("json-ld/facet")
 @Produces({ "application/json", "text/json" })
 public class FacetResource extends TransactionalResource {
 
-    public static <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> getFacetInstances(Aspect<RuleForm> aspect,
-                                                                                                                                                                   Model model,
-                                                                                                                                                                   UriInfo uriInfo) {
-        List<Map<String, Object>> facets = new ArrayList<>();
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(aspect.getClassification());
-        for (RuleForm ruleform : networkedModel.getChildren(aspect.getClassification(),
-                                                            aspect.getClassifier().getInverse())) {
-            Map<String, Object> ctx = new TreeMap<>();
-            ctx.put(Constants.CONTEXT, Facet.getContextIri(aspect, uriInfo));
-            ctx.put(Constants.ID, Facet.getNodeIri(aspect, ruleform, uriInfo));
-            ctx.put(Constants.TYPE, Facet.getTypeIri(aspect, uriInfo));
-            facets.add(ctx);
-        }
-        return facets;
-    }
-
-    public static String getTypeContextIri(UriInfo uriInfo) {
+    public static URI facetResourceIri(UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
+        return ub.build();
+    }
+
+    public static URI getTypeContextIri() {
+        UriBuilder ub = UriBuilder.fromResource(FacetResource.class);
         try {
             ub.path(FacetResource.class.getMethod("getContext"));
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Unable to retrieve getContext method",
                                             e);
         }
-        String ctxtUrl = ub.build().toASCIIString();
-        return ctxtUrl;
+        return ub.build();
     }
 
     @Context
@@ -106,28 +103,79 @@ public class FacetResource extends TransactionalResource {
         this.uriInfo = uriInfo;
     }
 
-    @Path("{ruleform-type}/{classifier}/{classification}")
-    @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> getAllInstances(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                                          @PathParam("classifier") UUID relationship,
-                                                                                                                                                          @PathParam("classification") UUID ruleform) {
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
+    @POST
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Response apply(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                               @PathParam("classifier") UUID relationship,
+                                                                                                                               @PathParam("classification") UUID ruleform,
+                                                                                                                               @PathParam("instance") UUID existential,
+                                                                                                                               @QueryParam("select") List<String> selection) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
-        return getFacetInstances(aspect, readOnlyModel, uriInfo);
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        RuleForm instance = networkedModel.find(existential);
+        networkedModel.initialize(instance, aspect);
+        return Response.ok().build();
     }
 
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
+    @DELETE
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Response delete(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                @PathParam("classifier") UUID relationship,
+                                                                                                                                @PathParam("classification") UUID ruleform,
+                                                                                                                                @PathParam("instance") UUID existential,
+                                                                                                                                @QueryParam("select") List<String> selection) {
+        Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
+                                            ruleform);
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        RuleForm instance = networkedModel.find(existential);
+        networkedModel.unlink(instance, aspect.getClassifier(),
+                              aspect.getClassification());
+        return Response.ok().build();
+    }
+
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/instances")
+    @GET
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getAllInstances(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                    @PathParam("classifier") UUID classifier,
+                                                                                                                                                    @PathParam("classification") UUID classification,
+                                                                                                                                                    @QueryParam("select") List<String> selection) {
+        Aspect<RuleForm> aspect = getAspect(ruleformType, classifier,
+                                            classification);
+
+        Map<String, Object> returned = new TreeMap<>();
+
+        returned.put(Constants.CONTEXT, Facet.getContextIri(aspect, uriInfo));
+        returned.put(Constants.ID, Facet.getAllInstancesIri(aspect, uriInfo));
+
+        List<Map<String, Object>> facets = new ArrayList<>();
+        returned.put(Constants.GRAPH, facets);
+
+        Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
+                                                     uriInfo);
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+        for (RuleForm ruleform : networkedModel.getChildren(aspect.getClassification(),
+                                                            aspect.getClassifier().getInverse())) {
+            facets.add(traverse(ruleform, selection, facet, networkedModel));
+        }
+        return returned;
+    }
+
+    @Timed
     @Path("context")
     @GET
     public Map<String, Object> getContext() {
-        String ctxtUrl = getTypeContextIri(uriInfo);
         Map<String, Object> node = new TreeMap<>();
         Map<String, Object> context = new TreeMap<>();
         node.put(Constants.CONTEXT, context);
-        context.put(Constants.ID, ctxtUrl);
+        context.put(Constants.ID, getTypeContextIri().toASCIIString());
         return node;
     }
 
-    @Path("context/{ruleform-type}/{classifier}/{classification}")
+    @Path("{ruleform-type}/{classifier}/{classification}/context")
     @GET
     public Map<String, Object> getContext(@PathParam("ruleform-type") String ruleformType,
                                           @PathParam("classifier") UUID relationship,
@@ -135,39 +183,98 @@ public class FacetResource extends TransactionalResource {
         return createContext(getAspect(ruleformType, relationship, ruleform));
     }
 
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}")
+    @GET
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacet(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                             @PathParam("classifier") UUID relationship,
+                                                                                                                                             @PathParam("classification") UUID ruleform) {
+
+        Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
+                                            ruleform);
+        Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
+                                                     uriInfo);
+        Map<String, Object> type = facet.toContext(uriInfo);
+        type.put(Constants.ID, "");
+        type.put(Constants.TYPE, "http://ultrastructure.me#Facet");
+        return type;
+    }
+
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/@facet:{instance}")
+    @GET
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacetQualifiedInstance(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                              @PathParam("classifier") UUID relationship,
+                                                                                                                                                              @PathParam("classification") UUID ruleform,
+                                                                                                                                                              @PathParam("instance") UUID existential,
+                                                                                                                                                              @QueryParam("select") List<String> selection) {
+        return getInstance(ruleformType, relationship, ruleform, existential,
+                           selection);
+    }
+
+    @Timed
+    @GET
+    public Map<String, Object> getFacetRuleforms() {
+
+        List<String> ruleforms = new ArrayList<>();
+        ruleforms.add("Agency");
+        ruleforms.add("Attribute");
+        ruleforms.add("Interval");
+        ruleforms.add("Location");
+        ruleforms.add("Product");
+        ruleforms.add("Relationship");
+        ruleforms.add("Status Code");
+        ruleforms.add("Unit");
+
+        Map<String, Object> context = new TreeMap<>();
+        Map<String, Object> keyTerm = new TreeMap<>();
+        keyTerm.put(Constants.ID, facetResourceIri(uriInfo));
+        keyTerm.put(Constants.TYPE, Constants.ID);
+        keyTerm.put(Constants.CONTAINER, Constants.LIST);
+        context.put("ruleforms", keyTerm);
+        Map<String, Object> returned = new TreeMap<>();
+        returned.put(Constants.CONTEXT, context);
+        returned.put(Constants.ID, facetResourceIri(uriInfo));
+        returned.put("ruleforms", ruleforms);
+        return returned;
+    }
+
+    @Timed
     @Path("{ruleform-type}")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacets(@PathParam("ruleform-type") String ruleformType) {
+        Class<?> clazz = RuleformResource.entityMap.get(ruleformType);
         switch (ruleformType) {
             case "Agency":
-                return getFacets(readOnlyModel.getAgencyModel());
+                return getFacets(readOnlyModel.getAgencyModel(), clazz);
             case "Attribute":
-                return getFacets(readOnlyModel.getAttributeModel());
+                return getFacets(readOnlyModel.getAttributeModel(), clazz);
             case "Interval":
-                return getFacets(readOnlyModel.getIntervalModel());
+                return getFacets(readOnlyModel.getIntervalModel(), clazz);
             case "Location":
-                return getFacets(readOnlyModel.getLocationModel());
+                return getFacets(readOnlyModel.getLocationModel(), clazz);
             case "Product":
-                return getFacets(readOnlyModel.getProductModel());
+                return getFacets(readOnlyModel.getProductModel(), clazz);
             case "Relationship":
-                return getFacets(readOnlyModel.getRelationshipModel());
+                return getFacets(readOnlyModel.getRelationshipModel(), clazz);
             case "StatusCode":
-                return getFacets(readOnlyModel.getStatusCodeModel());
+                return getFacets(readOnlyModel.getStatusCodeModel(), clazz);
             case "Unit":
-                return getFacets(readOnlyModel.getAgencyModel());
+                return getFacets(readOnlyModel.getAgencyModel(), clazz);
         }
         throw new WebApplicationException(String.format("%s does not exist",
                                                         ruleformType),
                                           Status.NOT_FOUND);
     }
 
+    @Timed
     @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getInstance(@PathParam("ruleform-type") String ruleformType,
                                                                                                                                                 @PathParam("classifier") UUID relationship,
                                                                                                                                                 @PathParam("classification") UUID ruleform,
                                                                                                                                                 @PathParam("instance") UUID existential,
-                                                                                                                                                @QueryParam("frame") String frame) {
+                                                                                                                                                @QueryParam("select") List<String> selection) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
@@ -180,32 +287,33 @@ public class FacetResource extends TransactionalResource {
         }
         Facet<RuleForm, Network> node = new Facet<>(aspect, readOnlyModel,
                                                     uriInfo);
-        try {
-            return frame != null ? frame(URLDecoder.decode(frame, "UTF-8"),
-                                         node, instance)
-                                 : node.toInstance(instance, readOnlyModel,
-                                                   uriInfo);
-        } catch (UnsupportedEncodingException e) {
-            throw new WebApplicationException(String.format("frame was not encoded correctly: %s",
-                                                            frame),
-                                              Status.BAD_REQUEST);
-        }
+        Map<String, Object> object = traverse(instance, selection, node,
+                                              networkedModel);
+        object.put(Constants.CONTEXT, Facet.getContextIri(node, uriInfo));
+        object.put(Constants.TYPE, Constants.FACET);
+        object.put(Constants.TYPENAME, node.getTypeName());
+        return object;
     }
 
-    @Path("term/{ruleform-type}/{classifier}/{classification}/{term}")
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/@ruleform:{instance}")
+    @GET
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getRuleformQualifiedInstance(@PathParam("ruleform-type") String ruleformType,
+                                                                                                                                                                 @PathParam("classifier") UUID relationship,
+                                                                                                                                                                 @PathParam("classification") UUID ruleform,
+                                                                                                                                                                 @PathParam("instance") UUID existential,
+                                                                                                                                                                 @QueryParam("select") List<String> selection) {
+        return getInstance(ruleformType, relationship, ruleform, existential,
+                           selection);
+    }
+
+    @Timed
+    @Path("{ruleform-type}/{classifier}/{classification}/term/{term}")
     @GET
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getTerm(@PathParam("ruleform-type") String ruleformType,
                                                                                                                                             @PathParam("classifier") UUID relationship,
                                                                                                                                             @PathParam("classification") UUID ruleform,
-                                                                                                                                            @PathParam("term") String term,
-                                                                                                                                            @QueryParam("instance") String facetInstance) {
-        if (facetInstance != null) {
-            Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
-                                                ruleform);
-            Facet<RuleForm, Network> node = new Facet<>(aspect, readOnlyModel,
-                                                        uriInfo);
-            return node.getPropertyReference(term);
-        }
+                                                                                                                                            @PathParam("term") String term) {
         Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                             ruleform);
         Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
@@ -214,11 +322,11 @@ public class FacetResource extends TransactionalResource {
         clazz.put(Constants.ID, Facet.getTermIri(aspect, term, uriInfo));
         Attribute attribute = facet.getAttribute(term);
         if (attribute != null) {
-            clazz.put(Constants.TYPE,
-                      RuleformContext.getIri(attribute, uriInfo));
+            clazz.put(Constants.TYPE, RuleformContext.getIri(attribute));
         } else if (facet.getTerm(term) != null) {
             Aspect<?> targetAspect = facet.getTerm(term);
-            clazz.put(Constants.TYPE, Facet.getTypeIri(targetAspect, uriInfo));
+            clazz.put(Constants.TYPE,
+                      Facet.getFullFacetIri(targetAspect, uriInfo));
 
         } else if (facet.getRuleformTerm(term) != null) {
             clazz.put(Constants.TYPE, facet.getRuleformTerm(term).type);
@@ -230,75 +338,527 @@ public class FacetResource extends TransactionalResource {
         return clazz;
     }
 
-    @Path("type/{ruleform-type}/{classifier}/{classification}")
-    @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getType(@PathParam("ruleform-type") String ruleformType,
-                                                                                                                                            @PathParam("classifier") UUID relationship,
-                                                                                                                                            @PathParam("classification") UUID ruleform) {
-
-        Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
-                                            ruleform);
-        Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
-                                                     uriInfo);
-        Map<String, Object> type = facet.toContext();
-        type.put(Constants.ID, Facet.getTypeIri(aspect, uriInfo));
-        type.put(Constants.TYPE, "http://ultrastructure.me#Facet");
-        return type;
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void additionalAttributes(ExistentialRuleform instance, Facet facet,
+                                      NetworkedModel networkedModel,
+                                      Map<String, Object> object,
+                                      MultivaluedMap<String, String> parameters) {
+        if (!parameters.containsKey("a")) {
+            return;
+        }
+        for (String property : parameters.get("a")) {
+            switch (property) {
+                case "name":
+                    object.put(property, instance.getName());
+                    break;
+                case "description":
+                    object.put(property, instance.getDescription());
+                    break;
+                case "notes":
+                    object.put(property, instance.getNotes());
+                    break;
+                case "updatedBy":
+                    object.put(property,
+                               new RuleformContext(Agency.class,
+                                                   uriInfo).getShort(instance.getUpdatedBy(),
+                                                                     uriInfo));
+                    break;
+                default: {
+                    Attribute attribute = facet.getAttribute(property);
+                    if (attribute != null) {
+                        object.put(property, getAttribute(instance, attribute,
+                                                          networkedModel));
+                    } else {
+                        throw new WebApplicationException(String.format("%s not found on %s",
+                                                                        property,
+                                                                        facet));
+                    }
+                }
+            }
+        }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Map<String, Object> createContext(Aspect<?> aspect) {
-        return new Facet(aspect, readOnlyModel, uriInfo).toContext();
+        return new Facet(aspect, readOnlyModel, uriInfo).toContext(uriInfo);
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> frame(String frameDescription,
-                                                                                                                                           Facet<RuleForm, Network> node,
-                                                                                                                                           RuleForm instance) {
-        Map<?, ?> frame;
-        try {
-            frame = new ObjectMapper().readValue(frameDescription.getBytes(),
-                                                 Map.class);
-        } catch (IOException e) {
-            throw new WebApplicationException(String.format("Invalid frame: %s",
-                                                            frameDescription),
-                                              Status.BAD_REQUEST);
+    @SuppressWarnings("unchecked")
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Object getAgencyLocationProperty(RuleForm instance,
+                                                                                                 MultivaluedMap<String, String> parameters,
+                                                                                                 XDomainNetworkAuthorization<Agency, Location> auth,
+                                                                                                 List<PathSegment> traversal,
+                                                                                                 NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        Aspect<?> childAspect = auth.isForward() ? new Aspect<>(auth.getToRelationship(),
+                                                                auth.getToParent())
+                                                 : new Aspect<>(auth.getFromRelationship(),
+                                                                auth.getFromParent());
+        List<Object> result = new ArrayList<>();
+        if (auth.isForward()) {
+            @SuppressWarnings("rawtypes")
+            Facet<Location, ?> childFacet = new Facet(childAspect,
+                                                      readOnlyModel, uriInfo);
+            for (Location child : networkedModel.getAuthorizedLocations(instance,
+                                                                        auth.getConnection())) {
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(childFacet, child, traversal,
+                                           readOnlyModel.getLocationModel(),
+                                           uriInfo));
+                }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getLocationModel(), object,
+                                     parameters);
+            }
+        } else {
+            List<Agency> children = networkedModel.getAuthorizedAgencies(instance,
+                                                                         auth.getConnection());
+            @SuppressWarnings("rawtypes")
+            Facet<Agency, ?> childFacet = new Facet(childAspect, readOnlyModel,
+                                                    uriInfo);
+            for (Agency child : children) {
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(childFacet, child, traversal,
+                                           readOnlyModel.getAgencyModel(),
+                                           uriInfo));
+                }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getAgencyModel(), object,
+                                     parameters);
+            }
         }
-        List<Map<String, Object>> graph = traverse(instance, node, frame);
-        JsonLdOptions options = new JsonLdOptions();
-        options.setEmbed(true);
-        try {
-            return JsonLdProcessor.frame(graph, frame, options);
-        } catch (JsonLdError e) {
-            throw new WebApplicationException(String.format("Invalid frame %s",
-                                                            frame),
-                                              Status.BAD_REQUEST);
+        if (auth.getCardinality() == Cardinality.N) {
+            return result;
+        } else {
+            return result.isEmpty() ? null : result.get(0);
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        Map<String, Object> result = new TreeMap<>();
-        Map<String, Object> terms = new TreeMap<>();
-        terms.put("allInstances", Constants.ID);
-        terms.put("typeName",
-                  AttributeModelImpl.HTTP_WWW_W3_ORG_2001_XML_SCHEMA_TEXT);
-        result.put(Constants.CONTEXT, terms);
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Object getAgencyProductProperty(RuleForm instance,
+                                                                                                MultivaluedMap<String, String> parameters,
+                                                                                                XDomainNetworkAuthorization<Agency, Product> auth,
+                                                                                                List<PathSegment> traversal,
+                                                                                                NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        Aspect<RuleForm> childAspect = auth.isForward() ? new Aspect(auth.getToRelationship(),
+                                                                     auth.getToParent())
+                                                        : new Aspect(auth.getFromRelationship(),
+                                                                     auth.getFromParent());
+
+        List<Object> result = new ArrayList<>();
+        if (auth.isForward()) {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Facet<Product, ?> childFacet = new Facet(childAspect, readOnlyModel,
+                                                     uriInfo);
+            for (Product child : networkedModel.getAuthorizedProducts(instance,
+                                                                      auth.getConnection())) {
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(childFacet, child, traversal,
+                                           readOnlyModel.getProductModel(),
+                                           uriInfo));
+                }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getProductModel(), object,
+                                     parameters);
+            }
+        } else {
+            List<Agency> children = networkedModel.getAuthorizedAgencies(instance,
+                                                                         auth.getConnection());
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Facet<Agency, ?> childFacet = new Facet(childAspect, readOnlyModel,
+                                                    uriInfo);
+            for (Agency child : children) {
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(childFacet, child, traversal,
+                                           readOnlyModel.getAgencyModel(),
+                                           uriInfo));
+                }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getAgencyModel(), object,
+                                     parameters);
+            }
+        }
+        if (auth.getCardinality() == Cardinality.N) {
+            return result;
+        } else {
+            return result.isEmpty() ? null : result.get(0);
+        }
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Object getAttribute(RuleForm instance,
+                                                                                    Attribute attribute,
+                                                                                    NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        if (attribute.getIndexed()) {
+            @SuppressWarnings("unchecked")
+            List<AttributeValue<RuleForm>> attributeValues = (List<AttributeValue<RuleForm>>) networkedModel.getAttributeValues(instance,
+                                                                                                                                attribute);
+            List<Object> values = new ArrayList<>(attributeValues.size());
+            for (AttributeValue<RuleForm> value : attributeValues) {
+                values.add(value.getValue());
+            }
+            return values;
+        } else {
+            return networkedModel.getAttributeValue(instance,
+                                                    attribute).getValue();
+        }
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Object getChild(RuleForm instance,
+                                                                                MultivaluedMap<String, String> parameters,
+                                                                                NetworkAuthorization<RuleForm> auth,
+                                                                                List<PathSegment> traversal,
+                                                                                NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        Aspect<RuleForm> childAspect = new Aspect<>(auth.getAuthorizedRelationship(),
+                                                    auth.getAuthorizedParent());
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        Facet<RuleForm, ?> childFacet = new Facet(childAspect, readOnlyModel,
+                                                  uriInfo);
+        if (auth.getCardinality() == Cardinality.N) {
+            List<Object> result = new ArrayList<>();
+            // TODO handle inferred as well as immediate
+            for (RuleForm child : networkedModel.getImmediateChildren(instance,
+                                                                      auth.getChildRelationship())) {
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(childFacet, child, traversal,
+                                           networkedModel, uriInfo));
+                }
+                result.add(object);
+                additionalAttributes(child, childFacet, networkedModel, object,
+                                     parameters);
+            }
+            return result;
+        } else {
+            RuleForm immediateChild = networkedModel.getImmediateChild(instance,
+                                                                       auth.getChildRelationship());
+            if (immediateChild == null) {
+                return null;
+            }
+            Map<String, Object> object = childFacet.getShort(immediateChild,
+                                                             uriInfo);
+            if (!traversal.isEmpty()) {
+                object = (Map<String, Object>) childFacet.getShort(immediateChild,
+                                                                   uriInfo);
+                object.put(traversal.get(0).getPath(),
+                           getProperty(childFacet, immediateChild, traversal,
+                                       networkedModel, uriInfo));
+                additionalAttributes(immediateChild, childFacet, networkedModel,
+                                     object, parameters);
+            }
+            additionalAttributes(immediateChild, childFacet, networkedModel,
+                                 object, parameters);
+            return object;
+
+        }
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Map<String, Object> getFacets(NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
+                                                                                              Class<?> clazz) {
+
+        Map<String, Object> context = new TreeMap<>();
+        context.put(Constants.VOCAB,
+                    uriInfo.getBaseUriBuilder().path(FacetResource.class).build());
+
+        Map<String, Object> returned = new TreeMap<>();
+
+        returned.put(Constants.CONTEXT, context);
+        returned.put(Constants.ID, Facet.getFacetsIri(clazz, uriInfo));
+
         List<Map<String, Object>> facets = new ArrayList<>();
-        result.put(Constants.GRAPH, facets);
+        returned.put(Constants.GRAPH, facets);
+
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
-            Map<String, Object> ctx = new TreeMap<>();
-            ctx.put("typeName",
-                    String.format("%s:%s", aspect.getClassifier().getName(),
-                                  aspect.getClassification().getName()));
-            ctx.put(Constants.ID, Facet.getTypeIri(aspect, uriInfo));
-            ctx.put("allInstances", Facet.getAllInstancesIri(aspect, uriInfo));
-            facets.add(ctx);
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            Facet<RuleForm, ?> facet = new Facet(aspect, readOnlyModel,
+                                                 uriInfo);
+            Map<String, Object> obj = new TreeMap<>();
+            obj.put(Constants.ID, Facet.getFacetIri(aspect));
+            obj.put(Constants.TYPENAME, facet.getTypeName());
+            facets.add(obj);
         }
-        return result;
+
+        return returned;
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<Map<String, Object>> traverse(RuleForm instance,
-                                                                                                                                                    Facet<RuleForm, Network> node,
-                                                                                                                                                    Map<?, ?> frame) {
-        return Arrays.asList(node.toInstance(instance, readOnlyModel, uriInfo));
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Object getProductLocationProperty(RuleForm instance,
+                                                                                                  MultivaluedMap<String, String> parameters,
+                                                                                                  XDomainNetworkAuthorization<Product, Location> auth,
+                                                                                                  List<PathSegment> traversal,
+                                                                                                  NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        Aspect<?> childAspect = auth.isForward() ? new Aspect<>(auth.getToRelationship(),
+                                                                auth.getToParent())
+                                                 : new Aspect<>(auth.getFromRelationship(),
+                                                                auth.getFromParent());
+        List<Object> result = new ArrayList<>();
+        if (auth.isForward()) {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Facet<Location, ?> childFacet = new Facet(childAspect,
+                                                      readOnlyModel, uriInfo);
+            for (Location child : networkedModel.getAuthorizedLocations(instance,
+                                                                        auth.getConnection())) {
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(childFacet, child, traversal,
+                                           readOnlyModel.getLocationModel(),
+                                           uriInfo));
+                }
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getLocationModel(), object,
+                                     parameters);
+                result.add(object);
+            }
+        } else {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Facet<Product, ?> childFacet = new Facet(childAspect, readOnlyModel,
+                                                     uriInfo);
+            List<Product> children = networkedModel.getAuthorizedProducts(instance,
+                                                                          auth.getConnection());
+            for (Product child : children) {
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(childFacet, child, traversal,
+                                           readOnlyModel.getProductModel(),
+                                           uriInfo));
+                }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getProductModel(), object,
+                                     parameters);
+            }
+        }
+        if (auth.getCardinality() == Cardinality.N) {
+            return result;
+        } else {
+            return result.isEmpty() ? null : result.get(0);
+        }
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Object getProductRelationshipProperty(RuleForm instance,
+                                                                                                      MultivaluedMap<String, String> parameters,
+                                                                                                      XDomainNetworkAuthorization<Product, Relationship> auth,
+                                                                                                      List<PathSegment> traversal,
+                                                                                                      NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        Aspect<?> childAspect = auth.isForward() ? new Aspect<>(auth.getToRelationship(),
+                                                                auth.getToParent())
+                                                 : new Aspect<>(auth.getFromRelationship(),
+                                                                auth.getFromParent());
+        List<Object> result = new ArrayList<>();
+        if (auth.isForward()) {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Facet<Relationship, ?> childFacet = new Facet(childAspect,
+                                                          readOnlyModel,
+                                                          uriInfo);
+            for (Relationship child : networkedModel.getAuthorizedRelationships(instance,
+                                                                                auth.getConnection())) {
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(childFacet, child, traversal,
+                                           readOnlyModel.getRelationshipModel(),
+                                           uriInfo));
+                }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getRelationshipModel(),
+                                     object, parameters);
+            }
+        } else {
+            List<Product> children = networkedModel.getAuthorizedProducts(instance,
+                                                                          auth.getConnection());
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Facet<Product, ?> childFacet = new Facet(childAspect, readOnlyModel,
+                                                     uriInfo);
+            for (Product child : children) {
+                Map<String, Object> object = childFacet.getShort(child,
+                                                                 uriInfo);
+                if (!traversal.isEmpty()) {
+                    object = (Map<String, Object>) childFacet.getShort(child,
+                                                                       uriInfo);
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(childFacet, child, traversal,
+                                           readOnlyModel.getProductModel(),
+                                           uriInfo));
+                }
+                result.add(object);
+                additionalAttributes(child, childFacet,
+                                     readOnlyModel.getProductModel(), object,
+                                     parameters);
+            }
+        }
+        if (auth.getCardinality() == Cardinality.N) {
+            return result;
+        } else {
+            return result.isEmpty() ? null : result.get(0);
+        }
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Object getProperty(Facet<RuleForm, ?> facet,
+                                                                                   RuleForm instance,
+                                                                                   List<PathSegment> traversal,
+                                                                                   NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
+                                                                                   UriInfo uriInfo) {
+        String property = traversal.get(0).getPath();
+        MultivaluedMap<String, String> parameters = traversal.isEmpty() ? new MultivaluedHashMap<>()
+                                                                        : traversal.get(0).getMatrixParameters();
+        List<PathSegment> next = traversal.subList(1, traversal.size());
+        switch (property) {
+            case "name":
+                return instance.getName();
+            case "description":
+                return instance.getDescription();
+            case "notes":
+                return instance.getNotes();
+            case "updatedBy":
+                return new RuleformContext(Agency.class,
+                                           uriInfo).getShort(instance.getUpdatedBy(),
+                                                             uriInfo);
+        }
+        Attribute attribute = facet.getAttribute(property);
+        if (attribute != null) {
+            return getAttribute(instance, attribute, networkedModel);
+        }
+        NetworkAuthorization<RuleForm> auth = facet.getNetworkAuth(property);
+        if (auth != null) {
+            return getChild(instance, parameters, auth, next, networkedModel);
+        }
+        XDomainNetworkAuthorization<Agency, Location> agencyLocationAuth = facet.getAgencyLocationAuth(property);
+        if (agencyLocationAuth != null) {
+            return getAgencyLocationProperty(instance, parameters,
+                                             agencyLocationAuth, next,
+                                             networkedModel);
+        }
+        XDomainNetworkAuthorization<Agency, Product> agencyProductAuth = facet.getAgencyProductAuth(property);
+        if (agencyProductAuth != null) {
+            return getAgencyProductProperty(instance, parameters,
+                                            agencyProductAuth, next,
+                                            networkedModel);
+        }
+        XDomainNetworkAuthorization<Product, Location> productLocationAuth = facet.getProductLocationAuth(property);
+        if (productLocationAuth != null) {
+            return getProductLocationProperty(instance, parameters,
+                                              productLocationAuth, next,
+                                              networkedModel);
+        }
+        XDomainNetworkAuthorization<Product, Relationship> productRelationshipAuth = facet.getProductRelationshipAuth(property);
+        if (productRelationshipAuth != null) {
+            return getProductRelationshipProperty(instance, parameters,
+                                                  productRelationshipAuth, next,
+                                                  networkedModel);
+        }
+        throw new WebApplicationException(String.format("%s is not a property of %s:%s",
+                                                        property,
+                                                        facet.getClassifier(),
+                                                        facet.getClassification()),
+                                          Status.NOT_FOUND);
+    }
+
+    private List<PathSegment> selectFrom(String query) {
+        try {
+            query = URLDecoder.decode(query, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
+        List<PathSegment> selection = new ArrayList<>();
+        for (StringTokenizer tokes = new StringTokenizer(query,
+                                                         "/"); tokes.hasMoreTokens();) {
+            String segment = tokes.nextToken().trim();
+            if (segment.isEmpty()) {
+                continue;
+            }
+            MultivaluedHashMap<String, String> matrixParams = new MultivaluedHashMap<String, String>(0);
+            String path;
+            if (segment.contains(";")) {
+                StringTokenizer split = new StringTokenizer(segment, ";");
+                path = segment.startsWith(";") ? "" : split.nextToken();
+                while (split.hasMoreTokens()) {
+                    String[] param = split.nextToken().split("=");
+                    matrixParams.computeIfAbsent(param[0],
+                                                 key -> new ArrayList<>(1)).add(param[1]);
+                }
+            } else {
+                path = segment;
+            }
+            selection.add(new PathSegment() {
+
+                @Override
+                public MultivaluedMap<String, String> getMatrixParameters() {
+                    return matrixParams;
+                }
+
+                @Override
+                public String getPath() {
+                    return path;
+                }
+
+                @Override
+                public String toString() {
+                    return String.format("%s [%s]", path, matrixParams);
+                }
+            });
+        }
+
+        return selection;
+    }
+
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> traverse(RuleForm instance,
+                                                                                                                                              List<String> selection,
+                                                                                                                                              Facet<RuleForm, Network> node,
+                                                                                                                                              NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        if (selection == null || selection.isEmpty()) {
+            return node.toCompactInstance(instance, readOnlyModel, uriInfo);
+        } else {
+            Map<String, Object> object = node.getShort(instance, uriInfo);
+            for (String query : selection) {
+                List<PathSegment> traversal = selectFrom(query);
+                MultivaluedMap<String, String> parameters = traversal.get(0).getMatrixParameters();
+                if (!traversal.get(0).getPath().isEmpty()) {
+                    object.put(traversal.get(0).getPath(),
+                               getProperty(node, instance, traversal,
+                                           networkedModel, uriInfo));
+                } else {
+                    additionalAttributes(instance, node, networkedModel, object,
+                                         parameters);
+                }
+            }
+            return object;
+        }
     }
 }

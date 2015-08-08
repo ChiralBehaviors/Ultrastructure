@@ -18,6 +18,10 @@
         </dependency>
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-annotation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-healthchecks</artifactId>
         </dependency>
         <dependency>
@@ -27,6 +31,7 @@
         <dependency>
             <groupId>com.github.jsonld-java</groupId>
             <artifactId>jsonld-java</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.dropwizard</groupId>
@@ -74,6 +79,11 @@
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-common</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

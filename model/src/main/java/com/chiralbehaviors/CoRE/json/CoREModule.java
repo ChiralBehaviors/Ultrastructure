@@ -20,7 +20,11 @@
 package com.chiralbehaviors.CoRE.json;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 
 /**
  * A jackson module for registering serializers and deserializers.
@@ -41,6 +45,11 @@ public class CoREModule extends SimpleModule {
 
         context.setMixInAnnotations(Ruleform.class,
                                     PolymorphicRuleformMixin.class);
+        ObjectMapper objectMapper = (ObjectMapper) context.getOwner();
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        Hibernate4Module module = new Hibernate4Module();
+        module.enable(Feature.FORCE_LAZY_LOADING);
+        objectMapper.registerModule(module);
         super.setupModule(context);
     }
 }

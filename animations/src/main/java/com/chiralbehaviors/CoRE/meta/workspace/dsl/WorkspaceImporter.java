@@ -247,6 +247,14 @@ public class WorkspaceImporter {
                                                                                                                       Function<Agency, AttributeAuthorization<T, Network>> attrAuth) {
         authorization.setClassifier(resolve(facet.classifier));
         authorization.setClassification(resolve(facet.classification));
+        if (facet.name != null) {
+            authorization.setName(stripQuotes(facet.name.getText()));
+        } else {
+            authorization.setName(authorization.getClassification().getName());
+        }
+        if (facet.description != null) {
+            authorization.setNotes(stripQuotes(facet.name.getText()));
+        }
         model.getEntityManager().persist(authorization);
         workspace.add(authorization);
         ClassifiedAttributesContext classifiedAttributes = facet.classifiedAttributes();

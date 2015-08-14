@@ -359,6 +359,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
 
+    NetworkAuthorization<RuleForm> getFacetDeclaration(Aspect<RuleForm> aspect);
+
     /**
      * Answer the non inferred child that is connected to the parent via the
      * relationship

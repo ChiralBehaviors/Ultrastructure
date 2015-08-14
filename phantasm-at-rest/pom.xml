@@ -12,6 +12,10 @@
     <description>A rest API for the Ultrastructure Phantasms</description>
     <dependencies>
         <dependency>
+            <groupId>graphql-java</groupId>
+            <artifactId>graphql-java</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-assets</artifactId>
             <scope>test</scope>

@@ -46,11 +46,16 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
 import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
@@ -58,7 +63,9 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
 import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
@@ -149,6 +156,7 @@ public class Bootstrap {
         populateRelationships(core, kernelWorkspace);
         populateStatusCodes(core, kernelWorkspace);
         populateUnits(core, kernelWorkspace);
+        populateAnyFacets(core, kernelWorkspace);
         connection.commit();
         em.getTransaction().commit();
         ModelImpl model = new ModelImpl(em.getEntityManagerFactory());
@@ -158,6 +166,68 @@ public class Bootstrap {
         model.getEntityManager().getTransaction().commit();
         model.getEntityManager().close();
         em.getTransaction().begin();
+    }
+
+    /**
+     * @param core
+     * @param kernelWorkspace
+     */
+    private void populateAnyFacets(Agency core, Product kernelWorkspace) {
+        AgencyNetworkAuthorization anyAgency = new AgencyNetworkAuthorization(core);
+        anyAgency.setClassifier(find(WellKnownRelationship.ANY));
+        anyAgency.setClassification(find(WellKnownAgency.ANY));
+        anyAgency.setName("AnyAgency");
+        anyAgency.setNotes("The facet that represents any agency");
+        populate(anyAgency, core, kernelWorkspace);
+
+        AttributeNetworkAuthorization anyAttribute = new AttributeNetworkAuthorization(core);
+        anyAttribute.setClassifier(find(WellKnownRelationship.ANY));
+        anyAttribute.setClassification(find(WellKnownAttribute.ANY));
+        anyAttribute.setName("AnyAttribute");
+        anyAttribute.setNotes("The facet that represents any attribute");
+        populate(anyAttribute, core, kernelWorkspace);
+
+        IntervalNetworkAuthorization anyInterval = new IntervalNetworkAuthorization(core);
+        anyInterval.setClassifier(find(WellKnownRelationship.ANY));
+        anyInterval.setClassification(find(WellKnownInterval.ANY));
+        anyInterval.setName("AnyInterval");
+        anyInterval.setNotes("The facet that represents any interval");
+        populate(anyInterval, core, kernelWorkspace);
+
+        LocationNetworkAuthorization anyLocation = new LocationNetworkAuthorization(core);
+        anyLocation.setClassifier(find(WellKnownRelationship.ANY));
+        anyLocation.setClassification(find(WellKnownLocation.ANY));
+        anyLocation.setName("AnyLocation");
+        anyLocation.setNotes("The facet that represents any location");
+        populate(anyLocation, core, kernelWorkspace);
+
+        ProductNetworkAuthorization anyProduct = new ProductNetworkAuthorization(core);
+        anyProduct.setClassifier(find(WellKnownRelationship.ANY));
+        anyProduct.setClassification(find(WellKnownProduct.ANY));
+        anyProduct.setName("AnyProduct");
+        anyProduct.setNotes("The facet that represents any product");
+        populate(anyProduct, core, kernelWorkspace);
+
+        RelationshipNetworkAuthorization anyRelationship = new RelationshipNetworkAuthorization(core);
+        anyRelationship.setClassifier(find(WellKnownRelationship.ANY));
+        anyRelationship.setClassification(find(WellKnownRelationship.ANY));
+        populate(anyRelationship, core, kernelWorkspace);
+        anyRelationship.setName("AnyRelationship");
+        anyRelationship.setNotes("The facet that represents any relationship");
+
+        StatusCodeNetworkAuthorization anyStatusCode = new StatusCodeNetworkAuthorization(core);
+        anyStatusCode.setClassifier(find(WellKnownRelationship.ANY));
+        anyStatusCode.setClassification(find(WellKnownStatusCode.ANY));
+        anyStatusCode.setName("AnyStatusCode");
+        anyAgency.setNotes("The facet that represents any statusCode");
+        populate(anyStatusCode, core, kernelWorkspace);
+
+        UnitNetworkAuthorization anyUnit = new UnitNetworkAuthorization(core);
+        anyUnit.setClassifier(find(WellKnownRelationship.ANY));
+        anyUnit.setClassification(find(WellKnownUnit.ANY));
+        anyUnit.setName("AnyUnit");
+        anyUnit.setNotes("The facet that represents any unit");
+        populate(anyUnit, core, kernelWorkspace);
     }
 
     private void createKernelWorkspace(Agency core, Product kernelWorkspace,

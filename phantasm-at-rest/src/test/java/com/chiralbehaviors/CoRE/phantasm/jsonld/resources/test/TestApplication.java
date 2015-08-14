@@ -25,10 +25,10 @@ import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.FacetResource;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceMediatedResource;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.WorkspaceResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.Application;

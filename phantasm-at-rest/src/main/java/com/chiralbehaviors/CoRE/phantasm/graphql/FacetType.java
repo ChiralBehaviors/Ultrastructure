@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import static com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchemaBuilder.ctx;
 import static graphql.Scalars.GraphQLBoolean;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLInt;
@@ -145,6 +146,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             builder.field(newFieldDefinition().type(typeOf(attribute))
                                               .name(attribute.getName())
                                               .description(attribute.getDescription())
+                                              .dataFetcher(env -> ctx(env).getAttributeValue(env,
+                                                                                             attribute,
+                                                                                             facet))
                                               .build());
         }
     }

@@ -25,6 +25,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
@@ -43,17 +44,37 @@ public class WorkspaceContext {
         this.model = model;
     }
 
+    /**
+     * @param attribute
+     * @param facet
+     * @return
+     */
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object getAttributeValue(DataFetchingEnvironment env,
+                                                                                                                                         Attribute attribute,
+                                                                                                                                         NetworkAuthorization<RuleForm> facet) {
+        @SuppressWarnings("unchecked")
+        RuleForm instance = (RuleForm) env.getSource();
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
+                                                                .getNetworkedModel(facet.getClassification());
+        return networkedModel.getAttributeValue(instance, attribute)
+                             .getValue();
+    }
+
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> RuleForm getInstance(DataFetchingEnvironment env,
                                                                                                                                      NetworkAuthorization<RuleForm> facet) {
-        return model.get().getNetworkedModel(facet.getClassification()).find(UUID.fromString(env.getArgument("id")));
+        return model.get()
+                    .getNetworkedModel(facet.getClassification())
+                    .find(UUID.fromString(env.getArgument("id")));
 
     }
 
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getInstances(DataFetchingEnvironment context,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getInstances(DataFetchingEnvironment env,
                                                                                                                                             NetworkAuthorization<RuleForm> facet) {
 
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get().getNetworkedModel(facet.getClassification());
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
+                                                                .getNetworkedModel(facet.getClassification());
         return networkedModel.getChildren(facet.getClassification(),
-                                          facet.getClassifier().getInverse());
+                                          facet.getClassifier()
+                                               .getInverse());
     }
 }

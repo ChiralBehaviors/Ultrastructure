@@ -53,18 +53,22 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     @BeforeClass
     public static void initialize() throws Exception {
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
         WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
-        em.getTransaction().commit();
+        em.getTransaction()
+          .commit();
     }
 
     protected WorkspaceScope scope;
 
     @Before
     public void loadWorkspace() {
-        em.getTransaction().begin();
-        scope = model.getWorkspaceModel().getScoped(Workspace.uuidOf(TEST_SCENARIO_URI));
+        em.getTransaction()
+          .begin();
+        scope = model.getWorkspaceModel()
+                     .getScoped(Workspace.uuidOf(TEST_SCENARIO_URI));
     }
 
     @Test
@@ -72,33 +76,43 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         thing1.setAliases(new String[] { "smith", "jones" });
-        thing1.setURI("http://example.com");
+        String uri = "http://example.com";
+        thing1.setURI(uri);
         thing1.setThing2(thing2);
         WorkspaceSchemaBuilder wspSchema = new WorkspaceSchemaBuilder(TEST_SCENARIO_URI,
                                                                       model);
         GraphQLSchema schema = wspSchema.build();
         WorkspaceContext ctx = new WorkspaceContext(() -> model);
         Map<String, Object> result = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name}}",
-                                                                               thing1.getRuleform().getId()),
-                                                                 ctx).getData();
+                                                                               thing1.getRuleform()
+                                                                                     .getId()),
+                                                                 ctx)
+                                                        .getData();
 
         assertNotNull(result);
         @SuppressWarnings("unchecked")
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
-        assertEquals(thing1.getRuleform().getId().toString(),
+        assertEquals(thing1.getRuleform()
+                           .getId()
+                           .toString(),
                      thing1Result.get("id"));
 
-        result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name}}",
-                                                           thing1.getRuleform().getId()),
-                                             ctx).getData();
+        result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
+                                                           thing1.getRuleform()
+                                                                 .getId()),
+                                             ctx)
+                                    .getData();
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("InstancesOfThing1");
         assertEquals(1, instances.size());
         Map<String, Object> instance = instances.get(0);
         assertEquals(thing1.getName(), instance.get("name"));
-        assertEquals(thing1.getRuleform().getId().toString(),
+        assertEquals(thing1.getRuleform()
+                           .getId()
+                           .toString(),
                      instance.get("id"));
+        assertEquals(uri, instance.get("URI"));
     }
 }

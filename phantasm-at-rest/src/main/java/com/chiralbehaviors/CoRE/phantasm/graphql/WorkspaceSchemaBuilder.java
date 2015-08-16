@@ -20,6 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
+import static graphql.schema.GraphQLObjectType.newObject;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -34,29 +37,30 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 
 import graphql.schema.GraphQLObjectType;
+import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
 
 /**
  * @author hhildebrand
  *
  */
-public class WorkspaceSchema {
+public class WorkspaceSchemaBuilder {
     private final Model                                         model;
     private final Map<String, GraphQLSchema>                    queries    = new HashMap<>();
     private final Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved   = new HashMap<>();
     private final Deque<NetworkAuthorization<?>>                unresolved = new ArrayDeque<>();
     private final Workspace                                     workspace;
 
-    public WorkspaceSchema(String urn, Model model) {
+    public WorkspaceSchemaBuilder(String urn, Model model) {
         this(Workspace.uuidOf(urn), model);
     }
 
-    public WorkspaceSchema(UUID uuid, Model model) {
+    public WorkspaceSchemaBuilder(UUID uuid, Model model) {
         this.model = model;
         workspace = model.getWorkspaceModel().getScoped(uuid).getWorkspace();
     }
 
-    public void build() {
+    public GraphQLSchema build() {
         initialState();
         while (!unresolved.isEmpty()) {
             NetworkAuthorization<?> facet = unresolved.pop();
@@ -69,13 +73,15 @@ public class WorkspaceSchema {
                 }
             }
         }
+        Builder topLevelQuery = newObject().name(workspace.getDefiningProduct().getName()).description(String.format("Top level query for %s",
+                                                                                                                     workspace.getDefiningProduct().getName()));
         resolved.values().forEach(facet -> {
             Set<NetworkAuthorization<?>> traversed = new HashSet<>();
             GraphQLObjectType queryType = facet.build(resolved, traversed);
-            queries.put(facet.getName(),
-                        GraphQLSchema.newSchema().query(queryType).build());
+            topLevelQuery.field(newFieldDefinition().name(facet.getName()).type(queryType).build());
         });
         clear();
+        return GraphQLSchema.newSchema().query(topLevelQuery.build()).build();
     }
 
     private void clear() {
@@ -85,7 +91,6 @@ public class WorkspaceSchema {
 
     private void initialState() {
         clear();
-        queries.clear();
         Product definingProduct = workspace.getDefiningProduct();
         unresolved.addAll(model.getAgencyModel().getFacets(definingProduct));
         unresolved.addAll(model.getAttributeModel().getFacets(definingProduct));

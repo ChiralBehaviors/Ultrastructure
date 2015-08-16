@@ -65,9 +65,9 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         thing1.setURI(uri);
         thing1.setThing2(thing2);
         thing2.addThing3(thing3);
-        WorkspaceSchemaBuilder wspSchema = new WorkspaceSchemaBuilder(TEST_SCENARIO_URI,
+        WorkspaceSchemaBuilder schemaBuilder = new WorkspaceSchemaBuilder(TEST_SCENARIO_URI,
                                                                       model);
-        GraphQLSchema schema = wspSchema.build();
+        GraphQLSchema schema = schemaBuilder.build();
         WorkspaceContext ctx = new WorkspaceContext(() -> model);
         ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name}}}}",
                                                                             thing1.getRuleform()

@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphQl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,9 @@ import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchemaBuilder;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.ResourcesTest;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 
+import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 
@@ -55,19 +58,26 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                                           model);
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
+                                        "a favorite thing");
         thing1.setAliases(new String[] { "smith", "jones" });
         String uri = "http://example.com";
         thing1.setURI(uri);
         thing1.setThing2(thing2);
+        thing2.addThing3(thing3);
         WorkspaceSchemaBuilder wspSchema = new WorkspaceSchemaBuilder(TEST_SCENARIO_URI,
                                                                       model);
         GraphQLSchema schema = wspSchema.build();
         WorkspaceContext ctx = new WorkspaceContext(() -> model);
-        Map<String, Object> result = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name}}}",
-                                                                               thing1.getRuleform()
-                                                                                     .getId()),
-                                                                 ctx)
-                                                        .getData();
+        ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name}}}}",
+                                                                            thing1.getRuleform()
+                                                                                  .getId()),
+                                                              ctx);
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        Map<String, Object> result = execute.getData();
 
         assertNotNull(result);
         @SuppressWarnings("unchecked")
@@ -87,6 +97,16 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                            .getId()
                            .toString(),
                      thing2Result.get("id"));
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> thing3s = (List<Map<String, Object>>) thing2Result.get("thing3s");
+        assertNotNull(thing3s);
+        assertEquals(1, thing3s.size());
+        Map<String, Object> thing3Result = thing3s.get(0);
+        assertEquals(thing3.getName(), thing3Result.get("name"));
+        assertEquals(thing3.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing3Result.get("id"));
 
         result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
                                                            thing1.getRuleform()

@@ -95,6 +95,8 @@ public class ResourcesTest extends AbstractModelTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFacetNode() throws Exception {
+        em.getTransaction()
+          .begin();
         URL url;
         Map<String, Object> jsonObject;
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
@@ -140,6 +142,8 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testSelect() throws Exception {
+        em.getTransaction()
+          .begin();
         URL url;
         Object jsonObject;
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
@@ -191,6 +195,8 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testInstancesSelect() throws Exception {
+        em.getTransaction()
+          .begin();
         URL url;
         Object jsonObject;
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");

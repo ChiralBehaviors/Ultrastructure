@@ -25,11 +25,16 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -96,5 +101,59 @@ public class WorkspaceContext {
                                                                 .getNetworkedModel(auth.getClassification());
         return networkedModel.getImmediateChild(instance,
                                                 auth.getChildRelationship());
+    }
+
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object getSingularXdChild(DataFetchingEnvironment env,
+                                                                                                                                          NetworkAuthorization<RuleForm> facet,
+                                                                                                                                          XDomainNetworkAuthorization<?, ?> auth,
+                                                                                                                                          NetworkAuthorization<?> child) {
+        @SuppressWarnings("unchecked")
+        RuleForm instance = (RuleForm) env.getSource();
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
+                                                                .getNetworkedModel(facet.getClassification());
+        if (child.getClassification() instanceof Agency) {
+            return networkedModel.getAuthorizedAgency(instance,
+                                                      auth.getConnection());
+        } else if (child.getClassification() instanceof Location) {
+            return networkedModel.getAuthorizedLocation(instance,
+                                                        auth.getConnection());
+        } else if (child.getClassification() instanceof Product) {
+            return networkedModel.getAuthorizedProduct(instance,
+                                                       auth.getConnection());
+        } else if (child.getClassification() instanceof Relationship) {
+            return networkedModel.getAuthorizedRelationship(instance,
+                                                            auth.getConnection());
+        } else {
+            throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
+                                                             facet.getClassification(),
+                                                             child.getClassification()));
+        }
+    }
+
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<?> getXdChildren(DataFetchingEnvironment env,
+                                                                                                                                      NetworkAuthorization<RuleForm> facet,
+                                                                                                                                      XDomainNetworkAuthorization<?, ?> auth,
+                                                                                                                                      NetworkAuthorization<?> child) {
+        @SuppressWarnings("unchecked")
+        RuleForm instance = (RuleForm) env.getSource();
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
+                                                                .getNetworkedModel(facet.getClassification());
+        if (child.getClassification() instanceof Agency) {
+            return networkedModel.getAuthorizedAgencies(instance,
+                                                        auth.getConnection());
+        } else if (child.getClassification() instanceof Location) {
+            return networkedModel.getAuthorizedLocations(instance,
+                                                         auth.getConnection());
+        } else if (child.getClassification() instanceof Product) {
+            return networkedModel.getAuthorizedProducts(instance,
+                                                        auth.getConnection());
+        } else if (child.getClassification() instanceof Relationship) {
+            return networkedModel.getAuthorizedRelationships(instance,
+                                                             auth.getConnection());
+        } else {
+            throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
+                                                             facet.getClassification(),
+                                                             child.getClassification()));
+        }
     }
 }

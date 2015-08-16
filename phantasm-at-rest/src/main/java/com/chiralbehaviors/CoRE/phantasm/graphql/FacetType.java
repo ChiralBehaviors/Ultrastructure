@@ -30,7 +30,6 @@ import static graphql.schema.GraphQLObjectType.newObject;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -86,13 +85,11 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                              .description(facet.getNotes());
     }
 
-    public GraphQLObjectType build(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
-                                   Set<NetworkAuthorization<?>> traversed) {
-        traversed.add(facet);
+    public GraphQLObjectType build() {
         buildAttributes();
         buildRuleformAttributes();
-        buildNetworkAuths(resolved, traversed);
-        buildXdAuths(resolved, traversed);
+        buildNetworkAuths();
+        buildXdAuths();
         return builder.build();
     }
 
@@ -129,15 +126,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private void buildAgencyAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
-                                  Set<NetworkAuthorization<?>> traversed) {
+    private void buildAgencyAuths() {
         AgencyModel agencyModel = model.getAgencyModel();
         Aspect<Agency> aspect = (Aspect<Agency>) this;
         for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect)) {
-            buildXdAuth(auth, resolveTo(auth), resolved, traversed);
+            buildXdAuth(auth, resolveTo(auth));
         }
         for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect)) {
-            buildXdAuth(auth, resolveTo(auth), resolved, traversed);
+            buildXdAuth(auth, resolveTo(auth));
         }
     }
 
@@ -154,35 +150,27 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
     }
 
-    private void buildLocationAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
-                                    Set<NetworkAuthorization<?>> traversed) {
+    private void buildLocationAuths() {
         LocationModel locationModel = model.getLocationModel();
         @SuppressWarnings("unchecked")
         Aspect<Location> aspect = (Aspect<Location>) this;
         for (AgencyLocationAuthorization auth : locationModel.getLocationAgencyAuths(aspect)) {
-            buildXdAuth(auth, resolveFrom(auth), resolved, traversed);
+            buildXdAuth(auth, resolveFrom(auth));
         }
         for (ProductLocationAuthorization auth : locationModel.getLocationProductAuths(aspect)) {
-            buildXdAuth(auth, resolveFrom(auth), resolved, traversed);
+            buildXdAuth(auth, resolveFrom(auth));
         }
     }
 
-    private void buildNetworkAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
-                                   Set<NetworkAuthorization<?>> traversed) {
+    private void buildNetworkAuths() {
         for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this)) {
             String term = auth.getName();
             if (term == null) {
                 continue;
             }
             DataFetcher dataFetcher;
-            GraphQLOutputType type;
             NetworkAuthorization<RuleForm> child = resolve(auth);
-            if (traversed.contains(child)) {
-                type = new GraphQLTypeReference(child.getName());
-            } else {
-                type = resolved.get(child)
-                               .build(resolved, traversed);
-            }
+            GraphQLOutputType type = new GraphQLTypeReference(child.getName());
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
                 type = new GraphQLList(type);
@@ -198,29 +186,27 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         }
     }
 
-    private void buildProductAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
-                                   Set<NetworkAuthorization<?>> traversed) {
+    private void buildProductAuths() {
         ProductModel productModel = model.getProductModel();
         @SuppressWarnings("unchecked")
         Aspect<Product> aspect = (Aspect<Product>) this;
         for (ProductLocationAuthorization auth : productModel.getProductLocationAuths(aspect)) {
-            buildXdAuth(auth, resolveTo(auth), resolved, traversed);
+            buildXdAuth(auth, resolveTo(auth));
         }
         for (ProductRelationshipAuthorization auth : productModel.getProductRelationshipAuths(aspect)) {
-            buildXdAuth(auth, resolveTo(auth), resolved, traversed);
+            buildXdAuth(auth, resolveTo(auth));
         }
         for (AgencyProductAuthorization auth : productModel.getProductAgencyAuths(aspect)) {
-            buildXdAuth(auth, resolveFrom(auth), resolved, traversed);
+            buildXdAuth(auth, resolveFrom(auth));
         }
     }
 
-    private void buildRelationshipAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
-                                        Set<NetworkAuthorization<?>> traversed) {
+    private void buildRelationshipAuths() {
         RelationshipModel agencyModel = model.getRelationshipModel();
         @SuppressWarnings("unchecked")
         Aspect<Relationship> aspect = (Aspect<Relationship>) this;
         for (ProductRelationshipAuthorization auth : agencyModel.getRelationshipProductAuths(aspect)) {
-            buildXdAuth(auth, resolveFrom(auth), resolved, traversed);
+            buildXdAuth(auth, resolveFrom(auth));
         }
     }
 
@@ -241,37 +227,35 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     private void buildXdAuth(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
-                             NetworkAuthorization<?> child,
-                             Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
-                             Set<NetworkAuthorization<?>> traversed) {
-        GraphQLOutputType type;
-        if (traversed.contains(child)) {
-            type = new GraphQLTypeReference(child.getName());
-        } else {
-            type = resolved.get(child)
-                           .build(resolved, traversed);
-        }
+                             NetworkAuthorization<?> child) {
+        DataFetcher dataFetcher;
+        GraphQLOutputType type = new GraphQLTypeReference(child.getName());
         String term = auth.getName();
         if (auth.getCardinality() == Cardinality.N) {
             term = English.plural(term);
             type = new GraphQLList(type);
+            dataFetcher = env -> ctx(env).getXdChildren(env, facet, auth,
+                                                        child);
+        } else {
+            dataFetcher = env -> ctx(env).getSingularXdChild(env, facet, auth,
+                                                             child);
         }
         builder.field(newFieldDefinition().type(type)
                                           .name(term)
                                           .description(auth.getNotes())
+                                          .dataFetcher(dataFetcher)
                                           .build());
     }
 
-    private void buildXdAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
-                              Set<NetworkAuthorization<?>> traversed) {
+    private void buildXdAuths() {
         if (getClassification() instanceof Agency) {
-            buildAgencyAuths(resolved, traversed);
+            buildAgencyAuths();
         } else if (getClassification() instanceof Product) {
-            buildProductAuths(resolved, traversed);
+            buildProductAuths();
         } else if (getClassification() instanceof Location) {
-            buildLocationAuths(resolved, traversed);
+            buildLocationAuths();
         } else if (getClassification() instanceof Relationship) {
-            buildRelationshipAuths(resolved, traversed);
+            buildRelationshipAuths();
         }
     }
 

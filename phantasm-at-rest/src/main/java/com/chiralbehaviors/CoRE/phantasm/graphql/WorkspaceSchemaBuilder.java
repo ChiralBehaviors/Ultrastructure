@@ -28,9 +28,7 @@ import static graphql.schema.GraphQLObjectType.newObject;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -92,9 +90,7 @@ public class WorkspaceSchemaBuilder {
                                                                                .getName()));
         resolved.values()
                 .forEach(facet -> {
-                    Set<NetworkAuthorization<?>> traversed = new HashSet<>();
-                    GraphQLObjectType queryType = facet.build(resolved,
-                                                              traversed);
+                    GraphQLObjectType queryType = facet.build();
                     topLevelQuery.field(instanceQuery(facet, queryType));
                     topLevelQuery.field(instancesQuery(facet, queryType));
                 });

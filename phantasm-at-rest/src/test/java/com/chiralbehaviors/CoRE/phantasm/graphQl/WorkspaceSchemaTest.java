@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchemaBuilder;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.ResourcesTest;
+import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
@@ -60,16 +61,23 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
                                         "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 "myartifact", "artifact");
+        artifact.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact.setArtifactID("model");
+        artifact.setVersion("0.0.2-SNAPSHOT");
+        artifact.setType("jar");
         thing1.setAliases(new String[] { "smith", "jones" });
         String uri = "http://example.com";
         thing1.setURI(uri);
+        thing1.setDerivedFrom(artifact);
         thing1.setThing2(thing2);
         thing2.addThing3(thing3);
         WorkspaceSchemaBuilder schemaBuilder = new WorkspaceSchemaBuilder(TEST_SCENARIO_URI,
-                                                                      model);
+                                                                          model);
         GraphQLSchema schema = schemaBuilder.build();
         WorkspaceContext ctx = new WorkspaceContext(() -> model);
-        ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name}}}}",
+        ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name}} derivedFrom {id name}}}",
                                                                             thing1.getRuleform()
                                                                                   .getId()),
                                                               ctx);
@@ -80,6 +88,9 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         Map<String, Object> result = execute.getData();
 
         assertNotNull(result);
+
+        System.out.println(result);
+
         @SuppressWarnings("unchecked")
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
         assertNotNull(thing1Result);

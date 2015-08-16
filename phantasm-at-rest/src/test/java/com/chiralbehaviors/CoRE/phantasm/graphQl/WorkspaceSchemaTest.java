@@ -255,6 +255,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                 return null;
             }
 
+            @SuppressWarnings("rawtypes")
             @Override
             public EntityManager createEntityManager(SynchronizationType synchronizationType,
                                                      Map map) {
@@ -268,6 +269,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                 return null;
             }
 
+            @SuppressWarnings("rawtypes")
             @Override
             public EntityManager createEntityManager(Map map) {
 

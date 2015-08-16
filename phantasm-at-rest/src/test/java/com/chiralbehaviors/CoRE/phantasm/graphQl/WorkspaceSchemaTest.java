@@ -26,13 +26,9 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchemaBuilder;
@@ -51,28 +47,12 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
 
-    @BeforeClass
-    public static void initialize() throws Exception {
+    @Test
+    public void testWorkspaceSchema() throws Exception {
         em.getTransaction()
           .begin();
         WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
-        em.getTransaction()
-          .commit();
-    }
-
-    protected WorkspaceScope scope;
-
-    @Before
-    public void loadWorkspace() {
-        em.getTransaction()
-          .begin();
-        scope = model.getWorkspaceModel()
-                     .getScoped(Workspace.uuidOf(TEST_SCENARIO_URI));
-    }
-
-    @Test
-    public void testWorkspaceSchema() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         thing1.setAliases(new String[] { "smith", "jones" });

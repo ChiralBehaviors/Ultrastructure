@@ -1,16 +1,16 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test;
@@ -39,7 +39,7 @@ import io.dropwizard.setup.Environment;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class TestApplication extends Application<TestServiceConfiguration> {
 
@@ -55,7 +55,9 @@ public class TestApplication extends Application<TestServiceConfiguration> {
     }
 
     public int getPort() {
-        return ((AbstractNetworkConnector) environment.getApplicationContext().getServer().getConnectors()[0]).getLocalPort();
+        return ((AbstractNetworkConnector) environment.getApplicationContext()
+                                                      .getServer()
+                                                      .getConnectors()[0]).getLocalPort();
     }
 
     @Override
@@ -71,26 +73,35 @@ public class TestApplication extends Application<TestServiceConfiguration> {
     public void run(TestServiceConfiguration configuration,
                     Environment environment) throws Exception {
         if (configuration.isRandomPort()) {
-            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors().get(0)).setPort(0);
-            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors().get(0)).setPort(0);
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
+                                                                                             .get(0)).setPort(0);
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors()
+                                                                                             .get(0)).setPort(0);
         }
         this.environment = environment;
-        environment.lifecycle().addServerLifecycleListener(server -> jettyServer = server);
+        environment.lifecycle()
+                   .addServerLifecycleListener(server -> jettyServer = server);
         JpaConfiguration jpaConfig = configuration.getCrudServiceConfiguration();
 
         String unit = jpaConfig.getPersistenceUnit();
         Map<String, String> properties = jpaConfig.getProperties();
         emf = Persistence.createEntityManagerFactory(unit, properties);
-        environment.jersey().register(new FacetResource(emf));
-        environment.jersey().register(new WorkspaceResource(emf));
-        environment.jersey().register(new RuleformResource(emf));
-        environment.jersey().register(new WorkspaceMediatedResource(emf));
-        environment.healthChecks().register("EMF Health",
-                                            new EmfHealthCheck(emf));
+        environment.jersey()
+                   .register(new FacetResource(emf));
+        environment.jersey()
+                   .register(new WorkspaceResource(emf));
+        environment.jersey()
+                   .register(new RuleformResource(emf));
+        environment.jersey()
+                   .register(new WorkspaceMediatedResource(emf));
+        environment.healthChecks()
+                   .register("EMF Health", new EmfHealthCheck(emf));
     }
 
     public void stop() {
-        emf.close();
+        if (emf != null) {
+            emf.close();
+        }
         if (jettyServer != null) {
             try {
                 jettyServer.setStopTimeout(100);

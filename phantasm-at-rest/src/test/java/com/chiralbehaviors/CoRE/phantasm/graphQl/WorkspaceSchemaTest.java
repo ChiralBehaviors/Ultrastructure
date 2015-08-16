@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphQl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -88,5 +89,17 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         assertEquals(thing1.getName(), thing1Result.get("name"));
         assertEquals(thing1.getRuleform().getId().toString(),
                      thing1Result.get("id"));
+
+        result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name}}",
+                                                           thing1.getRuleform().getId()),
+                                             ctx).getData();
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("InstancesOfThing1");
+        assertEquals(1, instances.size());
+        Map<String, Object> instance = instances.get(0);
+        assertEquals(thing1.getName(), instance.get("name"));
+        assertEquals(thing1.getRuleform().getId().toString(),
+                     instance.get("id"));
+
     }
 }

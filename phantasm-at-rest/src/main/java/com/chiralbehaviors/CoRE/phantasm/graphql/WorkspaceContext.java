@@ -20,11 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 
@@ -41,13 +43,17 @@ public class WorkspaceContext {
         this.model = model;
     }
 
-    /**
-     * @param env
-     * @return
-     */
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> RuleForm getInstance(DataFetchingEnvironment env,
                                                                                                                                      NetworkAuthorization<RuleForm> facet) {
         return model.get().getNetworkedModel(facet.getClassification()).find(UUID.fromString(env.getArgument("id")));
 
+    }
+
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getInstances(DataFetchingEnvironment context,
+                                                                                                                                            NetworkAuthorization<RuleForm> facet) {
+
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get().getNetworkedModel(facet.getClassification());
+        return networkedModel.getChildren(facet.getClassification(),
+                                          facet.getClassifier().getInverse());
     }
 }

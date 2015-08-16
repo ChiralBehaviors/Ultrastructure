@@ -39,6 +39,8 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
@@ -81,11 +83,30 @@ public class WorkspaceSchemaBuilder {
         resolved.values().forEach(facet -> {
             Set<NetworkAuthorization<?>> traversed = new HashSet<>();
             GraphQLObjectType queryType = facet.build(resolved, traversed);
-            topLevelQuery.field(newFieldDefinition().name(facet.getName()).type(queryType).argument(newArgument().name("id").description("id of the facet").type(new GraphQLNonNull(GraphQLString)).build()).dataFetcher(context -> ctx(context).getInstance(context,
-                                                                                                                                                                                                                                                             facet.getFacet())).build());
+            topLevelQuery.field(instanceQuery(facet, queryType));
+            topLevelQuery.field(instancesQuery(facet, queryType));
         });
         clear();
         return GraphQLSchema.newSchema().query(topLevelQuery.build()).build();
+    }
+
+    /**
+     * @param facet
+     * @param queryType
+     * @return
+     */
+    private GraphQLFieldDefinition instancesQuery(FacetType<?, ?> facet,
+                                                  GraphQLObjectType queryType) {
+        return newFieldDefinition().name(String.format("InstancesOf%s",
+                                                       facet.getName())).type(new GraphQLList(queryType)).dataFetcher(context -> ctx(context).getInstances(context,
+                                                                                                                                                           facet.getFacet())).build();
+
+    }
+
+    private GraphQLFieldDefinition instanceQuery(FacetType<?, ?> facet,
+                                                 GraphQLObjectType queryType) {
+        return newFieldDefinition().name(facet.getName()).type(queryType).argument(newArgument().name("id").description("id of the facet").type(new GraphQLNonNull(GraphQLString)).build()).dataFetcher(context -> ctx(context).getInstance(context,
+                                                                                                                                                                                                                                            facet.getFacet())).build();
     }
 
     private WorkspaceContext ctx(DataFetchingEnvironment env) {

@@ -27,8 +27,10 @@ import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLObjectType.newObject;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -66,142 +68,179 @@ import graphql.schema.GraphQLTypeReference;
 public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         extends Aspect<RuleForm> {
 
+    private final NetworkAuthorization<RuleForm>          facet;
     private final Model                                   model;
     private final NetworkedModel<RuleForm, Network, ?, ?> networkedModel;
-    private final GraphQLObjectType.Builder               readBuilder;
-    private final Map<String, Aspect<?>>                  referencedTypes = new HashMap<>();
+    private GraphQLObjectType                             query;
+    private final Set<NetworkAuthorization<?>>            references = new HashSet<>();
+    GraphQLObjectType.Builder                             builder;
 
-    public FacetType(Relationship classifier, RuleForm classification,
-                     Model model) {
-        super(classifier, classification);
+    public FacetType(NetworkAuthorization<RuleForm> facet, Model model) {
+        super(facet.getClassifier(), facet.getClassification());
         this.model = model;
-        networkedModel = this.model.getNetworkedModel(classification);
-        NetworkAuthorization<RuleForm> facet = networkedModel.getFacetDeclaration(this);
-        readBuilder = newObject().name(facet.getName()).description(facet.getNotes());
+        networkedModel = this.model.getNetworkedModel(getClassification());
+        this.facet = facet;
+        builder = newObject().name(facet.getName()).description(facet.getNotes());
     }
 
-    public void buid() {
-        buildRuleformAttributes();
+    public GraphQLObjectType build(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
+                                   Set<NetworkAuthorization<?>> traversed) {
+        traversed.add(facet);
         buildAttributes();
-        buildNetworkAuths();
-        buildXdAuths();
+        buildRuleformAttributes();
+        buildNetworkAuths(resolved, traversed);
+        buildXdAuths(resolved, traversed);
+        return builder.build();
+    }
+
+    public String getName() {
+        return facet.getName();
+    }
+
+    public GraphQLObjectType getQuery() {
+        return query;
+    }
+
+    public Collection<NetworkAuthorization<?>> referenced() {
+        return references;
+    }
+
+    public Collection<NetworkAuthorization<?>> resolve() {
+        if (!references.isEmpty()) {
+            return references;
+        }
+        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this)) {
+            references.add(resolve(auth));
+        }
+        resolveXdAuths();
+        return references;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("FacetType [name=%s]", getName());
     }
 
     @SuppressWarnings("unchecked")
-    public void buildAgencyAuths() {
+    private void buildAgencyAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
+                                  Set<NetworkAuthorization<?>> traversed) {
         AgencyModel agencyModel = model.getAgencyModel();
         Aspect<Agency> aspect = (Aspect<Agency>) this;
         for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect)) {
-            buildXdAuth(auth, typeNameOfTo(auth));
+            buildXdAuth(auth, resolveTo(auth), resolved, traversed);
         }
         for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect)) {
-            buildXdAuth(auth, typeNameOfTo(auth));
+            buildXdAuth(auth, resolveTo(auth), resolved, traversed);
         }
     }
 
-    public void buildAttributes() {
+    private void buildAttributes() {
         for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
             Attribute attribute = auth.getAuthorizedAttribute();
-            readBuilder.field(newFieldDefinition().type(typeOf(attribute)).name(attribute.getName()).description(attribute.getDescription()).build());
+            builder.field(newFieldDefinition().type(typeOf(attribute)).name(attribute.getName()).description(attribute.getDescription()).build());
         }
     }
 
-    public void buildLocationAuths() {
+    private void buildLocationAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
+                                    Set<NetworkAuthorization<?>> traversed) {
         LocationModel locationModel = model.getLocationModel();
         @SuppressWarnings("unchecked")
         Aspect<Location> aspect = (Aspect<Location>) this;
         for (AgencyLocationAuthorization auth : locationModel.getLocationAgencyAuths(aspect)) {
-            buildXdAuth(auth, typeNameOfFrom(auth));
+            buildXdAuth(auth, resolveFrom(auth), resolved, traversed);
         }
         for (ProductLocationAuthorization auth : locationModel.getLocationProductAuths(aspect)) {
-            buildXdAuth(auth, typeNameOfFrom(auth));
+            buildXdAuth(auth, resolveFrom(auth), resolved, traversed);
         }
     }
 
-    public void buildNetworkAuths() {
+    private void buildNetworkAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
+                                   Set<NetworkAuthorization<?>> traversed) {
         for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this)) {
             String term = auth.getName();
             if (term == null) {
                 continue;
             }
-            GraphQLOutputType type = new GraphQLTypeReference(typeNameOf(auth));
+            GraphQLOutputType type;
+            NetworkAuthorization<RuleForm> child = resolve(auth);
+            if (traversed.contains(child)) {
+                type = new GraphQLTypeReference(child.getName());
+            } else {
+                type = resolved.get(child).build(resolved, traversed);
+            }
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
                 type = new GraphQLList(type);
             }
-            readBuilder.field(newFieldDefinition().type(type).name(term).description(auth.getNotes()).build());
+            builder.field(newFieldDefinition().type(type).name(term).description(auth.getNotes()).build());
         }
     }
 
-    public void buildProductAuths() {
+    private void buildProductAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
+                                   Set<NetworkAuthorization<?>> traversed) {
         ProductModel productModel = model.getProductModel();
         @SuppressWarnings("unchecked")
         Aspect<Product> aspect = (Aspect<Product>) this;
         for (ProductLocationAuthorization auth : productModel.getProductLocationAuths(aspect)) {
-            buildXdAuth(auth, typeNameOfTo(auth));
+            buildXdAuth(auth, resolveTo(auth), resolved, traversed);
         }
         for (ProductRelationshipAuthorization auth : productModel.getProductRelationshipAuths(aspect)) {
-            buildXdAuth(auth, typeNameOfTo(auth));
+            buildXdAuth(auth, resolveTo(auth), resolved, traversed);
         }
         for (AgencyProductAuthorization auth : productModel.getProductAgencyAuths(aspect)) {
-            buildXdAuth(auth, typeNameOfFrom(auth));
+            buildXdAuth(auth, resolveFrom(auth), resolved, traversed);
         }
     }
 
-    public void buildRelationshipAuths() {
+    private void buildRelationshipAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
+                                        Set<NetworkAuthorization<?>> traversed) {
         RelationshipModel agencyModel = model.getRelationshipModel();
         @SuppressWarnings("unchecked")
         Aspect<Relationship> aspect = (Aspect<Relationship>) this;
         for (ProductRelationshipAuthorization auth : agencyModel.getRelationshipProductAuths(aspect)) {
-            buildXdAuth(auth, typeNameOfFrom(auth));
+            buildXdAuth(auth, resolveFrom(auth), resolved, traversed);
         }
     }
 
-    public void buildRuleformAttributes() {
+    private void buildRuleformAttributes() {
 
-        readBuilder.field(newFieldDefinition().type(GraphQLString).name("id").description("The id of the facet instance").build());
-        readBuilder.field(newFieldDefinition().type(GraphQLString).name("name").description("The name of the facet instance").build());
-        readBuilder.field(newFieldDefinition().type(GraphQLString).name("description").description("The description of the facet instance").build());
+        builder.field(newFieldDefinition().type(GraphQLString).name("id").description("The id of the facet instance").build());
+        builder.field(newFieldDefinition().type(GraphQLString).name("name").description("The name of the facet instance").build());
+        builder.field(newFieldDefinition().type(GraphQLString).name("description").description("The description of the facet instance").build());
     }
 
-    public void buildXdAuth(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
-                            String typeName) {
-        GraphQLOutputType type = new GraphQLTypeReference(typeName);
+    private void buildXdAuth(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
+                             NetworkAuthorization<?> child,
+                             Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
+                             Set<NetworkAuthorization<?>> traversed) {
+        GraphQLOutputType type;
+        if (traversed.contains(child)) {
+            type = new GraphQLTypeReference(child.getName());
+        } else {
+            type = resolved.get(child).build(resolved, traversed);
+        }
         String term = auth.getName();
         if (auth.getCardinality() == Cardinality.N) {
             term = English.plural(term);
             type = new GraphQLList(type);
         }
-        readBuilder.field(newFieldDefinition().type(type).name(term).description(auth.getNotes()).build());
+        builder.field(newFieldDefinition().type(type).name(term).description(auth.getNotes()).build());
     }
 
-    /**
-     * @param facet
-     * @param model
-     * @param networkedModel
-     * @param builder
-     */
-    public void buildXdAuths() {
+    private void buildXdAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
+                              Set<NetworkAuthorization<?>> traversed) {
         if (getClassification() instanceof Agency) {
-            buildAgencyAuths();
+            buildAgencyAuths(resolved, traversed);
         } else if (getClassification() instanceof Product) {
-            buildProductAuths();
+            buildProductAuths(resolved, traversed);
         } else if (getClassification() instanceof Location) {
-            buildLocationAuths();
+            buildLocationAuths(resolved, traversed);
         } else if (getClassification() instanceof Relationship) {
-            buildRelationshipAuths();
+            buildRelationshipAuths(resolved, traversed);
         }
     }
 
-    public GraphQLObjectType getReadType() {
-        return readBuilder.build();
-    }
-
-    public Map<String, Aspect<?>> getReferencedTypes() {
-        return referencedTypes;
-    }
-
-    private String typeNameOf(NetworkAuthorization<RuleForm> auth) {
+    private NetworkAuthorization<RuleForm> resolve(NetworkAuthorization<RuleForm> auth) {
         Aspect<RuleForm> aspect = new Aspect<>(auth.getAuthorizedRelationship(),
                                                auth.getAuthorizedParent());
         NetworkAuthorization<RuleForm> facet = networkedModel.getFacetDeclaration(aspect);
@@ -209,13 +248,23 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             throw new IllegalStateException(String.format("%s does not exist as a facet",
                                                           aspect));
         }
-        String name = facet.getName();
-        referencedTypes.put(name, aspect);
-        return name;
+        return facet;
+    }
+
+    private void resolveAgencyAuths() {
+        AgencyModel agencyModel = model.getAgencyModel();
+        @SuppressWarnings("unchecked")
+        Aspect<Agency> aspect = (Aspect<Agency>) this;
+        for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect)) {
+            references.add(resolveTo(auth));
+        }
+        for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect)) {
+            references.add(resolveTo(auth));
+        }
     }
 
     @SuppressWarnings("unchecked")
-    private String typeNameOfFrom(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth) {
+    private NetworkAuthorization<?> resolveFrom(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth) {
         Aspect<?> aspect = new Aspect<>(auth.getFromRelationship(),
                                         auth.getFromParent());
         @SuppressWarnings("rawtypes")
@@ -224,13 +273,51 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             throw new IllegalStateException(String.format("%s does not exist as a facet",
                                                           aspect));
         }
-        String name = facet.getName();
-        referencedTypes.put(name, aspect);
-        return name;
+        return facet;
+    }
+
+    /**
+     */
+    private void resolveLocationAuths() {
+        LocationModel locationModel = model.getLocationModel();
+        @SuppressWarnings("unchecked")
+        Aspect<Location> aspect = (Aspect<Location>) this;
+        for (AgencyLocationAuthorization auth : locationModel.getLocationAgencyAuths(aspect)) {
+            references.add(resolveFrom(auth));
+        }
+        for (ProductLocationAuthorization auth : locationModel.getLocationProductAuths(aspect)) {
+            references.add(resolveFrom(auth));
+        }
+    }
+
+    /**
+     */
+    private void resolveProductAuths() {
+        ProductModel productModel = model.getProductModel();
+        @SuppressWarnings("unchecked")
+        Aspect<Product> aspect = (Aspect<Product>) this;
+        for (ProductLocationAuthorization auth : productModel.getProductLocationAuths(aspect)) {
+            references.add(resolveTo(auth));
+        }
+        for (ProductRelationshipAuthorization auth : productModel.getProductRelationshipAuths(aspect)) {
+            references.add(resolveTo(auth));
+        }
+        for (AgencyProductAuthorization auth : productModel.getProductAgencyAuths(aspect)) {
+            references.add(resolveFrom(auth));
+        }
+    }
+
+    private void resolveRelationshipAuths() {
+        RelationshipModel agencyModel = model.getRelationshipModel();
+        @SuppressWarnings("unchecked")
+        Aspect<Relationship> aspect = (Aspect<Relationship>) this;
+        for (ProductRelationshipAuthorization auth : agencyModel.getRelationshipProductAuths(aspect)) {
+            references.add(resolveFrom(auth));
+        }
     }
 
     @SuppressWarnings("unchecked")
-    private String typeNameOfTo(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth) {
+    private NetworkAuthorization<?> resolveTo(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth) {
         Aspect<?> aspect = new Aspect<>(auth.getToRelationship(),
                                         auth.getToParent());
         @SuppressWarnings("rawtypes")
@@ -239,9 +326,19 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             throw new IllegalStateException(String.format("%s does not exist as a facet",
                                                           aspect));
         }
-        String name = facet.getName();
-        referencedTypes.put(name, aspect);
-        return name;
+        return facet;
+    }
+
+    private void resolveXdAuths() {
+        if (getClassification() instanceof Agency) {
+            resolveAgencyAuths();
+        } else if (getClassification() instanceof Product) {
+            resolveProductAuths();
+        } else if (getClassification() instanceof Location) {
+            resolveLocationAuths();
+        } else if (getClassification() instanceof Relationship) {
+            resolveRelationshipAuths();
+        }
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {

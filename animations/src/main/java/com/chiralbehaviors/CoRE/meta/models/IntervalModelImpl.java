@@ -23,6 +23,8 @@ package com.chiralbehaviors.CoRE.meta.models;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.metamodel.SingularAttribute;
+
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.meta.Aspect;
@@ -34,6 +36,8 @@ import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -144,6 +148,14 @@ public class IntervalModelImpl extends
                                                      Collection<Relationship> relationships,
                                                      Collection<Interval> children) {
         throw new UnsupportedOperationException();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetAuthWorkspaceAttribute()
+     */
+    @Override
+    protected SingularAttribute<? super WorkspaceAuthorization, ?> getNetAuthWorkspaceAttribute() {
+        return WorkspaceAuthorization_.intervalNetworkAuthorization;
     }
 
     /* (non-Javadoc)

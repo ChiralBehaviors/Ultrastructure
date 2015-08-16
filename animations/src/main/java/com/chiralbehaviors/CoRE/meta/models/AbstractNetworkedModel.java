@@ -53,6 +53,7 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +75,8 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -646,6 +649,27 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
         List<NetworkAuthorization<RuleForm>> results = q.getResultList();
         return results.isEmpty() ? null : results.get(0);
+    }
+
+    @Override
+    public List<NetworkAuthorization<RuleForm>> getFacets(Product workspace) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        @SuppressWarnings("unchecked")
+        Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();
+        CriteriaQuery<NetworkAuthorization<RuleForm>> query = cb.createQuery(clazz);
+        Root<NetworkAuthorization<RuleForm>> networkRoot = query.from(clazz);
+        Root<WorkspaceAuthorization> workspaces = query.from(WorkspaceAuthorization.class);
+        query.select(networkRoot).where(cb.and(cb.and(cb.equal(workspaces.get(WorkspaceAuthorization_.definingProduct),
+                                                               workspace),
+                                                      cb.equal(workspaces.get(getNetAuthWorkspaceAttribute()),
+                                                               networkRoot)),
+                                               cb.and(cb.isNotNull(networkRoot.get("classifier")),
+                                                      cb.isNotNull(networkRoot.get("classification")),
+                                                      cb.isNull(networkRoot.get("childRelationship")),
+                                                      cb.isNull(networkRoot.get("authorizedRelationship")),
+                                                      cb.isNull(networkRoot.get("authorizedParent")))));
+        TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
+        return q.getResultList();
     }
 
     @Override
@@ -1295,6 +1319,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             return null;
         }
     }
+
+    abstract protected SingularAttribute<? super WorkspaceAuthorization, ?> getNetAuthWorkspaceAttribute();
 
     /**
      * @return

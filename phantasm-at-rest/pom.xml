@@ -12,7 +12,7 @@
     <description>A rest API for the Ultrastructure Phantasms</description>
     <dependencies>
         <dependency>
-            <groupId>graphql-java</groupId>
+            <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
         </dependency>
         <dependency>

@@ -48,11 +48,11 @@
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classifier" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_classification_fkey"
+            baseColumnNames="classifier" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_classifier_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="classification" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_classifier_fkey"
+            baseColumnNames="classification" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_classification_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="unit" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"

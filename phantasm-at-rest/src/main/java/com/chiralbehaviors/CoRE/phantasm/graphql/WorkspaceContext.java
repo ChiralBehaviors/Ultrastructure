@@ -60,6 +60,16 @@ public class WorkspaceContext {
                              .getValue();
     }
 
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getChildren(DataFetchingEnvironment env,
+                                                                                                                                           NetworkAuthorization<RuleForm> auth) {
+        @SuppressWarnings("unchecked")
+        RuleForm instance = (RuleForm) env.getSource();
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
+                                                                .getNetworkedModel(auth.getClassification());
+        return networkedModel.getChildren(instance,
+                                          auth.getChildRelationship());
+    }
+
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> RuleForm getInstance(DataFetchingEnvironment env,
                                                                                                                                      NetworkAuthorization<RuleForm> facet) {
         return model.get()
@@ -76,5 +86,15 @@ public class WorkspaceContext {
         return networkedModel.getChildren(facet.getClassification(),
                                           facet.getClassifier()
                                                .getInverse());
+    }
+
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> RuleForm getSingularChild(DataFetchingEnvironment env,
+                                                                                                                                          NetworkAuthorization<RuleForm> auth) {
+        @SuppressWarnings("unchecked")
+        RuleForm instance = (RuleForm) env.getSource();
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
+                                                                .getNetworkedModel(auth.getClassification());
+        return networkedModel.getImmediateChild(instance,
+                                                auth.getChildRelationship());
     }
 }

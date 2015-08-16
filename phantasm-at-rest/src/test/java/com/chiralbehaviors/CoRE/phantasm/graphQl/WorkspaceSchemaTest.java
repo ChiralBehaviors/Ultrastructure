@@ -63,7 +63,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                                                                       model);
         GraphQLSchema schema = wspSchema.build();
         WorkspaceContext ctx = new WorkspaceContext(() -> model);
-        Map<String, Object> result = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name}}",
+        Map<String, Object> result = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name}}}",
                                                                                thing1.getRuleform()
                                                                                      .getId()),
                                                                  ctx)
@@ -78,6 +78,15 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                            .getId()
                            .toString(),
                      thing1Result.get("id"));
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> thing2Result = (Map<String, Object>) thing1Result.get("thing2");
+        assertNotNull(thing2Result);
+        assertEquals(thing2.getName(), thing2Result.get("name"));
+        assertEquals(thing2.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing2Result.get("id"));
 
         result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
                                                            thing1.getRuleform()

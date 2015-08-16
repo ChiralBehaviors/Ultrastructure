@@ -57,6 +57,7 @@ import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.utils.English;
 
+import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
@@ -173,6 +174,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             if (term == null) {
                 continue;
             }
+            DataFetcher dataFetcher;
             GraphQLOutputType type;
             NetworkAuthorization<RuleForm> child = resolve(auth);
             if (traversed.contains(child)) {
@@ -184,9 +186,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
                 type = new GraphQLList(type);
+                dataFetcher = env -> ctx(env).getChildren(env, auth);
+            } else {
+                dataFetcher = env -> ctx(env).getSingularChild(env, auth);
             }
             builder.field(newFieldDefinition().type(type)
                                               .name(term)
+                                              .dataFetcher(dataFetcher)
                                               .description(auth.getNotes())
                                               .build());
         }

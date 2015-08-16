@@ -27,6 +27,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Cache;
+import javax.persistence.EntityGraph;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.Query;
+import javax.persistence.SynchronizationType;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.metamodel.Metamodel;
+
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -38,6 +48,7 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
+import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -134,5 +145,156 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                            .toString(),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
+    }
+
+    @Test
+    public void testGraphQlResource() throws Exception {
+        em.getTransaction()
+          .begin();
+        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                          model);
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
+                                        "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class,
+                                                 "myartifact", "artifact");
+        artifact.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact.setArtifactID("model");
+        artifact.setVersion("0.0.2-SNAPSHOT");
+        artifact.setType("jar");
+        thing1.setAliases(new String[] { "smith", "jones" });
+        String uri = "http://example.com";
+        thing1.setURI(uri);
+        thing1.setDerivedFrom(artifact);
+        thing1.setThing2(thing2);
+        thing2.addThing3(thing3);
+
+        GraphQlResource resource = new GraphQlResource(wrappedEmf());
+        Map<String, Object> result = resource.query(TEST_SCENARIO_URI,
+                                                    String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name}} derivedFrom {id name}}}",
+                                                                  thing1.getRuleform()
+                                                                        .getId()));
+
+        assertNotNull(result);
+
+        System.out.println(result);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
+        assertNotNull(thing1Result);
+        assertEquals(thing1.getName(), thing1Result.get("name"));
+        assertEquals(thing1.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing1Result.get("id"));
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> thing2Result = (Map<String, Object>) thing1Result.get("thing2");
+        assertNotNull(thing2Result);
+        assertEquals(thing2.getName(), thing2Result.get("name"));
+        assertEquals(thing2.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing2Result.get("id"));
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> thing3s = (List<Map<String, Object>>) thing2Result.get("thing3s");
+        assertNotNull(thing3s);
+        assertEquals(1, thing3s.size());
+        Map<String, Object> thing3Result = thing3s.get(0);
+        assertEquals(thing3.getName(), thing3Result.get("name"));
+        assertEquals(thing3.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing3Result.get("id"));
+
+    }
+
+    private EntityManagerFactory wrappedEmf() {
+        return new EntityManagerFactory() {
+
+            @Override
+            public <T> T unwrap(Class<T> cls) {
+
+                return null;
+            }
+
+            @Override
+            public boolean isOpen() {
+
+                return false;
+            }
+
+            @Override
+            public Map<String, Object> getProperties() {
+
+                return null;
+            }
+
+            @Override
+            public PersistenceUnitUtil getPersistenceUnitUtil() {
+
+                return null;
+            }
+
+            @Override
+            public Metamodel getMetamodel() {
+
+                return null;
+            }
+
+            @Override
+            public CriteriaBuilder getCriteriaBuilder() {
+
+                return null;
+            }
+
+            @Override
+            public Cache getCache() {
+
+                return null;
+            }
+
+            @Override
+            public EntityManager createEntityManager(SynchronizationType synchronizationType,
+                                                     Map map) {
+
+                return null;
+            }
+
+            @Override
+            public EntityManager createEntityManager(SynchronizationType synchronizationType) {
+
+                return null;
+            }
+
+            @Override
+            public EntityManager createEntityManager(Map map) {
+
+                return null;
+            }
+
+            @Override
+            public EntityManager createEntityManager() {
+
+                return em;
+            }
+
+            @Override
+            public void close() {
+
+            }
+
+            @Override
+            public void addNamedQuery(String name, Query query) {
+
+            }
+
+            @Override
+            public <T> void addNamedEntityGraph(String graphName,
+                                                EntityGraph<T> entityGraph) {
+
+            }
+        };
     }
 }

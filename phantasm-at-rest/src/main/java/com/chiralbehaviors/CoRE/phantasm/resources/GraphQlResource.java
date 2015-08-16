@@ -20,18 +20,63 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchemaBuilder;
+
+import graphql.ExecutionResult;
+import graphql.GraphQL;
+import graphql.schema.GraphQLSchema;
 
 /**
+ * A resource providing GraphQL queries on schemas generated from workspaces
+ * 
  * @author hhildebrand
  *
  */
 @Path("graphql")
+@Produces({ MediaType.APPLICATION_JSON, "text/json" })
+@Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class GraphQlResource extends TransactionalResource {
 
     public GraphQlResource(EntityManagerFactory emf) {
         super(emf);
+    }
+
+    @Path("{workspace}")
+    @GET
+    public Map<String, Object> query(@PathParam("workspace") String workspace,
+                                     @QueryParam("query") String query) {
+        if (query == null) {
+            throw new WebApplicationException("Query cannot be null",
+                                              Status.BAD_REQUEST);
+        }
+        WorkspaceSchemaBuilder builder = new WorkspaceSchemaBuilder(workspace,
+                                                                    readOnlyModel);
+        GraphQLSchema schema = builder.build();
+        WorkspaceContext ctx = new WorkspaceContext(() -> readOnlyModel);
+        ExecutionResult execute = new GraphQL(schema).execute(query, ctx);
+        if (execute.getErrors()
+                   .isEmpty()) {
+            return execute.getData();
+        }
+        throw new WebApplicationException(query,
+                                          Response.status(Status.BAD_REQUEST)
+                                                  .entity(execute.getErrors())
+                                                  .build());
     }
 
 }

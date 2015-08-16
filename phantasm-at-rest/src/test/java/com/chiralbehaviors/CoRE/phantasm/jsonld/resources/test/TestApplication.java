@@ -26,6 +26,7 @@ import org.eclipse.jetty.server.Server;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
@@ -94,6 +95,8 @@ public class TestApplication extends Application<TestServiceConfiguration> {
                    .register(new RuleformResource(emf));
         environment.jersey()
                    .register(new WorkspaceMediatedResource(emf));
+        environment.jersey()
+                   .register(new GraphQlResource(emf));
         environment.healthChecks()
                    .register("EMF Health", new EmfHealthCheck(emf));
     }

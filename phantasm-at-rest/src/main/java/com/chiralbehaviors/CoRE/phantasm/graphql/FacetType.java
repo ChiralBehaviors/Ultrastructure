@@ -93,6 +93,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         return builder.build();
     }
 
+    public NetworkAuthorization<RuleForm> getFacet() {
+        return facet;
+    }
+
     public String getName() {
         return facet.getName();
     }

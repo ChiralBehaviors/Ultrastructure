@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import static graphql.Scalars.GraphQLString;
+import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLObjectType.newObject;
 
@@ -36,6 +38,8 @@ import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
@@ -46,7 +50,6 @@ import graphql.schema.GraphQLSchema;
  */
 public class WorkspaceSchemaBuilder {
     private final Model                                         model;
-    private final Map<String, GraphQLSchema>                    queries    = new HashMap<>();
     private final Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved   = new HashMap<>();
     private final Deque<NetworkAuthorization<?>>                unresolved = new ArrayDeque<>();
     private final Workspace                                     workspace;
@@ -78,10 +81,15 @@ public class WorkspaceSchemaBuilder {
         resolved.values().forEach(facet -> {
             Set<NetworkAuthorization<?>> traversed = new HashSet<>();
             GraphQLObjectType queryType = facet.build(resolved, traversed);
-            topLevelQuery.field(newFieldDefinition().name(facet.getName()).type(queryType).build());
+            topLevelQuery.field(newFieldDefinition().name(facet.getName()).type(queryType).argument(newArgument().name("id").description("id of the facet").type(new GraphQLNonNull(GraphQLString)).build()).dataFetcher(context -> ctx(context).getInstance(context,
+                                                                                                                                                                                                                                                             facet.getFacet())).build());
         });
         clear();
         return GraphQLSchema.newSchema().query(topLevelQuery.build()).build();
+    }
+
+    private WorkspaceContext ctx(DataFetchingEnvironment env) {
+        return (WorkspaceContext) env.getContext();
     }
 
     private void clear() {

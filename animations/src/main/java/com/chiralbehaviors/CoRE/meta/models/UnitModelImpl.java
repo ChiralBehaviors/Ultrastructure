@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
+import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -36,6 +37,8 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -157,6 +160,14 @@ public class UnitModelImpl extends
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetAuthWorkspaceAttribute()
+     */
+    @Override
+    protected SingularAttribute<? super WorkspaceAuthorization, ?> getNetAuthWorkspaceAttribute() {
+        return WorkspaceAuthorization_.unitNetworkAuthorization;
     }
 
     /* (non-Javadoc)

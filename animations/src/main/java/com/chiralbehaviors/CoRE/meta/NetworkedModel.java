@@ -359,6 +359,17 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
 
+    NetworkAuthorization<RuleForm> getFacetDeclaration(Aspect<RuleForm> aspect);
+
+    /**
+     * Answer the list of network authorizations that represent a facet defined
+     * in the workspace.
+     * 
+     * @param workspace
+     * @return the list of facet network authorizations in the workspace
+     */
+    List<NetworkAuthorization<RuleForm>> getFacets(Product workspace);
+
     /**
      * Answer the non inferred child that is connected to the parent via the
      * relationship

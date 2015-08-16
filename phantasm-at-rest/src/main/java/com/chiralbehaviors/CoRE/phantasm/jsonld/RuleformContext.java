@@ -42,7 +42,7 @@ import javax.ws.rs.core.UriInfo;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.network.Cardinality;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.RuleformResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 
 /**
  * @author hhildebrand

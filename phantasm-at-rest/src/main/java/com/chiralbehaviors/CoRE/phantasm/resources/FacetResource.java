@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
+package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;

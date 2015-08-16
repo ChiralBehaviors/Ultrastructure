@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
+package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import java.util.List;
 import java.util.UUID;

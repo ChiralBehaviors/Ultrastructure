@@ -56,7 +56,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<RuleForm, ?>> extends Ruleform {
+abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<RuleForm, ?>>
+        extends Ruleform {
 
     private static final long serialVersionUID = 1L;
 
@@ -64,7 +65,7 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
     @JoinColumn(name = "authorized_relationship")
     private Relationship authorizedRelationship;
 
-    private Cardinality cardinality;
+    private Cardinality cardinality = Cardinality.ZERO;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_relationship")

@@ -55,10 +55,12 @@ public class ResourcesTest extends AbstractModelTest {
 
     @BeforeClass
     public static void initialize() throws Exception {
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
         WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
-        em.getTransaction().commit();
+        em.getTransaction()
+          .commit();
         application.run("server", "target/test-classes/test.yml");
     }
 
@@ -71,17 +73,20 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Before
     public void loadWorkspace() {
-        em.getTransaction().begin();
-        scope = model.getWorkspaceModel().getScoped(Workspace.uuidOf(TEST_SCENARIO_URI));
+        scope = model.getWorkspaceModel()
+                     .getScoped(Workspace.uuidOf(TEST_SCENARIO_URI));
     }
 
     @Test
     public void testFacetContext() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/context",
                                         application.getPort(),
-                                        scope.lookup("kernel",
-                                                     "IsA").getId().toString(),
-                                        scope.lookup("Thing1").getId().toString()));
+                                        scope.lookup("kernel", "IsA")
+                                             .getId()
+                                             .toString(),
+                                        scope.lookup("Thing1")
+                                             .getId()
+                                             .toString()));
         Object jsonObject = JsonUtils.fromInputStream(url.openStream());
         System.out.println("Thing1 facet context");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
@@ -90,6 +95,8 @@ public class ResourcesTest extends AbstractModelTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFacetNode() throws Exception {
+        em.getTransaction()
+          .begin();
         URL url;
         Map<String, Object> jsonObject;
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
@@ -97,15 +104,21 @@ public class ResourcesTest extends AbstractModelTest {
         thing1.setAliases(new String[] { "smith", "jones" });
         thing1.setURI("http://example.com");
         thing1.setThing2(thing2);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
         JsonLdOptions options = new JsonLdOptions();
         url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s",
                                     application.getPort(),
-                                    scope.lookup("kernel",
-                                                 "IsA").getId().toString(),
-                                    scope.lookup("Thing1").getId().toString(),
-                                    thing1.getRuleform().getId()));
+                                    scope.lookup("kernel", "IsA")
+                                         .getId()
+                                         .toString(),
+                                    scope.lookup("Thing1")
+                                         .getId()
+                                         .toString(),
+                                    thing1.getRuleform()
+                                          .getId()));
         jsonObject = (Map<String, Object>) JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
         System.out.println("Node value of an instance of Thing1");
@@ -129,6 +142,8 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testSelect() throws Exception {
+        em.getTransaction()
+          .begin();
         URL url;
         Object jsonObject;
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
@@ -141,16 +156,22 @@ public class ResourcesTest extends AbstractModelTest {
                                                  "myartifact", "artifact");
         artifact.setType("jar");
         thing2.addDerivedFrom(artifact);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
         JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
                                                                 application.getPort()));
         url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s?select=thing2/derivedFroms;a=description;a=name",
                                     application.getPort(),
-                                    scope.lookup("kernel",
-                                                 "IsA").getId().toString(),
-                                    scope.lookup("Thing1").getId().toString(),
-                                    thing1.getRuleform().getId()));
+                                    scope.lookup("kernel", "IsA")
+                                         .getId()
+                                         .toString(),
+                                    scope.lookup("Thing1")
+                                         .getId()
+                                         .toString(),
+                                    thing1.getRuleform()
+                                          .getId()));
 
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
@@ -174,6 +195,8 @@ public class ResourcesTest extends AbstractModelTest {
 
     @Test
     public void testInstancesSelect() throws Exception {
+        em.getTransaction()
+          .begin();
         URL url;
         Object jsonObject;
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
@@ -182,15 +205,20 @@ public class ResourcesTest extends AbstractModelTest {
         thing1.setURI("http://example.com");
         thing2.setThing1(thing1);
         thing1.setThing2(thing2);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
         JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
                                                                 application.getPort()));
         url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/instances?select=;a=URI",
                                     application.getPort(),
-                                    scope.lookup("kernel",
-                                                 "IsA").getId().toString(),
-                                    scope.lookup("Thing1").getId().toString()));
+                                    scope.lookup("kernel", "IsA")
+                                         .getId()
+                                         .toString(),
+                                    scope.lookup("Thing1")
+                                         .getId()
+                                         .toString()));
 
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
@@ -216,7 +244,10 @@ public class ResourcesTest extends AbstractModelTest {
     public void testLookupWorkspace() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/workspace/%s",
                                         application.getPort(),
-                                        scope.getWorkspace().getDefiningProduct().getId().toString()));
+                                        scope.getWorkspace()
+                                             .getDefiningProduct()
+                                             .getId()
+                                             .toString()));
         Map<?, ?> jsonObject = (Map<?, ?>) JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject.get("auths"));
         assertNotNull(jsonObject.get("frontier"));
@@ -236,8 +267,9 @@ public class ResourcesTest extends AbstractModelTest {
         URL url;
         Object jsonObject;
         url = new URL(String.format("http://localhost:%s/json-ld/ruleform/Attribute/%s",
-                                    application.getPort(),
-                                    scope.lookup("URI").getId().toString()));
+                                    application.getPort(), scope.lookup("URI")
+                                                                .getId()
+                                                                .toString()));
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
         JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/",

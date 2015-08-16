@@ -347,18 +347,15 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>5.1.3.Final</version>
             </dependency>
+            <dependency>
+                <groupId>com.graphql-java</groupId>
+                <artifactId>graphql-java</artifactId>
+                <version>1.2</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
-    <repositories>
-        <repository>
-            <id>Maven central</id>
-            <url>http://repo1.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>eclipselink</id>
-            <url>http://www.eclipse.org/downloads/download.php?r=1&amp;nf=1&amp;file=/rt/eclipselink/maven.repo/</url>
-        </repository>
+    <repositories> 
         <repository>
             <id>chiralbehaviors-snapshots</id>
             <url>http://repository-chiralbehaviors.forge.cloudbees.com/snapshot/</url>
@@ -366,16 +363,23 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>chiralbehaviors-release</id>
+            <url>http://repository-chiralbehaviors.forge.cloudbees.com/release/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
-            <id>Maven central</id>
-            <url>http://repo1.maven.org/maven2/</url>
-        </pluginRepository>
-        <pluginRepository>
             <id>chiralbehaviors-snapshots</id>
             <url>http://repository-chiralbehaviors.forge.cloudbees.com/snapshot/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>chiralbehaviors-release</id>
+            <url>http://repository-chiralbehaviors.forge.cloudbees.com/release/</url>
         </pluginRepository>
         <pluginRepository>
             <id>reflections-repo</id>

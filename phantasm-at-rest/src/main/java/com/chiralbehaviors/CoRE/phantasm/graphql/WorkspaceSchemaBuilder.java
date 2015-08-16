@@ -51,10 +51,15 @@ import graphql.schema.GraphQLSchema;
  *
  */
 public class WorkspaceSchemaBuilder {
+    public static WorkspaceContext ctx(DataFetchingEnvironment env) {
+        return (WorkspaceContext) env.getContext();
+    }
+
     private final Model                                         model;
     private final Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved   = new HashMap<>();
     private final Deque<NetworkAuthorization<?>>                unresolved = new ArrayDeque<>();
-    private final Workspace                                     workspace;
+
+    private final Workspace workspace;
 
     public WorkspaceSchemaBuilder(String urn, Model model) {
         this(Workspace.uuidOf(urn), model);
@@ -62,7 +67,9 @@ public class WorkspaceSchemaBuilder {
 
     public WorkspaceSchemaBuilder(UUID uuid, Model model) {
         this.model = model;
-        workspace = model.getWorkspaceModel().getScoped(uuid).getWorkspace();
+        workspace = model.getWorkspaceModel()
+                         .getScoped(uuid)
+                         .getWorkspace();
     }
 
     public GraphQLSchema build() {
@@ -78,39 +85,23 @@ public class WorkspaceSchemaBuilder {
                 }
             }
         }
-        Builder topLevelQuery = newObject().name(workspace.getDefiningProduct().getName()).description(String.format("Top level query for %s",
-                                                                                                                     workspace.getDefiningProduct().getName()));
-        resolved.values().forEach(facet -> {
-            Set<NetworkAuthorization<?>> traversed = new HashSet<>();
-            GraphQLObjectType queryType = facet.build(resolved, traversed);
-            topLevelQuery.field(instanceQuery(facet, queryType));
-            topLevelQuery.field(instancesQuery(facet, queryType));
-        });
+        Builder topLevelQuery = newObject().name(workspace.getDefiningProduct()
+                                                          .getName())
+                                           .description(String.format("Top level query for %s",
+                                                                      workspace.getDefiningProduct()
+                                                                               .getName()));
+        resolved.values()
+                .forEach(facet -> {
+                    Set<NetworkAuthorization<?>> traversed = new HashSet<>();
+                    GraphQLObjectType queryType = facet.build(resolved,
+                                                              traversed);
+                    topLevelQuery.field(instanceQuery(facet, queryType));
+                    topLevelQuery.field(instancesQuery(facet, queryType));
+                });
         clear();
-        return GraphQLSchema.newSchema().query(topLevelQuery.build()).build();
-    }
-
-    /**
-     * @param facet
-     * @param queryType
-     * @return
-     */
-    private GraphQLFieldDefinition instancesQuery(FacetType<?, ?> facet,
-                                                  GraphQLObjectType queryType) {
-        return newFieldDefinition().name(String.format("InstancesOf%s",
-                                                       facet.getName())).type(new GraphQLList(queryType)).dataFetcher(context -> ctx(context).getInstances(context,
-                                                                                                                                                           facet.getFacet())).build();
-
-    }
-
-    private GraphQLFieldDefinition instanceQuery(FacetType<?, ?> facet,
-                                                 GraphQLObjectType queryType) {
-        return newFieldDefinition().name(facet.getName()).type(queryType).argument(newArgument().name("id").description("id of the facet").type(new GraphQLNonNull(GraphQLString)).build()).dataFetcher(context -> ctx(context).getInstance(context,
-                                                                                                                                                                                                                                            facet.getFacet())).build();
-    }
-
-    private WorkspaceContext ctx(DataFetchingEnvironment env) {
-        return (WorkspaceContext) env.getContext();
+        return GraphQLSchema.newSchema()
+                            .query(topLevelQuery.build())
+                            .build();
     }
 
     private void clear() {
@@ -121,13 +112,50 @@ public class WorkspaceSchemaBuilder {
     private void initialState() {
         clear();
         Product definingProduct = workspace.getDefiningProduct();
-        unresolved.addAll(model.getAgencyModel().getFacets(definingProduct));
-        unresolved.addAll(model.getAttributeModel().getFacets(definingProduct));
-        unresolved.addAll(model.getIntervalModel().getFacets(definingProduct));
-        unresolved.addAll(model.getLocationModel().getFacets(definingProduct));
-        unresolved.addAll(model.getProductModel().getFacets(definingProduct));
-        unresolved.addAll(model.getRelationshipModel().getFacets(definingProduct));
-        unresolved.addAll(model.getStatusCodeModel().getFacets(definingProduct));
-        unresolved.addAll(model.getUnitModel().getFacets(definingProduct));
+        unresolved.addAll(model.getAgencyModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getAttributeModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getIntervalModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getLocationModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getProductModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getRelationshipModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getStatusCodeModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getUnitModel()
+                               .getFacets(definingProduct));
+    }
+
+    private GraphQLFieldDefinition instanceQuery(FacetType<?, ?> facet,
+                                                 GraphQLObjectType queryType) {
+        return newFieldDefinition().name(facet.getName())
+                                   .type(queryType)
+                                   .argument(newArgument().name("id")
+                                                          .description("id of the facet")
+                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .build())
+                                   .dataFetcher(context -> ctx(context).getInstance(context,
+                                                                                    facet.getFacet()))
+                                   .build();
+    }
+
+    /**
+     * @param facet
+     * @param queryType
+     * @return
+     */
+    private GraphQLFieldDefinition instancesQuery(FacetType<?, ?> facet,
+                                                  GraphQLObjectType queryType) {
+        return newFieldDefinition().name(String.format("InstancesOf%s",
+                                                       facet.getName()))
+                                   .type(new GraphQLList(queryType))
+                                   .dataFetcher(context -> ctx(context).getInstances(context,
+                                                                                     facet.getFacet()))
+                                   .build();
+
     }
 }

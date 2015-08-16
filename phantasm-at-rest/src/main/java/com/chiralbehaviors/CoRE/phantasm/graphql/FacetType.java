@@ -80,7 +80,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         this.model = model;
         networkedModel = this.model.getNetworkedModel(getClassification());
         this.facet = facet;
-        builder = newObject().name(facet.getName()).description(facet.getNotes());
+        builder = newObject().name(facet.getName())
+                             .description(facet.getNotes());
     }
 
     public GraphQLObjectType build(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
@@ -141,7 +142,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private void buildAttributes() {
         for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
             Attribute attribute = auth.getAuthorizedAttribute();
-            builder.field(newFieldDefinition().type(typeOf(attribute)).name(attribute.getName()).description(attribute.getDescription()).build());
+            builder.field(newFieldDefinition().type(typeOf(attribute))
+                                              .name(attribute.getName())
+                                              .description(attribute.getDescription())
+                                              .build());
         }
     }
 
@@ -170,13 +174,17 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             if (traversed.contains(child)) {
                 type = new GraphQLTypeReference(child.getName());
             } else {
-                type = resolved.get(child).build(resolved, traversed);
+                type = resolved.get(child)
+                               .build(resolved, traversed);
             }
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
                 type = new GraphQLList(type);
             }
-            builder.field(newFieldDefinition().type(type).name(term).description(auth.getNotes()).build());
+            builder.field(newFieldDefinition().type(type)
+                                              .name(term)
+                                              .description(auth.getNotes())
+                                              .build());
         }
     }
 
@@ -208,9 +216,18 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     private void buildRuleformAttributes() {
 
-        builder.field(newFieldDefinition().type(GraphQLString).name("id").description("The id of the facet instance").build());
-        builder.field(newFieldDefinition().type(GraphQLString).name("name").description("The name of the facet instance").build());
-        builder.field(newFieldDefinition().type(GraphQLString).name("description").description("The description of the facet instance").build());
+        builder.field(newFieldDefinition().type(GraphQLString)
+                                          .name("id")
+                                          .description("The id of the facet instance")
+                                          .build());
+        builder.field(newFieldDefinition().type(GraphQLString)
+                                          .name("name")
+                                          .description("The name of the facet instance")
+                                          .build());
+        builder.field(newFieldDefinition().type(GraphQLString)
+                                          .name("description")
+                                          .description("The description of the facet instance")
+                                          .build());
     }
 
     private void buildXdAuth(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
@@ -221,14 +238,18 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         if (traversed.contains(child)) {
             type = new GraphQLTypeReference(child.getName());
         } else {
-            type = resolved.get(child).build(resolved, traversed);
+            type = resolved.get(child)
+                           .build(resolved, traversed);
         }
         String term = auth.getName();
         if (auth.getCardinality() == Cardinality.N) {
             term = English.plural(term);
             type = new GraphQLList(type);
         }
-        builder.field(newFieldDefinition().type(type).name(term).description(auth.getNotes()).build());
+        builder.field(newFieldDefinition().type(type)
+                                          .name(term)
+                                          .description(auth.getNotes())
+                                          .build());
     }
 
     private void buildXdAuths(Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved,
@@ -272,7 +293,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         Aspect<?> aspect = new Aspect<>(auth.getFromRelationship(),
                                         auth.getFromParent());
         @SuppressWarnings("rawtypes")
-        NetworkAuthorization facet = model.getNetworkedModel(auth.getFromParent()).getFacetDeclaration(aspect);
+        NetworkAuthorization facet = model.getNetworkedModel(auth.getFromParent())
+                                          .getFacetDeclaration(aspect);
         if (facet == null) {
             throw new IllegalStateException(String.format("%s does not exist as a facet",
                                                           aspect));
@@ -325,7 +347,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         Aspect<?> aspect = new Aspect<>(auth.getToRelationship(),
                                         auth.getToParent());
         @SuppressWarnings("rawtypes")
-        NetworkAuthorization facet = model.getNetworkedModel(auth.getToParent()).getFacetDeclaration(aspect);
+        NetworkAuthorization facet = model.getNetworkedModel(auth.getToParent())
+                                          .getFacetDeclaration(aspect);
         if (facet == null) {
             throw new IllegalStateException(String.format("%s does not exist as a facet",
                                                           aspect));

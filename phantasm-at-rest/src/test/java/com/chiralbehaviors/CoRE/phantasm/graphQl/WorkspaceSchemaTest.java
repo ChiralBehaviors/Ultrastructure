@@ -100,6 +100,5 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         assertEquals(thing1.getName(), instance.get("name"));
         assertEquals(thing1.getRuleform().getId().toString(),
                      instance.get("id"));
-
     }
 }

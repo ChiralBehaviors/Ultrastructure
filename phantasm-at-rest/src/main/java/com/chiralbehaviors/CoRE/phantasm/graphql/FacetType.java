@@ -28,6 +28,7 @@ import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import java.beans.Introspector;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -141,7 +142,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
             Attribute attribute = auth.getAuthorizedAttribute();
             builder.field(newFieldDefinition().type(typeOf(attribute))
-                                              .name(attribute.getName())
+                                              .name(toFieldName(attribute.getName()))
                                               .description(attribute.getDescription())
                                               .dataFetcher(env -> ctx(env).getAttributeValue(env,
                                                                                              attribute,
@@ -179,7 +180,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 dataFetcher = env -> ctx(env).getSingularChild(env, auth);
             }
             builder.field(newFieldDefinition().type(type)
-                                              .name(term)
+                                              .name(toFieldName(term))
                                               .dataFetcher(dataFetcher)
                                               .description(auth.getNotes())
                                               .build());
@@ -241,7 +242,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                              child);
         }
         builder.field(newFieldDefinition().type(type)
-                                          .name(term)
+                                          .name(toFieldName(term))
                                           .description(auth.getNotes())
                                           .dataFetcher(dataFetcher)
                                           .build());
@@ -389,5 +390,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                               attribute));
         }
         return attribute.getIndexed() ? new GraphQLList(type) : type;
+    }
+
+    private String toFieldName(String name) {
+        return Introspector.decapitalize(name.replaceAll("\\s", ""));
     }
 }

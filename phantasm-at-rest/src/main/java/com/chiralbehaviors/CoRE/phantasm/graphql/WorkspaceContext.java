@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -61,8 +62,12 @@ public class WorkspaceContext {
         RuleForm instance = (RuleForm) env.getSource();
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
                                                                 .getNetworkedModel(facet.getClassification());
-        return networkedModel.getAttributeValue(instance, attribute)
-                             .getValue();
+        Object value = networkedModel.getAttributeValue(instance, attribute)
+                                     .getValue();
+        if (value instanceof BigDecimal) {
+            value = ((BigDecimal) value).floatValue();
+        }
+        return value;
     }
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getChildren(DataFetchingEnvironment env,

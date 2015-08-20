@@ -37,9 +37,13 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.phantasm.demo.MavenArtifact;
 import com.chiralbehaviors.phantasm.demo.Thing1;
 import com.chiralbehaviors.phantasm.demo.Thing2;
@@ -53,10 +57,23 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Before
     public void before() throws Exception {
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
         WorkspaceImporter.createWorkspace(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
                                           model);
         em.flush();
+    }
+
+    @Test
+    public void testAttributeAccess() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        thing1.setPercentage(BigDecimal.ONE);
+        ProductAttributeAuthorization auth = new ProductAttributeAuthorization(kernel.getCore());
+        WorkspaceScope scope = thing1.getScope();
+        auth.setAuthorizedAttribute((Attribute) scope.lookup("Percentage"));
+        auth.setNetworkAuthorization(model.getProductModel()
+                                          .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
+                                                                            (Product) scope.lookup("Thing1"))));
     }
 
     @Test
@@ -68,7 +85,9 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(thing1, thing1.doSomethingElse());
         thing1.doSomething("hello");
         assertNotNull(thing1.getRuleform());
-        assertEquals(thing1.getRuleform().getName(), thing1.getName());
+        assertEquals(thing1.getRuleform()
+                           .getName(),
+                     thing1.getName());
         assertNull(thing1.getThing2());
         thing1.setThing2(thing2);
         assertNotNull(thing1.getThing2());
@@ -87,7 +106,8 @@ public class TestPhantasm extends AbstractModelTest {
         properties.put("foo", "bar");
         properties.put("baz", "bozo");
 
-        assertEquals(0, thing1.getProperties().size());
+        assertEquals(0, thing1.getProperties()
+                              .size());
         thing1.setProperties(properties);
         em.flush();
         Map<String, String> newProps = thing1.getProperties();
@@ -97,11 +117,14 @@ public class TestPhantasm extends AbstractModelTest {
         Thing3 thing3a = model.construct(Thing3.class, "uncle it",
                                          "one of my favorite things");
         assertNotNull(thing2.getThing3s());
-        assertEquals(0, thing2.getThing3s().size());
+        assertEquals(0, thing2.getThing3s()
+                              .size());
         thing2.add(thing3a);
-        assertEquals(1, thing2.getThing3s().size());
+        assertEquals(1, thing2.getThing3s()
+                              .size());
         thing2.remove(thing3a);
-        assertEquals(0, thing2.getThing3s().size());
+        assertEquals(0, thing2.getThing3s()
+                              .size());
 
         Thing3 thing3b = model.construct(Thing3.class, "cousin it",
                                          "another one of my favorite things");
@@ -111,9 +134,11 @@ public class TestPhantasm extends AbstractModelTest {
         aFewOfMyFavoriteThings.add(thing3b);
 
         thing2.add(aFewOfMyFavoriteThings);
-        assertEquals(2, thing2.getThing3s().size());
+        assertEquals(2, thing2.getThing3s()
+                              .size());
         thing2.remove(aFewOfMyFavoriteThings);
-        assertEquals(0, thing2.getThing3s().size());
+        assertEquals(0, thing2.getThing3s()
+                              .size());
 
         assertNull(thing1.getArtifact());
         MavenArtifact artifact = model.construct(MavenArtifact.class,
@@ -124,24 +149,31 @@ public class TestPhantasm extends AbstractModelTest {
         em.flush();
         assertNotNull(thing1.getArtifact());
 
-        assertEquals(0, thing2.getArtifacts().size());
+        assertEquals(0, thing2.getArtifacts()
+                              .size());
         thing2.addArtifact(artifact);
-        assertEquals(1, thing2.getArtifacts().size());
+        assertEquals(1, thing2.getArtifacts()
+                              .size());
         thing2.removeArtifact(artifact);
-        assertEquals(0, thing2.getArtifacts().size());
+        assertEquals(0, thing2.getArtifacts()
+                              .size());
         thing2.addArtifacts(Arrays.asList(artifact));
-        assertEquals(1, thing2.getArtifacts().size());
+        assertEquals(1, thing2.getArtifacts()
+                              .size());
 
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
                                                   "myartifact2", "artifact2");
         artifact2.setType("jar");
 
         thing2.setArtifacts(Arrays.asList(artifact2));
-        assertEquals(1, thing2.getArtifacts().size());
+        assertEquals(1, thing2.getArtifacts()
+                              .size());
         thing2.addArtifact(artifact);
-        assertEquals(2, thing2.getArtifacts().size());
+        assertEquals(2, thing2.getArtifacts()
+                              .size());
         thing2.setArtifacts(Collections.emptyList());
-        assertEquals(0, thing2.getArtifacts().size());
+        assertEquals(0, thing2.getArtifacts()
+                              .size());
 
         assertNotNull(thing1.getScope());
     }
@@ -164,8 +196,12 @@ public class TestPhantasm extends AbstractModelTest {
     public void testThis() throws InstantiationException {
 
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
-        Product child = model.getProductModel().getChild(thing1.getScope().getWorkspace().getDefiningProduct(),
-                                                         model.getKernel().getHasMember());
+        Product child = model.getProductModel()
+                             .getChild(thing1.getScope()
+                                             .getWorkspace()
+                                             .getDefiningProduct(),
+                                       model.getKernel()
+                                            .getHasMember());
         assertEquals("Thing1", child.getName());
     }
 

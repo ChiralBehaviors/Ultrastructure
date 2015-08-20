@@ -42,7 +42,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  *
- * The abstract authorization for attributes on entities.
+ * The abstract authorization for attributes on the authorization network
+ * between two existential entities.
  *
  * @author hhildebrand
  *

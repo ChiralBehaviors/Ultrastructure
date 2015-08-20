@@ -64,21 +64,23 @@ public class UnitModelImpl extends
      */
     @Override
     public void authorize(Aspect<Unit> aspect, Attribute... attributes) {
-        UnitNetworkAuthorization auth = new UnitNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
+        UnitNetworkAuthorization auth = new UnitNetworkAuthorization(model.getCurrentPrincipal()
+                                                                          .getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             UnitAttributeAuthorization authorization = new UnitAttributeAuthorization(attribute,
-                                                                                      model.getCurrentPrincipal().getPrincipal());
+                                                                                      model.getCurrentPrincipal()
+                                                                                           .getPrincipal());
             em.persist(authorization);
         }
     }
 
     @Override
     public final Unit create(String name, String description) {
-        Unit unit = new Unit(name, description,
-                             model.getCurrentPrincipal().getPrincipal());
+        Unit unit = new Unit(name, description, model.getCurrentPrincipal()
+                                                     .getPrincipal());
         em.persist(unit);
         return unit;
     }
@@ -95,8 +97,8 @@ public class UnitModelImpl extends
     public final Unit create(String name, String description,
                              Aspect<Unit> aspect, Agency updatedBy,
                              Aspect<Unit>... aspects) {
-        Unit agency = new Unit(name, description,
-                               model.getCurrentPrincipal().getPrincipal());
+        Unit agency = new Unit(name, description, model.getCurrentPrincipal()
+                                                       .getPrincipal());
         em.persist(agency);
         initialize(agency, aspect);
         if (aspects != null) {
@@ -119,19 +121,24 @@ public class UnitModelImpl extends
         Unit copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+        copy.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal());
         for (UnitNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     em);
+            network.getParent()
+                   .link(network.getRelationship(), copy,
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         em);
         }
         for (UnitAttribute attribute : prototype.getAttributes()) {
             UnitAttribute clone = (UnitAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setUnit(copy);
-            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+            clone.setUpdatedBy(model.getCurrentPrincipal()
+                                    .getPrincipal());
         }
         return copy;
     }
@@ -160,6 +167,14 @@ public class UnitModelImpl extends
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAttributeAuthorizationClass()
+     */
+    @Override
+    protected Class<?> getAttributeAuthorizationClass() {
+        return UnitAttributeAuthorization.class;
     }
 
     /* (non-Javadoc)

@@ -140,6 +140,37 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                            Relationship authorized);
 
     /**
+     * Check the access of an agency on an attribute of a ruleform.
+     */
+    boolean checkAccess(Agency agency, RuleForm instance,
+                        AttributeAuthorization<RuleForm, ?> auth,
+                        Relationship access);
+
+    /**
+     * Check the access of an agency on an attribute of the authorized
+     * relationship of the facet child relationship.
+     */
+    boolean checkAccess(Agency agency, RuleForm instance,
+                        NetworkAuthorization<RuleForm> authChild,
+                        AttributeAuthorization<RuleForm, ?> auth,
+                        Relationship access);
+
+    /**
+     * Check the access of an agency on the authorized relationship of the facet
+     * child relationship.
+     */
+    boolean checkAccess(Agency agency, RuleForm instance,
+                        NetworkAuthorization<RuleForm> auth,
+                        Relationship access);
+
+    /**
+     * Check the access of an agency on the facet.
+     */
+    boolean checkFacetAccess(Agency agency, RuleForm instance,
+                             NetworkAuthorization<RuleForm> facet,
+                             Relationship access);
+
+    /**
      * Create a new instance of the RuleForm based on the provided prototype
      *
      * @param prototype

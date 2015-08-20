@@ -91,9 +91,11 @@ public class Bootstrap {
         EntityManager em = emf.createEntityManager();
         Bootstrap bootstrap = new Bootstrap(em);
         bootstrap.clear();
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
         bootstrap.bootstrap();
-        em.getTransaction().commit();
+        em.getTransaction()
+          .commit();
         bootstrap.serialize(argv[1]);
         em.close();
         emf.close();
@@ -103,7 +105,8 @@ public class Bootstrap {
     private final EntityManager em;
 
     public Bootstrap(EntityManager em) throws SQLException {
-        connection = em.unwrap(SessionImpl.class).connection();
+        connection = em.unwrap(SessionImpl.class)
+                       .connection();
         connection.setAutoCommit(false);
         this.em = em;
     }
@@ -158,14 +161,21 @@ public class Bootstrap {
         populateUnits(core, kernelWorkspace);
         populateAnyFacets(core, kernelWorkspace);
         connection.commit();
-        em.getTransaction().commit();
+        em.getTransaction()
+          .commit();
         ModelImpl model = new ModelImpl(em.getEntityManagerFactory());
-        model.getEntityManager().getTransaction().begin();
+        model.getEntityManager()
+             .getTransaction()
+             .begin();
         new WorkspaceImporter(getClass().getResourceAsStream("/kernel.wsp"),
                               model).addToWorkspace();
-        model.getEntityManager().getTransaction().commit();
-        model.getEntityManager().close();
-        em.getTransaction().begin();
+        model.getEntityManager()
+             .getTransaction()
+             .commit();
+        model.getEntityManager()
+             .close();
+        em.getTransaction()
+          .begin();
     }
 
     /**
@@ -235,7 +245,10 @@ public class Bootstrap {
         // Kernel workspace isA workspace
         ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
                                                core);
+        ProductNetwork pnR = new ProductNetwork(workspace, isA.getInverse(),
+                                                kernelWorkspace, core);
         populate(pn, core, kernelWorkspace);
+        populate(pnR, core, kernelWorkspace);
 
         ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
         netAuth.setClassification(workspace);
@@ -313,7 +326,8 @@ public class Bootstrap {
             s.setString(2, wko.wkoName());
             s.setString(3, wko.description());
             s.setObject(4, WellKnownAgency.CORE.id());
-            s.setInt(5, wko.valueType().ordinal());
+            s.setInt(5, wko.valueType()
+                           .ordinal());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert WKA %s",
@@ -375,7 +389,8 @@ public class Bootstrap {
             s.setString(2, wko.wkoName());
             s.setString(3, wko.description());
             s.setObject(4, WellKnownAgency.CORE.id());
-            s.setObject(5, wko.inverse().id());
+            s.setObject(5, wko.inverse()
+                              .id());
             s.execute();
         } catch (SQLException e) {
             throw new SQLException(String.format("Unable to insert %s", wko),
@@ -614,7 +629,7 @@ public class Bootstrap {
         objMapper.registerModule(module);
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
         WorkspaceSnapshot snapshot = new WorkspaceSnapshot(kernelWorkspace, em);
-        objMapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName),
-                                                              snapshot);
+        objMapper.writerWithDefaultPrettyPrinter()
+                 .writeValue(new File(fileName), snapshot);
     }
 }

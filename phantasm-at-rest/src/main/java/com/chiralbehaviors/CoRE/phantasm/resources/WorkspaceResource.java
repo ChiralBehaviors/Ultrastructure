@@ -68,12 +68,13 @@ public class WorkspaceResource extends TransactionalResource {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
             ub.path(WorkspaceResource.class.getMethod("getKeys", UUID.class));
-            ub.resolveTemplate("uuid", definingProduct);
+            ub.resolveTemplate("workspace", definingProduct);
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Unable to get all instances method",
                                             e);
         }
-        return ub.build().toASCIIString();
+        return ub.build()
+                 .toASCIIString();
     }
 
     public static URI lookupIri(UUID definingProduct, String key,
@@ -82,7 +83,7 @@ public class WorkspaceResource extends TransactionalResource {
         try {
             ub.path(WorkspaceResource.class.getMethod("lookup", UUID.class,
                                                       String.class));
-            ub.resolveTemplate("uuid", definingProduct);
+            ub.resolveTemplate("workspace", definingProduct);
             ub.resolveTemplate("member", key);
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Unable to get all instances method",
@@ -104,11 +105,10 @@ public class WorkspaceResource extends TransactionalResource {
     public static URI workspaceIri(UUID definingProduct, UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
-            ub.path(WorkspaceResource.class.getMethod("getWorkspace",
-                                                      UUID.class));
+            ub.path(WorkspaceResource.class.getMethod("getWorkspaces"));
             ub.resolveTemplate("uuid", definingProduct);
         } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Unable to get all instances method",
+            throw new IllegalStateException("Unable to retrieve getWorkspaces method",
                                             e);
         }
         return ub.build();
@@ -127,14 +127,16 @@ public class WorkspaceResource extends TransactionalResource {
     public Map<String, Object> getKeys(@PathParam("workspace") UUID workspace) {
         WorkspaceScope scope;
         try {
-            scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
+            scope = readOnlyModel.getWorkspaceModel()
+                                 .getScoped(workspace);
         } catch (IllegalArgumentException e) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
                                                             workspace),
                                               Status.NOT_FOUND);
         }
         Map<String, String> keys = new TreeMap<>();
-        for (String key : scope.getWorkspace().getKeys()) {
+        for (String key : scope.getWorkspace()
+                               .getKeys()) {
             keys.put(key, lookupIri(workspace, key, uriInfo).toASCIIString());
         }
         Map<String, Object> context = new TreeMap<>();
@@ -165,6 +167,7 @@ public class WorkspaceResource extends TransactionalResource {
 
     @Timed
     @GET
+    @Path("/")
     public Map<String, Object> getWorkspaces() {
         Kernel kernel = readOnlyModel.getKernel();
         Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
@@ -177,7 +180,8 @@ public class WorkspaceResource extends TransactionalResource {
         List<Map<String, Object>> facets = new ArrayList<>();
         NetworkedModel<Product, ?, ?, ?> networkedModel = readOnlyModel.getProductModel();
         for (Product definingProduct : networkedModel.getChildren(aspect.getClassification(),
-                                                                  aspect.getClassifier().getInverse())) {
+                                                                  aspect.getClassifier()
+                                                                        .getInverse())) {
             Map<String, Object> ctx = new TreeMap<>();
             ctx.put(Constants.ID,
                     Facet.getInstanceIri(aspect, definingProduct, uriInfo));
@@ -200,7 +204,8 @@ public class WorkspaceResource extends TransactionalResource {
                                       @PathParam("member") String member) {
         WorkspaceScope scope;
         try {
-            scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
+            scope = readOnlyModel.getWorkspaceModel()
+                                 .getScoped(workspace);
         } catch (IllegalArgumentException e) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
                                                             workspace),
@@ -224,7 +229,8 @@ public class WorkspaceResource extends TransactionalResource {
                                       @PathParam("member") String member) {
         WorkspaceScope scope;
         try {
-            scope = readOnlyModel.getWorkspaceModel().getScoped(workspace);
+            scope = readOnlyModel.getWorkspaceModel()
+                                 .getScoped(workspace);
         } catch (IllegalArgumentException e) {
             throw new WebApplicationException(String.format("Workspace not found: %s",
                                                             workspace),

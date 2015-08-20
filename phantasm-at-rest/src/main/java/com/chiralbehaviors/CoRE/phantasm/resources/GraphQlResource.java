@@ -20,22 +20,33 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchemaBuilder;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.codahale.metrics.annotation.Timed;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -51,32 +62,83 @@ import graphql.schema.GraphQLSchema;
 @Produces({ MediaType.APPLICATION_JSON, "text/json" })
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class GraphQlResource extends TransactionalResource {
+    private static final Logger log = LoggerFactory.getLogger(GraphQlResource.class);
+
+    public static class QueryRequest {
+        private String              query;
+        private Map<String, Object> variables = Collections.emptyMap();
+
+        public QueryRequest() {
+        }
+
+        public QueryRequest(String query, Map<String, Object> variables) {
+            this.query = query;
+            this.variables = variables;
+        }
+
+        public String getQuery() {
+            return query;
+        }
+
+        public Map<String, Object> getVariables() {
+            return variables;
+        }
+    }
 
     public GraphQlResource(EntityManagerFactory emf) {
         super(emf);
     }
 
-    @Path("{workspace}")
+    @Timed
     @GET
+    @Path("workspace")
+    public List<Map<String, Object>> getWorkspaces() {
+        Kernel kernel = readOnlyModel.getKernel();
+        Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
+                                              kernel.getWorkspace());
+        List<Map<String, Object>> workspaces = new ArrayList<>();
+        for (Product definingProduct : readOnlyModel.getProductModel()
+                                                    .getChildren(aspect.getClassification(),
+                                                                 aspect.getClassifier()
+                                                                       .getInverse())) {
+            Map<String, Object> wsp = new TreeMap<>();
+            wsp.put("id", definingProduct.getId()
+                                         .toString());
+            wsp.put("name", definingProduct.getName());
+            wsp.put("description", definingProduct.getDescription());
+            workspaces.add(wsp);
+        }
+        return workspaces;
+    }
+
+    @Timed
+    @Path("workspace/{workspace}")
+    @POST
     public Map<String, Object> query(@PathParam("workspace") String workspace,
-                                     @QueryParam("query") String query) {
-        if (query == null) {
+                                     QueryRequest request) {
+        if (request == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        WorkspaceSchemaBuilder builder = new WorkspaceSchemaBuilder(workspace,
-                                                                    readOnlyModel);
+        WorkspaceSchemaBuilder builder;
+        try {
+            builder = new WorkspaceSchemaBuilder(workspace, readOnlyModel);
+        } catch (IllegalArgumentException e) {
+            throw new WebApplicationException(e.getMessage(), Status.NOT_FOUND);
+        }
         GraphQLSchema schema = builder.build();
         WorkspaceContext ctx = new WorkspaceContext(() -> readOnlyModel);
-        ExecutionResult execute = new GraphQL(schema).execute(query, ctx);
+        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
+                                                              ctx,
+                                                              request.getVariables());
         if (execute.getErrors()
                    .isEmpty()) {
             return execute.getData();
         }
-        throw new WebApplicationException(query,
-                                          Response.status(Status.BAD_REQUEST)
-                                                  .entity(execute.getErrors())
-                                                  .build());
+        Map<String, Object> result = new HashMap<>();
+        result.put("errors", execute.getErrors());
+        log.error("Query: {} Errors: {}", request.getQuery(),
+                  execute.getErrors());
+        return result;
     }
-
 }

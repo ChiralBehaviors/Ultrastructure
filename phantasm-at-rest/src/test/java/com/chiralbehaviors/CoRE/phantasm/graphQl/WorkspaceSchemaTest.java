@@ -23,19 +23,16 @@ package com.chiralbehaviors.CoRE.phantasm.graphQl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Cache;
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnitUtil;
-import javax.persistence.Query;
-import javax.persistence.SynchronizationType;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.metamodel.Metamodel;
+import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 
@@ -49,6 +46,7 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -72,23 +70,32 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
                                         "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 "myartifact", "artifact");
+        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
+                                                 "model artifact");
         artifact.setArtifactID("com.chiralbehaviors.CoRE");
         artifact.setArtifactID("model");
         artifact.setVersion("0.0.2-SNAPSHOT");
         artifact.setType("jar");
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
         thing1.setAliases(new String[] { "smith", "jones" });
         String uri = "http://example.com";
         thing1.setURI(uri);
         thing1.setDerivedFrom(artifact);
         thing1.setThing2(thing2);
         thing2.addThing3(thing3);
+        thing3.addDerivedFrom(artifact);
+        thing3.addDerivedFrom(artifact2);
         WorkspaceSchemaBuilder schemaBuilder = new WorkspaceSchemaBuilder(TEST_SCENARIO_URI,
                                                                           model);
         GraphQLSchema schema = schemaBuilder.build();
         WorkspaceContext ctx = new WorkspaceContext(() -> model);
-        ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name}} derivedFrom {id name}}}",
+        ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
                                                                             thing1.getRuleform()
                                                                                   .getId()),
                                                               ctx);
@@ -129,6 +136,10 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                            .getId()
                            .toString(),
                      thing3Result.get("id"));
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> thing3DerivedFroms = (List<Map<String, Object>>) thing3Result.get("derivedFroms");
+        assertNotNull(thing3DerivedFroms);
+        assertEquals(2, thing3DerivedFroms.size());
 
         result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
                                                            thing1.getRuleform()
@@ -157,12 +168,21 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
                                         "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 "myartifact", "artifact");
+        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
+                                                 "model artifact");
         artifact.setArtifactID("com.chiralbehaviors.CoRE");
         artifact.setArtifactID("model");
         artifact.setVersion("0.0.2-SNAPSHOT");
         artifact.setType("jar");
+
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
+
         thing1.setAliases(new String[] { "smith", "jones" });
         String uri = "http://example.com";
         thing1.setURI(uri);
@@ -170,12 +190,26 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         thing1.setThing2(thing2);
         thing2.addThing3(thing3);
 
-        GraphQlResource resource = new GraphQlResource(wrappedEmf());
-        Map<String, Object> result = resource.query(TEST_SCENARIO_URI,
-                                                    String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name}} derivedFrom {id name}}}",
-                                                                  thing1.getRuleform()
-                                                                        .getId()));
+        thing3.addDerivedFrom(artifact);
+        thing3.addDerivedFrom(artifact2);
 
+        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
+        when(mockedEmf.createEntityManager()).thenReturn(em);
+
+        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        QueryRequest request = new QueryRequest(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name  derivedFroms {id name}}} derivedFrom {id name}}}",
+                                                              thing1.getRuleform()
+                                                                    .getId()),
+                                                Collections.emptyMap());
+        Map<String, Object> result;
+        try {
+            result = resource.query(TEST_SCENARIO_URI, request);
+        } catch (WebApplicationException e) {
+            fail(e.getResponse()
+                  .getEntity()
+                  .toString());
+            return;
+        }
         assertNotNull(result);
 
         System.out.println(result);
@@ -208,95 +242,5 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                            .toString(),
                      thing3Result.get("id"));
 
-    }
-
-    private EntityManagerFactory wrappedEmf() {
-        return new EntityManagerFactory() {
-
-            @Override
-            public <T> T unwrap(Class<T> cls) {
-
-                return null;
-            }
-
-            @Override
-            public boolean isOpen() {
-
-                return false;
-            }
-
-            @Override
-            public Map<String, Object> getProperties() {
-
-                return null;
-            }
-
-            @Override
-            public PersistenceUnitUtil getPersistenceUnitUtil() {
-
-                return null;
-            }
-
-            @Override
-            public Metamodel getMetamodel() {
-
-                return null;
-            }
-
-            @Override
-            public CriteriaBuilder getCriteriaBuilder() {
-
-                return null;
-            }
-
-            @Override
-            public Cache getCache() {
-
-                return null;
-            }
-
-            @SuppressWarnings("rawtypes")
-            @Override
-            public EntityManager createEntityManager(SynchronizationType synchronizationType,
-                                                     Map map) {
-
-                return null;
-            }
-
-            @Override
-            public EntityManager createEntityManager(SynchronizationType synchronizationType) {
-
-                return null;
-            }
-
-            @SuppressWarnings("rawtypes")
-            @Override
-            public EntityManager createEntityManager(Map map) {
-
-                return null;
-            }
-
-            @Override
-            public EntityManager createEntityManager() {
-
-                return em;
-            }
-
-            @Override
-            public void close() {
-
-            }
-
-            @Override
-            public void addNamedQuery(String name, Query query) {
-
-            }
-
-            @Override
-            public <T> void addNamedEntityGraph(String graphName,
-                                                EntityGraph<T> entityGraph) {
-
-            }
-        };
     }
 }

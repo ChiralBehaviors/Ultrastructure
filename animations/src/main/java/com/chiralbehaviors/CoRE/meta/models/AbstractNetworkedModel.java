@@ -55,7 +55,6 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
 import javax.persistence.metamodel.SingularAttribute;
 
 import org.slf4j.Logger;
@@ -227,16 +226,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                Relationship capability) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
-        CriteriaQuery<Boolean> query = (CriteriaQuery<Boolean>) cb.createQuery(getAttributeAuthorizationClass());
+        CriteriaQuery<Integer> query = (CriteriaQuery<Integer>) cb.createQuery(getAttributeAuthorizationClass());
         Root<NetworkRuleform<RuleForm>> networkRoot = (Root<NetworkRuleform<RuleForm>>) query.from(network);
-        Root<AttributeAuthorization<RuleForm, ?>> attributeAuthRoot = (Root<AttributeAuthorization<RuleForm, ?>>) query.from(getAttributeAuthorizationClass());
-        NetworkAuthorization<RuleForm> stateAuthorization = auth.getNetworkAuthorization();
+        networkRoot.alias("authorizations");
 
-        Predicate matchingAuths = cb.and(cb.equal(attributeAuthRoot.get("classifier"),
-                                               stateAuthorization.getClassifier()),
-                                      cb.equal(attributeAuthRoot.get("classification"),
-                                               stateAuthorization.getClassification()),
-                                      cb.isNotNull(attributeAuthRoot.get(AttributeAuthorization_.groupingAgency)));
+        Root<AttributeAuthorization<RuleForm, ?>> attributeAuthRoot = (Root<AttributeAuthorization<RuleForm, ?>>) query.from(getAttributeAuthorizationClass());
+        attributeAuthRoot.alias("accessAuths");
+
+        Predicate matchingAuths = cb.and(cb.equal(attributeAuthRoot.get("networkAuthorization"),
+                                                  auth.getNetworkAuthorization()),
+                                         cb.isNotNull(attributeAuthRoot.get(AttributeAuthorization_.groupingAgency)));
 
         Predicate accessible = cb.and(cb.equal(networkRoot.get("parent"),
                                                instance),
@@ -245,24 +244,20 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                       cb.equal(networkRoot.get("child"),
                                                attributeAuthRoot.get(AttributeAuthorization_.groupingAgency)));
 
-        Subquery<Root<AttributeAuthorization<RuleForm, ?>>> authsExist = (Subquery<Root<AttributeAuthorization<RuleForm, ?>>>) query.subquery(getAttributeAuthorizationClass());
-        authsExist.from(getAttributeAuthorizationClass());
-        authsExist.where(matchingAuths);
-
-        Subquery<Root<AttributeAuthorization<RuleForm, ?>>> accessAuthorization = (Subquery<Root<AttributeAuthorization<RuleForm, ?>>>) query.subquery(getAttributeAuthorizationClass());
-        accessAuthorization.from(getAttributeAuthorizationClass());
-        accessAuthorization.where(cb.and(matchingAuths, accessible));
-
-        Expression<Boolean> authorized = cb.<Boolean> selectCase()
-                                           .when(cb.equal(cb.count(authsExist),
+        Expression<Integer> authorized = cb.<Integer> selectCase()
+                                           .when(cb.equal(cb.count(attributeAuthRoot),
                                                           0),
-                                                 true)
-                                           .otherwise(cb.gt(cb.count(accessAuthorization),
-                                                            0));
-        query.select(authorized);
+                                                 1)
+                                           .when(cb.gt(cb.count(networkRoot),
+                                                       0),
+                                                 1)
+                                           .otherwise(0);
+        authorized.alias("authorized");
+        query.select(authorized)
+             .where(cb.and(matchingAuths, accessible));
 
-        TypedQuery<Boolean> q = em.createQuery(query);
-        return q.getSingleResult();
+        TypedQuery<Integer> q = em.createQuery(query);
+        return q.getSingleResult() == 1;
     }
 
     abstract protected Class<?> getAttributeAuthorizationClass();

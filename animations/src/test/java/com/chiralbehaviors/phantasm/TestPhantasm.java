@@ -24,6 +24,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
@@ -68,12 +69,17 @@ public class TestPhantasm extends AbstractModelTest {
     public void testAttributeAccess() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
         thing1.setPercentage(BigDecimal.ONE);
+
         ProductAttributeAuthorization auth = new ProductAttributeAuthorization(kernel.getCore());
         WorkspaceScope scope = thing1.getScope();
         auth.setAuthorizedAttribute((Attribute) scope.lookup("Percentage"));
         auth.setNetworkAuthorization(model.getProductModel()
                                           .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
                                                                             (Product) scope.lookup("Thing1"))));
+        em.persist(auth);
+        assertTrue(model.getProductModel()
+                        .checkAccess(kernel.getCore(), thing1.getRuleform(),
+                                     auth, kernel.getHadMember()));
     }
 
     @Test

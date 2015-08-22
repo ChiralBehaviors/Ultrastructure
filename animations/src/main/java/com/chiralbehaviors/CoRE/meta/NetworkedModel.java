@@ -143,7 +143,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * Check the access of an agency on an attribute of a ruleform.
      */
     boolean checkAccess(Agency agency, RuleForm instance,
-                        AttributeAuthorization<RuleForm, ?> auth,
+                        AttributeAuthorization<RuleForm, ?> statAuth,
                         Relationship access);
 
     /**
@@ -152,7 +152,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     boolean checkAccess(Agency agency, RuleForm instance,
                         NetworkAuthorization<RuleForm> authChild,
-                        AttributeAuthorization<RuleForm, ?> auth,
+                        AttributeAuthorization<RuleForm, ?> stateAuth,
                         Relationship access);
 
     /**

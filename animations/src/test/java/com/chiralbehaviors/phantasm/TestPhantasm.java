@@ -36,14 +36,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.TypedQuery;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.phantasm.demo.MavenArtifact;
@@ -71,35 +75,45 @@ public class TestPhantasm extends AbstractModelTest {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
         thing1.setPercentage(BigDecimal.ONE);
 
-        ProductAttributeAuthorization stateAuth = new ProductAttributeAuthorization(kernel.getCore());
         WorkspaceScope scope = thing1.getScope();
-        stateAuth.setAuthorizedAttribute((Attribute) scope.lookup("Percentage"));
-        stateAuth.setNetworkAuthorization(model.getProductModel()
-                                               .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
-                                                                                 (Product) scope.lookup("Thing1"))));
+        NetworkAuthorization<Product> facet = model.getProductModel()
+                                                   .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
+                                                                                     (Product) scope.lookup("Thing1")));
+        assertNotNull(facet);
+        Attribute percentage = (Attribute) scope.lookup("discount");
+        assertNotNull(percentage);
+
+        TypedQuery<ProductAttributeAuthorization> query = em.createQuery("select paa from ProductAttributeAuthorization paa "
+                                                                         + "where paa.networkAuthorization = :a "
+                                                                         + "and paa.authorizedAttribute = :b",
+                                                                         ProductAttributeAuthorization.class);
+        query.setParameter("a", facet);
+        query.setParameter("b", percentage);
+        ProductAttributeAuthorization stateAuth = query.getSingleResult();
+        assertNotNull(stateAuth);
+
         assertTrue(model.getProductModel()
                         .checkAccess(kernel.getCore(), thing1.getRuleform(),
                                      stateAuth, kernel.getHadMember()));
 
-        em.flush();
-
         ProductAttributeAuthorization accessAuth = new ProductAttributeAuthorization(kernel.getCore());
-        accessAuth.setAuthorizedAttribute((Attribute) scope.lookup("Percentage"));
-        accessAuth.setNetworkAuthorization(model.getProductModel()
-                                                .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
-                                                                                  (Product) scope.lookup("Thing1"))));
+        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
+        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
         accessAuth.setSequenceNumber(1);
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
-        em.flush();
-        em.getTransaction()
-          .commit();
-        em.getTransaction()
-          .begin();
         assertFalse(model.getProductModel()
                          .checkAccess(kernel.getCore(), thing1.getRuleform(),
                                       stateAuth, kernel.getHadMember()));
-
+        AgencyNetwork allowAccess = model.getAgencyModel()
+                                         .link(kernel.getCore(),
+                                               kernel.getHadMember(),
+                                               kernel.getAnyAgency(),
+                                               kernel.getCore());
+        em.persist(allowAccess);
+        assertTrue(model.getProductModel()
+                        .checkAccess(kernel.getCore(), thing1.getRuleform(),
+                                     stateAuth, kernel.getHadMember()));
     }
 
     @Test

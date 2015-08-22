@@ -229,6 +229,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         TypedQuery<Agency> query = em.createQuery(String.format("SELECT p.groupingAgency FROM %s p "
                                                                 + "WHERE p.groupingAgency IS NOT NULL "
                                                                 + "AND p.networkAuthorization = :facet "
+                                                                + "AND p.authorizedAttribute = :attribute "
                                                                 + "AND NOT EXISTS( "
                                                                 + "     SELECT p.groupingAgency from AgencyNetwork authorized "
                                                                 + "     WHERE authorized.parent = :agency "
@@ -238,6 +239,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 getAttributeAuthorizationClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("facet", stateAuth.getNetworkAuthorization());
+        query.setParameter("attribute", stateAuth.getAuthorizedAttribute());
         query.setParameter("agency", agency);
         query.setParameter("capability", capability);
         return query.getResultList()

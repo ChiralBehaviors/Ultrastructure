@@ -220,15 +220,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                    AttributeAuthorization<RuleForm, ?> stateAuth,
                                    Relationship capability) {
         // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
-        TypedQuery<Agency> query = em.createQuery(String.format("SELECT p.groupingAgency FROM %s p "
-                                                                + "  WHERE p.groupingAgency IS NOT NULL "
-                                                                + "  AND p.networkAuthorization = :facet "
-                                                                + "  AND p.authorizedAttribute = :attribute "
+        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
+                                                                + "  WHERE required.groupingAgency IS NOT NULL "
+                                                                + "  AND required.networkAuthorization = :facet "
+                                                                + "  AND required.authorizedAttribute = :attribute "
                                                                 + "  AND NOT EXISTS( "
-                                                                + "      SELECT p.groupingAgency from AgencyNetwork authorized "
+                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
                                                                 + "         WHERE authorized.parent = :agency "
                                                                 + "         AND authorized.relationship = :capability "
-                                                                + "         AND authorized.child = p.groupingAgency "
+                                                                + "         AND authorized.child = required.groupingAgency "
                                                                 + "  )",
                                                                 getAttributeAuthorizationClass().getSimpleName()),
                                                   Agency.class);

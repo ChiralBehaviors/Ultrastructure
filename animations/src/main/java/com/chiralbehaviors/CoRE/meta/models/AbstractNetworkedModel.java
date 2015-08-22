@@ -222,9 +222,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     @Override
     @SuppressWarnings("unchecked")
-    public boolean checkAccess(Agency agency, RuleForm instance,
-                               AttributeAuthorization<RuleForm, ?> stateAuth,
-                               Relationship capability) {
+    public boolean checkCapability(Agency agency, RuleForm instance,
+                                   AttributeAuthorization<RuleForm, ?> stateAuth,
+                                   Relationship capability) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         CriteriaQuery<Integer> query = (CriteriaQuery<Integer>) cb.createQuery(getAttributeAuthorizationClass());
@@ -266,35 +266,35 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     /**
-     * Check the access of an agency on an attribute of the authorized
+     * Check the capability of an agency on an attribute of the authorized
      * relationship of the facet child relationship.
      */
     @Override
-    public boolean checkAccess(Agency agency, RuleForm instance,
-                               NetworkAuthorization<RuleForm> authChild,
-                               AttributeAuthorization<RuleForm, ?> auth,
-                               Relationship access) {
+    public boolean checkCapability(Agency agency, RuleForm instance,
+                                   NetworkAuthorization<RuleForm> authChild,
+                                   AttributeAuthorization<RuleForm, ?> auth,
+                                   Relationship capability) {
         return false;
     }
 
     /**
-     * Check the access of an agency on the authorized relationship of the facet
-     * child relationship.
+     * Check the capability of an agency on the authorized relationship of the
+     * facet child relationship.
      */
     @Override
-    public boolean checkAccess(Agency agency, RuleForm instance,
-                               NetworkAuthorization<RuleForm> auth,
-                               Relationship access) {
+    public boolean checkCapability(Agency agency, RuleForm instance,
+                                   NetworkAuthorization<RuleForm> auth,
+                                   Relationship capability) {
         return false;
     }
 
     /**
-     * Check the access of an agency on the facet.
+     * Check the capability of an agency on the facet.
      */
     @Override
-    public boolean checkFacetAccess(Agency agency, RuleForm instance,
-                                    NetworkAuthorization<RuleForm> facet,
-                                    Relationship access) {
+    public boolean checkFacetCapability(Agency agency, RuleForm instance,
+                                        NetworkAuthorization<RuleForm> facet,
+                                        Relationship capability) {
         return false;
     }
 

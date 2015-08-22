@@ -93,8 +93,8 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getProductModel()
-                        .checkAccess(kernel.getCore(), thing1.getRuleform(),
-                                     stateAuth, kernel.getHadMember()));
+                        .checkCapability(kernel.getCore(), thing1.getRuleform(),
+                                         stateAuth, kernel.getHadMember()));
 
         ProductAttributeAuthorization accessAuth = new ProductAttributeAuthorization(kernel.getCore());
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
@@ -103,8 +103,9 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
         assertFalse(model.getProductModel()
-                         .checkAccess(kernel.getCore(), thing1.getRuleform(),
-                                      stateAuth, kernel.getHadMember()));
+                         .checkCapability(kernel.getCore(),
+                                          thing1.getRuleform(), stateAuth,
+                                          kernel.getHadMember()));
         AgencyNetwork allowAccess = model.getAgencyModel()
                                          .link(kernel.getCore(),
                                                kernel.getHadMember(),
@@ -112,8 +113,8 @@ public class TestPhantasm extends AbstractModelTest {
                                                kernel.getCore());
         em.persist(allowAccess);
         assertTrue(model.getProductModel()
-                        .checkAccess(kernel.getCore(), thing1.getRuleform(),
-                                     stateAuth, kernel.getHadMember()));
+                        .checkCapability(kernel.getCore(), thing1.getRuleform(),
+                                         stateAuth, kernel.getHadMember()));
     }
 
     @Test

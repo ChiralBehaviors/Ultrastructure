@@ -140,35 +140,35 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                            Relationship authorized);
 
     /**
-     * Check the access of an agency on an attribute of a ruleform.
+     * Check the capability of an agency on an attribute of a ruleform.
      */
-    boolean checkAccess(Agency agency, RuleForm instance,
-                        AttributeAuthorization<RuleForm, ?> statAuth,
-                        Relationship access);
+    boolean checkCapability(Agency agency, RuleForm instance,
+                            AttributeAuthorization<RuleForm, ?> statAuth,
+                            Relationship capability);
 
     /**
-     * Check the access of an agency on an attribute of the authorized
+     * Check the capability of an agency on an attribute of the authorized
      * relationship of the facet child relationship.
      */
-    boolean checkAccess(Agency agency, RuleForm instance,
-                        NetworkAuthorization<RuleForm> authChild,
-                        AttributeAuthorization<RuleForm, ?> stateAuth,
-                        Relationship access);
+    boolean checkCapability(Agency agency, RuleForm instance,
+                            NetworkAuthorization<RuleForm> authChild,
+                            AttributeAuthorization<RuleForm, ?> stateAuth,
+                            Relationship capability);
 
     /**
-     * Check the access of an agency on the authorized relationship of the facet
-     * child relationship.
+     * Check the capability of an agency on the authorized relationship of the
+     * facet child relationship.
      */
-    boolean checkAccess(Agency agency, RuleForm instance,
-                        NetworkAuthorization<RuleForm> auth,
-                        Relationship access);
+    boolean checkCapability(Agency agency, RuleForm instance,
+                            NetworkAuthorization<RuleForm> auth,
+                            Relationship capability);
 
     /**
-     * Check the access of an agency on the facet.
+     * Check the capability of an agency on the facet.
      */
-    boolean checkFacetAccess(Agency agency, RuleForm instance,
-                             NetworkAuthorization<RuleForm> facet,
-                             Relationship access);
+    boolean checkFacetCapability(Agency agency, RuleForm instance,
+                                 NetworkAuthorization<RuleForm> facet,
+                                 Relationship capability);
 
     /**
      * Create a new instance of the RuleForm based on the provided prototype

@@ -219,16 +219,17 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public boolean checkCapability(Agency agency, RuleForm instance,
                                    AttributeAuthorization<RuleForm, ?> stateAuth,
                                    Relationship capability) {
+        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
         TypedQuery<Agency> query = em.createQuery(String.format("SELECT p.groupingAgency FROM %s p "
-                                                                + "WHERE p.groupingAgency IS NOT NULL "
-                                                                + "AND p.networkAuthorization = :facet "
-                                                                + "AND p.authorizedAttribute = :attribute "
-                                                                + "AND NOT EXISTS( "
-                                                                + "     SELECT p.groupingAgency from AgencyNetwork authorized "
-                                                                + "     WHERE authorized.parent = :agency "
-                                                                + "     AND authorized.relationship = :capability "
-                                                                + "     AND authorized.child = p.groupingAgency "
-                                                                + ")",
+                                                                + "  WHERE p.groupingAgency IS NOT NULL "
+                                                                + "  AND p.networkAuthorization = :facet "
+                                                                + "  AND p.authorizedAttribute = :attribute "
+                                                                + "  AND NOT EXISTS( "
+                                                                + "      SELECT p.groupingAgency from AgencyNetwork authorized "
+                                                                + "         WHERE authorized.parent = :agency "
+                                                                + "         AND authorized.relationship = :capability "
+                                                                + "         AND authorized.child = p.groupingAgency "
+                                                                + "  )",
                                                                 getAttributeAuthorizationClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("facet", stateAuth.getNetworkAuthorization());

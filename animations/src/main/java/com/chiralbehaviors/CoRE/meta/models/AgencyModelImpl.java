@@ -423,14 +423,4 @@ public class AgencyModelImpl extends
     protected Class<?> getNetworkAuthClass() {
         return AgencyNetworkAuthorization.class;
     }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getChildAttribute()
-     */
-    @SuppressWarnings("rawtypes")
-    @Override
-    protected SingularAttribute getChildAttribute() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

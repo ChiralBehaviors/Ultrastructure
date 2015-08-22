@@ -91,6 +91,10 @@ public class TestPhantasm extends AbstractModelTest {
         query.setParameter("b", percentage);
         ProductAttributeAuthorization stateAuth = query.getSingleResult();
         assertNotNull(stateAuth);
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
 
         assertTrue(model.getProductModel()
                         .checkCapability(kernel.getCore(), thing1.getRuleform(),
@@ -102,6 +106,10 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.setSequenceNumber(1);
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
         assertFalse(model.getProductModel()
                          .checkCapability(kernel.getCore(),
                                           thing1.getRuleform(), stateAuth,
@@ -112,6 +120,10 @@ public class TestPhantasm extends AbstractModelTest {
                                                kernel.getAnyAgency(),
                                                kernel.getCore());
         em.persist(allowAccess);
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
         assertTrue(model.getProductModel()
                         .checkCapability(kernel.getCore(), thing1.getRuleform(),
                                          stateAuth, kernel.getHadMember()));

@@ -33,11 +33,6 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_FROM_L
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
-import static com.chiralbehaviors.CoRE.agency.AgencyNetwork_.child;
-import static com.chiralbehaviors.CoRE.agency.AgencyNetwork_.parent;
-import static com.chiralbehaviors.CoRE.attribute.AttributeAuthorization_.authorizedAttribute;
-import static com.chiralbehaviors.CoRE.attribute.AttributeAuthorization_.groupingAgency;
-import static com.chiralbehaviors.CoRE.network.NetworkRuleform_.relationship;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -57,7 +52,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -66,7 +60,6 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
@@ -244,42 +237,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.setParameter("capability", capability);
         return query.getResultList()
                     .isEmpty();
-    }
-
-    @SuppressWarnings({ "unchecked", "unused" })
-    private boolean criteriaCheckAccess(Agency agency,
-                                        AttributeAuthorization<RuleForm, ?> stateAuth,
-                                        Relationship capability) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-
-        CriteriaQuery<Agency> query = (CriteriaQuery<Agency>) cb.createQuery(getAttributeAuthorizationClass());
-
-        Root<AttributeAuthorization<RuleForm, ?>> attributeAuthRoot = (Root<AttributeAuthorization<RuleForm, ?>>) query.from(getAttributeAuthorizationClass());
-        attributeAuthRoot.alias("accessAuths");
-
-        Root<AgencyNetwork> authorizationRoot = query.from(AgencyNetwork.class);
-        authorizationRoot.alias("authorizations");
-
-        Predicate matchingAuths = cb.and(cb.isNotNull(attributeAuthRoot.get(groupingAgency)),
-                                         cb.equal(attributeAuthRoot.get(authorizedAttribute),
-                                                  stateAuth.getAuthorizedAttribute()),
-                                         cb.equal(attributeAuthRoot.get("networkAuthorization"),
-                                                  stateAuth.getNetworkAuthorization()));
-
-        Predicate accessible = cb.and(cb.equal(authorizationRoot.get(parent),
-                                               agency),
-                                      cb.equal(authorizationRoot.get(relationship),
-                                               capability),
-                                      cb.equal(authorizationRoot.get(child),
-                                               attributeAuthRoot.get(groupingAgency)));
-
-        query.select(attributeAuthRoot.get(groupingAgency))
-             .distinct(true)
-             .where(cb.and(matchingAuths, cb.not(accessible)));
-
-        TypedQuery<Agency> q = em.createQuery(query);
-        List<Agency> requiredAuthorizations = q.getResultList();
-        return requiredAuthorizations.isEmpty();
     }
 
     /**

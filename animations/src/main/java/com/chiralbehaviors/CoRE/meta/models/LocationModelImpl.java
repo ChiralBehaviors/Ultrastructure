@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -363,17 +364,23 @@ public class LocationModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.LocationModel#getLocationAgencyAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<AgencyLocationAuthorization> getLocationAgencyAuths(Aspect<Location> aspect) {
+    public List<AgencyLocationAuthorization> getLocationAgencyAuths(Aspect<Location> aspect,
+                                                                    boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AgencyLocationAuthorization> query = cb.createQuery(AgencyLocationAuthorization.class);
         Root<AgencyLocationAuthorization> networkRoot = query.from(AgencyLocationAuthorization.class);
+        Predicate match = cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.toParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(AgencyLocationAuthorization_.toRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(AgencyLocationAuthorization_.forward),
+                                          false));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(AgencyLocationAuthorization_.groupingAgency)));
+        }
         query.select(networkRoot)
-             .where(cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.toParent),
-                                    aspect.getClassification()),
-                           cb.equal(networkRoot.get(AgencyLocationAuthorization_.toRelationship),
-                                    aspect.getClassifier()),
-                           cb.equal(networkRoot.get(AgencyLocationAuthorization_.forward),
-                                    false)));
+             .where(match);
         TypedQuery<AgencyLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -382,17 +389,23 @@ public class LocationModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.LocationModel#getLocationProductAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<ProductLocationAuthorization> getLocationProductAuths(Aspect<Location> aspect) {
+    public List<ProductLocationAuthorization> getLocationProductAuths(Aspect<Location> aspect,
+                                                                      boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ProductLocationAuthorization> query = cb.createQuery(ProductLocationAuthorization.class);
         Root<ProductLocationAuthorization> networkRoot = query.from(ProductLocationAuthorization.class);
+        Predicate match = cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.toParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.toRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
+                                          false));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(ProductLocationAuthorization_.groupingAgency)));
+        }
         query.select(networkRoot)
-             .where(cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.toParent),
-                                    aspect.getClassification()),
-                           cb.equal(networkRoot.get(ProductLocationAuthorization_.toRelationship),
-                                    aspect.getClassifier()),
-                           cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
-                                    false)));
+             .where(match);
         TypedQuery<ProductLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }

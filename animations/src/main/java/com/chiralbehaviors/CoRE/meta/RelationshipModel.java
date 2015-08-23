@@ -47,5 +47,5 @@ public interface RelationshipModel extends
     Relationship create(String rel1Name, String rel1Description,
                         String rel2Name, String rel2Description);
 
-    List<ProductRelationshipAuthorization> getRelationshipProductAuths(Aspect<Relationship> aspect);
+    List<ProductRelationshipAuthorization> getRelationshipProductAuths(Aspect<Relationship> aspect, boolean includeGrouping);
 }

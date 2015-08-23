@@ -35,7 +35,9 @@ import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
  */
 public interface AgencyModel extends
         NetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute> {
-    List<AgencyLocationAuthorization> getAgencyLocationAuths(Aspect<Agency> aspect);
+    List<AgencyLocationAuthorization> getAgencyLocationAuths(Aspect<Agency> aspect,
+                                                             boolean includeGrouping);
 
-    List<AgencyProductAuthorization> getAgencyProductAuths(Aspect<Agency> aspect);
+    List<AgencyProductAuthorization> getAgencyProductAuths(Aspect<Agency> aspect,
+                                                           boolean includeGrouping);
 }

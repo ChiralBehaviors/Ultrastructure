@@ -1082,7 +1082,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                  cb.isNotNull(networkRoot.get("authorizedRelationship")),
                                  cb.isNotNull(networkRoot.get("authorizedParent")));
         if (!includeGrouping) {
-            match = cb.and(cb.isNull(networkRoot.get("groupingAgency")));
+            match = cb.and(cb.isNull(networkRoot.get("groupingAgency")), match);
         }
         query.select(networkRoot)
              .where(match);

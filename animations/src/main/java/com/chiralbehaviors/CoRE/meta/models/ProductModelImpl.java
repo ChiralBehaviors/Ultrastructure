@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -443,17 +444,23 @@ public class ProductModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductAgencyAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<AgencyProductAuthorization> getProductAgencyAuths(Aspect<Product> aspect) {
+    public List<AgencyProductAuthorization> getProductAgencyAuths(Aspect<Product> aspect,
+                                                                  boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AgencyProductAuthorization> query = cb.createQuery(AgencyProductAuthorization.class);
         Root<AgencyProductAuthorization> networkRoot = query.from(AgencyProductAuthorization.class);
+        Predicate match = cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.toParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(AgencyProductAuthorization_.toRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(AgencyProductAuthorization_.forward),
+                                          false));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(AgencyProductAuthorization_.groupingAgency)));
+        }
         query.select(networkRoot)
-             .where(cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.toParent),
-                                    aspect.getClassification()),
-                           cb.equal(networkRoot.get(AgencyProductAuthorization_.toRelationship),
-                                    aspect.getClassifier()),
-                           cb.equal(networkRoot.get(AgencyProductAuthorization_.forward),
-                                    false)));
+             .where(match);
         TypedQuery<AgencyProductAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -462,17 +469,23 @@ public class ProductModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductLocationAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<ProductLocationAuthorization> getProductLocationAuths(Aspect<Product> aspect) {
+    public List<ProductLocationAuthorization> getProductLocationAuths(Aspect<Product> aspect,
+                                                                      boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ProductLocationAuthorization> query = cb.createQuery(ProductLocationAuthorization.class);
         Root<ProductLocationAuthorization> networkRoot = query.from(ProductLocationAuthorization.class);
+        Predicate match = cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.fromParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.fromRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
+                                          true));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(ProductLocationAuthorization_.groupingAgency)));
+        }
         query.select(networkRoot)
-             .where(cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.fromParent),
-                                    aspect.getClassification()),
-                           cb.equal(networkRoot.get(ProductLocationAuthorization_.fromRelationship),
-                                    aspect.getClassifier()),
-                           cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
-                                    true)));
+             .where(match);
         TypedQuery<ProductLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -481,17 +494,23 @@ public class ProductModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductRelationshipAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<ProductRelationshipAuthorization> getProductRelationshipAuths(Aspect<Product> aspect) {
+    public List<ProductRelationshipAuthorization> getProductRelationshipAuths(Aspect<Product> aspect,
+                                                                              boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ProductRelationshipAuthorization> query = cb.createQuery(ProductRelationshipAuthorization.class);
         Root<ProductRelationshipAuthorization> networkRoot = query.from(ProductRelationshipAuthorization.class);
+        Predicate match = cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
+                                          true));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(ProductLocationAuthorization_.groupingAgency)));
+        }
         query.select(networkRoot)
-             .where(cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromParent),
-                                    aspect.getClassification()),
-                           cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromRelationship),
-                                    aspect.getClassifier()),
-                           cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
-                                    true)));
+             .where(match);
         TypedQuery<ProductRelationshipAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }

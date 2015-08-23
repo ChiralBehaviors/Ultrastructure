@@ -50,6 +50,7 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.phantasm.demo.MavenArtifact;
 import com.chiralbehaviors.phantasm.demo.Thing1;
@@ -468,6 +469,84 @@ public class TestPhantasm extends AbstractModelTest {
                                        model.getKernel()
                                             .getHasMember());
         assertEquals("Thing1", child.getName());
+    }
+
+    @Test
+    public void testXdChildAccess() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+
+        WorkspaceScope scope = thing1.getScope();
+        NetworkAuthorization<Product> facet = model.getProductModel()
+                                                   .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
+                                                                                     (Product) scope.lookup("Thing1")));
+        assertNotNull(facet);
+
+        TypedQuery<ProductLocationAuthorization> query = em.createQuery("select auth from ProductLocationAuthorization auth "
+                                                                        + "where auth.fromRelationship = :fromRelationship "
+                                                                        + "and auth.fromParent = :fromParent "
+                                                                        + "and auth.connection = :connection "
+                                                                        + "and auth.toRelationship = :toRelationship "
+                                                                        + "and auth.toParent = :toParent ",
+                                                                        ProductLocationAuthorization.class);
+        query.setParameter("fromRelationship", kernel.getIsA());
+        query.setParameter("fromParent", scope.lookup("Thing1"));
+        query.setParameter("connection", scope.lookup("derivedFrom"));
+        query.setParameter("toRelationship", kernel.getIsA());
+        query.setParameter("toParent", scope.lookup("MavenArtifact"));
+        ProductLocationAuthorization stateAuth = query.getSingleResult();
+        assertNotNull(stateAuth);
+
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), stateAuth,
+                                         kernel.getHadMember()));
+
+        ProductLocationAuthorization accessAuth = new ProductLocationAuthorization(kernel.getCore());
+        accessAuth.setFromRelationship(stateAuth.getFromRelationship());
+        accessAuth.setFromParent(stateAuth.getFromParent());
+        accessAuth.setConnection(stateAuth.getConnection());
+        accessAuth.setToRelationship(stateAuth.getToRelationship());
+        accessAuth.setToParent(stateAuth.getToParent());
+        accessAuth.setSequenceNumber(1);
+        accessAuth.setCardinality(stateAuth.getCardinality());
+        accessAuth.setGroupingAgency(kernel.getAnyAgency());
+        em.persist(accessAuth);
+        assertNotNull(stateAuth);
+
+        assertFalse(model.getProductModel()
+                         .checkCapability(kernel.getCore(), stateAuth,
+                                          kernel.getHadMember()));
+
+        model.getAgencyModel()
+             .link(kernel.getCore(), kernel.getHadMember(),
+                   kernel.getAnyAgency(), kernel.getCore());
+
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), stateAuth,
+                                         kernel.getHadMember()));
+
+        accessAuth = new ProductLocationAuthorization(kernel.getCore());
+        accessAuth.setFromRelationship(stateAuth.getFromRelationship());
+        accessAuth.setFromParent(stateAuth.getFromParent());
+        accessAuth.setConnection(stateAuth.getConnection());
+        accessAuth.setToRelationship(stateAuth.getToRelationship());
+        accessAuth.setToParent(stateAuth.getToParent());
+        accessAuth.setSequenceNumber(2);
+        accessAuth.setCardinality(stateAuth.getCardinality());
+        accessAuth.setGroupingAgency(kernel.getSameAgency());
+        em.persist(accessAuth);
+        assertNotNull(stateAuth);
+
+        assertFalse(model.getProductModel()
+                         .checkCapability(kernel.getCore(), stateAuth,
+                                          kernel.getHadMember()));
+
+        model.getAgencyModel()
+             .link(kernel.getCore(), kernel.getHadMember(),
+                   kernel.getSameAgency(), kernel.getCore());
+
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), stateAuth,
+                                         kernel.getHadMember()));
     }
 
     @Test

@@ -321,7 +321,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "  AND required.classification = :classification "
                                                                 + "  AND required.childRelationship IS NULL "
                                                                 + "  AND required.authorizedRelationship IS NULL "
-                                                                + "  AND required.authorizedParent = IS NULL "
+                                                                + "  AND required.authorizedParent IS NULL "
                                                                 + "  AND NOT EXISTS( "
                                                                 + "      SELECT required.groupingAgency from AgencyNetwork authorized "
                                                                 + "         WHERE authorized.parent = :agency "

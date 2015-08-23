@@ -498,9 +498,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * 
      * @param aspect
+     * @param includeGrouping TODO
      * @return the list of network authorizations for this aspect
      */
-    List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect);
+    List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect, boolean includeGrouping);
 
     /**
      *

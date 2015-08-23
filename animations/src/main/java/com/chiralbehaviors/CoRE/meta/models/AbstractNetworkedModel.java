@@ -52,6 +52,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -506,7 +507,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.select(networkRoot)
              .where(cb.and(cb.isNull(networkRoot.get("authorizedParent")),
                            cb.isNull(networkRoot.get("authorizedRelationship")),
-                           cb.isNull(networkRoot.get("childRelationship"))));
+                           cb.isNull(networkRoot.get("childRelationship")),
+                           cb.isNull(networkRoot.get("groupingAgency"))));
         TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
         List<Aspect<RuleForm>> facets = new ArrayList<>();
         for (NetworkAuthorization<RuleForm> auth : q.getResultList()) {
@@ -859,7 +861,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                     aspect.getClassifier()),
                            cb.isNull(networkRoot.get("childRelationship")),
                            cb.isNull(networkRoot.get("authorizedRelationship")),
-                           cb.isNull(networkRoot.get("authorizedParent"))));
+                           cb.isNull(networkRoot.get("authorizedParent")),
+                           cb.isNull(networkRoot.get("groupingAgency"))));
         TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
         List<NetworkAuthorization<RuleForm>> results = q.getResultList();
         return results.isEmpty() ? null : results.get(0);
@@ -882,7 +885,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                   cb.isNotNull(networkRoot.get("classification")),
                                   cb.isNull(networkRoot.get("childRelationship")),
                                   cb.isNull(networkRoot.get("authorizedRelationship")),
-                                  cb.isNull(networkRoot.get("authorizedParent")))));
+                                  cb.isNull(networkRoot.get("groupingAgency")))));
         TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -1064,20 +1067,25 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect) {
+    public List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect,
+                                                                         boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         @SuppressWarnings("unchecked")
         Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();
         CriteriaQuery<NetworkAuthorization<RuleForm>> query = cb.createQuery(clazz);
         Root<NetworkAuthorization<RuleForm>> networkRoot = query.from(clazz);
+        Predicate match = cb.and(cb.equal(networkRoot.get("classification"),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get("classifier"),
+                                          aspect.getClassifier()),
+                                 cb.isNotNull(networkRoot.get("childRelationship")),
+                                 cb.isNotNull(networkRoot.get("authorizedRelationship")),
+                                 cb.isNotNull(networkRoot.get("authorizedParent")));
+        if (!includeGrouping) {
+            match = cb.and(cb.isNull(networkRoot.get("groupingAgency")));
+        }
         query.select(networkRoot)
-             .where(cb.and(cb.equal(networkRoot.get("classification"),
-                                    aspect.getClassification()),
-                           cb.equal(networkRoot.get("classifier"),
-                                    aspect.getClassifier()),
-                           cb.isNotNull(networkRoot.get("childRelationship")),
-                           cb.isNotNull(networkRoot.get("authorizedRelationship")),
-                           cb.isNotNull(networkRoot.get("authorizedParent"))));
+             .where(match);
         TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
         return q.getResultList();
     }

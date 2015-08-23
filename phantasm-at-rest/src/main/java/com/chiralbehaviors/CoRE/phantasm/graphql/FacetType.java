@@ -114,7 +114,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         if (!references.isEmpty()) {
             return references;
         }
-        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this)) {
+        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this, false)) {
             references.add(resolve(auth));
         }
         resolveXdAuths();
@@ -164,7 +164,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     private void buildNetworkAuths() {
-        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this)) {
+        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this, false)) {
             String term = auth.getName();
             if (term == null) {
                 continue;

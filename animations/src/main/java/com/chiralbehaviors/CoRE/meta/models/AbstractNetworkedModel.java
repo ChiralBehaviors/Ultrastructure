@@ -245,14 +245,13 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * relationship of the facet child relationship.
      */
     @Override
-    public boolean checkCapability(Agency agency,
-                                   NetworkAuthorization<RuleForm> authChild,
-                                   AttributeAuthorization<RuleForm, ?> stateAuth,
-                                   Relationship capability) {
+    public boolean checkNetworkCapability(Agency agency,
+                                          AttributeAuthorization<RuleForm, ?> stateAuth,
+                                          Relationship capability) {
         // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
         TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
                                                                 + "  WHERE required.groupingAgency IS NOT NULL "
-                                                                + "  AND required.networkAuthorization = :facet "
+                                                                + "  AND required.networkAuthorization = :auth "
                                                                 + "  AND required.authorizedNetworkAttribute = :attribute "
                                                                 + "  AND NOT EXISTS( "
                                                                 + "      SELECT required.groupingAgency from AgencyNetwork authorized "
@@ -262,7 +261,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "  )",
                                                                 getAttributeAuthorizationClass().getSimpleName()),
                                                   Agency.class);
-        query.setParameter("facet", stateAuth.getNetworkAuthorization());
+        query.setParameter("auth", stateAuth.getNetworkAuthorization());
         query.setParameter("attribute",
                            stateAuth.getAuthorizedNetworkAttribute());
         query.setParameter("agency", agency);
@@ -318,8 +317,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
         TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
                                                                 + "  WHERE required.groupingAgency IS NOT NULL "
-                                                                + "  AND required.classifier = facet.classifier "
-                                                                + "  AND required.classification = facet.classification "
+                                                                + "  AND required.classifier = :classifier "
+                                                                + "  AND required.classification = :classification "
                                                                 + "  AND required.childRelationship IS NULL "
                                                                 + "  AND required.authorizedRelationship IS NULL "
                                                                 + "  AND required.authorizedParent = IS NULL "
@@ -328,11 +327,11 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         WHERE authorized.parent = :agency "
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
-                                                                + "  ) "
-                                                                + "  AND facet = :facet",
+                                                                + "  ) ",
                                                                 getNetworkAuthClass().getSimpleName()),
                                                   Agency.class);
-        query.setParameter("facet", facet);
+        query.setParameter("classifier", facet.getClassifier());
+        query.setParameter("classification", facet.getClassification());
         query.setParameter("agency", agency);
         query.setParameter("capability", capability);
         return query.getResultList()

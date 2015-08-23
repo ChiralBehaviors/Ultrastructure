@@ -149,8 +149,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * Check the capability of an agency on an attribute of the authorized
      * relationship of the facet child relationship.
      */
-    boolean checkCapability(Agency agency, NetworkAuthorization<RuleForm> authChild,
-                            AttributeAuthorization<RuleForm, ?> stateAuth,
+    boolean checkNetworkCapability(Agency agency, AttributeAuthorization<RuleForm, ?> stateAuth,
                             Relationship capability);
 
     /**

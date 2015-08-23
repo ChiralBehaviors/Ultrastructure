@@ -41,7 +41,6 @@ import javax.persistence.TypedQuery;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -50,6 +49,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
+import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.phantasm.demo.MavenArtifact;
 import com.chiralbehaviors.phantasm.demo.Thing1;
 import com.chiralbehaviors.phantasm.demo.Thing2;
@@ -93,8 +93,8 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), thing1.getRuleform(),
-                                         stateAuth, kernel.getHadMember()));
+                        .checkCapability(kernel.getCore(), stateAuth,
+                                         kernel.getHadMember()));
 
         ProductAttributeAuthorization accessAuth = new ProductAttributeAuthorization(kernel.getCore());
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
@@ -102,19 +102,114 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.setSequenceNumber(1);
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
+
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(),
-                                          thing1.getRuleform(), stateAuth,
+                         .checkCapability(kernel.getCore(), stateAuth,
                                           kernel.getHadMember()));
-        AgencyNetwork allowAccess = model.getAgencyModel()
-                                         .link(kernel.getCore(),
-                                               kernel.getHadMember(),
-                                               kernel.getAnyAgency(),
-                                               kernel.getCore());
-        em.persist(allowAccess);
+
+        model.getAgencyModel()
+             .link(kernel.getCore(), kernel.getHadMember(),
+                   kernel.getAnyAgency(), kernel.getCore());
+
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), thing1.getRuleform(),
-                                         stateAuth, kernel.getHadMember()));
+                        .checkCapability(kernel.getCore(), stateAuth,
+                                         kernel.getHadMember()));
+
+        accessAuth = new ProductAttributeAuthorization(kernel.getCore());
+        accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
+        accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
+        accessAuth.setSequenceNumber(2);
+        accessAuth.setGroupingAgency(kernel.getSameAgency());
+        em.persist(accessAuth);
+
+        assertFalse(model.getProductModel()
+                         .checkCapability(kernel.getCore(), stateAuth,
+                                          kernel.getHadMember()));
+
+        model.getAgencyModel()
+             .link(kernel.getCore(), kernel.getHadMember(),
+                   kernel.getSameAgency(), kernel.getCore());
+
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), stateAuth,
+                                         kernel.getHadMember()));
+    }
+
+    @Test
+    public void testChildAccess() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        thing1.setPercentage(BigDecimal.ONE);
+
+        WorkspaceScope scope = thing1.getScope();
+        NetworkAuthorization<Product> facet = model.getProductModel()
+                                                   .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
+                                                                                     (Product) scope.lookup("Thing1")));
+        assertNotNull(facet);
+
+        TypedQuery<ProductNetworkAuthorization> query = em.createQuery("select auth from ProductNetworkAuthorization auth "
+                                                                       + "where auth.classifier = :classifier "
+                                                                       + "and auth.classification = :classification "
+                                                                       + "and auth.childRelationship = :relationship "
+                                                                       + "and auth.authorizedRelationship = :authRel "
+                                                                       + "and auth.authorizedParent = :authParent ",
+                                                                       ProductNetworkAuthorization.class);
+        query.setParameter("classifier", kernel.getIsA());
+        query.setParameter("classification", scope.lookup("Thing1"));
+        query.setParameter("relationship", scope.lookup("thing1Of"));
+        query.setParameter("authRel", kernel.getIsA());
+        query.setParameter("authParent", scope.lookup("Thing2"));
+        ProductNetworkAuthorization stateAuth = query.getSingleResult();
+        assertNotNull(stateAuth);
+
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), stateAuth,
+                                         kernel.getHadMember()));
+
+        ProductNetworkAuthorization accessAuth = new ProductNetworkAuthorization(kernel.getCore());
+        accessAuth.setClassifier(stateAuth.getClassifier());
+        accessAuth.setClassification(stateAuth.getClassification());
+        accessAuth.setChildRelationship(stateAuth.getChildRelationship());
+        accessAuth.setAuthorizedRelationship(stateAuth.getAuthorizedRelationship());
+        accessAuth.setAuthorizedParent(stateAuth.getAuthorizedParent());
+        accessAuth.setSequenceNumber(1);
+        accessAuth.setGroupingAgency(kernel.getAnyAgency());
+        em.persist(accessAuth);
+        assertNotNull(stateAuth);
+
+        assertFalse(model.getProductModel()
+                         .checkCapability(kernel.getCore(), stateAuth,
+                                          kernel.getHadMember()));
+
+        model.getAgencyModel()
+             .link(kernel.getCore(), kernel.getHadMember(),
+                   kernel.getAnyAgency(), kernel.getCore());
+
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), stateAuth,
+                                         kernel.getHadMember()));
+
+        accessAuth = new ProductNetworkAuthorization(kernel.getCore());
+        accessAuth.setClassifier(stateAuth.getClassifier());
+        accessAuth.setClassification(stateAuth.getClassification());
+        accessAuth.setChildRelationship(stateAuth.getChildRelationship());
+        accessAuth.setAuthorizedRelationship(stateAuth.getAuthorizedRelationship());
+        accessAuth.setAuthorizedParent(stateAuth.getAuthorizedParent());
+        accessAuth.setSequenceNumber(2);
+        accessAuth.setGroupingAgency(kernel.getSameAgency());
+        em.persist(accessAuth);
+        assertNotNull(stateAuth);
+
+        assertFalse(model.getProductModel()
+                         .checkCapability(kernel.getCore(), stateAuth,
+                                          kernel.getHadMember()));
+
+        model.getAgencyModel()
+             .link(kernel.getCore(), kernel.getHadMember(),
+                   kernel.getSameAgency(), kernel.getCore());
+
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), stateAuth,
+                                         kernel.getHadMember()));
     }
 
     @Test

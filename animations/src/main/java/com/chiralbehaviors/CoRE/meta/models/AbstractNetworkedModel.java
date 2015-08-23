@@ -216,7 +216,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * Check the capability of an agency on an attribute of a ruleform.
      */
     @Override
-    public boolean checkCapability(Agency agency, RuleForm instance,
+    public boolean checkCapability(Agency agency,
                                    AttributeAuthorization<RuleForm, ?> stateAuth,
                                    Relationship capability) {
         // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
@@ -245,7 +245,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * relationship of the facet child relationship.
      */
     @Override
-    public boolean checkCapability(Agency agency, RuleForm instance,
+    public boolean checkCapability(Agency agency,
                                    NetworkAuthorization<RuleForm> authChild,
                                    AttributeAuthorization<RuleForm, ?> stateAuth,
                                    Relationship capability) {
@@ -276,27 +276,32 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * facet child relationship.
      */
     @Override
-    public boolean checkCapability(Agency agency, RuleForm instance,
+    public boolean checkCapability(Agency agency,
                                    NetworkAuthorization<RuleForm> stateAuth,
                                    Relationship capability) {
         // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
         TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
                                                                 + "  WHERE required.groupingAgency IS NOT NULL "
-                                                                + "  AND required.classifier = facet.classifier "
-                                                                + "  AND required.classification = facet.classification "
-                                                                + "  AND required.childRelationship = facet.childRelationship "
-                                                                + "  AND required.authorizedRelationship = facet.authorizedRelationship "
-                                                                + "  AND required.authorizedParent = facet.authorizedParent "
+                                                                + "  AND required.classifier = :classifier "
+                                                                + "  AND required.classification = :classification "
+                                                                + "  AND required.childRelationship = :childRelationship "
+                                                                + "  AND required.authorizedRelationship = :authorizedRelationship "
+                                                                + "  AND required.authorizedParent = :authorizedParent "
                                                                 + "  AND NOT EXISTS( "
                                                                 + "      SELECT required.groupingAgency from AgencyNetwork authorized "
                                                                 + "         WHERE authorized.parent = :agency "
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
-                                                                + "  ) "
-                                                                + "  AND facet = :facet",
+                                                                + "  ) ",
                                                                 getNetworkAuthClass().getSimpleName()),
                                                   Agency.class);
-        query.setParameter("facet", stateAuth);
+        query.setParameter("classifier", stateAuth.getClassifier());
+        query.setParameter("classification", stateAuth.getClassification());
+        query.setParameter("childRelationship",
+                           stateAuth.getChildRelationship());
+        query.setParameter("authorizedRelationship",
+                           stateAuth.getAuthorizedRelationship());
+        query.setParameter("authorizedParent", stateAuth.getAuthorizedParent());
         query.setParameter("agency", agency);
         query.setParameter("capability", capability);
         return query.getResultList()
@@ -307,7 +312,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * Check the capability of an agency on the facet.
      */
     @Override
-    public boolean checkFacetCapability(Agency agency, RuleForm instance,
+    public boolean checkFacetCapability(Agency agency,
                                         NetworkAuthorization<RuleForm> facet,
                                         Relationship capability) {
         // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query

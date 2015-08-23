@@ -93,6 +93,8 @@
     <include relativeToChangelogFile="true" file="tables/product_sibling_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_self_sequencing_authorization.xml" />
+    
+    <include relativeToChangelogFile="true" file="tables/agency_grouping.xml" />
 
     <include relativeToChangelogFile="true" file="tables/workspace_authorization.xml" />
 

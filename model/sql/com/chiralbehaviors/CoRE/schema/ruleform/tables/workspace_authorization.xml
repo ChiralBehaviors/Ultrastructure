@@ -24,6 +24,7 @@
             <column name="agency" type="uuid" />
             <column name="agency_attribute" type="uuid" />
             <column name="agency_attribute_authorization" type="uuid" />
+            <column name="agency_grouping" type="uuid" />
             <column name="agency_location" type="uuid" />
             <column name="agency_location_attribute" type="uuid" />
             <column name="agency_network" type="uuid" />
@@ -106,6 +107,8 @@
         <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_attribute_authorization "
             constraintName="workspace_unique_ruleform_constraint62" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_grouping" constraintName="workspace_unique_ruleform_constraint200"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
         <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_location" constraintName="workspace_unique_ruleform_constraint2"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
         <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_location_attribute"
@@ -283,6 +286,10 @@
             baseColumnNames="agency_attribute_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_attribute_authorization_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_attribute_authorization" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="agency_grouping" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_grouping_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
+            referencedTableName="agency_grouping" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency_location" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_location_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id"
@@ -600,6 +607,7 @@
                 ruleform.null_zero(agency) +
                 ruleform.null_zero(agency_attribute) +
                 ruleform.null_zero(agency_attribute_authorization) +
+                ruleform.null_zero(agency_grouping) +
                 ruleform.null_zero(agency_location) +
                 ruleform.null_zero(agency_location_attribute) +
                 ruleform.null_zero(agency_location_attribute_authorization) +

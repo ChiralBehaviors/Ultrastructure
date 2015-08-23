@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.network;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -83,9 +82,6 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     private String name;
 
-    @Column(name = "sequence_number")
-    private int sequenceNumber = 0;
-
     public NetworkAuthorization() {
         super();
     }
@@ -134,10 +130,6 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
         return groupingAgency;
     }
 
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
-
     abstract public void setAuthorizedParent(RuleForm parent);
 
     public void setAuthorizedRelationship(Relationship authorizedRelationship) {
@@ -160,10 +152,6 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     public void setGroupingAgency(Agency groupingAgency) {
         this.groupingAgency = groupingAgency;
-    }
-
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
     }
 
     public String getName() {

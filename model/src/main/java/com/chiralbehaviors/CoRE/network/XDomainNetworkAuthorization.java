@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.network;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -78,9 +77,6 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
 
     private String name;
 
-    @Column(name = "sequence_number")
-    private int sequenceNumber = 0;
-
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "to_relationship")
     private Relationship toRelationship;
@@ -125,10 +121,6 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
         return name;
     }
 
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
-
     abstract public To getToParent();
 
     public Relationship getToRelationship() {
@@ -155,14 +147,6 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
     }
 
     abstract public void setToParent(To to);

@@ -7,9 +7,8 @@
 
     <changeSet id="2.0.0" author="hparry">
         <createView viewName="product_relationship" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT bl.id, res.name AS agency, b.name AS product, rel.name AS relationship, l.name AS child, bl.notes, up.name AS updated_by, bl.version
+			 SELECT bl.id, b.name AS product, rel.name AS relationship, l.name AS child, bl.notes, up.name AS updated_by, bl.version
 			   FROM product_relationship bl
-			   JOIN agency res ON bl.agency = res.id
 			   JOIN product b ON bl.product = b.id
 			   JOIN relationship rel ON bl.relationship = rel.id
 			   JOIN relationship l ON bl.child = l.id

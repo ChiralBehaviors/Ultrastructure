@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -583,13 +584,18 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect) {
+    public List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                          boolean includeGrouping) {
         TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
                                                               + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
                                                               authorization);
         query.setParameter("classifier", aspect.getClassifier());
         query.setParameter("classification", aspect.getClassification());
-        return query.getResultList();
+        List<AttributeAuth> result = query.getResultList();
+        return includeGrouping ? result.stream()
+                                       .filter(classifier -> classifier.getGroupingAgency() == null)
+                                       .collect(Collectors.toList())
+                               : result;
     }
 
     /*
@@ -1179,7 +1185,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                 workspace.add(link);
             }
         }
-        for (AttributeAuth authorization : getAttributeAuthorizations(aspect)) {
+        for (AttributeAuth authorization : getAttributeAuthorizations(aspect,
+                                                                      false)) {
             if (!authorization.getAuthorizedAttribute()
                               .getKeyed()
                 && !authorization.getAuthorizedAttribute()

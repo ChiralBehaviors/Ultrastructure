@@ -18,7 +18,6 @@
                     base_table.quantity,
                     u.name AS quantity_unit,
                     base_table.parent,
-                    base_table.sequence_number,
                     base_table.notes,
                     up.name AS updated_by, base_table.version,
                     base_table.protocol

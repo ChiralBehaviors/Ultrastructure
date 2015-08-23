@@ -21,11 +21,6 @@
             <column name="authorized_network_attribute" remarks="An Attribute the child network edge is expected to have" type="uuid">
                 <constraints nullable="true" />
             </column>
-            <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
-            >
-                <constraints nullable="false" />
-            </column>
             <column name="grouping_agency"
                 remarks="If present, along with 'location_attribute' and 'location_value', used to select an entire grouping of Locations that can be acceptable values"
                 type="uuid" />
@@ -67,7 +62,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="network_authorization, authorized_attribute, authorized_network_attribute, sequence_number" constraintName="location_attribute_authorizatio_agency_classification_attri_key"
+            columnNames="network_authorization, authorized_attribute, authorized_network_attribute, grouping_agency" constraintName="location_attribute_authorizatio_agency_classification_attri_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="location_attribute_authorization" />
         <createIndex schemaName="ruleform" indexName="location_attribute_authorization_updated_by_fkey_idx" tableName="location_attribute_authorization"
             unique="false"

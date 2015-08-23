@@ -139,7 +139,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     private void buildAttributes() {
-        for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
+        for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this, false)) {
             Attribute attribute = auth.getAuthorizedAttribute();
             builder.field(newFieldDefinition().type(typeOf(attribute))
                                               .name(toFieldName(attribute.getName()))

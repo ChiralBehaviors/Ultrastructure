@@ -10,9 +10,6 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_location_attribute_pkey" />
             </column>
-            <column name="agency" type="uuid">
-                <constraints nullable="false" />
-            </column>
             <column name="agency_location" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -41,10 +38,6 @@
             <dropTable tableName="agency_location_attribute" />
         </rollback> 
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency" baseTableName="agency_location_attribute" constraintName="agency_location_attribute_agency_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" /> 
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="agency_location_attribute" constraintName="agency_location_attribute_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="attribute" /> 
@@ -56,7 +49,7 @@
             baseColumnNames="updated_by" baseTableName="agency_location_attribute" constraintName="agency_location_attribute_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" /> 
-        <addUniqueConstraint schemaName="ruleform" columnNames="agency, agency_location, attribute, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="agency_location, attribute, sequence_number"
             constraintName="agency_location_attribute_agency_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="agency_location_attribute" /> 
         <createIndex schemaName="ruleform" indexName="agency_location_attribute_updated_by_fkey_idx" tableName="agency_location_attribute"

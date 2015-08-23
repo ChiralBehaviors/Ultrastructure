@@ -100,7 +100,6 @@ public class TestPhantasm extends AbstractModelTest {
         ProductAttributeAuthorization accessAuth = new ProductAttributeAuthorization(kernel.getCore());
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setSequenceNumber(1);
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
 
@@ -119,7 +118,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth = new ProductAttributeAuthorization(kernel.getCore());
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setSequenceNumber(2);
         accessAuth.setGroupingAgency(kernel.getSameAgency());
         em.persist(accessAuth);
 
@@ -171,7 +169,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.setChildRelationship(stateAuth.getChildRelationship());
         accessAuth.setAuthorizedRelationship(stateAuth.getAuthorizedRelationship());
         accessAuth.setAuthorizedParent(stateAuth.getAuthorizedParent());
-        accessAuth.setSequenceNumber(1);
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
         assertNotNull(stateAuth);
@@ -194,7 +191,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.setChildRelationship(stateAuth.getChildRelationship());
         accessAuth.setAuthorizedRelationship(stateAuth.getAuthorizedRelationship());
         accessAuth.setAuthorizedParent(stateAuth.getAuthorizedParent());
-        accessAuth.setSequenceNumber(2);
         accessAuth.setGroupingAgency(kernel.getSameAgency());
         em.persist(accessAuth);
         assertNotNull(stateAuth);
@@ -345,7 +341,6 @@ public class TestPhantasm extends AbstractModelTest {
         ProductNetworkAuthorization accessAuth = new ProductNetworkAuthorization(kernel.getCore());
         accessAuth.setClassifier(facet.getClassifier());
         accessAuth.setClassification(facet.getClassification());
-        accessAuth.setSequenceNumber(1);
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
 
@@ -364,7 +359,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth = new ProductNetworkAuthorization(kernel.getCore());
         accessAuth.setClassifier(facet.getClassifier());
         accessAuth.setClassification(facet.getClassification());
-        accessAuth.setSequenceNumber(2);
         accessAuth.setGroupingAgency(kernel.getSameAgency());
         em.persist(accessAuth);
 
@@ -422,7 +416,6 @@ public class TestPhantasm extends AbstractModelTest {
         ProductAttributeAuthorization accessAuth = new ProductAttributeAuthorization(kernel.getCore());
         accessAuth.setAuthorizedNetworkAttribute(stateAuth.getAuthorizedNetworkAttribute());
         accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setSequenceNumber(1);
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
 
@@ -441,7 +434,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth = new ProductAttributeAuthorization(kernel.getCore());
         accessAuth.setAuthorizedNetworkAttribute(stateAuth.getAuthorizedNetworkAttribute());
         accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setSequenceNumber(2);
         accessAuth.setGroupingAgency(kernel.getSameAgency());
         em.persist(accessAuth);
 
@@ -506,7 +498,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.setConnection(stateAuth.getConnection());
         accessAuth.setToRelationship(stateAuth.getToRelationship());
         accessAuth.setToParent(stateAuth.getToParent());
-        accessAuth.setSequenceNumber(1);
         accessAuth.setCardinality(stateAuth.getCardinality());
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
@@ -530,7 +521,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.setConnection(stateAuth.getConnection());
         accessAuth.setToRelationship(stateAuth.getToRelationship());
         accessAuth.setToParent(stateAuth.getToParent());
-        accessAuth.setSequenceNumber(2);
         accessAuth.setCardinality(stateAuth.getCardinality());
         accessAuth.setGroupingAgency(kernel.getSameAgency());
         em.persist(accessAuth);
@@ -571,7 +561,6 @@ public class TestPhantasm extends AbstractModelTest {
         ProductLocationAttributeAuthorization accessAuth = new ProductLocationAttributeAuthorization(kernel.getCore());
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setSequenceNumber(1);
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
 
@@ -590,7 +579,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth = new ProductLocationAttributeAuthorization(kernel.getCore());
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setNetworkAuthorization(stateAuth.getNetworkAuthorization());
-        accessAuth.setSequenceNumber(2);
         accessAuth.setGroupingAgency(kernel.getSameAgency());
         em.persist(accessAuth);
 

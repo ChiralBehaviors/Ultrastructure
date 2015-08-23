@@ -10,9 +10,6 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_product_attribute_pkey" />
             </column>
-            <column name="agency" type="uuid">
-                <constraints nullable="false" />
-            </column>
             <column name="agency_product" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -40,9 +37,6 @@
         <rollback>
             <dropTable tableName="agency_product_attribute" />
         </rollback>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency" baseTableName="agency_product_attribute" constraintName="agency_product_attribute_agency_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="agency_product_attribute" constraintName="agency_product_attribute_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />

@@ -108,6 +108,7 @@ import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
+import com.chiralbehaviors.CoRE.security.AgencyGrouping;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
@@ -135,6 +136,7 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  AGENCY                                       = "Agency";
     public static final String  AGENCY_ATTRIBUTE                             = "AgencyAttribute";
     public static final String  AGENCY_ATTRIBUTE_AUTHORIZATION               = "AgencyAttributeAuthorization";
+    public static final String  AGENCY_GROUPING                              = "AgencyGrouping";
     public static final String  AGENCY_LOCATION                              = "AgencyLocation";
     public static final String  AGENCY_LOCATION_ATTRIBUTE                    = "AgencyLocationAttribute";
     public static final String  AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION      = "AgencyLocationAttributeAuthorization";
@@ -215,7 +217,8 @@ public class WorkspaceAuthorization extends Ruleform {
 
     public static String getWorkspaceAuthorizationColumnName(Class<?> ruleform) {
         StringBuilder builder = new StringBuilder();
-        String simpleName = ruleform.getClass().getSimpleName();
+        String simpleName = ruleform.getClass()
+                                    .getSimpleName();
         builder.append(Character.toLowerCase(simpleName.charAt(0)));
         int i = 1;
         for (char c = simpleName.charAt(i); i < simpleName.length(); i++) {
@@ -241,6 +244,11 @@ public class WorkspaceAuthorization extends Ruleform {
     @JoinColumn(name = "agency_attribute_authorization")
     @JsonIgnore
     private AgencyAttributeAuthorization agencyAttributeAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_grouping")
+    @JsonIgnore
+    private AgencyGrouping<?, ?> agencyGrouping;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_location")
@@ -644,6 +652,8 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) agencyAttribute;
             case AGENCY_ATTRIBUTE_AUTHORIZATION:
                 return (T) agencyAttributeAuthorization;
+            case AGENCY_GROUPING:
+                return (T) agencyGrouping;
             case AGENCY_LOCATION:
                 return (T) agencyLocation;
             case AGENCY_LOCATION_ATTRIBUTE:
@@ -823,7 +833,8 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setRuleform(Ruleform ruleform) {
-        switch (ruleform.getClass().getSimpleName()) {
+        switch (ruleform.getClass()
+                        .getSimpleName()) {
             case AGENCY:
                 setAgency((Agency) ruleform);
                 break;
@@ -832,6 +843,9 @@ public class WorkspaceAuthorization extends Ruleform {
                 break;
             case AGENCY_ATTRIBUTE_AUTHORIZATION:
                 setAgencyAttributeAuthorization((AgencyAttributeAuthorization) ruleform);
+                break;
+            case AGENCY_GROUPING:
+                setAgencyGrouping((AgencyGrouping<?, ?>) ruleform);
                 break;
             case AGENCY_LOCATION:
                 setAgencyLocation((AgencyLocation) ruleform);
@@ -1048,7 +1062,8 @@ public class WorkspaceAuthorization extends Ruleform {
 
             default:
                 throw new IllegalStateException(String.format("Invalid type: %s",
-                                                              ruleform.getClass().getSimpleName()));
+                                                              ruleform.getClass()
+                                                                      .getSimpleName()));
         }
     }
 
@@ -1071,6 +1086,11 @@ public class WorkspaceAuthorization extends Ruleform {
     private void setAgencyAttributeAuthorization(AgencyAttributeAuthorization agencyAttributeAuthorization) {
         type = AGENCY_ATTRIBUTE_AUTHORIZATION;
         this.agencyAttributeAuthorization = agencyAttributeAuthorization;
+    }
+
+    private void setAgencyGrouping(AgencyGrouping<?, ?> agencyGrouping) {
+        type = AGENCY_GROUPING;
+        this.agencyGrouping = agencyGrouping;
     }
 
     private void setAgencyLocation(AgencyLocation agencyLocation) {

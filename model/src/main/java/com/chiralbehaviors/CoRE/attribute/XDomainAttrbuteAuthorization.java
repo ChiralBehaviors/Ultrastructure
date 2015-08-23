@@ -77,9 +77,6 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
     @Column(name = "numeric_value")
     private BigDecimal numericValue;
 
-    @Column(name = "sequence_number")
-    private int sequenceNumber = 0;
-
     @Column(name = "text_value")
     private String textValue;
 
@@ -156,10 +153,6 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
         return numericValue;
     }
 
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
-
     @JsonIgnore
     public String getTextValue() {
         return textValue;
@@ -224,10 +217,6 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
 
     public void setNumericValue(BigDecimal numericValue) {
         this.numericValue = numericValue;
-    }
-
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
     }
 
     public void setTextValue(String textValue) {

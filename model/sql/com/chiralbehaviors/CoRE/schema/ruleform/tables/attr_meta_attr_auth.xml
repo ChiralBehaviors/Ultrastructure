@@ -20,12 +20,7 @@
             </column>
             <column name="authorized_network_attribute" remarks="An Attribute the child network edge is expected to have" type="uuid">
                 <constraints nullable="true" />
-            </column>
-            <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when a meta Attribute can have multiple acceptable values" type="sequence_number"
-            >
-                <constraints nullable="false" />
-            </column>
+            </column> 
             <column name="grouping_agency" remarks="If present, used to select an entire grouping of Attributes that can be acceptable values"
                 type="uuid" />
             <column name="boolean_value" type="boolean" />
@@ -66,7 +61,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="network_authorization, authorized_attribute, authorized_network_attribute, sequence_number" constraintName="attr_meta_attr_auth_classification_attri_key"
+            columnNames="network_authorization, authorized_attribute, authorized_network_attribute, grouping_agency" constraintName="attr_meta_attr_auth_classification_attri_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="attr_meta_attr_auth" />
         <createIndex schemaName="ruleform" indexName="attr_meta_attr_auth_updated_by_fkey_idx" tableName="attr_meta_attr_auth"
             unique="false"

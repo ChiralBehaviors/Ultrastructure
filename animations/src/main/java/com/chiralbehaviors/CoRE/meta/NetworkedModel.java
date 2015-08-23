@@ -303,9 +303,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      *
      * @param aspect
      *            - the classifying aspect.
+     * @param includeGrouping TODO
      * @return
      */
-    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect);
+    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect, boolean includeGrouping);
 
     /**
      * Answer the list of attribute authorizations that are classified by an

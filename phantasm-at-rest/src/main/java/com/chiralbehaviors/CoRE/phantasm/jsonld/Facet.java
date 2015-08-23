@@ -695,7 +695,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     private void collectAttributes(Model model, UriInfo uriInfo) {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(getClassification());
-        for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
+        for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this, false)) {
             String term = auth.getAuthorizedAttribute().getName();
             attributes.put(term, auth.getAuthorizedAttribute());
             terms.put(term,

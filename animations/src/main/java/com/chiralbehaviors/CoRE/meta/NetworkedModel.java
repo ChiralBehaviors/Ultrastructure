@@ -30,11 +30,13 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
@@ -142,14 +144,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Check the capability of an agency on an attribute of a ruleform.
      */
-    boolean checkCapability(Agency agency, AttributeAuthorization<RuleForm, ?> statAuth,
-                            Relationship capability);
-
-    /**
-     * Check the capability of an agency on an attribute of the authorized
-     * relationship of the facet child relationship.
-     */
-    boolean checkNetworkCapability(Agency agency, AttributeAuthorization<RuleForm, ?> stateAuth,
+    boolean checkCapability(Agency agency,
+                            AttributeAuthorization<RuleForm, ?> statAuth,
                             Relationship capability);
 
     /**
@@ -160,10 +156,35 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
+     * Check the capability of an agency on an attribute of the authorized cross
+     * domain relationship of the facet child relationship.
+     */
+    boolean checkCapability(Agency agency,
+                            XDomainAttrbuteAuthorization<?, ?> stateAuth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of an agency on the authorized relationship of the
+     * facet child relationship.
+     */
+    boolean checkCapability(Agency agency,
+                            XDomainNetworkAuthorization<?, ?> stateAuth,
+                            Relationship capability);
+
+    /**
      * Check the capability of an agency on the facet.
      */
-    boolean checkFacetCapability(Agency agency, NetworkAuthorization<RuleForm> facet,
+    boolean checkFacetCapability(Agency agency,
+                                 NetworkAuthorization<RuleForm> facet,
                                  Relationship capability);
+
+    /**
+     * Check the capability of an agency on an attribute of the authorized
+     * relationship of the facet child relationship.
+     */
+    boolean checkNetworkCapability(Agency agency,
+                                   AttributeAuthorization<RuleForm, ?> stateAuth,
+                                   Relationship capability);
 
     /**
      * Create a new instance of the RuleForm based on the provided prototype

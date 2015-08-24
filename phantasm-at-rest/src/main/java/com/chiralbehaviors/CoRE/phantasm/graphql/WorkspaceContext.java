@@ -23,7 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphql;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
@@ -43,11 +43,10 @@ public class WorkspaceContext {
     }
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object getAttributeValue(DataFetchingEnvironment env,
-                                                                                                                                         Attribute attribute,
-                                                                                                                                         NetworkAuthorization<RuleForm> facet) {
+                                                                                                                                         @SuppressWarnings("rawtypes") AttributeAuthorization stateAuth) {
         @SuppressWarnings("unchecked")
         RuleForm instance = (RuleForm) env.getSource();
-        return crud.getAttributeValue(instance, attribute, facet);
+        return crud.getAttributeValue(instance, stateAuth);
     }
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getChildren(DataFetchingEnvironment env,

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -51,6 +51,8 @@ public interface Kernel {
 
     Unit getAnyUnit();
 
+    Relationship getCapability();
+
     Relationship getContains();
 
     Agency getCopyAgency();
@@ -77,7 +79,11 @@ public interface Kernel {
 
     Agency getCoreUser();
 
+    Relationship getCREATE();
+
     Unit getDays();
+
+    Relationship getDELETE();
 
     Relationship getDeveloped();
 
@@ -181,6 +187,8 @@ public interface Kernel {
 
     Relationship getPrototypeOf();
 
+    Relationship getREAD();
+
     Agency getSameAgency();
 
     Attribute getSameAttribute();
@@ -206,6 +214,8 @@ public interface Kernel {
     StatusCode getUnset();
 
     Unit getUnsetUnit();
+
+    Relationship getUPDATE();
 
     Relationship getValidates();
 

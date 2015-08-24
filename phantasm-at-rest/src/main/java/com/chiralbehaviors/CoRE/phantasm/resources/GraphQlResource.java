@@ -128,7 +128,7 @@ public class GraphQlResource extends TransactionalResource {
             throw new WebApplicationException(e.getMessage(), Status.NOT_FOUND);
         }
         GraphQLSchema schema = builder.build();
-        WorkspaceContext ctx = new WorkspaceContext(new PhantasmCRUD(() -> readOnlyModel));
+        WorkspaceContext ctx = new WorkspaceContext(new PhantasmCRUD(readOnlyModel));
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               ctx,
                                                               request.getVariables());

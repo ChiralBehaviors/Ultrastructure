@@ -23,11 +23,11 @@ package com.chiralbehaviors.CoRE.phantasm;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
@@ -42,23 +42,32 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  *
  */
 public class PhantasmCRUD {
-    private final Supplier<Model> model;
+    private final Model model;
 
-    public PhantasmCRUD(Supplier<Model> model) {
+    public PhantasmCRUD(Model model) {
         this.model = model;
     }
 
     /**
-     * @param attribute
-     * @param facet
+     * @param stateAuth
      * @return
      */
+    @SuppressWarnings("unchecked")
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object getAttributeValue(RuleForm instance,
-                                                                                                                                         Attribute attribute,
-                                                                                                                                         NetworkAuthorization<RuleForm> facet) {
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
-                                                                .getNetworkedModel(facet.getClassification());
-        Object value = networkedModel.getAttributeValue(instance, attribute)
+                                                                                                                                         @SuppressWarnings("rawtypes") AttributeAuthorization stateAuth) {
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(stateAuth.getNetworkAuthorization()
+                                                                                            .getClassification());
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            stateAuth, model.getKernel()
+                                                            .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
+        Object value = networkedModel.getAttributeValue(instance,
+                                                        stateAuth.getAuthorizedAttribute())
                                      .getValue();
         if (value instanceof BigDecimal) {
             value = ((BigDecimal) value).floatValue();
@@ -68,33 +77,83 @@ public class PhantasmCRUD {
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getChildren(RuleForm instance,
                                                                                                                                            NetworkAuthorization<RuleForm> auth) {
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
-                                                                .getNetworkedModel(auth.getClassification());
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            auth, model.getKernel()
+                                                       .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
         return networkedModel.getChildren(instance,
                                           auth.getChildRelationship());
     }
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> RuleForm getInstance(String id,
                                                                                                                                      NetworkAuthorization<RuleForm> facet) {
-        return model.get()
-                    .getNetworkedModel(facet.getClassification())
-                    .find(UUID.fromString(id));
+
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
+                                                      .getPrincipal(),
+                                                 facet, model.getKernel()
+                                                             .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
+        RuleForm instance = networkedModel.find(UUID.fromString(id));
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            instance, model.getKernel()
+                                                           .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
+        return instance;
 
     }
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<RuleForm> getInstances(NetworkAuthorization<RuleForm> facet) {
 
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
-                                                                .getNetworkedModel(facet.getClassification());
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
+                                                      .getPrincipal(),
+                                                 facet, model.getKernel()
+                                                             .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
         return networkedModel.getChildren(facet.getClassification(),
                                           facet.getClassifier()
-                                               .getInverse());
+                                               .getInverse())
+                             .stream()
+                             .filter(instance -> networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                                                     .getPrincipal(),
+                                                                                instance,
+                                                                                model.getKernel()
+                                                                                     .getREAD()))
+                             .collect(Collectors.toList());
     }
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> RuleForm getSingularChild(RuleForm instance,
                                                                                                                                           NetworkAuthorization<RuleForm> auth) {
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
-                                                                .getNetworkedModel(auth.getClassification());
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
+        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
+                                                      .getPrincipal(),
+                                                 auth, model.getKernel()
+                                                            .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
         return networkedModel.getImmediateChild(instance,
                                                 auth.getChildRelationship());
     }
@@ -103,8 +162,16 @@ public class PhantasmCRUD {
                                                                                                                                           NetworkAuthorization<RuleForm> facet,
                                                                                                                                           XDomainNetworkAuthorization<?, ?> auth,
                                                                                                                                           NetworkAuthorization<?> child) {
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
-                                                                .getNetworkedModel(facet.getClassification());
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            auth, model.getKernel()
+                                                       .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
         if (child.getClassification() instanceof Agency) {
             return networkedModel.getAuthorizedAgency(instance,
                                                       auth.getConnection());
@@ -128,8 +195,16 @@ public class PhantasmCRUD {
                                                                                                                                       NetworkAuthorization<RuleForm> facet,
                                                                                                                                       XDomainNetworkAuthorization<?, ?> auth,
                                                                                                                                       NetworkAuthorization<?> child) {
-        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.get()
-                                                                .getNetworkedModel(facet.getClassification());
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            auth, model.getKernel()
+                                                       .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
         if (child.getClassification() instanceof Agency) {
             return networkedModel.getAuthorizedAgencies(instance,
                                                         auth.getConnection());

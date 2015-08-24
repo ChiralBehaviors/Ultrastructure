@@ -53,6 +53,7 @@ import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductLocation_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyLocationGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -408,6 +409,14 @@ public class LocationModelImpl extends
              .where(match);
         TypedQuery<ProductLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyLocationGrouping.class;
     }
 
     /* (non-Javadoc)

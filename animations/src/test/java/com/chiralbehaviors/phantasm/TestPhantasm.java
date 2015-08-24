@@ -52,6 +52,7 @@ import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
+import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
 import com.chiralbehaviors.phantasm.demo.MavenArtifact;
 import com.chiralbehaviors.phantasm.demo.Thing1;
 import com.chiralbehaviors.phantasm.demo.Thing2;
@@ -73,7 +74,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testAttributeAccess() throws Exception {
+    public void testAttributeCapabilities() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
@@ -135,7 +136,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testChildAccess() throws Exception {
+    public void testChildCapabilities() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
@@ -325,7 +326,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testFacetAccess() throws Exception {
+    public void testFacetCapabilities() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
@@ -376,7 +377,53 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testNetworkAttributeAccess() throws Exception {
+    public void testInstanceCapabilities() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+
+        Product instance = thing1.getRuleform();
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), instance,
+                                         kernel.getHadMember()));
+
+        AgencyProductGrouping accessAuth = new AgencyProductGrouping();
+        accessAuth.setUpdatedBy(kernel.getCore());
+        accessAuth.setGroupingAgency(kernel.getAnyAgency());
+        accessAuth.setEntity(instance);
+        em.persist(accessAuth);
+
+        assertFalse(model.getProductModel()
+                         .checkCapability(kernel.getCore(), instance,
+                                          kernel.getHadMember()));
+
+        model.getAgencyModel()
+             .link(kernel.getCore(), kernel.getHadMember(),
+                   kernel.getAnyAgency(), kernel.getCore());
+
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), instance,
+                                         kernel.getHadMember()));
+
+        accessAuth = new AgencyProductGrouping();
+        accessAuth.setUpdatedBy(kernel.getCore());
+        accessAuth.setGroupingAgency(kernel.getSameAgency());
+        accessAuth.setEntity(instance);
+        em.persist(accessAuth);
+
+        assertFalse(model.getProductModel()
+                         .checkCapability(kernel.getCore(), instance,
+                                          kernel.getHadMember()));
+
+        model.getAgencyModel()
+             .link(kernel.getCore(), kernel.getHadMember(),
+                   kernel.getSameAgency(), kernel.getCore());
+
+        assertTrue(model.getProductModel()
+                        .checkCapability(kernel.getCore(), instance,
+                                         kernel.getHadMember()));
+    }
+
+    @Test
+    public void testNetworkAttributeCapabilities() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
@@ -464,7 +511,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testXdChildAccess() throws Exception {
+    public void testXdChildCapabilities() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();
@@ -540,7 +587,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testXdNetworkAttributeAccess() throws Exception {
+    public void testXdNetworkAttributeCapabilities() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
 
         WorkspaceScope scope = thing1.getScope();

@@ -54,6 +54,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyAgencyGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -411,6 +412,14 @@ public class AgencyModelImpl extends
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyAgencyGrouping.class;
     }
 
     /* (non-Javadoc)

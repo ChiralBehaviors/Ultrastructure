@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyAttributeGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -202,6 +203,14 @@ public class AttributeModelImpl extends
                 throw new IllegalStateException(String.format("invalid value type: %s",
                                                               attribute.getValueType()));
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyAttributeGrouping.class;
     }
 
     /* (non-Javadoc)

@@ -156,6 +156,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
+     * Check the capability of an agency on an instance.
+     */
+    boolean checkCapability(Agency agency, RuleForm instance,
+                            Relationship capability);
+
+    /**
      * Check the capability of an agency on an attribute of the authorized cross
      * domain relationship of the facet child relationship.
      */
@@ -299,17 +305,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     /**
      * Answer the list of attribute authorizations that are classified by an
-     * aspect
-     *
-     * @param aspect
-     *            - the classifying aspect.
-     * @param includeGrouping TODO
-     * @return
-     */
-    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect, boolean includeGrouping);
-
-    /**
-     * Answer the list of attribute authorizations that are classified by an
      * aspect, defined for the particular attribute
      *
      * @param aspect
@@ -319,6 +314,19 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
                                                    Attribute attribute);
+
+    /**
+     * Answer the list of attribute authorizations that are classified by an
+     * aspect
+     *
+     * @param aspect
+     *            - the classifying aspect.
+     * @param includeGrouping
+     *            TODO
+     * @return
+     */
+    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                   boolean includeGrouping);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -499,10 +507,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * 
      * @param aspect
-     * @param includeGrouping TODO
+     * @param includeGrouping
+     *            TODO
      * @return the list of network authorizations for this aspect
      */
-    List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect, boolean includeGrouping);
+    List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect,
+                                                                  boolean includeGrouping);
 
     /**
      *

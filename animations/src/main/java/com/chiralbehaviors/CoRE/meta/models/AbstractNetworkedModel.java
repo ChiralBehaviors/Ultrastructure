@@ -284,6 +284,30 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     /**
+     * Check the capability of an agency on an instance.
+     */
+    @Override
+    public boolean checkCapability(Agency agency, RuleForm instance,
+                                   Relationship capability) {
+        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
+        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
+                                                                + "  WHERE required.entity = :instance "
+                                                                + "    AND NOT EXISTS( "
+                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
+                                                                + "         WHERE authorized.parent = :agency "
+                                                                + "         AND authorized.relationship = :capability "
+                                                                + "         AND authorized.child = required.groupingAgency "
+                                                                + "  )",
+                                                                getAgencyGroupingClass().getSimpleName()),
+                                                  Agency.class);
+        query.setParameter("instance", instance);
+        query.setParameter("agency", agency);
+        query.setParameter("capability", capability);
+        return query.getResultList()
+                    .isEmpty();
+    }
+
+    /**
      * Check the capability of an agency on an attribute of the authorized cross
      * domain relationship of the facet child relationship.
      */
@@ -583,21 +607,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         return query.getResultList();
     }
 
-    @Override
-    public List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
-                                                          boolean includeGrouping) {
-        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
-                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
-                                                              authorization);
-        query.setParameter("classifier", aspect.getClassifier());
-        query.setParameter("classification", aspect.getClassification());
-        List<AttributeAuth> result = query.getResultList();
-        return includeGrouping ? result.stream()
-                                       .filter(classifier -> classifier.getGroupingAgency() == null)
-                                       .collect(Collectors.toList())
-                               : result;
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -615,6 +624,21 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.setParameter("classification", aspect.getClassification());
         query.setParameter("attribute", attribute);
         return query.getResultList();
+    }
+
+    @Override
+    public List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                          boolean includeGrouping) {
+        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
+                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
+                                                              authorization);
+        query.setParameter("classifier", aspect.getClassifier());
+        query.setParameter("classification", aspect.getClassification());
+        List<AttributeAuth> result = query.getResultList();
+        return includeGrouping ? result.stream()
+                                       .filter(classifier -> classifier.getGroupingAgency() == null)
+                                       .collect(Collectors.toList())
+                               : result;
     }
 
     @Override
@@ -1509,6 +1533,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
         return inserted;
     }
+
+    abstract protected Class<?> getAgencyGroupingClass();
 
     /**
      * @param attribute

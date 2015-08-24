@@ -57,6 +57,7 @@ import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductRelationship_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -513,6 +514,14 @@ public class ProductModelImpl extends
              .where(match);
         TypedQuery<ProductRelationshipAuthorization> q = em.createQuery(query);
         return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyProductGrouping.class;
     }
 
     /* (non-Javadoc)

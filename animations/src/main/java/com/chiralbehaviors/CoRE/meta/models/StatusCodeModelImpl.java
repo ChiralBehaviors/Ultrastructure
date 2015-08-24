@@ -41,6 +41,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyStatusCodeGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -245,6 +246,14 @@ public class StatusCodeModelImpl extends
                                                                      StatusCodeSequencing.class);
         query.setParameter("statusCode", parent);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyStatusCodeGrouping.class;
     }
 
     /* (non-Javadoc)

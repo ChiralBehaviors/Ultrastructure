@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyIntervalGrouping;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
@@ -157,6 +158,14 @@ public class IntervalModelImpl extends
                                                      Collection<Relationship> relationships,
                                                      Collection<Interval> children) {
         throw new UnsupportedOperationException();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyIntervalGrouping.class;
     }
 
     /* (non-Javadoc)

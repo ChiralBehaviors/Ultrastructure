@@ -19,6 +19,12 @@
  */
 package com.chiralbehaviors.CoRE.json;
 
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.reflections.Reflections;
+
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -50,6 +56,16 @@ public class CoREModule extends SimpleModule {
         Hibernate4Module module = new Hibernate4Module();
         module.enable(Feature.FORCE_LAZY_LOADING);
         objectMapper.registerModule(module);
+
+        Reflections reflections = new Reflections(Ruleform.class.getPackage()
+                                                                .getName());
+        List<Class<? extends Ruleform>> subTypes = new ArrayList<>();
+        for (Class<? extends Ruleform> form : reflections.getSubTypesOf(Ruleform.class)) {
+            if (!Modifier.isAbstract(form.getModifiers())) {
+                subTypes.add(form);
+            }
+        }
+        registerSubtypes(subTypes.toArray(new Class<?>[subTypes.size()]));
         super.setupModule(context);
     }
 }

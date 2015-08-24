@@ -76,6 +76,15 @@
         <class>com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization</class>
         <class>com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAttribute</class>
         <class>com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.security.AgencyAgencyGrouping</class>
+        <class>com.chiralbehaviors.CoRE.security.AgencyAttributeGrouping</class>
+        <class>com.chiralbehaviors.CoRE.security.AgencyGrouping</class>
+        <class>com.chiralbehaviors.CoRE.security.AgencyIntervalGrouping</class>
+        <class>com.chiralbehaviors.CoRE.security.AgencyLocationGrouping</class>
+        <class>com.chiralbehaviors.CoRE.security.AgencyProductGrouping</class>
+        <class>com.chiralbehaviors.CoRE.security.AgencyRelationshipGrouping</class>
+        <class>com.chiralbehaviors.CoRE.security.AgencyStatusCodeGrouping</class>
+        <class>com.chiralbehaviors.CoRE.security.AgencyUnitGrouping</class>
         <class>com.chiralbehaviors.CoRE.network.NetworkInference</class>
         <class>com.chiralbehaviors.CoRE.network.NetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.network.NetworkRuleform</class>

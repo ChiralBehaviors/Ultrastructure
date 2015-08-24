@@ -23,11 +23,8 @@ package com.chiralbehaviors.CoRE.network;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -35,7 +32,6 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.fasterxml.jackson.annotation.JsonGetter;
 
 /**
  * @author hhildebrand
@@ -43,14 +39,9 @@ import com.fasterxml.jackson.annotation.JsonGetter;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-abstract public class NetworkAttribute<T extends Ruleform> extends
-        AttributeValue<T> {
+abstract public class NetworkAttribute<T extends Ruleform>
+        extends AttributeValue<T> {
     private static final long serialVersionUID = 1L;
-
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency")
-    private Agency            agency;
 
     public NetworkAttribute() {
         super();
@@ -73,7 +64,8 @@ abstract public class NetworkAttribute<T extends Ruleform> extends
         super(attribute, value, updatedBy);
     }
 
-    public NetworkAttribute(Attribute attribute, Boolean value, Agency updatedBy) {
+    public NetworkAttribute(Attribute attribute, Boolean value,
+                            Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -81,7 +73,8 @@ abstract public class NetworkAttribute<T extends Ruleform> extends
         super(attribute, value, updatedBy);
     }
 
-    public NetworkAttribute(Attribute attribute, String value, Agency updatedBy) {
+    public NetworkAttribute(Attribute attribute, String value,
+                            Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -91,14 +84,5 @@ abstract public class NetworkAttribute<T extends Ruleform> extends
 
     public NetworkAttribute(UUID id) {
         super(id);
-    }
-
-    @JsonGetter
-    public Agency getAgency() {
-        return agency;
-    }
-
-    public void setAgency(Agency agency2) {
-        agency = agency2;
     }
 }

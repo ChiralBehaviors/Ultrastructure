@@ -108,6 +108,14 @@ import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
+import com.chiralbehaviors.CoRE.security.AgencyAgencyGrouping;
+import com.chiralbehaviors.CoRE.security.AgencyAttributeGrouping;
+import com.chiralbehaviors.CoRE.security.AgencyIntervalGrouping;
+import com.chiralbehaviors.CoRE.security.AgencyLocationGrouping;
+import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
+import com.chiralbehaviors.CoRE.security.AgencyRelationshipGrouping;
+import com.chiralbehaviors.CoRE.security.AgencyStatusCodeGrouping;
+import com.chiralbehaviors.CoRE.security.AgencyUnitGrouping;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
@@ -133,12 +141,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 public class WorkspaceAuthorization extends Ruleform {
     public static final String  AGENCY                                       = "Agency";
+    public static final String  AGENCY_AGENCY_GROUPING                       = "AgencyAgencyGrouping";
     public static final String  AGENCY_ATTRIBUTE                             = "AgencyAttribute";
     public static final String  AGENCY_ATTRIBUTE_AUTHORIZATION               = "AgencyAttributeAuthorization";
+    public static final String  AGENCY_ATTRIBUTE_GROUPING                    = "AgencyAttributeGrouping";
+    public static final String  AGENCY_INTERVAL_GROUPING                     = "AgencyIntervalGrouping";
     public static final String  AGENCY_LOCATION                              = "AgencyLocation";
     public static final String  AGENCY_LOCATION_ATTRIBUTE                    = "AgencyLocationAttribute";
     public static final String  AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION      = "AgencyLocationAttributeAuthorization";
     public static final String  AGENCY_LOCATION_AUTHORIZATION                = "AgencyLocationAuthorization";
+    public static final String  AGENCY_LOCATION_GROUPING                     = "AgencyLocationGrouping";
     public static final String  AGENCY_NETWORK                               = "AgencyNetwork";
     public static final String  AGENCY_NETWORK_ATTRIBUTE                     = "AgencyNetworkAttribute";
     public static final String  AGENCY_NETWORK_AUTHORIZATION                 = "AgencyNetworkAuthorization";
@@ -146,6 +158,10 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  AGENCY_PRODUCT_ATTRIBUTE                     = "AgencyProductAttribute";
     public static final String  AGENCY_PRODUCT_ATTRIBUTE_AUTHORIZATION       = "AgencyProductAttributeAuthorization";
     public static final String  AGENCY_PRODUCT_AUTHORIZATION                 = "AgencyProductAuthorization";
+    public static final String  AGENCY_PRODUCT_GROUPING                      = "AgencyProductGrouping";
+    public static final String  AGENCY_RELATIONSHIP_GROUPING                 = "AgencyRelationshipGrouping";
+    public static final String  AGENCY_STATUS_CODE_GROUPING                  = "AgencyStatusCodeGrouping";
+    public static final String  AGENCY_UNIT_GROUPING                         = "AgencyUnitGrouping";
     public static final String  ATTRIBUTE                                    = "Attribute";
     public static final String  ATTRIBUTE_META_ATTRIBUTE                     = "AttributeMetaAttribute";
     public static final String  ATTRIBUTE_META_ATTRIBUTE_AUTHORIZATION       = "AttributeMetaAttributeAuthorization";
@@ -215,7 +231,8 @@ public class WorkspaceAuthorization extends Ruleform {
 
     public static String getWorkspaceAuthorizationColumnName(Class<?> ruleform) {
         StringBuilder builder = new StringBuilder();
-        String simpleName = ruleform.getClass().getSimpleName();
+        String simpleName = ruleform.getClass()
+                                    .getSimpleName();
         builder.append(Character.toLowerCase(simpleName.charAt(0)));
         int i = 1;
         for (char c = simpleName.charAt(i); i < simpleName.length(); i++) {
@@ -233,6 +250,11 @@ public class WorkspaceAuthorization extends Ruleform {
     private Agency agency;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_agency_grouping")
+    @JsonIgnore
+    private AgencyAgencyGrouping agencyAgencyGrouping;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_attribute")
     @JsonIgnore
     private AgencyAttribute agencyAttribute;
@@ -241,6 +263,16 @@ public class WorkspaceAuthorization extends Ruleform {
     @JoinColumn(name = "agency_attribute_authorization")
     @JsonIgnore
     private AgencyAttributeAuthorization agencyAttributeAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_attribute_grouping")
+    @JsonIgnore
+    private AgencyAttributeGrouping agencyAttributeGrouping;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_interval_grouping")
+    @JsonIgnore
+    private AgencyIntervalGrouping agencyIntervalGrouping;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_location")
@@ -261,6 +293,11 @@ public class WorkspaceAuthorization extends Ruleform {
     @JoinColumn(name = "agency_location_authorization")
     @JsonIgnore
     private AgencyLocationAuthorization agencyLocationAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_location_grouping")
+    @JsonIgnore
+    private AgencyLocationGrouping agencyLocationGrouping;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_network")
@@ -297,6 +334,26 @@ public class WorkspaceAuthorization extends Ruleform {
     @JoinColumn(name = "agency_product_authorization")
     @JsonIgnore
     private AgencyProductAuthorization agencyProductAuthorization;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_product_grouping")
+    @JsonIgnore
+    private AgencyProductGrouping agencyProductGrouping;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_relationship_grouping")
+    @JsonIgnore
+    private AgencyRelationshipGrouping agencyRelationshipGrouping;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_status_code_grouping")
+    @JsonIgnore
+    private AgencyStatusCodeGrouping agencyStatusCodeGrouping;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "agency_unit_grouping")
+    @JsonIgnore
+    private AgencyUnitGrouping agencyUnitGrouping;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "attribute")
@@ -646,6 +703,22 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) agencyAttributeAuthorization;
             case AGENCY_LOCATION:
                 return (T) agencyLocation;
+            case AGENCY_AGENCY_GROUPING:
+                return (T) agencyAgencyGrouping;
+            case AGENCY_ATTRIBUTE_GROUPING:
+                return (T) agencyAgencyGrouping;
+            case AGENCY_INTERVAL_GROUPING:
+                return (T) agencyIntervalGrouping;
+            case AGENCY_LOCATION_GROUPING:
+                return (T) agencyLocationGrouping;
+            case AGENCY_PRODUCT_GROUPING:
+                return (T) agencyProductGrouping;
+            case AGENCY_RELATIONSHIP_GROUPING:
+                return (T) agencyRelationshipGrouping;
+            case AGENCY_STATUS_CODE_GROUPING:
+                return (T) agencyStatusCodeGrouping;
+            case AGENCY_UNIT_GROUPING:
+                return (T) agencyUnitGrouping;
             case AGENCY_LOCATION_ATTRIBUTE:
                 return (T) agencyLocationAttribute;
             case AGENCY_NETWORK:
@@ -823,7 +896,8 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setRuleform(Ruleform ruleform) {
-        switch (ruleform.getClass().getSimpleName()) {
+        switch (ruleform.getClass()
+                        .getSimpleName()) {
             case AGENCY:
                 setAgency((Agency) ruleform);
                 break;
@@ -835,6 +909,30 @@ public class WorkspaceAuthorization extends Ruleform {
                 break;
             case AGENCY_LOCATION:
                 setAgencyLocation((AgencyLocation) ruleform);
+                break;
+            case AGENCY_AGENCY_GROUPING:
+                setAgencyAgencyGrouping((AgencyAgencyGrouping) ruleform);
+                break;
+            case AGENCY_ATTRIBUTE_GROUPING:
+                setAgencyAttributeGrouping((AgencyAttributeGrouping) ruleform);
+                break;
+            case AGENCY_INTERVAL_GROUPING:
+                setAgencyIntervalGrouping((AgencyIntervalGrouping) ruleform);
+                break;
+            case AGENCY_LOCATION_GROUPING:
+                setAgencyLocationGrouping((AgencyLocationGrouping) ruleform);
+                break;
+            case AGENCY_PRODUCT_GROUPING:
+                setAgencyProductGrouping((AgencyProductGrouping) ruleform);
+                break;
+            case AGENCY_RELATIONSHIP_GROUPING:
+                setAgencyRelationshipGrouping((AgencyRelationshipGrouping) ruleform);
+                break;
+            case AGENCY_STATUS_CODE_GROUPING:
+                setAgencyStatusCodeGrouping((AgencyStatusCodeGrouping) ruleform);
+                break;
+            case AGENCY_UNIT_GROUPING:
+                setAgencyUnitGrouping((AgencyUnitGrouping) ruleform);
                 break;
             case AGENCY_LOCATION_ATTRIBUTE:
                 setAgencyLocationAttribute((AgencyLocationAttribute) ruleform);
@@ -1048,7 +1146,8 @@ public class WorkspaceAuthorization extends Ruleform {
 
             default:
                 throw new IllegalStateException(String.format("Invalid type: %s",
-                                                              ruleform.getClass().getSimpleName()));
+                                                              ruleform.getClass()
+                                                                      .getSimpleName()));
         }
     }
 
@@ -1063,6 +1162,11 @@ public class WorkspaceAuthorization extends Ruleform {
         this.agency = agency;
     }
 
+    private void setAgencyAgencyGrouping(AgencyAgencyGrouping agencyAgencyGrouping) {
+        type = AGENCY_AGENCY_GROUPING;
+        this.agencyAgencyGrouping = agencyAgencyGrouping;
+    }
+
     private void setAgencyAttribute(AgencyAttribute agencyAttribute) {
         type = AGENCY_ATTRIBUTE;
         this.agencyAttribute = agencyAttribute;
@@ -1071,6 +1175,16 @@ public class WorkspaceAuthorization extends Ruleform {
     private void setAgencyAttributeAuthorization(AgencyAttributeAuthorization agencyAttributeAuthorization) {
         type = AGENCY_ATTRIBUTE_AUTHORIZATION;
         this.agencyAttributeAuthorization = agencyAttributeAuthorization;
+    }
+
+    private void setAgencyAttributeGrouping(AgencyAttributeGrouping agencyAttributeGrouping) {
+        type = AGENCY_ATTRIBUTE_GROUPING;
+        this.agencyAttributeGrouping = agencyAttributeGrouping;
+    }
+
+    private void setAgencyIntervalGrouping(AgencyIntervalGrouping agencyIntervalGrouping) {
+        type = AGENCY_INTERVAL_GROUPING;
+        this.agencyIntervalGrouping = agencyIntervalGrouping;
     }
 
     private void setAgencyLocation(AgencyLocation agencyLocation) {
@@ -1091,6 +1205,11 @@ public class WorkspaceAuthorization extends Ruleform {
     private void setAgencyLocationAuthorization(AgencyLocationAuthorization agencyLocationAuthorization) {
         type = AGENCY_LOCATION_AUTHORIZATION;
         this.agencyLocationAuthorization = agencyLocationAuthorization;
+    }
+
+    private void setAgencyLocationGrouping(AgencyLocationGrouping agencyLocationGrouping) {
+        type = AGENCY_LOCATION_GROUPING;
+        this.agencyLocationGrouping = agencyLocationGrouping;
     }
 
     private void setAgencyNetwork(AgencyNetwork agencyNetwork) {
@@ -1126,6 +1245,26 @@ public class WorkspaceAuthorization extends Ruleform {
     private void setAgencyProductAuthorization(AgencyProductAuthorization agencyProductAuthorization) {
         type = AGENCY_PRODUCT_AUTHORIZATION;
         this.agencyProductAuthorization = agencyProductAuthorization;
+    }
+
+    private void setAgencyProductGrouping(AgencyProductGrouping agencyProductGrouping) {
+        type = AGENCY_PRODUCT_GROUPING;
+        this.agencyProductGrouping = agencyProductGrouping;
+    }
+
+    private void setAgencyRelationshipGrouping(AgencyRelationshipGrouping agencyRelationshipGrouping) {
+        type = AGENCY_RELATIONSHIP_GROUPING;
+        this.agencyRelationshipGrouping = agencyRelationshipGrouping;
+    }
+
+    private void setAgencyStatusCodeGrouping(AgencyStatusCodeGrouping agencyStatusCodeGrouping) {
+        type = AGENCY_STATUS_CODE_GROUPING;
+        this.agencyStatusCodeGrouping = agencyStatusCodeGrouping;
+    }
+
+    private void setAgencyUnitGrouping(AgencyUnitGrouping agencyUnitGrouping) {
+        type = AGENCY_UNIT_GROUPING;
+        this.agencyUnitGrouping = agencyUnitGrouping;
     }
 
     private void setAttribute(Attribute attribute) {

@@ -36,7 +36,7 @@ import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 public interface LocationModel extends
         NetworkedModel<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute> {
 
-    List<AgencyLocationAuthorization> getLocationAgencyAuths(Aspect<Location> aspect);
+    List<AgencyLocationAuthorization> getLocationAgencyAuths(Aspect<Location> aspect, boolean includeGrouping);
 
-    List<ProductLocationAuthorization> getLocationProductAuths(Aspect<Location> aspect);
+    List<ProductLocationAuthorization> getLocationProductAuths(Aspect<Location> aspect, boolean includeGrouping);
 }

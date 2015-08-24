@@ -9,10 +9,7 @@
         <createTable schemaName="ruleform" tableName="product_location_attribute">
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_location_attribute_pkey" />
-            </column>
-            <column name="agency" type="uuid">
-                <constraints nullable="false" />
-            </column>
+            </column> 
             <column name="product_location" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -39,9 +36,6 @@
         <rollback>
             <dropTable tableName="product_location_attribute" />
         </rollback>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency" baseTableName="product_location_attribute" constraintName="product_location_attribute_agency_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="product_location_attribute" constraintName="product_location_attribute_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />

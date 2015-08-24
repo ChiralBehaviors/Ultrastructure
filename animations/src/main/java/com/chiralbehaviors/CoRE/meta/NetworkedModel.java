@@ -30,11 +30,13 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
@@ -138,6 +140,57 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     void authorizeSingular(RuleForm ruleform, Relationship relationship,
                            Relationship authorized);
+
+    /**
+     * Check the capability of an agency on an attribute of a ruleform.
+     */
+    boolean checkCapability(Agency agency,
+                            AttributeAuthorization<RuleForm, ?> statAuth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of an agency on the authorized relationship of the
+     * facet child relationship.
+     */
+    boolean checkCapability(Agency agency, NetworkAuthorization<RuleForm> auth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of an agency on an instance.
+     */
+    boolean checkCapability(Agency agency, RuleForm instance,
+                            Relationship capability);
+
+    /**
+     * Check the capability of an agency on an attribute of the authorized cross
+     * domain relationship of the facet child relationship.
+     */
+    boolean checkCapability(Agency agency,
+                            XDomainAttrbuteAuthorization<?, ?> stateAuth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of an agency on the authorized relationship of the
+     * facet child relationship.
+     */
+    boolean checkCapability(Agency agency,
+                            XDomainNetworkAuthorization<?, ?> stateAuth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of an agency on the facet.
+     */
+    boolean checkFacetCapability(Agency agency,
+                                 NetworkAuthorization<RuleForm> facet,
+                                 Relationship capability);
+
+    /**
+     * Check the capability of an agency on an attribute of the authorized
+     * relationship of the facet child relationship.
+     */
+    boolean checkNetworkCapability(Agency agency,
+                                   AttributeAuthorization<RuleForm, ?> stateAuth,
+                                   Relationship capability);
 
     /**
      * Create a new instance of the RuleForm based on the provided prototype
@@ -252,16 +305,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     /**
      * Answer the list of attribute authorizations that are classified by an
-     * aspect
-     *
-     * @param aspect
-     *            - the classifying aspect.
-     * @return
-     */
-    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect);
-
-    /**
-     * Answer the list of attribute authorizations that are classified by an
      * aspect, defined for the particular attribute
      *
      * @param aspect
@@ -271,6 +314,19 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
                                                    Attribute attribute);
+
+    /**
+     * Answer the list of attribute authorizations that are classified by an
+     * aspect
+     *
+     * @param aspect
+     *            - the classifying aspect.
+     * @param includeGrouping
+     *            TODO
+     * @return
+     */
+    List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                   boolean includeGrouping);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -451,9 +507,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * 
      * @param aspect
+     * @param includeGrouping
+     *            TODO
      * @return the list of network authorizations for this aspect
      */
-    List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect);
+    List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect,
+                                                                  boolean includeGrouping);
 
     /**
      *

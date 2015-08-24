@@ -25,11 +25,9 @@ import static com.chiralbehaviors.CoRE.ExistentialRuleform.USED_RELATIONSHIPS_SU
 import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_CHILDREN;
 import static com.chiralbehaviors.CoRE.time.IntervalNetwork.GET_NETWORKS;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -51,14 +49,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM IntervalNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM IntervalNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+@NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM IntervalNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship"),
+                @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM IntervalNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship "
+                                                         + "AND n.child = :child") })
 @Entity
 @Table(name = "interval_network", schema = "ruleform")
 public class IntervalNetwork extends NetworkRuleform<Interval> {
@@ -74,26 +71,20 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     // bi-directional many-to-one association to Interval
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Interval           child;
-
-    @Column(insertable = false, name = "end_time")
-    private BigDecimal         endTime;
+    private Interval child;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Interval           parent;
+    private Interval parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise1")
-    private IntervalNetwork    premise1;
+    private IntervalNetwork premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise2")
-    private IntervalNetwork    premise2;
-
-    @Column(insertable = false, name = "start_time")
-    private BigDecimal         startTime;
+    private IntervalNetwork premise2;
 
     public IntervalNetwork() {
         super();
@@ -144,10 +135,6 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
         return child;
     }
 
-    public BigDecimal getEndTime() {
-        return endTime;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.network.NetworkRuleform#getParent()
      */
@@ -173,10 +160,6 @@ public class IntervalNetwork extends NetworkRuleform<Interval> {
     @JsonGetter
     public IntervalNetwork getPremise2() {
         return premise2;
-    }
-
-    public BigDecimal getStartTime() {
-        return startTime;
     }
 
     /* (non-Javadoc)

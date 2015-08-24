@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -56,6 +57,7 @@ import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductRelationship_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -83,13 +85,15 @@ public class ProductModelImpl extends
      */
     @Override
     public void authorize(Aspect<Product> aspect, Attribute... attributes) {
-        ProductNetworkAuthorization auth = new ProductNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
+        ProductNetworkAuthorization auth = new ProductNetworkAuthorization(model.getCurrentPrincipal()
+                                                                                .getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             ProductAttributeAuthorization authorization = new ProductAttributeAuthorization(attribute,
-                                                                                            model.getCurrentPrincipal().getPrincipal());
+                                                                                            model.getCurrentPrincipal()
+                                                                                                 .getPrincipal());
             em.persist(authorization);
         }
     }
@@ -100,12 +104,14 @@ public class ProductModelImpl extends
     @Override
     public void authorize(Product ruleform, Relationship relationship,
                           Agency authorized) {
-        AgencyProduct a = new AgencyProduct(model.getCurrentPrincipal().getPrincipal());
+        AgencyProduct a = new AgencyProduct(model.getCurrentPrincipal()
+                                                 .getPrincipal());
         a.setAgency(authorized);
         a.setRelationship(relationship);
         a.setProduct(ruleform);
         em.persist(a);
-        AgencyProduct b = new AgencyProduct(model.getCurrentPrincipal().getPrincipal());
+        AgencyProduct b = new AgencyProduct(model.getCurrentPrincipal()
+                                                 .getPrincipal());
         b.setAgency(authorized);
         b.setRelationship(relationship.getInverse());
         b.setProduct(ruleform);
@@ -121,12 +127,14 @@ public class ProductModelImpl extends
         assert ruleform != null : "ruleform is null";
         assert relationship != null : "relationshp is null";
         assert authorized != null : "authorized is null";
-        ProductLocation a = new ProductLocation(model.getCurrentPrincipal().getPrincipal());
+        ProductLocation a = new ProductLocation(model.getCurrentPrincipal()
+                                                     .getPrincipal());
         a.setProduct(ruleform);
         a.setRelationship(relationship);
         a.setLocation(authorized);
         em.persist(a);
-        ProductLocation b = new ProductLocation(model.getCurrentPrincipal().getPrincipal());
+        ProductLocation b = new ProductLocation(model.getCurrentPrincipal()
+                                                     .getPrincipal());
         b.setProduct(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setLocation(authorized);
@@ -151,12 +159,14 @@ public class ProductModelImpl extends
         assert ruleform != null : "ruleform is null";
         assert relationship != null : "relationshp is null";
         assert authorized != null : "authorized is null";
-        ProductRelationship a = new ProductRelationship(model.getCurrentPrincipal().getPrincipal());
+        ProductRelationship a = new ProductRelationship(model.getCurrentPrincipal()
+                                                             .getPrincipal());
         a.setProduct(ruleform);
         a.setRelationship(relationship);
         a.setChild(authorized);
         em.persist(a);
-        ProductRelationship b = new ProductRelationship(model.getCurrentPrincipal().getPrincipal());
+        ProductRelationship b = new ProductRelationship(model.getCurrentPrincipal()
+                                                             .getPrincipal());
         b.setProduct(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setChild(authorized);
@@ -175,19 +185,24 @@ public class ProductModelImpl extends
         Product copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+        copy.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal());
         for (ProductNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     em);
+            network.getParent()
+                   .link(network.getRelationship(), copy,
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         em);
         }
         for (ProductAttribute attribute : prototype.getAttributes()) {
             ProductAttribute clone = (ProductAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setProduct(copy);
-            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+            clone.setUpdatedBy(model.getCurrentPrincipal()
+                                    .getPrincipal());
         }
         return copy;
     }
@@ -201,7 +216,8 @@ public class ProductModelImpl extends
     @Override
     public final Product create(String name, String description) {
         Product product = new Product(name, description,
-                                      model.getCurrentPrincipal().getPrincipal());
+                                      model.getCurrentPrincipal()
+                                           .getPrincipal());
         em.persist(product);
         return product;
     }
@@ -219,7 +235,8 @@ public class ProductModelImpl extends
                                 Aspect<Product> aspect, Agency updatedBy,
                                 Aspect<Product>... aspects) {
         Product product = new Product(name, description,
-                                      model.getCurrentPrincipal().getPrincipal());
+                                      model.getCurrentPrincipal()
+                                           .getPrincipal());
         em.persist(product);
         initialize(product, aspect);
         if (aspects != null) {
@@ -240,12 +257,13 @@ public class ProductModelImpl extends
         CriteriaQuery<AgencyProduct> query = cb.createQuery(AgencyProduct.class);
         Root<AgencyProduct> plRoot = query.from(AgencyProduct.class);
         ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
-        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.agency),
-                                                   authorized),
-                                          cb.equal(plRoot.get(AgencyProduct_.relationship),
-                                                   relationshipParam),
-                                          cb.equal(plRoot.get(AgencyProduct_.product),
-                                                   ruleform)));
+        query.select(plRoot)
+             .where(cb.and(cb.equal(plRoot.get(AgencyProduct_.agency),
+                                    authorized),
+                           cb.equal(plRoot.get(AgencyProduct_.relationship),
+                                    relationshipParam),
+                           cb.equal(plRoot.get(AgencyProduct_.product),
+                                    ruleform)));
         TypedQuery<AgencyProduct> q = em.createQuery(query);
         q.setParameter(relationshipParam, relationship);
         try {
@@ -270,12 +288,13 @@ public class ProductModelImpl extends
         CriteriaQuery<ProductLocation> query = cb.createQuery(ProductLocation.class);
         Root<ProductLocation> plRoot = query.from(ProductLocation.class);
         ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
-        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
-                                                   ruleform),
-                                          cb.equal(plRoot.get(ProductLocation_.relationship),
-                                                   relationshipParam),
-                                          cb.equal(plRoot.get(ProductLocation_.location),
-                                                   authorized)));
+        query.select(plRoot)
+             .where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
+                                    ruleform),
+                           cb.equal(plRoot.get(ProductLocation_.relationship),
+                                    relationshipParam),
+                           cb.equal(plRoot.get(ProductLocation_.location),
+                                    authorized)));
         TypedQuery<ProductLocation> q = em.createQuery(query);
         q.setParameter(relationshipParam, relationship);
         try {
@@ -306,12 +325,13 @@ public class ProductModelImpl extends
         CriteriaQuery<ProductRelationship> query = cb.createQuery(ProductRelationship.class);
         Root<ProductRelationship> plRoot = query.from(ProductRelationship.class);
         ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
-        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
-                                                   ruleform),
-                                          cb.equal(plRoot.get(ProductRelationship_.relationship),
-                                                   relationshipParam),
-                                          cb.equal(plRoot.get(ProductRelationship_.child),
-                                                   authorized)));
+        query.select(plRoot)
+             .where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
+                                    ruleform),
+                           cb.equal(plRoot.get(ProductRelationship_.relationship),
+                                    relationshipParam),
+                           cb.equal(plRoot.get(ProductRelationship_.child),
+                                    authorized)));
         TypedQuery<ProductRelationship> q = em.createQuery(query);
         q.setParameter(relationshipParam, relationship);
         try {
@@ -341,10 +361,11 @@ public class ProductModelImpl extends
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.product),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(AgencyProduct_.relationship),
-                                                 relationship)));
+        query.select(path)
+             .where(cb.and(cb.equal(plRoot.get(AgencyProduct_.product),
+                                    ruleform),
+                           cb.equal(plRoot.get(AgencyProduct_.relationship),
+                                    relationship)));
         TypedQuery<Agency> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -364,10 +385,11 @@ public class ProductModelImpl extends
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(ProductLocation_.relationship),
-                                                 relationship)));
+        query.select(path)
+             .where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
+                                    ruleform),
+                           cb.equal(plRoot.get(ProductLocation_.relationship),
+                                    relationship)));
         TypedQuery<Location> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -393,10 +415,11 @@ public class ProductModelImpl extends
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(ProductRelationship_.relationship),
-                                                 relationship)));
+        query.select(path)
+             .where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
+                                    ruleform),
+                           cb.equal(plRoot.get(ProductRelationship_.relationship),
+                                    relationship)));
         TypedQuery<Relationship> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -422,16 +445,23 @@ public class ProductModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductAgencyAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<AgencyProductAuthorization> getProductAgencyAuths(Aspect<Product> aspect) {
+    public List<AgencyProductAuthorization> getProductAgencyAuths(Aspect<Product> aspect,
+                                                                  boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AgencyProductAuthorization> query = cb.createQuery(AgencyProductAuthorization.class);
         Root<AgencyProductAuthorization> networkRoot = query.from(AgencyProductAuthorization.class);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.toParent),
-                                                        aspect.getClassification()),
-                                               cb.equal(networkRoot.get(AgencyProductAuthorization_.toRelationship),
-                                                        aspect.getClassifier()),
-                                               cb.equal(networkRoot.get(AgencyProductAuthorization_.forward),
-                                                        false)));
+        Predicate match = cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.toParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(AgencyProductAuthorization_.toRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(AgencyProductAuthorization_.forward),
+                                          false));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(AgencyProductAuthorization_.groupingAgency)));
+        }
+        query.select(networkRoot)
+             .where(match);
         TypedQuery<AgencyProductAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -440,16 +470,23 @@ public class ProductModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductLocationAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<ProductLocationAuthorization> getProductLocationAuths(Aspect<Product> aspect) {
+    public List<ProductLocationAuthorization> getProductLocationAuths(Aspect<Product> aspect,
+                                                                      boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ProductLocationAuthorization> query = cb.createQuery(ProductLocationAuthorization.class);
         Root<ProductLocationAuthorization> networkRoot = query.from(ProductLocationAuthorization.class);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.fromParent),
-                                                        aspect.getClassification()),
-                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.fromRelationship),
-                                                        aspect.getClassifier()),
-                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
-                                                        true)));
+        Predicate match = cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.fromParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.fromRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
+                                          true));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(ProductLocationAuthorization_.groupingAgency)));
+        }
+        query.select(networkRoot)
+             .where(match);
         TypedQuery<ProductLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -458,18 +495,41 @@ public class ProductModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.ProductModel#getProductRelationshipAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<ProductRelationshipAuthorization> getProductRelationshipAuths(Aspect<Product> aspect) {
+    public List<ProductRelationshipAuthorization> getProductRelationshipAuths(Aspect<Product> aspect,
+                                                                              boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ProductRelationshipAuthorization> query = cb.createQuery(ProductRelationshipAuthorization.class);
         Root<ProductRelationshipAuthorization> networkRoot = query.from(ProductRelationshipAuthorization.class);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromParent),
-                                                        aspect.getClassification()),
-                                               cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromRelationship),
-                                                        aspect.getClassifier()),
-                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
-                                                        true)));
+        Predicate match = cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(ProductRelationshipAuthorization_.fromRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
+                                          true));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(ProductLocationAuthorization_.groupingAgency)));
+        }
+        query.select(networkRoot)
+             .where(match);
         TypedQuery<ProductRelationshipAuthorization> q = em.createQuery(query);
         return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyProductGrouping.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAttributeAuthorizationClass()
+     */
+    @Override
+    protected Class<?> getAttributeAuthorizationClass() {
+        return ProductAttributeAuthorization.class;
     }
 
     /* (non-Javadoc)

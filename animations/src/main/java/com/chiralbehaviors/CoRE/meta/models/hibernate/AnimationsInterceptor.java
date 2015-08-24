@@ -36,7 +36,7 @@ import com.chiralbehaviors.CoRE.meta.models.Animations;
  */
 public class AnimationsInterceptor extends EmptyInterceptor {
 
-    private static final long  serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     protected final Animations animations;
 

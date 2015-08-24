@@ -23,11 +23,6 @@
             <column name="authorized_relationship" type="uuid" />
             <column name="cardinality" type="SMALLINT" />
             <column name="child_relationship" remarks="the relationship between the classified child and its child" type="uuid" />
-            <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
-            >
-                <constraints nullable="false" />
-            </column>
             <column name="grouping_agency" remarks="A network parent an Product is expected to have" type="uuid" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
             <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
@@ -67,7 +62,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, sequence_number"
+            columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, grouping_agency"
             constraintName="product_attribute_authorizatio_agency_classification_attri_key" deferrable="false" disabled="false"
             initiallyDeferred="true" tableName="product_network_authorization" />
         <createIndex schemaName="ruleform" indexName="product_network_authorization_updated_by_fkey_idx" tableName="product_network_authorization"

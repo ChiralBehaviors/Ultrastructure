@@ -33,9 +33,6 @@
             </column>
             <column name="parent" remarks="The parent of this job, in a hierarchical sense" type="uuid" />
             <column name="protocol" remarks="The protocol that generated this job" type="uuid" />
-            <column defaultValueNumeric="1" name="sequence_number" type="INT4">
-                <constraints nullable="false" />
-            </column>
             <column name="quantity" type="numeric" />
             <column name="quantity_unit" type="uuid">
                 <constraints nullable="false" />

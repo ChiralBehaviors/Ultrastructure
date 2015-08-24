@@ -12,7 +12,7 @@
                 cls.name AS classifier, 
                 b.name AS classification, 
                 att.name AS authorized_attribute, 
-                base_table.sequence_number, 
+                natt.name AS authorized_network_attribute,
                 base_table.text_value, 
                 base_table.integer_value, 
                 base_table.numeric_value, 
@@ -25,8 +25,8 @@
              LEFT JOIN relationship cls ON na.classifier = cls.id
              LEFT JOIN unit b ON na.classification = b.id
              LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
+             LEFT JOIN attribute natt ON base_table.authorized_network_attribute = natt.id
              LEFT JOIN agency up ON base_table.updated_by = up.id
-             WHERE base_table.authorized_attribute IS NOT NULL
             ]]>
         </createView>
         <rollback>

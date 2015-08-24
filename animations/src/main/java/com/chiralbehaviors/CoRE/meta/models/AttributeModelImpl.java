@@ -37,6 +37,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyAttributeGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -71,13 +72,15 @@ public class AttributeModelImpl extends
      */
     @Override
     public void authorize(Aspect<Attribute> aspect, Attribute... attributes) {
-        AttributeNetworkAuthorization auth = new AttributeNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
+        AttributeNetworkAuthorization auth = new AttributeNetworkAuthorization(model.getCurrentPrincipal()
+                                                                                    .getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             AttributeMetaAttributeAuthorization authorization = new AttributeMetaAttributeAuthorization(attribute,
-                                                                                                        model.getCurrentPrincipal().getPrincipal());
+                                                                                                        model.getCurrentPrincipal()
+                                                                                                             .getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -95,19 +98,24 @@ public class AttributeModelImpl extends
         Attribute copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+        copy.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal());
         for (AttributeNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     em);
+            network.getParent()
+                   .link(network.getRelationship(), copy,
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         em);
         }
         for (AttributeMetaAttribute attribute : prototype.getAttributes()) {
             AttributeMetaAttribute clone = (AttributeMetaAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setAttribute(copy);
-            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+            clone.setUpdatedBy(model.getCurrentPrincipal()
+                                    .getPrincipal());
         }
         return copy;
     }
@@ -122,7 +130,8 @@ public class AttributeModelImpl extends
     @Override
     public final Attribute create(String name, String description) {
         Attribute attribute = new Attribute(name, description,
-                                            model.getCurrentPrincipal().getPrincipal());
+                                            model.getCurrentPrincipal()
+                                                 .getPrincipal());
         em.persist(attribute);
         return attribute;
     }
@@ -137,7 +146,8 @@ public class AttributeModelImpl extends
                                   Aspect<Attribute> aspect, Agency updatedBy,
                                   Aspect<Attribute>... aspects) {
         Attribute attribute = new Attribute(name, description,
-                                            model.getCurrentPrincipal().getPrincipal());
+                                            model.getCurrentPrincipal()
+                                                 .getPrincipal());
         em.persist(attribute);
         initialize(attribute, aspect);
         if (aspects != null) {
@@ -171,7 +181,8 @@ public class AttributeModelImpl extends
     @Override
     public String getJsonLdType(Attribute attribute) {
         AttributeValue<Attribute> type = getAttributeValue(attribute,
-                                                           model.getKernel().getJsonldType());
+                                                           model.getKernel()
+                                                                .getJsonldType());
         if (type != null) {
             return type.getTextValue();
         }
@@ -192,6 +203,22 @@ public class AttributeModelImpl extends
                 throw new IllegalStateException(String.format("invalid value type: %s",
                                                               attribute.getValueType()));
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyAttributeGrouping.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAttributeAuthorizationClass()
+     */
+    @Override
+    protected Class<?> getAttributeAuthorizationClass() {
+        return AttributeMetaAttributeAuthorization.class;
     }
 
     /* (non-Javadoc)

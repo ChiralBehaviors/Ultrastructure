@@ -26,9 +26,6 @@
             <column name="to_relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
-                <constraints nullable="false" />
-            </column>
             <column name="cardinality" type="SMALLINT">
                 <constraints nullable="false"/>
             </column>
@@ -74,7 +71,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="from_relationship, from_parent, to_parent, to_relationship, connection, sequence_number" constraintName="product_relationship_unique_key"
+            columnNames="from_relationship, from_parent, to_parent, to_relationship, connection, grouping_agency" constraintName="product_relationship_unique_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_relationship_authorization" />
         <createIndex schemaName="ruleform" indexName="product_relationship_authorization_updated_by_fkey_idx" tableName="product_relationship_authorization"
             unique="false"

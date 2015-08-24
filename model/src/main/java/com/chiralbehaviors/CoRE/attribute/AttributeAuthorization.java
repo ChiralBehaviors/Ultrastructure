@@ -78,9 +78,6 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
     @Column(name = "numeric_value")
     private BigDecimal numericValue;
 
-    @Column(name = "sequence_number")
-    private int sequenceNumber = 0;
-
     @Column(name = "text_value")
     private String textValue;
 
@@ -160,10 +157,6 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
         return numericValue;
     }
 
-    public Integer getSequenceNumber() {
-        return sequenceNumber;
-    }
-
     @JsonIgnore
     public String getTextValue() {
         return textValue;
@@ -239,10 +232,6 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
 
     public void setNumericValue(BigDecimal numericValue) {
         this.numericValue = numericValue;
-    }
-
-    public void setSequenceNumber(Integer sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
     }
 
     public void setTextValue(String textValue) {

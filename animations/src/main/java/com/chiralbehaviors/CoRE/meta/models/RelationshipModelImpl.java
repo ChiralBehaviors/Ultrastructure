@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -47,6 +48,7 @@ import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
+import com.chiralbehaviors.CoRE.security.AgencyRelationshipGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -75,13 +77,15 @@ public class RelationshipModelImpl extends
     @Override
     public void authorize(Aspect<Relationship> aspect,
                           Attribute... attributes) {
-        RelationshipNetworkAuthorization auth = new RelationshipNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
+        RelationshipNetworkAuthorization auth = new RelationshipNetworkAuthorization(model.getCurrentPrincipal()
+                                                                                          .getPrincipal());
         auth.setClassification(aspect.getClassifier());
         auth.setClassifier(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             RelationshipAttributeAuthorization authorization = new RelationshipAttributeAuthorization(attribute,
-                                                                                                      model.getCurrentPrincipal().getPrincipal());
+                                                                                                      model.getCurrentPrincipal()
+                                                                                                           .getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -90,12 +94,14 @@ public class RelationshipModelImpl extends
     @Override
     public void authorize(Relationship ruleform, Relationship relationship,
                           Product authorized) {
-        ProductRelationship a = new ProductRelationship(model.getCurrentPrincipal().getPrincipal());
+        ProductRelationship a = new ProductRelationship(model.getCurrentPrincipal()
+                                                             .getPrincipal());
         a.setProduct(authorized);
         a.setRelationship(relationship);
         a.setChild(ruleform);
         em.persist(a);
-        ProductRelationship b = new ProductRelationship(model.getCurrentPrincipal().getPrincipal());
+        ProductRelationship b = new ProductRelationship(model.getCurrentPrincipal()
+                                                             .getPrincipal());
         b.setProduct(authorized);
         b.setRelationship(relationship.getInverse());
         b.setChild(ruleform);
@@ -114,19 +120,24 @@ public class RelationshipModelImpl extends
         Relationship copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+        copy.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal());
         for (RelationshipNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     em);
+            network.getParent()
+                   .link(network.getRelationship(), copy,
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         em);
         }
         for (RelationshipAttribute attribute : prototype.getAttributes()) {
             RelationshipAttribute clone = (RelationshipAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setRelationship(copy);
-            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+            clone.setUpdatedBy(model.getCurrentPrincipal()
+                                    .getPrincipal());
         }
         return copy;
     }
@@ -140,7 +151,8 @@ public class RelationshipModelImpl extends
     @Override
     public final Relationship create(String name, String description) {
         Relationship relationship = new Relationship(name, description,
-                                                     model.getCurrentPrincipal().getPrincipal());
+                                                     model.getCurrentPrincipal()
+                                                          .getPrincipal());
         em.persist(relationship);
         return relationship;
     }
@@ -159,7 +171,8 @@ public class RelationshipModelImpl extends
                                      Agency updatedBy,
                                      Aspect<Relationship>... aspects) {
         Relationship relationship = new Relationship(name, description,
-                                                     model.getCurrentPrincipal().getPrincipal());
+                                                     model.getCurrentPrincipal()
+                                                          .getPrincipal());
         em.persist(relationship);
         initialize(relationship, aspect);
         if (aspects != null) {
@@ -174,10 +187,12 @@ public class RelationshipModelImpl extends
     public final Relationship create(String rel1Name, String rel1Description,
                                      String rel2Name, String rel2Description) {
         Relationship relationship = new Relationship(rel1Name, rel1Description,
-                                                     model.getCurrentPrincipal().getPrincipal());
+                                                     model.getCurrentPrincipal()
+                                                          .getPrincipal());
 
         Relationship relationship2 = new Relationship(rel2Name, rel2Description,
-                                                      model.getCurrentPrincipal().getPrincipal());
+                                                      model.getCurrentPrincipal()
+                                                           .getPrincipal());
 
         relationship.setInverse(relationship2);
         relationship2.setInverse(relationship);
@@ -194,12 +209,13 @@ public class RelationshipModelImpl extends
         CriteriaQuery<ProductRelationship> query = cb.createQuery(ProductRelationship.class);
         Root<ProductRelationship> plRoot = query.from(ProductRelationship.class);
         ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
-        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
-                                                   authorized),
-                                          cb.equal(plRoot.get(ProductRelationship_.relationship),
-                                                   relationshipParam),
-                                          cb.equal(plRoot.get(ProductRelationship_.child),
-                                                   ruleform)));
+        query.select(plRoot)
+             .where(cb.and(cb.equal(plRoot.get(ProductRelationship_.product),
+                                    authorized),
+                           cb.equal(plRoot.get(ProductRelationship_.relationship),
+                                    relationshipParam),
+                           cb.equal(plRoot.get(ProductRelationship_.child),
+                                    ruleform)));
         TypedQuery<ProductRelationship> q = em.createQuery(query);
         q.setParameter(relationshipParam, relationship);
         try {
@@ -226,10 +242,11 @@ public class RelationshipModelImpl extends
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductRelationship_.child),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(ProductRelationship_.relationship),
-                                                 relationship)));
+        query.select(path)
+             .where(cb.and(cb.equal(plRoot.get(ProductRelationship_.child),
+                                    ruleform),
+                           cb.equal(plRoot.get(ProductRelationship_.relationship),
+                                    relationship)));
         TypedQuery<Product> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -255,19 +272,42 @@ public class RelationshipModelImpl extends
     }
 
     @Override
-    public List<ProductRelationshipAuthorization> getRelationshipProductAuths(Aspect<Relationship> aspect) {
+    public List<ProductRelationshipAuthorization> getRelationshipProductAuths(Aspect<Relationship> aspect,
+                                                                              boolean includeGrouping) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ProductRelationshipAuthorization> query = cb.createQuery(ProductRelationshipAuthorization.class);
         Root<ProductRelationshipAuthorization> networkRoot = query.from(ProductRelationshipAuthorization.class);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.toParent),
-                                                        aspect.getClassification()),
-                                               cb.equal(networkRoot.get(ProductRelationshipAuthorization_.toRelationship),
-                                                        aspect.getClassifier()),
-                                               cb.equal(networkRoot.get(ProductRelationshipAuthorization_.forward),
-                                                        false)));
+        Predicate match = cb.and(cb.equal(networkRoot.get(ProductRelationshipAuthorization_.toParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(ProductRelationshipAuthorization_.toRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(ProductRelationshipAuthorization_.forward),
+                                          false));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(ProductRelationshipAuthorization_.groupingAgency)));
+        }
+        query.select(networkRoot)
+             .where(match);
         TypedQuery<ProductRelationshipAuthorization> q = em.createQuery(query);
         return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyRelationshipGrouping.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAttributeAuthorizationClass()
+     */
+    @Override
+    protected Class<?> getAttributeAuthorizationClass() {
+        return RelationshipAttributeAuthorization.class;
     }
 
     /* (non-Javadoc)

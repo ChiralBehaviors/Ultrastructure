@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -37,6 +39,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
+import com.hellblazer.utils.Utils;
 
 /**
  * Repository of immutable kernal rules
@@ -57,45 +60,75 @@ public class KernelUtil {
 
     public static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    public static void loadKernel(EntityManager em) throws IOException {
-        loadKernel(em,
-                   KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE));
-    }
-
     public static void clear(EntityManager em) throws SQLException {
         boolean committed = false;
-        Connection connection = em.unwrap(SessionImpl.class).connection();
-        em.getTransaction().begin();
+        Connection connection = em.unwrap(SessionImpl.class)
+                                  .connection();
+        em.getTransaction()
+          .begin();
         try {
             connection.setAutoCommit(false);
-            connection.createStatement().execute("TRUNCATE TABLE ruleform.agency CASCADE");
-            ResultSet r = connection.createStatement().executeQuery(KernelUtil.SELECT_TABLE);
+            connection.createStatement()
+                      .execute("TRUNCATE TABLE ruleform.agency CASCADE");
+            ResultSet r = connection.createStatement()
+                                    .executeQuery(KernelUtil.SELECT_TABLE);
             while (r.next()) {
                 String table = r.getString("name");
                 String query = String.format("TRUNCATE TABLE %s CASCADE",
                                              table);
-                connection.createStatement().execute(query);
+                connection.createStatement()
+                          .execute(query);
             }
             r.close();
             connection.commit();
-            em.getTransaction().commit();
+            em.getTransaction()
+              .commit();
             committed = true;
         } finally {
             if (!committed) {
                 connection.rollback();
-                em.getTransaction().rollback();
+                em.getTransaction()
+                  .rollback();
             }
         }
     }
 
+    public static void clearAndLoadKernel(EntityManager em) throws SQLException,
+                                                            IOException {
+        clear(em);
+        loadKernel(em);
+    }
+
+    public static void loadKernel(EntityManager em) throws IOException {
+        loadKernel(em,
+                   getBits(KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)));
+    }
+
     public static void loadKernel(EntityManager em,
                                   InputStream is) throws IOException {
-        if (!em.getTransaction().isActive()) {
-            em.getTransaction().begin();
+        if (!em.getTransaction()
+               .isActive()) {
+            em.getTransaction()
+              .begin();
         }
         WorkspaceSnapshot workspace = rehydrateKernel(is);
         workspace.retarget(em);
-        em.getTransaction().commit();
+        em.getTransaction()
+          .commit();
+    }
+
+    /**
+     * This is a work around, as there's a weird edge case where the resource
+     * has been closed by someone (probably dropwizard).
+     * 
+     * @param resourceAsStream
+     * @return
+     * @throws IOException
+     */
+    private static InputStream getBits(InputStream resourceAsStream) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Utils.copy(resourceAsStream, baos);
+        return new ByteArrayInputStream(baos.toByteArray());
     }
 
     private static WorkspaceSnapshot rehydrateKernel(InputStream is) throws IOException,
@@ -109,11 +142,5 @@ public class KernelUtil {
         WorkspaceSnapshot workspace = mapper.readValue(is,
                                                        WorkspaceSnapshot.class);
         return workspace;
-    }
-
-    public static void clearAndLoadKernel(EntityManager em) throws SQLException,
-                                                            IOException {
-        clear(em);
-        loadKernel(em);
     }
 }

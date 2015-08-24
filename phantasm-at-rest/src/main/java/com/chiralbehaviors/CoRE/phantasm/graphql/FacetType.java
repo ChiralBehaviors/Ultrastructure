@@ -114,7 +114,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         if (!references.isEmpty()) {
             return references;
         }
-        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this)) {
+        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this, false)) {
             references.add(resolve(auth));
         }
         resolveXdAuths();
@@ -130,16 +130,16 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private void buildAgencyAuths() {
         AgencyModel agencyModel = model.getAgencyModel();
         Aspect<Agency> aspect = (Aspect<Agency>) this;
-        for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect)) {
+        for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect, false)) {
             buildXdAuth(auth, resolveTo(auth));
         }
-        for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect)) {
+        for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect, false)) {
             buildXdAuth(auth, resolveTo(auth));
         }
     }
 
     private void buildAttributes() {
-        for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
+        for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this, false)) {
             Attribute attribute = auth.getAuthorizedAttribute();
             builder.field(newFieldDefinition().type(typeOf(attribute))
                                               .name(toFieldName(attribute.getName()))
@@ -155,16 +155,16 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         LocationModel locationModel = model.getLocationModel();
         @SuppressWarnings("unchecked")
         Aspect<Location> aspect = (Aspect<Location>) this;
-        for (AgencyLocationAuthorization auth : locationModel.getLocationAgencyAuths(aspect)) {
+        for (AgencyLocationAuthorization auth : locationModel.getLocationAgencyAuths(aspect, false)) {
             buildXdAuth(auth, resolveFrom(auth));
         }
-        for (ProductLocationAuthorization auth : locationModel.getLocationProductAuths(aspect)) {
+        for (ProductLocationAuthorization auth : locationModel.getLocationProductAuths(aspect, false)) {
             buildXdAuth(auth, resolveFrom(auth));
         }
     }
 
     private void buildNetworkAuths() {
-        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this)) {
+        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this, false)) {
             String term = auth.getName();
             if (term == null) {
                 continue;
@@ -191,13 +191,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         ProductModel productModel = model.getProductModel();
         @SuppressWarnings("unchecked")
         Aspect<Product> aspect = (Aspect<Product>) this;
-        for (ProductLocationAuthorization auth : productModel.getProductLocationAuths(aspect)) {
+        for (ProductLocationAuthorization auth : productModel.getProductLocationAuths(aspect, false)) {
             buildXdAuth(auth, resolveTo(auth));
         }
-        for (ProductRelationshipAuthorization auth : productModel.getProductRelationshipAuths(aspect)) {
+        for (ProductRelationshipAuthorization auth : productModel.getProductRelationshipAuths(aspect, false)) {
             buildXdAuth(auth, resolveTo(auth));
         }
-        for (AgencyProductAuthorization auth : productModel.getProductAgencyAuths(aspect)) {
+        for (AgencyProductAuthorization auth : productModel.getProductAgencyAuths(aspect, false)) {
             buildXdAuth(auth, resolveFrom(auth));
         }
     }
@@ -206,7 +206,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         RelationshipModel agencyModel = model.getRelationshipModel();
         @SuppressWarnings("unchecked")
         Aspect<Relationship> aspect = (Aspect<Relationship>) this;
-        for (ProductRelationshipAuthorization auth : agencyModel.getRelationshipProductAuths(aspect)) {
+        for (ProductRelationshipAuthorization auth : agencyModel.getRelationshipProductAuths(aspect, false)) {
             buildXdAuth(auth, resolveFrom(auth));
         }
     }
@@ -275,10 +275,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         AgencyModel agencyModel = model.getAgencyModel();
         @SuppressWarnings("unchecked")
         Aspect<Agency> aspect = (Aspect<Agency>) this;
-        for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect)) {
+        for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect, false)) {
             references.add(resolveTo(auth));
         }
-        for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect)) {
+        for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect, false)) {
             references.add(resolveTo(auth));
         }
     }
@@ -303,10 +303,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         LocationModel locationModel = model.getLocationModel();
         @SuppressWarnings("unchecked")
         Aspect<Location> aspect = (Aspect<Location>) this;
-        for (AgencyLocationAuthorization auth : locationModel.getLocationAgencyAuths(aspect)) {
+        for (AgencyLocationAuthorization auth : locationModel.getLocationAgencyAuths(aspect, false)) {
             references.add(resolveFrom(auth));
         }
-        for (ProductLocationAuthorization auth : locationModel.getLocationProductAuths(aspect)) {
+        for (ProductLocationAuthorization auth : locationModel.getLocationProductAuths(aspect, false)) {
             references.add(resolveFrom(auth));
         }
     }
@@ -317,13 +317,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         ProductModel productModel = model.getProductModel();
         @SuppressWarnings("unchecked")
         Aspect<Product> aspect = (Aspect<Product>) this;
-        for (ProductLocationAuthorization auth : productModel.getProductLocationAuths(aspect)) {
+        for (ProductLocationAuthorization auth : productModel.getProductLocationAuths(aspect, false)) {
             references.add(resolveTo(auth));
         }
-        for (ProductRelationshipAuthorization auth : productModel.getProductRelationshipAuths(aspect)) {
+        for (ProductRelationshipAuthorization auth : productModel.getProductRelationshipAuths(aspect, false)) {
             references.add(resolveTo(auth));
         }
-        for (AgencyProductAuthorization auth : productModel.getProductAgencyAuths(aspect)) {
+        for (AgencyProductAuthorization auth : productModel.getProductAgencyAuths(aspect, false)) {
             references.add(resolveFrom(auth));
         }
     }
@@ -332,7 +332,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         RelationshipModel agencyModel = model.getRelationshipModel();
         @SuppressWarnings("unchecked")
         Aspect<Relationship> aspect = (Aspect<Relationship>) this;
-        for (ProductRelationshipAuthorization auth : agencyModel.getRelationshipProductAuths(aspect)) {
+        for (ProductRelationshipAuthorization auth : agencyModel.getRelationshipProductAuths(aspect, false)) {
             references.add(resolveFrom(auth));
         }
     }

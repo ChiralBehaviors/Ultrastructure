@@ -93,6 +93,15 @@
     <include relativeToChangelogFile="true" file="tables/product_sibling_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_child_sequencing_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/product_self_sequencing_authorization.xml" />
+    
+    <include relativeToChangelogFile="true" file="tables/agency_agency_grouping.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_attribute_grouping.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_interval_grouping.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_location_grouping.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_product_grouping.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_relationship_grouping.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_status_code_grouping.xml" />
+    <include relativeToChangelogFile="true" file="tables/agency_unit_grouping.xml" />
 
     <include relativeToChangelogFile="true" file="tables/workspace_authorization.xml" />
 

@@ -12,8 +12,7 @@
         >
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="interval_network_attribute_pkey" />
-            </column>
-            <column name="agency" remarks="The agency that the information in this rule comes from" type="uuid" />
+            </column> 
             <column name="network_rule" remarks="The agency Network rule whose attribute is being defined" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -41,9 +40,6 @@
             <dropTable tableName="interval_network_attribute" />
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="agency" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_agency_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -56,14 +52,9 @@
             baseColumnNames="updated_by" baseTableName="interval_network_attribute" constraintName="interval_network_attribute_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="agency, network_rule, attribute, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="network_rule, attribute, sequence_number"
             constraintName="interval_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="interval_network_attribute" />
-        <createIndex schemaName="ruleform" indexName="interval_network_attribute_agency_fkey_idx" tableName="interval_network_attribute"
-            unique="false"
-        >
-            <column name="agency" />
-        </createIndex>
         <createIndex schemaName="ruleform" indexName="interval_network_attribute_attribute_fkey_idx" tableName="interval_network_attribute"
             unique="false"
         >

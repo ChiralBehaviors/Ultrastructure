@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -52,6 +53,7 @@ import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductLocation_;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyLocationGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -79,13 +81,15 @@ public class LocationModelImpl extends
      */
     @Override
     public void authorize(Aspect<Location> aspect, Attribute... attributes) {
-        LocationNetworkAuthorization auth = new LocationNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
+        LocationNetworkAuthorization auth = new LocationNetworkAuthorization(model.getCurrentPrincipal()
+                                                                                  .getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             LocationAttributeAuthorization authorization = new LocationAttributeAuthorization(attribute,
-                                                                                              model.getCurrentPrincipal().getPrincipal());
+                                                                                              model.getCurrentPrincipal()
+                                                                                                   .getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -97,12 +101,14 @@ public class LocationModelImpl extends
     @Override
     public void authorize(Location ruleform, Relationship relationship,
                           Agency authorized) {
-        AgencyLocation a = new AgencyLocation(model.getCurrentPrincipal().getPrincipal());
+        AgencyLocation a = new AgencyLocation(model.getCurrentPrincipal()
+                                                   .getPrincipal());
         a.setAgency(authorized);
         a.setRelationship(relationship);
         a.setLocation(ruleform);
         em.persist(a);
-        AgencyLocation b = new AgencyLocation(model.getCurrentPrincipal().getPrincipal());
+        AgencyLocation b = new AgencyLocation(model.getCurrentPrincipal()
+                                                   .getPrincipal());
         b.setAgency(authorized);
         b.setRelationship(relationship.getInverse());
         b.setLocation(ruleform);
@@ -124,12 +130,14 @@ public class LocationModelImpl extends
     @Override
     public void authorize(Location ruleform, Relationship relationship,
                           Product authorized) {
-        ProductLocation a = new ProductLocation(model.getCurrentPrincipal().getPrincipal());
+        ProductLocation a = new ProductLocation(model.getCurrentPrincipal()
+                                                     .getPrincipal());
         a.setProduct(authorized);
         a.setRelationship(relationship);
         a.setLocation(ruleform);
         em.persist(a);
-        ProductLocation b = new ProductLocation(model.getCurrentPrincipal().getPrincipal());
+        ProductLocation b = new ProductLocation(model.getCurrentPrincipal()
+                                                     .getPrincipal());
         b.setProduct(authorized);
         b.setRelationship(relationship.getInverse());
         b.setLocation(ruleform);
@@ -148,19 +156,24 @@ public class LocationModelImpl extends
         Location copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+        copy.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal());
         for (LocationNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     em);
+            network.getParent()
+                   .link(network.getRelationship(), copy,
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         em);
         }
         for (LocationAttribute attribute : prototype.getAttributes()) {
             LocationAttribute clone = (LocationAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setLocation(copy);
-            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+            clone.setUpdatedBy(model.getCurrentPrincipal()
+                                    .getPrincipal());
         }
         return copy;
     }
@@ -177,7 +190,8 @@ public class LocationModelImpl extends
     @Override
     public final Location create(String name, String description) {
         Location location = new Location(name, description,
-                                         model.getCurrentPrincipal().getPrincipal());
+                                         model.getCurrentPrincipal()
+                                              .getPrincipal());
         em.persist(location);
         return location;
     }
@@ -195,7 +209,8 @@ public class LocationModelImpl extends
                                  Aspect<Location> aspect, Agency updatedBy,
                                  Aspect<Location>... aspects) {
         Location location = new Location(name, description,
-                                         model.getCurrentPrincipal().getPrincipal());
+                                         model.getCurrentPrincipal()
+                                              .getPrincipal());
         em.persist(location);
         initialize(location, aspect);
         if (aspects != null) {
@@ -216,12 +231,13 @@ public class LocationModelImpl extends
         CriteriaQuery<AgencyLocation> query = cb.createQuery(AgencyLocation.class);
         Root<AgencyLocation> plRoot = query.from(AgencyLocation.class);
         ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
-        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(AgencyLocation_.agency),
-                                                   authorized),
-                                          cb.equal(plRoot.get(AgencyLocation_.relationship),
-                                                   relationshipParam),
-                                          cb.equal(plRoot.get(AgencyLocation_.location),
-                                                   ruleform)));
+        query.select(plRoot)
+             .where(cb.and(cb.equal(plRoot.get(AgencyLocation_.agency),
+                                    authorized),
+                           cb.equal(plRoot.get(AgencyLocation_.relationship),
+                                    relationshipParam),
+                           cb.equal(plRoot.get(AgencyLocation_.location),
+                                    ruleform)));
         TypedQuery<AgencyLocation> q = em.createQuery(query);
         q.setParameter(relationshipParam, relationship);
         try {
@@ -255,12 +271,13 @@ public class LocationModelImpl extends
         CriteriaQuery<ProductLocation> query = cb.createQuery(ProductLocation.class);
         Root<ProductLocation> plRoot = query.from(ProductLocation.class);
         ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
-        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
-                                                   authorized),
-                                          cb.equal(plRoot.get(ProductLocation_.relationship),
-                                                   relationshipParam),
-                                          cb.equal(plRoot.get(ProductLocation_.location),
-                                                   ruleform)));
+        query.select(plRoot)
+             .where(cb.and(cb.equal(plRoot.get(ProductLocation_.product),
+                                    authorized),
+                           cb.equal(plRoot.get(ProductLocation_.relationship),
+                                    relationshipParam),
+                           cb.equal(plRoot.get(ProductLocation_.location),
+                                    ruleform)));
         TypedQuery<ProductLocation> q = em.createQuery(query);
         q.setParameter(relationshipParam, relationship);
         try {
@@ -290,10 +307,11 @@ public class LocationModelImpl extends
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyLocation_.location),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(AgencyLocation_.relationship),
-                                                 relationship)));
+        query.select(path)
+             .where(cb.and(cb.equal(plRoot.get(AgencyLocation_.location),
+                                    ruleform),
+                           cb.equal(plRoot.get(AgencyLocation_.relationship),
+                                    relationship)));
         TypedQuery<Agency> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -322,10 +340,11 @@ public class LocationModelImpl extends
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(ProductLocation_.location),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(ProductLocation_.relationship),
-                                                 relationship)));
+        query.select(path)
+             .where(cb.and(cb.equal(plRoot.get(ProductLocation_.location),
+                                    ruleform),
+                           cb.equal(plRoot.get(ProductLocation_.relationship),
+                                    relationship)));
         TypedQuery<Product> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -346,16 +365,23 @@ public class LocationModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.LocationModel#getLocationAgencyAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<AgencyLocationAuthorization> getLocationAgencyAuths(Aspect<Location> aspect) {
+    public List<AgencyLocationAuthorization> getLocationAgencyAuths(Aspect<Location> aspect,
+                                                                    boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AgencyLocationAuthorization> query = cb.createQuery(AgencyLocationAuthorization.class);
         Root<AgencyLocationAuthorization> networkRoot = query.from(AgencyLocationAuthorization.class);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.toParent),
-                                                        aspect.getClassification()),
-                                               cb.equal(networkRoot.get(AgencyLocationAuthorization_.toRelationship),
-                                                        aspect.getClassifier()),
-                                               cb.equal(networkRoot.get(AgencyLocationAuthorization_.forward),
-                                                        false)));
+        Predicate match = cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.toParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(AgencyLocationAuthorization_.toRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(AgencyLocationAuthorization_.forward),
+                                          false));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(AgencyLocationAuthorization_.groupingAgency)));
+        }
+        query.select(networkRoot)
+             .where(match);
         TypedQuery<AgencyLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -364,18 +390,41 @@ public class LocationModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.LocationModel#getLocationProductAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<ProductLocationAuthorization> getLocationProductAuths(Aspect<Location> aspect) {
+    public List<ProductLocationAuthorization> getLocationProductAuths(Aspect<Location> aspect,
+                                                                      boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ProductLocationAuthorization> query = cb.createQuery(ProductLocationAuthorization.class);
         Root<ProductLocationAuthorization> networkRoot = query.from(ProductLocationAuthorization.class);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.toParent),
-                                                        aspect.getClassification()),
-                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.toRelationship),
-                                                        aspect.getClassifier()),
-                                               cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
-                                                        false)));
+        Predicate match = cb.and(cb.equal(networkRoot.get(ProductLocationAuthorization_.toParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.toRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(ProductLocationAuthorization_.forward),
+                                          false));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(ProductLocationAuthorization_.groupingAgency)));
+        }
+        query.select(networkRoot)
+             .where(match);
         TypedQuery<ProductLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyLocationGrouping.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAttributeAuthorizationClass()
+     */
+    @Override
+    protected Class<?> getAttributeAuthorizationClass() {
+        return LocationAttributeAuthorization.class;
     }
 
     /* (non-Javadoc)

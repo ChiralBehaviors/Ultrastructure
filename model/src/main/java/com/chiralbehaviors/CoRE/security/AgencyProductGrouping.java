@@ -21,10 +21,10 @@
 package com.chiralbehaviors.CoRE.security;
 
 import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
@@ -34,14 +34,14 @@ import com.chiralbehaviors.CoRE.product.ProductNetwork;
  *
  */
 @Entity
-@DiscriminatorValue("PRODUCT")
+@Table(name = "agency_product_grouping", schema = "ruleform")
 public class AgencyProductGrouping
         extends AgencyGrouping<Product, ProductNetwork> {
 
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "product_entity")
+    @JoinColumn(name = "entity")
     private Product entity;
 
     @Override

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- *
-
+ * 
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,38 +20,33 @@
 
 package com.chiralbehaviors.CoRE.security;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
  * @author hhildebrand
  *
  */
-@Entity
-@Table(name = "agency_status_code_grouping", schema = "ruleform")
-public class AgencyStatusCodeGrouping
-        extends AgencyGrouping<StatusCode, StatusCodeNetwork> {
+public class AgencyGroupingTest extends DatabaseTest {
 
-    private static final long serialVersionUID = 1L;
+    @Test
+    public void testAgencyGroupings() {
+        Agency agency = new Agency("prime", "prime");
+        agency.setUpdatedBy(agency);
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "entity")
-    private StatusCode entity;
+        em.persist(agency);
+        em.flush();
 
-    @Override
-    public StatusCode getEntity() {
-        return entity;
+        AgencyAgencyGrouping aag = new AgencyAgencyGrouping();
+        aag.setUpdatedBy(agency);
+        aag.setEntity(agency);
+        aag.setGroupingAgency(agency);
+
+        em.persist(aag);
+
+        em.flush();
+
     }
-
-    @Override
-    public void setEntity(StatusCode entity) {
-        this.entity = entity;
-    }
-
 }

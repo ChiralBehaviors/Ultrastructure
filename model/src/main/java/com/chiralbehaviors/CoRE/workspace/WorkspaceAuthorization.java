@@ -108,7 +108,6 @@ import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
-import com.chiralbehaviors.CoRE.security.AgencyGrouping;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
@@ -136,7 +135,6 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String  AGENCY                                       = "Agency";
     public static final String  AGENCY_ATTRIBUTE                             = "AgencyAttribute";
     public static final String  AGENCY_ATTRIBUTE_AUTHORIZATION               = "AgencyAttributeAuthorization";
-    public static final String  AGENCY_GROUPING                              = "AgencyGrouping";
     public static final String  AGENCY_LOCATION                              = "AgencyLocation";
     public static final String  AGENCY_LOCATION_ATTRIBUTE                    = "AgencyLocationAttribute";
     public static final String  AGENCY_LOCATION_ATTRIBUTE_AUTHORIZATION      = "AgencyLocationAttributeAuthorization";
@@ -244,11 +242,6 @@ public class WorkspaceAuthorization extends Ruleform {
     @JoinColumn(name = "agency_attribute_authorization")
     @JsonIgnore
     private AgencyAttributeAuthorization agencyAttributeAuthorization;
-
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency_grouping")
-    @JsonIgnore
-    private AgencyGrouping<?, ?> agencyGrouping;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency_location")
@@ -652,8 +645,6 @@ public class WorkspaceAuthorization extends Ruleform {
                 return (T) agencyAttribute;
             case AGENCY_ATTRIBUTE_AUTHORIZATION:
                 return (T) agencyAttributeAuthorization;
-            case AGENCY_GROUPING:
-                return (T) agencyGrouping;
             case AGENCY_LOCATION:
                 return (T) agencyLocation;
             case AGENCY_LOCATION_ATTRIBUTE:
@@ -843,9 +834,6 @@ public class WorkspaceAuthorization extends Ruleform {
                 break;
             case AGENCY_ATTRIBUTE_AUTHORIZATION:
                 setAgencyAttributeAuthorization((AgencyAttributeAuthorization) ruleform);
-                break;
-            case AGENCY_GROUPING:
-                setAgencyGrouping((AgencyGrouping<?, ?>) ruleform);
                 break;
             case AGENCY_LOCATION:
                 setAgencyLocation((AgencyLocation) ruleform);
@@ -1086,11 +1074,6 @@ public class WorkspaceAuthorization extends Ruleform {
     private void setAgencyAttributeAuthorization(AgencyAttributeAuthorization agencyAttributeAuthorization) {
         type = AGENCY_ATTRIBUTE_AUTHORIZATION;
         this.agencyAttributeAuthorization = agencyAttributeAuthorization;
-    }
-
-    private void setAgencyGrouping(AgencyGrouping<?, ?> agencyGrouping) {
-        type = AGENCY_GROUPING;
-        this.agencyGrouping = agencyGrouping;
     }
 
     private void setAgencyLocation(AgencyLocation agencyLocation) {

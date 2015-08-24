@@ -21,26 +21,22 @@
 package com.chiralbehaviors.CoRE.security;
 
 import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
 
-/**
- * @author hhildebrand
- *
- */
 @Entity
-@DiscriminatorValue("UNIT")
+@Table(name = "agency_unit_grouping", schema = "ruleform")
 public class AgencyUnitGrouping extends AgencyGrouping<Unit, UnitNetwork> {
 
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "unit_entity")
+    @JoinColumn(name = "entity")
     private Unit entity;
 
     @Override

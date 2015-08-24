@@ -21,10 +21,10 @@
 package com.chiralbehaviors.CoRE.security;
 
 import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
@@ -34,14 +34,14 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  *
  */
 @Entity
-@DiscriminatorValue("INTERVAL")
+@Table(name = "agency_interval_grouping", schema = "ruleform")
 public class AgencyIntervalGrouping
         extends AgencyGrouping<Interval, IntervalNetwork> {
 
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "interval_entity")
+    @JoinColumn(name = "entity")
     private Interval entity;
 
     @Override

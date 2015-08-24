@@ -23,3 +23,12 @@ products {
             }
     }
 }
+
+relationships {
+    edges {
+        CREATE.IsA.Capability
+        READ.IsA.Capability
+        UPDATE.IsA.Capability
+        DELETE.IsA.Capability
+    }
+}

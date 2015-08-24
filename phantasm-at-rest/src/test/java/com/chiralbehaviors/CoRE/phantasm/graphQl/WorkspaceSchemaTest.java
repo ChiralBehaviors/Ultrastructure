@@ -38,6 +38,7 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchemaBuilder;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.ResourcesTest;
@@ -94,7 +95,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         WorkspaceSchemaBuilder schemaBuilder = new WorkspaceSchemaBuilder(TEST_SCENARIO_URI,
                                                                           model);
         GraphQLSchema schema = schemaBuilder.build();
-        WorkspaceContext ctx = new WorkspaceContext(() -> model);
+        WorkspaceContext ctx = new WorkspaceContext(new PhantasmCRUD(() -> model));
         ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
                                                                             thing1.getRuleform()
                                                                                   .getId()),

@@ -675,7 +675,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         AgencyModel agencyModel = model.getAgencyModel();
         @SuppressWarnings("unchecked")
         Aspect<Agency> aspect = (Aspect<Agency>) this;
-        for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect)) {
+        for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect, false)) {
             String term = auth.getName();
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
@@ -683,7 +683,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             collectTerm(term, model, uriInfo);
             agencyLocationAuths.put(term, auth);
         }
-        for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect)) {
+        for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect, false)) {
             String term = auth.getName();
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
@@ -695,7 +695,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     private void collectAttributes(Model model, UriInfo uriInfo) {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(getClassification());
-        for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this)) {
+        for (AttributeAuthorization<RuleForm, ?> auth : networkedModel.getAttributeAuthorizations(this, false)) {
             String term = auth.getAuthorizedAttribute().getName();
             attributes.put(term, auth.getAuthorizedAttribute());
             terms.put(term,
@@ -715,7 +715,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private void collectLocationAuthTerms(Model model, UriInfo uriInfo) {
         @SuppressWarnings("unchecked")
         Aspect<Location> aspect = (Aspect<Location>) this;
-        for (AgencyLocationAuthorization auth : model.getLocationModel().getLocationAgencyAuths(aspect)) {
+        for (AgencyLocationAuthorization auth : model.getLocationModel().getLocationAgencyAuths(aspect, false)) {
             String term = auth.getName();
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
@@ -723,7 +723,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             collectTerm(term, model, uriInfo);
             agencyLocationAuths.put(term, auth);
         }
-        for (ProductLocationAuthorization auth : model.getLocationModel().getLocationProductAuths(aspect)) {
+        for (ProductLocationAuthorization auth : model.getLocationModel().getLocationProductAuths(aspect, false)) {
             String term = auth.getName();
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
@@ -736,7 +736,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private void collectNetworkAuths(Model model,
                                      NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
                                      UriInfo uriInfo) {
-        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this)) {
+        for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(this, false)) {
             String term = auth.getName();
             if (term == null) {
                 continue;
@@ -753,7 +753,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private void collectProductAuthTerms(Model model, UriInfo uriInfo) {
         @SuppressWarnings("unchecked")
         Aspect<Product> aspect = (Aspect<Product>) this;
-        for (AgencyProductAuthorization auth : model.getProductModel().getProductAgencyAuths(aspect)) {
+        for (AgencyProductAuthorization auth : model.getProductModel().getProductAgencyAuths(aspect, false)) {
             String term = auth.getName();
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
@@ -761,7 +761,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             collectTerm(term, model, uriInfo);
             agencyProductAuths.put(term, auth);
         }
-        for (ProductLocationAuthorization auth : model.getProductModel().getProductLocationAuths(aspect)) {
+        for (ProductLocationAuthorization auth : model.getProductModel().getProductLocationAuths(aspect, false)) {
             String term = auth.getName();
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
@@ -769,7 +769,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             collectTerm(term, model, uriInfo);
             productLocationAuths.put(term, auth);
         }
-        for (ProductRelationshipAuthorization auth : model.getProductModel().getProductRelationshipAuths(aspect)) {
+        for (ProductRelationshipAuthorization auth : model.getProductModel().getProductRelationshipAuths(aspect, false)) {
             String term = auth.getName();
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);
@@ -782,7 +782,7 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private void collectRelationshipAuthTerms(Model model, UriInfo uriInfo) {
         @SuppressWarnings("unchecked")
         Aspect<Relationship> aspect = (Aspect<Relationship>) this;
-        for (ProductRelationshipAuthorization auth : model.getRelationshipModel().getRelationshipProductAuths(aspect)) {
+        for (ProductRelationshipAuthorization auth : model.getRelationshipModel().getRelationshipProductAuths(aspect, false)) {
             String term = auth.getName();
             if (auth.getCardinality() == Cardinality.N) {
                 term = English.plural(term);

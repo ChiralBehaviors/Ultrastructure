@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyIntervalGrouping;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
@@ -63,13 +64,15 @@ public class IntervalModelImpl extends
      */
     @Override
     public void authorize(Aspect<Interval> aspect, Attribute... attributes) {
-        IntervalNetworkAuthorization auth = new IntervalNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
+        IntervalNetworkAuthorization auth = new IntervalNetworkAuthorization(model.getCurrentPrincipal()
+                                                                                  .getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             IntervalAttributeAuthorization authorization = new IntervalAttributeAuthorization(attribute,
-                                                                                              model.getCurrentPrincipal().getPrincipal());
+                                                                                              model.getCurrentPrincipal()
+                                                                                                   .getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -87,19 +90,24 @@ public class IntervalModelImpl extends
         Interval copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+        copy.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal());
         for (IntervalNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     em);
+            network.getParent()
+                   .link(network.getRelationship(), copy,
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         em);
         }
         for (IntervalAttribute attribute : prototype.getAttributes()) {
             IntervalAttribute clone = (IntervalAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setInterval(copy);
-            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+            clone.setUpdatedBy(model.getCurrentPrincipal()
+                                    .getPrincipal());
         }
         return copy;
     }
@@ -116,7 +124,8 @@ public class IntervalModelImpl extends
     @Override
     public final Interval create(String name, String description) {
         Interval interval = new Interval(name, description,
-                                         model.getCurrentPrincipal().getPrincipal());
+                                         model.getCurrentPrincipal()
+                                              .getPrincipal());
         em.persist(interval);
         return interval;
     }
@@ -129,7 +138,8 @@ public class IntervalModelImpl extends
                            Aspect<Interval> aspect, Agency updatedBy,
                            @SuppressWarnings("unchecked") Aspect<Interval>... aspects) {
         Interval agency = new Interval(name, description,
-                                       model.getCurrentPrincipal().getPrincipal());
+                                       model.getCurrentPrincipal()
+                                            .getPrincipal());
         em.persist(agency);
         initialize(agency, aspect);
         if (aspects != null) {
@@ -148,6 +158,22 @@ public class IntervalModelImpl extends
                                                      Collection<Relationship> relationships,
                                                      Collection<Interval> children) {
         throw new UnsupportedOperationException();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyIntervalGrouping.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAttributeAuthorizationClass()
+     */
+    @Override
+    protected Class<?> getAttributeAuthorizationClass() {
+        return IntervalAttributeAuthorization.class;
     }
 
     /* (non-Javadoc)

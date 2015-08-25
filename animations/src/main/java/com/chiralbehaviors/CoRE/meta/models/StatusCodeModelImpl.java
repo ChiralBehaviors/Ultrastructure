@@ -41,6 +41,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyStatusCodeGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -68,13 +69,15 @@ public class StatusCodeModelImpl extends
      */
     @Override
     public void authorize(Aspect<StatusCode> aspect, Attribute... attributes) {
-        StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
+        StatusCodeNetworkAuthorization auth = new StatusCodeNetworkAuthorization(model.getCurrentPrincipal()
+                                                                                      .getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             StatusCodeAttributeAuthorization authorization = new StatusCodeAttributeAuthorization(attribute,
-                                                                                                  model.getCurrentPrincipal().getPrincipal());
+                                                                                                  model.getCurrentPrincipal()
+                                                                                                       .getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -92,19 +95,24 @@ public class StatusCodeModelImpl extends
         StatusCode copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+        copy.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal());
         for (StatusCodeNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     em);
+            network.getParent()
+                   .link(network.getRelationship(), copy,
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         em);
         }
         for (StatusCodeAttribute attribute : prototype.getAttributes()) {
             StatusCodeAttribute clone = (StatusCodeAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setStatusCode(copy);
-            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+            clone.setUpdatedBy(model.getCurrentPrincipal()
+                                    .getPrincipal());
         }
         return copy;
     }
@@ -118,7 +126,8 @@ public class StatusCodeModelImpl extends
     @Override
     public final StatusCode create(String name, String description) {
         StatusCode statusCode = new StatusCode(name, description,
-                                               model.getCurrentPrincipal().getPrincipal());
+                                               model.getCurrentPrincipal()
+                                                    .getPrincipal());
         em.persist(statusCode);
         return statusCode;
     }
@@ -136,7 +145,8 @@ public class StatusCodeModelImpl extends
                                    Aspect<StatusCode> aspect, Agency updatedBy,
                                    Aspect<StatusCode>... aspects) {
         StatusCode agency = new StatusCode(name, description,
-                                           model.getCurrentPrincipal().getPrincipal());
+                                           model.getCurrentPrincipal()
+                                                .getPrincipal());
         em.persist(agency);
         initialize(agency, aspect);
         if (aspects != null) {
@@ -236,6 +246,22 @@ public class StatusCodeModelImpl extends
                                                                      StatusCodeSequencing.class);
         query.setParameter("statusCode", parent);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyStatusCodeGrouping.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAttributeAuthorizationClass()
+     */
+    @Override
+    protected Class<?> getAttributeAuthorizationClass() {
+        return StatusCodeAttributeAuthorization.class;
     }
 
     /* (non-Javadoc)

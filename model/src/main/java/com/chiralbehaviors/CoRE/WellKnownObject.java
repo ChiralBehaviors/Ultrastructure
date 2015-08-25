@@ -822,11 +822,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.ANY;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -846,11 +841,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.IS_CONTAINED_IN;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return true;
                 }
 
                 /* (non-Javadoc)
@@ -874,11 +864,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.COPY;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -898,11 +883,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.DEVELOPED_BY;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return true;
                 }
 
                 /* (non-Javadoc)
@@ -926,11 +906,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.DEVELOPED;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return false;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -950,11 +925,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.EQUALS;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return true;
                 }
 
                 /* (non-Javadoc)
@@ -978,11 +948,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.HAD_MEMBER;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1002,11 +967,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.LESS_THAN;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return true;
                 }
 
                 /* (non-Javadoc)
@@ -1030,11 +990,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.LESS_THAN_OR_EQUAL;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1054,11 +1009,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.FORMER_MEMBER_OF;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return false;
                 }
 
                 /* (non-Javadoc)
@@ -1082,11 +1032,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.IS_EXCEPTION_TO;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return false;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1106,11 +1051,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.HEAD_OF;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return false;
                 }
 
                 /* (non-Javadoc)
@@ -1134,11 +1074,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.MEMBER_OF;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1158,11 +1093,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.VERSION_OF;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return false;
                 }
 
                 /* (non-Javadoc)
@@ -1186,11 +1116,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.HAS_HEAD;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1210,11 +1135,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.IMPORTS;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return false;
                 }
 
                 /* (non-Javadoc)
@@ -1238,11 +1158,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.IMPORTED_BY;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1262,11 +1177,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.IS_A;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return false;
                 }
 
                 /* (non-Javadoc)
@@ -1290,11 +1200,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.INCLUDES;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1314,11 +1219,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.CONTAINS;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return true;
                 }
 
                 /* (non-Javadoc)
@@ -1342,11 +1242,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.HAS_EXCEPTION;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1366,11 +1261,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.MAPS_TO_LOCATION;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return true;
                 }
 
                 /* (non-Javadoc)
@@ -1394,11 +1284,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.VALIDATES;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1418,11 +1303,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.GREATER_THAN;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return true;
                 }
 
                 /* (non-Javadoc)
@@ -1446,11 +1326,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.GREATER_THAN_OR_EQUAL;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return false;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1470,11 +1345,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.IS_LOCATION_OF;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return false;
                 }
 
                 /* (non-Javadoc)
@@ -1498,11 +1368,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.HAS_MEMBER;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1522,11 +1387,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.NOT_APPLICABLE;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return false;
                 }
 
                 /* (non-Javadoc)
@@ -1549,11 +1409,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.OWNS;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return false;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1571,11 +1426,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.OWNED_BY;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return true;
                 }
 
                 /* (non-Javadoc)
@@ -1596,11 +1446,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.PROTOTYPE_OF;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return false;
                 }
 
                 /* (non-Javadoc)
@@ -1624,11 +1469,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.PROTOTYPE;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1648,11 +1488,6 @@ public interface WellKnownObject {
                 @Override
                 public WellKnownRelationship inverse() {
                     return WellKnownRelationship.SAME;
-                }
-
-                @Override
-                public boolean preferred() {
-                    return true;
                 }
 
                 /* (non-Javadoc)
@@ -1676,11 +1511,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.IS_VALIDATED_BY;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return true;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1702,11 +1532,6 @@ public interface WellKnownObject {
                     return WellKnownRelationship.HAS_VERSION;
                 }
 
-                @Override
-                public boolean preferred() {
-                    return false;
-                }
-
                 /* (non-Javadoc)
                  * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
                  */
@@ -1714,7 +1539,177 @@ public interface WellKnownObject {
                 public String wkoName() {
                     return WellKnownObject.VERSION_OF;
                 }
+            },
+            CAPABILITY() {
+                @Override
+                public String description() {
+                    return "The classification of capabilities";
+                }
 
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.CAPABILITY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "Capability";
+                }
+            },
+            CREATE() {
+                @Override
+                public String description() {
+                    return "The create capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_CREATED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "CREATE";
+                }
+            },
+            MAY_BE_CREATED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse create capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.CREATE;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Created By";
+                }
+            },
+            READ() {
+                @Override
+                public String description() {
+                    return "The read capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_READ_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "READ";
+                }
+            },
+            MAY_BE_READ_BY() {
+                @Override
+                public String description() {
+                    return "The inverse read capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.READ;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Read By";
+                }
+            },
+            UPDATE() {
+                @Override
+                public String description() {
+                    return "The update capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_UPDATED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "UPDATE";
+                }
+            },
+            MAY_BE_UPDATED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse update capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.UPDATE;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Updated By";
+                }
+            },
+            DELETE() {
+                @Override
+                public String description() {
+                    return "The delete capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_DELETED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "DELETE";
+                }
+            },
+            MAY_BE_DELETED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse delete capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.DELETE;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Deleted By";
+                }
             };
 
         /* (non-Javadoc)
@@ -1727,8 +1722,6 @@ public interface WellKnownObject {
         }
 
         abstract public WellKnownRelationship inverse();
-
-        public abstract boolean preferred();
 
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()

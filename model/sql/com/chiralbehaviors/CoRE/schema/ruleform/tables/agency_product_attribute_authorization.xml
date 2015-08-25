@@ -16,11 +16,6 @@
             <column name="authorized_attribute" remarks="An Attribute the existential entity is expected to have" type="uuid">
                 <constraints nullable="true" />
             </column>
-            <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
-            >
-                <constraints nullable="false" />
-            </column>
             <column name="boolean_value" type="boolean" />
             <column name="binary_value" type="BYTEA" />
             <column name="text_value" type="TEXT" />
@@ -52,7 +47,7 @@
             baseColumnNames="updated_by" baseTableName="agency_product_attribute_authorization" constraintName="agency_product_attribute_authorization_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="network_authorization, authorized_attribute, sequence_number"
+        <addUniqueConstraint schemaName="ruleform" columnNames="network_authorization, authorized_attribute, grouping_agency"
             constraintName="agency_product_attribute_authorization_unique_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="agency_product_attribute_authorization" />
         <createIndex schemaName="ruleform" indexName="agency_product_attribute_authorization_updated_by_fkey_idx" tableName="agency_product_attribute_authorization"

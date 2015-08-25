@@ -46,14 +46,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "product_relationship_attribute", schema = "ruleform")
-public class ProductRelationshipAttribute extends
-        AttributeValue<ProductRelationship> {
-    private static final long   serialVersionUID = 1L;
-
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency")
-    private Agency              agency;
+public class ProductRelationshipAttribute
+        extends AttributeValue<ProductRelationship> {
+    private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to ProductLocation
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -141,11 +136,6 @@ public class ProductRelationshipAttribute extends
     }
 
     @JsonGetter
-    public Agency getAgency() {
-        return agency;
-    }
-
-    @JsonGetter
     public ProductRelationship getEntityRelationship() {
         return productRelationship;
     }
@@ -178,10 +168,6 @@ public class ProductRelationshipAttribute extends
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, ProductRelationshipAttribute> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.productRelationshipAttribute;
-    }
-
-    public void setAgency(Agency agency2) {
-        agency = agency2;
     }
 
     public void setEntityRelationship(ProductRelationship productRelationship) {

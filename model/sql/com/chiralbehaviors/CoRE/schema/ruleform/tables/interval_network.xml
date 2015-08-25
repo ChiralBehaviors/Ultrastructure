@@ -22,8 +22,6 @@
             <column name="inference" type="uuid" />
             <column name="premise1" type="uuid" />
             <column name="premise2" type="uuid" />
-            <column name="start_time" type="numeric" />
-            <column name="end_time" type="numeric" />
             <column name="notes" type="TEXT" />
             <column name="updated_by" type="uuid">
                 <constraints nullable="false" />
@@ -71,11 +69,5 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="inference" baseTableName="interval_network" constraintName="interval_network_inference_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
-        <createIndex schemaName="ruleform" indexName="interval_network_start_time_fkey_idx" tableName="interval_network" unique="false">
-            <column name="start_time" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="interval_network_end_time_fkey_idx" tableName="interval_network" unique="false">
-            <column name="end_time" />
-        </createIndex>
     </changeSet>
 </databaseChangeLog>

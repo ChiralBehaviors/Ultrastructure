@@ -37,9 +37,9 @@ import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
 public interface ProductModel extends
         NetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute> {
 
-    List<AgencyProductAuthorization> getProductAgencyAuths(Aspect<Product> aspect);
+    List<AgencyProductAuthorization> getProductAgencyAuths(Aspect<Product> aspect, boolean includeGrouping);
 
-    List<ProductLocationAuthorization> getProductLocationAuths(Aspect<Product> aspect);
+    List<ProductLocationAuthorization> getProductLocationAuths(Aspect<Product> aspect, boolean includeGrouping);
 
-    List<ProductRelationshipAuthorization> getProductRelationshipAuths(Aspect<Product> aspect);
+    List<ProductRelationshipAuthorization> getProductRelationshipAuths(Aspect<Product> aspect, boolean includeGrouping);
 }

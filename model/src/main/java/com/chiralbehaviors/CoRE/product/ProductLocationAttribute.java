@@ -49,15 +49,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     private static final long serialVersionUID = 1L;
 
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "agency")
-    private Agency            agency;
-
     // bi-directional many-to-one association to ProductLocation
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product_location")
-    private ProductLocation   productLocation;
+    private ProductLocation productLocation;
 
     public ProductLocationAttribute() {
     }
@@ -140,11 +135,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     }
 
     @JsonGetter
-    public Agency getAgency() {
-        return agency;
-    }
-
-    @JsonGetter
     public ProductLocation getEntityLocation() {
         return productLocation;
     }
@@ -177,10 +167,6 @@ public class ProductLocationAttribute extends AttributeValue<ProductLocation> {
     @JsonIgnore
     public SingularAttribute<WorkspaceAuthorization, ProductLocationAttribute> getWorkspaceAuthAttribute() {
         return WorkspaceAuthorization_.productLocationAttribute;
-    }
-
-    public void setAgency(Agency agency2) {
-        agency = agency2;
     }
 
     public void setEntityLocation(ProductLocation productLocation) {

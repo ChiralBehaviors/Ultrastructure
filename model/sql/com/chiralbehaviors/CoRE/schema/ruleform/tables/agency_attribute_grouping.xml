@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="agency_attribute_grouping">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="agency_attribute_grouping_pkey" />
+            </column>
+            <column name="name" type="TEXT" />
+            <column name="grouping_agency" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="entity" type="uuid" />
+            <column name="updated_by" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column name="notes" type="TEXT" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="agency_attribute_grouping" />
+        </rollback>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="agency_attribute_grouping" constraintName="agency_attribute_grouping_grouping_agency_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="entity" baseTableName="agency_attribute_grouping" constraintName="agency_attribute_grouping_entity_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="entity, grouping_agency" constraintName="agency_attribute_grouping_agency_key_attribute"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="agency_attribute_grouping" />
+
+        <createIndex schemaName="ruleform" indexName="agency_attribute_grouping_updated_by_fkey_idx" tableName="agency_attribute_grouping"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_attribute_grouping_grouping_agency_fkey_idx" tableName="agency_attribute_grouping"
+            unique="false"
+        >
+            <column name="grouping_agency" />
+        </createIndex> 
+    </changeSet>
+</databaseChangeLog>

@@ -21,11 +21,6 @@
             <column name="authorized_network_attribute" remarks="An Attribute the child network edge is expected to have" type="uuid">
                 <constraints nullable="true" />
             </column>
-            <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when an Attribute can have multiple acceptable values" type="sequence_number"
-            >
-                <constraints nullable="false" />
-            </column>
             <column name="boolean_value" type="boolean" />
             <column name="binary_value" type="BYTEA" />
             <column name="text_value" remarks="Contains a single acceptable text-value if 'attribute' has a data type of 'text'"
@@ -64,7 +59,7 @@
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
-            columnNames="network_authorization, authorized_attribute, authorized_network_attribute, sequence_number" constraintName="unit_attribute_authorizat_classification_attribute_clas_key"
+            columnNames="network_authorization, authorized_attribute, authorized_network_attribute, grouping_agency" constraintName="unit_attribute_authorizat_classification_attribute_clas_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="unit_attribute_authorization" />
         <createIndex schemaName="ruleform" indexName="unit_attribute_authorization_updated_by_fkey_idx" tableName="unit_attribute_authorization"
             unique="false"

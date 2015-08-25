@@ -587,6 +587,24 @@ public class Bootstrap {
                  core, kernelWorkspace);
         populate("Validates", find(WellKnownRelationship.VALIDATES), core,
                  kernelWorkspace);
+        populate("Capability", find(WellKnownRelationship.CAPABILITY), core,
+                 kernelWorkspace);
+        populate("CREATE", find(WellKnownRelationship.CREATE), core,
+                 kernelWorkspace);
+        populate("READ", find(WellKnownRelationship.READ), core,
+                 kernelWorkspace);
+        populate("UPDATE", find(WellKnownRelationship.UPDATE), core,
+                 kernelWorkspace);
+        populate("DELETE", find(WellKnownRelationship.DELETE), core,
+                 kernelWorkspace);
+        populate(find(WellKnownRelationship.MAY_BE_CREATED_BY), core,
+                 kernelWorkspace);
+        populate(find(WellKnownRelationship.MAY_BE_READ_BY), core,
+                 kernelWorkspace);
+        populate(find(WellKnownRelationship.MAY_BE_UPDATED_BY), core,
+                 kernelWorkspace);
+        populate(find(WellKnownRelationship.MAY_BE_DELETED_BY), core,
+                 kernelWorkspace);
     }
 
     private void populateStatusCodes(Agency core, Product kernelWorkspace) {

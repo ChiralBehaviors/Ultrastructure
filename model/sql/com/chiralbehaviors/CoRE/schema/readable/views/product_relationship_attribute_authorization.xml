@@ -15,7 +15,6 @@
                 to_r.name AS to_relationship, 
                 to_p.name AS to_parent, 
                 att.name AS authorized_attribute, 
-                base_table.sequence_number, 
                 base_table.text_value, 
                 base_table.integer_value, 
                 base_table.numeric_value, 

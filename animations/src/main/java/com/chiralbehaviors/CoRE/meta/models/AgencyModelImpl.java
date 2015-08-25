@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -53,6 +54,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AgencyAgencyGrouping;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
@@ -86,12 +88,14 @@ public class AgencyModelImpl extends
     @Override
     public void authorize(Agency ruleform, Relationship relationship,
                           Location authorized) {
-        AgencyLocation a = new AgencyLocation(model.getCurrentPrincipal().getPrincipal());
+        AgencyLocation a = new AgencyLocation(model.getCurrentPrincipal()
+                                                   .getPrincipal());
         a.setAgency(ruleform);
         a.setRelationship(relationship);
         a.setLocation(authorized);
         em.persist(a);
-        AgencyLocation b = new AgencyLocation(model.getCurrentPrincipal().getPrincipal());
+        AgencyLocation b = new AgencyLocation(model.getCurrentPrincipal()
+                                                   .getPrincipal());
         b.setAgency(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setLocation(authorized);
@@ -104,12 +108,14 @@ public class AgencyModelImpl extends
     @Override
     public void authorize(Agency ruleform, Relationship relationship,
                           Product authorized) {
-        AgencyProduct a = new AgencyProduct(model.getCurrentPrincipal().getPrincipal());
+        AgencyProduct a = new AgencyProduct(model.getCurrentPrincipal()
+                                                 .getPrincipal());
         a.setAgency(ruleform);
         a.setRelationship(relationship);
         a.setProduct(authorized);
         em.persist(a);
-        AgencyProduct b = new AgencyProduct(model.getCurrentPrincipal().getPrincipal());
+        AgencyProduct b = new AgencyProduct(model.getCurrentPrincipal()
+                                                 .getPrincipal());
         b.setAgency(ruleform);
         b.setRelationship(relationship.getInverse());
         b.setProduct(authorized);
@@ -125,13 +131,15 @@ public class AgencyModelImpl extends
      */
     @Override
     public void authorize(Aspect<Agency> aspect, Attribute... attributes) {
-        AgencyNetworkAuthorization auth = new AgencyNetworkAuthorization(model.getCurrentPrincipal().getPrincipal());
+        AgencyNetworkAuthorization auth = new AgencyNetworkAuthorization(model.getCurrentPrincipal()
+                                                                              .getPrincipal());
         auth.setClassifier(aspect.getClassifier());
         auth.setClassification(aspect.getClassification());
         em.persist(auth);
         for (Attribute attribute : attributes) {
             AgencyAttributeAuthorization authorization = new AgencyAttributeAuthorization(attribute,
-                                                                                          model.getCurrentPrincipal().getPrincipal());
+                                                                                          model.getCurrentPrincipal()
+                                                                                               .getPrincipal());
             authorization.setNetworkAuthorization(auth);
             em.persist(authorization);
         }
@@ -149,19 +157,24 @@ public class AgencyModelImpl extends
         Agency copy = prototype.clone();
         em.detach(copy);
         em.persist(copy);
-        copy.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+        copy.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal());
         for (AgencyNetwork network : prototype.getNetworkByParent()) {
-            network.getParent().link(network.getRelationship(), copy,
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     model.getCurrentPrincipal().getPrincipal(),
-                                     em);
+            network.getParent()
+                   .link(network.getRelationship(), copy,
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         model.getCurrentPrincipal()
+                              .getPrincipal(),
+                         em);
         }
         for (AttributeValue<Agency> attribute : prototype.getAttributes()) {
             AgencyAttribute clone = (AgencyAttribute) attribute.clone();
             em.detach(clone);
             em.persist(clone);
             clone.setAgency(copy);
-            clone.setUpdatedBy(model.getCurrentPrincipal().getPrincipal());
+            clone.setUpdatedBy(model.getCurrentPrincipal()
+                                    .getPrincipal());
         }
         return copy;
     }
@@ -175,7 +188,8 @@ public class AgencyModelImpl extends
     @Override
     public final Agency create(String name, String description) {
         Agency agency = new Agency(name, description,
-                                   model.getCurrentPrincipal().getPrincipal());
+                                   model.getCurrentPrincipal()
+                                        .getPrincipal());
         em.persist(agency);
         return agency;
     }
@@ -193,7 +207,8 @@ public class AgencyModelImpl extends
                                Aspect<Agency> aspect, Agency updatedBy,
                                Aspect<Agency>... aspects) {
         Agency agency = new Agency(name, description,
-                                   model.getCurrentPrincipal().getPrincipal());
+                                   model.getCurrentPrincipal()
+                                        .getPrincipal());
         em.persist(agency);
         initialize(agency, aspect);
         if (aspects != null) {
@@ -223,12 +238,13 @@ public class AgencyModelImpl extends
         CriteriaQuery<AgencyLocation> query = cb.createQuery(AgencyLocation.class);
         Root<AgencyLocation> plRoot = query.from(AgencyLocation.class);
         ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
-        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(AgencyLocation_.agency),
-                                                   ruleform),
-                                          cb.equal(plRoot.get(AgencyLocation_.relationship),
-                                                   relationshipParam),
-                                          cb.equal(plRoot.get(AgencyLocation_.location),
-                                                   authorized)));
+        query.select(plRoot)
+             .where(cb.and(cb.equal(plRoot.get(AgencyLocation_.agency),
+                                    ruleform),
+                           cb.equal(plRoot.get(AgencyLocation_.relationship),
+                                    relationshipParam),
+                           cb.equal(plRoot.get(AgencyLocation_.location),
+                                    authorized)));
         TypedQuery<AgencyLocation> q = em.createQuery(query);
         q.setParameter(relationshipParam, relationship);
         try {
@@ -253,12 +269,13 @@ public class AgencyModelImpl extends
         CriteriaQuery<AgencyProduct> query = cb.createQuery(AgencyProduct.class);
         Root<AgencyProduct> plRoot = query.from(AgencyProduct.class);
         ParameterExpression<Relationship> relationshipParam = cb.parameter(Relationship.class);
-        query.select(plRoot).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.agency),
-                                                   ruleform),
-                                          cb.equal(plRoot.get(AgencyProduct_.relationship),
-                                                   relationshipParam),
-                                          cb.equal(plRoot.get(AgencyProduct_.product),
-                                                   authorized)));
+        query.select(plRoot)
+             .where(cb.and(cb.equal(plRoot.get(AgencyProduct_.agency),
+                                    ruleform),
+                           cb.equal(plRoot.get(AgencyProduct_.relationship),
+                                    relationshipParam),
+                           cb.equal(plRoot.get(AgencyProduct_.product),
+                                    authorized)));
         TypedQuery<AgencyProduct> q = em.createQuery(query);
         q.setParameter(relationshipParam, relationship);
         try {
@@ -277,16 +294,23 @@ public class AgencyModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.AgencyModel#getAgencyLocationAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<AgencyLocationAuthorization> getAgencyLocationAuths(Aspect<Agency> aspect) {
+    public List<AgencyLocationAuthorization> getAgencyLocationAuths(Aspect<Agency> aspect,
+                                                                    boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AgencyLocationAuthorization> query = cb.createQuery(AgencyLocationAuthorization.class);
         Root<AgencyLocationAuthorization> networkRoot = query.from(AgencyLocationAuthorization.class);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.fromParent),
-                                                        aspect.getClassification()),
-                                               cb.equal(networkRoot.get(AgencyLocationAuthorization_.fromRelationship),
-                                                        aspect.getClassifier()),
-                                               cb.equal(networkRoot.get(AgencyLocationAuthorization_.forward),
-                                                        true)));
+        Predicate match = cb.and(cb.equal(networkRoot.get(AgencyLocationAuthorization_.fromParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(AgencyLocationAuthorization_.fromRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(AgencyLocationAuthorization_.forward),
+                                          true));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(AgencyLocationAuthorization_.groupingAgency)));
+        }
+        query.select(networkRoot)
+             .where(match);
         TypedQuery<AgencyLocationAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -295,16 +319,23 @@ public class AgencyModelImpl extends
      * @see com.chiralbehaviors.CoRE.meta.AgencyModel#getAgencyProductAuths(com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<AgencyProductAuthorization> getAgencyProductAuths(Aspect<Agency> aspect) {
+    public List<AgencyProductAuthorization> getAgencyProductAuths(Aspect<Agency> aspect,
+                                                                  boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<AgencyProductAuthorization> query = cb.createQuery(AgencyProductAuthorization.class);
         Root<AgencyProductAuthorization> networkRoot = query.from(AgencyProductAuthorization.class);
-        query.select(networkRoot).where(cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.fromParent),
-                                                        aspect.getClassification()),
-                                               cb.equal(networkRoot.get(AgencyProductAuthorization_.fromRelationship),
-                                                        aspect.getClassifier()),
-                                               cb.equal(networkRoot.get(AgencyProductAuthorization_.forward),
-                                                        true)));
+        Predicate match = cb.and(cb.equal(networkRoot.get(AgencyProductAuthorization_.fromParent),
+                                          aspect.getClassification()),
+                                 cb.equal(networkRoot.get(AgencyProductAuthorization_.fromRelationship),
+                                          aspect.getClassifier()),
+                                 cb.equal(networkRoot.get(AgencyProductAuthorization_.forward),
+                                          true));
+        if (!includeGrouping) {
+            match = cb.and(match,
+                           cb.isNull(networkRoot.get(AgencyProductAuthorization_.groupingAgency)));
+        }
+        query.select(networkRoot)
+             .where(match);
         TypedQuery<AgencyProductAuthorization> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -333,10 +364,11 @@ public class AgencyModelImpl extends
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyLocation_.agency),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(AgencyLocation_.relationship),
-                                                 relationship)));
+        query.select(path)
+             .where(cb.and(cb.equal(plRoot.get(AgencyLocation_.agency),
+                                    ruleform),
+                           cb.equal(plRoot.get(AgencyLocation_.relationship),
+                                    relationship)));
         TypedQuery<Location> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -356,10 +388,11 @@ public class AgencyModelImpl extends
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
-        query.select(path).where(cb.and(cb.equal(plRoot.get(AgencyProduct_.agency),
-                                                 ruleform),
-                                        cb.equal(plRoot.get(AgencyProduct_.relationship),
-                                                 relationship)));
+        query.select(path)
+             .where(cb.and(cb.equal(plRoot.get(AgencyProduct_.agency),
+                                    ruleform),
+                           cb.equal(plRoot.get(AgencyProduct_.relationship),
+                                    relationship)));
         TypedQuery<Product> q = em.createQuery(query);
         return q.getResultList();
     }
@@ -379,6 +412,22 @@ public class AgencyModelImpl extends
         query.setParameter("relationships", relationships);
         query.setParameter("children", children);
         return query.getResultList();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAgencyGroupingClass()
+     */
+    @Override
+    protected Class<?> getAgencyGroupingClass() {
+        return AgencyAgencyGrouping.class;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getAttributeAuthorizationClass()
+     */
+    @Override
+    protected Class<?> getAttributeAuthorizationClass() {
+        return AgencyAttributeAuthorization.class;
     }
 
     /* (non-Javadoc)

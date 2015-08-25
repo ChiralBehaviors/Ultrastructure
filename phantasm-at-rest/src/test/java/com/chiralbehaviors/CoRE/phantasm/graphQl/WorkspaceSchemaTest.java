@@ -40,7 +40,6 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchemaBuilder;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.ResourcesTest;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
@@ -92,9 +91,11 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         thing2.addThing3(thing3);
         thing3.addDerivedFrom(artifact);
         thing3.addDerivedFrom(artifact2);
-        WorkspaceSchemaBuilder schemaBuilder = new WorkspaceSchemaBuilder(TEST_SCENARIO_URI,
-                                                                          model);
-        GraphQLSchema schema = schemaBuilder.build();
+
+        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
+        when(mockedEmf.createEntityManager()).thenReturn(em);
+        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
+                                                                          .getWorkspace());
         WorkspaceContext ctx = new WorkspaceContext(new PhantasmCRUD(model));
         ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
                                                                             thing1.getRuleform()

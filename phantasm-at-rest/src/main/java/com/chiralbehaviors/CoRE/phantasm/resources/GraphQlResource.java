@@ -20,12 +20,17 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import static graphql.schema.GraphQLObjectType.newObject;
+
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -43,14 +48,18 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceSchemaBuilder;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.codahale.metrics.annotation.Timed;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
 
 /**
@@ -63,8 +72,6 @@ import graphql.schema.GraphQLSchema;
 @Produces({ MediaType.APPLICATION_JSON, "text/json" })
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class GraphQlResource extends TransactionalResource {
-    private static final Logger log = LoggerFactory.getLogger(GraphQlResource.class);
-
     public static class QueryRequest {
         private String              query;
         private Map<String, Object> variables = Collections.emptyMap();
@@ -86,8 +93,34 @@ public class GraphQlResource extends TransactionalResource {
         }
     }
 
+    private static final Logger log = LoggerFactory.getLogger(GraphQlResource.class);
+
     public GraphQlResource(EntityManagerFactory emf) {
         super(emf);
+    }
+
+    public GraphQLSchema build(Workspace workspace) {
+        Deque<NetworkAuthorization<?>> unresolved = initialState(workspace);
+        Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved = new HashMap<>();
+        Builder topLevelQuery = newObject().name(workspace.getDefiningProduct()
+                                                          .getName())
+                                           .description(String.format("Top level query for %s",
+                                                                      workspace.getDefiningProduct()
+                                                                               .getName()));
+        while (!unresolved.isEmpty()) {
+            NetworkAuthorization<?> facet = unresolved.pop();
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            FacetType<?, ?> type = new FacetType(facet, readOnlyModel);
+            resolved.put(facet, type);
+            for (NetworkAuthorization<?> auth : type.build(topLevelQuery)) {
+                if (!resolved.containsKey(auth)) {
+                    unresolved.add(auth);
+                }
+            }
+        }
+        return GraphQLSchema.newSchema()
+                            .query(topLevelQuery.build())
+                            .build();
     }
 
     @Timed
@@ -121,25 +154,54 @@ public class GraphQlResource extends TransactionalResource {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        WorkspaceSchemaBuilder builder;
-        try {
-            builder = new WorkspaceSchemaBuilder(workspace, readOnlyModel);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(e.getMessage(), Status.NOT_FOUND);
+        Map<String, Object> result = new HashMap<>();
+        UUID uuid = Workspace.uuidOf(workspace);
+        WorkspaceScope scoped = readOnlyModel.getWorkspaceModel()
+                                             .getScoped(uuid);
+        if (scoped == null) {
+            result.put("errors",
+                       String.format("Workspace %s does not exist", workspace));
+            return result;
         }
-        GraphQLSchema schema = builder.build();
+
+        GraphQLSchema schema = build(scoped.getWorkspace());
         WorkspaceContext ctx = new WorkspaceContext(new PhantasmCRUD(readOnlyModel));
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                               ctx,
                                                               request.getVariables());
+
         if (execute.getErrors()
                    .isEmpty()) {
             return execute.getData();
         }
-        Map<String, Object> result = new HashMap<>();
+
         result.put("errors", execute.getErrors());
+
         log.error("Query: {} Errors: {}", request.getQuery(),
                   execute.getErrors());
+
         return result;
+    }
+
+    private Deque<NetworkAuthorization<?>> initialState(Workspace workspace) {
+        Product definingProduct = workspace.getDefiningProduct();
+        Deque<NetworkAuthorization<?>> unresolved = new ArrayDeque<>();
+        unresolved.addAll(readOnlyModel.getAgencyModel()
+                                       .getFacets(definingProduct));
+        unresolved.addAll(readOnlyModel.getAttributeModel()
+                                       .getFacets(definingProduct));
+        unresolved.addAll(readOnlyModel.getIntervalModel()
+                                       .getFacets(definingProduct));
+        unresolved.addAll(readOnlyModel.getLocationModel()
+                                       .getFacets(definingProduct));
+        unresolved.addAll(readOnlyModel.getProductModel()
+                                       .getFacets(definingProduct));
+        unresolved.addAll(readOnlyModel.getRelationshipModel()
+                                       .getFacets(definingProduct));
+        unresolved.addAll(readOnlyModel.getStatusCodeModel()
+                                       .getFacets(definingProduct));
+        unresolved.addAll(readOnlyModel.getUnitModel()
+                                       .getFacets(definingProduct));
+        return unresolved;
     }
 }

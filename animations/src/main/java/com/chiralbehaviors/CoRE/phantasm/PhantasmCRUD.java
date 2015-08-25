@@ -341,6 +341,7 @@ public class PhantasmCRUD {
         return value;
     }
 
+    @SuppressWarnings("unused")
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object setAttributeArray(RuleForm instance,
                                                                                                                                           Attribute authorizedAttribute,
                                                                                                                                           Object[] values,
@@ -384,6 +385,7 @@ public class PhantasmCRUD {
         return null;
     }
 
+    @SuppressWarnings("unused")
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object setAttributeMap(RuleForm instance,
                                                                                                                                         Attribute authorizedAttribute,
                                                                                                                                         Map<String, Object> values,

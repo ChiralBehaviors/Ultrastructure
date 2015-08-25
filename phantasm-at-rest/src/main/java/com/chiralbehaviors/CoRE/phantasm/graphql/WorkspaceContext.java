@@ -43,7 +43,7 @@ public class WorkspaceContext {
     }
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Object getAttributeValue(DataFetchingEnvironment env,
-                                                                                                                                         @SuppressWarnings("rawtypes") AttributeAuthorization stateAuth) {
+                                                                                                                                         AttributeAuthorization<RuleForm, Network> stateAuth) {
         @SuppressWarnings("unchecked")
         RuleForm instance = (RuleForm) env.getSource();
         return crud.getAttributeValue(instance, stateAuth);

@@ -329,6 +329,19 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                                                    boolean includeGrouping);
 
     /**
+     * Answer the list of attribute authorizations that are classified by a
+     * facet
+     *
+     * @param facet
+     *            - the classifying aspect.
+     * @param includeGrouping
+     *            TODO
+     * @return
+     */
+    List<AttributeAuth> getAttributeAuthorizations(NetworkAuthorization<RuleForm> facet,
+                                                   boolean includeGrouping);
+
+    /**
      * Answer the list of existing attributes for the ruleform instance that are
      * authorized by the groupingAgency
      *

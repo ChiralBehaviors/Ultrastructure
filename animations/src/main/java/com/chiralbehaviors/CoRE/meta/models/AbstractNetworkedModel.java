@@ -64,6 +64,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization_;
 import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization;
@@ -639,6 +640,20 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                        .filter(classifier -> classifier.getGroupingAgency() == null)
                                        .collect(Collectors.toList())
                                : result;
+    }
+
+    @Override
+    public List<AttributeAuth> getAttributeAuthorizations(NetworkAuthorization<RuleForm> facet,
+                                                          boolean includeGrouping) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttributeAuth> query = cb.createQuery(authorization);
+        Root<AttributeAuth> authRoot = query.from(authorization);
+        query.select(authRoot)
+             .where(cb.and(cb.equal(authRoot.get("networkAuthorization"),
+                                    facet),
+                           cb.isNull(authRoot.get(AttributeAuthorization_.groupingAgency))));
+        TypedQuery<AttributeAuth> q = em.createQuery(query);
+        return q.getResultList();
     }
 
     @Override

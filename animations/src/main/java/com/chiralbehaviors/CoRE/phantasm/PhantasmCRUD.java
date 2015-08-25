@@ -59,6 +59,21 @@ public class PhantasmCRUD {
         this.model = model;
     }
 
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> RuleForm createInstance(RuleForm instance,
+                                                                                                                                        NetworkAuthorization<RuleForm> facet) {
+        NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
+                                                      .getPrincipal(),
+                                                 facet, model.getKernel()
+                                                             .getCREATE())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getCREATE()));
+        }
+        return null;
+    }
+
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void addChild(RuleForm instance,
                                                                                                                               NetworkAuthorization<RuleForm> auth,
                                                                                                                               RuleForm child) {

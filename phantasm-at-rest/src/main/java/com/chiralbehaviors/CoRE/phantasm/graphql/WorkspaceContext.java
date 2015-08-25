@@ -81,7 +81,7 @@ public class WorkspaceContext {
                                                                                                                                           NetworkAuthorization<?> child) {
         @SuppressWarnings("unchecked")
         RuleForm instance = (RuleForm) env.getSource();
-        return crud.getSingularXdChild(instance, facet, auth, child);
+        return crud.getSingularChild(instance, facet, auth, child);
     }
 
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> List<?> getXdChildren(DataFetchingEnvironment env,
@@ -90,6 +90,6 @@ public class WorkspaceContext {
                                                                                                                                       NetworkAuthorization<?> child) {
         @SuppressWarnings("unchecked")
         RuleForm instance = (RuleForm) env.getSource();
-        return crud.getXdChildren(instance, facet, auth, child);
+        return crud.getChildren(instance, facet, auth, child);
     }
 }

@@ -26,6 +26,8 @@ products {
 
 relationships {
     edges {
+        APPLY.IsA.Capability
+        REMOVE.IsA.Capability
         CREATE.IsA.Capability
         READ.IsA.Capability
         UPDATE.IsA.Capability

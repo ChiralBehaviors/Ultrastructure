@@ -53,7 +53,6 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.codahale.metrics.annotation.Timed;
 
@@ -165,9 +164,8 @@ public class GraphQlResource extends TransactionalResource {
         }
 
         GraphQLSchema schema = build(scoped.getWorkspace());
-        WorkspaceContext ctx = new WorkspaceContext(new PhantasmCRUD(readOnlyModel));
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              ctx,
+                                                              new PhantasmCRUD(readOnlyModel),
                                                               request.getVariables());
 
         if (execute.getErrors()

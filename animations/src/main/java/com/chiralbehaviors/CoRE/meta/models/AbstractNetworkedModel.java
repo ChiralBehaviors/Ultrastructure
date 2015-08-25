@@ -1244,6 +1244,14 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
     }
 
+    @Override
+    public void initialize(RuleForm instance,
+                           NetworkAuthorization<RuleForm> facet,
+                           Agency principal) {
+        // TODO Auto-generated method stub
+
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#isAccessible(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship, com.chiralbehaviors.CoRE.network.Relationship, com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
      */

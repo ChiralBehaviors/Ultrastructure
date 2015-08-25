@@ -51,6 +51,8 @@ public interface Kernel {
 
     Unit getAnyUnit();
 
+    Relationship getAPPLY();
+
     Relationship getCapability();
 
     Relationship getContains();
@@ -188,6 +190,8 @@ public interface Kernel {
     Relationship getPrototypeOf();
 
     Relationship getREAD();
+
+    Relationship getREMOVE();
 
     Agency getSameAgency();
 

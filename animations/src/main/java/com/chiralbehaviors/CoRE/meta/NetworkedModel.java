@@ -622,4 +622,12 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                            RuleForm child, Agency updatedBy);
 
     void unlink(RuleForm parent, Relationship r, RuleForm child);
+
+    /**
+     * @param instance
+     * @param facet
+     * @param principal
+     */
+    void initialize(RuleForm instance, NetworkAuthorization<RuleForm> facet,
+                    Agency principal);
 }

@@ -1710,6 +1710,82 @@ public interface WellKnownObject {
                 public String wkoName() {
                     return "May Be Deleted By";
                 }
+            },
+            APPLY() {
+                @Override
+                public String description() {
+                    return "The apply capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_APPLIED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "Apply";
+                }
+            },
+            MAY_BE_APPLIED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse apply capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.APPLY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Applied By";
+                }
+            },
+            REMOVE() {
+                @Override
+                public String description() {
+                    return "The remove capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_REMOVED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "Apply";
+                }
+            },
+            MAY_BE_REMOVED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse remove capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.REMOVE;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Removed By";
+                }
             };
 
         /* (non-Javadoc)

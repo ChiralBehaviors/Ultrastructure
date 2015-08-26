@@ -67,19 +67,6 @@ public class PhantasmTraversal {
                    String fieldName);
 
         /**
-         * Visit the multiple child xd authorization
-         * 
-         * @param auth
-         *            - the authorization
-         * @param fieldName
-         *            - the normalized field name
-         * @param child
-         *            - the child facet
-         */
-        void visitChildren(XDomainNetworkAuthorization<?, ?> auth,
-                           String fieldName, NetworkAuthorization<?> child);
-
-        /**
          * Visit the multiple child authorization
          * 
          * @param auth
@@ -92,6 +79,19 @@ public class PhantasmTraversal {
         void visitChildren(NetworkAuthorization<RuleForm> auth,
                            String fieldName,
                            NetworkAuthorization<RuleForm> child);
+
+        /**
+         * Visit the multiple child xd authorization
+         * 
+         * @param auth
+         *            - the authorization
+         * @param fieldName
+         *            - the normalized field name
+         * @param child
+         *            - the child facet
+         */
+        void visitChildren(XDomainNetworkAuthorization<?, ?> auth,
+                           String fieldName, NetworkAuthorization<?> child);
 
         /**
          * Visit the singular child network authorization
@@ -122,6 +122,34 @@ public class PhantasmTraversal {
 
     }
 
+    public static NetworkAuthorization<?> resolveFrom(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
+                                                      Model model) {
+        Aspect<?> aspect = new Aspect<>(auth.getFromRelationship(),
+                                        auth.getFromParent());
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        NetworkAuthorization facet = model.getNetworkedModel(auth.getFromParent())
+                                          .getFacetDeclaration(aspect);
+        if (facet == null) {
+            throw new IllegalStateException(String.format("%s does not exist as a facet",
+                                                          aspect));
+        }
+        return facet;
+    }
+
+    public static NetworkAuthorization<?> resolveTo(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
+                                                    Model model) {
+        Aspect<?> aspect = new Aspect<>(auth.getToRelationship(),
+                                        auth.getToParent());
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        NetworkAuthorization facet = model.getNetworkedModel(auth.getToParent())
+                                          .getFacetDeclaration(aspect);
+        if (facet == null) {
+            throw new IllegalStateException(String.format("%s does not exist as a facet",
+                                                          aspect));
+        }
+        return facet;
+    }
+
     private final Model model;
 
     public PhantasmTraversal(Model model) {
@@ -137,25 +165,11 @@ public class PhantasmTraversal {
 
     }
 
-    private NetworkAuthorization<?> resolveFrom(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth) {
-        Aspect<?> aspect = new Aspect<>(auth.getFromRelationship(),
-                                        auth.getFromParent());
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        NetworkAuthorization facet = model.getNetworkedModel(auth.getFromParent())
-                                          .getFacetDeclaration(aspect);
-        if (facet == null) {
-            throw new IllegalStateException(String.format("%s does not exist as a facet",
-                                                          aspect));
-        }
-        return facet;
-    }
-
-    private NetworkAuthorization<?> resolveTo(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth) {
-        Aspect<?> aspect = new Aspect<>(auth.getToRelationship(),
-                                        auth.getToParent());
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        NetworkAuthorization facet = model.getNetworkedModel(auth.getToParent())
-                                          .getFacetDeclaration(aspect);
+    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> NetworkAuthorization<RuleForm> resolve(NetworkAuthorization<RuleForm> auth,
+                                                                                                                                                        NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
+        Aspect<RuleForm> aspect = new Aspect<>(auth.getAuthorizedRelationship(),
+                                               auth.getAuthorizedParent());
+        NetworkAuthorization<RuleForm> facet = networkedModel.getFacetDeclaration(aspect);
         if (facet == null) {
             throw new IllegalStateException(String.format("%s does not exist as a facet",
                                                           aspect));
@@ -176,11 +190,11 @@ public class PhantasmTraversal {
                                            facet.getClassification());
         for (AgencyLocationAuthorization auth : agencyModel.getAgencyLocationAuths(aspect,
                                                                                    false)) {
-            traverseXdAuth(auth, resolveTo(auth), visitor);
+            traverseXdAuth(auth, resolveTo(auth, model), visitor);
         }
         for (AgencyProductAuthorization auth : agencyModel.getAgencyProductAuths(aspect,
                                                                                  false)) {
-            traverseXdAuth(auth, resolveTo(auth), visitor);
+            traverseXdAuth(auth, resolveTo(auth, model), visitor);
         }
     }
 
@@ -204,24 +218,12 @@ public class PhantasmTraversal {
                                              facet.getClassification());
         for (AgencyLocationAuthorization auth : locationModel.getLocationAgencyAuths(aspect,
                                                                                      false)) {
-            traverseXdAuth(auth, resolveFrom(auth), visitor);
+            traverseXdAuth(auth, resolveFrom(auth, model), visitor);
         }
         for (ProductLocationAuthorization auth : locationModel.getLocationProductAuths(aspect,
                                                                                        false)) {
-            traverseXdAuth(auth, resolveFrom(auth), visitor);
+            traverseXdAuth(auth, resolveFrom(auth, model), visitor);
         }
-    }
-
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> NetworkAuthorization<RuleForm> resolve(NetworkAuthorization<RuleForm> auth,
-                                                                                                                                                        NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
-        Aspect<RuleForm> aspect = new Aspect<>(auth.getAuthorizedRelationship(),
-                                               auth.getAuthorizedParent());
-        NetworkAuthorization<RuleForm> facet = networkedModel.getFacetDeclaration(aspect);
-        if (facet == null) {
-            throw new IllegalStateException(String.format("%s does not exist as a facet",
-                                                          aspect));
-        }
-        return facet;
     }
 
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverseNetworkAuths(NetworkAuthorization<RuleForm> facet,
@@ -253,15 +255,15 @@ public class PhantasmTraversal {
                                             facet.getClassification());
         for (ProductLocationAuthorization auth : productModel.getProductLocationAuths(aspect,
                                                                                       false)) {
-            traverseXdAuth(auth, resolveTo(auth), visitor);
+            traverseXdAuth(auth, resolveTo(auth, model), visitor);
         }
         for (ProductRelationshipAuthorization auth : productModel.getProductRelationshipAuths(aspect,
                                                                                               false)) {
-            traverseXdAuth(auth, resolveTo(auth), visitor);
+            traverseXdAuth(auth, resolveTo(auth, model), visitor);
         }
         for (AgencyProductAuthorization auth : productModel.getProductAgencyAuths(aspect,
                                                                                   false)) {
-            traverseXdAuth(auth, resolveFrom(auth), visitor);
+            traverseXdAuth(auth, resolveFrom(auth, model), visitor);
         }
     }
 
@@ -275,7 +277,7 @@ public class PhantasmTraversal {
                                                  facet.getClassification());
         for (ProductRelationshipAuthorization auth : agencyModel.getRelationshipProductAuths(aspect,
                                                                                              false)) {
-            traverseXdAuth(auth, resolveFrom(auth), visitor);
+            traverseXdAuth(auth, resolveFrom(auth, model), visitor);
         }
     }
 

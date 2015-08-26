@@ -106,12 +106,18 @@ public class GraphQlResource extends TransactionalResource {
                                            .description(String.format("Top level query for %s",
                                                                       workspace.getDefiningProduct()
                                                                                .getName()));
+        Builder topLevelMutation = newObject().name(workspace.getDefiningProduct()
+                                                             .getName())
+                                              .description(String.format("Top level mutation for %s",
+                                                                         workspace.getDefiningProduct()
+                                                                                  .getName()));
         while (!unresolved.isEmpty()) {
             NetworkAuthorization<?> facet = unresolved.pop();
             @SuppressWarnings({ "unchecked", "rawtypes" })
             FacetType<?, ?> type = new FacetType(facet, readOnlyModel);
             resolved.put(facet, type);
-            for (NetworkAuthorization<?> auth : type.build(topLevelQuery)) {
+            for (NetworkAuthorization<?> auth : type.build(topLevelQuery,
+                                                           topLevelMutation)) {
                 if (!resolved.containsKey(auth)) {
                     unresolved.add(auth);
                 }
@@ -119,6 +125,7 @@ public class GraphQlResource extends TransactionalResource {
         }
         return GraphQLSchema.newSchema()
                             .query(topLevelQuery.build())
+                            .mutation(topLevelMutation.build())
                             .build();
     }
 

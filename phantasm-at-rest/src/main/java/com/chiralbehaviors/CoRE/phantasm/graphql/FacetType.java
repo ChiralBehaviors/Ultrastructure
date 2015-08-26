@@ -62,7 +62,6 @@ import graphql.schema.GraphQLTypeReference;
 public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         implements PhantasmTraversal.PhantasmVisitor<RuleForm, Network> {
 
-    private static final String SET_FIELD_TEMPLATE    = "set%s%s";
     private static final String APPLY_TEMPLATE        = "Apply%s";
     private static final String CREATE_TEMPLATE       = "Create%s";
     private static final String DESCRIPTION           = "description";
@@ -70,6 +69,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private static final String INSTANCES_OF_TEMPLATE = "InstancesOf%s";
     private static final String NAME                  = "name";
     private static final String REMOVE_TEMPLATE       = "Remove%s";
+    private static final String SET_FIELD_TEMPLATE    = "Set%s%s";
     private static final String STATE                 = "state";
     private static final String UPDATE_TEMPLATE       = "Update%s";
 

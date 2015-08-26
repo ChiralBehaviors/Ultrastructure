@@ -184,7 +184,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                          .type(new GraphQLNonNull(GraphQLString))
                                                                          .build())
                                                   .argument(newArgument().name(fieldName)
-                                                                         .description(String.format("the %s to update on %s",
+                                                                         .description(String.format("the %s attribute to update on %s",
                                                                                                     fieldName,
                                                                                                     facet.getName()))
                                                                          .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
@@ -216,7 +216,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                          .type(new GraphQLNonNull(GraphQLString))
                                                                          .build())
                                                   .argument(newArgument().name(fieldName)
-                                                                         .description(String.format("the %s to update on %s",
+                                                                         .description(String.format("the ids of the %s to update on %s",
                                                                                                     fieldName,
                                                                                                     facet.getName()))
                                                                          .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
@@ -247,7 +247,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                       capitalized(fieldName)))
                                                   .description(auth.getNotes())
                                                   .argument(newArgument().name(ID)
-                                                                         .description("the id of the instance to apply the update")
+                                                                         .description("the ids of the instance to apply the update")
                                                                          .type(new GraphQLNonNull(GraphQLString))
                                                                          .build())
                                                   .argument(newArgument().name(fieldName)
@@ -286,7 +286,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                          .type(new GraphQLNonNull(GraphQLString))
                                                                          .build())
                                                   .argument(newArgument().name(fieldName)
-                                                                         .description(String.format("the %s to update on %s",
+                                                                         .description(String.format("the id of the %s to update on %s",
                                                                                                     fieldName,
                                                                                                     facet.getName()))
                                                                          .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
@@ -321,7 +321,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                          .type(new GraphQLNonNull(GraphQLString))
                                                                          .build())
                                                   .argument(newArgument().name(fieldName)
-                                                                         .description(String.format("the %s to update on %s",
+                                                                         .description(String.format("the id of the %s to update on %s",
                                                                                                     fieldName,
                                                                                                     facet.getName()))
                                                                          .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))

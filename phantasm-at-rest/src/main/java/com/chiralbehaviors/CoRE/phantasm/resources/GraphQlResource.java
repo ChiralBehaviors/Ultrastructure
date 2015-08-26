@@ -101,13 +101,11 @@ public class GraphQlResource extends TransactionalResource {
     public GraphQLSchema build(Workspace workspace) {
         Deque<NetworkAuthorization<?>> unresolved = initialState(workspace);
         Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved = new HashMap<>();
-        Builder topLevelQuery = newObject().name(workspace.getDefiningProduct()
-                                                          .getName())
+        Builder topLevelQuery = newObject().name("Query")
                                            .description(String.format("Top level query for %s",
                                                                       workspace.getDefiningProduct()
                                                                                .getName()));
-        Builder topLevelMutation = newObject().name(workspace.getDefiningProduct()
-                                                             .getName())
+        Builder topLevelMutation = newObject().name("Mutation")
                                               .description(String.format("Top level mutation for %s",
                                                                          workspace.getDefiningProduct()
                                                                                   .getName()));

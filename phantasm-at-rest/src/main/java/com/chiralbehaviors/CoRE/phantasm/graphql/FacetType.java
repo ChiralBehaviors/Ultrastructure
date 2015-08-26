@@ -100,20 +100,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
      */
     public Set<NetworkAuthorization<?>> build(Builder query, Builder mutation) {
         mutationBuilder = mutation;
-        // Ruleform attributes for the facet
-        typeBuilder.field(newFieldDefinition().type(GraphQLString)
-                                              .name(ID)
-                                              .description("The id of the facet instance")
-                                              .build());
-        typeBuilder.field(newFieldDefinition().type(GraphQLString)
-                                              .name(NAME)
-                                              .description("The name of the facet instance")
-                                              .build());
-        typeBuilder.field(newFieldDefinition().type(GraphQLString)
-                                              .name(DESCRIPTION)
-                                              .description("The description of the facet instance")
-                                              .build());
-
+        buildRuleformAttributes();
         new PhantasmTraversal<RuleForm, Network>(model).traverse(facet, this);
         GraphQLObjectType type = typeBuilder.build();
 
@@ -388,6 +375,59 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .dataFetcher(env -> ctx(env).apply(facet,
                                                                       (String) env.getArgument(ID)))
                                    .build();
+    }
+
+    private void buildRuleformAttributes() {
+        typeBuilder.field(newFieldDefinition().type(GraphQLString)
+                                              .name(ID)
+                                              .description("The id of the facet instance")
+                                              .build());
+        typeBuilder.field(newFieldDefinition().type(GraphQLString)
+                                              .name(NAME)
+                                              .description("The name of the facet instance")
+                                              .build());
+        typeBuilder.field(newFieldDefinition().type(GraphQLString)
+                                              .name(DESCRIPTION)
+                                              .description("The description of the facet instance")
+                                              .build());
+        mutationBuilder.field(newFieldDefinition().type(GraphQLString)
+                                                  .name(String.format(SET_FIELD_TEMPLATE,
+                                                                      facet.getName(),
+                                                                      capitalized(NAME)))
+                                                  .description(String.format("Set the name of the %s",
+                                                                             facet.getName()))
+                                                  .argument(newArgument().name(ID)
+                                                                         .description("the id of the instance")
+                                                                         .type(new GraphQLNonNull(GraphQLString))
+                                                                         .build())
+                                                  .argument(newArgument().name(NAME)
+                                                                         .description(String.format("the name to update on %s",
+                                                                                                    facet.getName()))
+                                                                         .type(new GraphQLNonNull(GraphQLString))
+                                                                         .build())
+                                                  .dataFetcher(env -> ctx(env).setName(facet,
+                                                                                       (String) env.getArgument(ID),
+                                                                                       (String) env.getArgument(NAME)))
+                                                  .build());
+        mutationBuilder.field(newFieldDefinition().type(GraphQLString)
+                                                  .name(String.format(SET_FIELD_TEMPLATE,
+                                                                      facet.getName(),
+                                                                      capitalized(DESCRIPTION)))
+                                                  .description(String.format("Set the description of the %s",
+                                                                             facet.getName()))
+                                                  .argument(newArgument().name(ID)
+                                                                         .description("the id of the instance")
+                                                                         .type(new GraphQLNonNull(GraphQLString))
+                                                                         .build())
+                                                  .argument(newArgument().name(DESCRIPTION)
+                                                                         .description(String.format("the description to update on %s",
+                                                                                                    facet.getName()))
+                                                                         .type(new GraphQLNonNull(GraphQLString))
+                                                                         .build())
+                                                  .dataFetcher(env -> ctx(env).setDescription(facet,
+                                                                                              (String) env.getArgument(ID),
+                                                                                              (String) env.getArgument(DESCRIPTION)))
+                                                  .build());
     }
 
     private String capitalized(String field) {

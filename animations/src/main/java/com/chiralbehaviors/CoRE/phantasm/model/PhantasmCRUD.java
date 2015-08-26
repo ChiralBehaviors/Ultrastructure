@@ -224,6 +224,19 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
     }
 
+    public void checkUPDATE(@SuppressWarnings("rawtypes") ExistentialRuleform child,
+                            NetworkedModel<?, ?, ?, ?> networkedModel) {
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            child, model.getKernel()
+                                                        .getUPDATE())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getUPDATE()));
+        }
+    }
+
     public void checkUPDATE(NetworkAuthorization<RuleForm> auth,
                             NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
         if (!networkedModel.checkCapability(model.getCurrentPrincipal()
@@ -796,6 +809,44 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             children.add(lookup(child, childId));
         }
         return setChildren(instance, facet, auth, children);
+    }
+
+    /**
+     * @param facet
+     * @param id
+     * @param description
+     * @return
+     */
+    public Object setDescription(NetworkAuthorization<RuleForm> facet,
+                                 String id, String description) {
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        RuleForm instance = networkedModel.find(UUID.fromString(id));
+        if (instance == null) {
+            return null;
+        }
+        checkREAD(instance, networkedModel);
+        checkUPDATE(instance, networkedModel);
+        instance.setDescription(description);
+        return instance;
+    }
+
+    /**
+     * @param facet
+     * @param id
+     * @param name
+     * @return
+     */
+    public Object setName(NetworkAuthorization<RuleForm> facet, String id,
+                          String name) {
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        RuleForm instance = networkedModel.find(UUID.fromString(id));
+        if (instance == null) {
+            return null;
+        }
+        checkREAD(instance, networkedModel);
+        checkUPDATE(instance, networkedModel);
+        instance.setName(name);
+        return instance;
     }
 
     /**

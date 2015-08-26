@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphQl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -243,5 +244,65 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                            .toString(),
                      thing3Result.get("id"));
 
+    }
+
+    @Test
+    public void testMutation() throws Exception {
+        em.getTransaction()
+          .begin();
+        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                          model);
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
+                                        "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
+                                                 "model artifact");
+        artifact.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact.setArtifactID("model");
+        artifact.setVersion("0.0.2-SNAPSHOT");
+        artifact.setType("jar");
+
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
+
+        thing1.setAliases(new String[] { "smith", "jones" });
+        String uri = "http://example.com";
+        thing1.setURI(uri);
+        thing1.setDerivedFrom(artifact);
+        thing1.setThing2(thing2);
+        thing2.addThing3(thing3);
+
+        thing3.addDerivedFrom(artifact);
+        thing3.addDerivedFrom(artifact2);
+
+        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
+        when(mockedEmf.createEntityManager()).thenReturn(em);
+
+        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        QueryRequest request = new QueryRequest(String.format("mutation m { SetThing1Name(id: \"%s\" name: \"hello\") }",
+                                                              thing1.getRuleform()
+                                                                    .getId()),
+                                                Collections.emptyMap());
+        Map<String, Object> result;
+        try {
+            result = resource.query(TEST_SCENARIO_URI, request);
+        } catch (WebApplicationException e) {
+            fail(e.getResponse()
+                  .getEntity()
+                  .toString());
+            return;
+        }
+        assertNotNull(result);
+
+        System.out.println(result);
+
+        assertNull(result.get("errors"));
+        assertEquals("hello", thing1.getName());
     }
 }

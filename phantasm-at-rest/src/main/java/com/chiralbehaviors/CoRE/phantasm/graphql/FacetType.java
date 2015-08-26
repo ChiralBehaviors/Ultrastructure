@@ -62,6 +62,7 @@ import graphql.schema.GraphQLTypeReference;
 public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         implements PhantasmTraversal.PhantasmVisitor<RuleForm, Network> {
 
+    private static final String SET_FIELD_TEMPLATE    = "set%s%s";
     private static final String APPLY_TEMPLATE        = "Apply%s";
     private static final String CREATE_TEMPLATE       = "Create%s";
     private static final String DESCRIPTION           = "description";
@@ -174,7 +175,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                             (Object) env.getArgument(fieldName));
         }
         mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format("set%s%s",
+                                                  .name(String.format(SET_FIELD_TEMPLATE,
                                                                       facet.getName(),
                                                                       capitalized(fieldName)))
                                                   .description(auth.getNotes())
@@ -206,7 +207,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .description(auth.getNotes())
                                               .build());
         mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format("set%s%s",
+                                                  .name(String.format(SET_FIELD_TEMPLATE,
                                                                       facet.getName(),
                                                                       capitalized(fieldName)))
                                                   .description(auth.getNotes())
@@ -241,7 +242,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                        auth))
                                               .build());
         mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format("set%s%s",
+                                                  .name(String.format(SET_FIELD_TEMPLATE,
                                                                       facet.getName(),
                                                                       capitalized(fieldName)))
                                                   .description(auth.getNotes())
@@ -276,7 +277,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .description(auth.getNotes())
                                               .build());
         mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format("set%s%s",
+                                                  .name(String.format(SET_FIELD_TEMPLATE,
                                                                       facet.getName(),
                                                                       capitalized(fieldName)))
                                                   .description(auth.getNotes())
@@ -311,7 +312,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                             auth))
                                               .build());
         mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format("set%s%s",
+                                                  .name(String.format(SET_FIELD_TEMPLATE,
                                                                       facet.getName(),
                                                                       capitalized(fieldName)))
                                                   .description(auth.getNotes())

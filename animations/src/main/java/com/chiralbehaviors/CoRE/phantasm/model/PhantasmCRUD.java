@@ -146,6 +146,110 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         return apply(facet, instance);
     }
 
+    public void checkFacetCREATE(NetworkAuthorization<RuleForm> facet,
+                                 NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
+                                                      .getPrincipal(),
+                                                 facet, model.getKernel()
+                                                             .getCREATE())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getCREATE()));
+        }
+    }
+
+    public void checkFacetREAD(NetworkAuthorization<RuleForm> facet,
+                               NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
+                                                      .getPrincipal(),
+                                                 facet, model.getKernel()
+                                                             .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
+    }
+
+    public void checkREAD(AttributeAuthorization<RuleForm, Network> stateAuth,
+                          NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            stateAuth, model.getKernel()
+                                                            .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
+    }
+
+    public void checkREAD(@SuppressWarnings("rawtypes") ExistentialRuleform child,
+                          NetworkedModel<?, ?, ?, ?> networkedModel) {
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            child, model.getKernel()
+                                                        .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
+    }
+
+    public void checkREAD(NetworkAuthorization<RuleForm> auth,
+                          NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
+                                                      .getPrincipal(),
+                                                 auth, model.getKernel()
+                                                            .getUPDATE())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getUPDATE()));
+        }
+    }
+
+    public void checkREAD(XDomainNetworkAuthorization<?, ?> auth,
+                          NetworkedModel<?, ?, ?, ?> networkedModel) {
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            auth, model.getKernel()
+                                                       .getREAD())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getREAD()));
+        }
+    }
+
+    public void checkUPDATE(NetworkAuthorization<RuleForm> auth,
+                            NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            auth, model.getKernel()
+                                                       .getUPDATE())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getUPDATE()));
+        }
+    }
+
+    public void checkUPDATE(XDomainNetworkAuthorization<?, ?> auth,
+                            NetworkedModel<?, ?, ?, ?> networkedModel) {
+        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                 .getPrincipal(),
+                                            auth, model.getKernel()
+                                                       .getUPDATE())) {
+            throw new SecurityException(String.format("%s does not have %s capability",
+                                                      model.getCurrentPrincipal(),
+                                                      model.getKernel()
+                                                           .getUPDATE()));
+        }
+    }
+
     /**
      * Create a new instance of the facet
      * 
@@ -795,20 +899,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                      .find(UUID.fromString(childId)));
     }
 
-    /**
-     * Update the facet state of the instance
-     * 
-     * @param facet
-     * @param state
-     * @return
-     */
-    public RuleForm update(NetworkAuthorization<RuleForm> facet,
-                           Map<String, Object> state) {
-        // TODO The idea is to iterate over all the update state, reflecting this in the facet state of 
-        // the instance identified by the ID of the update state
-        return null;
-    }
-
     private void checkAPPLY(NetworkAuthorization<RuleForm> facet,
                             NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
         if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
@@ -822,84 +912,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
     }
 
-    private void checkFacetCREATE(NetworkAuthorization<RuleForm> facet,
-                                  NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
-                                                      .getPrincipal(),
-                                                 facet, model.getKernel()
-                                                             .getCREATE())) {
-            throw new SecurityException(String.format("%s does not have %s capability",
-                                                      model.getCurrentPrincipal(),
-                                                      model.getKernel()
-                                                           .getCREATE()));
-        }
-    }
-
-    private void checkFacetREAD(NetworkAuthorization<RuleForm> facet,
-                                NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
-                                                      .getPrincipal(),
-                                                 facet, model.getKernel()
-                                                             .getREAD())) {
-            throw new SecurityException(String.format("%s does not have %s capability",
-                                                      model.getCurrentPrincipal(),
-                                                      model.getKernel()
-                                                           .getREAD()));
-        }
-    }
-
-    private void checkREAD(AttributeAuthorization<RuleForm, Network> stateAuth,
-                           NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                 .getPrincipal(),
-                                            stateAuth, model.getKernel()
-                                                            .getREAD())) {
-            throw new SecurityException(String.format("%s does not have %s capability",
-                                                      model.getCurrentPrincipal(),
-                                                      model.getKernel()
-                                                           .getREAD()));
-        }
-    }
-
-    private void checkREAD(@SuppressWarnings("rawtypes") ExistentialRuleform child,
-                           NetworkedModel<?, ?, ?, ?> networkedModel) {
-        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                 .getPrincipal(),
-                                            child, model.getKernel()
-                                                        .getREAD())) {
-            throw new SecurityException(String.format("%s does not have %s capability",
-                                                      model.getCurrentPrincipal(),
-                                                      model.getKernel()
-                                                           .getREAD()));
-        }
-    }
-
-    private void checkREAD(NetworkAuthorization<RuleForm> auth,
-                           NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
-                                                      .getPrincipal(),
-                                                 auth, model.getKernel()
-                                                            .getUPDATE())) {
-            throw new SecurityException(String.format("%s does not have %s capability",
-                                                      model.getCurrentPrincipal(),
-                                                      model.getKernel()
-                                                           .getUPDATE()));
-        }
-    }
-
-    private void checkREAD(XDomainNetworkAuthorization<?, ?> auth,
-                           NetworkedModel<?, ?, ?, ?> networkedModel) {
-        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                 .getPrincipal(),
-                                            auth, model.getKernel()
-                                                       .getREAD())) {
-            throw new SecurityException(String.format("%s does not have %s capability",
-                                                      model.getCurrentPrincipal(),
-                                                      model.getKernel()
-                                                           .getREAD()));
-        }
-    }
-
     private void checkREMOVE(NetworkAuthorization<RuleForm> facet,
                              NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
         if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
@@ -910,32 +922,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                       model.getCurrentPrincipal(),
                                                       model.getKernel()
                                                            .getREMOVE()));
-        }
-    }
-
-    private void checkUPDATE(NetworkAuthorization<RuleForm> auth,
-                             NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                 .getPrincipal(),
-                                            auth, model.getKernel()
-                                                       .getUPDATE())) {
-            throw new SecurityException(String.format("%s does not have %s capability",
-                                                      model.getCurrentPrincipal(),
-                                                      model.getKernel()
-                                                           .getUPDATE()));
-        }
-    }
-
-    private void checkUPDATE(XDomainNetworkAuthorization<?, ?> auth,
-                             NetworkedModel<?, ?, ?, ?> networkedModel) {
-        if (!networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                 .getPrincipal(),
-                                            auth, model.getKernel()
-                                                       .getUPDATE())) {
-            throw new SecurityException(String.format("%s does not have %s capability",
-                                                      model.getCurrentPrincipal(),
-                                                      model.getKernel()
-                                                           .getUPDATE()));
         }
     }
 

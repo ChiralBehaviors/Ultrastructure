@@ -28,10 +28,12 @@ import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -73,11 +75,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private static final String STATE                 = "state";
     private static final String UPDATE_TEMPLATE       = "Update%s";
 
-    private final NetworkAuthorization<RuleForm> facet;
-    private final Model                          model;
-    private Builder                              mutationBuilder;
-    private final Set<NetworkAuthorization<?>>   references = new HashSet<>();
-    private Builder                              typeBuilder;
+    private final NetworkAuthorization<RuleForm>                                                          facet;
+    private final Model                                                                                   model;
+    private Builder                                                                                       mutationBuilder;
+    private final Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
+    private Builder                                                                                       typeBuilder;
+    private final Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
 
     public FacetType(NetworkAuthorization<RuleForm> facet, Model model) {
         this.model = model;
@@ -162,17 +165,35 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                             (String) env.getArgument(ID),
                                                             auth,
                                                             (List<Object>) env.getArgument(fieldName));
+            updateTemplate.put(fieldName,
+                               (crud,
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (String) update.get(ID),
+                                                                  auth,
+                                                                  (List<Object>) update.get(fieldName)));
         } else if (auth.getAuthorizedAttribute()
                        .getKeyed()) {
             dataFetcher = env -> ctx(env).setAttributeValue(facet,
                                                             (String) env.getArgument(ID),
                                                             auth,
                                                             (Map<String, Object>) env.getArgument(fieldName));
+            updateTemplate.put(fieldName,
+                               (crud,
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (String) update.get(ID),
+                                                                  auth,
+                                                                  (Map<String, Object>) update.get(fieldName)));
         } else {
             dataFetcher = env -> ctx(env).setAttributeValue(facet,
                                                             (String) env.getArgument(ID),
                                                             auth,
                                                             (Object) env.getArgument(fieldName));
+            updateTemplate.put(fieldName,
+                               (crud,
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (String) update.get(ID),
+                                                                  auth,
+                                                                  (Object) update.get(fieldName)));
         }
         mutationBuilder.field(newFieldDefinition().type(type)
                                                   .name(String.format(SET_FIELD_TEMPLATE,
@@ -226,6 +247,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                            auth,
                                                                                            (List<String>) env.getArgument(fieldName)))
                                                   .build());
+        updateTemplate.put(fieldName,
+                           (crud,
+                            update) -> crud.setChildren(facet,
+                                                        (String) update.get(ID),
+                                                        auth,
+                                                        (List<String>) update.get(fieldName)));
         references.add(child);
     }
 
@@ -261,6 +288,11 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                            auth,
                                                                                            (List<String>) env.getArgument(fieldName)))
                                                   .build());
+        updateTemplate.put(fieldName,
+                           (crud,
+                            update) -> crud.setChildren((String) update.get(ID),
+                                                        facet, auth,
+                                                        (List<String>) update.get(fieldName)));
         references.add(child);
     }
 
@@ -296,6 +328,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                                 facet,
                                                                                                 env.getArgument(fieldName)))
                                                   .build());
+        updateTemplate.put(fieldName,
+                           (crud,
+                            update) -> crud.setSingularChild(facet,
+                                                             (String) update.get(ID),
+                                                             facet,
+                                                             (String) update.get(fieldName)));
         references.add(child);
     }
 
@@ -331,6 +369,11 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                                 auth,
                                                                                                 env.getArgument(fieldName)))
                                                   .build());
+        updateTemplate.put(fieldName,
+                           (crud,
+                            update) -> crud.setSingularChild((String) update.get(ID),
+                                                             facet, auth,
+                                                             (String) update.get(fieldName)));
         references.add(child);
     }
 
@@ -444,8 +487,18 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .description("the update state to apply")
                                                           .type(new GraphQLNonNull(GraphQLString))
                                                           .build())
-                                   .dataFetcher(env -> ctx(env).update(facet,
-                                                                       (Map<String, Object>) env.getArgument(STATE)))
+                                   .dataFetcher(env -> {
+                                       Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
+                                       RuleForm ruleform = null;
+                                       for (String field : updateState.keySet()) {
+                                           if (updateState.containsKey(field)) {
+                                               ruleform = updateTemplate.get(field)
+                                                                        .apply(ctx(env),
+                                                                               updateState);
+                                           }
+                                       }
+                                       return ruleform;
+                                   })
                                    .build();
     }
 }

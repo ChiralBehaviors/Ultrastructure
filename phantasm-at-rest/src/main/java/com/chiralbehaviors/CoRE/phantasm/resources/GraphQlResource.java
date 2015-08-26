@@ -171,8 +171,10 @@ public class GraphQlResource extends TransactionalResource {
         }
 
         GraphQLSchema schema = build(scoped.getWorkspace());
+        @SuppressWarnings("rawtypes")
+        PhantasmCRUD crud = new PhantasmCRUD(readOnlyModel);
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              new PhantasmCRUD(readOnlyModel),
+                                                              crud,
                                                               request.getVariables());
 
         if (execute.getErrors()

@@ -59,6 +59,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testWorkspaceSchema() throws Exception {
         em.getTransaction()

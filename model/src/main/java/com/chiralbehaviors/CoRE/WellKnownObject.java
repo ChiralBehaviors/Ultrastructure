@@ -1765,7 +1765,7 @@ public interface WellKnownObject {
                  */
                 @Override
                 public String wkoName() {
-                    return "Apply";
+                    return "Remove";
                 }
             },
             MAY_BE_REMOVED_BY() {

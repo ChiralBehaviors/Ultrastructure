@@ -40,9 +40,10 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmTraversal;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 
+import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLList;
@@ -109,7 +110,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .description("The description of the facet instance")
                                               .build());
 
-        new PhantasmTraversal(model).traverse(facet, this);
+        new PhantasmTraversal<RuleForm, Network>(model).traverse(facet, this);
         GraphQLObjectType type = typeBuilder.build();
 
         query.field(instance(type));
@@ -145,12 +146,50 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     public void visit(AttributeAuthorization<RuleForm, Network> auth,
                       String fieldName) {
         Attribute attribute = auth.getAuthorizedAttribute();
-        typeBuilder.field(newFieldDefinition().type(typeOf(attribute))
+        GraphQLOutputType type = typeOf(attribute);
+        typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .description(attribute.getDescription())
                                               .dataFetcher(env -> ctx(env).getAttributeValue((RuleForm) env.getSource(),
                                                                                              auth))
                                               .build());
+
+        DataFetcher dataFetcher;
+        if (auth.getAuthorizedAttribute()
+                .getIndexed()) {
+            dataFetcher = env -> ctx(env).setAttributeValue(facet,
+                                                            (String) env.getArgument(ID),
+                                                            auth,
+                                                            (List<Object>) env.getArgument(fieldName));
+        } else if (auth.getAuthorizedAttribute()
+                       .getKeyed()) {
+            dataFetcher = env -> ctx(env).setAttributeValue(facet,
+                                                            (String) env.getArgument(ID),
+                                                            auth,
+                                                            (Map<String, Object>) env.getArgument(fieldName));
+        } else {
+            dataFetcher = env -> ctx(env).setAttributeValue(facet,
+                                                            (String) env.getArgument(ID),
+                                                            auth,
+                                                            (Object) env.getArgument(fieldName));
+        }
+        mutationBuilder.field(newFieldDefinition().type(type)
+                                                  .name(String.format("set%s%s",
+                                                                      facet.getName(),
+                                                                      capitalized(fieldName)))
+                                                  .description(auth.getNotes())
+                                                  .argument(newArgument().name(ID)
+                                                                         .description("the id of the instance to apply the update")
+                                                                         .type(new GraphQLNonNull(GraphQLString))
+                                                                         .build())
+                                                  .argument(newArgument().name(fieldName)
+                                                                         .description(String.format("the %s to update on %s",
+                                                                                                    fieldName,
+                                                                                                    facet.getName()))
+                                                                         .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
+                                                                         .build())
+                                                  .dataFetcher(dataFetcher)
+                                                  .build());
     }
 
     @SuppressWarnings("unchecked")
@@ -183,7 +222,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                          .build())
                                                   .dataFetcher(env -> ctx(env).setChildren(facet,
                                                                                            (String) env.getArgument(ID),
-                                                                                           auth, (List<String>) env.getArgument(fieldName)))
+                                                                                           auth,
+                                                                                           (List<String>) env.getArgument(fieldName)))
                                                   .build());
         references.add(child);
     }
@@ -252,7 +292,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                          .build())
                                                   .dataFetcher(env -> ctx(env).setSingularChild(facet,
                                                                                                 (String) env.getArgument(ID),
-                                                                                                facet, env.getArgument(fieldName)))
+                                                                                                facet,
+                                                                                                env.getArgument(fieldName)))
                                                   .build());
         references.add(child);
     }

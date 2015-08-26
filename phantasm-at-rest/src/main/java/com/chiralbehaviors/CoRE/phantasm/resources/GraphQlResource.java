@@ -51,8 +51,8 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.codahale.metrics.annotation.Timed;
 

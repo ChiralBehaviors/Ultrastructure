@@ -18,10 +18,10 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm;
+package com.chiralbehaviors.CoRE.phantasm.model;
 
-import static com.chiralbehaviors.CoRE.phantasm.PhantasmTraversal.resolveFrom;
-import static com.chiralbehaviors.CoRE.phantasm.PhantasmTraversal.resolveTo;
+import static com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.resolveFrom;
+import static com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.resolveTo;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -485,6 +485,66 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             }
         }
         return instance;
+    }
+
+    /**
+     * @param facet
+     * @param id
+     * @param auth
+     * @param value
+     * @return
+     */
+    public RuleForm setAttributeValue(NetworkAuthorization<RuleForm> facet,
+                                      String id,
+                                      AttributeAuthorization<RuleForm, Network> auth,
+                                      List<Object> value) {
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        RuleForm instance = networkedModel.find(UUID.fromString(id));
+        if (instance == null) {
+            return null;
+        }
+        checkREAD(instance, networkedModel);
+        return setAttributeValue(instance, auth, value);
+    }
+
+    /**
+     * @param facet
+     * @param id
+     * @param auth
+     * @param value
+     * @return
+     */
+    public RuleForm setAttributeValue(NetworkAuthorization<RuleForm> facet,
+                                      String id,
+                                      AttributeAuthorization<RuleForm, Network> auth,
+                                      Map<String, Object> value) {
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        RuleForm instance = networkedModel.find(UUID.fromString(id));
+        if (instance == null) {
+            return null;
+        }
+        checkREAD(instance, networkedModel);
+        return setAttributeValue(instance, auth, value);
+    }
+
+    /**
+     * @param facet
+     * @param id
+     * @param auth
+     * @param value
+     * @return
+     */
+    public RuleForm setAttributeValue(NetworkAuthorization<RuleForm> facet,
+                                      String id,
+                                      AttributeAuthorization<RuleForm, Network> auth,
+                                      Object value) {
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
+        RuleForm instance = networkedModel.find(UUID.fromString(id));
+        if (instance == null) {
+            return null;
+        }
+        checkREAD(instance, networkedModel);
+        return setAttributeValue(instance, auth, value);
     }
 
     public RuleForm setAttributeValue(RuleForm instance,

@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm;
+package com.chiralbehaviors.CoRE.phantasm.model;
 
 import java.beans.Introspector;
 
@@ -51,7 +51,7 @@ import com.chiralbehaviors.CoRE.utils.English;
  * @author hhildebrand
  *
  */
-public class PhantasmTraversal {
+public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> {
 
     public static interface PhantasmVisitor<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> {
 
@@ -156,8 +156,8 @@ public class PhantasmTraversal {
         this.model = model;
     }
 
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverse(NetworkAuthorization<RuleForm> facet,
-                                                                                                                              PhantasmVisitor<RuleForm, Network> visitor) {
+    public void traverse(NetworkAuthorization<RuleForm> facet,
+                         PhantasmVisitor<RuleForm, Network> visitor) {
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
         traverseAttributes(facet, visitor, networkedModel);
         traverseNetworkAuths(facet, visitor, networkedModel);
@@ -165,8 +165,8 @@ public class PhantasmTraversal {
 
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> NetworkAuthorization<RuleForm> resolve(NetworkAuthorization<RuleForm> auth,
-                                                                                                                                                        NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
+    private NetworkAuthorization<RuleForm> resolve(NetworkAuthorization<RuleForm> auth,
+                                                   NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
         Aspect<RuleForm> aspect = new Aspect<>(auth.getAuthorizedRelationship(),
                                                auth.getAuthorizedParent());
         NetworkAuthorization<RuleForm> facet = networkedModel.getFacetDeclaration(aspect);
@@ -181,9 +181,9 @@ public class PhantasmTraversal {
         return Introspector.decapitalize(name.replaceAll("\\s", ""));
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverseAgencyAuths(NetworkAuthorization<RuleForm> facet,
-                                                                                                                                          PhantasmVisitor<RuleForm, Network> visitor,
-                                                                                                                                          NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
+    private void traverseAgencyAuths(NetworkAuthorization<RuleForm> facet,
+                                     PhantasmVisitor<RuleForm, Network> visitor,
+                                     NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
         AgencyModel agencyModel = model.getAgencyModel();
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<Agency> aspect = new Aspect(facet.getClassifier(),
@@ -198,9 +198,9 @@ public class PhantasmTraversal {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverseAttributes(NetworkAuthorization<RuleForm> facet,
-                                                                                                                                         PhantasmVisitor<RuleForm, Network> visitor,
-                                                                                                                                         NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
+    private void traverseAttributes(NetworkAuthorization<RuleForm> facet,
+                                    PhantasmVisitor<RuleForm, Network> visitor,
+                                    NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
 
         for (AttributeAuthorization<RuleForm, Network> auth : networkedModel.getAttributeAuthorizations(facet,
                                                                                                         false)) {
@@ -209,9 +209,9 @@ public class PhantasmTraversal {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverseLocationAuths(NetworkAuthorization<RuleForm> facet,
-                                                                                                                                            PhantasmVisitor<RuleForm, Network> visitor,
-                                                                                                                                            NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
+    private void traverseLocationAuths(NetworkAuthorization<RuleForm> facet,
+                                       PhantasmVisitor<RuleForm, Network> visitor,
+                                       NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
         LocationModel locationModel = model.getLocationModel();
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Aspect<Location> aspect = new Aspect(facet.getClassifier(),
@@ -226,9 +226,9 @@ public class PhantasmTraversal {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverseNetworkAuths(NetworkAuthorization<RuleForm> facet,
-                                                                                                                                           PhantasmVisitor<RuleForm, Network> visitor,
-                                                                                                                                           NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
+    private void traverseNetworkAuths(NetworkAuthorization<RuleForm> facet,
+                                      PhantasmVisitor<RuleForm, Network> visitor,
+                                      NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
 
         Aspect<RuleForm> aspect = new Aspect<>(facet.getClassifier(),
                                                facet.getClassification());
@@ -245,9 +245,9 @@ public class PhantasmTraversal {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverseProductAuths(NetworkAuthorization<RuleForm> facet,
-                                                                                                                                           PhantasmVisitor<RuleForm, Network> visitor,
-                                                                                                                                           NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
+    private void traverseProductAuths(NetworkAuthorization<RuleForm> facet,
+                                      PhantasmVisitor<RuleForm, Network> visitor,
+                                      NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
 
         ProductModel productModel = model.getProductModel();
         @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -267,9 +267,9 @@ public class PhantasmTraversal {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverseRelationshipAuths(NetworkAuthorization<RuleForm> facet,
-                                                                                                                                                PhantasmVisitor<RuleForm, Network> visitor,
-                                                                                                                                                NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
+    private void traverseRelationshipAuths(NetworkAuthorization<RuleForm> facet,
+                                           PhantasmVisitor<RuleForm, Network> visitor,
+                                           NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
 
         RelationshipModel agencyModel = model.getRelationshipModel();
         @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -281,9 +281,9 @@ public class PhantasmTraversal {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverseXdAuth(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
-                                                                                                                                     NetworkAuthorization<?> child,
-                                                                                                                                     PhantasmVisitor<RuleForm, Network> visitor) {
+    private void traverseXdAuth(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
+                                NetworkAuthorization<?> child,
+                                PhantasmVisitor<RuleForm, Network> visitor) {
         String fieldName = toFieldName(auth.getName());
         if (auth.getCardinality() == Cardinality.N) {
             fieldName = English.plural(fieldName);
@@ -293,9 +293,9 @@ public class PhantasmTraversal {
         }
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> void traverseXdAuths(NetworkAuthorization<RuleForm> facet,
-                                                                                                                                      PhantasmVisitor<RuleForm, Network> visitor,
-                                                                                                                                      NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
+    private void traverseXdAuths(NetworkAuthorization<RuleForm> facet,
+                                 PhantasmVisitor<RuleForm, Network> visitor,
+                                 NetworkedModel<RuleForm, Network, ?, ?> networkedModel) {
 
         if (facet.getClassification() instanceof Agency) {
             traverseAgencyAuths(facet, visitor, networkedModel);

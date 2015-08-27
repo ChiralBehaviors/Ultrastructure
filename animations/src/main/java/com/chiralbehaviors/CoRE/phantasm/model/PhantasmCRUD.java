@@ -836,8 +836,8 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param name
      * @return
      */
-    public Object setName(NetworkAuthorization<RuleForm> facet, String id,
-                          String name) {
+    public RuleForm setName(NetworkAuthorization<RuleForm> facet, String id,
+                            String name) {
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
         RuleForm instance = networkedModel.find(UUID.fromString(id));
         if (instance == null) {

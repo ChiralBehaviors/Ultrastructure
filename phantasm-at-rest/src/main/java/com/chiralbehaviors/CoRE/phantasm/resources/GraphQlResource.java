@@ -111,6 +111,9 @@ public class GraphQlResource extends TransactionalResource {
                                                                                   .getName()));
         while (!unresolved.isEmpty()) {
             NetworkAuthorization<?> facet = unresolved.pop();
+            if (resolved.containsKey(facet)) {
+                continue;
+            }
             @SuppressWarnings({ "unchecked", "rawtypes" })
             FacetType<?, ?> type = new FacetType(facet, readOnlyModel);
             resolved.put(facet, type);

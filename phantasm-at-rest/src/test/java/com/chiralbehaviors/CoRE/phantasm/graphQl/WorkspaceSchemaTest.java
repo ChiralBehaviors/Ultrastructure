@@ -285,7 +285,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         when(mockedEmf.createEntityManager()).thenReturn(em);
 
         GraphQlResource resource = new GraphQlResource(mockedEmf);
-        QueryRequest request = new QueryRequest(String.format("mutation m { SetThing1Name(id: \"%s\" name: \"hello\") }",
+        QueryRequest request = new QueryRequest(String.format("mutation m { UpdateThing1(state: { id: \"%s\" name: \"hello\"}) { name } }",
                                                               thing1.getRuleform()
                                                                     .getId()),
                                                 Collections.emptyMap());
@@ -304,5 +304,9 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
         assertNull(result.get("errors"));
         assertEquals("hello", thing1.getName());
+        @SuppressWarnings("unchecked")
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("UpdateThing1");
+        assertNotNull(thing1Result);
+        assertEquals(thing1.getName(), thing1Result.get("name"));
     }
 }

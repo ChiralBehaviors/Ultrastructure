@@ -26,6 +26,8 @@ import static graphql.Scalars.GraphQLInt;
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
+import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
+import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
 
 import java.util.HashMap;
@@ -45,9 +47,9 @@ import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 
-import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
@@ -71,13 +73,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private static final String INSTANCES_OF_TEMPLATE = "InstancesOf%s";
     private static final String NAME                  = "name";
     private static final String REMOVE_TEMPLATE       = "Remove%s";
-    private static final String SET_FIELD_TEMPLATE    = "Set%s%s";
     private static final String STATE                 = "state";
     private static final String UPDATE_TEMPLATE       = "Update%s";
+    private static final String UPDATE_TYPE_TEMPLATE  = "%sUpdate";
 
     private final NetworkAuthorization<RuleForm>                                                          facet;
     private final Model                                                                                   model;
-    private Builder                                                                                       mutationBuilder;
+    private graphql.schema.GraphQLInputObjectType.Builder                                                 updateTypeBuilder;
     private final Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
     private Builder                                                                                       typeBuilder;
     private final Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
@@ -87,6 +89,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         this.facet = facet;
         typeBuilder = newObject().name(facet.getName())
                                  .description(facet.getNotes());
+        updateTypeBuilder = newInputObject().name(String.format(UPDATE_TYPE_TEMPLATE,
+                                                                facet.getName()))
+                                            .description(facet.getNotes());
     }
 
     /**
@@ -99,18 +104,17 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
      * @return the references this facet has to other facets.
      */
     public Set<NetworkAuthorization<?>> build(Builder query, Builder mutation) {
-        mutationBuilder = mutation;
         buildRuleformAttributes();
         new PhantasmTraversal<RuleForm, Network>(model).traverse(facet, this);
         GraphQLObjectType type = typeBuilder.build();
 
         query.field(instance(type));
-        query.field(instances(type));
 
-        mutation.field(createInstance(type));
-        mutation.field(apply(type));
-        mutation.field(update(type));
-        mutation.field(remove(type));
+        query.field(instances());
+        mutation.field(createInstance());
+        mutation.field(apply());
+        mutation.field(update());
+        mutation.field(remove());
         return references;
     }
 
@@ -145,60 +149,39 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                              auth))
                                               .build());
 
-        DataFetcher dataFetcher;
+        String setter = String.format("set%s", capitalized(fieldName));
+        GraphQLInputType inputType;
         if (auth.getAuthorizedAttribute()
                 .getIndexed()) {
-            dataFetcher = env -> ctx(env).setAttributeValue(facet,
-                                                            (String) env.getArgument(ID),
-                                                            auth,
-                                                            (List<Object>) env.getArgument(fieldName));
-            updateTemplate.put(fieldName,
+            updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (String) update.get(ID),
                                                                   auth,
-                                                                  (List<Object>) update.get(fieldName)));
+                                                                  (List<Object>) update.get(setter)));
+            inputType = new GraphQLList(GraphQLString);
         } else if (auth.getAuthorizedAttribute()
                        .getKeyed()) {
-            dataFetcher = env -> ctx(env).setAttributeValue(facet,
-                                                            (String) env.getArgument(ID),
-                                                            auth,
-                                                            (Map<String, Object>) env.getArgument(fieldName));
-            updateTemplate.put(fieldName,
+            updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (String) update.get(ID),
                                                                   auth,
-                                                                  (Map<String, Object>) update.get(fieldName)));
+                                                                  (Map<String, Object>) update.get(setter)));
+            inputType = GraphQLString;
         } else {
-            dataFetcher = env -> ctx(env).setAttributeValue(facet,
-                                                            (String) env.getArgument(ID),
-                                                            auth,
-                                                            (Object) env.getArgument(fieldName));
-            updateTemplate.put(fieldName,
+            updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (String) update.get(ID),
                                                                   auth,
-                                                                  (Object) update.get(fieldName)));
+                                                                  (Object) update.get(setter)));
+            inputType = new GraphQLList(GraphQLString);
         }
-        mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format(SET_FIELD_TEMPLATE,
-                                                                      facet.getName(),
-                                                                      capitalized(fieldName)))
-                                                  .description(auth.getNotes())
-                                                  .argument(newArgument().name(ID)
-                                                                         .description("the id of the instance to apply the update")
-                                                                         .type(new GraphQLNonNull(GraphQLString))
-                                                                         .build())
-                                                  .argument(newArgument().name(fieldName)
-                                                                         .description(String.format("the %s attribute to update on %s",
-                                                                                                    fieldName,
-                                                                                                    facet.getName()))
-                                                                         .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
-                                                                         .build())
-                                                  .dataFetcher(dataFetcher)
-                                                  .build());
+        updateTypeBuilder.field(newInputObjectField().type(inputType)
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
     }
 
     @SuppressWarnings("unchecked")
@@ -214,32 +197,17 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                        auth))
                                               .description(auth.getNotes())
                                               .build());
-        mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format(SET_FIELD_TEMPLATE,
-                                                                      facet.getName(),
-                                                                      capitalized(fieldName)))
-                                                  .description(auth.getNotes())
-                                                  .argument(newArgument().name(ID)
-                                                                         .description("the id of the instance to apply the update")
-                                                                         .type(new GraphQLNonNull(GraphQLString))
-                                                                         .build())
-                                                  .argument(newArgument().name(fieldName)
-                                                                         .description(String.format("the ids of the %s to update on %s",
-                                                                                                    fieldName,
-                                                                                                    facet.getName()))
-                                                                         .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
-                                                                         .build())
-                                                  .dataFetcher(env -> ctx(env).setChildren(facet,
-                                                                                           (String) env.getArgument(ID),
-                                                                                           auth,
-                                                                                           (List<String>) env.getArgument(fieldName)))
-                                                  .build());
-        updateTemplate.put(fieldName,
+        String setter = String.format("set%s", capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(setter,
                            (crud,
                             update) -> crud.setChildren(facet,
                                                         (String) update.get(ID),
                                                         auth,
-                                                        (List<String>) update.get(fieldName)));
+                                                        (List<String>) update.get(setter)));
         references.add(child);
     }
 
@@ -255,31 +223,16 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                        facet,
                                                                                        auth))
                                               .build());
-        mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format(SET_FIELD_TEMPLATE,
-                                                                      facet.getName(),
-                                                                      capitalized(fieldName)))
-                                                  .description(auth.getNotes())
-                                                  .argument(newArgument().name(ID)
-                                                                         .description("the ids of the instance to apply the update")
-                                                                         .type(new GraphQLNonNull(GraphQLString))
-                                                                         .build())
-                                                  .argument(newArgument().name(fieldName)
-                                                                         .description(String.format("the %s to update on %s",
-                                                                                                    fieldName,
-                                                                                                    facet.getName()))
-                                                                         .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
-                                                                         .build())
-                                                  .dataFetcher(env -> ctx(env).setChildren((String) env.getArgument(ID),
-                                                                                           facet,
-                                                                                           auth,
-                                                                                           (List<String>) env.getArgument(fieldName)))
-                                                  .build());
-        updateTemplate.put(fieldName,
+        String setter = String.format("set%s", capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(setter,
                            (crud,
                             update) -> crud.setChildren((String) update.get(ID),
                                                         facet, auth,
-                                                        (List<String>) update.get(fieldName)));
+                                                        (List<String>) update.get(setter)));
         references.add(child);
     }
 
@@ -295,32 +248,17 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                             auth))
                                               .description(auth.getNotes())
                                               .build());
-        mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format(SET_FIELD_TEMPLATE,
-                                                                      facet.getName(),
-                                                                      capitalized(fieldName)))
-                                                  .description(auth.getNotes())
-                                                  .argument(newArgument().name(ID)
-                                                                         .description("the id of the instance to apply the update")
-                                                                         .type(new GraphQLNonNull(GraphQLString))
-                                                                         .build())
-                                                  .argument(newArgument().name(fieldName)
-                                                                         .description(String.format("the id of the %s to update on %s",
-                                                                                                    fieldName,
-                                                                                                    facet.getName()))
-                                                                         .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
-                                                                         .build())
-                                                  .dataFetcher(env -> ctx(env).setSingularChild(facet,
-                                                                                                (String) env.getArgument(ID),
-                                                                                                facet,
-                                                                                                env.getArgument(fieldName)))
-                                                  .build());
-        updateTemplate.put(fieldName,
+        String setter = String.format("set%s", capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(setter,
                            (crud,
                             update) -> crud.setSingularChild(facet,
                                                              (String) update.get(ID),
                                                              facet,
-                                                             (String) update.get(fieldName)));
+                                                             (String) update.get(setter)));
         references.add(child);
     }
 
@@ -336,38 +274,23 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                             facet,
                                                                                             auth))
                                               .build());
-        mutationBuilder.field(newFieldDefinition().type(type)
-                                                  .name(String.format(SET_FIELD_TEMPLATE,
-                                                                      facet.getName(),
-                                                                      capitalized(fieldName)))
-                                                  .description(auth.getNotes())
-                                                  .argument(newArgument().name(ID)
-                                                                         .description("the id of the instance to apply the update")
-                                                                         .type(new GraphQLNonNull(GraphQLString))
-                                                                         .build())
-                                                  .argument(newArgument().name(fieldName)
-                                                                         .description(String.format("the id of the %s to update on %s",
-                                                                                                    fieldName,
-                                                                                                    facet.getName()))
-                                                                         .type(new GraphQLNonNull(new GraphQLList(GraphQLString)))
-                                                                         .build())
-                                                  .dataFetcher(env -> ctx(env).setSingularChild((String) env.getArgument(ID),
-                                                                                                facet,
-                                                                                                auth,
-                                                                                                env.getArgument(fieldName)))
-                                                  .build());
-        updateTemplate.put(fieldName,
+        String setter = String.format("set%s", capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(setter,
                            (crud,
                             update) -> crud.setSingularChild((String) update.get(ID),
                                                              facet, auth,
-                                                             (String) update.get(fieldName)));
+                                                             (String) update.get(setter)));
         references.add(child);
     }
 
-    private GraphQLFieldDefinition apply(GraphQLObjectType queryType) {
+    private GraphQLFieldDefinition apply() {
         return newFieldDefinition().name(String.format(APPLY_TEMPLATE,
                                                        facet.getName()))
-                                   .type(queryType)
+                                   .type(new GraphQLTypeReference(facet.getName()))
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the instance")
                                                           .type(new GraphQLNonNull(GraphQLString))
@@ -375,6 +298,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .dataFetcher(env -> ctx(env).apply(facet,
                                                                       (String) env.getArgument(ID)))
                                    .build();
+    }
+
+    private String capitalized(String field) {
+        char[] chars = field.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
     }
 
     private void buildRuleformAttributes() {
@@ -390,56 +319,40 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .name(DESCRIPTION)
                                               .description("The description of the facet instance")
                                               .build());
-        mutationBuilder.field(newFieldDefinition().type(GraphQLString)
-                                                  .name(String.format(SET_FIELD_TEMPLATE,
-                                                                      facet.getName(),
-                                                                      capitalized(NAME)))
-                                                  .description(String.format("Set the name of the %s",
-                                                                             facet.getName()))
-                                                  .argument(newArgument().name(ID)
-                                                                         .description("the id of the instance")
-                                                                         .type(new GraphQLNonNull(GraphQLString))
-                                                                         .build())
-                                                  .argument(newArgument().name(NAME)
-                                                                         .description(String.format("the name to update on %s",
-                                                                                                    facet.getName()))
-                                                                         .type(new GraphQLNonNull(GraphQLString))
-                                                                         .build())
-                                                  .dataFetcher(env -> ctx(env).setName(facet,
-                                                                                       (String) env.getArgument(ID),
-                                                                                       (String) env.getArgument(NAME)))
-                                                  .build());
-        mutationBuilder.field(newFieldDefinition().type(GraphQLString)
-                                                  .name(String.format(SET_FIELD_TEMPLATE,
-                                                                      facet.getName(),
-                                                                      capitalized(DESCRIPTION)))
-                                                  .description(String.format("Set the description of the %s",
-                                                                             facet.getName()))
-                                                  .argument(newArgument().name(ID)
-                                                                         .description("the id of the instance")
-                                                                         .type(new GraphQLNonNull(GraphQLString))
-                                                                         .build())
-                                                  .argument(newArgument().name(DESCRIPTION)
-                                                                         .description(String.format("the description to update on %s",
-                                                                                                    facet.getName()))
-                                                                         .type(new GraphQLNonNull(GraphQLString))
-                                                                         .build())
-                                                  .dataFetcher(env -> ctx(env).setDescription(facet,
-                                                                                              (String) env.getArgument(ID),
-                                                                                              (String) env.getArgument(DESCRIPTION)))
-                                                  .build());
+
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(ID)
+                                                     .description(String.format("the id of the updated %s",
+                                                                                facet.getName()))
+                                                     .build());
+
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(NAME)
+                                                     .description(String.format("the name to update on %s",
+                                                                                facet.getName()))
+                                                     .build());
+        updateTemplate.put(NAME,
+                           (crud,
+                            update) -> crud.setName(facet,
+                                                    (String) update.get(ID),
+                                                    (String) update.get(NAME)));
+
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(DESCRIPTION)
+                                                     .description(String.format("the description to update on %s",
+                                                                                facet.getName()))
+                                                     .build());
+        updateTemplate.put(DESCRIPTION,
+                           (crud,
+                            update) -> crud.setName(facet,
+                                                    (String) update.get(ID),
+                                                    (String) update.get(DESCRIPTION)));
     }
 
-    private String capitalized(String field) {
-        char[] chars = field.toCharArray();
-        chars[0] = Character.toUpperCase(chars[0]);
-        return new String(chars);
-    }
-
-    private GraphQLFieldDefinition createInstance(GraphQLObjectType queryType) {
+    private GraphQLFieldDefinition createInstance() {
         return newFieldDefinition().name(String.format(CREATE_TEMPLATE,
                                                        facet.getName()))
-                                   .type(queryType)
+                                   .type(new GraphQLTypeReference(facet.getName()))
                                    .argument(newArgument().name(NAME)
                                                           .description("the name of the created facet instance")
                                                           .type(new GraphQLNonNull(GraphQLString))
@@ -454,9 +367,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .build();
     }
 
-    private GraphQLFieldDefinition instance(GraphQLObjectType queryType) {
+    private GraphQLFieldDefinition instance(GraphQLObjectType type) {
         return newFieldDefinition().name(facet.getName())
-                                   .type(queryType)
+                                   .type(type)
                                    .argument(newArgument().name(ID)
                                                           .description("id of the facet")
                                                           .type(new GraphQLNonNull(GraphQLString))
@@ -466,19 +379,19 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .build();
     }
 
-    private GraphQLFieldDefinition instances(GraphQLObjectType queryType) {
+    private GraphQLFieldDefinition instances() {
         return newFieldDefinition().name(String.format(INSTANCES_OF_TEMPLATE,
                                                        facet.getName()))
-                                   .type(new GraphQLList(queryType))
+                                   .type(new GraphQLList(new GraphQLTypeReference(facet.getName())))
                                    .dataFetcher(context -> ctx(context).getInstances(facet))
                                    .build();
 
     }
 
-    private GraphQLFieldDefinition remove(GraphQLObjectType queryType) {
+    private GraphQLFieldDefinition remove() {
         return newFieldDefinition().name(String.format(REMOVE_TEMPLATE,
                                                        facet.getName()))
-                                   .type(queryType)
+                                   .type(new GraphQLTypeReference(facet.getName()))
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the instance")
                                                           .type(new GraphQLNonNull(GraphQLString))
@@ -519,19 +432,20 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition update(GraphQLObjectType queryType) {
+    private GraphQLFieldDefinition update() {
         return newFieldDefinition().name(String.format(UPDATE_TEMPLATE,
                                                        facet.getName()))
-                                   .type(queryType)
+                                   .type(new GraphQLTypeReference(facet.getName()))
                                    .argument(newArgument().name(STATE)
                                                           .description("the update state to apply")
-                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .type(new GraphQLNonNull(updateTypeBuilder.build()))
                                                           .build())
                                    .dataFetcher(env -> {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
                                        RuleForm ruleform = null;
                                        for (String field : updateState.keySet()) {
-                                           if (updateState.containsKey(field)) {
+                                           if (!field.equals(ID)
+                                               && updateState.containsKey(field)) {
                                                ruleform = updateTemplate.get(field)
                                                                         .apply(ctx(env),
                                                                                updateState);

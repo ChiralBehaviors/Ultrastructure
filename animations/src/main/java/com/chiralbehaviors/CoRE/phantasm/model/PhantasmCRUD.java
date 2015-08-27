@@ -757,8 +757,12 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                                          model)
                                                              : resolveFrom(auth,
                                                                            model);
+        NetworkedModel<?, ?, ?, ?> childNetworkedModel = null;
         for (ExistentialRuleform child : (List<ExistentialRuleform>) children) {
-            checkREAD(child, networkedModel);
+            if (childNetworkedModel == null) {
+                childNetworkedModel = model.getUnknownNetworkedModel(child);
+            }
+            checkREAD(child, childNetworkedModel);
         }
         if (childAuth.getClassification() instanceof Agency) {
             networkedModel.setAuthorizedAgencies(instance, auth.getConnection(),
@@ -906,7 +910,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                      @SuppressWarnings("rawtypes") ExistentialRuleform child) {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
         checkUPDATE(auth, networkedModel);
-        checkREAD(child, networkedModel);
+        checkREAD(child, model.getUnknownNetworkedModel(child));
         NetworkAuthorization<?> childAuth = auth.isForward() ? resolveTo(auth,
                                                                          model)
                                                              : resolveFrom(auth,

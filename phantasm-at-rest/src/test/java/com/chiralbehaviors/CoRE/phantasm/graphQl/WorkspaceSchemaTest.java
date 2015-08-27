@@ -285,9 +285,11 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         when(mockedEmf.createEntityManager()).thenReturn(em);
 
         GraphQlResource resource = new GraphQlResource(mockedEmf);
-        QueryRequest request = new QueryRequest(String.format("mutation m { UpdateThing1(state: { id: \"%s\" name: \"hello\"}) { name } }",
+        QueryRequest request = new QueryRequest(String.format("mutation m { UpdateThing1(state: { id: \"%s\" name: \"hello\" setDerivedFrom: \"%s\"}) { name } }",
                                                               thing1.getRuleform()
-                                                                    .getId()),
+                                                                    .getId(),
+                                                              artifact2.getRuleform()
+                                                                       .getId()),
                                                 Collections.emptyMap());
         Map<String, Object> result;
         try {
@@ -308,5 +310,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("UpdateThing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
+
+        assertEquals(artifact2, thing1.getDerivedFrom());
     }
 }

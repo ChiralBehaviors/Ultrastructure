@@ -109,8 +109,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         GraphQLObjectType type = typeBuilder.build();
 
         query.field(instance(type));
-
         query.field(instances());
+
         mutation.field(createInstance());
         mutation.field(apply());
         mutation.field(update());

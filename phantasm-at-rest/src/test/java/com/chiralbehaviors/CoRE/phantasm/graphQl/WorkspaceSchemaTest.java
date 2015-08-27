@@ -28,7 +28,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,10 +97,13 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         when(mockedEmf.createEntityManager()).thenReturn(em);
         GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
                                                                           .getWorkspace());
-        ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
-                                                                            thing1.getRuleform()
-                                                                                  .getId()),
-                                                              new PhantasmCRUD(model));
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("id", thing1.getRuleform()
+                                  .getId()
+                                  .toString());
+        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String) { Thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
+
+        new PhantasmCRUD(model), variables);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -199,10 +202,12 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         when(mockedEmf.createEntityManager()).thenReturn(em);
 
         GraphQlResource resource = new GraphQlResource(mockedEmf);
-        QueryRequest request = new QueryRequest(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name  derivedFroms {id name}}} derivedFrom {id name}}}",
-                                                              thing1.getRuleform()
-                                                                    .getId()),
-                                                Collections.emptyMap());
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("id", thing1.getRuleform()
+                                  .getId()
+                                  .toString());
+        QueryRequest request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name thing2 {id name thing3s {id name  derivedFroms {id name}}} derivedFrom {id name}}}",
+                                                variables);
         Map<String, Object> result;
         try {
             result = resource.query(TEST_SCENARIO_URI, request);
@@ -285,12 +290,16 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         when(mockedEmf.createEntityManager()).thenReturn(em);
 
         GraphQlResource resource = new GraphQlResource(mockedEmf);
-        QueryRequest request = new QueryRequest(String.format("mutation m { UpdateThing1(state: { id: \"%s\" name: \"hello\" setDerivedFrom: \"%s\"}) { name } }",
-                                                              thing1.getRuleform()
-                                                                    .getId(),
-                                                              artifact2.getRuleform()
-                                                                       .getId()),
-                                                Collections.emptyMap());
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("id", thing1.getRuleform()
+                                  .getId()
+                                  .toString());
+        variables.put("artifact", artifact2.getRuleform()
+                                           .getId()
+                                           .toString());
+        variables.put("name", "hello");
+        QueryRequest request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String) { UpdateThing1(state: { id: $id name: $name setDerivedFrom: $artifact}) { name } }",
+                                                variables);
         Map<String, Object> result;
         try {
             result = resource.query(TEST_SCENARIO_URI, request);

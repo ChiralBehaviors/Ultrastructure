@@ -293,7 +293,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .type(new GraphQLTypeReference(facet.getName()))
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the instance")
-                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .type(GraphQLString)
                                                           .build())
                                    .dataFetcher(env -> ctx(env).apply(facet,
                                                                       (String) env.getArgument(ID)))
@@ -355,7 +355,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .type(new GraphQLTypeReference(facet.getName()))
                                    .argument(newArgument().name(NAME)
                                                           .description("the name of the created facet instance")
-                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .type(GraphQLString)
                                                           .build())
                                    .argument(newArgument().name(DESCRIPTION)
                                                           .description("the optional description of the created facet instance")
@@ -372,7 +372,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .type(type)
                                    .argument(newArgument().name(ID)
                                                           .description("id of the facet")
-                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .type(GraphQLString)
                                                           .build())
                                    .dataFetcher(env -> ctx(env).getInstance(env.getArgument(ID),
                                                                             facet))
@@ -394,7 +394,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .type(new GraphQLTypeReference(facet.getName()))
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the instance")
-                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .type(GraphQLString)
                                                           .build())
                                    .dataFetcher(env -> ctx(env).remove(facet,
                                                                        (String) env.getArgument(ID),

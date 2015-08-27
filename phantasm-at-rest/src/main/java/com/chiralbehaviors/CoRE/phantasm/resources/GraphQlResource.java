@@ -71,27 +71,6 @@ import graphql.schema.GraphQLSchema;
 @Produces({ MediaType.APPLICATION_JSON, "text/json" })
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class GraphQlResource extends TransactionalResource {
-    public static class QueryRequest {
-        private String              query;
-        private Map<String, Object> variables = Collections.emptyMap();
-
-        public QueryRequest() {
-        }
-
-        public QueryRequest(String query, Map<String, Object> variables) {
-            this.query = query;
-            this.variables = variables;
-        }
-
-        public String getQuery() {
-            return query;
-        }
-
-        public Map<String, Object> getVariables() {
-            return variables;
-        }
-    }
-
     private static final Logger log = LoggerFactory.getLogger(GraphQlResource.class);
 
     public GraphQlResource(EntityManagerFactory emf) {
@@ -156,7 +135,7 @@ public class GraphQlResource extends TransactionalResource {
     @Path("workspace/{workspace}")
     @POST
     public Map<String, Object> query(@PathParam("workspace") String workspace,
-                                     QueryRequest request) {
+                                     Map<String, Object> request) {
         if (request == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
@@ -174,9 +153,13 @@ public class GraphQlResource extends TransactionalResource {
         GraphQLSchema schema = build(scoped.getWorkspace());
         @SuppressWarnings("rawtypes")
         PhantasmCRUD crud = new PhantasmCRUD(readOnlyModel);
-        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              crud,
-                                                              request.getVariables());
+        @SuppressWarnings("unchecked")
+        Map<String, Object> variables = (Map<String, Object>) request.get("variables");
+        if (variables == null) {
+            variables = Collections.emptyMap();
+        }
+        ExecutionResult execute = new GraphQL(schema).execute((String) request.get("query"),
+                                                              crud, variables);
 
         if (execute.getErrors()
                    .isEmpty()) {
@@ -185,7 +168,7 @@ public class GraphQlResource extends TransactionalResource {
 
         result.put("errors", execute.getErrors());
 
-        log.error("Query: {} Errors: {}", request.getQuery(),
+        log.error("Query: {} Errors: {}", request.get("query"),
                   execute.getErrors());
 
         return result;

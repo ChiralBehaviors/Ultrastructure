@@ -46,7 +46,6 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -206,8 +205,11 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         variables.put("id", thing1.getRuleform()
                                   .getId()
                                   .toString());
-        QueryRequest request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name thing2 {id name thing3s {id name  derivedFroms {id name}}} derivedFrom {id name}}}",
-                                                variables);
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("query",
+                    "query it($id: String) { Thing1(id: $id) {id name thing2 {id name thing3s {id name  derivedFroms {id name}}} derivedFrom {id name}}}");
+        request.put("variables", variables);
         Map<String, Object> result;
         try {
             result = resource.query(TEST_SCENARIO_URI, request);
@@ -298,8 +300,10 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                                            .getId()
                                            .toString());
         variables.put("name", "hello");
-        QueryRequest request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String) { UpdateThing1(state: { id: $id name: $name setDerivedFrom: $artifact}) { name } }",
-                                                variables);
+        Map<String, Object> request = new HashMap<>();
+        request.put("query",
+                    "mutation m($id: String, $name: String, $artifact: String) { UpdateThing1(state: { id: $id name: $name setDerivedFrom: $artifact}) { name } }");
+        request.put("variables", variables);
         Map<String, Object> result;
         try {
             result = resource.query(TEST_SCENARIO_URI, request);

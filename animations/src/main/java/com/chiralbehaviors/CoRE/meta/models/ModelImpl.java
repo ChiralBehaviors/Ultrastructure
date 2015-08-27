@@ -119,7 +119,7 @@ public class ModelImpl implements Model {
         relationshipModel = new RelationshipModelImpl(this);
         statusCodeModel = new StatusCodeModelImpl(this);
         unitModel = new UnitModelImpl(this);
-        currentPrincipal.set(new AuthorizedPrincipal(kernel.getCoreAnimationSoftware()));
+        initializeCurrentPrincipal();
     }
 
     /* (non-Javadoc)
@@ -323,6 +323,7 @@ public class ModelImpl implements Model {
     @Override
     public void flushWorkspaces() {
         workspaceModel.flush();
+        initializeCurrentPrincipal();
     }
 
     /*
@@ -453,6 +454,35 @@ public class ModelImpl implements Model {
     }
 
     /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#getUnknownNetworkedModel(com.chiralbehaviors.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public <RuleForm extends ExistentialRuleform<?, ?>> NetworkedModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform) {
+        switch (ruleform.getClass()
+                        .getSimpleName()) {
+            case "Agency":
+                return getAgencyModel();
+            case "Attribute":
+                return getAttributeModel();
+            case "Interval":
+                return getIntervalModel();
+            case "Location":
+                return getLocationModel();
+            case "Product":
+                return getProductModel();
+            case "Relationship":
+                return getRelationshipModel();
+            case "StatusCode":
+                return getStatusCodeModel();
+            case "Unit":
+                return getUnitModel();
+            default:
+                throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
+                                                                 ruleform.getClass()));
+        }
+    }
+
+    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.Model#getWorkspaceModel()
      */
     @Override
@@ -489,32 +519,7 @@ public class ModelImpl implements Model {
         return (R) definition.wrap(ruleform, this);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#getUnknownNetworkedModel(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
-    @Override
-    public <RuleForm extends ExistentialRuleform<?, ?>> NetworkedModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform) {
-        switch (ruleform.getClass()
-                        .getSimpleName()) {
-            case "Agency":
-                return getAgencyModel();
-            case "Attribute":
-                return getAttributeModel();
-            case "Interval":
-                return getIntervalModel();
-            case "Location":
-                return getLocationModel();
-            case "Product":
-                return getProductModel();
-            case "Relationship":
-                return getRelationshipModel();
-            case "StatusCode":
-                return getStatusCodeModel();
-            case "Unit":
-                return getUnitModel();
-            default:
-                throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
-                                                                 ruleform.getClass()));
-        }
+    private void initializeCurrentPrincipal() {
+        currentPrincipal.set(new AuthorizedPrincipal(kernel.getCoreAnimationSoftware()));
     }
 }

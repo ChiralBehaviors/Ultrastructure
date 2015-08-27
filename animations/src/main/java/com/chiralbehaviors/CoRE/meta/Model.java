@@ -286,4 +286,12 @@ public interface Model {
     <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R wrap(Class<R> phantasm,
                                                                         ExistentialRuleform<T, ?> ruleform);
 
+    /**
+     * Answer the appropriate networked model for the existential ruleform
+     * 
+     * @param ruleform
+     * @return
+     */
+    <RuleForm extends ExistentialRuleform<?, ?>> NetworkedModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform);
+
 }

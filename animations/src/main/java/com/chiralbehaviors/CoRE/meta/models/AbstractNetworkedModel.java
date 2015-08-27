@@ -288,7 +288,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * Check the capability of an agency on an instance.
      */
     @Override
-    public boolean checkCapability(Agency agency, RuleForm instance,
+    public boolean checkCapability(Agency agency,
+                                   @SuppressWarnings("rawtypes") ExistentialRuleform instance,
                                    Relationship capability) {
         // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
         TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
@@ -1242,6 +1243,14 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                 }
             }
         }
+    }
+
+    @Override
+    public void initialize(RuleForm instance,
+                           NetworkAuthorization<RuleForm> facet,
+                           Agency principal) {
+        // TODO Auto-generated method stub
+
     }
 
     /* (non-Javadoc)

@@ -51,9 +51,8 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.codahale.metrics.annotation.Timed;
 
@@ -102,17 +101,24 @@ public class GraphQlResource extends TransactionalResource {
     public GraphQLSchema build(Workspace workspace) {
         Deque<NetworkAuthorization<?>> unresolved = initialState(workspace);
         Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved = new HashMap<>();
-        Builder topLevelQuery = newObject().name(workspace.getDefiningProduct()
-                                                          .getName())
+        Builder topLevelQuery = newObject().name("Query")
                                            .description(String.format("Top level query for %s",
                                                                       workspace.getDefiningProduct()
                                                                                .getName()));
+        Builder topLevelMutation = newObject().name("Mutation")
+                                              .description(String.format("Top level mutation for %s",
+                                                                         workspace.getDefiningProduct()
+                                                                                  .getName()));
         while (!unresolved.isEmpty()) {
             NetworkAuthorization<?> facet = unresolved.pop();
+            if (resolved.containsKey(facet)) {
+                continue;
+            }
             @SuppressWarnings({ "unchecked", "rawtypes" })
             FacetType<?, ?> type = new FacetType(facet, readOnlyModel);
             resolved.put(facet, type);
-            for (NetworkAuthorization<?> auth : type.build(topLevelQuery)) {
+            for (NetworkAuthorization<?> auth : type.build(topLevelQuery,
+                                                           topLevelMutation)) {
                 if (!resolved.containsKey(auth)) {
                     unresolved.add(auth);
                 }
@@ -120,6 +126,7 @@ public class GraphQlResource extends TransactionalResource {
         }
         return GraphQLSchema.newSchema()
                             .query(topLevelQuery.build())
+                            .mutation(topLevelMutation.build())
                             .build();
     }
 
@@ -165,9 +172,10 @@ public class GraphQlResource extends TransactionalResource {
         }
 
         GraphQLSchema schema = build(scoped.getWorkspace());
-        WorkspaceContext ctx = new WorkspaceContext(new PhantasmCRUD(readOnlyModel));
+        @SuppressWarnings("rawtypes")
+        PhantasmCRUD crud = new PhantasmCRUD(readOnlyModel);
         ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              ctx,
+                                                              crud,
                                                               request.getVariables());
 
         if (execute.getErrors()

@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.graphQl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -38,9 +39,8 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.phantasm.graphql.WorkspaceContext;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.ResourcesTest;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
@@ -60,6 +60,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testWorkspaceSchema() throws Exception {
         em.getTransaction()
@@ -96,11 +97,10 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         when(mockedEmf.createEntityManager()).thenReturn(em);
         GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
                                                                           .getWorkspace());
-        WorkspaceContext ctx = new WorkspaceContext(new PhantasmCRUD(model));
         ExecutionResult execute = new GraphQL(schema).execute(String.format("{ Thing1(id: \"%s\") {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
                                                                             thing1.getRuleform()
                                                                                   .getId()),
-                                                              ctx);
+                                                              new PhantasmCRUD(model));
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
@@ -146,7 +146,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
                                                            thing1.getRuleform()
                                                                  .getId()),
-                                             ctx)
+                                             new PhantasmCRUD(model))
                                     .getData();
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("InstancesOfThing1");
@@ -244,5 +244,73 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                            .toString(),
                      thing3Result.get("id"));
 
+    }
+
+    @Test
+    public void testMutation() throws Exception {
+        em.getTransaction()
+          .begin();
+        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                          model);
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
+                                        "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
+                                                 "model artifact");
+        artifact.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact.setArtifactID("model");
+        artifact.setVersion("0.0.2-SNAPSHOT");
+        artifact.setType("jar");
+
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
+
+        thing1.setAliases(new String[] { "smith", "jones" });
+        String uri = "http://example.com";
+        thing1.setURI(uri);
+        thing1.setDerivedFrom(artifact);
+        thing1.setThing2(thing2);
+        thing2.addThing3(thing3);
+
+        thing3.addDerivedFrom(artifact);
+        thing3.addDerivedFrom(artifact2);
+
+        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
+        when(mockedEmf.createEntityManager()).thenReturn(em);
+
+        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        QueryRequest request = new QueryRequest(String.format("mutation m { UpdateThing1(state: { id: \"%s\" name: \"hello\" setDerivedFrom: \"%s\"}) { name } }",
+                                                              thing1.getRuleform()
+                                                                    .getId(),
+                                                              artifact2.getRuleform()
+                                                                       .getId()),
+                                                Collections.emptyMap());
+        Map<String, Object> result;
+        try {
+            result = resource.query(TEST_SCENARIO_URI, request);
+        } catch (WebApplicationException e) {
+            fail(e.getResponse()
+                  .getEntity()
+                  .toString());
+            return;
+        }
+        assertNotNull(result);
+
+        System.out.println(result);
+
+        assertNull(result.get("errors"));
+        assertEquals("hello", thing1.getName());
+        @SuppressWarnings("unchecked")
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("UpdateThing1");
+        assertNotNull(thing1Result);
+        assertEquals(thing1.getName(), thing1Result.get("name"));
+
+        assertEquals(artifact2, thing1.getDerivedFrom());
     }
 }

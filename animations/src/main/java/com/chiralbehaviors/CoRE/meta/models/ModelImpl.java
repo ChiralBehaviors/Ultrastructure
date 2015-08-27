@@ -107,7 +107,9 @@ public class ModelImpl implements Model {
         animations = new Animations(this, entityManager);
         em = new EmWrapper(animations, entityManager);
         workspaceModel = new WorkspaceModelImpl(this);
-        kernel = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id()).getWorkspace().getAccessor(Kernel.class);
+        kernel = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id())
+                               .getWorkspace()
+                               .getAccessor(Kernel.class);
         attributeModel = new AttributeModelImpl(this);
         productModel = new ProductModelImpl(this);
         intervalModel = new IntervalModelImpl(this);
@@ -151,9 +153,9 @@ public class ModelImpl implements Model {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm);
         ExistentialRuleform<? extends T, ?> ruleform;
         try {
-            ruleform = (T) Model.getExistentialRuleformConstructor(phantasm).newInstance(name,
-                                                                                         description,
-                                                                                         getCurrentPrincipal().getPrincipal());
+            ruleform = (T) Model.getExistentialRuleformConstructor(phantasm)
+                                .newInstance(name, description,
+                                             getCurrentPrincipal().getPrincipal());
         } catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             InstantiationException ex = new InstantiationException(String.format("Cannot construct instance of existential ruleform for %s",
@@ -218,7 +220,8 @@ public class ModelImpl implements Model {
                                                         rf);
 
         Predicate whereAttributeValue = null;
-        switch (attributeValue.getAttribute().getValueType()) {
+        switch (attributeValue.getAttribute()
+                              .getValueType()) {
             case BINARY: {
                 whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.binaryValue),
                                                             attributeValue.getBinaryValue());
@@ -253,7 +256,8 @@ public class ModelImpl implements Model {
         query.where(criteriaBuilder.and(whereAttribute, whereAttributeValue,
                                         whereRuleform));
 
-        return em.createQuery(query).getResultList();
+        return em.createQuery(query)
+                 .getResultList();
     }
 
     /*
@@ -268,8 +272,9 @@ public class ModelImpl implements Model {
                                                                       Class<RuleForm> ruleform) {
         try {
             return (RuleForm) em.createNamedQuery(prefixFor(ruleform)
-                                                  + FIND_BY_NAME_SUFFIX).setParameter("name",
-                                                                                      name).getSingleResult();
+                                                  + FIND_BY_NAME_SUFFIX)
+                                .setParameter("name", name)
+                                .getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -306,9 +311,9 @@ public class ModelImpl implements Model {
     @Override
     public <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(Agency updatedBy,
                                                                     Class<Ruleform> ruleform) {
-        return em.createNamedQuery(prefixFor(ruleform)
-                                   + FIND_BY_NAME_SUFFIX).setParameter("agency",
-                                                                       updatedBy).getResultList();
+        return em.createNamedQuery(prefixFor(ruleform) + FIND_BY_NAME_SUFFIX)
+                 .setParameter("agency", updatedBy)
+                 .getResultList();
     }
 
     /* (non-Javadoc)
@@ -394,7 +399,8 @@ public class ModelImpl implements Model {
     @SuppressWarnings("unchecked")
     @Override
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> NetworkedModel<RuleForm, Network, ?, ?> getNetworkedModel(ExistentialRuleform<RuleForm, Network> ruleform) {
-        switch (ruleform.getClass().getSimpleName()) {
+        switch (ruleform.getClass()
+                        .getSimpleName()) {
             case "Agency":
                 return (NetworkedModel<RuleForm, Network, ?, ?>) getAgencyModel();
             case "Attribute":
@@ -480,5 +486,34 @@ public class ModelImpl implements Model {
         }
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm);
         return (R) definition.wrap(ruleform, this);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#getUnknownNetworkedModel(com.chiralbehaviors.CoRE.ExistentialRuleform)
+     */
+    @Override
+    public <RuleForm extends ExistentialRuleform<?, ?>> NetworkedModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform) {
+        switch (ruleform.getClass()
+                        .getSimpleName()) {
+            case "Agency":
+                return getAgencyModel();
+            case "Attribute":
+                return getAttributeModel();
+            case "Interval":
+                return getIntervalModel();
+            case "Location":
+                return getLocationModel();
+            case "Product":
+                return getProductModel();
+            case "Relationship":
+                return getRelationshipModel();
+            case "StatusCode":
+                return getStatusCodeModel();
+            case "Unit":
+                return getUnitModel();
+            default:
+                throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
+                                                                 ruleform.getClass()));
+        }
     }
 }

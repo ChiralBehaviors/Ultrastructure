@@ -597,6 +597,10 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("DELETE", find(WellKnownRelationship.DELETE), core,
                  kernelWorkspace);
+        populate("APPLY", find(WellKnownRelationship.APPLY), core,
+                 kernelWorkspace);
+        populate("REMOVE", find(WellKnownRelationship.REMOVE), core,
+                 kernelWorkspace);
         populate(find(WellKnownRelationship.MAY_BE_CREATED_BY), core,
                  kernelWorkspace);
         populate(find(WellKnownRelationship.MAY_BE_READ_BY), core,
@@ -604,6 +608,10 @@ public class Bootstrap {
         populate(find(WellKnownRelationship.MAY_BE_UPDATED_BY), core,
                  kernelWorkspace);
         populate(find(WellKnownRelationship.MAY_BE_DELETED_BY), core,
+                 kernelWorkspace);
+        populate(find(WellKnownRelationship.MAY_BE_APPLIED_BY), core,
+                 kernelWorkspace);
+        populate(find(WellKnownRelationship.MAY_BE_REMOVED_BY), core,
                  kernelWorkspace);
     }
 

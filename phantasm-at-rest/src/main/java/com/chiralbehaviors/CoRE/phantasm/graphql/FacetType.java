@@ -26,10 +26,16 @@ import static graphql.Scalars.GraphQLInt;
 import static graphql.Scalars.GraphQLString;
 import static graphql.schema.GraphQLArgument.newArgument;
 import static graphql.schema.GraphQLFieldDefinition.newFieldDefinition;
+import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
+import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -38,10 +44,12 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.PhantasmTraversal;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
@@ -50,117 +58,69 @@ import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLTypeReference;
 
 /**
+ * Cannonical tranform of Phantasm metadata into GraphQL metadata.
+ * 
  * @author hhildebrand
  *
  */
 public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         implements PhantasmTraversal.PhantasmVisitor<RuleForm, Network> {
 
-    private final NetworkAuthorization<RuleForm> facet;
-    private final Model                          model;
-    private final Set<NetworkAuthorization<?>>   references = new HashSet<>();
-    private Builder                              builder;
+    private static final String APPLY_TEMPLATE        = "Apply%s";
+    private static final String CREATE_TEMPLATE       = "Create%s";
+    private static final String DESCRIPTION           = "description";
+    private static final String ID                    = "id";
+    private static final String INSTANCES_OF_TEMPLATE = "InstancesOf%s";
+    private static final String NAME                  = "name";
+    private static final String REMOVE_TEMPLATE       = "Remove%s";
+    private static final String STATE                 = "state";
+    private static final String UPDATE_TEMPLATE       = "Update%s";
+    private static final String UPDATE_TYPE_TEMPLATE  = "%sUpdate";
+
+    private final NetworkAuthorization<RuleForm>                                                          facet;
+    private final Model                                                                                   model;
+    private graphql.schema.GraphQLInputObjectType.Builder                                                 updateTypeBuilder;
+    private final Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
+    private Builder                                                                                       typeBuilder;
+    private final Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
 
     public FacetType(NetworkAuthorization<RuleForm> facet, Model model) {
         this.model = model;
         this.facet = facet;
-        builder = newObject().name(facet.getName())
-                             .description(facet.getNotes());
+        typeBuilder = newObject().name(facet.getName())
+                                 .description(facet.getNotes());
+        updateTypeBuilder = newInputObject().name(String.format(UPDATE_TYPE_TEMPLATE,
+                                                                facet.getName()))
+                                            .description(facet.getNotes());
     }
 
-    @Override
-    public void visit(AttributeAuthorization<RuleForm, Network> auth,
-                      String fieldName) {
-        Attribute attribute = auth.getAuthorizedAttribute();
-        builder.field(newFieldDefinition().type(typeOf(attribute))
-                                          .name(fieldName)
-                                          .description(attribute.getDescription())
-                                          .dataFetcher(env -> FacetType.ctx(env)
-                                                                       .getAttributeValue(env,
-                                                                                          auth))
-                                          .build());
-    }
+    /**
+     * Build the top level queries and mutations
+     * 
+     * @param query
+     *            - top level query
+     * @param mutation
+     *            - top level mutation
+     * @return the references this facet has to other facets.
+     */
+    public Set<NetworkAuthorization<?>> build(Builder query, Builder mutation) {
+        buildRuleformAttributes();
+        new PhantasmTraversal<RuleForm, Network>(model).traverse(facet, this);
+        GraphQLObjectType type = typeBuilder.build();
 
-    @Override
-    public void visitChildren(NetworkAuthorization<RuleForm> auth,
-                              String fieldName,
-                              NetworkAuthorization<RuleForm> child) {
-        GraphQLOutputType type = new GraphQLTypeReference(child.getName());
-        type = new GraphQLList(type);
-        builder.field(newFieldDefinition().type(type)
-                                          .name(fieldName)
-                                          .dataFetcher(env -> FacetType.ctx(env)
-                                                                       .getChildren(env,
-                                                                                    auth))
-                                          .description(auth.getNotes())
-                                          .build());
-        references.add(child);
-    }
+        query.field(instance(type));
+        query.field(instances());
 
-    @Override
-    public void visitChildren(XDomainNetworkAuthorization<?, ?> auth,
-                              String fieldName, NetworkAuthorization<?> child) {
-        builder.field(newFieldDefinition().type(new GraphQLList(new GraphQLTypeReference(child.getName())))
-                                          .name(fieldName)
-                                          .description(auth.getNotes())
-                                          .dataFetcher(env -> FacetType.ctx(env)
-                                                                       .getXdChildren(env,
-                                                                                      facet,
-                                                                                      auth,
-                                                                                      child))
-                                          .build());
-        references.add(child);
-    }
-
-    @Override
-    public void visitSingular(NetworkAuthorization<RuleForm> auth,
-                              String fieldName,
-                              NetworkAuthorization<RuleForm> child) {
-        GraphQLOutputType type = new GraphQLTypeReference(child.getName());
-        builder.field(newFieldDefinition().type(type)
-                                          .name(fieldName)
-                                          .dataFetcher(env -> FacetType.ctx(env)
-                                                                       .getSingularChild(env,
-                                                                                         auth))
-                                          .description(auth.getNotes())
-                                          .build());
-        references.add(child);
-    }
-
-    @Override
-    public void visitSingular(XDomainNetworkAuthorization<?, ?> auth,
-                              String fieldName, NetworkAuthorization<?> child) {
-        builder.field(newFieldDefinition().type(new GraphQLTypeReference(child.getName()))
-                                          .name(fieldName)
-                                          .description(auth.getNotes())
-                                          .dataFetcher(env -> FacetType.ctx(env)
-                                                                       .getSingularXdChild(env,
-                                                                                           facet,
-                                                                                           auth,
-                                                                                           child))
-                                          .build());
-        references.add(child);
-    }
-
-    public Set<NetworkAuthorization<?>> build(Builder topLevelQuery) {
-        // Ruleform attributes for the facet
-        builder.field(newFieldDefinition().type(GraphQLString)
-                                          .name("id")
-                                          .description("The id of the facet instance")
-                                          .build());
-        builder.field(newFieldDefinition().type(GraphQLString)
-                                          .name("name")
-                                          .description("The name of the facet instance")
-                                          .build());
-        builder.field(newFieldDefinition().type(GraphQLString)
-                                          .name("description")
-                                          .description("The description of the facet instance")
-                                          .build());
-        new PhantasmTraversal(model).traverse(facet, this);
-        GraphQLObjectType queryType = builder.build();
-        topLevelQuery.field(instanceQuery(queryType));
-        topLevelQuery.field(instancesQuery(queryType));
+        mutation.field(createInstance());
+        mutation.field(apply());
+        mutation.field(update());
+        mutation.field(remove());
         return references;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public PhantasmCRUD<RuleForm, Network> ctx(DataFetchingEnvironment env) {
+        return (PhantasmCRUD) env.getContext();
     }
 
     public NetworkAuthorization<RuleForm> getFacet() {
@@ -174,6 +134,272 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     @Override
     public String toString() {
         return String.format("FacetType [name=%s]", getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void visit(AttributeAuthorization<RuleForm, Network> auth,
+                      String fieldName) {
+        Attribute attribute = auth.getAuthorizedAttribute();
+        GraphQLOutputType type = typeOf(attribute);
+        typeBuilder.field(newFieldDefinition().type(type)
+                                              .name(fieldName)
+                                              .description(attribute.getDescription())
+                                              .dataFetcher(env -> ctx(env).getAttributeValue((RuleForm) env.getSource(),
+                                                                                             auth))
+                                              .build());
+
+        String setter = String.format("set%s", capitalized(fieldName));
+        GraphQLInputType inputType;
+        if (auth.getAuthorizedAttribute()
+                .getIndexed()) {
+            updateTemplate.put(setter,
+                               (crud,
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (String) update.get(ID),
+                                                                  auth,
+                                                                  (List<Object>) update.get(setter)));
+            inputType = new GraphQLList(GraphQLString);
+        } else if (auth.getAuthorizedAttribute()
+                       .getKeyed()) {
+            updateTemplate.put(setter,
+                               (crud,
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (String) update.get(ID),
+                                                                  auth,
+                                                                  (Map<String, Object>) update.get(setter)));
+            inputType = GraphQLString;
+        } else {
+            updateTemplate.put(setter,
+                               (crud,
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (String) update.get(ID),
+                                                                  auth,
+                                                                  (Object) update.get(setter)));
+            inputType = new GraphQLList(GraphQLString);
+        }
+        updateTypeBuilder.field(newInputObjectField().type(inputType)
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void visitChildren(NetworkAuthorization<RuleForm> auth,
+                              String fieldName,
+                              NetworkAuthorization<RuleForm> child) {
+        GraphQLOutputType type = new GraphQLTypeReference(child.getName());
+        type = new GraphQLList(type);
+        typeBuilder.field(newFieldDefinition().type(type)
+                                              .name(fieldName)
+                                              .dataFetcher(env -> ctx(env).getChildren((RuleForm) env.getSource(),
+                                                                                       auth))
+                                              .description(auth.getNotes())
+                                              .build());
+        String setter = String.format("set%s", capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(setter,
+                           (crud,
+                            update) -> crud.setChildren(facet,
+                                                        (String) update.get(ID),
+                                                        auth,
+                                                        (List<String>) update.get(setter)));
+        references.add(child);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void visitChildren(XDomainNetworkAuthorization<?, ?> auth,
+                              String fieldName, NetworkAuthorization<?> child) {
+        GraphQLList type = new GraphQLList(new GraphQLTypeReference(child.getName()));
+        typeBuilder.field(newFieldDefinition().type(type)
+                                              .name(fieldName)
+                                              .description(auth.getNotes())
+                                              .dataFetcher(env -> ctx(env).getChildren((RuleForm) env.getSource(),
+                                                                                       facet,
+                                                                                       auth))
+                                              .build());
+        String setter = String.format("set%s", capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(setter,
+                           (crud,
+                            update) -> crud.setChildren((String) update.get(ID),
+                                                        facet, auth,
+                                                        (List<String>) update.get(setter)));
+        references.add(child);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void visitSingular(NetworkAuthorization<RuleForm> auth,
+                              String fieldName,
+                              NetworkAuthorization<RuleForm> child) {
+        GraphQLOutputType type = new GraphQLTypeReference(child.getName());
+        typeBuilder.field(newFieldDefinition().type(type)
+                                              .name(fieldName)
+                                              .dataFetcher(env -> ctx(env).getSingularChild((RuleForm) env.getSource(),
+                                                                                            auth))
+                                              .description(auth.getNotes())
+                                              .build());
+        String setter = String.format("set%s", capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(setter,
+                           (crud,
+                            update) -> crud.setSingularChild(facet,
+                                                             (String) update.get(ID),
+                                                             facet,
+                                                             (String) update.get(setter)));
+        references.add(child);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void visitSingular(XDomainNetworkAuthorization<?, ?> auth,
+                              String fieldName, NetworkAuthorization<?> child) {
+        GraphQLTypeReference type = new GraphQLTypeReference(child.getName());
+        typeBuilder.field(newFieldDefinition().type(type)
+                                              .name(fieldName)
+                                              .description(auth.getNotes())
+                                              .dataFetcher(env -> ctx(env).getSingularChild((RuleForm) env.getSource(),
+                                                                                            facet,
+                                                                                            auth))
+                                              .build());
+        String setter = String.format("set%s", capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(setter)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(setter,
+                           (crud,
+                            update) -> crud.setSingularChild((String) update.get(ID),
+                                                             facet, auth,
+                                                             (String) update.get(setter)));
+        references.add(child);
+    }
+
+    private GraphQLFieldDefinition apply() {
+        return newFieldDefinition().name(String.format(APPLY_TEMPLATE,
+                                                       facet.getName()))
+                                   .type(new GraphQLTypeReference(facet.getName()))
+                                   .argument(newArgument().name(ID)
+                                                          .description("the id of the instance")
+                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .build())
+                                   .dataFetcher(env -> ctx(env).apply(facet,
+                                                                      (String) env.getArgument(ID)))
+                                   .build();
+    }
+
+    private String capitalized(String field) {
+        char[] chars = field.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    private void buildRuleformAttributes() {
+        typeBuilder.field(newFieldDefinition().type(GraphQLString)
+                                              .name(ID)
+                                              .description("The id of the facet instance")
+                                              .build());
+        typeBuilder.field(newFieldDefinition().type(GraphQLString)
+                                              .name(NAME)
+                                              .description("The name of the facet instance")
+                                              .build());
+        typeBuilder.field(newFieldDefinition().type(GraphQLString)
+                                              .name(DESCRIPTION)
+                                              .description("The description of the facet instance")
+                                              .build());
+
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(ID)
+                                                     .description(String.format("the id of the updated %s",
+                                                                                facet.getName()))
+                                                     .build());
+
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(NAME)
+                                                     .description(String.format("the name to update on %s",
+                                                                                facet.getName()))
+                                                     .build());
+        updateTemplate.put(NAME,
+                           (crud,
+                            update) -> crud.setName(facet,
+                                                    (String) update.get(ID),
+                                                    (String) update.get(NAME)));
+
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(DESCRIPTION)
+                                                     .description(String.format("the description to update on %s",
+                                                                                facet.getName()))
+                                                     .build());
+        updateTemplate.put(DESCRIPTION,
+                           (crud,
+                            update) -> crud.setName(facet,
+                                                    (String) update.get(ID),
+                                                    (String) update.get(DESCRIPTION)));
+    }
+
+    private GraphQLFieldDefinition createInstance() {
+        return newFieldDefinition().name(String.format(CREATE_TEMPLATE,
+                                                       facet.getName()))
+                                   .type(new GraphQLTypeReference(facet.getName()))
+                                   .argument(newArgument().name(NAME)
+                                                          .description("the name of the created facet instance")
+                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .build())
+                                   .argument(newArgument().name(DESCRIPTION)
+                                                          .description("the optional description of the created facet instance")
+                                                          .type(GraphQLString)
+                                                          .build())
+                                   .dataFetcher(env -> ctx(env).createInstance(facet,
+                                                                               env.getArgument(NAME),
+                                                                               env.getArgument(DESCRIPTION)))
+                                   .build();
+    }
+
+    private GraphQLFieldDefinition instance(GraphQLObjectType type) {
+        return newFieldDefinition().name(facet.getName())
+                                   .type(type)
+                                   .argument(newArgument().name(ID)
+                                                          .description("id of the facet")
+                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .build())
+                                   .dataFetcher(env -> ctx(env).getInstance(env.getArgument(ID),
+                                                                            facet))
+                                   .build();
+    }
+
+    private GraphQLFieldDefinition instances() {
+        return newFieldDefinition().name(String.format(INSTANCES_OF_TEMPLATE,
+                                                       facet.getName()))
+                                   .type(new GraphQLList(new GraphQLTypeReference(facet.getName())))
+                                   .dataFetcher(context -> ctx(context).getInstances(facet))
+                                   .build();
+
+    }
+
+    private GraphQLFieldDefinition remove() {
+        return newFieldDefinition().name(String.format(REMOVE_TEMPLATE,
+                                                       facet.getName()))
+                                   .type(new GraphQLTypeReference(facet.getName()))
+                                   .argument(newArgument().name(ID)
+                                                          .description("the id of the instance")
+                                                          .type(new GraphQLNonNull(GraphQLString))
+                                                          .build())
+                                   .dataFetcher(env -> ctx(env).remove(facet,
+                                                                       (String) env.getArgument(ID),
+                                                                       true))
+                                   .build();
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {
@@ -205,31 +431,28 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         return attribute.getIndexed() ? new GraphQLList(type) : type;
     }
 
-    private GraphQLFieldDefinition instanceQuery(GraphQLObjectType queryType) {
-        return newFieldDefinition().name(facet.getName())
-                                   .type(queryType)
-                                   .argument(newArgument().name("id")
-                                                          .description("id of the facet")
-                                                          .type(new GraphQLNonNull(GraphQLString))
-                                                          .build())
-                                   .dataFetcher(context -> FacetType.ctx(context)
-                                                                    .getInstance(context,
-                                                                                 facet))
-                                   .build();
-    }
-
-    private GraphQLFieldDefinition instancesQuery(GraphQLObjectType queryType) {
-        return newFieldDefinition().name(String.format("InstancesOf%s",
+    @SuppressWarnings("unchecked")
+    private GraphQLFieldDefinition update() {
+        return newFieldDefinition().name(String.format(UPDATE_TEMPLATE,
                                                        facet.getName()))
-                                   .type(new GraphQLList(queryType))
-                                   .dataFetcher(context -> FacetType.ctx(context)
-                                                                    .getInstances(context,
-                                                                                  facet))
+                                   .type(new GraphQLTypeReference(facet.getName()))
+                                   .argument(newArgument().name(STATE)
+                                                          .description("the update state to apply")
+                                                          .type(new GraphQLNonNull(updateTypeBuilder.build()))
+                                                          .build())
+                                   .dataFetcher(env -> {
+                                       Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
+                                       RuleForm ruleform = null;
+                                       for (String field : updateState.keySet()) {
+                                           if (!field.equals(ID)
+                                               && updateState.containsKey(field)) {
+                                               ruleform = updateTemplate.get(field)
+                                                                        .apply(ctx(env),
+                                                                               updateState);
+                                           }
+                                       }
+                                       return ruleform;
+                                   })
                                    .build();
-
-    }
-
-    public static WorkspaceContext ctx(DataFetchingEnvironment env) {
-        return (WorkspaceContext) env.getContext();
     }
 }

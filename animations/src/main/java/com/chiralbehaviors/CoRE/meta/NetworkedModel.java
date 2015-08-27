@@ -158,7 +158,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Check the capability of an agency on an instance.
      */
-    boolean checkCapability(Agency agency, RuleForm instance,
+    boolean checkCapability(Agency agency,
+                            @SuppressWarnings("rawtypes") ExistentialRuleform instance,
                             Relationship capability);
 
     /**
@@ -622,4 +623,13 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                            RuleForm child, Agency updatedBy);
 
     void unlink(RuleForm parent, Relationship r, RuleForm child);
+
+    /**
+     * @param instance
+     * @param facet
+     * @param principal
+     */
+    void initialize(RuleForm instance, NetworkAuthorization<RuleForm> facet,
+                    Agency principal);
+
 }

@@ -119,6 +119,7 @@ public class ModelImpl implements Model {
         relationshipModel = new RelationshipModelImpl(this);
         statusCodeModel = new StatusCodeModelImpl(this);
         unitModel = new UnitModelImpl(this);
+        currentPrincipal.set(new AuthorizedPrincipal(kernel.getCoreAnimationSoftware()));
     }
 
     /* (non-Javadoc)

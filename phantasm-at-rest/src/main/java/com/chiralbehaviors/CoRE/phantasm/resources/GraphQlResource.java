@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -93,7 +94,8 @@ public class GraphQlResource extends TransactionalResource {
         }
     }
 
-    private static final Logger log = LoggerFactory.getLogger(GraphQlResource.class);
+    private static final Logger            log   = LoggerFactory.getLogger(GraphQlResource.class);
+    private final Map<UUID, GraphQLSchema> cache = new ConcurrentHashMap<>();
 
     public GraphQlResource(EntityManagerFactory emf) {
         super(emf);
@@ -126,10 +128,14 @@ public class GraphQlResource extends TransactionalResource {
                 }
             }
         }
-        return GraphQLSchema.newSchema()
-                            .query(topLevelQuery.build())
-                            .mutation(topLevelMutation.build())
-                            .build();
+        GraphQLSchema schema = GraphQLSchema.newSchema()
+                                            .query(topLevelQuery.build())
+                                            .mutation(topLevelMutation.build())
+                                            .build();
+        cache.put(workspace.getDefiningProduct()
+                           .getId(),
+                  schema);
+        return schema;
     }
 
     @Timed
@@ -168,16 +174,19 @@ public class GraphQlResource extends TransactionalResource {
         return perform(model -> {
             Map<String, Object> result = new HashMap<>();
             UUID uuid = Workspace.uuidOf(workspace);
-            WorkspaceScope scoped = model.getWorkspaceModel()
-                                         .getScoped(uuid);
-            if (scoped == null) {
-                result.put("errors",
-                           String.format("Workspace %s does not exist",
-                                         workspace));
-                return result;
-            }
+            GraphQLSchema schema = cache.get(uuid);
+            if (schema == null) {
+                WorkspaceScope scoped = model.getWorkspaceModel()
+                                             .getScoped(uuid);
+                if (scoped == null) {
+                    result.put("errors",
+                               String.format("Workspace %s does not exist",
+                                             workspace));
+                    return result;
+                }
 
-            GraphQLSchema schema = build(scoped.getWorkspace(), model);
+                schema = build(scoped.getWorkspace(), model);
+            }
             @SuppressWarnings("rawtypes")
             PhantasmCRUD crud = new PhantasmCRUD(model);
             ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),

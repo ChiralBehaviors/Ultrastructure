@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
@@ -98,8 +99,9 @@ public class GraphQlResource extends TransactionalResource {
         super(emf);
     }
 
-    public GraphQLSchema build(Workspace workspace) {
-        Deque<NetworkAuthorization<?>> unresolved = initialState(workspace);
+    public GraphQLSchema build(Workspace workspace, Model model) {
+        Deque<NetworkAuthorization<?>> unresolved = initialState(workspace,
+                                                                 model);
         Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved = new HashMap<>();
         Builder topLevelQuery = newObject().name("Query")
                                            .description(String.format("Top level query for %s",
@@ -115,7 +117,7 @@ public class GraphQlResource extends TransactionalResource {
                 continue;
             }
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            FacetType<?, ?> type = new FacetType(facet, readOnlyModel);
+            FacetType<?, ?> type = new FacetType(facet, model);
             resolved.put(facet, type);
             for (NetworkAuthorization<?> auth : type.build(topLevelQuery,
                                                            topLevelMutation)) {
@@ -134,22 +136,24 @@ public class GraphQlResource extends TransactionalResource {
     @GET
     @Path("workspace")
     public List<Map<String, Object>> getWorkspaces() {
-        Kernel kernel = readOnlyModel.getKernel();
-        Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
-                                              kernel.getWorkspace());
-        List<Map<String, Object>> workspaces = new ArrayList<>();
-        for (Product definingProduct : readOnlyModel.getProductModel()
-                                                    .getChildren(aspect.getClassification(),
-                                                                 aspect.getClassifier()
-                                                                       .getInverse())) {
-            Map<String, Object> wsp = new TreeMap<>();
-            wsp.put("id", definingProduct.getId()
-                                         .toString());
-            wsp.put("name", definingProduct.getName());
-            wsp.put("description", definingProduct.getDescription());
-            workspaces.add(wsp);
-        }
-        return workspaces;
+        return readOnly(readOnlyModel -> {
+            Kernel kernel = readOnlyModel.getKernel();
+            Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
+                                                  kernel.getWorkspace());
+            List<Map<String, Object>> workspaces = new ArrayList<>();
+            for (Product definingProduct : readOnlyModel.getProductModel()
+                                                        .getChildren(aspect.getClassification(),
+                                                                     aspect.getClassifier()
+                                                                           .getInverse())) {
+                Map<String, Object> wsp = new TreeMap<>();
+                wsp.put("id", definingProduct.getId()
+                                             .toString());
+                wsp.put("name", definingProduct.getName());
+                wsp.put("description", definingProduct.getDescription());
+                workspaces.add(wsp);
+            }
+            return workspaces;
+        });
     }
 
     @Timed
@@ -161,55 +165,60 @@ public class GraphQlResource extends TransactionalResource {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        Map<String, Object> result = new HashMap<>();
-        UUID uuid = Workspace.uuidOf(workspace);
-        WorkspaceScope scoped = readOnlyModel.getWorkspaceModel()
-                                             .getScoped(uuid);
-        if (scoped == null) {
-            result.put("errors",
-                       String.format("Workspace %s does not exist", workspace));
+        return perform(model -> {
+            Map<String, Object> result = new HashMap<>();
+            UUID uuid = Workspace.uuidOf(workspace);
+            WorkspaceScope scoped = model.getWorkspaceModel()
+                                         .getScoped(uuid);
+            if (scoped == null) {
+                result.put("errors",
+                           String.format("Workspace %s does not exist",
+                                         workspace));
+                return result;
+            }
+
+            GraphQLSchema schema = build(scoped.getWorkspace(), model);
+            @SuppressWarnings("rawtypes")
+            PhantasmCRUD crud = new PhantasmCRUD(model);
+            ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
+                                                                  crud,
+                                                                  request.getVariables());
+
+            if (execute.getErrors()
+                       .isEmpty()) {
+                return execute.getData();
+            }
+
+            result.put("errors", execute.getErrors());
+
+            log.error("Query: {} Errors: {}", request.getQuery(),
+                      execute.getErrors());
+
             return result;
-        }
+        });
 
-        GraphQLSchema schema = build(scoped.getWorkspace());
-        @SuppressWarnings("rawtypes")
-        PhantasmCRUD crud = new PhantasmCRUD(readOnlyModel);
-        ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                              crud,
-                                                              request.getVariables());
-
-        if (execute.getErrors()
-                   .isEmpty()) {
-            return execute.getData();
-        }
-
-        result.put("errors", execute.getErrors());
-
-        log.error("Query: {} Errors: {}", request.getQuery(),
-                  execute.getErrors());
-
-        return result;
     }
 
-    private Deque<NetworkAuthorization<?>> initialState(Workspace workspace) {
+    private Deque<NetworkAuthorization<?>> initialState(Workspace workspace,
+                                                        Model model) {
         Product definingProduct = workspace.getDefiningProduct();
         Deque<NetworkAuthorization<?>> unresolved = new ArrayDeque<>();
-        unresolved.addAll(readOnlyModel.getAgencyModel()
-                                       .getFacets(definingProduct));
-        unresolved.addAll(readOnlyModel.getAttributeModel()
-                                       .getFacets(definingProduct));
-        unresolved.addAll(readOnlyModel.getIntervalModel()
-                                       .getFacets(definingProduct));
-        unresolved.addAll(readOnlyModel.getLocationModel()
-                                       .getFacets(definingProduct));
-        unresolved.addAll(readOnlyModel.getProductModel()
-                                       .getFacets(definingProduct));
-        unresolved.addAll(readOnlyModel.getRelationshipModel()
-                                       .getFacets(definingProduct));
-        unresolved.addAll(readOnlyModel.getStatusCodeModel()
-                                       .getFacets(definingProduct));
-        unresolved.addAll(readOnlyModel.getUnitModel()
-                                       .getFacets(definingProduct));
+        unresolved.addAll(model.getAgencyModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getAttributeModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getIntervalModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getLocationModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getProductModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getRelationshipModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getStatusCodeModel()
+                               .getFacets(definingProduct));
+        unresolved.addAll(model.getUnitModel()
+                               .getFacets(definingProduct));
         return unresolved;
     }
 }

@@ -25,6 +25,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,10 +34,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
+import org.mockito.AdditionalAnswers;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
@@ -59,109 +64,6 @@ import graphql.schema.GraphQLSchema;
 public class WorkspaceSchemaTest extends AbstractModelTest {
 
     private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
-
-    @SuppressWarnings("rawtypes")
-    @Test
-    public void testWorkspaceSchema() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
-                                        "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
-                                                 "model artifact");
-        artifact.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact.setArtifactID("model");
-        artifact.setVersion("0.0.2-SNAPSHOT");
-        artifact.setType("jar");
-        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
-                                                  "animations",
-                                                  "animations artifact");
-        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact2.setArtifactID("animations");
-        artifact2.setVersion("0.0.2-SNAPSHOT");
-        artifact2.setType("jar");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        String uri = "http://example.com";
-        thing1.setURI(uri);
-        thing1.setDerivedFrom(artifact);
-        thing1.setThing2(thing2);
-        thing2.addThing3(thing3);
-        thing3.addDerivedFrom(artifact);
-        thing3.addDerivedFrom(artifact2);
-
-        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
-        when(mockedEmf.createEntityManager()).thenReturn(em);
-        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
-                                                                          .getWorkspace());
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("id", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
-        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String) { Thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
-
-        new PhantasmCRUD(model), variables);
-        assertTrue(execute.getErrors()
-                          .toString(),
-                   execute.getErrors()
-                          .isEmpty());
-        Map<String, Object> result = execute.getData();
-
-        assertNotNull(result);
-
-        System.out.println(result);
-
-        @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
-        assertNotNull(thing1Result);
-        assertEquals(thing1.getName(), thing1Result.get("name"));
-        assertEquals(thing1.getRuleform()
-                           .getId()
-                           .toString(),
-                     thing1Result.get("id"));
-
-        @SuppressWarnings("unchecked")
-        Map<String, Object> thing2Result = (Map<String, Object>) thing1Result.get("thing2");
-        assertNotNull(thing2Result);
-        assertEquals(thing2.getName(), thing2Result.get("name"));
-        assertEquals(thing2.getRuleform()
-                           .getId()
-                           .toString(),
-                     thing2Result.get("id"));
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> thing3s = (List<Map<String, Object>>) thing2Result.get("thing3s");
-        assertNotNull(thing3s);
-        assertEquals(1, thing3s.size());
-        Map<String, Object> thing3Result = thing3s.get(0);
-        assertEquals(thing3.getName(), thing3Result.get("name"));
-        assertEquals(thing3.getRuleform()
-                           .getId()
-                           .toString(),
-                     thing3Result.get("id"));
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> thing3DerivedFroms = (List<Map<String, Object>>) thing3Result.get("derivedFroms");
-        assertNotNull(thing3DerivedFroms);
-        assertEquals(2, thing3DerivedFroms.size());
-
-        result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
-                                                           thing1.getRuleform()
-                                                                 .getId()),
-                                             new PhantasmCRUD(model))
-                                    .getData();
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("InstancesOfThing1");
-        assertEquals(1, instances.size());
-        Map<String, Object> instance = instances.get(0);
-        assertEquals(thing1.getName(), instance.get("name"));
-        assertEquals(thing1.getRuleform()
-                           .getId()
-                           .toString(),
-                     instance.get("id"));
-        assertEquals(uri, instance.get("URI"));
-    }
 
     @Test
     public void testGraphQlResource() throws Exception {
@@ -198,8 +100,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         thing3.addDerivedFrom(artifact);
         thing3.addDerivedFrom(artifact2);
 
-        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
-        when(mockedEmf.createEntityManager()).thenReturn(em);
+        EntityManagerFactory mockedEmf = mockedEmf();
 
         GraphQlResource resource = new GraphQlResource(mockedEmf);
         Map<String, Object> variables = new HashMap<>();
@@ -286,8 +187,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         thing3.addDerivedFrom(artifact);
         thing3.addDerivedFrom(artifact2);
 
-        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
-        when(mockedEmf.createEntityManager()).thenReturn(em);
+        EntityManagerFactory mockedEmf = mockedEmf();
 
         GraphQlResource resource = new GraphQlResource(mockedEmf);
         Map<String, Object> variables = new HashMap<>();
@@ -321,5 +221,121 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         assertEquals(thing1.getName(), thing1Result.get("name"));
 
         assertEquals(artifact2, thing1.getDerivedFrom());
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void testWorkspaceSchema() throws Exception {
+        em.getTransaction()
+          .begin();
+        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                          model);
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
+                                        "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
+                                                 "model artifact");
+        artifact.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact.setArtifactID("model");
+        artifact.setVersion("0.0.2-SNAPSHOT");
+        artifact.setType("jar");
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
+        thing1.setAliases(new String[] { "smith", "jones" });
+        String uri = "http://example.com";
+        thing1.setURI(uri);
+        thing1.setDerivedFrom(artifact);
+        thing1.setThing2(thing2);
+        thing2.addThing3(thing3);
+        thing3.addDerivedFrom(artifact);
+        thing3.addDerivedFrom(artifact2);
+
+        EntityManagerFactory mockedEmf = mockedEmf();
+        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
+                                                                          .getWorkspace(),
+                                                                    model);
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("id", thing1.getRuleform()
+                                  .getId()
+                                  .toString());
+        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String) { Thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
+
+        new PhantasmCRUD(model), variables);
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        Map<String, Object> result = execute.getData();
+
+        assertNotNull(result);
+
+        System.out.println(result);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
+        assertNotNull(thing1Result);
+        assertEquals(thing1.getName(), thing1Result.get("name"));
+        assertEquals(thing1.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing1Result.get("id"));
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> thing2Result = (Map<String, Object>) thing1Result.get("thing2");
+        assertNotNull(thing2Result);
+        assertEquals(thing2.getName(), thing2Result.get("name"));
+        assertEquals(thing2.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing2Result.get("id"));
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> thing3s = (List<Map<String, Object>>) thing2Result.get("thing3s");
+        assertNotNull(thing3s);
+        assertEquals(1, thing3s.size());
+        Map<String, Object> thing3Result = thing3s.get(0);
+        assertEquals(thing3.getName(), thing3Result.get("name"));
+        assertEquals(thing3.getRuleform()
+                           .getId()
+                           .toString(),
+                     thing3Result.get("id"));
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> thing3DerivedFroms = (List<Map<String, Object>>) thing3Result.get("derivedFroms");
+        assertNotNull(thing3DerivedFroms);
+        assertEquals(2, thing3DerivedFroms.size());
+
+        result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
+                                                           thing1.getRuleform()
+                                                                 .getId()),
+                                             new PhantasmCRUD(model))
+                                    .getData();
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("InstancesOfThing1");
+        assertEquals(1, instances.size());
+        Map<String, Object> instance = instances.get(0);
+        assertEquals(thing1.getName(), instance.get("name"));
+        assertEquals(thing1.getRuleform()
+                           .getId()
+                           .toString(),
+                     instance.get("id"));
+        assertEquals(uri, instance.get("URI"));
+    }
+
+    private EntityManagerFactory mockedEmf() {
+        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
+        EntityManager mockedEm = mock(EntityManager.class,
+                                      AdditionalAnswers.delegatesTo(em));
+        EntityTransaction mockedTxn = mock(EntityTransaction.class);
+        doReturn(mockedTxn).when(mockedEm)
+                           .getTransaction();
+        doNothing().when(mockedEm)
+                   .close();
+        when(mockedEmf.createEntityManager()).thenReturn(mockedEm);
+        return mockedEmf;
     }
 }

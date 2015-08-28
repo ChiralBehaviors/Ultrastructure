@@ -65,23 +65,28 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                                     @PathParam("ruleform-type") String ruleformType,
                                     @PathParam("classifier") String classifier,
                                     @PathParam("classification") String classification) {
-        UUID workspaceUUID;
-        workspaceUUID = WorkspaceResource.toUUID(workspace);
-        WorkspaceScope scope;
-        try {
-            scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceUUID);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceUUID),
-                                              Status.NOT_FOUND);
-        }
-        Ruleform relationship = WorkspaceResource.resolve(classifier, scope);
-        Ruleform ruleform = WorkspaceResource.resolve(classification, scope);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getAllInstancesIri(aspect,
-                                                          uriInfo)).build();
+        return readOnly(readOnlyModel -> {
+            UUID workspaceUUID;
+            workspaceUUID = WorkspaceResource.toUUID(workspace);
+            WorkspaceScope scope;
+            try {
+                scope = readOnlyModel.getWorkspaceModel()
+                                     .getScoped(workspaceUUID);
+            } catch (IllegalArgumentException e) {
+                throw new WebApplicationException(String.format("Workspace not found: %s",
+                                                                workspaceUUID),
+                                                  Status.NOT_FOUND);
+            }
+            Ruleform relationship = WorkspaceResource.resolve(classifier,
+                                                              scope);
+            Ruleform ruleform = WorkspaceResource.resolve(classification,
+                                                          scope);
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Aspect<?> aspect = new Aspect((Relationship) relationship,
+                                          (ExistentialRuleform) ruleform);
+            return Response.seeOther(Facet.getAllInstancesIri(aspect, uriInfo))
+                           .build();
+        });
     }
 
     @Timed
@@ -91,22 +96,28 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                                @PathParam("ruleform-type") String ruleformType,
                                @PathParam("classifier") String classifier,
                                @PathParam("classification") String classification) {
-        UUID workspaceUUID;
-        workspaceUUID = WorkspaceResource.toUUID(workspace);
-        WorkspaceScope scope;
-        try {
-            scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceUUID);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceUUID),
-                                              Status.NOT_FOUND);
-        }
-        Ruleform relationship = WorkspaceResource.resolve(classifier, scope);
-        Ruleform ruleform = WorkspaceResource.resolve(classification, scope);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getContextIri(aspect, uriInfo)).build();
+        return readOnly(readOnlyModel -> {
+            UUID workspaceUUID;
+            workspaceUUID = WorkspaceResource.toUUID(workspace);
+            WorkspaceScope scope;
+            try {
+                scope = readOnlyModel.getWorkspaceModel()
+                                     .getScoped(workspaceUUID);
+            } catch (IllegalArgumentException e) {
+                throw new WebApplicationException(String.format("Workspace not found: %s",
+                                                                workspaceUUID),
+                                                  Status.NOT_FOUND);
+            }
+            Ruleform relationship = WorkspaceResource.resolve(classifier,
+                                                              scope);
+            Ruleform ruleform = WorkspaceResource.resolve(classification,
+                                                          scope);
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Aspect<?> aspect = new Aspect((Relationship) relationship,
+                                          (ExistentialRuleform) ruleform);
+            return Response.seeOther(Facet.getContextIri(aspect, uriInfo))
+                           .build();
+        });
     }
 
     @Timed
@@ -118,23 +129,29 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                                 @PathParam("classification") String classification,
                                 @PathParam("instance") String instance,
                                 @QueryParam("select") List<String> selection) {
-        UUID workspaceUUID;
-        workspaceUUID = WorkspaceResource.toUUID(workspace);
-        WorkspaceScope scope;
-        try {
-            scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceUUID);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceUUID),
-                                              Status.NOT_FOUND);
-        }
-        Ruleform relationship = WorkspaceResource.resolve(classifier, scope);
-        Ruleform ruleform = WorkspaceResource.resolve(classification, scope);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getInstanceIri(aspect, instance, uriInfo,
-                                                      selection)).build();
+        return readOnly(readOnlyModel -> {
+            UUID workspaceUUID;
+            workspaceUUID = WorkspaceResource.toUUID(workspace);
+            WorkspaceScope scope;
+            try {
+                scope = readOnlyModel.getWorkspaceModel()
+                                     .getScoped(workspaceUUID);
+            } catch (IllegalArgumentException e) {
+                throw new WebApplicationException(String.format("Workspace not found: %s",
+                                                                workspaceUUID),
+                                                  Status.NOT_FOUND);
+            }
+            Ruleform relationship = WorkspaceResource.resolve(classifier,
+                                                              scope);
+            Ruleform ruleform = WorkspaceResource.resolve(classification,
+                                                          scope);
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Aspect<?> aspect = new Aspect((Relationship) relationship,
+                                          (ExistentialRuleform) ruleform);
+            return Response.seeOther(Facet.getInstanceIri(aspect, instance,
+                                                          uriInfo, selection))
+                           .build();
+        });
     }
 
     @Timed
@@ -145,22 +162,28 @@ public class WorkspaceMediatedResource extends TransactionalResource {
                             @PathParam("classifier") String classifier,
                             @PathParam("classification") String classification,
                             @PathParam("term") String term) {
-        UUID workspaceUUID;
-        workspaceUUID = WorkspaceResource.toUUID(workspace);
-        WorkspaceScope scope;
-        try {
-            scope = readOnlyModel.getWorkspaceModel().getScoped(workspaceUUID);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(String.format("Workspace not found: %s",
-                                                            workspaceUUID),
-                                              Status.NOT_FOUND);
-        }
-        Ruleform relationship = WorkspaceResource.resolve(classifier, scope);
-        Ruleform ruleform = WorkspaceResource.resolve(classification, scope);
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        Aspect<?> aspect = new Aspect((Relationship) relationship,
-                                      (ExistentialRuleform) ruleform);
-        return Response.seeOther(Facet.getFullTermIri(aspect, term,
-                                                      uriInfo)).build();
+        return readOnly(readOnlyModel -> {
+            UUID workspaceUUID;
+            workspaceUUID = WorkspaceResource.toUUID(workspace);
+            WorkspaceScope scope;
+            try {
+                scope = readOnlyModel.getWorkspaceModel()
+                                     .getScoped(workspaceUUID);
+            } catch (IllegalArgumentException e) {
+                throw new WebApplicationException(String.format("Workspace not found: %s",
+                                                                workspaceUUID),
+                                                  Status.NOT_FOUND);
+            }
+            Ruleform relationship = WorkspaceResource.resolve(classifier,
+                                                              scope);
+            Ruleform ruleform = WorkspaceResource.resolve(classification,
+                                                          scope);
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            Aspect<?> aspect = new Aspect((Relationship) relationship,
+                                          (ExistentialRuleform) ruleform);
+            return Response.seeOther(Facet.getFullTermIri(aspect, term,
+                                                          uriInfo))
+                           .build();
+        });
     }
 }

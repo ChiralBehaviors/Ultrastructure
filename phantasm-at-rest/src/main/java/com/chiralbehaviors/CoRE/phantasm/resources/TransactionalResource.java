@@ -16,15 +16,18 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.function.Function;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -40,23 +43,12 @@ import com.chiralbehaviors.CoRE.utils.Util;
  * @author hhildebrand
  */
 public class TransactionalResource {
-
-    @FunctionalInterface
-    public interface Transactionally<T> {
-        T exec(Model model) throws SQLException;
-    }
+    private final static Logger log = LoggerFactory.getLogger(TransactionalResource.class);
 
     private final EntityManagerFactory emf;
 
-    protected final Model readOnlyModel;
-
     public TransactionalResource(EntityManagerFactory emf) {
         this.emf = emf;
-        readOnlyModel = new ModelImpl(emf);
-    }
-
-    public void close() {
-        readOnlyModel.getEntityManager().close();
     }
 
     protected <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(UUID classifier,
@@ -72,22 +64,25 @@ public class TransactionalResource {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Aspect<RuleForm> getAspect(String ruleformType,
                                                                                                                                               UUID relationship,
-                                                                                                                                              UUID ruleform) {
+                                                                                                                                              UUID ruleform,
+                                                                                                                                              Model readOnlyModel) {
         Class<ExistentialRuleform> ruleformClass = (Class<ExistentialRuleform>) RuleformResource.entityMap.get(ruleformType);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
                                                             ruleformType),
                                               Status.NOT_FOUND);
         }
-        Relationship classifier = readOnlyModel.getEntityManager().find(Relationship.class,
-                                                                        relationship);
+        Relationship classifier = readOnlyModel.getEntityManager()
+                                               .find(Relationship.class,
+                                                     relationship);
         if (classifier == null) {
             throw new WebApplicationException(String.format("classifier does not exist: %s",
                                                             relationship),
                                               Status.NOT_FOUND);
         }
-        ExistentialRuleform classification = readOnlyModel.getEntityManager().find(ruleformClass,
-                                                                                   ruleform);
+        ExistentialRuleform classification = readOnlyModel.getEntityManager()
+                                                          .find(ruleformClass,
+                                                                ruleform);
         if (classification == null) {
             throw new WebApplicationException(String.format("classification does not exist: %s",
                                                             ruleform),
@@ -104,21 +99,38 @@ public class TransactionalResource {
     protected UUID insert(final Ruleform ruleform) {
         return perform((Model model) -> Util.smartMerge(model.getEntityManager(),
                                                         ruleform,
-                                                        new HashMap<>()).getId());
+                                                        new HashMap<>())
+                                            .getId());
     }
 
-    protected <T> T perform(Transactionally<T> txn) throws WebApplicationException {
+    protected <T> T perform(Function<Model, T> txn) throws WebApplicationException {
         Model model = new ModelImpl(emf);
         EntityManager em = model.getEntityManager();
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
         try {
-            T value = txn.exec(model);
-            em.getTransaction().commit();
+            T value = txn.apply(model);
+            em.getTransaction()
+              .commit();
             return value;
         } catch (Throwable e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
+            log.error("error applying transaction", e);
+            throw new WebApplicationException(e, 500);
+        } finally {
+            em.close();
+        }
+    }
+
+    protected <T> T readOnly(Function<Model, T> txn) throws WebApplicationException {
+        Model model = new ModelImpl(emf);
+        EntityManager em = model.getEntityManager();
+        em.getTransaction()
+          .begin();
+        try {
+            T value = txn.apply(model);
+            return value;
+        } catch (Throwable e) {
+            log.error("error applying transaction", e);
             throw new WebApplicationException(e, 500);
         } finally {
             em.close();

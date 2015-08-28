@@ -75,7 +75,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                              NetworkAuthorization<RuleForm> auth,
                              RuleForm child) {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        checkREAD(auth, networkedModel);
+        checkUPDATE(auth, networkedModel);
         checkREAD(child, networkedModel);
 
         networkedModel.link(instance, auth.getAuthorizedRelationship(), child,
@@ -95,7 +95,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                 NetworkAuthorization<RuleForm> auth,
                                 List<RuleForm> children) {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        checkREAD(auth, networkedModel);
+        checkUPDATE(auth, networkedModel);
         for (RuleForm child : children) {
             checkREAD(child, networkedModel);
             networkedModel.link(instance, auth.getAuthorizedRelationship(),
@@ -203,11 +203,11 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
                                                       .getPrincipal(),
                                                  auth, model.getKernel()
-                                                            .getUPDATE())) {
+                                                            .getREAD())) {
             throw new SecurityException(String.format("%s does not have %s capability",
                                                       model.getCurrentPrincipal(),
                                                       model.getKernel()
-                                                           .getUPDATE()));
+                                                           .getREAD()));
         }
     }
 

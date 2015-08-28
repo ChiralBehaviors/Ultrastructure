@@ -30,7 +30,6 @@ import java.util.UUID;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -62,7 +61,8 @@ public class RuleformResource extends TransactionalResource {
     private final static ArrayList<String> sortedRuleforms;
 
     static {
-        Reflections reflections = new Reflections(Ruleform.class.getPackage().getName());
+        Reflections reflections = new Reflections(Ruleform.class.getPackage()
+                                                                .getName());
         for (Class<? extends Ruleform> form : reflections.getSubTypesOf(Ruleform.class)) {
             if (!Modifier.isAbstract(form.getModifiers())) {
                 entityMap.put(form.getSimpleName(), form);
@@ -73,7 +73,10 @@ public class RuleformResource extends TransactionalResource {
     }
 
     public static String getRuleformIri(UriInfo uriInfo) {
-        return uriInfo.getBaseUriBuilder().path(RuleformResource.class).build().toASCIIString()
+        return uriInfo.getBaseUriBuilder()
+                      .path(RuleformResource.class)
+                      .build()
+                      .toASCIIString()
                + "/";
     }
 
@@ -85,14 +88,6 @@ public class RuleformResource extends TransactionalResource {
     }
 
     @Timed
-    @Path("{ruleform}")
-    @POST
-    public Map<String, Object> create(@PathParam("ruleform") String ruleform,
-                                      Map<String, Object> instance) {
-        return null;
-    }
-
-    @Timed
     @Path("context")
     @GET
     public Map<String, Object> getContext() {
@@ -100,7 +95,8 @@ public class RuleformResource extends TransactionalResource {
         ub.path("context");
         ub.path("context.jsonld");
         Map<String, Object> context = new TreeMap<>();
-        context.put(Constants.ID, ub.build().toASCIIString());
+        context.put(Constants.ID, ub.build()
+                                    .toASCIIString());
         return context;
     }
 
@@ -125,15 +121,19 @@ public class RuleformResource extends TransactionalResource {
     @GET
     public Map<String, Object> getInstance(@PathParam("ruleform") String ruleform,
                                            @PathParam("instance") UUID instance) {
-        Ruleform ruleformInstance = (Ruleform) readOnlyModel.getEntityManager().find(entityMap.get(ruleform),
-                                                                                     instance);
-        if (ruleformInstance == null) {
-            throw new WebApplicationException(String.format("%s:%s does not exist",
-                                                            ruleform,
-                                                            instance));
-        }
-        return new RuleformContext(ruleformInstance.getClass(),
-                                   uriInfo).toNode(ruleformInstance, uriInfo);
+        return readOnly(readOnlyModel -> {
+            Ruleform ruleformInstance = (Ruleform) readOnlyModel.getEntityManager()
+                                                                .find(entityMap.get(ruleform),
+                                                                      instance);
+            if (ruleformInstance == null) {
+                throw new WebApplicationException(String.format("%s:%s does not exist",
+                                                                ruleform,
+                                                                instance));
+            }
+            return new RuleformContext(ruleformInstance.getClass(),
+                                       uriInfo).toNode(ruleformInstance,
+                                                       uriInfo);
+        });
     }
 
     @Timed
@@ -145,16 +145,19 @@ public class RuleformResource extends TransactionalResource {
             throw new WebApplicationException(String.format("%s does not exist",
                                                             ruleform));
         }
-        List<Map<String, String>> instances = new ArrayList<>();
-        readOnlyModel.findAll(ruleformClass).forEach(rf -> {
-            Map<String, String> map = new TreeMap<>();
-            map.put(Constants.CONTEXT,
-                    RuleformContext.getContextIri(rf.getClass(),
-                                                  uriInfo).toASCIIString());
-            map.put(Constants.ID, RuleformContext.getIri(rf));
-            instances.add(map);
+        return readOnly(readOnlyModel -> {
+            List<Map<String, String>> instances = new ArrayList<>();
+            readOnlyModel.findAll(ruleformClass)
+                         .forEach(rf -> {
+                Map<String, String> map = new TreeMap<>();
+                map.put(Constants.CONTEXT,
+                        RuleformContext.getContextIri(rf.getClass(), uriInfo)
+                                       .toASCIIString());
+                map.put(Constants.ID, RuleformContext.getIri(rf));
+                instances.add(map);
+            });
+            return instances;
         });
-        return instances;
     }
 
     @Timed
@@ -166,16 +169,19 @@ public class RuleformResource extends TransactionalResource {
             throw new WebApplicationException(String.format("%s does not exist",
                                                             ruleform));
         }
-        List<Map<String, String>> instances = new ArrayList<>();
-        readOnlyModel.findAll(ruleformClass).forEach(rf -> {
-            Map<String, String> map = new TreeMap<>();
-            map.put(Constants.CONTEXT,
-                    RuleformContext.getContextIri(rf.getClass(),
-                                                  uriInfo).toASCIIString());
-            map.put(Constants.ID, RuleformContext.getIri(rf));
-            instances.add(map);
+        return readOnly(readOnlyModel -> {
+            List<Map<String, String>> instances = new ArrayList<>();
+            readOnlyModel.findAll(ruleformClass)
+                         .forEach(rf -> {
+                Map<String, String> map = new TreeMap<>();
+                map.put(Constants.CONTEXT,
+                        RuleformContext.getContextIri(rf.getClass(), uriInfo)
+                                       .toASCIIString());
+                map.put(Constants.ID, RuleformContext.getIri(rf));
+                instances.add(map);
+            });
+            return instances;
         });
-        return instances;
     }
 
     @Timed

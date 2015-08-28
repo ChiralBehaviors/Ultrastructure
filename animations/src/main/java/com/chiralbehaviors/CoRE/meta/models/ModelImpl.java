@@ -86,19 +86,19 @@ public class ModelImpl implements Model {
         return builder.toString();
     }
 
-    private final AgencyModel                      agencyModel;
-    private final Animations                       animations;
-    private final AttributeModel                   attributeModel;
-    private final ThreadLocal<AuthorizedPrincipal> currentPrincipal = new ThreadLocal<>();
-    private final EntityManager                    em;
-    private final IntervalModel                    intervalModel;
-    private final JobModel                         jobModel;
-    private final Kernel                           kernel;
-    private final LocationModel                    locationModel;
-    private final ProductModel                     productModel;
-    private final RelationshipModel                relationshipModel;
-    private final StatusCodeModel                  statusCodeModel;
-    private final UnitModel                        unitModel;
+    private final AgencyModel       agencyModel;
+    private final Animations        animations;
+    private final AttributeModel    attributeModel;
+    private AuthorizedPrincipal     currentPrincipal;
+    private final EntityManager     em;
+    private final IntervalModel     intervalModel;
+    private final JobModel          jobModel;
+    private final Kernel            kernel;
+    private final LocationModel     locationModel;
+    private final ProductModel      productModel;
+    private final RelationshipModel relationshipModel;
+    private final StatusCodeModel   statusCodeModel;
+    private final UnitModel         unitModel;
 
     private final WorkspaceModel workspaceModel;
 
@@ -176,12 +176,12 @@ public class ModelImpl implements Model {
     public <V> V executeAs(AuthorizedPrincipal principal,
                            Callable<V> function) throws Exception {
         V value = null;
-        AuthorizedPrincipal previous = currentPrincipal.get();
-        currentPrincipal.set(principal);
+        AuthorizedPrincipal previous = currentPrincipal;
+        currentPrincipal = principal;
         try {
             value = function.call();
         } finally {
-            currentPrincipal.set(previous);
+            currentPrincipal = previous;
         }
         return value;
     }
@@ -348,7 +348,7 @@ public class ModelImpl implements Model {
 
     @Override
     public AuthorizedPrincipal getCurrentPrincipal() {
-        AuthorizedPrincipal authorizedPrincipal = currentPrincipal.get();
+        AuthorizedPrincipal authorizedPrincipal = currentPrincipal;
         return authorizedPrincipal == null ? new AuthorizedPrincipal(kernel.getCoreAnimationSoftware())
                                            : authorizedPrincipal;
     }
@@ -520,6 +520,6 @@ public class ModelImpl implements Model {
     }
 
     private void initializeCurrentPrincipal() {
-        currentPrincipal.set(new AuthorizedPrincipal(kernel.getCoreAnimationSoftware()));
+        currentPrincipal = new AuthorizedPrincipal(kernel.getCoreAnimationSoftware());
     }
 }

@@ -17,6 +17,14 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>oscache</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>thing-ontology</artifactId>
             <scope>test</scope>

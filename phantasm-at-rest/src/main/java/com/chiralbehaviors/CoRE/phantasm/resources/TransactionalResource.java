@@ -126,6 +126,8 @@ public class TransactionalResource {
         EntityManager em = model.getEntityManager();
         em.getTransaction()
           .begin();
+        em.getTransaction()
+          .setRollbackOnly();
         try {
             T value = txn.apply(model);
             return value;

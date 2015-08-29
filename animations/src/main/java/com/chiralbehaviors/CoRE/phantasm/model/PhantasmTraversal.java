@@ -75,10 +75,13 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
          *            - the normalized field name
          * @param child
          *            - the child facet
+         * @param singularFieldName
+         *            - the singular form of the field name
          */
         void visitChildren(NetworkAuthorization<RuleForm> auth,
                            String fieldName,
-                           NetworkAuthorization<RuleForm> child);
+                           NetworkAuthorization<RuleForm> child,
+                           String singularFieldName);
 
         /**
          * Visit the multiple child xd authorization
@@ -89,9 +92,12 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
          *            - the normalized field name
          * @param child
          *            - the child facet
+         * @param singularFieldName
+         *            TODO
          */
         void visitChildren(XDomainNetworkAuthorization<?, ?> auth,
-                           String fieldName, NetworkAuthorization<?> child);
+                           String fieldName, NetworkAuthorization<?> child,
+                           String singularFieldName);
 
         /**
          * Visit the singular child network authorization
@@ -238,7 +244,8 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
                                                            networkedModel);
             String fieldName = toFieldName(auth.getName());
             if (auth.getCardinality() == Cardinality.N) {
-                visitor.visitChildren(auth, English.plural(fieldName), child);
+                visitor.visitChildren(auth, English.plural(fieldName), child,
+                                      fieldName);
             } else {
                 visitor.visitSingular(auth, fieldName, child);
             }
@@ -286,8 +293,8 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
                                 PhantasmVisitor<RuleForm, Network> visitor) {
         String fieldName = toFieldName(auth.getName());
         if (auth.getCardinality() == Cardinality.N) {
-            fieldName = English.plural(fieldName);
-            visitor.visitChildren(auth, fieldName, child);
+            visitor.visitChildren(auth, English.plural(fieldName), child,
+                                  fieldName);
         } else {
             visitor.visitSingular(auth, fieldName, child);
         }

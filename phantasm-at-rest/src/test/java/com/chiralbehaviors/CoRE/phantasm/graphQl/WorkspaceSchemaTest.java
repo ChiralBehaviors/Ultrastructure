@@ -198,14 +198,13 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                                            .getId()
                                            .toString());
         variables.put("name", "hello");
-        QueryRequest request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String) { UpdateThing1(state: { id: $id name: $name setDerivedFrom: $artifact}) { name } }",
+        QueryRequest request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact}) { name } }",
                                                 variables);
         Map<String, Object> result;
         try {
             result = resource.query(TEST_SCENARIO_URI, request);
         } catch (WebApplicationException e) {
             fail(e.getResponse()
-                  .getEntity()
                   .toString());
             return;
         }
@@ -221,6 +220,66 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         assertEquals(thing1.getName(), thing1Result.get("name"));
 
         assertEquals(artifact2, thing1.getDerivedFrom());
+    }
+
+    @Test
+    public void testCreate() throws Exception {
+        em.getTransaction()
+          .begin();
+        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                          model);
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
+                                        "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
+                                                 "model artifact");
+        artifact.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact.setArtifactID("model");
+        artifact.setVersion("0.0.2-SNAPSHOT");
+        artifact.setType("jar");
+
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
+
+        thing2.addThing3(thing3);
+
+        thing3.addDerivedFrom(artifact);
+        thing3.addDerivedFrom(artifact2);
+
+        EntityManagerFactory mockedEmf = mockedEmf();
+
+        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("artifact", artifact2.getRuleform()
+                                           .getId()
+                                           .toString());
+        variables.put("name", "hello");
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $artifact: String) { CreateThing1(state: { setName: $name, setDerivedFrom: $artifact}) { id name } }",
+                                                variables);
+        Map<String, Object> result;
+        try {
+            result = resource.query(TEST_SCENARIO_URI, request);
+        } catch (WebApplicationException e) {
+            fail(e.getResponse()
+                  .toString());
+            return;
+        }
+        assertNotNull(result);
+
+        System.out.println(result);
+
+        assertNull(result.get("errors"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        assertNotNull(thing1Result);
+        assertEquals("hello", thing1Result.get("name"));
+
+        // assertEquals(artifact2, thing1.getDerivedFrom());
     }
 
     @SuppressWarnings("rawtypes")

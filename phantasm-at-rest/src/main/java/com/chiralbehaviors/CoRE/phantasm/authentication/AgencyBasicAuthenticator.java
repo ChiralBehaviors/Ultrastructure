@@ -38,16 +38,16 @@ import io.dropwizard.auth.basic.BasicCredentials;
  * @author hhildebrand
  * 
  */
-public class AgencyAuthenticator
+public class AgencyBasicAuthenticator
         implements Authenticator<BasicCredentials, AuthorizedPrincipal> {
-    private final static Logger log = LoggerFactory.getLogger(AgencyAuthenticator.class);
+    private final static Logger log = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
     private final EntityManagerFactory emf;
 
     /**
      * @param emf
      */
-    public AgencyAuthenticator(EntityManagerFactory emf) {
+    public AgencyBasicAuthenticator(EntityManagerFactory emf) {
         this.emf = emf;
     }
 

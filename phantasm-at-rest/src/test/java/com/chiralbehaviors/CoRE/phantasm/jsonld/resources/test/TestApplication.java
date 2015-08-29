@@ -24,7 +24,7 @@ import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyAuthenticator;
+import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
@@ -90,7 +90,7 @@ public class TestApplication extends Application<TestServiceConfiguration> {
 
         String unit = jpaConfig.getPersistenceUnit();
         environment.jersey()
-                   .register(AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new AgencyAuthenticator(emf),
+                   .register(AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new AgencyBasicAuthenticator(emf),
                                                                                           "CoRE",
                                                                                           AuthorizedPrincipal.class)));
         Map<String, String> properties = jpaConfig.getProperties();

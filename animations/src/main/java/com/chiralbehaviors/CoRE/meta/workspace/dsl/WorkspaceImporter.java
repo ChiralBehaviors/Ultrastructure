@@ -964,8 +964,7 @@ public class WorkspaceImporter {
             UUID uuid = Workspace.uuidOf(uri);
             workspace.addImport(w.namespace.getText(),
                                 model.getEntityManager().find(Product.class,
-                                                              uuid),
-                                model.getCurrentPrincipal().getPrincipal());
+                                                              uuid));
         }
     }
 

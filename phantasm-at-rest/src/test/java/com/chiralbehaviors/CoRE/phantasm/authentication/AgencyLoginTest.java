@@ -47,7 +47,7 @@ public class AgencyLoginTest extends AbstractModelTest {
         em.flush();
         em.clear();
 
-        AgencyAuthenticator authenticator = new AgencyAuthenticator(mockedEmf());
+        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator(mockedEmf());
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(username,
                                                                                                       password));
         assertNotNull(authenticated.get());

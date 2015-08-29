@@ -31,7 +31,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 public interface EditableWorkspace extends Workspace {
     <T extends Ruleform> void add(T ruleform);
 
-    void addImport(String namespace, Product workspace, Agency updatedBy);
+    void addImport(String namespace, Product workspace);
 
     <T extends Ruleform> void put(String key, T ruleform);
 

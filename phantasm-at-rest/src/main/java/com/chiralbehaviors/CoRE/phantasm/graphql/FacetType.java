@@ -66,25 +66,39 @@ import graphql.schema.GraphQLTypeReference;
 public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         implements PhantasmTraversal.PhantasmVisitor<RuleForm, Network> {
 
-    private static final String SET_TEMPLATE          = "set%s";
     private static final String APPLY_TEMPLATE        = "Apply%s";
-    private static final String CREATE_TEMPLATE       = "Create%s";
     private static final String AT_RULEFORM           = "@ruleform";
+    private static final String CREATE_TEMPLATE       = "Create%s";
     private static final String DESCRIPTION           = "description";
     private static final String ID                    = "id";
     private static final String INSTANCES_OF_TEMPLATE = "InstancesOf%s";
     private static final String NAME                  = "name";
     private static final String REMOVE_TEMPLATE       = "Remove%s";
+    private static final String SET_DESCRIPTION;
+    private static final String SET_NAME;
+    private static final String SET_TEMPLATE          = "set%s";
     private static final String STATE                 = "state";
     private static final String UPDATE_TEMPLATE       = "Update%s";
     private static final String UPDATE_TYPE_TEMPLATE  = "%sUpdate";
 
+    static {
+        SET_NAME = String.format(SET_TEMPLATE, capitalized(NAME));
+        SET_DESCRIPTION = String.format(SET_TEMPLATE, capitalized(DESCRIPTION));
+    }
+
+    private static String capitalized(String field) {
+        char[] chars = field.toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
     private final NetworkAuthorization<RuleForm>                                                          facet;
     private final Model                                                                                   model;
-    private graphql.schema.GraphQLInputObjectType.Builder                                                 updateTypeBuilder;
     private final Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
     private Builder                                                                                       typeBuilder;
     private final Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
+
+    private graphql.schema.GraphQLInputObjectType.Builder updateTypeBuilder;
 
     public FacetType(NetworkAuthorization<RuleForm> facet, Model model) {
         this.model = model;
@@ -303,12 +317,6 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .build();
     }
 
-    private String capitalized(String field) {
-        char[] chars = field.toCharArray();
-        chars[0] = Character.toUpperCase(chars[0]);
-        return new String(chars);
-    }
-
     @SuppressWarnings("unchecked")
     private void buildRuleformAttributes() {
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
@@ -329,29 +337,24 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .description(String.format("the id of the updated %s",
                                                                                 facet.getName()))
                                                      .build());
-
-        String setName = String.format(SET_TEMPLATE, capitalized(NAME));
         updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(setName)
+                                                     .name(SET_NAME)
                                                      .description(String.format("the name to update on %s",
                                                                                 facet.getName()))
                                                      .build());
-        updateTemplate.put(setName,
+        updateTemplate.put(SET_NAME,
                            (crud,
                             update) -> crud.setName((RuleForm) update.get(AT_RULEFORM),
-                                                    (String) update.get(setName)));
-
-        String setDescription = String.format(SET_TEMPLATE,
-                                              capitalized(DESCRIPTION));
+                                                    (String) update.get(SET_NAME)));
         updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(setDescription)
+                                                     .name(SET_DESCRIPTION)
                                                      .description(String.format("the description to update on %s",
                                                                                 facet.getName()))
                                                      .build());
-        updateTemplate.put(setDescription,
+        updateTemplate.put(SET_DESCRIPTION,
                            (crud,
                             update) -> crud.setName((RuleForm) update.get(AT_RULEFORM),
-                                                    (String) update.get(setDescription)));
+                                                    (String) update.get(SET_DESCRIPTION)));
     }
 
     @SuppressWarnings("unchecked")
@@ -368,9 +371,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                        PhantasmCRUD<RuleForm, Network> crud = ctx(env);
                                        RuleForm ruleform = crud.createInstance(facet,
                                                                                (String) updateState.get(String.format(SET_TEMPLATE,
-                                                                                                                      capitalized(NAME))),
+                                                                                                                      SET_NAME)),
                                                                                (String) updateState.get(String.format(SET_TEMPLATE,
-                                                                                                                      capitalized(DESCRIPTION))));
+                                                                                                                      SET_DESCRIPTION)));
                                        return ruleform == null ? null
                                                                : update(ruleform,
                                                                         updateState,

@@ -226,6 +226,22 @@ public interface WellKnownObject {
                     return WellKnownObject.SUPER_USER;
                 }
 
+            },
+            UNAUTHENTICATED() {
+
+                @Override
+                public String description() {
+                    return "The unauthenticated agency";
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "Unauthenticated";
+                }
+
             };
 
         /* (non-Javadoc)

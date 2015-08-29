@@ -34,7 +34,6 @@ import com.chiralbehaviors.CoRE.time.Interval;
  *
  */
 public interface Kernel {
-
     Agency getAnyAgency();
 
     Attribute getAnyAttribute();
@@ -214,6 +213,8 @@ public interface Kernel {
     Agency getSpecialSystemAgency();
 
     Agency getSuperUser();
+
+    Agency getUnauthenticatedAgency();
 
     StatusCode getUnset();
 

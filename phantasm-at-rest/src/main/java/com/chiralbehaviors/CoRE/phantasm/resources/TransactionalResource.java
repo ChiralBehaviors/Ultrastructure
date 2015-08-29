@@ -100,6 +100,10 @@ public class TransactionalResource {
         EntityManager em = model.getEntityManager();
         em.getTransaction()
           .begin();
+        if (principal == null) {
+            principal = new AuthorizedPrincipal(model.getKernel()
+                                                     .getUnauthenticatedAgency());
+        }
         try {
             return model.executeAs(principal, () -> {
                 try {
@@ -128,6 +132,10 @@ public class TransactionalResource {
           .begin();
         em.getTransaction()
           .setRollbackOnly();
+        if (principal == null) {
+            principal = new AuthorizedPrincipal(model.getKernel()
+                                                     .getUnauthenticatedAgency());
+        }
         try {
             return model.executeAs(principal, () -> {
                 try {

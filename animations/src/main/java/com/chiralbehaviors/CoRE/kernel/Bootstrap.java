@@ -451,6 +451,8 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("NotApplicableAgency", find(WellKnownAgency.NOT_APPLICABLE),
                  core, kernelWorkspace);
+        populate("UnauthenticatedAgency", find(WellKnownAgency.UNAUTHENTICATED),
+                 core, kernelWorkspace);
     }
 
     private void populateAttributes(Agency core, Product kernelWorkspace) {

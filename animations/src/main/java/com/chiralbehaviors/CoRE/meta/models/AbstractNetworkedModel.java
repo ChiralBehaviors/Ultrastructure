@@ -1249,7 +1249,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public void initialize(RuleForm instance,
                            NetworkAuthorization<RuleForm> facet,
                            Agency principal) {
-        // TODO Auto-generated method stub
+        initialize(instance, new Aspect<RuleForm>(facet.getClassifier(),
+                                                  facet.getClassification()));
 
     }
 

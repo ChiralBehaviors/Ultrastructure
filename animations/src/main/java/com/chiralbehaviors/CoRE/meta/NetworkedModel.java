@@ -584,10 +584,11 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Propagate the network inferences based on the tracked additions,
      * deletions and modifications
+     * @param initial TODO
      *
      * @throws SQLException
      */
-    void propagate();
+    void propagate(boolean initial);
 
     /**
      * Sets a value for an attribute after validating it first

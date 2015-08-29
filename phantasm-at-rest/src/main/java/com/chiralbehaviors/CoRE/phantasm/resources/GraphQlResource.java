@@ -176,9 +176,11 @@ public class GraphQlResource extends TransactionalResource {
             UUID uuid = Workspace.uuidOf(workspace);
             GraphQLSchema schema = cache.get(uuid);
             if (schema == null) {
-                WorkspaceScope scoped = model.getWorkspaceModel()
-                                             .getScoped(uuid);
-                if (scoped == null) {
+                WorkspaceScope scoped;
+                try {
+                    scoped = model.getWorkspaceModel()
+                                  .getScoped(uuid);
+                } catch (IllegalArgumentException e) {
                     result.put("errors",
                                String.format("Workspace %s does not exist",
                                              workspace));

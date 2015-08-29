@@ -1431,7 +1431,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     private void createCurrentPassRules() {
-        em.createNativeQuery("CREATE TEMPORARY TABLE current_pass_rules ("
+        em.createNativeQuery("CREATE TEMPORARY TABLE IF NOT EXISTS current_pass_rules ("
                              + "id uuid NOT NULL," + "parent uuid NOT NULL,"
                              + "relationship uuid NOT NULL,"
                              + "child uuid NOT NULL,"
@@ -1442,19 +1442,19 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     private void createDeductionTemporaryTables() {
-        em.createNativeQuery("DROP TABLE IF EXISTS last_pass_rules")
-          .executeUpdate();
-        em.createNativeQuery("DROP TABLE IF EXISTS current_pass_rules")
-          .executeUpdate();
-        em.createNativeQuery("DROP TABLE IF EXISTS working_memory")
-          .executeUpdate();
         createWorkingMemory();
         createCurrentPassRules();
         createLastPassRules();
+        em.createNativeQuery("TRUNCATE working_memory")
+          .executeUpdate();
+        em.createNativeQuery("TRUNCATE current_pass_rules")
+          .executeUpdate();
+        em.createNativeQuery("TRUNCATE last_pass_rules")
+          .executeUpdate();
     }
 
     private void createLastPassRules() {
-        em.createNativeQuery("CREATE TEMPORARY TABLE last_pass_rules ("
+        em.createNativeQuery("CREATE TEMPORARY TABLE IF NOT EXISTS last_pass_rules ("
                              + "id uuid NOT NULL," + "parent uuid NOT NULL,"
                              + "relationship uuid NOT NULL,"
                              + "child uuid NOT NULL,"
@@ -1465,7 +1465,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     private void createWorkingMemory() {
-        em.createNativeQuery("CREATE TEMPORARY TABLE working_memory("
+        em.createNativeQuery("CREATE TEMPORARY TABLE IF NOT EXISTS working_memory("
                              + "parent uuid NOT NULL,"
                              + "relationship uuid NOT NULL,"
                              + "child uuid NOT NULL,"

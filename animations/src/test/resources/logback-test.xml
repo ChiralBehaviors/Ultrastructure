@@ -10,7 +10,7 @@
         <level value="INFO" />
     </logger>
     <logger name="org.hibernate">
-        <level value="INFO" />
+        <level value="ERROR" />
     </logger>
     <logger name="org.hibernate.SQL">
         <level value="ERROR" />
@@ -19,10 +19,10 @@
         <level value="ERROR" />
     </logger>
     <logger name="org.hibernate.cache">
-        <level value="INFO" />
+        <level value="ERROR" />
     </logger>
     <root>
-        <level value="INFO" />
+        <level value="ERROR" />
         <appender-ref ref="C" />
     </root>
 

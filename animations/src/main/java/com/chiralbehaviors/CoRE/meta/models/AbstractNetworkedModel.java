@@ -1279,8 +1279,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public void propagate() {
-        createDeductionTemporaryTables();
+    public void propagate(boolean initial) {
+        createDeductionTemporaryTables(initial);
         boolean firstPass = true;
         do {
             if (infer(firstPass) == 0) {
@@ -1441,10 +1441,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
           .executeUpdate();
     }
 
-    private void createDeductionTemporaryTables() {
-        createWorkingMemory();
-        createCurrentPassRules();
-        createLastPassRules();
+    private void createDeductionTemporaryTables(boolean initial) {
+        if (initial) {
+            createWorkingMemory();
+            createCurrentPassRules();
+            createLastPassRules();
+        }
         em.createNativeQuery("TRUNCATE working_memory")
           .executeUpdate();
         em.createNativeQuery("TRUNCATE current_pass_rules")

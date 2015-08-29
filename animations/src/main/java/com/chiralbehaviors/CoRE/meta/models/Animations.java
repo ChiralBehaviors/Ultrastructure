@@ -260,7 +260,8 @@ public class Animations implements Triggers {
     public void flush() {
         em.flush();
         try {
-            model.getJobModel().validateStateGraph(modifiedServices);
+            model.getJobModel()
+                 .validateStateGraph(modifiedServices);
         } catch (SQLException e) {
             throw new TriggerException("StatusCodeSequencing validation failed",
                                        e);
@@ -298,7 +299,8 @@ public class Animations implements Triggers {
     }
 
     public void inferNetworks(ExistentialRuleform<?, ?> ruleform) {
-        switch (ruleform.getClass().getSimpleName()) {
+        switch (ruleform.getClass()
+                        .getSimpleName()) {
             case "Agency":
                 inferAgencyNetwork = true;
                 return;
@@ -482,34 +484,51 @@ public class Animations implements Triggers {
     private void process(Job j) {
         JobModel jobModel = model.getJobModel();
         jobModel.generateImplicitJobsForExplicitJobs(j,
-                                                     model.getCurrentPrincipal().getPrincipal());
+                                                     model.getCurrentPrincipal()
+                                                          .getPrincipal());
         jobModel.processJobSequencing(j);
     }
 
     private void propagate() {
+        boolean initial = true;
         if (inferAgencyNetwork) {
-            model.getAgencyModel().propagate();
+            model.getAgencyModel()
+                 .propagate(initial);
+            initial = false;
         }
         if (inferAttributeNetwork) {
-            model.getAttributeModel().propagate();
+            model.getAttributeModel()
+                 .propagate(initial);
+            initial = false;
         }
         if (inferIntervalNetwork) {
-            model.getIntervalModel().propagate();
+            model.getIntervalModel()
+                 .propagate(initial);
+            initial = false;
         }
         if (inferLocationNetwork) {
-            model.getLocationModel().propagate();
+            model.getLocationModel()
+                 .propagate(initial);
+            initial = false;
         }
         if (inferProductNetwork) {
-            model.getProductModel().propagate();
+            model.getProductModel()
+                 .propagate(initial);
+            initial = false;
         }
         if (inferRelationshipNetwork) {
-            model.getRelationshipModel().propagate();
+            model.getRelationshipModel()
+                 .propagate(initial);
+            initial = false;
         }
         if (inferStatusCodeNetwork) {
-            model.getStatusCodeModel().propagate();
+            model.getStatusCodeModel()
+                 .propagate(initial);
+            initial = false;
         }
         if (inferUnitNetwork) {
-            model.getUnitModel().propagate();
+            model.getUnitModel()
+                 .propagate(initial);
         }
     }
 
@@ -540,8 +559,9 @@ public class Animations implements Triggers {
         for (ProductChildSequencingAuthorization pcsa : childSequences) {
 
             try {
-                model.getJobModel().ensureValidServiceAndStatus(pcsa.getNextChild(),
-                                                                pcsa.getNextChildStatus());
+                model.getJobModel()
+                     .ensureValidServiceAndStatus(pcsa.getNextChild(),
+                                                  pcsa.getNextChildStatus());
             } catch (SQLException e) {
                 throw new TriggerException(String.format("Invalid sequence: %s",
                                                          pcsa),
@@ -553,19 +573,22 @@ public class Animations implements Triggers {
     private void validateEnums() {
         for (AttributeValue<?> value : attributeValues) {
             Attribute attribute = value.getAttribute();
-            Attribute validatingAttribute = model.getAttributeModel().getSingleChild(attribute,
-                                                                                     model.getKernel().getIsValidatedBy());
+            Attribute validatingAttribute = model.getAttributeModel()
+                                                 .getSingleChild(attribute,
+                                                                 model.getKernel()
+                                                                      .getIsValidatedBy());
             if (validatingAttribute != null) {
-                List<AttributeMetaAttribute> attrs = model.getAttributeModel().getAttributeValues(validatingAttribute,
-                                                                                                  attribute);
+                List<AttributeMetaAttribute> attrs = model.getAttributeModel()
+                                                          .getAttributeValues(validatingAttribute,
+                                                                              attribute);
                 if (attrs == null || attrs.size() == 0) {
                     throw new IllegalArgumentException("No valid values for attribute "
                                                        + attribute.getName());
                 }
                 boolean valid = false;
                 for (AttributeMetaAttribute ama : attrs) {
-                    if (ama.getTextValue() != null
-                        && ama.getTextValue().equals(value.getTextValue())) {
+                    if (ama.getTextValue() != null && ama.getTextValue()
+                                                         .equals(value.getTextValue())) {
                         valid = true;
                         break;
                     }
@@ -582,8 +605,9 @@ public class Animations implements Triggers {
     private void validateParentSequencing() {
         for (ProductParentSequencingAuthorization ppsa : parentSequences) {
             try {
-                model.getJobModel().ensureValidServiceAndStatus(ppsa.getParent(),
-                                                                ppsa.getParentStatusToSet());
+                model.getJobModel()
+                     .ensureValidServiceAndStatus(ppsa.getParent(),
+                                                  ppsa.getParentStatusToSet());
             } catch (SQLException e) {
                 throw new TriggerException("Invalid sequence", e);
             }
@@ -593,8 +617,9 @@ public class Animations implements Triggers {
     private void validateSelfSequencing() {
         for (ProductSelfSequencingAuthorization pssa : selfSequences) {
             try {
-                model.getJobModel().ensureValidServiceAndStatus(pssa.getService(),
-                                                                pssa.getStatusToSet());
+                model.getJobModel()
+                     .ensureValidServiceAndStatus(pssa.getService(),
+                                                  pssa.getStatusToSet());
             } catch (SQLException e) {
                 throw new TriggerException("Invalid sequence", e);
             }
@@ -611,8 +636,9 @@ public class Animations implements Triggers {
     private void validateSiblingSequencing() {
         for (ProductSiblingSequencingAuthorization pssa : siblingSequences) {
             try {
-                model.getJobModel().ensureValidServiceAndStatus(pssa.getNextSibling(),
-                                                                pssa.getNextSiblingStatus());
+                model.getJobModel()
+                     .ensureValidServiceAndStatus(pssa.getNextSibling(),
+                                                  pssa.getNextSiblingStatus());
             } catch (SQLException e) {
                 throw new TriggerException("Invalid sequence", e);
             }

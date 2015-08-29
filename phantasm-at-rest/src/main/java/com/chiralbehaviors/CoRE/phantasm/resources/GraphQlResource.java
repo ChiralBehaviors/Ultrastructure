@@ -56,12 +56,14 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLSchema;
+import io.dropwizard.auth.Auth;
 
 /**
  * A resource providing GraphQL queries on schemas generated from workspaces
@@ -141,8 +143,8 @@ public class GraphQlResource extends TransactionalResource {
     @Timed
     @GET
     @Path("workspace")
-    public List<Map<String, Object>> getWorkspaces() {
-        return readOnly(readOnlyModel -> {
+    public List<Map<String, Object>> getWorkspaces(@Auth AuthorizedPrincipal principal) {
+        return readOnly(principal, readOnlyModel -> {
             Kernel kernel = readOnlyModel.getKernel();
             Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
                                                   kernel.getWorkspace());
@@ -165,13 +167,14 @@ public class GraphQlResource extends TransactionalResource {
     @Timed
     @Path("workspace/{workspace}")
     @POST
-    public Map<String, Object> query(@PathParam("workspace") String workspace,
+    public Map<String, Object> query(@Auth AuthorizedPrincipal principal,
+                                     @PathParam("workspace") String workspace,
                                      QueryRequest request) {
         if (request == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        return perform(model -> {
+        return perform(principal, model -> {
             Map<String, Object> result = new HashMap<>();
             UUID uuid = Workspace.uuidOf(workspace);
             GraphQLSchema schema = cache.get(uuid);

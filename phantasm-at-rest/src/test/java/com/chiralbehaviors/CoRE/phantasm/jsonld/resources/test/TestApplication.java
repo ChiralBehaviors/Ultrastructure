@@ -24,15 +24,19 @@ import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.Application;
+import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
@@ -85,6 +89,10 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         JpaConfiguration jpaConfig = configuration.getCrudServiceConfiguration();
 
         String unit = jpaConfig.getPersistenceUnit();
+        environment.jersey()
+                   .register(AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new AgencyAuthenticator(emf),
+                                                                                          "CoRE",
+                                                                                          AuthorizedPrincipal.class)));
         Map<String, String> properties = jpaConfig.getProperties();
         emf = Persistence.createEntityManagerFactory(unit, properties);
         environment.jersey()

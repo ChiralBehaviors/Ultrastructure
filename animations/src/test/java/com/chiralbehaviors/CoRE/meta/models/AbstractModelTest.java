@@ -21,6 +21,10 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,12 +33,14 @@ import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.mockito.AdditionalAnswers;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
@@ -58,14 +64,17 @@ public class AbstractModelTest {
     @AfterClass
     public static void afterClass() {
         if (em != null) {
-            if (em.getTransaction().isActive()) {
+            if (em.getTransaction()
+                  .isActive()) {
                 try {
-                    em.getTransaction().rollback();
+                    em.getTransaction()
+                      .rollback();
                     em.close();
                 } catch (Throwable e) {
-                    LoggerFactory.getLogger(AbstractModelTest.class).warn(String.format("Had a bit of trouble cleaning up after %s",
-                                                                                        e.getMessage()),
-                                                                          e);
+                    LoggerFactory.getLogger(AbstractModelTest.class)
+                                 .warn(String.format("Had a bit of trouble cleaning up after %s",
+                                                     e.getMessage()),
+                                       e);
                 }
             }
         }
@@ -105,18 +114,34 @@ public class AbstractModelTest {
         return em;
     }
 
+    public static EntityManagerFactory mockedEmf() {
+        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
+        EntityManager mockedEm = mock(EntityManager.class,
+                                      AdditionalAnswers.delegatesTo(em));
+        EntityTransaction mockedTxn = mock(EntityTransaction.class);
+        doReturn(mockedTxn).when(mockedEm)
+                           .getTransaction();
+        doNothing().when(mockedEm)
+                   .close();
+        when(mockedEmf.createEntityManager()).thenReturn(mockedEm);
+        return mockedEmf;
+    }
+
     public AbstractModelTest() {
         super();
     }
 
     @After
     public void after() {
-        if (em.getTransaction().isActive()) {
+        if (em.getTransaction()
+              .isActive()) {
             try {
-                em.getTransaction().rollback();
+                em.getTransaction()
+                  .rollback();
             } catch (PersistenceException e) {
-                LoggerFactory.getLogger(AbstractModelTest.class).warn(String.format("Bit of a problem cleaning up"),
-                                                                      e);
+                LoggerFactory.getLogger(AbstractModelTest.class)
+                             .warn(String.format("Bit of a problem cleaning up"),
+                                   e);
             }
         }
     }

@@ -51,7 +51,10 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
+
+import io.dropwizard.auth.Auth;
 
 /**
  * @author hhildebrand
@@ -149,8 +152,9 @@ public class WorkspaceResource extends TransactionalResource {
     @Timed
     @Path("{workspace}/key")
     @GET
-    public Map<String, Object> getKeys(@PathParam("workspace") UUID workspace) {
-        return readOnly(readOnlyModel -> {
+    public Map<String, Object> getKeys(@Auth(required = false) AuthorizedPrincipal principal,
+                                       @PathParam("workspace") UUID workspace) {
+        return readOnly(principal, readOnlyModel -> {
             WorkspaceScope scope;
             try {
                 scope = readOnlyModel.getWorkspaceModel()
@@ -182,8 +186,9 @@ public class WorkspaceResource extends TransactionalResource {
     @Timed
     @Path("{workspace}")
     @GET
-    public WorkspaceSnapshot getWorkspace(@PathParam("workspace") UUID wsp) {
-        return readOnly(readOnlyModel -> {
+    public WorkspaceSnapshot getWorkspace(@Auth(required = false) AuthorizedPrincipal principal,
+                                          @PathParam("workspace") UUID wsp) {
+        return readOnly(principal, readOnlyModel -> {
             EntityManager em = readOnlyModel.getEntityManager();
             Product workspace = em.find(Product.class, wsp);
             if (workspace == null) {
@@ -198,8 +203,8 @@ public class WorkspaceResource extends TransactionalResource {
     @Timed
     @GET
     @Path("/")
-    public Map<String, Object> getWorkspaces() {
-        return readOnly(readOnlyModel -> {
+    public Map<String, Object> getWorkspaces(@Auth(required = false) AuthorizedPrincipal principal) {
+        return readOnly(principal, readOnlyModel -> {
             Kernel kernel = readOnlyModel.getKernel();
             Aspect<Product> aspect = new Aspect<>(kernel.getIsA(),
                                                   kernel.getWorkspace());
@@ -232,9 +237,10 @@ public class WorkspaceResource extends TransactionalResource {
     @Timed
     @Path("{workspace}/key/{member}")
     @GET
-    public Map<String, Object> lookup(@PathParam("workspace") UUID workspace,
+    public Map<String, Object> lookup(@Auth(required = false) AuthorizedPrincipal principal,
+                                      @PathParam("workspace") UUID workspace,
                                       @PathParam("member") String member) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             WorkspaceScope scope;
             try {
                 scope = readOnlyModel.getWorkspaceModel()
@@ -259,10 +265,11 @@ public class WorkspaceResource extends TransactionalResource {
     @Timed
     @Path("{workspace}/key/{namespace}/{member}")
     @GET
-    public Map<String, Object> lookup(@PathParam("workspace") UUID workspace,
+    public Map<String, Object> lookup(@Auth(required = false) AuthorizedPrincipal principal,
+                                      @PathParam("workspace") UUID workspace,
                                       @PathParam("namespace") String namespace,
                                       @PathParam("member") String member) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             WorkspaceScope scope;
             try {
                 scope = readOnlyModel.getWorkspaceModel()

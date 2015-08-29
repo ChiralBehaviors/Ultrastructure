@@ -16,7 +16,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -30,14 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.utils.Util;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 
 /**
  * @author hhildebrand
@@ -96,32 +94,34 @@ public class TransactionalResource {
         return new ModelImpl(emf);
     }
 
-    protected UUID insert(final Ruleform ruleform) {
-        return perform((Model model) -> Util.smartMerge(model.getEntityManager(),
-                                                        ruleform,
-                                                        new HashMap<>())
-                                            .getId());
-    }
-
-    protected <T> T perform(Function<Model, T> txn) throws WebApplicationException {
+    protected <T> T perform(AuthorizedPrincipal principal,
+                            Function<Model, T> txn) throws WebApplicationException {
         Model model = new ModelImpl(emf);
         EntityManager em = model.getEntityManager();
         em.getTransaction()
           .begin();
         try {
-            T value = txn.apply(model);
-            em.getTransaction()
-              .commit();
-            return value;
-        } catch (Throwable e) {
+            return model.executeAs(principal, () -> {
+                try {
+                    T value = txn.apply(model);
+                    em.getTransaction()
+                      .commit();
+                    return value;
+                } catch (Throwable e) {
+                    log.error("error applying transaction", e);
+                    throw new WebApplicationException(e, 500);
+                } finally {
+                    em.close();
+                }
+            });
+        } catch (Exception e) {
             log.error("error applying transaction", e);
             throw new WebApplicationException(e, 500);
-        } finally {
-            em.close();
         }
     }
 
-    protected <T> T readOnly(Function<Model, T> txn) throws WebApplicationException {
+    protected <T> T readOnly(AuthorizedPrincipal principal,
+                             Function<Model, T> txn) throws WebApplicationException {
         Model model = new ModelImpl(emf);
         EntityManager em = model.getEntityManager();
         em.getTransaction()
@@ -129,13 +129,20 @@ public class TransactionalResource {
         em.getTransaction()
           .setRollbackOnly();
         try {
-            T value = txn.apply(model);
-            return value;
-        } catch (Throwable e) {
+            return model.executeAs(principal, () -> {
+                try {
+                    T value = txn.apply(model);
+                    return value;
+                } catch (Throwable e) {
+                    log.error("error applying transaction", e);
+                    throw new WebApplicationException(e, 500);
+                } finally {
+                    em.close();
+                }
+            });
+        } catch (Exception e) {
             log.error("error applying transaction", e);
             throw new WebApplicationException(e, 500);
-        } finally {
-            em.close();
         }
     }
 }

@@ -25,22 +25,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
-import org.mockito.AdditionalAnswers;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
@@ -111,7 +104,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                                                 variables);
         Map<String, Object> result;
         try {
-            result = resource.query(TEST_SCENARIO_URI, request);
+            result = resource.query(null, TEST_SCENARIO_URI, request);
         } catch (WebApplicationException e) {
             fail(e.getResponse()
                   .getEntity()
@@ -202,7 +195,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                                                 variables);
         Map<String, Object> result;
         try {
-            result = resource.query(TEST_SCENARIO_URI, request);
+            result = resource.query(null, TEST_SCENARIO_URI, request);
         } catch (WebApplicationException e) {
             fail(e.getResponse()
                   .toString());
@@ -263,7 +256,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                                                 variables);
         Map<String, Object> result;
         try {
-            result = resource.query(TEST_SCENARIO_URI, request);
+            result = resource.query(null, TEST_SCENARIO_URI, request);
         } catch (WebApplicationException e) {
             fail(e.getResponse()
                   .toString());
@@ -383,18 +376,5 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                            .toString(),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
-    }
-
-    private EntityManagerFactory mockedEmf() {
-        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
-        EntityManager mockedEm = mock(EntityManager.class,
-                                      AdditionalAnswers.delegatesTo(em));
-        EntityTransaction mockedTxn = mock(EntityTransaction.class);
-        doReturn(mockedTxn).when(mockedEm)
-                           .getTransaction();
-        doNothing().when(mockedEm)
-                   .close();
-        when(mockedEmf.createEntityManager()).thenReturn(mockedEm);
-        return mockedEmf;
     }
 }

@@ -41,7 +41,10 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
+
+import io.dropwizard.auth.Auth;
 
 /**
  * @author hhildebrand
@@ -61,11 +64,12 @@ public class WorkspaceMediatedResource extends TransactionalResource {
     @Timed
     @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}/instances")
     @GET
-    public Response getAllInstances(@PathParam("workspace") String workspace,
+    public Response getAllInstances(@Auth(required = false) AuthorizedPrincipal principal,
+                                    @PathParam("workspace") String workspace,
                                     @PathParam("ruleform-type") String ruleformType,
                                     @PathParam("classifier") String classifier,
                                     @PathParam("classification") String classification) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             UUID workspaceUUID;
             workspaceUUID = WorkspaceResource.toUUID(workspace);
             WorkspaceScope scope;
@@ -92,11 +96,12 @@ public class WorkspaceMediatedResource extends TransactionalResource {
     @Timed
     @Path("{workspace}/facet/context/{ruleform-type}/{classifier}/{classification}")
     @GET
-    public Response getContext(@PathParam("workspace") String workspace,
+    public Response getContext(@Auth(required = false) AuthorizedPrincipal principal,
+                               @PathParam("workspace") String workspace,
                                @PathParam("ruleform-type") String ruleformType,
                                @PathParam("classifier") String classifier,
                                @PathParam("classification") String classification) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             UUID workspaceUUID;
             workspaceUUID = WorkspaceResource.toUUID(workspace);
             WorkspaceScope scope;
@@ -123,13 +128,14 @@ public class WorkspaceMediatedResource extends TransactionalResource {
     @Timed
     @Path("{workspace}/facet/{ruleform-type}/{classifier}/{classification}/{instance}")
     @GET
-    public Response getInstance(@PathParam("workspace") String workspace,
+    public Response getInstance(@Auth(required = false) AuthorizedPrincipal principal,
+                                @PathParam("workspace") String workspace,
                                 @PathParam("ruleform-type") String ruleformType,
                                 @PathParam("classifier") String classifier,
                                 @PathParam("classification") String classification,
                                 @PathParam("instance") String instance,
                                 @QueryParam("select") List<String> selection) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             UUID workspaceUUID;
             workspaceUUID = WorkspaceResource.toUUID(workspace);
             WorkspaceScope scope;
@@ -157,12 +163,13 @@ public class WorkspaceMediatedResource extends TransactionalResource {
     @Timed
     @Path("{workspace}/facet/term/{ruleform-type}/{classifier}/{classification}/{term}")
     @GET
-    public Response getTerm(@PathParam("workspace") String workspace,
+    public Response getTerm(@Auth(required = false) AuthorizedPrincipal principal,
+                            @PathParam("workspace") String workspace,
                             @PathParam("ruleform-type") String ruleformType,
                             @PathParam("classifier") String classifier,
                             @PathParam("classification") String classification,
                             @PathParam("term") String term) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             UUID workspaceUUID;
             workspaceUUID = WorkspaceResource.toUUID(workspace);
             WorkspaceScope scope;

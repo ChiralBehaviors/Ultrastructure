@@ -78,7 +78,7 @@ public class LoginResource {
             attributeValue.setTextValue(username);
             List<Agency> agencies = model.find(attributeValue);
             if (agencies.size() > 1) {
-                log.error(String.format("Multiple agencys with username %s",
+                log.error(String.format("Multiple agencies with username %s",
                                         username));
                 throw new WebApplicationException(Status.UNAUTHORIZED);
             }

@@ -37,10 +37,12 @@
 
     <properties>
         <db.context>local</db.context>
+
         <dropwizard.version>0.8.2</dropwizard.version>
         <postgresql.driver.version>9.4-1201-jdbc41</postgresql.driver.version>
         <jackson.version>2.5.1</jackson.version>
         <hibernate.version>4.3.10.Final</hibernate.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <dba.db.database>postgres</dba.db.database>
@@ -496,11 +498,6 @@
                     <version>${project.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>mixin-generator</artifactId>
-                    <version>${project.version}</version>
-                </plugin>
-                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>1.8</version>
@@ -627,19 +624,6 @@
                     <configuration>
                         <lifecycleMappingMetadata>
                             <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>com.chiralbehaviors.CoRE</groupId>
-                                        <artifactId>mixin-generator</artifactId>
-                                        <versionRange>[2.0.0-SNAPSHOT,)</versionRange>
-                                        <goals>
-                                            <goal>generate</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>com.chiralbehaviors.CoRE</groupId>

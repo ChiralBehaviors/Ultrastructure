@@ -41,7 +41,7 @@ import io.dropwizard.auth.Authenticator;
  * @author hhildebrand
  *
  */
-public class AgencyOAuth2Authenticator
+public class AgencyBearerTokenAuthenticator
         implements Authenticator<String, AuthorizedPrincipal> {
     private final static Logger log = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
@@ -50,7 +50,7 @@ public class AgencyOAuth2Authenticator
     /**
      * @param emf
      */
-    public AgencyOAuth2Authenticator(EntityManagerFactory emf) {
+    public AgencyBearerTokenAuthenticator(EntityManagerFactory emf) {
         this.emf = emf;
     }
 

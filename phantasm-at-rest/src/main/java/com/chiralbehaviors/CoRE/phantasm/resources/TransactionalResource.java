@@ -103,6 +103,8 @@ public class TransactionalResource {
         if (principal == null) {
             principal = new AuthorizedPrincipal(model.getKernel()
                                                      .getUnauthenticatedAgency());
+        } else {
+            principal = em.merge(principal);
         }
         try {
             return model.executeAs(principal, () -> {
@@ -135,6 +137,8 @@ public class TransactionalResource {
         if (principal == null) {
             principal = new AuthorizedPrincipal(model.getKernel()
                                                      .getUnauthenticatedAgency());
+        } else {
+            principal = principal.merge(em);
         }
         try {
             return model.executeAs(principal, () -> {

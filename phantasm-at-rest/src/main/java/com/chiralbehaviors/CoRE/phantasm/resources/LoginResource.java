@@ -49,13 +49,13 @@ import com.chiralbehaviors.CoRE.phantasm.authentication.CoreUser;
  */
 @Path("/oauth2/token")
 @Produces(MediaType.APPLICATION_JSON)
-public class OAuth2Resource {
-    private static final Logger        log = LoggerFactory.getLogger(OAuth2Resource.class);
+public class LoginResource {
+    private static final Logger        log = LoggerFactory.getLogger(LoginResource.class);
     private final List<String>         allowedGrantTypes;
     private final EntityManagerFactory emf;
 
-    public OAuth2Resource(List<String> allowedGrantTypes,
-                          EntityManagerFactory emf) {
+    public LoginResource(List<String> allowedGrantTypes,
+                         EntityManagerFactory emf) {
         this.allowedGrantTypes = allowedGrantTypes;
         this.emf = emf;
     }
@@ -66,7 +66,6 @@ public class OAuth2Resource {
                                @FormParam("username") String username,
                                @FormParam("password") String password,
                                @FormParam("client_id") String clientId) {
-        // Check if the grant type is allowed
         if (!allowedGrantTypes.contains(grantType)) {
             Response response = Response.status(Status.METHOD_NOT_ALLOWED)
                                         .build();
@@ -74,7 +73,6 @@ public class OAuth2Resource {
         }
         Model model = new ModelImpl(emf);
         try {
-            // Tr
             AgencyAttribute attributeValue = new AgencyAttribute(model.getKernel()
                                                                       .getLogin());
             attributeValue.setTextValue(username);

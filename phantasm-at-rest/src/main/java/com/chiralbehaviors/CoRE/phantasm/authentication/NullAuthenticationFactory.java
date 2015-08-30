@@ -20,11 +20,10 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.google.common.base.Optional;
 
 import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -36,18 +35,8 @@ import io.dropwizard.auth.basic.BasicCredentials;
 public final class NullAuthenticationFactory
         extends AuthFactory<BasicCredentials, AuthorizedPrincipal> {
 
-    private final AuthorizedPrincipal unauthenticated;
-
-    public NullAuthenticationFactory(EntityManagerFactory emf) {
-        super(new AgencyBasicAuthenticator(emf));
-        ModelImpl model = new ModelImpl(emf);
-        try {
-            unauthenticated = new AuthorizedPrincipal(model.getKernel()
-                                                           .getUnauthenticatedAgency());
-        } finally {
-            model.getEntityManager()
-                 .close();
-        }
+    public NullAuthenticationFactory() {
+        super(cred -> Optional.absent());
     }
 
     @Override
@@ -56,7 +45,7 @@ public final class NullAuthenticationFactory
 
     @Override
     public AuthorizedPrincipal provide() {
-        return unauthenticated;
+        return null;
     }
 
     @Override

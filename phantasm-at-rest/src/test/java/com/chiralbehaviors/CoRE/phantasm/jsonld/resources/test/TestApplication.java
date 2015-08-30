@@ -90,7 +90,7 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         Map<String, String> properties = jpaConfig.getProperties();
         emf = Persistence.createEntityManagerFactory(unit, properties);
         environment.jersey()
-                   .register(AuthFactory.binder(new NullAuthenticationFactory(emf)));
+                   .register(AuthFactory.binder(new NullAuthenticationFactory()));
         environment.jersey()
                    .register(new FacetResource(emf));
         environment.jersey()

@@ -40,8 +40,14 @@ public final class NullAuthenticationFactory
 
     public NullAuthenticationFactory(EntityManagerFactory emf) {
         super(new AgencyBasicAuthenticator(emf));
-        unauthenticated = new AuthorizedPrincipal(new ModelImpl(emf).getKernel()
-                                                                    .getUnauthenticatedAgency());
+        ModelImpl model = new ModelImpl(emf);
+        try {
+            unauthenticated = new AuthorizedPrincipal(model.getKernel()
+                                                           .getUnauthenticatedAgency());
+        } finally {
+            model.getEntityManager()
+                 .close();
+        }
     }
 
     @Override

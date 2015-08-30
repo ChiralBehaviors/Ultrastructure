@@ -80,12 +80,7 @@
     </modules>
 
     <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>opensymphony</groupId>
-                <artifactId>oscache</artifactId>
-                <version>2.4.1</version>
-            </dependency>
+        <dependencies>  
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>phantasm-at-rest</artifactId>
@@ -120,6 +115,11 @@
                 <groupId>com.github.jsonld-java</groupId>
                 <artifactId>jsonld-java</artifactId>
                 <version>0.5.1</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-client</artifactId>
+                <version>${dropwizard.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.dropwizard</groupId>
@@ -373,6 +373,11 @@
                 <groupId>javax.jms</groupId>
                 <artifactId>jms</artifactId>
                 <version>1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

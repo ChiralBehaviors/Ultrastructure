@@ -104,7 +104,7 @@ public class TransactionalResource {
             principal = new AuthorizedPrincipal(model.getKernel()
                                                      .getUnauthenticatedAgency());
         } else {
-            principal = em.merge(principal);
+            principal = principal.merge(em);
         }
         try {
             return model.executeAs(principal, () -> {

@@ -75,7 +75,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private static final String INSTANCES_OF_QUERY = "InstancesOf%s";
     private static final String NAME               = "name";
     private static final String REMOVE_MUTATION    = "Remove%s";
-    private static final String REMOVE_TEMPLATE    = "add%s";
+    private static final String REMOVE_TEMPLATE    = "remove%s";
     private static final String SET_DESCRIPTION;
     private static final String SET_NAME;
     private static final String SET_TEMPLATE       = "set%s";
@@ -459,7 +459,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(SET_DESCRIPTION,
                            (crud,
-                            update) -> crud.setName((RuleForm) update.get(AT_RULEFORM),
+                            update) -> crud.setDescription((RuleForm) update.get(AT_RULEFORM),
                                                     (String) update.get(SET_DESCRIPTION)));
     }
 

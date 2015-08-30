@@ -525,7 +525,34 @@ public interface WellKnownObject {
                 public String wkoName() {
                     return WellKnownObject.JSONLD_TYPE;
                 }
+            },
+            ACCESS_TOKEN() {
 
+                @Override
+                public String description() {
+                    return "An attribute that represents access tokens";
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
+                 */
+                @Override
+                public ValueType valueType() {
+                    return ValueType.TIMESTAMP;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "Access Token";
+                }
+
+                @Override
+                public boolean indexed() {
+                    return true;
+                }
             };
 
         /* (non-Javadoc)
@@ -545,6 +572,14 @@ public interface WellKnownObject {
         }
 
         abstract public ValueType valueType();
+
+        public boolean indexed() {
+            return false;
+        }
+
+        public boolean keyed() {
+            return false;
+        }
     }
 
     public static enum WellKnownInterval

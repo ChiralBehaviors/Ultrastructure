@@ -24,7 +24,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.annotations.Facet;
 import com.chiralbehaviors.CoRE.annotations.Key;
 import com.chiralbehaviors.CoRE.annotations.State;
-import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.bcrypt.BCrypt;
 
 /**
@@ -32,7 +32,7 @@ import com.chiralbehaviors.bcrypt.BCrypt;
  *
  */
 @State(facets = { @Facet(classifier = @Key(name = "IsA") , classification = @Key(name = "CoreUser") ) }, workspace = "urn:uuid:00000000-0000-0004-0000-000000000003")
-public interface CoreUser extends Phantasm<Agency> {
+public interface CoreUser extends ScopedPhantasm<Agency> {
 
     default boolean authenticate(String password) {
         return BCrypt.checkpw(password, getPasswordHash());
@@ -44,7 +44,7 @@ public interface CoreUser extends Phantasm<Agency> {
     @Key(name = "PasswordRounds")
     int getPasswordRounds();
 
-    @Key(name = "LoginA")
+    @Key(name = "Login")
     String getUserName();
 
     default void resetPassword(String newPassword) {

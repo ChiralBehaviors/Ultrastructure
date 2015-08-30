@@ -34,6 +34,8 @@ import com.chiralbehaviors.CoRE.time.Interval;
  *
  */
 public interface Kernel {
+    Attribute getAccessToken();
+
     Agency getAnyAgency();
 
     Attribute getAnyAttribute();

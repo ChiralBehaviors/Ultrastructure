@@ -252,7 +252,8 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                                            .getId()
                                            .toString());
         variables.put("name", "hello");
-        QueryRequest request = new QueryRequest("mutation m ($name: String, $artifact: String) { CreateThing1(state: { setName: $name, setDerivedFrom: $artifact}) { id name } }",
+        variables.put("description", "goodbye");
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
         Map<String, Object> result;
         try {

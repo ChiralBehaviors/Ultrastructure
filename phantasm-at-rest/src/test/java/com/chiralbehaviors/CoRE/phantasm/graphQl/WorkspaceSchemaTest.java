@@ -20,12 +20,14 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphQl;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +39,13 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.ResourcesTest;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 
 import graphql.ExecutionResult;
@@ -149,6 +151,8 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
     public void testMutation() throws Exception {
         em.getTransaction()
           .begin();
+        String[] newAliases = new String[] { "jones", "smith" };
+        String newUri = "new iri";
         WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
@@ -190,8 +194,10 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         variables.put("artifact", artifact2.getRuleform()
                                            .getId()
                                            .toString());
+        variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
-        QueryRequest request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact}) { name } }",
+        variables.put("uri", newUri);
+        QueryRequest request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
                                                 variables);
         Map<String, Object> result;
         try {
@@ -211,8 +217,9 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("UpdateThing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
-
         assertEquals(artifact2, thing1.getDerivedFrom());
+        assertArrayEquals(newAliases, thing1.getAliases());
+        assertEquals(newUri, thing1.getURI());
     }
 
     @Test

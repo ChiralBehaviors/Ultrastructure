@@ -18,14 +18,16 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
+package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -48,11 +50,11 @@ import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test.TestApplication;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
+import com.chiralbehaviors.CoRE.phantasm.resources.test.TestApplication;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -320,6 +322,8 @@ public class ResourcesTest extends AbstractModelTest {
     public void testGraphQlCreateAndMutate() throws Exception {
         em.getTransaction()
           .begin();
+        String[] newAliases = new String[] { "jones", "smith" };
+        String newUri = "new iri";
 
         MavenArtifact artifact1 = model.construct(MavenArtifact.class, "core",
                                                   "core artifact");
@@ -372,18 +376,22 @@ public class ResourcesTest extends AbstractModelTest {
         assertEquals(artifact1, thing1.getDerivedFrom());
 
         variables = new HashMap<>();
-        variables.put("id", thing1Result.get("id"));
+        variables.put("id", thing1.getRuleform()
+                                  .getId()
+                                  .toString());
         variables.put("artifact", artifact2.getRuleform()
                                            .getId()
                                            .toString());
-        request = new QueryRequest("mutation m ($id: String, $artifact: String) { UpdateThing1(state: { id: $id, setDerivedFrom: $artifact}) { id name } }",
+        variables.put("aliases", Arrays.asList(newAliases));
+        variables.put("name", "hello");
+        variables.put("uri", newUri);
+        request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
                                    variables);
-
         response = invocationBuilder.post(Entity.entity(request,
                                                         MediaType.APPLICATION_JSON_TYPE));
         result = response.readEntity(Map.class);
 
-        assertNull((String) result.get("errors"), result.get("errors"));
+        assertNull(result.get("errors"));
         thing1Result = (Map<String, Object>) result.get("UpdateThing1");
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
@@ -392,5 +400,7 @@ public class ResourcesTest extends AbstractModelTest {
                                     UUID.fromString((String) thing1Result.get("id"))));
         assertNotNull(thing1);
         assertEquals(artifact2, thing1.getDerivedFrom());
+        assertArrayEquals(newAliases, thing1.getAliases());
+        assertEquals(newUri, thing1.getURI());
     }
 }

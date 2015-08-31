@@ -28,6 +28,8 @@ import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.bcrypt.BCrypt;
 
 /**
+ * A custom Phantasm for manipulating user accounts.
+ * 
  * @author hhildebrand
  *
  */

@@ -638,7 +638,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * Remove a child from the instance
      * 
      * @param facet
-     *            TODO
      * @param instance
      * @param auth
      * @param child
@@ -708,7 +707,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * Remove the immediate child links from the instance
      * 
      * @param facet
-     *            TODO
      * @param instance
      * @param auth
      * @param children
@@ -838,7 +836,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * children. No inferred links will be explicitly added or deleted.
      * 
      * @param facet
-     *            TODO
      * @param instance
      * @param auth
      * @param children
@@ -875,7 +872,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * Set the xd children of the instance.
      * 
      * @param facet
-     *            TODO
      * @param instance
      * @param auth
      * @param children
@@ -966,7 +962,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * Set the singular child of the instance.
      * 
      * @param facet
-     *            TODO
      * @param instance
      * @param auth
      * @param child
@@ -994,7 +989,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * Set the singular xd child of the instance
      * 
      * @param facet
-     *            TODO
      * @param instance
      * @param auth
      * @param child
@@ -1203,7 +1197,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
     }
 
-    @SuppressWarnings("unused")
     private void setAttributeMap(RuleForm instance,
                                  Attribute authorizedAttribute,
                                  Map<String, Object> values,

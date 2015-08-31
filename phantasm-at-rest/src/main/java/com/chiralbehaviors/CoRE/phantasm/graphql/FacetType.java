@@ -196,7 +196,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                   (RuleForm) update.get(AT_RULEFORM),
                                                                   auth,
                                                                   (Object) update.get(setter)));
-            inputType = new GraphQLList(GraphQLString);
+            inputType = GraphQLString;
         }
         updateTypeBuilder.field(newInputObjectField().type(inputType)
                                                      .name(setter)

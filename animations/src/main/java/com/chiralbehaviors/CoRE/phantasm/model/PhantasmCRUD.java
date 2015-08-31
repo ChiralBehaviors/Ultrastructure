@@ -314,7 +314,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(stateAuth.getNetworkAuthorization()
                                                                                             .getClassification());
         if (!checkREAD(facet, networkedModel)
-            || checkREAD(stateAuth, networkedModel)) {
+            || !checkREAD(stateAuth, networkedModel)) {
             return null;
         }
         Attribute authorizedAttribute = stateAuth.getAuthorizedAttribute();
@@ -798,7 +798,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(stateAuth.getNetworkAuthorization()
                                                                                             .getClassification());
         if (!checkUPDATE(facet, networkedModel)
-            || checkUPDATE(stateAuth, networkedModel)) {
+            || !checkUPDATE(stateAuth, networkedModel)) {
             return instance;
         }
         networkedModel.getAttributeValue(instance,

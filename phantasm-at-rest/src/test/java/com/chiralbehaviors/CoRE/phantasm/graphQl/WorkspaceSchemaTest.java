@@ -151,6 +151,8 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
     public void testMutation() throws Exception {
         em.getTransaction()
           .begin();
+        String[] newAliases = new String[] { "jones", "smith" };
+        String newUri = "new iri";
         WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
@@ -192,10 +194,10 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         variables.put("artifact", artifact2.getRuleform()
                                            .getId()
                                            .toString());
-        String[] newAliases = new String[] { "jones", "smith" };
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
-        QueryRequest request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String, $aliases: [String]) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases}) { name } }",
+        variables.put("uri", newUri);
+        QueryRequest request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
                                                 variables);
         Map<String, Object> result;
         try {
@@ -217,6 +219,7 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         assertEquals(thing1.getName(), thing1Result.get("name"));
         assertEquals(artifact2, thing1.getDerivedFrom());
         assertArrayEquals(newAliases, thing1.getAliases());
+        assertEquals(newUri, thing1.getURI());
     }
 
     @Test

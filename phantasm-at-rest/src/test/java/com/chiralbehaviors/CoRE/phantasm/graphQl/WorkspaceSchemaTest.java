@@ -39,13 +39,13 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.ResourcesTest;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 
 import graphql.ExecutionResult;

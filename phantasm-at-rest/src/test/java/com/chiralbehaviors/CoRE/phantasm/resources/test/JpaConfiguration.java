@@ -13,31 +13,41 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test;
-
-import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.chiralbehaviors.CoRE.phantasm.resources.test;
 
 import io.dropwizard.Configuration;
+
+import java.util.Map;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author hhildebrand
  * 
  */
-public class TestServiceConfiguration extends Configuration {
+public class JpaConfiguration extends Configuration {
     @JsonProperty
-    private Boolean randomPort = false;
+    private boolean             debug = false;
 
-    @NotNull
+    @NotEmpty
     @JsonProperty
-    private JpaConfiguration jpa = new JpaConfiguration();
+    private String              persistenceUnit;
 
-    public JpaConfiguration getCrudServiceConfiguration() {
-        return jpa;
+    @NotEmpty
+    @JsonProperty
+    private Map<String, String> properties;
+
+    public String getPersistenceUnit() {
+        return persistenceUnit;
     }
 
-    public Boolean isRandomPort() {
-        return randomPort;
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 }

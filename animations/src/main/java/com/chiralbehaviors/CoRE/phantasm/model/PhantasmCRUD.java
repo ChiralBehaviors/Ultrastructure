@@ -801,8 +801,8 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             || !checkUPDATE(stateAuth, networkedModel)) {
             return instance;
         }
-        networkedModel.getAttributeValue(instance,
-                                         stateAuth.getAuthorizedAttribute())
+        networkedModel.getAttributeValue(instance, model.getEntityManager()
+                                                        .merge(stateAuth.getAuthorizedAttribute()))
                       .setValue(value);
         return instance;
     }
@@ -1162,6 +1162,8 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         AttributeValue<RuleForm>[] old = getValueArray(instance,
                                                        authorizedAttribute,
                                                        networkedModel);
+        authorizedAttribute = model.getEntityManager()
+                                   .merge(authorizedAttribute);
         if (values == null) {
             if (old != null) {
                 for (AttributeValue<RuleForm> value : old) {
@@ -1171,24 +1173,29 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             }
         } else if (old == null) {
             for (int i = 0; i < values.length; i++) {
-                setValue(instance, authorizedAttribute, i, null, values[i]);
+                setValue(instance, authorizedAttribute, i, null, values[i],
+                         networkedModel);
             }
         } else if (old.length == values.length) {
             for (int i = 0; i < values.length; i++) {
-                setValue(instance, authorizedAttribute, i, old[i], values[i]);
+                setValue(instance, authorizedAttribute, i, old[i], values[i],
+                         networkedModel);
             }
         } else if (old.length < values.length) {
             int i;
             for (i = 0; i < old.length; i++) {
-                setValue(instance, authorizedAttribute, i, old[i], values[i]);
+                setValue(instance, authorizedAttribute, i, old[i], values[i],
+                         networkedModel);
             }
             for (; i < values.length; i++) {
-                setValue(instance, authorizedAttribute, i, null, values[i]);
+                setValue(instance, authorizedAttribute, i, null, values[i],
+                         networkedModel);
             }
         } else if (old.length > values.length) {
             int i;
             for (i = 0; i < values.length; i++) {
-                setValue(instance, authorizedAttribute, i, old[i], values[i]);
+                setValue(instance, authorizedAttribute, i, old[i], values[i],
+                         networkedModel);
             }
             for (; i < old.length; i++) {
                 model.getEntityManager()
@@ -1212,6 +1219,8 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         for (AttributeValue<RuleForm> value : valueMap.values()) {
             maxSeq = Math.max(maxSeq, value.getSequenceNumber());
         }
+        authorizedAttribute = model.getEntityManager()
+                                   .merge(authorizedAttribute);
         for (Map.Entry<String, Object> entry : values.entrySet()) {
             AttributeValue<RuleForm> value = valueMap.get(entry.getKey());
             if (value == null) {
@@ -1226,9 +1235,11 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
     }
 
     private void setValue(RuleForm instance, Attribute attribute, int i,
-                          AttributeValue<RuleForm> existing, Object newValue) {
+                          AttributeValue<RuleForm> existing, Object newValue,
+                          NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
         if (existing == null) {
-            existing = newAttributeValue(null, attribute, i, null);
+            existing = newAttributeValue(instance, attribute, i,
+                                         networkedModel);
             model.getEntityManager()
                  .persist(existing);
         }

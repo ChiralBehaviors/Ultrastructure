@@ -72,6 +72,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private static final String CREATE_MUTATION    = "Create%s";
     private static final String DESCRIPTION        = "description";
     private static final String ID                 = "id";
+    private static final String IMMEDIATE_TEMPLATE = "immediate%s";
     private static final String INSTANCES_OF_QUERY = "InstancesOf%s";
     private static final String NAME               = "name";
     private static final String REMOVE_MUTATION    = "Remove%s";
@@ -219,7 +220,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .description(auth.getNotes())
                                               .build());
         typeBuilder.field(newFieldDefinition().type(type)
-                                              .name(String.format("immediate%s",
+                                              .name(String.format(IMMEDIATE_TEMPLATE,
                                                                   capitalized(fieldName)))
                                               .dataFetcher(env -> ctx(env).getImmediateChildren(facet,
                                                                                                 (RuleForm) env.getSource(),

@@ -173,17 +173,17 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                 .getIndexed()) {
             updateTemplate.put(setter,
                                (crud,
-                                update) -> crud.setAttributeValue((RuleForm) update.get(AT_RULEFORM),
-                                                                  auth,
-                                                                  (List<Object>) update.get(setter)));
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (RuleForm) update.get(AT_RULEFORM),
+                                                                  auth, (List<Object>) update.get(setter)));
             inputType = new GraphQLList(GraphQLString);
         } else if (auth.getAuthorizedAttribute()
                        .getKeyed()) {
             updateTemplate.put(setter,
                                (crud,
-                                update) -> crud.setAttributeValue((RuleForm) update.get(AT_RULEFORM),
-                                                                  auth,
-                                                                  (Map<String, Object>) update.get(setter)));
+                                update) -> crud.setAttributeValue(facet,
+                                                                  (RuleForm) update.get(AT_RULEFORM),
+                                                                  auth, (Map<String, Object>) update.get(setter)));
             inputType = GraphQLString;
         } else {
             updateTemplate.put(setter,
@@ -220,9 +220,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(setter,
                            (crud,
-                            update) -> crud.setChildren((RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
+                            update) -> crud.setChildren(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth, (List<RuleForm>) crud.lookupRuleForm(auth,
                                                                                              (List<String>) update.get(setter))));
 
         String add = String.format(ADD_TEMPLATE,
@@ -246,9 +246,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(remove,
                            (crud,
-                            update) -> crud.removeChild((RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        (RuleForm) crud.lookup(auth,
+                            update) -> crud.removeChild(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth, (RuleForm) crud.lookup(auth,
                                                                                (String) update.get(remove))));
 
         String removeChildren = String.format(REMOVE_TEMPLATE,
@@ -259,9 +259,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(removeChildren,
                            (crud,
-                            update) -> crud.removeChildren((RuleForm) update.get(AT_RULEFORM),
-                                                           auth,
-                                                           (List<RuleForm>) crud.lookupRuleForm(auth,
+                            update) -> crud.removeChildren(facet,
+                                                           (RuleForm) update.get(AT_RULEFORM),
+                                                           auth, (List<RuleForm>) crud.lookupRuleForm(auth,
                                                                                                 (List<String>) update.get(removeChildren))));
 
         String addChildren = String.format(ADD_TEMPLATE,
@@ -298,9 +298,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(setter,
                            (crud,
-                            update) -> crud.setChildren((RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        crud.lookup(child,
+                            update) -> crud.setChildren(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth, crud.lookup(child,
                                                                     (List<String>) update.get(setter))));
 
         String add = String.format(ADD_TEMPLATE,
@@ -324,9 +324,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(remove,
                            (crud,
-                            update) -> crud.removeChild((RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        crud.lookup(child,
+                            update) -> crud.removeChild(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth, crud.lookup(child,
                                                                     (String) update.get(remove))));
 
         String removeChildren = String.format(REMOVE_TEMPLATE,
@@ -337,9 +337,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(removeChildren,
                            (crud,
-                            update) -> crud.removeChildren((RuleForm) update.get(AT_RULEFORM),
-                                                           auth,
-                                                           crud.lookup(child,
+                            update) -> crud.removeChildren(facet,
+                                                           (RuleForm) update.get(AT_RULEFORM),
+                                                           auth, crud.lookup(child,
                                                                        (List<String>) update.get(removeChildren))));
 
         String addChildren = String.format(ADD_TEMPLATE,
@@ -376,9 +376,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(setter,
                            (crud,
-                            update) -> crud.setSingularChild((RuleForm) update.get(AT_RULEFORM),
-                                                             auth,
-                                                             (RuleForm) crud.lookup(auth,
+                            update) -> crud.setSingularChild(facet,
+                                                             (RuleForm) update.get(AT_RULEFORM),
+                                                             auth, (RuleForm) crud.lookup(auth,
                                                                                     (String) update.get(setter))));
         references.add(child);
     }
@@ -401,9 +401,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .build());
         updateTemplate.put(setter,
                            (crud,
-                            update) -> crud.setSingularChild((RuleForm) update.get(AT_RULEFORM),
-                                                             auth,
-                                                             crud.lookup(child,
+                            update) -> crud.setSingularChild(facet,
+                                                             (RuleForm) update.get(AT_RULEFORM),
+                                                             auth, crud.lookup(child,
                                                                          (String) update.get(setter))));
         references.add(child);
     }

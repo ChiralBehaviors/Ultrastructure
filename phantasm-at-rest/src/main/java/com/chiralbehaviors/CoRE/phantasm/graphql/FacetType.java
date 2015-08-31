@@ -164,7 +164,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .name(fieldName)
                                               .description(attribute.getDescription())
                                               .dataFetcher(env -> ctx(env).getAttributeValue(facet,
-                                                                                             (RuleForm) env.getSource(), auth))
+                                                                                             (RuleForm) env.getSource(),
+                                                                                             auth))
                                               .build());
 
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
@@ -175,7 +176,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (RuleForm) update.get(AT_RULEFORM),
-                                                                  auth, (List<Object>) update.get(setter)));
+                                                                  auth,
+                                                                  (List<Object>) update.get(setter)));
             inputType = new GraphQLList(GraphQLString);
         } else if (auth.getAuthorizedAttribute()
                        .getKeyed()) {
@@ -183,14 +185,16 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (RuleForm) update.get(AT_RULEFORM),
-                                                                  auth, (Map<String, Object>) update.get(setter)));
+                                                                  auth,
+                                                                  (Map<String, Object>) update.get(setter)));
             inputType = GraphQLString;
         } else {
             updateTemplate.put(setter,
                                (crud,
                                 update) -> crud.setAttributeValue(facet,
                                                                   (RuleForm) update.get(AT_RULEFORM),
-                                                                  auth, (Object) update.get(setter)));
+                                                                  auth,
+                                                                  (Object) update.get(setter)));
             inputType = new GraphQLList(GraphQLString);
         }
         updateTypeBuilder.field(newInputObjectField().type(inputType)
@@ -210,7 +214,16 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .dataFetcher(env -> ctx(env).getChildren(facet,
-                                                                                       (RuleForm) env.getSource(), auth))
+                                                                                       (RuleForm) env.getSource(),
+                                                                                       auth))
+                                              .description(auth.getNotes())
+                                              .build());
+        typeBuilder.field(newFieldDefinition().type(type)
+                                              .name(String.format("immediate%s",
+                                                                  capitalized(fieldName)))
+                                              .dataFetcher(env -> ctx(env).getImmediateChildren(facet,
+                                                                                                (RuleForm) env.getSource(),
+                                                                                                auth))
                                               .description(auth.getNotes())
                                               .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
@@ -222,7 +235,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.setChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
-                                                        auth, (List<RuleForm>) crud.lookupRuleForm(auth,
+                                                        auth,
+                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
                                                                                              (List<String>) update.get(setter))));
 
         String add = String.format(ADD_TEMPLATE,
@@ -235,7 +249,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.addChild(facet,
                                                      (RuleForm) update.get(AT_RULEFORM),
-                                                     auth, (RuleForm) crud.lookup(auth,
+                                                     auth,
+                                                     (RuleForm) crud.lookup(auth,
                                                                             (String) update.get(add))));
 
         String remove = String.format(REMOVE_TEMPLATE,
@@ -248,7 +263,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.removeChild(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
-                                                        auth, (RuleForm) crud.lookup(auth,
+                                                        auth,
+                                                        (RuleForm) crud.lookup(auth,
                                                                                (String) update.get(remove))));
 
         String removeChildren = String.format(REMOVE_TEMPLATE,
@@ -261,7 +277,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.removeChildren(facet,
                                                            (RuleForm) update.get(AT_RULEFORM),
-                                                           auth, (List<RuleForm>) crud.lookupRuleForm(auth,
+                                                           auth,
+                                                           (List<RuleForm>) crud.lookupRuleForm(auth,
                                                                                                 (List<String>) update.get(removeChildren))));
 
         String addChildren = String.format(ADD_TEMPLATE,
@@ -274,7 +291,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.addChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
-                                                        auth, (List<RuleForm>) crud.lookupRuleForm(auth,
+                                                        auth,
+                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
                                                                                              (List<String>) update.get(addChildren))));
         references.add(child);
     }
@@ -289,7 +307,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .name(fieldName)
                                               .description(auth.getNotes())
                                               .dataFetcher(env -> ctx(env).getChildren(facet,
-                                                                                       (RuleForm) env.getSource(), auth))
+                                                                                       (RuleForm) env.getSource(),
+                                                                                       auth))
                                               .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
         updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
@@ -300,7 +319,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.setChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
-                                                        auth, crud.lookup(child,
+                                                        auth,
+                                                        crud.lookup(child,
                                                                     (List<String>) update.get(setter))));
 
         String add = String.format(ADD_TEMPLATE,
@@ -313,7 +333,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.addChild(facet,
                                                      (RuleForm) update.get(AT_RULEFORM),
-                                                     auth, crud.lookup(child,
+                                                     auth,
+                                                     crud.lookup(child,
                                                                  (String) update.get(add))));
 
         String remove = String.format(REMOVE_TEMPLATE,
@@ -326,7 +347,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.removeChild(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
-                                                        auth, crud.lookup(child,
+                                                        auth,
+                                                        crud.lookup(child,
                                                                     (String) update.get(remove))));
 
         String removeChildren = String.format(REMOVE_TEMPLATE,
@@ -339,7 +361,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.removeChildren(facet,
                                                            (RuleForm) update.get(AT_RULEFORM),
-                                                           auth, crud.lookup(child,
+                                                           auth,
+                                                           crud.lookup(child,
                                                                        (List<String>) update.get(removeChildren))));
 
         String addChildren = String.format(ADD_TEMPLATE,
@@ -352,7 +375,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.addChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
-                                                        auth, crud.lookup(child,
+                                                        auth,
+                                                        crud.lookup(child,
                                                                     (List<String>) update.get(addChildren))));
         references.add(child);
     }
@@ -366,7 +390,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .dataFetcher(env -> ctx(env).getSingularChild(facet,
-                                                                                            (RuleForm) env.getSource(), auth))
+                                                                                            (RuleForm) env.getSource(),
+                                                                                            auth))
                                               .description(auth.getNotes())
                                               .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
@@ -378,7 +403,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.setSingularChild(facet,
                                                              (RuleForm) update.get(AT_RULEFORM),
-                                                             auth, (RuleForm) crud.lookup(auth,
+                                                             auth,
+                                                             (RuleForm) crud.lookup(auth,
                                                                                     (String) update.get(setter))));
         references.add(child);
     }
@@ -392,7 +418,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .name(fieldName)
                                               .description(auth.getNotes())
                                               .dataFetcher(env -> ctx(env).getSingularChild((RuleForm) env.getSource(),
-                                                                                            auth, facet))
+                                                                                            auth,
+                                                                                            facet))
                                               .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
         updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
@@ -403,7 +430,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.setSingularChild(facet,
                                                              (RuleForm) update.get(AT_RULEFORM),
-                                                             auth, crud.lookup(child,
+                                                             auth,
+                                                             crud.lookup(child,
                                                                          (String) update.get(setter))));
         references.add(child);
     }

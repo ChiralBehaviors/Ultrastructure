@@ -12,4 +12,4 @@ logging:
     level: INFO
     loggers:
         "org.hibernate": ERROR
-        "org.glassfish": ERROR 
+        "org.glassfish": ERROR

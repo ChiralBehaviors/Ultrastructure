@@ -23,6 +23,8 @@ package com.chiralbehaviors.CoRE.security;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 
@@ -33,7 +35,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
  * @author hhildebrand
  *
  */
-public class AuthorizedPrincipal {
+public class AuthorizedPrincipal implements Cloneable {
     private final List<Aspect<Agency>> activeRoles;
     private final Agency               principal;
 
@@ -60,5 +62,9 @@ public class AuthorizedPrincipal {
 
     public Agency getPrincipal() {
         return principal;
+    }
+
+    public AuthorizedPrincipal merge(EntityManager em) {
+        return new AuthorizedPrincipal(em.merge(principal));
     }
 }

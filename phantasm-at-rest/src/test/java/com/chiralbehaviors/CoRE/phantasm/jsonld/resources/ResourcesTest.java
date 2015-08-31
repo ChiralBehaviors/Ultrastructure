@@ -20,11 +20,23 @@
 
 package com.chiralbehaviors.CoRE.phantasm.jsonld.resources;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,6 +52,8 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.resources.test.TestApplication;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
+import com.chiralbehaviors.CoRE.product.Product;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
@@ -299,5 +313,84 @@ public class ResourcesTest extends AbstractModelTest {
         Object jsonObject = JsonUtils.fromInputStream(url.openStream());
         System.out.println("Ruleform types:");
         System.out.println(JsonUtils.toPrettyString(jsonObject));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGraphQlCreateAndMutate() throws Exception {
+        em.getTransaction()
+          .begin();
+
+        MavenArtifact artifact1 = model.construct(MavenArtifact.class, "core",
+                                                  "core artifact");
+        artifact1.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact1.setArtifactID("core");
+        artifact1.setVersion("0.0.2-SNAPSHOT");
+        artifact1.setType("jar");
+
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
+
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(String.format("http://localhost:%s/graphql/workspace",
+                                                          application.getPort()));
+        webTarget = webTarget.path(URLEncoder.encode(TEST_SCENARIO_URI,
+                                                     "UTF-8"));
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("artifact", artifact1.getRuleform()
+                                           .getId()
+                                           .toString());
+        variables.put("name", "hello");
+        variables.put("description", "goodbye");
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+                                                variables);
+
+        Response response = invocationBuilder.post(Entity.entity(request,
+                                                                 MediaType.APPLICATION_JSON_TYPE));
+        Map<String, Object> result = response.readEntity(Map.class);
+
+        assertNull((String) result.get("errors"), result.get("errors"));
+
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        assertNotNull(thing1Result);
+        assertEquals("hello", thing1Result.get("name"));
+        Thing1 thing1 = model.wrap(Thing1.class,
+                                   em.find(Product.class,
+                                           UUID.fromString((String) thing1Result.get("id"))));
+        assertNotNull(thing1);
+        assertEquals(artifact1, thing1.getDerivedFrom());
+
+        variables = new HashMap<>();
+        variables.put("id", thing1Result.get("id"));
+        variables.put("artifact", artifact2.getRuleform()
+                                           .getId()
+                                           .toString());
+        request = new QueryRequest("mutation m ($id: String, $artifact: String) { UpdateThing1(state: { id: $id, setDerivedFrom: $artifact}) { id name } }",
+                                   variables);
+
+        response = invocationBuilder.post(Entity.entity(request,
+                                                        MediaType.APPLICATION_JSON_TYPE));
+        result = response.readEntity(Map.class);
+
+        assertNull((String) result.get("errors"), result.get("errors"));
+        thing1Result = (Map<String, Object>) result.get("UpdateThing1");
+        assertNotNull(thing1Result);
+        assertEquals("hello", thing1Result.get("name"));
+        thing1 = model.wrap(Thing1.class,
+                            em.find(Product.class,
+                                    UUID.fromString((String) thing1Result.get("id"))));
+        assertNotNull(thing1);
+        assertEquals(artifact2, thing1.getDerivedFrom());
     }
 }

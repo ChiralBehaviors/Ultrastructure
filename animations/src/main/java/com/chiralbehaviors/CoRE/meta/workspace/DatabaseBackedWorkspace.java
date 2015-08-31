@@ -63,7 +63,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         @SuppressWarnings("unchecked")
         @Override
         public T get(int index) {
-            return (T) backingList.get(index).getRuleform();
+            return (T) backingList.get(index)
+                                  .getRuleform();
         }
 
         /* (non-Javadoc)
@@ -88,10 +89,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         this.em = model.getEntityManager();
         this.scope = new WorkspaceScope(this);
         // We need the kernel workspace to lookup workspaces, so special case the kernel
-        if (!definingProduct.getId().equals(WellKnownProduct.KERNEL_WORKSPACE.id())) {
+        if (!definingProduct.getId()
+                            .equals(WellKnownProduct.KERNEL_WORKSPACE.id())) {
             for (Map.Entry<String, Product> entry : getImports().entrySet()) {
-                scope.add(entry.getKey(),
-                          model.getWorkspaceModel().getScoped(entry.getValue()).getWorkspace());
+                scope.add(entry.getKey(), model.getWorkspaceModel()
+                                               .getScoped(entry.getValue())
+                                               .getWorkspace());
             }
         }
     }
@@ -112,23 +115,29 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#addImport(com.chiralbehaviors.CoRE.product.Product)
      */
     @Override
-    public void addImport(String namespace, Product workspace,
-                          Agency updatedBy) {
+    public void addImport(String namespace, Product workspace) {
         ProductModel productModel = model.getProductModel();
-        if (!productModel.isAccessible(getDefiningProduct(),
-                                       model.getKernel().getIsA(),
-                                       model.getKernel().getWorkspace())) {
+        if (!productModel.isAccessible(getDefiningProduct(), model.getKernel()
+                                                                  .getIsA(),
+                                       model.getKernel()
+                                            .getWorkspace())) {
             throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }
-        scope.add(namespace,
-                  model.getWorkspaceModel().getScoped(workspace).getWorkspace());
+        scope.add(namespace, model.getWorkspaceModel()
+                                  .getScoped(workspace)
+                                  .getWorkspace());
         ProductNetwork link = productModel.link(getDefiningProduct(),
-                                                model.getKernel().getImports(),
-                                                workspace, updatedBy);
-        ProductNetworkAttribute attribute = new ProductNetworkAttribute(model.getKernel().getNamespace(),
+                                                model.getKernel()
+                                                     .getImports(),
+                                                workspace,
+                                                model.getCurrentPrincipal()
+                                                     .getPrincipal());
+        ProductNetworkAttribute attribute = new ProductNetworkAttribute(model.getKernel()
+                                                                             .getNamespace(),
                                                                         namespace,
-                                                                        updatedBy);
+                                                                        model.getCurrentPrincipal()
+                                                                             .getPrincipal());
         attribute.setNetwork(link);
         em.persist(attribute);
         add(link);
@@ -159,12 +168,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
         Root<WorkspaceAuthorization> from = query.from(WorkspaceAuthorization.class);
-        query.select(from).where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.key),
-                                                 key),
-                                        cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
-                                                 getDefiningProduct())));
+        query.select(from)
+             .where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.key), key),
+                           cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
+                                    getDefiningProduct())));
         try {
-            WorkspaceAuthorization authorization = em.createQuery(query).getSingleResult();
+            WorkspaceAuthorization authorization = em.createQuery(query)
+                                                     .getSingleResult();
             T ruleform = authorization.getEntity();
             cache.put(key, ruleform);
             return ruleform;
@@ -189,11 +199,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
         Root<WorkspaceAuthorization> from = query.from(WorkspaceAuthorization.class);
-        query.select(from).where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.type),
-                                                 ruleformClass.getSimpleName()),
-                                        cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
-                                                 getDefiningProduct())));
-        return new EntityList<T>(em.createQuery(query).getResultList());
+        query.select(from)
+             .where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.type),
+                                    ruleformClass.getSimpleName()),
+                           cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
+                                    getDefiningProduct())));
+        return new EntityList<T>(em.createQuery(query)
+                                   .getResultList());
     }
 
     @Override
@@ -207,10 +219,14 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public Map<String, Product> getImports() {
         Map<String, Product> imports = new HashMap<>();
-        for (ProductNetwork link : model.getProductModel().getImmediateChildrenLinks(getDefiningProduct(),
-                                                                                     model.getKernel().getImports())) {
-            NetworkAttribute<?> attribute = model.getProductModel().getAttributeValue(link,
-                                                                                      model.getKernel().getNamespace());
+        for (ProductNetwork link : model.getProductModel()
+                                        .getImmediateChildrenLinks(getDefiningProduct(),
+                                                                   model.getKernel()
+                                                                        .getImports())) {
+            NetworkAttribute<?> attribute = model.getProductModel()
+                                                 .getAttributeValue(link,
+                                                                    model.getKernel()
+                                                                         .getNamespace());
             if (attribute == null) {
                 throw new IllegalStateException(String.format("Import has no namespace attribute defined: %s",
                                                               link));
@@ -268,15 +284,19 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void removeImport(Product workspace, Agency updatedBy) {
         ProductModel productModel = model.getProductModel();
-        if (!productModel.isAccessible(getDefiningProduct(),
-                                       model.getKernel().getIsA(),
-                                       model.getKernel().getWorkspace())) {
+        if (!productModel.isAccessible(getDefiningProduct(), model.getKernel()
+                                                                  .getIsA(),
+                                       model.getKernel()
+                                            .getWorkspace())) {
             throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }
-        scope.remove(model.getWorkspaceModel().getScoped(workspace).getWorkspace());
-        productModel.unlink(getDefiningProduct(),
-                            model.getKernel().getImports(), workspace);
+        scope.remove(model.getWorkspaceModel()
+                          .getScoped(workspace)
+                          .getWorkspace());
+        productModel.unlink(getDefiningProduct(), model.getKernel()
+                                                       .getImports(),
+                            workspace);
     }
 
     @Override

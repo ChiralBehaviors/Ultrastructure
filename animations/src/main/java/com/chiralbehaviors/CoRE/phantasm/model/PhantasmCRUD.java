@@ -81,9 +81,10 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
         checkUPDATE(auth, networkedModel);
 
-        networkedModel.link(instance, auth.getAuthorizedRelationship(), child,
-                            model.getCurrentPrincipal()
-                                 .getPrincipal());
+        networkedModel.link(instance, model.getEntityManager()
+                                           .merge(auth.getChildRelationship()),
+                            child, model.getCurrentPrincipal()
+                                        .getPrincipal());
         return instance;
     }
 
@@ -100,16 +101,20 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                              : resolveFrom(auth,
                                                                            model);
         if (childAuth.getClassification() instanceof Agency) {
-            networkedModel.authorize(instance, auth.getConnection(),
+            networkedModel.authorize(instance, model.getEntityManager()
+                                                    .merge(auth.getConnection()),
                                      (Agency) child);
         } else if (childAuth.getClassification() instanceof Location) {
-            networkedModel.authorize(instance, auth.getConnection(),
+            networkedModel.authorize(instance, model.getEntityManager()
+                                                    .merge(auth.getConnection()),
                                      (Location) child);
         } else if (childAuth.getClassification() instanceof Product) {
-            networkedModel.authorize(instance, auth.getConnection(),
+            networkedModel.authorize(instance, model.getEntityManager()
+                                                    .merge(auth.getConnection()),
                                      (Product) child);
         } else if (childAuth.getClassification() instanceof Relationship) {
-            networkedModel.authorize(instance, auth.getConnection(),
+            networkedModel.authorize(instance, model.getEntityManager()
+                                                    .merge(auth.getConnection()),
                                      (Relationship) child);
         } else {
             throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
@@ -139,7 +144,8 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         checkUPDATE(auth, networkedModel);
         for (RuleForm child : children) {
             checkREAD(child, networkedModel);
-            networkedModel.link(instance, auth.getAuthorizedRelationship(),
+            networkedModel.link(instance, model.getEntityManager()
+                                               .merge(auth.getAuthorizedRelationship()),
                                 child, model.getCurrentPrincipal()
                                             .getPrincipal());
         }
@@ -160,17 +166,22 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                                            model);
         for (@SuppressWarnings("rawtypes")
         ExistentialRuleform child : children) {
+            checkREAD(child, model.getUnknownNetworkedModel(child));
             if (childAuth.getClassification() instanceof Agency) {
-                networkedModel.authorize(instance, auth.getConnection(),
+                networkedModel.authorize(instance, model.getEntityManager()
+                                                        .merge(auth.getConnection()),
                                          (Agency) child);
             } else if (childAuth.getClassification() instanceof Location) {
-                networkedModel.authorize(instance, auth.getConnection(),
+                networkedModel.authorize(instance, model.getEntityManager()
+                                                        .merge(auth.getConnection()),
                                          (Location) child);
             } else if (childAuth.getClassification() instanceof Product) {
-                networkedModel.authorize(instance, auth.getConnection(),
+                networkedModel.authorize(instance, model.getEntityManager()
+                                                        .merge(auth.getConnection()),
                                          (Product) child);
             } else if (childAuth.getClassification() instanceof Relationship) {
-                networkedModel.authorize(instance, auth.getConnection(),
+                networkedModel.authorize(instance, model.getEntityManager()
+                                                        .merge(auth.getConnection()),
                                          (Relationship) child);
             } else {
                 throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
@@ -199,8 +210,10 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
         checkAPPLY(facet, networkedModel);
-        networkedModel.initialize(instance, facet, model.getCurrentPrincipal()
-                                                        .getPrincipal());
+        networkedModel.initialize(instance, model.getEntityManager()
+                                                 .merge(facet),
+                                  model.getCurrentPrincipal()
+                                       .getPrincipal());
         return instance;
     }
 
@@ -239,8 +252,10 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                                                facet.getClassification())),
                                             e);
         }
-        networkedModel.initialize(instance, facet, model.getCurrentPrincipal()
-                                                        .getPrincipal());
+        networkedModel.initialize(instance, model.getEntityManager()
+                                                 .merge(facet),
+                                  model.getCurrentPrincipal()
+                                       .getPrincipal());
         return instance;
     }
 
@@ -689,9 +704,11 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             model.getEntityManager()
                  .remove(childLink);
         }
+        Relationship merged = model.getEntityManager()
+                                   .merge(auth.getChildRelationship());
         for (RuleForm child : children) {
             checkREAD(child, networkedModel);
-            networkedModel.link(instance, auth.getChildRelationship(), child,
+            networkedModel.link(instance, merged, child,
                                 model.getCurrentPrincipal()
                                      .getPrincipal());
         }
@@ -720,18 +737,24 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                              : resolveFrom(auth,
                                                                            model);
         if (childAuth.getClassification() instanceof Agency) {
-            networkedModel.setAuthorizedAgencies(instance, auth.getConnection(),
+            networkedModel.setAuthorizedAgencies(instance,
+                                                 model.getEntityManager()
+                                                      .merge(auth.getConnection()),
                                                  (List<Agency>) children);
         } else if (childAuth.getClassification() instanceof Location) {
             networkedModel.setAuthorizedLocations(instance,
-                                                  auth.getConnection(),
+                                                  model.getEntityManager()
+                                                       .merge(auth.getConnection()),
                                                   (List<Location>) children);
         } else if (childAuth.getClassification() instanceof Product) {
-            networkedModel.setAuthorizedProducts(instance, auth.getConnection(),
+            networkedModel.setAuthorizedProducts(instance,
+                                                 model.getEntityManager()
+                                                      .merge(auth.getConnection()),
                                                  (List<Product>) children);
         } else if (childAuth.getClassification() instanceof Relationship) {
             networkedModel.setAuthorizedRelationships(instance,
-                                                      auth.getConnection(),
+                                                      model.getEntityManager()
+                                                           .merge(auth.getConnection()),
                                                       (List<Relationship>) children);
         } else {
             throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
@@ -790,8 +813,8 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
         checkUPDATE(auth, networkedModel);
         checkREAD(child, networkedModel);
-        networkedModel.setImmediateChild(instance,
-                                         auth.getAuthorizedRelationship(),
+        networkedModel.setImmediateChild(instance, model.getEntityManager()
+                                                        .merge(auth.getAuthorizedRelationship()),
                                          child, model.getCurrentPrincipal()
                                                      .getPrincipal());
         return instance;
@@ -819,16 +842,20 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                              : resolveFrom(auth,
                                                                            model);
         if (childAuth.getClassification() instanceof Agency) {
-            networkedModel.authorizeSingular(instance, auth.getConnection(),
+            networkedModel.authorizeSingular(instance, model.getEntityManager()
+                                                            .merge(auth.getConnection()),
                                              (Agency) child);
         } else if (childAuth.getClassification() instanceof Location) {
-            networkedModel.authorizeSingular(instance, auth.getConnection(),
+            networkedModel.authorizeSingular(instance, model.getEntityManager()
+                                                            .merge(auth.getConnection()),
                                              (Location) child);
         } else if (childAuth.getClassification() instanceof Product) {
-            networkedModel.authorizeSingular(instance, auth.getConnection(),
+            networkedModel.authorizeSingular(instance, model.getEntityManager()
+                                                            .merge(auth.getConnection()),
                                              (Product) child);
         } else if (childAuth.getClassification() instanceof Relationship) {
-            networkedModel.authorizeSingular(instance, auth.getConnection(),
+            networkedModel.authorizeSingular(instance, model.getEntityManager()
+                                                            .merge(auth.getConnection()),
                                              (Relationship) child);
         } else {
             throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",

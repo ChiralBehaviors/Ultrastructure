@@ -45,7 +45,10 @@ import org.reflections.Reflections;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
+
+import io.dropwizard.auth.Auth;
 
 /**
  * @author hhildebrand
@@ -111,17 +114,19 @@ public class RuleformResource extends TransactionalResource {
     @Timed
     @Path("{ruleform}/@facet:{instance}")
     @GET
-    public Map<String, Object> getFacetQualifiedInstance(@PathParam("ruleform") String ruleform,
+    public Map<String, Object> getFacetQualifiedInstance(@Auth(required = false) AuthorizedPrincipal principal,
+                                                         @PathParam("ruleform") String ruleform,
                                                          @PathParam("instance") UUID instance) {
-        return getInstance(ruleform, instance);
+        return getInstance(principal, ruleform, instance);
     }
 
     @Timed
     @Path("{ruleform}/{instance}")
     @GET
-    public Map<String, Object> getInstance(@PathParam("ruleform") String ruleform,
+    public Map<String, Object> getInstance(@Auth(required = false) AuthorizedPrincipal principal,
+                                           @PathParam("ruleform") String ruleform,
                                            @PathParam("instance") UUID instance) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             Ruleform ruleformInstance = (Ruleform) readOnlyModel.getEntityManager()
                                                                 .find(entityMap.get(ruleform),
                                                                       instance);
@@ -139,13 +144,14 @@ public class RuleformResource extends TransactionalResource {
     @Timed
     @Path("{ruleform}/instances")
     @GET
-    public List<Map<String, String>> getInstances(@PathParam("ruleform") String ruleform) {
+    public List<Map<String, String>> getInstances(@Auth(required = false) AuthorizedPrincipal principal,
+                                                  @PathParam("ruleform") String ruleform) {
         Class<? extends Ruleform> ruleformClass = entityMap.get(ruleform);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
                                                             ruleform));
         }
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             List<Map<String, String>> instances = new ArrayList<>();
             readOnlyModel.findAll(ruleformClass)
                          .forEach(rf -> {
@@ -163,13 +169,14 @@ public class RuleformResource extends TransactionalResource {
     @Timed
     @Path("{ruleform}")
     @GET
-    public List<Map<String, String>> getRuleform(@PathParam("ruleform") String ruleform) {
+    public List<Map<String, String>> getRuleform(@Auth(required = false) AuthorizedPrincipal principal,
+                                                 @PathParam("ruleform") String ruleform) {
         Class<? extends Ruleform> ruleformClass = entityMap.get(ruleform);
         if (ruleformClass == null) {
             throw new WebApplicationException(String.format("%s does not exist",
                                                             ruleform));
         }
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             List<Map<String, String>> instances = new ArrayList<>();
             readOnlyModel.findAll(ruleformClass)
                          .forEach(rf -> {
@@ -187,9 +194,10 @@ public class RuleformResource extends TransactionalResource {
     @Timed
     @Path("{ruleform}/@ruleform:{instance}")
     @GET
-    public Map<String, Object> getRuleformQualifiedInstance(@PathParam("ruleform") String ruleform,
+    public Map<String, Object> getRuleformQualifiedInstance(@Auth(required = false) AuthorizedPrincipal principal,
+                                                            @PathParam("ruleform") String ruleform,
                                                             @PathParam("instance") UUID instance) {
-        return getInstance(ruleform, instance);
+        return getInstance(principal, ruleform, instance);
     }
 
     @Timed

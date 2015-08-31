@@ -7,7 +7,7 @@ agencies {
         SuperUser.IsA.CoreUser
     }
     facets {
-        IsA.CoreUser { Login PasswordRounds PasswordHash }
+        IsA.CoreUser { Login PasswordRounds PasswordHash AccessToken }
     }
 }
 

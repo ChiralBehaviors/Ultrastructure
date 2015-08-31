@@ -37,10 +37,12 @@
 
     <properties>
         <db.context>local</db.context>
+
         <dropwizard.version>0.8.2</dropwizard.version>
         <postgresql.driver.version>9.4-1201-jdbc41</postgresql.driver.version>
         <jackson.version>2.5.1</jackson.version>
         <hibernate.version>4.3.10.Final</hibernate.version>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <dba.db.database>postgres</dba.db.database>
@@ -78,12 +80,7 @@
     </modules>
 
     <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>opensymphony</groupId>
-                <artifactId>oscache</artifactId>
-                <version>2.4.1</version>
-            </dependency>
+        <dependencies>  
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>phantasm-at-rest</artifactId>
@@ -100,6 +97,16 @@
                 <version>3.1.1</version>
             </dependency>
             <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-auth</artifactId>
+                <version>${dropwizard.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.chiralbehaviors</groupId>
+                <artifactId>jbcrypt</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
                 <version>3.18.1-GA</version>
@@ -108,6 +115,11 @@
                 <groupId>com.github.jsonld-java</groupId>
                 <artifactId>jsonld-java</artifactId>
                 <version>0.5.1</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-client</artifactId>
+                <version>${dropwizard.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.dropwizard</groupId>
@@ -362,6 +374,11 @@
                 <artifactId>jms</artifactId>
                 <version>1.1</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -483,11 +500,6 @@
                 <plugin>
                     <groupId>${project.groupId}</groupId>
                     <artifactId>network-inference-generator</artifactId>
-                    <version>${project.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>mixin-generator</artifactId>
                     <version>${project.version}</version>
                 </plugin>
                 <plugin>
@@ -617,19 +629,6 @@
                     <configuration>
                         <lifecycleMappingMetadata>
                             <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>com.chiralbehaviors.CoRE</groupId>
-                                        <artifactId>mixin-generator</artifactId>
-                                        <versionRange>[2.0.0-SNAPSHOT,)</versionRange>
-                                        <goals>
-                                            <goal>generate</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>com.chiralbehaviors.CoRE</groupId>

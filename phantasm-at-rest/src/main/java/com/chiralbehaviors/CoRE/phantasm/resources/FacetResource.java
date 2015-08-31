@@ -65,7 +65,10 @@ import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
+
+import io.dropwizard.auth.Auth;
 
 /**
  * @author hhildebrand
@@ -107,12 +110,13 @@ public class FacetResource extends TransactionalResource {
     @Timed
     @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
     @POST
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Response apply(@PathParam("ruleform-type") String ruleformType,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Response apply(@Auth(required = false) AuthorizedPrincipal principal,
+                                                                                                                               @PathParam("ruleform-type") String ruleformType,
                                                                                                                                @PathParam("classifier") UUID relationship,
                                                                                                                                @PathParam("classification") UUID ruleform,
                                                                                                                                @PathParam("instance") UUID existential,
                                                                                                                                @QueryParam("select") List<String> selection) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                                 ruleform, readOnlyModel);
             NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
@@ -126,12 +130,13 @@ public class FacetResource extends TransactionalResource {
     @Timed
     @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
     @DELETE
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Response delete(@PathParam("ruleform-type") String ruleformType,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Response delete(@Auth(required = false) AuthorizedPrincipal principal,
+                                                                                                                                @PathParam("ruleform-type") String ruleformType,
                                                                                                                                 @PathParam("classifier") UUID relationship,
                                                                                                                                 @PathParam("classification") UUID ruleform,
                                                                                                                                 @PathParam("instance") UUID existential,
                                                                                                                                 @QueryParam("select") List<String> selection) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                                 ruleform, readOnlyModel);
             NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
@@ -146,11 +151,12 @@ public class FacetResource extends TransactionalResource {
     @Timed
     @Path("{ruleform-type}/{classifier}/{classification}/instances")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getAllInstances(@PathParam("ruleform-type") String ruleformType,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getAllInstances(@Auth(required = false) AuthorizedPrincipal principal,
+                                                                                                                                                    @PathParam("ruleform-type") String ruleformType,
                                                                                                                                                     @PathParam("classifier") UUID classifier,
                                                                                                                                                     @PathParam("classification") UUID classification,
                                                                                                                                                     @QueryParam("select") List<String> selection) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             Aspect<RuleForm> aspect = getAspect(ruleformType, classifier,
                                                 classification, readOnlyModel);
 
@@ -190,10 +196,12 @@ public class FacetResource extends TransactionalResource {
 
     @Path("{ruleform-type}/{classifier}/{classification}/context")
     @GET
-    public Map<String, Object> getContext(@PathParam("ruleform-type") String ruleformType,
+    public Map<String, Object> getContext(@Auth(required = false) AuthorizedPrincipal principal,
+                                          @PathParam("ruleform-type") String ruleformType,
                                           @PathParam("classifier") UUID relationship,
                                           @PathParam("classification") UUID ruleform) {
-        return readOnly(readOnlyModel -> createContext(getAspect(ruleformType,
+        return readOnly(principal,
+                        readOnlyModel -> createContext(getAspect(ruleformType,
                                                                  relationship,
                                                                  ruleform,
                                                                  readOnlyModel),
@@ -203,11 +211,12 @@ public class FacetResource extends TransactionalResource {
     @Timed
     @Path("{ruleform-type}/{classifier}/{classification}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacet(@PathParam("ruleform-type") String ruleformType,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacet(@Auth(required = false) AuthorizedPrincipal principal,
+                                                                                                                                             @PathParam("ruleform-type") String ruleformType,
                                                                                                                                              @PathParam("classifier") UUID relationship,
                                                                                                                                              @PathParam("classification") UUID ruleform) {
 
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                                 ruleform, readOnlyModel);
             Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,
@@ -222,13 +231,14 @@ public class FacetResource extends TransactionalResource {
     @Timed
     @Path("{ruleform-type}/{classifier}/{classification}/@facet:{instance}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacetQualifiedInstance(@PathParam("ruleform-type") String ruleformType,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacetQualifiedInstance(@Auth(required = false) AuthorizedPrincipal principal,
+                                                                                                                                                              @PathParam("ruleform-type") String ruleformType,
                                                                                                                                                               @PathParam("classifier") UUID relationship,
                                                                                                                                                               @PathParam("classification") UUID ruleform,
                                                                                                                                                               @PathParam("instance") UUID existential,
                                                                                                                                                               @QueryParam("select") List<String> selection) {
-        return getInstance(ruleformType, relationship, ruleform, existential,
-                           selection);
+        return getInstance(principal, ruleformType, relationship, ruleform,
+                           existential, selection);
     }
 
     @Timed
@@ -261,8 +271,9 @@ public class FacetResource extends TransactionalResource {
     @Timed
     @Path("{ruleform-type}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacets(@PathParam("ruleform-type") String ruleformType) {
-        return readOnly(readOnlyModel -> {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getFacets(@Auth(required = false) AuthorizedPrincipal principal,
+                                                                                                                                              @PathParam("ruleform-type") String ruleformType) {
+        return readOnly(principal, readOnlyModel -> {
             Class<?> clazz = RuleformResource.entityMap.get(ruleformType);
             switch (ruleformType) {
                 case "Agency":
@@ -299,12 +310,13 @@ public class FacetResource extends TransactionalResource {
     @Timed
     @Path("{ruleform-type}/{classifier}/{classification}/{instance}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getInstance(@PathParam("ruleform-type") String ruleformType,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getInstance(@Auth(required = false) AuthorizedPrincipal principal,
+                                                                                                                                                @PathParam("ruleform-type") String ruleformType,
                                                                                                                                                 @PathParam("classifier") UUID relationship,
                                                                                                                                                 @PathParam("classification") UUID ruleform,
                                                                                                                                                 @PathParam("instance") UUID existential,
                                                                                                                                                 @QueryParam("select") List<String> selection) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                                 ruleform, readOnlyModel);
             NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
@@ -330,23 +342,25 @@ public class FacetResource extends TransactionalResource {
     @Timed
     @Path("{ruleform-type}/{classifier}/{classification}/@ruleform:{instance}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getRuleformQualifiedInstance(@PathParam("ruleform-type") String ruleformType,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getRuleformQualifiedInstance(@Auth(required = false) AuthorizedPrincipal principal,
+                                                                                                                                                                 @PathParam("ruleform-type") String ruleformType,
                                                                                                                                                                  @PathParam("classifier") UUID relationship,
                                                                                                                                                                  @PathParam("classification") UUID ruleform,
                                                                                                                                                                  @PathParam("instance") UUID existential,
                                                                                                                                                                  @QueryParam("select") List<String> selection) {
-        return getInstance(ruleformType, relationship, ruleform, existential,
-                           selection);
+        return getInstance(principal, ruleformType, relationship, ruleform,
+                           existential, selection);
     }
 
     @Timed
     @Path("{ruleform-type}/{classifier}/{classification}/term/{term}")
     @GET
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getTerm(@PathParam("ruleform-type") String ruleformType,
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Map<String, Object> getTerm(@Auth(required = false) AuthorizedPrincipal principal,
+                                                                                                                                            @PathParam("ruleform-type") String ruleformType,
                                                                                                                                             @PathParam("classifier") UUID relationship,
                                                                                                                                             @PathParam("classification") UUID ruleform,
                                                                                                                                             @PathParam("term") String term) {
-        return readOnly(readOnlyModel -> {
+        return readOnly(principal, readOnlyModel -> {
             Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                                 ruleform, readOnlyModel);
             Facet<RuleForm, Network> facet = new Facet<>(aspect, readOnlyModel,

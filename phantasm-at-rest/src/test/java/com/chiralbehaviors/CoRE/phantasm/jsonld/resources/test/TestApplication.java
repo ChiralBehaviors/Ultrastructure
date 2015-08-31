@@ -24,6 +24,7 @@ import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
@@ -33,6 +34,7 @@ import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.Application;
+import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
@@ -87,6 +89,8 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         String unit = jpaConfig.getPersistenceUnit();
         Map<String, String> properties = jpaConfig.getProperties();
         emf = Persistence.createEntityManagerFactory(unit, properties);
+        environment.jersey()
+                   .register(AuthFactory.binder(new NullAuthenticationFactory()));
         environment.jersey()
                    .register(new FacetResource(emf));
         environment.jersey()

@@ -334,14 +334,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         return value;
     }
 
-    private boolean checkREAD(AttributeAuthorization<RuleForm, Network> stateAuth,
-                              NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        return !networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                    .getPrincipal(),
-                                               stateAuth, model.getKernel()
-                                                               .getREAD());
-    }
-
     /**
      * Answer the inferred and immediate network children of the instance
      * 
@@ -481,14 +473,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                              .filter(instance -> checkREAD(networkedModel,
                                                            instance))
                              .collect(Collectors.toList());
-    }
-
-    private boolean checkREAD(NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
-                              RuleForm instance) {
-        return networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                   .getPrincipal(),
-                                              instance, model.getKernel()
-                                                             .getREAD());
     }
 
     /**
@@ -823,14 +807,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         return instance;
     }
 
-    private boolean checkUPDATE(AttributeAuthorization<RuleForm, Network> stateAuth,
-                                NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        return !networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                    .getPrincipal(),
-                                               stateAuth, model.getKernel()
-                                                               .getUPDATE());
-    }
-
     /**
      * Set the immediate children of the instance to be the list of supplied
      * children. No inferred links will be explicitly added or deleted.
@@ -1038,6 +1014,14 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         return instance;
     }
 
+    private boolean checkREAD(AttributeAuthorization<RuleForm, Network> stateAuth,
+                              NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        return networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                   .getPrincipal(),
+                                              stateAuth, model.getKernel()
+                                                              .getREAD());
+    }
+
     private boolean checkREAD(@SuppressWarnings("rawtypes") ExistentialRuleform child,
                               NetworkedModel<?, ?, ?, ?> networkedModel) {
         return networkedModel.checkCapability(model.getCurrentPrincipal()
@@ -1054,12 +1038,28 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                               .getREAD());
     }
 
+    private boolean checkREAD(NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
+                              RuleForm instance) {
+        return networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                   .getPrincipal(),
+                                              instance, model.getKernel()
+                                                             .getREAD());
+    }
+
     private boolean checkREAD(XDomainNetworkAuthorization<?, ?> auth,
                               NetworkedModel<?, ?, ?, ?> networkedModel) {
         return networkedModel.checkCapability(model.getCurrentPrincipal()
                                                    .getPrincipal(),
                                               auth, model.getKernel()
                                                          .getREAD());
+    }
+
+    private boolean checkUPDATE(AttributeAuthorization<RuleForm, Network> stateAuth,
+                                NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        return networkedModel.checkCapability(model.getCurrentPrincipal()
+                                                   .getPrincipal(),
+                                              stateAuth, model.getKernel()
+                                                              .getUPDATE());
     }
 
     private boolean checkUPDATE(@SuppressWarnings("rawtypes") ExistentialRuleform child,

@@ -19,7 +19,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,8 +39,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.reflections.Reflections;
-
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
@@ -59,19 +56,13 @@ import io.dropwizard.auth.Auth;
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class RuleformResource extends TransactionalResource {
 
-    public final static Map<String, Class<? extends Ruleform>> entityMap = new TreeMap<>();
+    public final static Map<String, Class<? extends Ruleform>> entityMap;
 
     private final static ArrayList<String> sortedRuleforms;
 
     static {
-        Reflections reflections = new Reflections(Ruleform.class.getPackage()
-                                                                .getName());
-        for (Class<? extends Ruleform> form : reflections.getSubTypesOf(Ruleform.class)) {
-            if (!Modifier.isAbstract(form.getModifiers())) {
-                entityMap.put(form.getSimpleName(), form);
-            }
-        }
-        sortedRuleforms = new ArrayList<>(entityMap.keySet());
+        entityMap = Ruleform.CONCRETE_SUBCLASSES;
+        sortedRuleforms = new ArrayList<>(Ruleform.CONCRETE_SUBCLASSES.keySet());
         Collections.sort(sortedRuleforms);
     }
 

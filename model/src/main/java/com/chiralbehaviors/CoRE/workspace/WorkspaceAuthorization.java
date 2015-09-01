@@ -41,7 +41,6 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @NamedQueries({ @NamedQuery(name = GET_WORKSPACE, query = "SELECT auth FROM WorkspaceAuthorization auth WHERE auth.definingProduct = :product"),
@@ -108,23 +107,20 @@ public class WorkspaceAuthorization extends Ruleform {
         setKey(key);
     }
 
-    @SuppressWarnings("unchecked")
-    @JsonIgnore
-    public <T extends Ruleform> T getEntity() {
-        return null;
+    public Product getDefiningProduct() {
+        return definingProduct;
     }
 
     public String getKey() {
         return key;
     }
 
-    @JsonGetter
-    public Ruleform getRuleform() {
-        return getEntity();
-    }
-
     public String getType() {
         return type;
+    }
+
+    public void setDefiningProduct(Product definingProduct) {
+        this.definingProduct = definingProduct;
     }
 
     public void setKey(String key) {
@@ -132,19 +128,14 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setRuleform(Ruleform ruleform) {
+        ruleform.setWorkspace(this);
+        type = ruleform.getClass()
+                       .getSimpleName();
     }
 
     @Override
     public String toString() {
-        return String.format("WorkspaceAuthorization [getRuleform()=%s]",
-                             getRuleform());
-    }
-
-    public Product getDefiningProduct() {
-        return definingProduct;
-    }
-
-    public void setDefiningProduct(Product definingProduct) {
-        this.definingProduct = definingProduct;
+        return String.format("WorkspaceAuthorization [definingProduct=%s, key=%s, type=%s]",
+                             definingProduct.getName(), key, type);
     }
 }

@@ -20,6 +20,10 @@
 package com.chiralbehaviors.CoRE;
 
 import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Cacheable;
@@ -35,6 +39,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.Type;
+import org.reflections.Reflections;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.json.RuleformIdGenerator;
@@ -62,12 +67,26 @@ import com.fasterxml.uuid.NoArgGenerator;
 @JsonInclude(Include.NON_NULL)
 @Cacheable
 abstract public class Ruleform implements Serializable, Cloneable {
-    public static final String         FIND_ALL_SUFFIX       = ".findAll";
-    public static final String         FIND_BY_ID_SUFFIX     = ".findById";
-    public static final String         FIND_BY_NAME_SUFFIX   = ".findByName";
-    public static final NoArgGenerator GENERATOR             = Generators.timeBasedGenerator();
-    public static final String         GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
-    private static final long          serialVersionUID      = 1L;
+    public static final Map<String, Class<? extends Ruleform>> CONCRETE_SUBCLASSES;
+    public static final String                                 FIND_ALL_SUFFIX       = ".findAll";
+    public static final String                                 FIND_BY_ID_SUFFIX     = ".findById";
+    public static final String                                 FIND_BY_NAME_SUFFIX   = ".findByName";
+    public static final NoArgGenerator                         GENERATOR             = Generators.timeBasedGenerator();
+    public static final String                                 GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
+
+    private static final long serialVersionUID = 1L;
+
+    static {
+        Map<String, Class<? extends Ruleform>> concrete = new HashMap<>();
+        Reflections reflections = new Reflections(Ruleform.class.getPackage()
+                                                                .getName());
+        for (Class<? extends Ruleform> form : reflections.getSubTypesOf(Ruleform.class)) {
+            if (!Modifier.isAbstract(form.getModifiers())) {
+                concrete.put(form.getSimpleName(), form);
+            }
+        }
+        CONCRETE_SUBCLASSES = Collections.unmodifiableMap(concrete);
+    }
 
     @Id
     @Type(type = "pg-uuid")
@@ -79,14 +98,14 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Column(name = "version")
     private int version = 0;
 
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @JoinColumn(name = "updated_by")
+    protected Agency updatedBy;
+
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace")
     protected WorkspaceAuthorization workspace;
-
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "updated_by")
-    protected Agency updatedBy;
 
     public Ruleform() {
     }
@@ -157,11 +176,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     @JsonGetter
-    public WorkspaceAuthorization getWorkspace() {
-        return workspace;
-    }
-
-    @JsonGetter
     public UUID getId() {
         return id;
     }
@@ -190,6 +204,11 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return version;
     }
 
+    @JsonGetter
+    public WorkspaceAuthorization getWorkspace() {
+        return workspace;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -205,10 +224,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     public void persist(Triggers triggers) {
         // default is to do nothing
-    }
-
-    public void setWorkspace(WorkspaceAuthorization workspace) {
-        this.workspace = workspace;
     }
 
     @JsonProperty
@@ -234,6 +249,10 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public void setWorkspace(WorkspaceAuthorization workspace) {
+        this.workspace = workspace;
     }
 
     @Override

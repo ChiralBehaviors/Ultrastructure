@@ -175,7 +175,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         try {
             WorkspaceAuthorization authorization = em.createQuery(query)
                                                      .getSingleResult();
-            T ruleform = authorization.getEntity();
+            T ruleform = authorization.getEntity(model);
             cache.put(key, ruleform);
             return ruleform;
         } catch (NoResultException e) {

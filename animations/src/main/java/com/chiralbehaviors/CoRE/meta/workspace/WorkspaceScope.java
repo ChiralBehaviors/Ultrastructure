@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.annotations.Key;
+import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
  * @author hhildebrand
@@ -93,14 +94,12 @@ public class WorkspaceScope {
         }
         Workspace workspace = imports.get(namespace);
         if (workspace == null) {
-            throw new IllegalArgumentException(
-                                               String.format("Namespace %s does not exist",
+            throw new IllegalArgumentException(String.format("Namespace %s does not exist",
                                                              namespace));
         }
         T member = workspace.get(name);
         if (member == null) {
-            throw new IllegalArgumentException(
-                                               String.format("Member %s::%s does not exist",
+            throw new IllegalArgumentException(String.format("Member %s::%s does not exist",
                                                              namespace, name));
         }
         return member;
@@ -113,7 +112,8 @@ public class WorkspaceScope {
     public void remove(Workspace scope) {
         String key = null;
         for (Map.Entry<String, Workspace> entry : imports.entrySet()) {
-            if (entry.getValue().equals(scope)) {
+            if (entry.getValue()
+                     .equals(scope)) {
                 key = entry.getKey();
                 break;
             }
@@ -127,10 +127,11 @@ public class WorkspaceScope {
     @Override
     public String toString() {
         return String.format("WorkspaceScope[%s]",
-                             workspace.getDefiningProduct().getName());
+                             workspace.getDefiningProduct()
+                                      .getName());
     }
 
-    protected Ruleform localLookup(String key) {
+    protected Ruleform localLookup(String key, Model model) {
         return workspace.get(key);
     }
 }

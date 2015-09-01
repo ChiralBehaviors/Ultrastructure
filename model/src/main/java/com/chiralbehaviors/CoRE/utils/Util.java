@@ -79,7 +79,8 @@ public final class Util {
         Hibernate4Module module = new Hibernate4Module();
         module.enable(Feature.FORCE_LAZY_LOADING);
         objMapper.registerModule(module);
-        objMapper.writerWithDefaultPrettyPrinter().writeValue(os, ruleform);
+        objMapper.writerWithDefaultPrettyPrinter()
+                 .writeValue(os, ruleform);
     }
 
     public static Map<Ruleform, Ruleform> slice(Ruleform ruleform,
@@ -113,7 +114,8 @@ public final class Util {
         List<Field> fields = new ArrayList<Field>();
         for (Class<?> c = type; c != null; c = c.getSuperclass()) {
             for (Field field : c.getDeclaredFields()) {
-                if (field.getName().contains("$")
+                if (field.getName()
+                         .contains("$")
                     || Modifier.isStatic(field.getModifiers())
                     || field.getAnnotation(OneToMany.class) != null) {
                     continue;
@@ -145,7 +147,9 @@ public final class Util {
 
         // This value is not in the system and has not been traversed, create a mapped value that stands for an exit from the system
         try {
-            mappedValue = value.getClass().getConstructor().newInstance();
+            mappedValue = value.getClass()
+                               .getConstructor()
+                               .newInstance();
             mappedValue.setNotes("Mapped frontier stand in");
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException(String.format("Unable to get no argument constructor on ruleform: %s",
@@ -186,12 +190,6 @@ public final class Util {
 
     protected static void traverse(EntityManager em, Ruleform ruleform,
                                    Map<Ruleform, Ruleform> mapped) {
-        if (ruleform instanceof WorkspaceAuthorization) {
-            WorkspaceAuthorization auth = (WorkspaceAuthorization) ruleform;
-            auth.setDefiningProduct(map(em, auth.getDefiningProduct(), mapped));
-            auth.setRuleform(map(em, auth.getRuleform(), mapped));
-            return;
-        }
         for (Field field : getInheritedFields(ruleform.getClass())) {
             if (field.getAnnotation(JoinColumn.class) == null) {
                 continue;

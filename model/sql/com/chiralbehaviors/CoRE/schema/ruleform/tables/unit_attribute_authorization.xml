@@ -66,6 +66,21 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="unit_attribute_authorization_network_authorization_fkey_idx" tableName="unit_attribute_authorization"
+            unique="false"
+        >
+            <column name="network_authorization" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="unit_attribute_authorization_authorized_attribute_fkey_idx" tableName="unit_attribute_authorization"
+            unique="false"
+        >
+            <column name="authorized_attribute" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="unit_attribute_authorization_authorized_network_attribute_fkey_idx"
+            tableName="unit_attribute_authorization" unique="false"
+        >
+            <column name="authorized_network_attribute" />
+        </createIndex>
         <sql><![CDATA[
             GRANT ALL ON TABLE unit_attribute_authorization TO core;
             GRANT SELECT ON TABLE unit_attribute_authorization TO core_read_only;

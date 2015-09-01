@@ -20,7 +20,7 @@
             </column>
             <column name="authorized_network_attribute" remarks="An Attribute the child network edge is expected to have" type="uuid">
                 <constraints nullable="true" />
-            </column> 
+            </column>
             <column name="grouping_agency" remarks="If present, used to select an entire grouping of Attributes that can be acceptable values"
                 type="uuid" />
             <column name="boolean_value" type="boolean" />
@@ -67,6 +67,21 @@
             unique="false"
         >
             <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="attr_meta_attr_auth_network_authorization_fkey_idx" tableName="attr_meta_attr_auth"
+            unique="false"
+        >
+            <column name="network_authorization" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="attr_meta_attr_auth_authorized_attribute_fkey_idx" tableName="attr_meta_attr_auth"
+            unique="false"
+        >
+            <column name="authorized_attribute" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="attr_meta_attr_auth_authorized_network_attribute_fkey_idx" tableName="attr_meta_attr_auth"
+            unique="false"
+        >
+            <column name="authorized_network_attribute" />
         </createIndex>
     </changeSet>
 </databaseChangeLog>

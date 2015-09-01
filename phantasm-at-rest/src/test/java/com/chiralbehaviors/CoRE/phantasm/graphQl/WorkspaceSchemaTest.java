@@ -45,12 +45,14 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
+import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
+import graphql.validation.ValidationError;
+import graphql.validation.ValidationErrorType;
 
 /**
  * @author hhildebrand
@@ -59,6 +61,93 @@ import graphql.schema.GraphQLSchema;
 public class WorkspaceSchemaTest extends AbstractModelTest {
 
     private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
+
+    @Test
+    public void testBadQueries() throws Exception {
+        em.getTransaction()
+          .begin();
+        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                          model);
+
+        EntityManagerFactory mockedEmf = mockedEmf();
+        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        Map<String, Object> variables = new HashMap<>();
+        QueryRequest request = new QueryRequest("mutation m($id: String) { UpdateThing1(state: { id: $id, setName: \"foo\"}) { name } }",
+                                                variables);
+        Map<String, Object> result;
+        result = resource.query(null, TEST_SCENARIO_URI, request);
+        assertNotNull(result);
+        @SuppressWarnings("unchecked")
+        List<ValidationError> errors = (List<ValidationError>) result.get("errors");
+        assertNotNull(errors);
+        assertEquals(1, errors.size());
+        ValidationError error = errors.get(0);
+        assertEquals(ValidationErrorType.UnboundVariable,
+                     error.getValidationErrorType());
+        assertEquals("Validation error of type UnboundVariable: Variable not bound: '$id'",
+                     error.getMessage());
+    }
+
+    @Test
+    public void testCreate() throws Exception {
+        em.getTransaction()
+          .begin();
+        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                          model);
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
+                                        "a favorite thing");
+        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
+                                                 "model artifact");
+        artifact.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact.setArtifactID("model");
+        artifact.setVersion("0.0.2-SNAPSHOT");
+        artifact.setType("jar");
+
+        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
+                                                  "animations",
+                                                  "animations artifact");
+        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
+        artifact2.setArtifactID("animations");
+        artifact2.setVersion("0.0.2-SNAPSHOT");
+        artifact2.setType("jar");
+
+        thing2.addThing3(thing3);
+
+        thing3.addDerivedFrom(artifact);
+        thing3.addDerivedFrom(artifact2);
+
+        EntityManagerFactory mockedEmf = mockedEmf();
+
+        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("artifact", artifact2.getRuleform()
+                                           .getId()
+                                           .toString());
+        variables.put("name", "hello");
+        variables.put("description", "goodbye");
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+                                                variables);
+        Map<String, Object> result;
+        try {
+            result = resource.query(null, TEST_SCENARIO_URI, request);
+        } catch (WebApplicationException e) {
+            fail(e.getResponse()
+                  .toString());
+            return;
+        }
+        assertNotNull(result);
+
+        System.out.println(result);
+
+        assertNull(result.get("errors"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        assertNotNull(thing1Result);
+        assertEquals("hello", thing1Result.get("name"));
+
+        // assertEquals(artifact2, thing1.getDerivedFrom());
+    }
 
     @Test
     public void testGraphQlResource() throws Exception {
@@ -220,67 +309,6 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         assertEquals(artifact2, thing1.getDerivedFrom());
         assertArrayEquals(newAliases, thing1.getAliases());
         assertEquals(newUri, thing1.getURI());
-    }
-
-    @Test
-    public void testCreate() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
-                                        "a favorite thing");
-        MavenArtifact artifact = model.construct(MavenArtifact.class, "model",
-                                                 "model artifact");
-        artifact.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact.setArtifactID("model");
-        artifact.setVersion("0.0.2-SNAPSHOT");
-        artifact.setType("jar");
-
-        MavenArtifact artifact2 = model.construct(MavenArtifact.class,
-                                                  "animations",
-                                                  "animations artifact");
-        artifact2.setArtifactID("com.chiralbehaviors.CoRE");
-        artifact2.setArtifactID("animations");
-        artifact2.setVersion("0.0.2-SNAPSHOT");
-        artifact2.setType("jar");
-
-        thing2.addThing3(thing3);
-
-        thing3.addDerivedFrom(artifact);
-        thing3.addDerivedFrom(artifact2);
-
-        EntityManagerFactory mockedEmf = mockedEmf();
-
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("artifact", artifact2.getRuleform()
-                                           .getId()
-                                           .toString());
-        variables.put("name", "hello");
-        variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
-                                                variables);
-        Map<String, Object> result;
-        try {
-            result = resource.query(null, TEST_SCENARIO_URI, request);
-        } catch (WebApplicationException e) {
-            fail(e.getResponse()
-                  .toString());
-            return;
-        }
-        assertNotNull(result);
-
-        System.out.println(result);
-
-        assertNull(result.get("errors"));
-        @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
-        assertNotNull(thing1Result);
-        assertEquals("hello", thing1Result.get("name"));
-
-        // assertEquals(artifact2, thing1.getDerivedFrom());
     }
 
     @SuppressWarnings("rawtypes")

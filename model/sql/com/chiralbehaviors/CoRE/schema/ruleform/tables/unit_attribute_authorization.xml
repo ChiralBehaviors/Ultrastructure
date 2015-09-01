@@ -9,7 +9,7 @@
         <createTable schemaName="ruleform" remarks="Defines rules stating what attributes (and values thereof) are authorized for particular units"
             tableName="unit_attribute_authorization"
         >
-            <column name="defining_product" type="uuid" />
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="unit_attribute_authorization_pkey" />
             </column>
@@ -81,8 +81,8 @@
             <column name="authorized_network_attribute" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="defining_product" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_defining_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            baseColumnNames="workspace" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
         <sql><![CDATA[
             GRANT ALL ON TABLE unit_attribute_authorization TO core;
             GRANT SELECT ON TABLE unit_attribute_authorization TO core_read_only;

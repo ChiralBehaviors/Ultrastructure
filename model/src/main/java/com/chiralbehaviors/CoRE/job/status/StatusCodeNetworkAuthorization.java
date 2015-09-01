@@ -29,11 +29,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -41,20 +38,20 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
  */
 @Entity
 @Table(name = "status_code_network_authorization", schema = "ruleform")
-public class StatusCodeNetworkAuthorization extends
-        NetworkAuthorization<StatusCode> {
+public class StatusCodeNetworkAuthorization
+        extends NetworkAuthorization<StatusCode> {
 
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_parent")
-    private StatusCode        authorizedParent;
+    private StatusCode authorizedParent;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
-    private StatusCode        classification;
+    private StatusCode classification;
 
     public StatusCodeNetworkAuthorization() {
         super();
@@ -92,14 +89,6 @@ public class StatusCodeNetworkAuthorization extends
     @Override
     public SingularAttribute<? extends NetworkAuthorization<StatusCode>, ? extends StatusCode> getClassifierAttribute() {
         return StatusCodeNetworkAuthorization_.classification;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeNetworkAuthorization;
     }
 
     @Override

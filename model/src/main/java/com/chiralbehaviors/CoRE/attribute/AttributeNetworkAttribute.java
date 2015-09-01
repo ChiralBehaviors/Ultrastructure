@@ -32,9 +32,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product attributes
@@ -44,8 +41,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "attribute_network_attribute", schema = "ruleform")
-public class AttributeNetworkAttribute extends
-        NetworkAttribute<AttributeNetwork> {
+public class AttributeNetworkAttribute
+        extends NetworkAttribute<AttributeNetwork> {
     private static final long serialVersionUID = 1L;
     // bi-directional many-to-one association to AttributeNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -155,15 +152,6 @@ public class AttributeNetworkAttribute extends
     @Override
     public Class<AttributeNetwork> getRuleformClass() {
         return AttributeNetwork.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AttributeNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attributeNetworkAttribute;
     }
 
     public void setNetwork(AttributeNetwork network) {

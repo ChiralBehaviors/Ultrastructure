@@ -9,7 +9,7 @@
         <createTable schemaName="ruleform"
             remarks="Defines rules stating what attributes (and values thereof) are authorized for particular Entities" tableName="attr_meta_attr_auth"
         >
-            <column name="defining_product" type="uuid" />
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="attr_meta_attr_auth_pkey" />
             </column>
@@ -85,7 +85,7 @@
             <column name="authorized_network_attribute" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="defining_product" baseTableName="attr_meta_attr_auth" constraintName="attr_meta_attr_auth_defining_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            baseColumnNames="workspace" baseTableName="attr_meta_attr_auth" constraintName="attr_meta_attr_auth_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

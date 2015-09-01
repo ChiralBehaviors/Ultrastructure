@@ -55,7 +55,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1633,8 +1632,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             return null;
         }
     }
-
-    abstract protected SingularAttribute<? super WorkspaceAuthorization, ?> getNetAuthWorkspaceAttribute();
 
     abstract protected Class<?> getNetworkAuthClass();
 }

@@ -7,7 +7,7 @@
 
     <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="agency_product_attribute_authorization">
-            <column name="defining_product" type="uuid" />
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_product_attribute_authorization_pkey" />
             </column>
@@ -67,7 +67,7 @@
             <column name="authorized_attribute" />
         </createIndex> 
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="defining_product" baseTableName="agency_product_attribute_authorization" constraintName="agency_product_attribute_authorization_defining_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            baseColumnNames="workspace" baseTableName="agency_product_attribute_authorization" constraintName="agency_product_attribute_authorization_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

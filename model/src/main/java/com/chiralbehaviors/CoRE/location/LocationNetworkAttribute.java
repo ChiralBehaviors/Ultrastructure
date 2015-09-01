@@ -33,9 +33,6 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product attributes
@@ -45,13 +42,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "location_network_attribute", schema = "ruleform")
-public class LocationNetworkAttribute extends NetworkAttribute<LocationNetwork> {
+public class LocationNetworkAttribute
+        extends NetworkAttribute<LocationNetwork> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to LocationNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private LocationNetwork   network;
+    private LocationNetwork network;
 
     public LocationNetworkAttribute() {
     }
@@ -156,15 +154,6 @@ public class LocationNetworkAttribute extends NetworkAttribute<LocationNetwork> 
     @Override
     public Class<LocationNetwork> getRuleformClass() {
         return LocationNetwork.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, LocationNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.locationNetworkAttribute;
     }
 
     public void setNetwork(LocationNetwork network) {

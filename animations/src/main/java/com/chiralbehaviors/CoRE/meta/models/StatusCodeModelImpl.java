@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.TypedQuery;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -42,8 +41,6 @@ import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.security.AgencyStatusCodeGrouping;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -262,14 +259,6 @@ public class StatusCodeModelImpl extends
     @Override
     protected Class<?> getAttributeAuthorizationClass() {
         return StatusCodeAttributeAuthorization.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.AbstractNetworkedModel#getNetAuthWorkspaceAttribute()
-     */
-    @Override
-    protected SingularAttribute<? super WorkspaceAuthorization, ?> getNetAuthWorkspaceAttribute() {
-        return WorkspaceAuthorization_.statusCodeNetworkAuthorization;
     }
 
     /* (non-Javadoc)

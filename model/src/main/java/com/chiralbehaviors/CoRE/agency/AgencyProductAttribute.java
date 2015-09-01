@@ -33,10 +33,7 @@ import javax.validation.constraints.NotNull;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product location attributes
@@ -159,15 +156,6 @@ public class AgencyProductAttribute extends AttributeValue<AgencyProduct> {
     @Override
     public Class<AgencyProduct> getRuleformClass() {
         return AgencyProduct.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyProductAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyProductAttribute;
     }
 
     public void setAgencyProduct(AgencyProduct agencyProduct) {

@@ -26,15 +26,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * A chain of relationships.
@@ -50,17 +46,17 @@ public class NetworkInference extends Ruleform {
     // bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "inference")
-    private Relationship      inference;
+    private Relationship inference;
 
     // bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise1")
-    private Relationship      premise1;
+    private Relationship premise1;
 
     // bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise2")
-    private Relationship      premise2;
+    private Relationship premise2;
 
     public NetworkInference() {
     }
@@ -133,15 +129,6 @@ public class NetworkInference extends Ruleform {
 
     public Relationship getPremise2() {
         return premise2;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, NetworkInference> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.networkInference;
     }
 
     public void setInference(Relationship inference) {

@@ -52,8 +52,6 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -62,90 +60,89 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = FIND_BY_ID, query = "select e from Product e where e.id = :id"),
-               @NamedQuery(name = FIND_BY_NAME, query = "select e from Product e where e.name = :name"),
-               @NamedQuery(name = FIND_ALL, query = "select e from Product e"),
-               @NamedQuery(name = UPDATED_BY, query = "select e from Product e where e.updatedBy = :agency"),
-               @NamedQuery(name = UPDATED_BY_NAME, query = "select e from Product e where e.updatedBy.name = :name"),
-               @NamedQuery(name = SUBSUMING_ENTITIES, query = "SELECT distinct(bn.child) "
-                                                              + "FROM ProductNetwork AS bn "
-                                                              + "WHERE bn.relationship = :relationship "
-                                                              + "AND bn.parent = :product"),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-                                                                            + "  attrValue "
-                                                                            + "FROM "
-                                                                            + "       ProductAttribute attrValue, "
-                                                                            + "       ProductAttributeAuthorization auth, "
-                                                                            + "       ProductNetworkAuthorization na, "
-                                                                            + "       ProductNetwork network "
-                                                                            + "WHERE "
-                                                                            + "        auth.networkAuthorization = na "
-                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
-                                                                            + "    AND network.relationship = na.classifier "
-                                                                            + "    AND network.child = na.classification"
-                                                                            + "    AND attrValue.product = :ruleform "
-                                                                            + "    AND na.classifier = :classifier "
-                                                                            + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
-                                                                                                  + "  auth "
-                                                                                                  + "FROM "
-                                                                                                  + "       ProductAttributeAuthorization auth, "
-                                                                                                  + "       ProductNetworkAuthorization na, "
-                                                                                                  + "       ProductNetwork network "
-                                                                                                  + "WHERE "
-                                                                                                  + "        auth.networkAuthorization = na "
-                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
-                                                                                                  + "    AND network.relationship = na.classifier "
-                                                                                                  + "    AND network.child = na.classification"
-                                                                                                  + "    AND na.classifier = :classifier "
-                                                                                                  + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from ProductAttributeAuthorization auth "
-                                                                                    + "WHERE auth.networkAuthorization.classifier = :classifier "
-                                                                                    + "AND auth.networkAuthorization.classification = :classification "
-                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child "
-                                                        + "FROM ProductNetwork n "
-                                                        + "WHERE n.parent = :p "
-                                                        + "AND n.relationship = :r"),
-               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
-                                                                        + "FROM ProductNetwork n "
-                                                                        + "WHERE n.child = :c"),
-               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM ProductNetwork n "
-                                                                           + "WHERE n.parent = :product "
-                                                                           + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+@NamedQueries({ @NamedQuery(name = FIND_BY_ID, query = "select e from Product e where e.id = :id"),
+                @NamedQuery(name = FIND_BY_NAME, query = "select e from Product e where e.name = :name"),
+                @NamedQuery(name = FIND_ALL, query = "select e from Product e"),
+                @NamedQuery(name = UPDATED_BY, query = "select e from Product e where e.updatedBy = :agency"),
+                @NamedQuery(name = UPDATED_BY_NAME, query = "select e from Product e where e.updatedBy.name = :name"),
+                @NamedQuery(name = SUBSUMING_ENTITIES, query = "SELECT distinct(bn.child) "
+                                                               + "FROM ProductNetwork AS bn "
+                                                               + "WHERE bn.relationship = :relationship "
+                                                               + "AND bn.parent = :product"),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                             + "  attrValue "
+                                                                             + "FROM "
+                                                                             + "       ProductAttribute attrValue, "
+                                                                             + "       ProductAttributeAuthorization auth, "
+                                                                             + "       ProductNetworkAuthorization na, "
+                                                                             + "       ProductNetwork network "
+                                                                             + "WHERE "
+                                                                             + "        auth.networkAuthorization = na "
+                                                                             + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                             + "    AND network.relationship = na.classifier "
+                                                                             + "    AND network.child = na.classification"
+                                                                             + "    AND attrValue.product = :ruleform "
+                                                                             + "    AND na.classifier = :classifier "
+                                                                             + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                   + "  auth "
+                                                                                                   + "FROM "
+                                                                                                   + "       ProductAttributeAuthorization auth, "
+                                                                                                   + "       ProductNetworkAuthorization na, "
+                                                                                                   + "       ProductNetwork network "
+                                                                                                   + "WHERE "
+                                                                                                   + "        auth.networkAuthorization = na "
+                                                                                                   + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                   + "    AND network.relationship = na.classifier "
+                                                                                                   + "    AND network.child = na.classification"
+                                                                                                   + "    AND na.classifier = :classifier "
+                                                                                                   + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from ProductAttributeAuthorization auth "
+                                                                                     + "WHERE auth.networkAuthorization.classifier = :classifier "
+                                                                                     + "AND auth.networkAuthorization.classification = :classification "
+                                                                                     + "AND auth.authorizedAttribute IS NOT NULL"),
+                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child "
+                                                         + "FROM ProductNetwork n "
+                                                         + "WHERE n.parent = :p "
+                                                         + "AND n.relationship = :r"),
+                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                         + "FROM ProductNetwork n "
+                                                                         + "WHERE n.child = :c"),
+                @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM ProductNetwork n "
+                                                                            + "WHERE n.parent = :product "
+                                                                            + "AND n.relationship IN :relationships "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @Entity
 @Table(name = "product", schema = "ruleform")
 public class Product extends ExistentialRuleform<Product, ProductNetwork> {
 
-    public static final String    CREATE_ENTITY_FROM_GROUP                               = "product.createEntityFromGroup";
-    public static final String    FIND_ALL                                               = "product"
-                                                                                           + Ruleform.FIND_ALL_SUFFIX;
-    public static final String    FIND_ATTRIBUTE_AUTHORIZATIONS                          = "product.findAttributeAuthorizations";
-    public static final String    FIND_BY_ID                                             = "product.findById";
-    public static final String    FIND_BY_NAME                                           = "product"
-                                                                                           + FIND_BY_NAME_SUFFIX;
-    public static final String    FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "product"
-                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String    FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "product"
-                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-    public static final String    FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "product"
-                                                                                           + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String    FIND_FLAGGED                                           = "product.findFlagged";
-    public static final String    GET_ALL_PARENT_RELATIONSHIPS                           = "product"
-                                                                                           + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String    GET_CHILD_RULES_BY_RELATIONSHIP                        = "product"
-                                                                                           + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String    GET_CHILDREN                                           = "product"
-                                                                                           + GET_CHILDREN_SUFFIX;
-    public static final String    SUBSUMING_ENTITIES                                     = "product.subsumingEntities";
-    public static final String    UNIQUE_ENTITY_BY_ATTRIBUTE_VALUE                       = "product.uniqueEntityByAttributeValue";
-    public static final String    UPDATED_BY                                             = "product"
-                                                                                           + GET_UPDATED_BY_SUFFIX;
-    public static final String    UPDATED_BY_NAME                                        = "product.getUpdatedByName";
+    public static final String CREATE_ENTITY_FROM_GROUP                               = "product.createEntityFromGroup";
+    public static final String FIND_ALL                                               = "product"
+                                                                                        + Ruleform.FIND_ALL_SUFFIX;
+    public static final String FIND_ATTRIBUTE_AUTHORIZATIONS                          = "product.findAttributeAuthorizations";
+    public static final String FIND_BY_ID                                             = "product.findById";
+    public static final String FIND_BY_NAME                                           = "product"
+                                                                                        + FIND_BY_NAME_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "product"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "product"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "product"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String FIND_FLAGGED                                           = "product.findFlagged";
+    public static final String GET_ALL_PARENT_RELATIONSHIPS                           = "product"
+                                                                                        + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String GET_CHILD_RULES_BY_RELATIONSHIP                        = "product"
+                                                                                        + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String GET_CHILDREN                                           = "product"
+                                                                                        + GET_CHILDREN_SUFFIX;
+    public static final String SUBSUMING_ENTITIES                                     = "product.subsumingEntities";
+    public static final String UNIQUE_ENTITY_BY_ATTRIBUTE_VALUE                       = "product.uniqueEntityByAttributeValue";
+    public static final String UPDATED_BY                                             = "product"
+                                                                                        + GET_UPDATED_BY_SUFFIX;
+    public static final String UPDATED_BY_NAME                                        = "product.getUpdatedByName";
 
-    private static final long     serialVersionUID                                       = 1L;
+    private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to ProductAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
@@ -155,17 +152,17 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     // bi-directional many-to-one association to ProductLocation
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     @JsonIgnore
-    private Set<ProductLocation>  locations;
+    private Set<ProductLocation> locations;
 
     // bi-directional many-to-one association to ProductNetwork
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
-    private Set<ProductNetwork>   networkByChild;
+    private Set<ProductNetwork> networkByChild;
 
     // bi-directional many-to-one association to ProductNetwork
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
-    private Set<ProductNetwork>   networkByParent;
+    private Set<ProductNetwork> networkByParent;
 
     public Product() {
     }
@@ -353,14 +350,6 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, ProductNetwork> getNetworkWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productNetwork;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -377,20 +366,12 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Product> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.product;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
      */
     @Override
     public boolean isAny() {
-        return WellKnownProduct.ANY.id().equals(getId());
+        return WellKnownProduct.ANY.id()
+                                   .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -398,8 +379,10 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
      */
     @Override
     public boolean isAnyOrSame() {
-        return WellKnownProduct.ANY.id().equals(getId())
-               || WellKnownProduct.SAME.id().equals(getId());
+        return WellKnownProduct.ANY.id()
+                                   .equals(getId())
+               || WellKnownProduct.SAME.id()
+                                       .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -407,7 +390,8 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
      */
     @Override
     public boolean isCopy() {
-        return WellKnownProduct.COPY.id().equals(getId());
+        return WellKnownProduct.COPY.id()
+                                    .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -415,12 +399,14 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
      */
     @Override
     public boolean isNotApplicable() {
-        return WellKnownProduct.NOT_APPLICABLE.id().equals(getId());
+        return WellKnownProduct.NOT_APPLICABLE.id()
+                                              .equals(getId());
     }
 
     @Override
     public boolean isSame() {
-        return WellKnownProduct.SAME.id().equals(getId());
+        return WellKnownProduct.SAME.id()
+                                    .equals(getId());
     }
 
     @Override
@@ -428,8 +414,8 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
                                Agency inverseSoftware, EntityManager em) {
         ProductNetwork link = new ProductNetwork(this, r, child, updatedBy);
         em.persist(link);
-        ProductNetwork inverse = new ProductNetwork(child, r.getInverse(),
-                                                    this, inverseSoftware);
+        ProductNetwork inverse = new ProductNetwork(child, r.getInverse(), this,
+                                                    inverseSoftware);
         em.persist(inverse);
         return link;
     }

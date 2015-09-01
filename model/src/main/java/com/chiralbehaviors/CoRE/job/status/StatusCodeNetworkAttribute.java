@@ -33,9 +33,6 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for unit networks
@@ -45,8 +42,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "unit_network_attribute", schema = "ruleform")
-public class StatusCodeNetworkAttribute extends
-        NetworkAttribute<StatusCodeNetwork> {
+public class StatusCodeNetworkAttribute
+        extends NetworkAttribute<StatusCodeNetwork> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to StatusCodeNetwork
@@ -157,15 +154,6 @@ public class StatusCodeNetworkAttribute extends
     @Override
     public Class<StatusCodeNetwork> getRuleformClass() {
         return StatusCodeNetwork.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeNetworkAttribute;
     }
 
     public void setNetwork(StatusCodeNetwork network) {

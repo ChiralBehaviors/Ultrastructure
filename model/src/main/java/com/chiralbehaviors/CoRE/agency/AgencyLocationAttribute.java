@@ -32,10 +32,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product location attributes
@@ -157,15 +154,6 @@ public class AgencyLocationAttribute extends AttributeValue<AgencyLocation> {
     @Override
     public Class<AgencyLocation> getRuleformClass() {
         return AgencyLocation.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyLocationAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyLocationAttribute;
     }
 
     public void setEntityLocation(AgencyLocation AgencyLocation) {

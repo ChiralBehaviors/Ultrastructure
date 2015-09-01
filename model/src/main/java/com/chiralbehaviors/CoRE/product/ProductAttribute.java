@@ -37,10 +37,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute values of product attributes
@@ -59,7 +56,7 @@ public class ProductAttribute extends AttributeValue<Product> {
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
-    private Product            product;
+    private Product product;
 
     public ProductAttribute() {
     }
@@ -93,7 +90,8 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param value
      * @param updatedBy
      */
-    public ProductAttribute(Attribute attribute, boolean value, Agency updatedBy) {
+    public ProductAttribute(Attribute attribute, boolean value,
+                            Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -111,7 +109,8 @@ public class ProductAttribute extends AttributeValue<Product> {
      * @param value
      * @param updatedBy
      */
-    public ProductAttribute(Attribute attribute, String value, Agency updatedBy) {
+    public ProductAttribute(Attribute attribute, String value,
+                            Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -164,15 +163,6 @@ public class ProductAttribute extends AttributeValue<Product> {
     @Override
     public Class<Product> getRuleformClass() {
         return Product.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productAttribute;
     }
 
     public void setProduct(Product product2) {

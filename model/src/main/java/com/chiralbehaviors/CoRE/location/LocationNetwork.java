@@ -36,14 +36,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -51,15 +48,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * The persistent class for the location_network database table.
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from LocationNetwork n"),
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM LocationNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM LocationNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+@NamedQueries({ @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from LocationNetwork n"),
+                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM LocationNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship"),
+                @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM LocationNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship "
+                                                         + "AND n.child = :child") })
 @Entity
 @Table(name = "location_network", schema = "ruleform")
 public class LocationNetwork extends NetworkRuleform<Location> {
@@ -71,16 +67,17 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     private static final long  serialVersionUID       = 1L;
 
     public static List<Relationship> getUsedRelationships(EntityManager em) {
-        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
+        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class)
+                 .getResultList();
     }
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Location        child;
+    private Location child;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Location        parent;
+    private Location parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise1")
@@ -165,15 +162,6 @@ public class LocationNetwork extends NetworkRuleform<Location> {
     @JsonGetter
     public LocationNetwork getPremise2() {
         return premise2;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, LocationNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.locationNetwork;
     }
 
     @Override

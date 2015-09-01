@@ -34,13 +34,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -48,33 +45,32 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM RelationshipNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM RelationshipNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+@NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM RelationshipNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship"),
+                @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM RelationshipNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship "
+                                                         + "AND n.child = :child") })
 @Entity
 @Table(name = "relationship_network", schema = "ruleform")
 public class RelationshipNetwork extends NetworkRuleform<Relationship> {
-    public static final String  GET_CHILDREN           = "relationshipNetwork"
-                                                         + GET_CHILDREN_SUFFIX;
-    public static final String  GET_NETWORKS           = "relationshipNetwork"
-                                                         + GET_NETWORKS_SUFFIX;
-    public static final String  GET_USED_RELATIONSHIPS = "relationshipNetwork"
-                                                         + USED_RELATIONSHIPS_SUFFIX;
-    private static final long   serialVersionUID       = 1L;
+    public static final String GET_CHILDREN           = "relationshipNetwork"
+                                                        + GET_CHILDREN_SUFFIX;
+    public static final String GET_NETWORKS           = "relationshipNetwork"
+                                                        + GET_NETWORKS_SUFFIX;
+    public static final String GET_USED_RELATIONSHIPS = "relationshipNetwork"
+                                                        + USED_RELATIONSHIPS_SUFFIX;
+    private static final long  serialVersionUID       = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Relationship        child;
+    private Relationship child;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Relationship        parent;
+    private Relationship parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise1")
@@ -172,15 +168,6 @@ public class RelationshipNetwork extends NetworkRuleform<Relationship> {
     @JsonGetter
     public RelationshipNetwork getPremise2() {
         return premise2;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, RelationshipNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.relationshipNetwork;
     }
 
     @Override

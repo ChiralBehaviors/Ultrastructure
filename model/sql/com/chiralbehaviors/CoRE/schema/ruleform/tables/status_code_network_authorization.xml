@@ -9,7 +9,7 @@
         <createTable schemaName="ruleform" remarks="Defines rules stating what network status_codes are authorized for particular status_codes"
             tableName="status_code_network_authorization"
         >
-            <column name="defining_product" type="uuid" />
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="status_code_network_authorization_pkey" />
             </column>
@@ -71,8 +71,8 @@
             <column name="classifier" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="defining_product" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_defining_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            baseColumnNames="workspace" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
         <createIndex schemaName="ruleform" indexName="status_code_network_authorization_classification_fkey_idx" tableName="status_code_network_authorization"
             unique="false"
         >

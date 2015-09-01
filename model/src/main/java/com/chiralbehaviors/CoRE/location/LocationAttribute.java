@@ -37,10 +37,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the location_attribute database table.
@@ -57,7 +54,7 @@ public class LocationAttribute extends AttributeValue<Location> {
     // bi-directional many-to-one association to Location
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location")
-    private Location           location;
+    private Location location;
 
     public LocationAttribute() {
     }
@@ -110,7 +107,8 @@ public class LocationAttribute extends AttributeValue<Location> {
      * @param value
      * @param updatedBy
      */
-    public LocationAttribute(Attribute attribute, String value, Agency updatedBy) {
+    public LocationAttribute(Attribute attribute, String value,
+                             Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -163,15 +161,6 @@ public class LocationAttribute extends AttributeValue<Location> {
     @Override
     public Class<Location> getRuleformClass() {
         return Location.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, LocationAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.locationAttribute;
     }
 
     public void setLocation(Location location) {

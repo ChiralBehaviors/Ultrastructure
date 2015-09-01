@@ -33,14 +33,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -56,15 +53,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                  + "FROM AgencyLocation n "
                                                                  + "WHERE n.relationship = :relationship "
                                                                  + "AND n.location = :location"), })
-public class AgencyLocation extends Ruleform implements
-        Attributable<AgencyLocationAttribute> {
-    public static final String           AGENCIES_AT_LOCATION = "agencyLocation.agenciesAtLocation";
-    private static final long            serialVersionUID     = 1L;
+public class AgencyLocation extends Ruleform
+        implements Attributable<AgencyLocationAttribute> {
+    public static final String AGENCIES_AT_LOCATION = "agencyLocation.agenciesAtLocation";
+    private static final long  serialVersionUID     = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
-    private Agency                       agency;
+    private Agency agency;
 
     // bi-directional many-to-one association to ProductLocationAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "agencyLocation")
@@ -74,17 +71,17 @@ public class AgencyLocation extends Ruleform implements
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authority")
-    private Agency                       authority;
+    private Agency authority;
 
     // bi-directional many-to-one association to Location
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location")
-    private Location                     location;
+    private Location location;
 
     // bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
-    private Relationship                 relationship;
+    private Relationship relationship;
 
     public AgencyLocation() {
     }
@@ -128,15 +125,6 @@ public class AgencyLocation extends Ruleform implements
 
     public Relationship getRelationship() {
         return relationship;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyLocation> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyLocation;
     }
 
     public void setAgency(Agency agency) {

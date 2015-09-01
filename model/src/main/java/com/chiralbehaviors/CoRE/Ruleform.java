@@ -25,6 +25,7 @@ import java.util.UUID;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -32,7 +33,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
-import javax.persistence.metamodel.SingularAttribute;
 
 import org.hibernate.annotations.Type;
 
@@ -43,7 +43,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -79,6 +78,11 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Version
     @Column(name = "version")
     private int version = 0;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "workspace")
+    protected WorkspaceAuthorization workspace;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "updated_by")
@@ -153,6 +157,11 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     @JsonGetter
+    public WorkspaceAuthorization getWorkspace() {
+        return workspace;
+    }
+
+    @JsonGetter
     public UUID getId() {
         return id;
     }
@@ -181,9 +190,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
         return version;
     }
 
-    @JsonIgnore
-    abstract public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute();
-
     /*
      * (non-Javadoc)
      *
@@ -199,6 +205,10 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     public void persist(Triggers triggers) {
         // default is to do nothing
+    }
+
+    public void setWorkspace(WorkspaceAuthorization workspace) {
+        this.workspace = workspace;
     }
 
     @JsonProperty

@@ -29,11 +29,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -48,12 +45,12 @@ public class UnitNetworkAuthorization extends NetworkAuthorization<Unit> {
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_parent")
-    private Unit              authorizedParent;
+    private Unit authorizedParent;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
-    private Unit              classification;
+    private Unit classification;
 
     public UnitNetworkAuthorization() {
         super();
@@ -91,14 +88,6 @@ public class UnitNetworkAuthorization extends NetworkAuthorization<Unit> {
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Unit>, ? extends Unit> getClassifierAttribute() {
         return UnitNetworkAuthorization_.classification;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.unitNetworkAuthorization;
     }
 
     @Override

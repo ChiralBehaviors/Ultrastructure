@@ -9,7 +9,7 @@
         <createTable schemaName="ruleform"
             remarks="Defines rules stating what attributes (and values thereof) are authorized for particular status_codes" tableName="status_code_attribute_authorization"
         >
-            <column name="defining_product" type="uuid" />
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="status_code_attribute_authorization_pkey" />
             </column>
@@ -79,8 +79,8 @@
             <column name="authorized_network_attribute" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="defining_product" baseTableName="status_code_attribute_authorization" constraintName="status_code_attribute_authorization_defining_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            baseColumnNames="workspace" baseTableName="status_code_attribute_authorization" constraintName="status_code_attribute_authorization_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
         <sql> ALTER TABLE status_code_attribute_authorization OWNER TO core; </sql>
         <rollback />
         <sql><![CDATA[

@@ -10,7 +10,7 @@
             remarks="Determines what the next available product should be, based on the status code returned for the previous product"
             tableName="product_parent_sequencing_authorization"
         >
-            <column name="defining_product" type="uuid" />
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_parent_sequencing_authorization_pkey" />
             </column>
@@ -70,7 +70,7 @@
             <column name="updated_by" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="defining_product" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_defining_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            baseColumnNames="workspace" baseTableName="product_parent_sequencing_authorization" constraintName="product_parent_sequencing_authorization_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

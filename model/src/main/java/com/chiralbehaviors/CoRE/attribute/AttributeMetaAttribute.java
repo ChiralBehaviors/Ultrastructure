@@ -36,10 +36,7 @@ import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * An attribute value on an attribute
@@ -138,15 +135,6 @@ public class AttributeMetaAttribute extends AttributeValue<Attribute> {
     @Override
     public Class<Attribute> getRuleformClass() {
         return Attribute.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attributeMetaAttribute;
     }
 
     public void setMetaAttribute(Attribute attribute3) {

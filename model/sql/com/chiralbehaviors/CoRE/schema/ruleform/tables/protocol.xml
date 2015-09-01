@@ -10,7 +10,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="protocol_pkey" />
             </column>
-            <column name="defining_product" type="uuid" />
+            <column name="workspace" type="uuid" />
             <column name="sequence_number" remarks="Ordering and uniqueness, for when an service / key combination can have multiple protocol rules"
                 type="sequence_number"
             >
@@ -135,7 +135,7 @@
             <column name="service" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="defining_product" baseTableName="protocol" constraintName="protocol_defining_product_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            baseColumnNames="workspace" baseTableName="protocol" constraintName="protocol_workspace_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

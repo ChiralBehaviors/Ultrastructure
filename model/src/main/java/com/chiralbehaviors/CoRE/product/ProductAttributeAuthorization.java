@@ -26,15 +26,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorizations relating products and their attributes
@@ -44,9 +40,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "product_attribute_authorization", schema = "ruleform")
-public class ProductAttributeAuthorization extends
-        AttributeAuthorization<Product, ProductNetwork> {
-    private static final long           serialVersionUID = 1L;
+public class ProductAttributeAuthorization
+        extends AttributeAuthorization<Product, ProductNetwork> {
+    private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -81,15 +77,6 @@ public class ProductAttributeAuthorization extends
     @Override
     public NetworkAuthorization<Product> getNetworkAuthorization() {
         return networkAuthorization;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productAttributeAuthorization;
     }
 
     @Override

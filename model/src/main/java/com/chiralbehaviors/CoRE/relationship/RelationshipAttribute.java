@@ -37,10 +37,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -56,7 +53,7 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
-    private Relationship       relationship;
+    private Relationship relationship;
 
     public RelationshipAttribute() {
         super();
@@ -94,8 +91,8 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
         super(attribute, unit);
     }
 
-    public RelationshipAttribute(Relationship relationship,
-                                 Attribute attribute, Agency updatedBy) {
+    public RelationshipAttribute(Relationship relationship, Attribute attribute,
+                                 Agency updatedBy) {
         super(attribute, updatedBy);
         setRelationship(relationship);
     }
@@ -128,15 +125,6 @@ public class RelationshipAttribute extends AttributeValue<Relationship> {
     @Override
     public Class<Relationship> getRuleformClass() {
         return Relationship.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, RelationshipAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.relationshipAttribute;
     }
 
     public void setRelationship(Relationship interval) {

@@ -9,7 +9,7 @@
         <createTable schemaName="ruleform"
             remarks="A agency is an actor in the system.  It has the ability to do work, produce and consume products" tableName="agency"
         >
-            <column name="defining_product" type="uuid" />
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_pkey" />
             </column>

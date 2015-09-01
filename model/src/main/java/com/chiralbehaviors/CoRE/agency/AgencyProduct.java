@@ -30,15 +30,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorization rule form that defines rules for relating agencies to
@@ -61,19 +57,19 @@ public class AgencyProduct extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
-    private Agency             agency;
+    private Agency agency;
 
     // bi-directional many-to-one association to Location
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
-    private Product            product;
+    private Product product;
 
     // bi-directional many-to-one association to Relationship
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
-    private Relationship       relationship;
+    private Relationship relationship;
 
     public AgencyProduct() {
     }
@@ -110,15 +106,6 @@ public class AgencyProduct extends Ruleform {
 
     public Relationship getRelationship() {
         return relationship;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyProduct> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyProduct;
     }
 
     public void setAgency(Agency agency) {

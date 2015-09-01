@@ -47,8 +47,6 @@ import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -335,14 +333,6 @@ public class Attribute
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, AttributeNetwork> getNetworkWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attributeNetwork;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -363,20 +353,12 @@ public class Attribute
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Attribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attribute;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
      */
     @Override
     public boolean isAny() {
-        return WellKnownAttribute.ANY.id().equals(getId());
+        return WellKnownAttribute.ANY.id()
+                                     .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -384,8 +366,10 @@ public class Attribute
      */
     @Override
     public boolean isAnyOrSame() {
-        return WellKnownAttribute.ANY.id().equals(getId())
-               || WellKnownAttribute.SAME.id().equals(getId());
+        return WellKnownAttribute.ANY.id()
+                                     .equals(getId())
+               || WellKnownAttribute.SAME.id()
+                                         .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -393,7 +377,8 @@ public class Attribute
      */
     @Override
     public boolean isCopy() {
-        return WellKnownAttribute.COPY.id().equals(getId());
+        return WellKnownAttribute.COPY.id()
+                                      .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -401,12 +386,14 @@ public class Attribute
      */
     @Override
     public boolean isNotApplicable() {
-        return WellKnownAttribute.NOT_APPLICABLE.id().equals(getId());
+        return WellKnownAttribute.NOT_APPLICABLE.id()
+                                                .equals(getId());
     }
 
     @Override
     public boolean isSame() {
-        return WellKnownAttribute.SAME.id().equals(getId());
+        return WellKnownAttribute.SAME.id()
+                                      .equals(getId());
     }
 
     /*

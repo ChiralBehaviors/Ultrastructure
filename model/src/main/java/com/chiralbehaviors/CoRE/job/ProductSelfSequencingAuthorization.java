@@ -32,51 +32,46 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hparry
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_SELF_ACTIONS, query = "SELECT seq FROM ProductSelfSequencingAuthorization AS seq"
-                                                            + " WHERE seq.service = :service"
-                                                            + "   AND seq.statusCode = :status"
-                                                            + " ORDER BY seq.sequenceNumber"),
-               @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductSelfSequencingAuthorization AS seq"
-                                                         + " WHERE seq.service = :service"
-                                                         + " ORDER BY seq.sequenceNumber") })
+@NamedQueries({ @NamedQuery(name = GET_SELF_ACTIONS, query = "SELECT seq FROM ProductSelfSequencingAuthorization AS seq"
+                                                             + " WHERE seq.service = :service"
+                                                             + "   AND seq.statusCode = :status"
+                                                             + " ORDER BY seq.sequenceNumber"),
+                @NamedQuery(name = GET_SEQUENCES, query = "SELECT seq FROM ProductSelfSequencingAuthorization AS seq"
+                                                          + " WHERE seq.service = :service"
+                                                          + " ORDER BY seq.sequenceNumber") })
 @Entity
 @Table(name = "product_self_sequencing_authorization", schema = "ruleform")
 public class ProductSelfSequencingAuthorization extends Ruleform {
     public static final String GET_SELF_ACTIONS = "productSelfSequencingAuthorization.getSelfActions";
     public static final String GET_SEQUENCES    = "productSelfSequencingAuthorization.getSequences";
 
-    private static final long  serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber   = 0;
+    private int sequenceNumber = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
-    private Product            service;
+    private Product service;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
-    private StatusCode         statusCode;
+    private StatusCode statusCode;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_to_set")
-    private StatusCode         statusToSet;
+    private StatusCode statusToSet;
 
     public ProductSelfSequencingAuthorization() {
         super();
@@ -143,15 +138,6 @@ public class ProductSelfSequencingAuthorization extends Ruleform {
 
     public StatusCode getStatusToSet() {
         return statusToSet;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductSelfSequencingAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productSelfSequencingAuthorization;
     }
 
     @Override

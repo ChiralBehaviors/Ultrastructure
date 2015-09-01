@@ -30,10 +30,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -41,19 +38,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "location_network_authorization", schema = "ruleform")
-public class LocationNetworkAuthorization extends
-        NetworkAuthorization<Location> {
+public class LocationNetworkAuthorization
+        extends NetworkAuthorization<Location> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_parent")
-    private Location          authorizedParent;
+    private Location authorizedParent;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
-    private Location          classification;
+    private Location classification;
 
     /**
      *
@@ -112,15 +109,6 @@ public class LocationNetworkAuthorization extends
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Location>, ? extends Location> getClassifierAttribute() {
         return LocationNetworkAuthorization_.classification;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, LocationNetworkAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.locationNetworkAuthorization;
     }
 
     /* (non-Javadoc)

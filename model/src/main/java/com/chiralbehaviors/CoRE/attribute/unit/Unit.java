@@ -46,8 +46,6 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -311,14 +309,6 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, UnitNetwork> getNetworkWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.unitNetwork;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -335,20 +325,12 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Unit> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.unit;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
      */
     @Override
     public boolean isAny() {
-        return WellKnownUnit.ANY.id().equals(getId());
+        return WellKnownUnit.ANY.id()
+                                .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -356,8 +338,10 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public boolean isAnyOrSame() {
-        return WellKnownUnit.ANY.id().equals(getId())
-               || WellKnownUnit.SAME.id().equals(getId());
+        return WellKnownUnit.ANY.id()
+                                .equals(getId())
+               || WellKnownUnit.SAME.id()
+                                    .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -365,7 +349,8 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public boolean isCopy() {
-        return WellKnownUnit.COPY.id().equals(getId());
+        return WellKnownUnit.COPY.id()
+                                 .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -373,12 +358,14 @@ public class Unit extends ExistentialRuleform<Unit, UnitNetwork> {
      */
     @Override
     public boolean isNotApplicable() {
-        return WellKnownUnit.NOT_APPLICABLE.id().equals(getId());
+        return WellKnownUnit.NOT_APPLICABLE.id()
+                                           .equals(getId());
     }
 
     @Override
     public boolean isSame() {
-        return WellKnownUnit.SAME.id().equals(getId());
+        return WellKnownUnit.SAME.id()
+                                 .equals(getId());
     }
 
     /*

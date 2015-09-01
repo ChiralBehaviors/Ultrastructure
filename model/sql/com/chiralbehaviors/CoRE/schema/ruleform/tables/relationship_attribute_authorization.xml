@@ -64,21 +64,6 @@
         >
             <column name="updated_by" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="relationship_attribute_authorization_network_authorization_fkey_idx"
-            tableName="relationship_attribute_authorization" unique="false"
-        >
-            <column name="network_authorization" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="relationship_attribute_authorization_authorized_attribute_fkey_idx"
-            tableName="relationship_attribute_authorization" unique="false"
-        >
-            <column name="authorized_attribute" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="relationship_attribute_authorization_authorized_network_attribute_fkey_idx"
-            tableName="relationship_attribute_authorization" unique="false"
-        >
-            <column name="authorized_network_attribute" />
-        </createIndex>
         <sql> ALTER TABLE relationship_attribute_authorization OWNER TO core; </sql>
         <rollback />
         <sql><![CDATA[

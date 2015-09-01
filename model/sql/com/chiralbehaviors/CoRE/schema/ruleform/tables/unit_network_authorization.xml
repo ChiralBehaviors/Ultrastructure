@@ -67,16 +67,6 @@
         >
             <column name="updated_by" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="unit_network_authorization_classifier_fkey_idx" tableName="unit_network_authorization"
-            unique="false"
-        >
-            <column name="classifier" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="unit_network_authorization_classification_fkey_idx" tableName="unit_network_authorization"
-            unique="false"
-        >
-            <column name="classification" />
-        </createIndex>
         <rollback>
             <dropTable tableName="unit_network_authorization" />
         </rollback>

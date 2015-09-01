@@ -12,7 +12,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="location_network_authorization_pkey" />
             </column>
-            <column name="name" type="text"/>
+            <column name="name" type="text" />
             <column name="classifier" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -64,6 +64,9 @@
         <addUniqueConstraint schemaName="ruleform"
             columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, grouping_agency"
             constraintName="location_attribute_auth_agency_classification_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="location_network_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="classifier, classification, grouping_agency"
+            constraintName="location_network_authorization_facet_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="location_network_authorization" />
         <createIndex schemaName="ruleform" indexName="location_network_authorization_updated_by_fkey_idx" tableName="location_network_authorization"
             unique="false"

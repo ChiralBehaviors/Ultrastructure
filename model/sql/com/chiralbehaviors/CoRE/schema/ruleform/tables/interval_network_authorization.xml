@@ -62,6 +62,9 @@
             columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, grouping_agency"
             constraintName="interval_interval_authorizatio_interval_classification_attri_key" deferrable="false" disabled="false"
             initiallyDeferred="true" tableName="interval_network_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="classifier, classification, grouping_agency"
+            constraintName="interval_network_authorization_facet_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="interval_network_authorization" />
         <createIndex schemaName="ruleform" indexName="interval_network_authorization_updated_by_fkey_idx" tableName="interval_network_authorization"
             unique="false"
         >

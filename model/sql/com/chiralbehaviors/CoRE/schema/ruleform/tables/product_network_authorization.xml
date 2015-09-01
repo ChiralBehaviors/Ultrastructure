@@ -65,6 +65,9 @@
             columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, grouping_agency"
             constraintName="product_attribute_authorizatio_agency_classification_attri_key" deferrable="false" disabled="false"
             initiallyDeferred="true" tableName="product_network_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="classifier, classification, grouping_agency"
+            constraintName="product_network_authorization_facet_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="product_network_authorization" />
         <createIndex schemaName="ruleform" indexName="product_network_authorization_updated_by_fkey_idx" tableName="product_network_authorization"
             unique="false"
         >

@@ -62,6 +62,9 @@
             columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, grouping_agency"
             constraintName="attribute_attribute_authorizatio_attribute_classification_attri_key" deferrable="false" disabled="false"
             initiallyDeferred="true" tableName="attribute_network_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="classifier, classification, grouping_agency"
+            constraintName="attribute_network_authorization_facet_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="attribute_network_authorization" />
         <createIndex schemaName="ruleform" indexName="attribute_network_authorization_updated_by_fkey_idx" tableName="attribute_network_authorization"
             unique="false"
         >

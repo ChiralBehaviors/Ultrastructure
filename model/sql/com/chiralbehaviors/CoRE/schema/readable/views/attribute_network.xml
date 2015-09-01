@@ -12,7 +12,6 @@
 			     rel.name AS relationship, 
 			     c.name AS child, 
                  n.inference,
-			     n.ordering,   
                  n.premise1, 
                  n.premise2,
 			     n.notes, 

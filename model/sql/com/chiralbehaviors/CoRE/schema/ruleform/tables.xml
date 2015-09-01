@@ -6,9 +6,9 @@
 >
 
     <include relativeToChangelogFile="true" file="tables/agency.xml" />
+    <include relativeToChangelogFile="true" file="tables/product.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/location.xml" />
-    <include relativeToChangelogFile="true" file="tables/product.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship.xml" />
     <include relativeToChangelogFile="true" file="tables/status_code.xml" />
     <include relativeToChangelogFile="true" file="tables/unit.xml" />

@@ -7,6 +7,7 @@
 
     <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="relationship">
+            <column name="defining_product" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="relationship_pkey" />
             </column>
@@ -30,7 +31,7 @@
             initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="inverse" baseTableName="relationship" constraintName="relationship_inverse_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addUniqueConstraint schemaName="ruleform" columnNames="name" constraintName="relationship_name_constraint"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="relationship" />
         <createIndex schemaName="ruleform" indexName="relationship_inverse_idx" tableName="relationship" unique="false">
@@ -39,5 +40,8 @@
         <createIndex schemaName="ruleform" indexName="relationship_updated_by_fkey_idx" tableName="relationship" unique="false">
             <column name="updated_by" />
         </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="defining_product" baseTableName="relationship" constraintName="relationship_defining_product_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
 </databaseChangeLog>

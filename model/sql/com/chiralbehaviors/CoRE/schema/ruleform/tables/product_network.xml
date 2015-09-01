@@ -7,6 +7,7 @@
 
     <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="product_network">
+            <column name="defining_product" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_network_pkey" />
             </column>
@@ -59,12 +60,15 @@
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="premise1" baseTableName="product_network" constraintName="product_network_premise1_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_network" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product_network" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="premise2" baseTableName="product_network" constraintName="product_network_premise2_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_network" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product_network" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="inference" baseTableName="product_network" constraintName="product_network_inference_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="network_inference" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="defining_product" baseTableName="product_network" constraintName="product_network_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
 </databaseChangeLog>

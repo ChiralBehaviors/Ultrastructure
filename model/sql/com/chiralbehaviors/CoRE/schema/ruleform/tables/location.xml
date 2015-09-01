@@ -7,6 +7,7 @@
 
     <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="location">
+            <column name="defining_product" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="location_pkey" />
             </column>
@@ -29,5 +30,8 @@
         <createIndex schemaName="ruleform" indexName="location_updated_by_fkey_idx" tableName="location" unique="false">
             <column name="updated_by" />
         </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="defining_product" baseTableName="location" constraintName="location_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
 </databaseChangeLog>

@@ -7,6 +7,7 @@
 
     <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="agency_interval_grouping">
+            <column name="defining_product" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_interval_grouping_pkey" />
             </column>
@@ -26,11 +27,11 @@
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="agency_interval_grouping" constraintName="agency_interval_grouping_grouping_agency_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
 
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="entity" baseTableName="agency_interval_grouping" constraintName="agency_interval_grouping_entity_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="interval" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="interval" />
 
         <addUniqueConstraint schemaName="ruleform" columnNames="entity, grouping_agency" constraintName="agency_interval_grouping_key_agency"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="agency_interval_grouping" />
@@ -45,5 +46,8 @@
         >
             <column name="grouping_agency" />
         </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="defining_product" baseTableName="agency_interval_grouping" constraintName="agency_interval_grouping_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
 </databaseChangeLog>

@@ -114,20 +114,27 @@
         <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_attribute_authorization "
             constraintName="workspace_unique_ruleform_constraint62" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="workspace_authorization" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_agency_grouping" constraintName="workspace_unique_ruleform_constraint200"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_attribute_grouping" constraintName="workspace_unique_ruleform_constraint201"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_interval_grouping" constraintName="workspace_unique_ruleform_constraint202"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_location_grouping" constraintName="workspace_unique_ruleform_constraint203"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_product_grouping" constraintName="workspace_unique_ruleform_constraint204"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_relationship_grouping" constraintName="workspace_unique_ruleform_constraint205"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
-        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_status_code_grouping" constraintName="workspace_unique_ruleform_constraint206"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_agency_grouping"
+            constraintName="workspace_unique_ruleform_constraint200" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_attribute_grouping"
+            constraintName="workspace_unique_ruleform_constraint201" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_interval_grouping"
+            constraintName="workspace_unique_ruleform_constraint202" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_location_grouping"
+            constraintName="workspace_unique_ruleform_constraint203" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_product_grouping"
+            constraintName="workspace_unique_ruleform_constraint204" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_relationship_grouping"
+            constraintName="workspace_unique_ruleform_constraint205" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_status_code_grouping"
+            constraintName="workspace_unique_ruleform_constraint206" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="workspace_authorization" />
         <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_unit_grouping" constraintName="workspace_unique_ruleform_constraint207"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
         <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, agency_location" constraintName="workspace_unique_ruleform_constraint2"
@@ -580,55 +587,48 @@
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="defining_product" baseTableName="workspace_authorization" constraintName="workspace_authorization_defining_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_attribute_network_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="attribute_network_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute_network_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="interval_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_interval_network_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="interval_network_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="interval_network_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_network_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product_network_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product_network_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="relationship_network_authorization" baseTableName="workspace_authorization"
             constraintName="workspace_authorization_relationship_network_authorization_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="relationship_network_authorization" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship_network_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="status_code_network_authorization" baseTableName="workspace_authorization"
             constraintName="workspace_authorization_status_code_network_authorization_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="status_code_network_authorization" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code_network_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="unit_network_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_unit_network_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="unit_network_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit_network_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency_location_attribute_authorization" baseTableName="workspace_authorization"
             constraintName="workspace_authorization_agency_location_attribute_authorization_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency_location_attribute_authorization" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency_location_attribute_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency_location_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_location_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency_location_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency_location_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency_product_attribute_authorization" baseTableName="workspace_authorization"
             constraintName="workspace_authorization_agency_product_attribute_authorization_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency_product_attribute_authorization" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency_product_attribute_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency_product_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_agency_product_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency_product_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency_product_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product_location_attribute_authorization" baseTableName="workspace_authorization"
             constraintName="workspace_authorization_product_location_attribute_authorization_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_location_attribute_authorization" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product_location_attribute_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product_location_authorization" baseTableName="workspace_authorization" constraintName="workspace_authorization_product_location_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product_location_authorization" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product_location_authorization" />
 
         <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_fkey_idx" tableName="workspace_authorization"
             unique="false"

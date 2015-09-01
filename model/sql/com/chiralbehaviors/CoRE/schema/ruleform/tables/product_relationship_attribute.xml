@@ -7,9 +7,10 @@
 
     <changeSet author="hparry" id="2.0.0">
         <createTable schemaName="ruleform" tableName="product_relationship_attribute">
+            <column name="defining_product" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_relationship_attribute_pkey" />
-            </column> 
+            </column>
             <column name="product_relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -38,10 +39,10 @@
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="product_relationship_attribute" constraintName="product_relationship_attribute_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product_relationship" baseTableName="product_relationship_attribute" constraintName="product_relationship_attribute_product_relationship_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="product_relationship" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product_relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="product_relationship_attribute" constraintName="product_relationship_attribute_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
@@ -68,15 +69,24 @@
             unique="false"
         >
             <column name="timestamp_value" />
-        </createIndex> 
-        <createIndex schemaName="ruleform" indexName="product_relationship_attribute_product_relationship_idx" tableName="product_relationship_attribute" unique="false">
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_relationship_attribute_product_relationship_idx" tableName="product_relationship_attribute"
+            unique="false"
+        >
             <column name="product_relationship" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="product_relationship_attribute_attribute_idx" tableName="product_relationship_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_relationship_attribute_attribute_idx" tableName="product_relationship_attribute"
+            unique="false"
+        >
             <column name="attribute" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="product_relationship_attribute_unit_idx" tableName="product_relationship_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_relationship_attribute_unit_idx" tableName="product_relationship_attribute"
+            unique="false"
+        >
             <column name="unit" />
         </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="defining_product" baseTableName="product_relationship_attribute" constraintName="product_relationship_attribute_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
 </databaseChangeLog>

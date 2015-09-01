@@ -7,10 +7,11 @@
 
     <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="product_relationship_authorization">
+            <column name="defining_product" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_relationship_authorization_pkey" />
             </column>
-            <column name="name" type="text"/>
+            <column name="name" type="text" />
             <column name="forward" type="boolean">
                 <constraints nullable="false" />
             </column>
@@ -27,7 +28,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="cardinality" type="SMALLINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false" />
             </column>
             <column name="connection" type="uuid">
                 <constraints nullable="false" />
@@ -44,28 +45,22 @@
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="connection" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_connection_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="to_parent" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_to_parent_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="to_relationship" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_to_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="from_relationship" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_from_parent_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="from_parent" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_from_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="product" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_grouping_product_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_updated_by_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
@@ -78,5 +73,8 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="defining_product" baseTableName="product_relationship_authorization" constraintName="product_relationship_authorization_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
 </databaseChangeLog>

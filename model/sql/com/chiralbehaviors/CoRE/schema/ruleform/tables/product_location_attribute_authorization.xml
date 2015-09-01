@@ -7,6 +7,7 @@
 
     <changeSet author="hhildebrand" id="2.0.0">
         <createTable schemaName="ruleform" tableName="product_location_attribute_authorization">
+            <column name="defining_product" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_location_attribute_authorization_pkey" />
             </column>
@@ -34,19 +35,18 @@
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="product_location_attribute_authorization" constraintName="product_location_attribute_authorization_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="network_authorization" baseTableName="product_location_attribute_authorization" constraintName="product_location_attribute_authorization__attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="product_location_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="product_location_attribute_authorization" constraintName="product_location_attribute_authorization_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="updated_by" baseTableName="product_location_attribute_authorization" constraintName="product_location_attribute_authorization_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
+    baseColumnNames="updated_by" baseTableName="product_location_attribute_authorization" constraintName="product_location_attribute_authorization_updated_by_fkey"
+    deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="network_authorization, authorized_attribute, grouping_agency"
             constraintName="product_location_attribute_authorization_unique_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="product_location_attribute_authorization" />
@@ -55,5 +55,8 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="defining_product" baseTableName="product_location_attribute_authorization" constraintName="product_location_attribute_authorization_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
 </databaseChangeLog>

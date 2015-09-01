@@ -9,10 +9,11 @@
         <createTable schemaName="ruleform" remarks="Defines rules stating what network units are authorized for particular units"
             tableName="unit_network_authorization"
         >
+            <column name="defining_product" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="unit_network_authorization_pkey" />
             </column>
-            <column name="name" type="text"/>
+            <column name="name" type="text" />
             <column name="classifier" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -32,28 +33,22 @@
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_relationship" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_child_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_parent" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_authorized_parent_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="unit" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_relationship" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_authorized_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classifier" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_classifier_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classification" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_classification_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="unit" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_updated_by_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
@@ -80,6 +75,9 @@
         >
             <column name="classification" />
         </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="defining_product" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
         <rollback>
             <dropTable tableName="unit_network_authorization" />
         </rollback>

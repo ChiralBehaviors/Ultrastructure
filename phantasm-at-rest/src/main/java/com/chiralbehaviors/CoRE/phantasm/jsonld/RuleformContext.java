@@ -171,7 +171,7 @@ public class RuleformContext {
             } else {
                 Ruleform fk;
                 try {
-                    fk = (Ruleform) field.get(instance);
+                    fk = (Ruleform) Ruleform.initializeAndUnproxy(field.get(instance));
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     throw new IllegalStateException(e);
                 }

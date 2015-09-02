@@ -29,6 +29,7 @@ import java.util.UUID;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -37,7 +38,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Type;
+import org.hibernate.proxy.HibernateProxy;
 import org.reflections.Reflections;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -87,6 +90,20 @@ abstract public class Ruleform implements Serializable, Cloneable {
         CONCRETE_SUBCLASSES = Collections.unmodifiableMap(concrete);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T initializeAndUnproxy(T entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        Hibernate.initialize(entity);
+        if (entity instanceof HibernateProxy) {
+            entity = (T) ((HibernateProxy) entity).getHibernateLazyInitializer()
+                                                  .getImplementation();
+        }
+        return entity;
+    }
+
     @Id
     @Type(type = "pg-uuid")
     private UUID id = GENERATOR.generate();
@@ -97,11 +114,13 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Column(name = "version")
     private int version = 0;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by")
     protected Agency updatedBy;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace")
     protected WorkspaceAuthorization workspace;
 

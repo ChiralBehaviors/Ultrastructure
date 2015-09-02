@@ -185,7 +185,7 @@ public final class Util {
             }
             try {
                 field.setAccessible(true);
-                Ruleform value = (Ruleform) field.get(ruleform);
+                Ruleform value = (Ruleform) Ruleform.initializeAndUnproxy(field.get(ruleform));
                 if (value != null && !ruleform.equals(value)) {
                     Ruleform mappedValue = map(em, value, mapped);
                     if (mappedValue == null) {
@@ -218,7 +218,7 @@ public final class Util {
             }
             try {
                 field.setAccessible(true);
-                Ruleform value = (Ruleform) field.get(ruleform);
+                Ruleform value = (Ruleform) Ruleform.initializeAndUnproxy(field.get(ruleform));
                 if (value != null && !ruleform.equals(value)) {
                     field.set(ruleform,
                               map(value, systemDefinition, sliced, traversed));

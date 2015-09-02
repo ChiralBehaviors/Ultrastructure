@@ -135,7 +135,8 @@ public class Relationship
     @JsonIgnore
     private Set<RelationshipAttribute> attributes;
 
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @OneToOne(cascade = { CascadeType.PERSIST,
+                          CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "inverse", unique = true)
     @JsonIgnore
     private Relationship inverse;

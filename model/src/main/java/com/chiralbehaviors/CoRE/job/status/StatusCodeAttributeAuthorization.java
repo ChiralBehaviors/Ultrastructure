@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -44,7 +45,8 @@ public class StatusCodeAttributeAuthorization
         extends AttributeAuthorization<StatusCode, StatusCodeNetwork> {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "network_authorization")
     private StatusCodeNetworkAuthorization networkAuthorization;
 

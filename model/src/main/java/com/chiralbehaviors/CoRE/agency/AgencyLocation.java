@@ -69,7 +69,8 @@ public class AgencyLocation extends Ruleform
     private Set<AgencyLocationAttribute> attributes;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "authority")
     private Agency authority;
 

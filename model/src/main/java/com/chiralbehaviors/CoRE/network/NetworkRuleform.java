@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -50,13 +51,14 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
         extends Ruleform {
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "inference")
-    private NetworkInference  inference;
+    private NetworkInference inference;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
-    private Relationship      relationship;
+    private Relationship relationship;
 
     public NetworkRuleform() {
         super();
@@ -164,9 +166,9 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
 
     @Override
     public String toString() {
-        return String.format("%s[%s] %s >> %s >> %s: %s",
-                             this.getClass().getSimpleName(), getId(),
-                             getParent().getName(),
+        return String.format("%s[%s] %s >> %s >> %s: %s", this.getClass()
+                                                              .getSimpleName(),
+                             getId(), getParent().getName(),
                              getRelationship().getName(), getChild().getName(),
                              isInferred());
     }

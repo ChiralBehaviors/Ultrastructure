@@ -164,7 +164,7 @@ public class Job extends AbstractProtocol {
     /**
      * The chronology of this job
      */
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<JobChronology> chronology;
 
@@ -178,7 +178,8 @@ public class Job extends AbstractProtocol {
     @JoinColumn(name = "parent")
     private Job parent;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "protocol")
     private Protocol protocol;
 

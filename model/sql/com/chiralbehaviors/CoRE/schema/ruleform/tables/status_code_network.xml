@@ -23,6 +23,7 @@
             <column name="inference" type="uuid" />
             <column name="premise1" type="uuid" />
             <column name="premise2" type="uuid" />
+            <column name="ordering" type="ordinal_number" />
             <column name="notes" type="TEXT" />
             <column name="updated_by" type="uuid">
                 <constraints nullable="false" />

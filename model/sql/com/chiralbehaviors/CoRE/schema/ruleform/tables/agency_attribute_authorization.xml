@@ -9,7 +9,7 @@
         <createTable schemaName="ruleform"
             remarks="Defines rules stating what attributes (and values thereof) are authorized for particular agencys" tableName="agency_attribute_authorization"
         >
-            <column name="workspace" type="uuid" />
+            <column name="defining_product" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_attribute_authorization_pkey" />
             </column>
@@ -81,7 +81,7 @@
             <column name="authorized_network_attribute" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_authorization_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            baseColumnNames="defining_product" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_authorization_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
     </changeSet>
 </databaseChangeLog>

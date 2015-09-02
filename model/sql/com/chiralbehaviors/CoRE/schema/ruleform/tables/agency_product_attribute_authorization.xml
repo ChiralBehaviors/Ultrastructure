@@ -56,6 +56,7 @@
         >
             <column name="updated_by" />
         </createIndex>
+<<<<<<< HEAD
         <createIndex schemaName="ruleform" indexName="agency_product_attribute_authorization_network_authorization_fkey_idx" tableName="agency_product_attribute_authorization"
             unique="false"
         >
@@ -69,5 +70,7 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="agency_product_attribute_authorization" constraintName="agency_product_attribute_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+=======
+>>>>>>> refs/heads/master
     </changeSet>
 </databaseChangeLog>

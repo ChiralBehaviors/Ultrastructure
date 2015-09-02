@@ -65,6 +65,7 @@
         >
             <column name="updated_by" />
         </createIndex>
+<<<<<<< HEAD
         <createIndex schemaName="ruleform" indexName="unit_network_authorization_classifier_fkey_idx" tableName="unit_network_authorization"
             unique="false"
         >
@@ -78,6 +79,8 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="unit_network_authorization" constraintName="unit_network_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+=======
+>>>>>>> refs/heads/master
         <rollback>
             <dropTable tableName="unit_network_authorization" />
         </rollback>

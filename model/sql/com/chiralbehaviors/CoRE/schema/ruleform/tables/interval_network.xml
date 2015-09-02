@@ -28,6 +28,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
+            <column name="ordering" type="ordinal_number" />
         </createTable>
         <rollback>
             <dropTable tableName="interval_network" />

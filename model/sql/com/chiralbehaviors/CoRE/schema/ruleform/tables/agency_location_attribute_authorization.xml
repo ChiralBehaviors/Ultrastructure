@@ -16,7 +16,7 @@
             </column>
             <column name="authorized_attribute" remarks="An Attribute the existential entity is expected to have" type="uuid">
                 <constraints nullable="true" />
-            </column>
+            </column> 
             <column name="boolean_value" type="boolean" />
             <column name="binary_value" type="BYTEA" />
             <column name="text_value" type="TEXT" />
@@ -50,19 +50,9 @@
             constraintName="agency_location_attribute_authorization_unique_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="agency_location_attribute_authorization" />
         <createIndex schemaName="ruleform" indexName="agency_location_attribute_authorization_updated_by_fkey_idx" tableName="agency_location_attribute_authorization"
-            unique="false"
-        >
+    unique="false"
+>
             <column name="updated_by" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="agency_location_attribute_authorization_network_authorization_fkey_idx"
-            tableName="agency_location_attribute_authorization" unique="false"
-        >
-            <column name="network_authorization" />
-        </createIndex>
-        <createIndex schemaName="ruleform" indexName="agency_location_attribute_authorization_authorized_attribute_fkey_idx"
-            tableName="agency_location_attribute_authorization" unique="false"
-        >
-            <column name="authorized_attribute" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="agency_location_attribute_authorization" constraintName="agency_location_attribute_authorization_workspace_fkey"

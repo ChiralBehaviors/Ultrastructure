@@ -37,11 +37,9 @@ import java.util.function.Predicate;
 import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -99,14 +97,6 @@ public final class Util {
 
     private static <T extends Ruleform> Ruleform find(EntityManager em,
                                                       T ruleform) {
-        if (ruleform instanceof WorkspaceAuthorization) {
-            TypedQuery<Long> existQueury = em.createNamedQuery(WorkspaceAuthorization.DOES_WORKSPACE_AUTH_EXIST,
-                                                               Long.class);
-            existQueury.setParameter("id", ruleform.getId());
-            if (existQueury.getFirstResult() == 0) {
-                return null;
-            }
-        }
         return em.find(ruleform.getClass(), ruleform.getId());
     }
 

@@ -245,15 +245,18 @@ public class Bootstrap {
         // Kernel workspace isA workspace
         ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
                                                core);
+        populate(pn, core, kernelWorkspace);
+        em.flush();
         ProductNetwork pnR = new ProductNetwork(workspace, isA.getInverse(),
                                                 kernelWorkspace, core);
-        populate(pn, core, kernelWorkspace);
         populate(pnR, core, kernelWorkspace);
+        em.flush();
 
         ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
         netAuth.setClassification(workspace);
         netAuth.setClassifier(isA);
         populate(netAuth, core, workspace);
+        em.flush();
     }
 
     /**
@@ -418,13 +421,14 @@ public class Bootstrap {
 
     private void populate(Ruleform ruleform, Agency core,
                           Product kernelWorkspace) {
-        em.persist(new WorkspaceAuthorization(ruleform, kernelWorkspace, core));
+        em.persist(new WorkspaceAuthorization(ruleform, kernelWorkspace, core,
+                                              em));
     }
 
     private void populate(String key, Ruleform ruleform, Agency core,
                           Product kernelWorkspace) {
         em.persist(new WorkspaceAuthorization(key, ruleform, kernelWorkspace,
-                                              core));
+                                              core, em));
     }
 
     private void populateAgencies(Agency core, Product kernelWorkspace) {

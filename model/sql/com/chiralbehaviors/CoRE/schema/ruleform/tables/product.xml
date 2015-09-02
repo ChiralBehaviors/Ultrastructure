@@ -33,8 +33,5 @@
         <createIndex schemaName="ruleform" indexName="product_updated_by_fkey_idx" tableName="product" unique="false">
             <column name="updated_by" />
         </createIndex>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="product" constraintName="product_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

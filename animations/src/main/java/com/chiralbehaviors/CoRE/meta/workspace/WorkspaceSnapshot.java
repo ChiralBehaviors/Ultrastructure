@@ -42,48 +42,56 @@ import com.hellblazer.utils.collections.OaHashSet;
  *
  */
 public class WorkspaceSnapshot {
-    public static ArrayList<WorkspaceAuthorization> getAuthorizations(Product definingProduct,
-                                                                      EntityManager em) {
+    public static List<WorkspaceAuthorization> getAuthorizations(Product definingProduct,
+                                                                 EntityManager em) {
         TypedQuery<WorkspaceAuthorization> query = em.createQuery("SELECT auth FROM WorkspaceAuthorization auth "
                                                                   + "WHERE auth.definingProduct = :product",
                                                                   WorkspaceAuthorization.class);
         query.setParameter("product", definingProduct);
-        ArrayList<WorkspaceAuthorization> authorizations = new ArrayList<>(query.getResultList());
+        List<WorkspaceAuthorization> authorizations = new ArrayList<>(query.getResultList());
         return authorizations;
     }
 
     @JsonSerialize
-    protected final List<WorkspaceAuthorization> auths;
+    protected final List<Ruleform> ruleforms;
     @JsonSerialize
-    protected final List<Ruleform>               frontier;
+    protected final List<Ruleform> frontier;
 
     public WorkspaceSnapshot() {
-        auths = null;
+        ruleforms = null;
         frontier = new ArrayList<>();
     }
 
-    public WorkspaceSnapshot(List<WorkspaceAuthorization> auths) {
-        this.auths = auths;
+    public WorkspaceSnapshot(Product definingProduct,
+                             List<WorkspaceAuthorization> auths,
+                             EntityManager em) {
+        this.ruleforms = new ArrayList<>(auths.size());
         Set<UUID> included = new OaHashSet<>(1024);
+        included.add(definingProduct.getId());
         for (WorkspaceAuthorization auth : auths) {
-            included.add(auth.getRuleform().getId());
+            Ruleform ruleform = auth.getRuleform(em);
+            included.add(ruleform.getId());
+            ruleforms.add(ruleform);
         }
         Map<Ruleform, Ruleform> exits = new HashMap<>();
         Set<UUID> traversed = new OaHashSet<UUID>(1024);
-        for (WorkspaceAuthorization auth : auths) {
-            Util.slice(auth.getRuleform(),
-                       ruleform -> included.contains(ruleform.getId()), exits,
-                       traversed);
+        for (Ruleform ruleform : ruleforms) {
+            Util.slice(ruleform, traversing -> {
+                return traversing instanceof WorkspaceAuthorization
+                       || traversing.getWorkspace()
+                                    .getDefiningProduct()
+                                    .equals(definingProduct);
+            } , exits, traversed);
         }
         frontier = new ArrayList<>(exits.values());
     }
 
     public WorkspaceSnapshot(Product definingProduct, EntityManager em) {
-        this(getAuthorizations(definingProduct, em));
+        this(definingProduct, getAuthorizations(definingProduct, em), em);
     }
 
-    public List<WorkspaceAuthorization> getAuths() {
-        return auths;
+    public List<Ruleform> getRuleforms() {
+        return ruleforms;
     }
 
     public List<Ruleform> getFrontier() {
@@ -95,8 +103,8 @@ public class WorkspaceSnapshot {
         for (Ruleform exit : frontier) {
             theReplacements.put(exit, em.find(exit.getClass(), exit.getId()));
         }
-        for (WorkspaceAuthorization auth : auths) {
-            Util.smartMerge(em, auth, theReplacements);
+        for (Ruleform ruleform : ruleforms) {
+            Util.smartMerge(em, ruleform, theReplacements);
         }
     }
 }

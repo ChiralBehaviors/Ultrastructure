@@ -7,6 +7,7 @@
 
     <include relativeToChangelogFile="true" file="tables/agency.xml" />
     <include relativeToChangelogFile="true" file="tables/product.xml" />
+    <include relativeToChangelogFile="true" file="tables/workspace_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/location.xml" />
     <include relativeToChangelogFile="true" file="tables/relationship.xml" />
@@ -102,7 +103,5 @@
     <include relativeToChangelogFile="true" file="tables/agency_relationship_grouping.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_status_code_grouping.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_unit_grouping.xml" />
-
-    <include relativeToChangelogFile="true" file="tables/workspace_authorization.xml" />
 
 </databaseChangeLog>

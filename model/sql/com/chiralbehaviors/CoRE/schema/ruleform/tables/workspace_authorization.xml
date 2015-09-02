@@ -9,10 +9,11 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="workspace_authorization_pkey" />
             </column>
-            <column name="notes" type="TEXT" />
-            <column name="workspace" type="uuid">
+            <column name="workspace" type="uuid" />
+            <column name="reference" type="uuid">
                 <constraints nullable="false" />
             </column>
+            <column name="notes" type="TEXT" />
             <column name="type" type="VARCHAR(256)">
                 <constraints nullable="false" />
             </column>
@@ -21,32 +22,37 @@
             </column>
             <column name="version" type="INT4" />
             <column name="key" type="text" />
+            <column name="defining_product" type="uuid">
+                <constraints nullable="false" />
+            </column>
         </createTable>
 
-        <addUniqueConstraint schemaName="ruleform" columnNames="workspace, key," constraintName="workspace_key_constraint"
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, key," constraintName="workspace_key_constraint"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="defining_product, reference" constraintName="workspace_reference_constraint"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="workspace_authorization" constraintName="workspace_authorization_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            baseColumnNames="defining_product" baseTableName="workspace_authorization" constraintName="workspace_defining_product_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="workspace_authorization" constraintName="workspace_authorization_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
 
-        <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_fkey_idx" tableName="workspace_authorization"
+        <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_idx" tableName="workspace_authorization"
             unique="false"
         >
             <column name="updated_by" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="workspace_authorization_workspace_fkey_idx" tableName="workspace_authorization"
+        <createIndex schemaName="ruleform" indexName="workspace_authorization_defining_product_idx" tableName="workspace_authorization"
             unique="false"
         >
-            <column name="workspace" />
+            <column name="defining_product" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="workspace_authorization_workspace_fkey_idx" tableName="workspace_authorization"
+        <createIndex schemaName="ruleform" indexName="workspace_authorization_defining_product_key_idx" tableName="workspace_authorization"
             unique="false"
         >
-            <column name="workspace" />
+            <column name="defining_product" />
             <column name="key" />
         </createIndex>
         <createIndex schemaName="ruleform" indexName="workspace_authorization_type_idx" tableName="workspace_authorization"
@@ -58,6 +64,10 @@
         <comment>This contraint needs to be here, instead of agency to deal with circularity constraints</comment>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="agency" constraintName="agency_workspace_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+        <comment>This contraint needs to be here, instead of agency to deal with circularity constraints</comment>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace" baseTableName="product" constraintName="product_workspace_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

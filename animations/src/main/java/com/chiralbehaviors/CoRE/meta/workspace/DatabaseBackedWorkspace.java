@@ -64,7 +64,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         @Override
         public T get(int index) {
             return (T) backingList.get(index)
-                                  .getRuleform();
+                                  .getRuleform(em);
         }
 
         /* (non-Javadoc)
@@ -105,7 +105,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public <T extends Ruleform> void add(T ruleform) {
         WorkspaceAuthorization authorization = new WorkspaceAuthorization();
-        authorization.setRuleform(ruleform);
+        authorization.setRuleform(ruleform, em);
         authorization.setDefiningProduct(getDefiningProduct());
         authorization.setUpdatedBy(ruleform.getUpdatedBy());
         em.persist(authorization);
@@ -175,7 +175,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         try {
             WorkspaceAuthorization authorization = em.createQuery(query)
                                                      .getSingleResult();
-            T ruleform = authorization.getEntity(model);
+            T ruleform = authorization.getEntity(em);
             cache.put(key, ruleform);
             return ruleform;
         } catch (NoResultException e) {
@@ -272,7 +272,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         cache.put(key, ruleform);
         WorkspaceAuthorization authorization = new WorkspaceAuthorization();
         authorization.setDefiningProduct(getDefiningProduct());
-        authorization.setRuleform(ruleform);
+        authorization.setRuleform(ruleform, em);
         authorization.setKey(key);
         authorization.setUpdatedBy(ruleform.getUpdatedBy());
         em.persist(authorization);

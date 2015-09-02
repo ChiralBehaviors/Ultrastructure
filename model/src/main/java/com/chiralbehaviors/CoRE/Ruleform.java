@@ -29,7 +29,6 @@ import java.util.UUID;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -102,8 +101,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @JoinColumn(name = "updated_by")
     protected Agency updatedBy;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "workspace")
     protected WorkspaceAuthorization workspace;
 

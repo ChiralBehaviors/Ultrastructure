@@ -28,20 +28,22 @@ import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_AUTH
 import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_AUTHORIZATIONS_BY_TYPE;
 import static com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization.GET_WORKSPACE;
 
+import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @NamedQueries({ @NamedQuery(name = GET_WORKSPACE, query = "SELECT auth FROM WorkspaceAuthorization auth WHERE auth.definingProduct = :product"),
                 @NamedQuery(name = GET_AUTHORIZATION, query = "SELECT auth FROM WorkspaceAuthorization auth "
@@ -54,7 +56,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                       + "WHERE auth.id = :id") })
 @Entity
 @Table(name = "workspace_authorization", schema = "ruleform")
-@JsonAutoDetect(fieldVisibility = Visibility.PUBLIC_ONLY)
 public class WorkspaceAuthorization extends Ruleform {
     public static final String DOES_WORKSPACE_AUTH_EXIST  = "workspaceAuthorization.doesAuthExist";
     public static final String GET_AUTHORIZATION          = "workspaceAuthorization.getAuthorization";
@@ -63,47 +64,37 @@ public class WorkspaceAuthorization extends Ruleform {
 
     private static final long serialVersionUID = 1L;
 
-    public static String getWorkspaceAuthorizationColumnName(Class<?> ruleform) {
-        StringBuilder builder = new StringBuilder();
-        String simpleName = ruleform.getClass()
-                                    .getSimpleName();
-        builder.append(Character.toLowerCase(simpleName.charAt(0)));
-        int i = 1;
-        for (char c = simpleName.charAt(i); i < simpleName.length(); i++) {
-            if (Character.isUpperCase(c)) {
-                builder.append('_');
-                builder.append(Character.toLowerCase(c));
-            }
-        }
-        return builder.toString();
-    }
-
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "defining_product")
-    @JsonIgnore
     private Product definingProduct;
-    private String  key;
-    private String  type;
+
+    private String key;
+    @Type(type = "pg-uuid")
+    private UUID   reference; // teh pointer ;)
+    private String type;
 
     public WorkspaceAuthorization() {
         super();
-    }
 
-    public WorkspaceAuthorization(Ruleform ruleform, Product definingProduct) {
-        super();
-        setRuleform(ruleform);
-        setDefiningProduct(definingProduct);
     }
 
     public WorkspaceAuthorization(Ruleform ruleform, Product definingProduct,
-                                  Agency updatedBy) {
-        this(ruleform, definingProduct);
+                                  Agency updatedBy, EntityManager em) {
+        this(ruleform, definingProduct, em);
         setUpdatedBy(updatedBy);
     }
 
+    public WorkspaceAuthorization(Ruleform ruleform, Product definingProduct,
+                                  EntityManager em) {
+        super();
+        setDefiningProduct(definingProduct);
+        setRuleform(ruleform, em);
+    }
+
     public WorkspaceAuthorization(String key, Ruleform ruleform,
-                                  Product definingProduct, Agency updatedBy) {
-        this(ruleform, definingProduct, updatedBy);
+                                  Product definingProduct, Agency updatedBy,
+                                  EntityManager em) {
+        this(ruleform, definingProduct, updatedBy, em);
         setKey(key);
     }
 
@@ -111,8 +102,27 @@ public class WorkspaceAuthorization extends Ruleform {
         return definingProduct;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends Ruleform> T getEntity(EntityManager em) {
+        T found = (T) em.find(CONCRETE_SUBCLASSES.get(type), reference);
+        if (found != null) {
+            return found;
+        } else {
+            throw new IllegalStateException(String.format("%s not found",
+                                                          this));
+        }
+    }
+
     public String getKey() {
         return key;
+    }
+
+    public UUID getReference() {
+        return reference;
+    }
+
+    public Ruleform getRuleform(EntityManager em) {
+        return getEntity(em);
     }
 
     public String getType() {
@@ -120,6 +130,9 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setDefiningProduct(Product definingProduct) {
+        if (definingProduct == null) {
+            throw new IllegalArgumentException("defining product cannot be null");
+        }
         this.definingProduct = definingProduct;
     }
 
@@ -127,15 +140,21 @@ public class WorkspaceAuthorization extends Ruleform {
         this.key = key;
     }
 
-    public void setRuleform(Ruleform ruleform) {
-        ruleform.setWorkspace(this);
+    public void setReference(UUID reference) {
+        this.reference = reference;
+    }
+
+    public void setRuleform(Ruleform ruleform, EntityManager em) {
         type = ruleform.getClass()
                        .getSimpleName();
+        reference = ruleform.getId();
+        em.persist(ruleform);
+        ruleform.setWorkspace(this);
     }
 
     @Override
     public String toString() {
-        return String.format("WorkspaceAuthorization [definingProduct=%s, key=%s, type=%s]",
-                             definingProduct.getName(), key, type);
+        return String.format("WorkspaceAuthorization [definingProduct=%s, key=%s, type=%s, reference=%s]",
+                             definingProduct, key, type, reference);
     }
 }

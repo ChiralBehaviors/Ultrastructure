@@ -13,7 +13,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="interval_network_authorization_pkey" />
             </column>
-            <column name="name" type="text"/>
+            <column name="name" type="text" />
             <column name="classifier" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -70,6 +70,16 @@
             unique="false"
         >
             <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="interval_network_authorization_classifier_fkey_idx" tableName="interval_network_authorization"
+            unique="false"
+        >
+            <column name="classifier" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="interval_network_authorization_classification_fkey_idx" tableName="interval_network_authorization"
+            unique="false"
+        >
+            <column name="classification" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="interval_network_authorization" constraintName="interval_network_authorization_workspace_fkey"

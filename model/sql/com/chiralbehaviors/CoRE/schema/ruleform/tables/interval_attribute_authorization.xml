@@ -65,7 +65,6 @@
         >
             <column name="updated_by" />
         </createIndex>
-<<<<<<< HEAD
         <createIndex schemaName="ruleform" indexName="interval_attribute_authorization_network_authorization_fkey_idx" tableName="interval_attribute_authorization"
             unique="false"
         >
@@ -84,8 +83,6 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="interval_attribute_authorization" constraintName="interval_attribute_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-=======
->>>>>>> refs/heads/master
         <sql> ALTER TABLE interval_attribute_authorization OWNER TO core; </sql>
         <rollback />
         <sql><![CDATA[

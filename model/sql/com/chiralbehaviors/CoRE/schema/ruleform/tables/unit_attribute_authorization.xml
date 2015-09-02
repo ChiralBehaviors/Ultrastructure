@@ -65,7 +65,6 @@
         >
             <column name="updated_by" />
         </createIndex>
-<<<<<<< HEAD
         <createIndex schemaName="ruleform" indexName="unit_attribute_authorization_network_authorization_fkey_idx" tableName="unit_attribute_authorization"
             unique="false"
         >
@@ -84,8 +83,6 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-=======
->>>>>>> refs/heads/master
         <sql><![CDATA[
             GRANT ALL ON TABLE unit_attribute_authorization TO core;
             GRANT SELECT ON TABLE unit_attribute_authorization TO core_read_only;

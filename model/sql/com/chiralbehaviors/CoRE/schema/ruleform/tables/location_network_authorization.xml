@@ -68,7 +68,6 @@
         >
             <column name="updated_by" />
         </createIndex>
-<<<<<<< HEAD
         <createIndex schemaName="ruleform" indexName="location_network_authorization_classifier_fkey_idx" tableName="location_network_authorization"
             unique="false"
         >
@@ -82,7 +81,5 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="location_network_authorization" constraintName="location_network_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-=======
->>>>>>> refs/heads/master
     </changeSet>
 </databaseChangeLog>

@@ -99,7 +99,8 @@ public class RuleformContext {
         List<Field> fields = new ArrayList<Field>();
         for (Class<?> c = type; c != null; c = c.getSuperclass()) {
             for (Field field : c.getDeclaredFields()) {
-                if (field.getName().contains("$")
+                if (field.getName()
+                         .contains("$")
                     || Modifier.isStatic(field.getModifiers())
                     || field.getAnnotation(OneToMany.class) != null) {
                     continue;
@@ -138,13 +139,16 @@ public class RuleformContext {
         Map<String, Object> context = new TreeMap<>();
         Map<String, Object> t = new TreeMap<>();
         context.put(Constants.CONTEXT, t);
-        t.put(Constants.VOCAB,
-              uriInfo.getBaseUriBuilder().path(RuleformResource.class).build().toASCIIString()
+        t.put(Constants.VOCAB, uriInfo.getBaseUriBuilder()
+                                      .path(RuleformResource.class)
+                                      .build()
+                                      .toASCIIString()
                                + "/");
         t.put(Constants.RULEFORM,
               String.format("%s/", ruleformClass.getSimpleName()));
         for (Entry<String, Typed> entry : terms.entrySet()) {
-            t.put(entry.getKey(), entry.getValue().toMap());
+            t.put(entry.getKey(), entry.getValue()
+                                       .toMap());
         }
         return context;
     }
@@ -185,7 +189,8 @@ public class RuleformContext {
     public Map<String, Object> getShort(Ruleform instance, UriInfo uriInfo) {
         Map<String, Object> object = new TreeMap<>();
         object.put(Constants.CONTEXT, getContextIri(ruleformClass, uriInfo));
-        object.put(Constants.TYPENAME, instance.getClass().getSimpleName());
+        object.put(Constants.TYPENAME, instance.getClass()
+                                               .getSimpleName());
         object.put(Constants.TYPE, Constants.RULEFORM);
         object.put(Constants.ID, getIri(instance));
         return object;

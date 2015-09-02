@@ -520,6 +520,13 @@ public class ModelImpl implements Model {
     }
 
     private void initializeCurrentPrincipal() {
-        currentPrincipal = new AuthorizedPrincipal(kernel.getCoreAnimationSoftware());
+        if (em.getTransaction()
+              .isActive()
+            && em.getTransaction()
+                 .getRollbackOnly()) {
+            currentPrincipal = null;
+        } else {
+            currentPrincipal = new AuthorizedPrincipal(kernel.getCoreAnimationSoftware());
+        }
     }
 }

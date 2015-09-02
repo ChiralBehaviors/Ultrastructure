@@ -23,9 +23,11 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -34,7 +36,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.utils.Util;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hellblazer.utils.collections.OaHashSet;
 
 /**
@@ -52,37 +54,47 @@ public class WorkspaceSnapshot {
         return authorizations;
     }
 
-    @JsonSerialize
-    protected final List<Ruleform> ruleforms;
-    @JsonSerialize
-    protected final List<Ruleform> frontier;
+    @JsonProperty
+    protected List<Ruleform> ruleforms;
+    @JsonProperty
+    protected List<Ruleform> frontier;
+    @JsonProperty
+    protected Product        definingProduct;
 
     public WorkspaceSnapshot() {
         ruleforms = null;
+        definingProduct = null;
         frontier = new ArrayList<>();
     }
 
     public WorkspaceSnapshot(Product definingProduct,
                              List<WorkspaceAuthorization> auths,
                              EntityManager em) {
+        this.definingProduct = definingProduct;
+        Predicate<Ruleform> systemDefinition = traversing -> {
+            return traversing instanceof WorkspaceAuthorization
+                   || traversing == definingProduct || traversing.getWorkspace()
+                                                                 .getDefiningProduct()
+                                                                 .equals(definingProduct);
+        };
+
         this.ruleforms = new ArrayList<>(auths.size());
         Set<UUID> included = new OaHashSet<>(1024);
+        Map<Ruleform, Ruleform> exits = new HashMap<>();
+        Set<UUID> traversed = new OaHashSet<UUID>(1024);
+
         included.add(definingProduct.getId());
+
         for (WorkspaceAuthorization auth : auths) {
             Ruleform ruleform = auth.getRuleform(em);
             included.add(ruleform.getId());
             ruleforms.add(ruleform);
         }
-        Map<Ruleform, Ruleform> exits = new HashMap<>();
-        Set<UUID> traversed = new OaHashSet<UUID>(1024);
+
         for (Ruleform ruleform : ruleforms) {
-            Util.slice(ruleform, traversing -> {
-                return traversing instanceof WorkspaceAuthorization
-                       || traversing.getWorkspace()
-                                    .getDefiningProduct()
-                                    .equals(definingProduct);
-            } , exits, traversed);
+            Util.slice(ruleform, systemDefinition, exits, traversed);
         }
+
         frontier = new ArrayList<>(exits.values());
     }
 
@@ -99,12 +111,17 @@ public class WorkspaceSnapshot {
     }
 
     public void retarget(EntityManager em) {
+        WorkspaceAuthorization defining = definingProduct.getWorkspace();
+        definingProduct.setWorkspace(null);
         Map<Ruleform, Ruleform> theReplacements = new HashMap<>();
         for (Ruleform exit : frontier) {
             theReplacements.put(exit, em.find(exit.getClass(), exit.getId()));
         }
-        for (Ruleform ruleform : ruleforms) {
-            Util.smartMerge(em, ruleform, theReplacements);
+        definingProduct = Util.smartMerge(em, definingProduct, theReplacements);
+        defining = Util.smartMerge(em, defining, theReplacements);
+        for (ListIterator<Ruleform> iterator = ruleforms.listIterator(); iterator.hasNext();) {
+            iterator.set(Util.smartMerge(em, iterator.next(), theReplacements));
         }
+        definingProduct.setWorkspace(defining);
     }
 }

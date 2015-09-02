@@ -10,7 +10,16 @@
         <level value="INFO" />
     </logger>
     <logger name="org.hibernate">
-        <level value="TRACE" />
+        <level value="ERROR" />
+    </logger>
+    <logger name="org.hibernate.SQL">
+        <level value="ERROR" />
+    </logger>
+    <logger name="org.hibernate.type">
+        <level value="ERROR" />
+    </logger>
+    <logger name="org.hibernate.cache">
+        <level value="ERROR" />
     </logger>
     <root>
         <level value="ERROR" />

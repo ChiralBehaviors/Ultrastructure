@@ -82,6 +82,7 @@ public class WorkspaceAuthorization extends Ruleform {
                                   Agency updatedBy, EntityManager em) {
         this(ruleform, definingProduct, em);
         setUpdatedBy(updatedBy);
+        em.persist(this);
     }
 
     public WorkspaceAuthorization(Ruleform ruleform, Product definingProduct,
@@ -130,9 +131,6 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setDefiningProduct(Product definingProduct) {
-        if (definingProduct == null) {
-            throw new IllegalArgumentException("defining product cannot be null");
-        }
         this.definingProduct = definingProduct;
     }
 

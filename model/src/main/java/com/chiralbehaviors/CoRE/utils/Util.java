@@ -155,7 +155,6 @@ public final class Util {
         // Mapped value has the same id, but null fields for everything else
         mappedValue.setId(value.getId());
         sliced.put(value, mappedValue);
-        traverseBoundary(value, systemDefinition, sliced, traversed);
         return mappedValue;
     }
 

@@ -265,7 +265,7 @@ public class ResourcesTest extends AbstractModelTest {
                                              .getId()
                                              .toString()));
         Map<?, ?> jsonObject = (Map<?, ?>) JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(jsonObject.get("auths"));
+        assertNotNull(jsonObject.get("ruleforms"));
         assertNotNull(jsonObject.get("frontier"));
     }
 

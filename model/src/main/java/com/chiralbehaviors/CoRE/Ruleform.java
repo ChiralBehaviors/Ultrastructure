@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -108,6 +109,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     @Type(type = "pg-uuid")
     private UUID id = GENERATOR.generate();
 
+    @Basic(fetch = FetchType.LAZY)
     private String notes;
 
     @Version

@@ -95,11 +95,11 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         return new String(chars);
     }
 
-    private final NetworkAuthorization<RuleForm>                                                          facet;
-    private final Model                                                                                   model;
-    private final Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
-    private Builder                                                                                       typeBuilder;
-    private final Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
+    private NetworkAuthorization<RuleForm>                                                          facet;
+    private Model                                                                                   model;
+    private Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
+    private Builder                                                                                 typeBuilder;
+    private Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
 
     private graphql.schema.GraphQLInputObjectType.Builder updateTypeBuilder;
 
@@ -134,7 +134,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         mutation.field(apply());
         mutation.field(update());
         mutation.field(remove());
-        return references;
+        Set<NetworkAuthorization<?>> referenced = references;
+        clear();
+        return referenced;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -490,6 +492,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                            (crud,
                             update) -> crud.setDescription((RuleForm) update.get(AT_RULEFORM),
                                                            (String) update.get(SET_DESCRIPTION)));
+    }
+
+    private void clear() {
+        this.model = null;
+        this.references = null;
+        this.typeBuilder = null;
     }
 
     @SuppressWarnings("unchecked")

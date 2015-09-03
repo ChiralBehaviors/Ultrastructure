@@ -115,7 +115,7 @@ public class Attribute
     private static final long  serialVersionUID                                       = 1L;
 
     // bi-directional many-to-one association to AttributeMetaAttribute
-    @OneToMany(mappedBy = "attribute")
+    @OneToMany(mappedBy = "attribute", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<AttributeMetaAttribute> attributes;
 

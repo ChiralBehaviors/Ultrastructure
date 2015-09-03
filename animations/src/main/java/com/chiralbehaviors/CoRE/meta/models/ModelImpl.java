@@ -401,8 +401,9 @@ public class ModelImpl implements Model {
     @SuppressWarnings("unchecked")
     @Override
     public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> NetworkedModel<RuleForm, Network, ?, ?> getNetworkedModel(ExistentialRuleform<RuleForm, Network> ruleform) {
-        switch (ruleform.getClass()
-                        .getSimpleName()) {
+        ExistentialRuleform<RuleForm, Network> unproxied = Ruleform.initializeAndUnproxy(ruleform);
+        switch (unproxied.getClass()
+                         .getSimpleName()) {
             case "Agency":
                 return (NetworkedModel<RuleForm, Network, ?, ?>) getAgencyModel();
             case "Attribute":
@@ -421,7 +422,7 @@ public class ModelImpl implements Model {
                 return (NetworkedModel<RuleForm, Network, ?, ?>) getUnitModel();
             default:
                 throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
-                                                                 ruleform.getClass()));
+                                                                 unproxied.getClass()));
         }
     }
 
@@ -458,8 +459,9 @@ public class ModelImpl implements Model {
      */
     @Override
     public <RuleForm extends ExistentialRuleform<?, ?>> NetworkedModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform) {
-        switch (ruleform.getClass()
-                        .getSimpleName()) {
+        RuleForm unproxied = Ruleform.initializeAndUnproxy(ruleform);
+        switch (unproxied.getClass()
+                         .getSimpleName()) {
             case "Agency":
                 return getAgencyModel();
             case "Attribute":
@@ -478,7 +480,7 @@ public class ModelImpl implements Model {
                 return getUnitModel();
             default:
                 throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
-                                                                 ruleform.getClass()));
+                                                                 unproxied.getClass()));
         }
     }
 

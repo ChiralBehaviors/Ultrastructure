@@ -9,10 +9,11 @@
         <createTable schemaName="ruleform" remarks="Defines rules stating what network relationships are authorized for particular agencys"
             tableName="agency_network_authorization"
         >
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_network_authorization_pkey" />
             </column>
-            <column name="name" type="text"/>
+            <column name="name" type="text" />
             <column name="classifier" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -35,27 +36,27 @@
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_relationship" baseTableName="agency_network_authorization" constraintName="agency_network_authorization_child_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_parent" baseTableName="agency_network_authorization" constraintName="agency_network_authorization_authorized_parent_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_relationship" baseTableName="agency_network_authorization" constraintName="agency_network_authorization_authorized_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classifier" baseTableName="agency_network_authorization" constraintName="agency_network_authorization_classifier_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classification" baseTableName="agency_network_authorization" constraintName="agency_network_authorization_classification_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="agency_network_authorization" constraintName="agency_network_authorization_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="agency_network_authorization" constraintName="agency_network_authorization_updated_by_fkey"
@@ -63,12 +64,28 @@
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
             columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, grouping_agency"
-            constraintName="agency_attribute_authorizatio_agency_classification_attri_key" deferrable="false" disabled="false"
-            initiallyDeferred="true" tableName="agency_network_authorization" />
+            constraintName="agency_network_authorization_unique_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="agency_network_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="classifier, classification, grouping_agency"
+            constraintName="agency_network_authorization_facet_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="agency_network_authorization" />
         <createIndex schemaName="ruleform" indexName="agency_network_authorization_updated_by_fkey_idx" tableName="agency_network_authorization"
             unique="false"
         >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_network_authorization_classifier_fkey_idx" tableName="agency_network_authorization"
+            unique="false"
+        >
+            <column name="classifier" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_network_authorization_classification_fkey_idx" tableName="agency_network_authorization"
+            unique="false"
+        >
+            <column name="classification" />
+        </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace" baseTableName="agency_network_authorization" constraintName="agency_network_authorization_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

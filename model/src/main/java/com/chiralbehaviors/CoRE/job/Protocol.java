@@ -32,7 +32,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -40,9 +39,6 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The Protocol ruleform.
@@ -50,71 +46,70 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * The factors of this ruleform are {consumer, service, product1, product2}
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET, query = "SELECT p FROM Protocol p "
-                                               + "WHERE p.service = :service "
-                                               + "    AND p.product =:product"
-                                               + "    AND p.requester = :requester"
-                                               + "    AND p.deliverFrom = :deliverFrom"
-                                               + "    AND p.deliverTo = :deliverTo"
-                                               + "    AND p.assignTo = :assignTo"
-                                               + " ORDER BY p.sequenceNumber"),
-               @NamedQuery(name = GET_FOR_SERVICE, query = "SELECT p FROM Protocol p "
-                                                           + "WHERE p.service = :service "
-                                                           + " ORDER BY p.sequenceNumber") })
+@NamedQueries({ @NamedQuery(name = GET, query = "SELECT p FROM Protocol p "
+                                                + "WHERE p.service = :service "
+                                                + "    AND p.product =:product"
+                                                + "    AND p.requester = :requester"
+                                                + "    AND p.deliverFrom = :deliverFrom"
+                                                + "    AND p.deliverTo = :deliverTo"
+                                                + "    AND p.assignTo = :assignTo"
+                                                + " ORDER BY p.sequenceNumber"),
+                @NamedQuery(name = GET_FOR_SERVICE, query = "SELECT p FROM Protocol p "
+                                                            + "WHERE p.service = :service "
+                                                            + " ORDER BY p.sequenceNumber") })
 @Entity
 @Table(name = "protocol", schema = "ruleform")
 public class Protocol extends AbstractProtocol {
-    public static final String GET              = "protocol.get";
-    public static final String GET_FOR_SERVICE  = "protocol.getForService";
+    public static final String GET             = "protocol.get";
+    public static final String GET_FOR_SERVICE = "protocol.getForService";
 
-    private static final long  serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_assign_to")
-    private Agency             childAssignTo;
+    private Agency childAssignTo;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_deliver_from")
-    private Location           childDeliverFrom;
+    private Location childDeliverFrom;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_deliver_to")
-    private Location           childDeliverTo;
+    private Location childDeliverTo;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_product")
-    private Product            childProduct;
+    private Product childProduct;
 
     @Column(name = "child_quantity")
-    private BigDecimal         childQuantity    = BigDecimal.ZERO;
+    private BigDecimal childQuantity = BigDecimal.ZERO;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_quantity_unit")
-    private Unit               childQuantityUnit;
+    private Unit childQuantityUnit;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "children_relationship")
-    private Relationship       childrenRelationship;
+    private Relationship childrenRelationship;
     /**
      * The service of the child job
      */
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_service")
-    private Product            childService;
+    private Product      childService;
 
     @Column(name = "name")
-    private String             name;
+    private String name;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber   = 0;
+    private int sequenceNumber = 0;
 
     public Protocol() {
     }
@@ -160,15 +155,6 @@ public class Protocol extends AbstractProtocol {
      */
     public Integer getSequenceNumber() {
         return sequenceNumber;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Protocol> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.protocol;
     }
 
     public void setChildAssignTo(Agency childAssignTo) {

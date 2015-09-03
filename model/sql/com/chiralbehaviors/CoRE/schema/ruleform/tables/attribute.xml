@@ -10,6 +10,7 @@
             remarks="Existential ruleform for all attributes in the CoRE database.  This table defines and describes all attributes."
             tableName="attribute"
         >
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="attribute_pkey" />
             </column>
@@ -44,5 +45,8 @@
         <createIndex schemaName="ruleform" indexName="attribute_updated_by_fkey_idx" tableName="attribute" unique="false">
             <column name="updated_by" />
         </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace" baseTableName="attribute" constraintName="attribute_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

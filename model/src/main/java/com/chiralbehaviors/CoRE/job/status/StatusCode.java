@@ -50,8 +50,6 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -340,14 +338,6 @@ public class StatusCode
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeNetwork> getNetworkWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeNetwork;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -368,20 +358,12 @@ public class StatusCode
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCode> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCode;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
      */
     @Override
     public boolean isAny() {
-        return WellKnownStatusCode.ANY.id().equals(getId());
+        return WellKnownStatusCode.ANY.id()
+                                      .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -389,8 +371,10 @@ public class StatusCode
      */
     @Override
     public boolean isAnyOrSame() {
-        return WellKnownStatusCode.ANY.id().equals(getId())
-               || WellKnownStatusCode.SAME.id().equals(getId());
+        return WellKnownStatusCode.ANY.id()
+                                      .equals(getId())
+               || WellKnownStatusCode.SAME.id()
+                                          .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -398,7 +382,8 @@ public class StatusCode
      */
     @Override
     public boolean isCopy() {
-        return WellKnownStatusCode.COPY.id().equals(getId());
+        return WellKnownStatusCode.COPY.id()
+                                       .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -406,12 +391,14 @@ public class StatusCode
      */
     @Override
     public boolean isNotApplicable() {
-        return WellKnownStatusCode.NOT_APPLICABLE.id().equals(getId());
+        return WellKnownStatusCode.NOT_APPLICABLE.id()
+                                                 .equals(getId());
     }
 
     @Override
     public boolean isSame() {
-        return WellKnownStatusCode.SAME.id().equals(getId());
+        return WellKnownStatusCode.SAME.id()
+                                       .equals(getId());
     }
 
     /*

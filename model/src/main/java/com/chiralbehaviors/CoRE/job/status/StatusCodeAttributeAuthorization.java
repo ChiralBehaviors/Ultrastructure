@@ -26,15 +26,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorizations for attributes on entities.
@@ -44,9 +40,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "status_code_attribute_authorization", schema = "ruleform")
-public class StatusCodeAttributeAuthorization extends
-        AttributeAuthorization<StatusCode, StatusCodeNetwork> {
-    private static final long              serialVersionUID = 1L;
+public class StatusCodeAttributeAuthorization
+        extends AttributeAuthorization<StatusCode, StatusCodeNetwork> {
+    private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_authorization")
@@ -81,15 +77,6 @@ public class StatusCodeAttributeAuthorization extends
     @Override
     public NetworkAuthorization<StatusCode> getNetworkAuthorization() {
         return networkAuthorization;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeAttributeAuthorization;
     }
 
     @Override

@@ -35,29 +35,24 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the job_chronology database table.
  *
  */
-@NamedQueries({
-               @NamedQuery(name = FIND_ALL, query = "SELECT j FROM JobChronology j"),
-               @NamedQuery(name = FIND_FOR_JOB, query = "SELECT j FROM JobChronology j "
-                                                        + "WHERE j.job = :job ORDER BY j.sequenceNumber "),
-               @NamedQuery(name = FIND_FOR_PRODUCT, query = "SELECT j FROM JobChronology j "
-                                                            + "WHERE j.product = :product "),
-               @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "SELECT MAX(j.sequenceNumber) FROM JobChronology j "
-                                                                    + "WHERE j.job = :job"),
-               @NamedQuery(name = GET_LOG_FOR_SEQUENCE, query = "SELECT j from JobChronology j "
-                                                                + "WHERE j.job = :job "
-                                                                + "    AND j.sequenceNumber = :sequence") })
+@NamedQueries({ @NamedQuery(name = FIND_ALL, query = "SELECT j FROM JobChronology j"),
+                @NamedQuery(name = FIND_FOR_JOB, query = "SELECT j FROM JobChronology j "
+                                                         + "WHERE j.job = :job ORDER BY j.sequenceNumber "),
+                @NamedQuery(name = FIND_FOR_PRODUCT, query = "SELECT j FROM JobChronology j "
+                                                             + "WHERE j.product = :product "),
+                @NamedQuery(name = HIGHEST_SEQUENCE_FOR_JOB, query = "SELECT MAX(j.sequenceNumber) FROM JobChronology j "
+                                                                     + "WHERE j.job = :job"),
+                @NamedQuery(name = GET_LOG_FOR_SEQUENCE, query = "SELECT j from JobChronology j "
+                                                                 + "WHERE j.job = :job "
+                                                                 + "    AND j.sequenceNumber = :sequence") })
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
 public class JobChronology extends AbstractProtocol {
@@ -73,15 +68,15 @@ public class JobChronology extends AbstractProtocol {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "job")
-    private Job                job;
+    private Job job;
 
     @Column(name = "sequence_number")
-    private int                sequenceNumber           = 0;
+    private int sequenceNumber = 0;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status")
-    private StatusCode         status;
+    private StatusCode status;
 
     public JobChronology() {
     }
@@ -117,15 +112,6 @@ public class JobChronology extends AbstractProtocol {
      */
     public StatusCode getStatus() {
         return status;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, JobChronology> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.jobChronology;
     }
 
     /**

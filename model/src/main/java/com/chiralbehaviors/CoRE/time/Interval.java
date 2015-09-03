@@ -47,8 +47,6 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -57,78 +55,77 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from IntervalAttribute as ca where ca.interval = :interval"),
-               @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-                                                                            + "  attrValue "
-                                                                            + "FROM "
-                                                                            + "       IntervalAttribute attrValue, "
-                                                                            + "       IntervalAttributeAuthorization auth, "
-                                                                            + "       IntervalNetworkAuthorization na, "
-                                                                            + "       IntervalNetwork network "
-                                                                            + "WHERE "
-                                                                            + "        auth.networkAuthorization = na "
-                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
-                                                                            + "    AND network.relationship = na.classifier "
-                                                                            + "    AND network.child = na.classification"
-                                                                            + "    AND attrValue.interval = :ruleform "
-                                                                            + "    AND na.classifier = :classifier "
-                                                                            + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
-                                                                                                  + "  auth "
-                                                                                                  + "FROM "
-                                                                                                  + "       IntervalAttributeAuthorization auth, "
-                                                                                                  + "       IntervalNetworkAuthorization na, "
-                                                                                                  + "       IntervalNetwork network "
-                                                                                                  + "WHERE "
-                                                                                                  + "        auth.networkAuthorization = na "
-                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
-                                                                                                  + "    AND network.relationship = na.classifier "
-                                                                                                  + "    AND network.child = na.classification"
-                                                                                                  + "    AND na.classifier = :classifier "
-                                                                                                  + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from IntervalAttributeAuthorization auth "
-                                                                                    + "WHERE auth.networkAuthorization.classifier = :classifier "
-                                                                                    + "AND auth.networkAuthorization.classification = :classification "
-                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
-                                                     + "FROM IntervalNetwork n "
-                                                     + "WHERE n.parent = :p "
-                                                     + "AND n.relationship = :r"),
-               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
-                                                                        + "FROM IntervalNetwork n "
-                                                                        + "WHERE n.child = :c"),
-               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM IntervalNetwork n "
-                                                                           + "WHERE n.parent = :interval "
-                                                                           + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+@NamedQueries({ @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from IntervalAttribute as ca where ca.interval = :interval"),
+                @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                             + "  attrValue "
+                                                                             + "FROM "
+                                                                             + "       IntervalAttribute attrValue, "
+                                                                             + "       IntervalAttributeAuthorization auth, "
+                                                                             + "       IntervalNetworkAuthorization na, "
+                                                                             + "       IntervalNetwork network "
+                                                                             + "WHERE "
+                                                                             + "        auth.networkAuthorization = na "
+                                                                             + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                             + "    AND network.relationship = na.classifier "
+                                                                             + "    AND network.child = na.classification"
+                                                                             + "    AND attrValue.interval = :ruleform "
+                                                                             + "    AND na.classifier = :classifier "
+                                                                             + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                   + "  auth "
+                                                                                                   + "FROM "
+                                                                                                   + "       IntervalAttributeAuthorization auth, "
+                                                                                                   + "       IntervalNetworkAuthorization na, "
+                                                                                                   + "       IntervalNetwork network "
+                                                                                                   + "WHERE "
+                                                                                                   + "        auth.networkAuthorization = na "
+                                                                                                   + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                   + "    AND network.relationship = na.classifier "
+                                                                                                   + "    AND network.child = na.classification"
+                                                                                                   + "    AND na.classifier = :classifier "
+                                                                                                   + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from IntervalAttributeAuthorization auth "
+                                                                                     + "WHERE auth.networkAuthorization.classifier = :classifier "
+                                                                                     + "AND auth.networkAuthorization.classification = :classification "
+                                                                                     + "AND auth.authorizedAttribute IS NOT NULL"),
+                @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                                      + "FROM IntervalNetwork n "
+                                                      + "WHERE n.parent = :p "
+                                                      + "AND n.relationship = :r"),
+                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                         + "FROM IntervalNetwork n "
+                                                                         + "WHERE n.child = :c"),
+                @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM IntervalNetwork n "
+                                                                            + "WHERE n.parent = :interval "
+                                                                            + "AND n.relationship IN :relationships "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
 @Entity
 @Table(name = "interval", schema = "ruleform")
 public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
 
-    public static final String     AGENCY_ATTRIBUTES_BY_CLASSIFICATION                    = "interval.IntervalAttributesByClassification";
+    public static final String AGENCY_ATTRIBUTES_BY_CLASSIFICATION = "interval.IntervalAttributesByClassification";
 
-    public static final String     AUTHORIZED_AGENCY_ATTRIBUTES                           = "interval.authorizedAttributes";
-    public static final String     FIND_BY_NAME                                           = "interval"
-                                                                                            + FIND_BY_NAME_SUFFIX;
-    public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "interval"
-                                                                                            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String     FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "interval"
-                                                                                            + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-    public static final String     FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "interval"
-                                                                                            + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String     FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS                  = "interval"
-                                                                                            + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String     GET_ALL_PARENT_RELATIONSHIPS                           = "interval"
-                                                                                            + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String     GET_CHILD                                              = "interval"
-                                                                                            + GET_CHILDREN_SUFFIX;
-    public static final String     GET_CHILD_RULES_BY_RELATIONSHIP                        = "interval"
-                                                                                            + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String     ORDERED_ATTRIBUTES                                     = "interval.orderedAttributes";
-    public static final String     QUALIFIED_ENTITY_NETWORK_RULES                         = "interval.qualifiedEntityNetworkRules";
-    private static final long      serialVersionUID                                       = 1L;
+    public static final String AUTHORIZED_AGENCY_ATTRIBUTES                           = "interval.authorizedAttributes";
+    public static final String FIND_BY_NAME                                           = "interval"
+                                                                                        + FIND_BY_NAME_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "interval"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "interval"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "interval"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String FIND_GROUPED_ATTRIBUTE_AUTHORIZATIONS                  = "interval"
+                                                                                        + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String GET_ALL_PARENT_RELATIONSHIPS                           = "interval"
+                                                                                        + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String GET_CHILD                                              = "interval"
+                                                                                        + GET_CHILDREN_SUFFIX;
+    public static final String GET_CHILD_RULES_BY_RELATIONSHIP                        = "interval"
+                                                                                        + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String ORDERED_ATTRIBUTES                                     = "interval.orderedAttributes";
+    public static final String QUALIFIED_ENTITY_NETWORK_RULES                         = "interval.qualifiedEntityNetworkRules";
+    private static final long  serialVersionUID                                       = 1L;
 
     // bi-directional many-to-one association to IntervalAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "interval")
@@ -138,12 +135,12 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     // bi-directional many-to-one association to IntervalNetwork
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
-    private Set<IntervalNetwork>   networkByChild;
+    private Set<IntervalNetwork> networkByChild;
 
     // bi-directional many-to-one association to IntervalNetwork
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
-    private Set<IntervalNetwork>   networkByParent;
+    private Set<IntervalNetwork> networkByParent;
 
     public Interval() {
         super();
@@ -296,14 +293,6 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, IntervalNetwork> getNetworkWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.intervalNetwork;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -320,20 +309,12 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Interval> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.interval;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
      */
     @Override
     public boolean isAny() {
-        return WellKnownInterval.ANY.id().equals(getId());
+        return WellKnownInterval.ANY.id()
+                                    .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -341,8 +322,10 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      */
     @Override
     public boolean isAnyOrSame() {
-        return WellKnownInterval.ANY.id().equals(getId())
-               || WellKnownInterval.SAME.id().equals(getId());
+        return WellKnownInterval.ANY.id()
+                                    .equals(getId())
+               || WellKnownInterval.SAME.id()
+                                        .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -350,7 +333,8 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      */
     @Override
     public boolean isCopy() {
-        return WellKnownInterval.COPY.id().equals(getId());
+        return WellKnownInterval.COPY.id()
+                                     .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -358,12 +342,14 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      */
     @Override
     public boolean isNotApplicable() {
-        return WellKnownInterval.NOT_APPLICABLE.id().equals(getId());
+        return WellKnownInterval.NOT_APPLICABLE.id()
+                                               .equals(getId());
     }
 
     @Override
     public boolean isSame() {
-        return WellKnownInterval.SAME.id().equals(getId());
+        return WellKnownInterval.SAME.id()
+                                     .equals(getId());
     }
 
     /*

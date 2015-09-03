@@ -36,10 +36,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value of an agency attribute
@@ -58,7 +55,7 @@ public class AgencyAttribute extends AttributeValue<Agency> {
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
-    private Agency             agency;
+    private Agency agency;
 
     public AgencyAttribute() {
         super();
@@ -76,7 +73,8 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * @param attribute
      * @param updatedBy
      */
-    public AgencyAttribute(Agency agency, Attribute attribute, Agency updatedBy) {
+    public AgencyAttribute(Agency agency, Attribute attribute,
+                           Agency updatedBy) {
         super(attribute, updatedBy);
         setAgency(agency);
     }
@@ -103,7 +101,8 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * @param value
      * @param updatedBy
      */
-    public AgencyAttribute(Attribute attribute, boolean value, Agency updatedBy) {
+    public AgencyAttribute(Attribute attribute, boolean value,
+                           Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -121,7 +120,8 @@ public class AgencyAttribute extends AttributeValue<Agency> {
      * @param value
      * @param updatedBy
      */
-    public AgencyAttribute(Attribute attribute, String value, Agency updatedBy) {
+    public AgencyAttribute(Attribute attribute, String value,
+                           Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -164,15 +164,6 @@ public class AgencyAttribute extends AttributeValue<Agency> {
     @Override
     public Class<Agency> getRuleformClass() {
         return Agency.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyAttribute;
     }
 
     public void setAgency(Agency agency2) {

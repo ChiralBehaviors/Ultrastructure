@@ -29,11 +29,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -41,20 +38,20 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
  */
 @Entity
 @Table(name = "attribute_network_authorization", schema = "ruleform")
-public class AttributeNetworkAuthorization extends
-        NetworkAuthorization<Attribute> {
+public class AttributeNetworkAuthorization
+        extends NetworkAuthorization<Attribute> {
 
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_parent")
-    private Attribute         authorizedParent;
+    private Attribute authorizedParent;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
-    private Attribute         classification;
+    private Attribute classification;
 
     public AttributeNetworkAuthorization() {
         super();
@@ -92,14 +89,6 @@ public class AttributeNetworkAuthorization extends
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Attribute>, Attribute> getClassifierAttribute() {
         return AttributeNetworkAuthorization_.classification;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attributeNetworkAuthorization;
     }
 
     @Override

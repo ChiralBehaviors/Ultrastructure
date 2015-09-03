@@ -27,14 +27,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -42,18 +38,18 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
  */
 @Table(name = "product_relationship_authorization", schema = "ruleform")
 @Entity
-public class ProductRelationshipAuthorization extends
-        XDomainNetworkAuthorization<Product, Relationship> {
+public class ProductRelationshipAuthorization
+        extends XDomainNetworkAuthorization<Product, Relationship> {
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "from_parent")
-    private Product           fromParent;
+    private Product fromParent;
 
     // bi-directional many-to-one association to AgencyProduct
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "to_parent")
-    private Relationship      toParent;
+    private Relationship toParent;
 
     public ProductRelationshipAuthorization() {
         super();
@@ -75,14 +71,6 @@ public class ProductRelationshipAuthorization extends
     @Override
     public Relationship getToParent() {
         return toParent;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productRelationshipAuthorization;
     }
 
     @Override

@@ -265,7 +265,7 @@ public class ResourcesTest extends AbstractModelTest {
                                              .getId()
                                              .toString()));
         Map<?, ?> jsonObject = (Map<?, ?>) JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(jsonObject.get("auths"));
+        assertNotNull(jsonObject.get("ruleforms"));
         assertNotNull(jsonObject.get("frontier"));
     }
 
@@ -364,7 +364,9 @@ public class ResourcesTest extends AbstractModelTest {
                                                                  MediaType.APPLICATION_JSON_TYPE));
         Map<String, Object> result = response.readEntity(Map.class);
 
-        assertNull((String) result.get("errors"), result.get("errors"));
+        assertNull(result.get("errors") == null ? "" : result.get("errors")
+                                                             .toString(),
+                   result.get("errors"));
 
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
         assertNotNull(thing1Result);

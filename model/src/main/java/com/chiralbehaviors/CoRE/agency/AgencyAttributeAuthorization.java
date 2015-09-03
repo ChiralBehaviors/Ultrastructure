@@ -26,15 +26,11 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorizations for attributes on entities.
@@ -44,9 +40,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "agency_attribute_authorization", schema = "ruleform")
-public class AgencyAttributeAuthorization extends
-        AttributeAuthorization<Agency, AgencyNetwork> {
-    private static final long          serialVersionUID = 1L;
+public class AgencyAttributeAuthorization
+        extends AttributeAuthorization<Agency, AgencyNetwork> {
+    private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -81,15 +77,6 @@ public class AgencyAttributeAuthorization extends
     @Override
     public NetworkAuthorization<Agency> getNetworkAuthorization() {
         return networkAuthorization;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyAttributeAuthorization;
     }
 
     /* (non-Javadoc)

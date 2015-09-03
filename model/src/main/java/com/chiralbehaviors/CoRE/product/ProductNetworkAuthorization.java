@@ -30,9 +30,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorization for product networks
@@ -48,12 +46,12 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_parent")
-    private Product           authorizedParent;
+    private Product authorizedParent;
 
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
-    private Product           classification;
+    private Product classification;
 
     /**
      *
@@ -115,15 +113,6 @@ public class ProductNetworkAuthorization extends NetworkAuthorization<Product> {
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Product>, ? extends Product> getClassifierAttribute() {
         return ProductNetworkAuthorization_.classification;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductNetworkAuthorization> getWorkspaceAuthAttribute() {
-        return null;
     }
 
     /*

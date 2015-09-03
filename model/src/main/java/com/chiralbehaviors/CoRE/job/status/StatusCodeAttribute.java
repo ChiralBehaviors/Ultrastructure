@@ -37,10 +37,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -57,7 +54,7 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     // bi-directional many-to-one association to StatusCode
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "status_code")
-    private StatusCode         statusCode;
+    private StatusCode statusCode;
 
     public StatusCodeAttribute() {
         super();
@@ -81,7 +78,8 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
         super(attribute, value, updatedBy);
     }
 
-    public StatusCodeAttribute(Attribute attribute, int value, Agency updatedBy) {
+    public StatusCodeAttribute(Attribute attribute, int value,
+                               Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -128,15 +126,6 @@ public class StatusCodeAttribute extends AttributeValue<StatusCode> {
     @JsonGetter
     public StatusCode getStatusCode() {
         return statusCode;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeAttribute;
     }
 
     public void setStatusCode(StatusCode interval) {

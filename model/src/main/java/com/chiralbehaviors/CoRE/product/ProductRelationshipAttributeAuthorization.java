@@ -27,16 +27,12 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -45,10 +41,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Table(name = "product_relationship_attribute_authorization", schema = "ruleform")
 @Entity
-public class ProductRelationshipAttributeAuthorization extends
-        XDomainAttrbuteAuthorization<Product, Relationship> {
+public class ProductRelationshipAttributeAuthorization
+        extends XDomainAttrbuteAuthorization<Product, Relationship> {
 
-    private static final long                serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -72,7 +68,8 @@ public class ProductRelationshipAttributeAuthorization extends
         super(id);
     }
 
-    public ProductRelationshipAttributeAuthorization(UUID id, Agency updatedBy) {
+    public ProductRelationshipAttributeAuthorization(UUID id,
+                                                     Agency updatedBy) {
         super(id, updatedBy);
     }
 
@@ -82,14 +79,6 @@ public class ProductRelationshipAttributeAuthorization extends
     @Override
     public XDomainNetworkAuthorization<Product, Relationship> getNetworkAuthorization() {
         return networkAuthorization;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productRelationshipAttributeAuthorization;
     }
 
     /* (non-Javadoc)

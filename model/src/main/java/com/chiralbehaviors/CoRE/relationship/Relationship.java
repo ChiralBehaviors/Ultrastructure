@@ -49,8 +49,6 @@ import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -63,76 +61,75 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "relationship", schema = "ruleform")
-@NamedQueries({
-               @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from RelationshipAttribute as ca where ca.relationship = :relationship"),
-               @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
-                                                                            + "  attrValue "
-                                                                            + "FROM "
-                                                                            + "       RelationshipAttribute attrValue, "
-                                                                            + "       RelationshipAttributeAuthorization auth, "
-                                                                            + "       RelationshipNetworkAuthorization na, "
-                                                                            + "       RelationshipNetwork network "
-                                                                            + "WHERE "
-                                                                            + "        auth.networkAuthorization = na "
-                                                                            + "    AND auth.authorizedAttribute = attrValue.attribute "
-                                                                            + "    AND network.relationship = na.classifier "
-                                                                            + "    AND network.child = na.classification"
-                                                                            + "    AND attrValue.relationship = :ruleform "
-                                                                            + "    AND na.classifier = :classifier "
-                                                                            + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
-                                                                                                  + "  auth "
-                                                                                                  + "FROM "
-                                                                                                  + "       IntervalAttributeAuthorization auth, "
-                                                                                                  + "       IntervalNetworkAuthorization na, "
-                                                                                                  + "       IntervalNetwork network "
-                                                                                                  + "WHERE "
-                                                                                                  + "        auth.networkAuthorization = na "
-                                                                                                  + "    AND auth.authorizedAttribute = :attribute "
-                                                                                                  + "    AND network.relationship = na.classifier "
-                                                                                                  + "    AND network.child = na.classification"
-                                                                                                  + "    AND na.classifier = :classifier "
-                                                                                                  + "    AND na.classification= :classification "),
-               @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from RelationshipAttributeAuthorization auth "
-                                                                                    + "WHERE auth.networkAuthorization.classifier = :classifier "
-                                                                                    + "AND auth.networkAuthorization.classification = :classification "
-                                                                                    + "AND auth.authorizedAttribute IS NOT NULL"),
-               @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
-                                                     + "FROM RelationshipNetwork n "
-                                                     + "WHERE n.parent = :p "
-                                                     + "AND n.relationship = :r"),
-               @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
-                                                                        + "FROM RelationshipNetwork n "
-                                                                        + "WHERE n.child = :c"),
-               @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM RelationshipNetwork n "
-                                                                           + "WHERE n.parent = :relationship "
-                                                                           + "AND n.relationship IN :relationships "
-                                                                           + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
-public class Relationship extends
-        ExistentialRuleform<Relationship, RelationshipNetwork> {
+@NamedQueries({ @NamedQuery(name = ORDERED_ATTRIBUTES, query = "select ca from RelationshipAttribute as ca where ca.relationship = :relationship"),
+                @NamedQuery(name = FIND_BY_NAME, query = "select e from Agency e where e.name = :name"),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_VALUES, query = "SELECT "
+                                                                             + "  attrValue "
+                                                                             + "FROM "
+                                                                             + "       RelationshipAttribute attrValue, "
+                                                                             + "       RelationshipAttributeAuthorization auth, "
+                                                                             + "       RelationshipNetworkAuthorization na, "
+                                                                             + "       RelationshipNetwork network "
+                                                                             + "WHERE "
+                                                                             + "        auth.networkAuthorization = na "
+                                                                             + "    AND auth.authorizedAttribute = attrValue.attribute "
+                                                                             + "    AND network.relationship = na.classifier "
+                                                                             + "    AND network.child = na.classification"
+                                                                             + "    AND attrValue.relationship = :ruleform "
+                                                                             + "    AND na.classifier = :classifier "
+                                                                             + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE, query = "SELECT "
+                                                                                                   + "  auth "
+                                                                                                   + "FROM "
+                                                                                                   + "       IntervalAttributeAuthorization auth, "
+                                                                                                   + "       IntervalNetworkAuthorization na, "
+                                                                                                   + "       IntervalNetwork network "
+                                                                                                   + "WHERE "
+                                                                                                   + "        auth.networkAuthorization = na "
+                                                                                                   + "    AND auth.authorizedAttribute = :attribute "
+                                                                                                   + "    AND network.relationship = na.classifier "
+                                                                                                   + "    AND network.child = na.classification"
+                                                                                                   + "    AND na.classifier = :classifier "
+                                                                                                   + "    AND na.classification= :classification "),
+                @NamedQuery(name = FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS, query = "select auth from RelationshipAttributeAuthorization auth "
+                                                                                     + "WHERE auth.networkAuthorization.classifier = :classifier "
+                                                                                     + "AND auth.networkAuthorization.classification = :classification "
+                                                                                     + "AND auth.authorizedAttribute IS NOT NULL"),
+                @NamedQuery(name = GET_CHILD, query = "SELECT n.child "
+                                                      + "FROM RelationshipNetwork n "
+                                                      + "WHERE n.parent = :p "
+                                                      + "AND n.relationship = :r"),
+                @NamedQuery(name = GET_ALL_PARENT_RELATIONSHIPS, query = "SELECT n "
+                                                                         + "FROM RelationshipNetwork n "
+                                                                         + "WHERE n.child = :c"),
+                @NamedQuery(name = GET_CHILD_RULES_BY_RELATIONSHIP, query = "SELECT n FROM RelationshipNetwork n "
+                                                                            + "WHERE n.parent = :relationship "
+                                                                            + "AND n.relationship IN :relationships "
+                                                                            + "ORDER by n.parent.name, n.relationship.name, n.child.name") })
+public class Relationship
+        extends ExistentialRuleform<Relationship, RelationshipNetwork> {
 
-    public static final String         AGENCY_ATTRIBUTES_BY_CLASSIFICATION                    = "relationship.RelationshipAttributesByClassification";
+    public static final String AGENCY_ATTRIBUTES_BY_CLASSIFICATION = "relationship.RelationshipAttributesByClassification";
 
-    public static final String         AUTHORIZED_AGENCY_ATTRIBUTES                           = "relationship.authorizedAttributes";
-    public static final String         FIND_BY_NAME                                           = "relationship"
-                                                                                                + FIND_BY_NAME_SUFFIX;
-    public static final String         FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "relationship"
-                                                                                                + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-    public static final String         FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "relationship"
-                                                                                                + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-    public static final String         FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "relationship"
-                                                                                                + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-    public static final String         GET_ALL_PARENT_RELATIONSHIPS                           = "relationship"
-                                                                                                + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
-    public static final String         GET_CHILD                                              = "relationship"
-                                                                                                + GET_CHILDREN_SUFFIX;
-    public static final String         GET_CHILD_RULES_BY_RELATIONSHIP                        = "relationship"
-                                                                                                + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
-    public static final String         ORDERED_ATTRIBUTES                                     = "relationship.orderedAttributes";
-    public static final String         QUALIFIED_ENTITY_NETWORK_RULES                         = "relationship.qualifiedEntityNetworkRules";
+    public static final String AUTHORIZED_AGENCY_ATTRIBUTES                           = "relationship.authorizedAttributes";
+    public static final String FIND_BY_NAME                                           = "relationship"
+                                                                                        + FIND_BY_NAME_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS               = "relationship"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE = "relationship"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
+    public static final String FIND_CLASSIFIED_ATTRIBUTE_VALUES                       = "relationship"
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
+    public static final String GET_ALL_PARENT_RELATIONSHIPS                           = "relationship"
+                                                                                        + GET_ALL_PARENT_RELATIONSHIPS_SUFFIX;
+    public static final String GET_CHILD                                              = "relationship"
+                                                                                        + GET_CHILDREN_SUFFIX;
+    public static final String GET_CHILD_RULES_BY_RELATIONSHIP                        = "relationship"
+                                                                                        + GET_CHILD_RULES_BY_RELATIONSHIP_SUFFIX;
+    public static final String ORDERED_ATTRIBUTES                                     = "relationship.orderedAttributes";
+    public static final String QUALIFIED_ENTITY_NETWORK_RULES                         = "relationship.qualifiedEntityNetworkRules";
 
-    private static final long          serialVersionUID                                       = 1L;
+    private static final long serialVersionUID = 1L;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "relationship")
     @JsonIgnore
@@ -141,17 +138,17 @@ public class Relationship extends
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "inverse", unique = true)
     @JsonIgnore
-    private Relationship               inverse;
+    private Relationship inverse;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
     @JsonIgnore
-    private Set<RelationshipNetwork>   networkByChild;
+    private Set<RelationshipNetwork> networkByChild;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
-    private Set<RelationshipNetwork>   networkByParent;
+    private Set<RelationshipNetwork> networkByParent;
 
-    private String                     operator;
+    private String operator;
 
     public Relationship() {
     }
@@ -338,14 +335,6 @@ public class Relationship extends
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNetworkWorkspaceAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, RelationshipNetwork> getNetworkWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.relationshipNetwork;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getNotApplicableId()
      */
     @Override
@@ -366,20 +355,12 @@ public class Relationship extends
     }
 
     /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, Relationship> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.relationship;
-    }
-
-    /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#isAny()
      */
     @Override
     public boolean isAny() {
-        return WellKnownRelationship.ANY.id().equals(getId());
+        return WellKnownRelationship.ANY.id()
+                                        .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -387,8 +368,10 @@ public class Relationship extends
      */
     @Override
     public boolean isAnyOrSame() {
-        return WellKnownRelationship.ANY.id().equals(getId())
-               || WellKnownRelationship.SAME.id().equals(getId());
+        return WellKnownRelationship.ANY.id()
+                                        .equals(getId())
+               || WellKnownRelationship.SAME.id()
+                                            .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -396,7 +379,8 @@ public class Relationship extends
      */
     @Override
     public boolean isCopy() {
-        return WellKnownRelationship.COPY.id().equals(getId());
+        return WellKnownRelationship.COPY.id()
+                                         .equals(getId());
     }
 
     /* (non-Javadoc)
@@ -404,12 +388,14 @@ public class Relationship extends
      */
     @Override
     public boolean isNotApplicable() {
-        return WellKnownRelationship.NOT_APPLICABLE.id().equals(getId());
+        return WellKnownRelationship.NOT_APPLICABLE.id()
+                                                   .equals(getId());
     }
 
     @Override
     public boolean isSame() {
-        return WellKnownRelationship.SAME.id().equals(getId());
+        return WellKnownRelationship.SAME.id()
+                                         .equals(getId());
     }
 
     /*

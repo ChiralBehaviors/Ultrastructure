@@ -9,10 +9,11 @@
         <createTable schemaName="ruleform" remarks="Defines rules stating what network status_codes are authorized for particular status_codes"
             tableName="status_code_network_authorization"
         >
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="status_code_network_authorization_pkey" />
             </column>
-            <column name="name" type="text"/>
+            <column name="name" type="text" />
             <column name="classifier" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -32,28 +33,22 @@
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_relationship" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_child_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_parent" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_authorized_parent_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="status_code" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_relationship" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_authorized_relationship_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classifier" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_classifier_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="relationship" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="classification" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_classification_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="status_code" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
-            referencedTableName="agency" />
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_updated_by_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
@@ -62,10 +57,26 @@
             columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, grouping_agency"
             constraintName="status_code_status_code_authorizatio_status_code_classification_attri_key" deferrable="false" disabled="false"
             initiallyDeferred="true" tableName="status_code_network_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="classifier, classification, grouping_agency"
+            constraintName="status_code_network_authorization_facet_key" deferrable="false" disabled="false" initiallyDeferred="true"
+            tableName="status_code_network_authorization" />
         <createIndex schemaName="ruleform" indexName="status_code_network_authorization_updated_by_fkey_idx" tableName="status_code_network_authorization"
             unique="false"
         >
             <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="status_code_network_authorization_classifier_fkey_idx" tableName="status_code_network_authorization"
+            unique="false"
+        >
+            <column name="classifier" />
+        </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+        <createIndex schemaName="ruleform" indexName="status_code_network_authorization_classification_fkey_idx" tableName="status_code_network_authorization"
+            unique="false"
+        >
+            <column name="classification" />
         </createIndex>
         <rollback>
             <dropTable tableName="status_code_network_authorization" />

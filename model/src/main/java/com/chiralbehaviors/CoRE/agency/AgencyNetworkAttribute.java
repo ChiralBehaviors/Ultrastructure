@@ -32,9 +32,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product attributes
@@ -50,7 +47,7 @@ public class AgencyNetworkAttribute extends NetworkAttribute<AgencyNetwork> {
     // bi-directional many-to-one association to ProductNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private AgencyNetwork     network;
+    private AgencyNetwork network;
 
     public AgencyNetworkAttribute() {
     }
@@ -155,15 +152,6 @@ public class AgencyNetworkAttribute extends NetworkAttribute<AgencyNetwork> {
     @Override
     public Class<AgencyNetwork> getRuleformClass() {
         return AgencyNetwork.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyNetworkAttribute;
     }
 
     public void setNetwork(AgencyNetwork network) {

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- *
-
+ * 
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -18,40 +18,17 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.security;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
+package com.chiralbehaviors.CoRE.kernel;
 
 /**
  * @author hhildebrand
  *
  */
-@Entity
-@Table(name = "agency_agency_grouping", schema = "ruleform")
-public class AgencyAgencyGrouping
-        extends AgencyGrouping<Agency, AgencyNetwork> {
-
-    private static final long serialVersionUID = 1L;
-
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
-    @JoinColumn(name = "entity")
-    private Agency entity;
-
-    @Override
-    public Agency getEntity() {
-        return entity;
+public class BootstrapTest {
+    // uncomment to test zee bootstrapping. commented out because pretty much everything tests bootstrapping
+    // @Test 
+    public void testBootstrap() throws Exception {
+        Bootstrap.main(new String[] { "target/test-classes/jpa.properties",
+                                      "target/bootstrap-out.json" });
     }
-
-    @Override
-    public void setEntity(Agency entity) {
-        this.entity = entity;
-    }
-
 }

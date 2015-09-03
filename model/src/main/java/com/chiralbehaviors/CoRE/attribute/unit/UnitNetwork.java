@@ -34,14 +34,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -49,14 +46,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM UnitNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM ProductNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+@NamedQueries({ @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM UnitNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship"),
+                @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM ProductNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship "
+                                                         + "AND n.child = :child") })
 @Entity
 @Table(name = "unit_network", schema = "ruleform")
 public class UnitNetwork extends NetworkRuleform<Unit> {
@@ -73,20 +69,20 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Unit               child;
+    private Unit child;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Unit               parent;
+    private Unit parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise1")
-    private UnitNetwork        premise1;
+    private UnitNetwork premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise2")
-    private UnitNetwork        premise2;
+    private UnitNetwork premise2;
 
     /**
      *
@@ -174,15 +170,6 @@ public class UnitNetwork extends NetworkRuleform<Unit> {
     @JsonGetter
     public UnitNetwork getPremise2() {
         return premise2;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, UnitNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.unitNetwork;
     }
 
     @Override

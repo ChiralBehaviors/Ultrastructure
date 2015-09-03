@@ -30,10 +30,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorized network relationshps of agencies
@@ -48,12 +45,12 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "authorized_parent")
-    private Agency            authorizedParent;
+    private Agency authorizedParent;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "classification")
-    private Agency            classification;
+    private Agency classification;
 
     public AgencyNetworkAuthorization() {
         super();
@@ -112,15 +109,6 @@ public class AgencyNetworkAuthorization extends NetworkAuthorization<Agency> {
     @Override
     public SingularAttribute<? extends NetworkAuthorization<Agency>, Agency> getClassifierAttribute() {
         return AgencyNetworkAuthorization_.classification;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyNetworkAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyNetworkAuthorization;
     }
 
     /*

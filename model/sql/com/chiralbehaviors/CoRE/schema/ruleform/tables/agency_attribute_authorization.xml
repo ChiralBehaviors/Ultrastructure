@@ -9,6 +9,7 @@
         <createTable schemaName="ruleform"
             remarks="Defines rules stating what attributes (and values thereof) are authorized for particular agencys" tableName="agency_attribute_authorization"
         >
+            <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="agency_attribute_authorization_pkey" />
             </column>
@@ -40,17 +41,17 @@
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_authorization_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_network_attribute" baseTableName="agency_attribute_authorization" constraintName="agency_network_attribute_authorization_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="network_authorization" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_network_authorization_classification_attribute_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="agency_network_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_authorization_grouping_agency_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_authorization_updated_by_fkey"
@@ -64,5 +65,23 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_attribute_authorization_network_authorization_fkey_idx" tableName="agency_attribute_authorization"
+            unique="false"
+        >
+            <column name="network_authorization" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_attribute_authorization_authorized_attribute_fkey_idx" tableName="agency_attribute_authorization"
+            unique="false"
+        >
+            <column name="authorized_attribute" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_attribute_authorization_authorized_network_attribute_fkey_idx" tableName="agency_attribute_authorization"
+            unique="false"
+        >
+            <column name="authorized_network_attribute" />
+        </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace" baseTableName="agency_attribute_authorization" constraintName="agency_attribute_authorization_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

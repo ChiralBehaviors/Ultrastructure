@@ -36,13 +36,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -52,15 +49,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM AgencyNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+@NamedQueries({ @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from AgencyNetwork n"),
+                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM AgencyNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship"),
+                @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM AgencyNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship "
+                                                         + "AND n.child = :child") })
 @Entity
 @Table(name = "agency_network", schema = "ruleform")
 public class AgencyNetwork extends NetworkRuleform<Agency> {
@@ -74,20 +70,20 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Agency             child;
+    private Agency child;
 
     //bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Agency             parent;
+    private Agency parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise1")
-    private AgencyNetwork      premise1;
+    private AgencyNetwork premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise2")
-    private AgencyNetwork      premise2;
+    private AgencyNetwork premise2;
 
     public AgencyNetwork() {
     }
@@ -103,8 +99,8 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
      * @param relationship
      * @param updatedBy
      */
-    public AgencyNetwork(Agency parent, Relationship relationship,
-                         Agency child, Agency updatedBy) {
+    public AgencyNetwork(Agency parent, Relationship relationship, Agency child,
+                         Agency updatedBy) {
         super(relationship, updatedBy);
         this.parent = parent;
         this.child = child;
@@ -167,16 +163,8 @@ public class AgencyNetwork extends NetworkRuleform<Agency> {
     }
 
     public List<Relationship> getUsedRelationships(EntityManager em) {
-        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AgencyNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyNetwork;
+        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class)
+                 .getResultList();
     }
 
     @Override

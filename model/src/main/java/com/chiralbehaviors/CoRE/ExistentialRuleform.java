@@ -22,7 +22,9 @@ package com.chiralbehaviors.CoRE;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Basic;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
@@ -35,7 +37,6 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -71,9 +72,11 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     private static final long serialVersionUID = 1L;
 
+    @Basic(fetch = FetchType.LAZY)
     private String description;
 
     @NotNull
+    @Basic(fetch = FetchType.LAZY)
     private String name;
 
     public ExistentialRuleform() {
@@ -164,9 +167,6 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
 
     @JsonIgnore
     abstract public SingularAttribute<Network, RuleForm> getNetworkParentAttribute();
-
-    @JsonIgnore
-    abstract public SingularAttribute<WorkspaceAuthorization, Network> getNetworkWorkspaceAuthAttribute();
 
     @JsonIgnore
     abstract public UUID getNotApplicableId();

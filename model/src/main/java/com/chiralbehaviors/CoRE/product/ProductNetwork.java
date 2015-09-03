@@ -40,15 +40,12 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -58,19 +55,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
-@NamedQueries({
-               @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n"),
-               @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM ProductNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship"),
-               @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM ProductNetwork n "
-                                                        + "WHERE n.parent = :parent "
-                                                        + "AND n.relationship = :relationship "
-                                                        + "AND n.child = :child") })
+@NamedQueries({ @NamedQuery(name = GET_USED_RELATIONSHIPS, query = "select distinct n.relationship from ProductNetwork n"),
+                @NamedQuery(name = GET_CHILDREN, query = "SELECT n.child FROM ProductNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship"),
+                @NamedQuery(name = GET_NETWORKS, query = "SELECT n FROM ProductNetwork n "
+                                                         + "WHERE n.parent = :parent "
+                                                         + "AND n.relationship = :relationship "
+                                                         + "AND n.child = :child") })
 @Entity
 @Table(name = "product_network", schema = "ruleform")
-public class ProductNetwork extends NetworkRuleform<Product> implements
-        Attributable<ProductNetworkAttribute> {
+public class ProductNetwork extends NetworkRuleform<Product>
+        implements Attributable<ProductNetworkAttribute> {
     public static final String GET_CHILDREN           = "productNetwork"
                                                         + GET_CHILDREN_SUFFIX;
     public static final String GET_NETWORKS           = "productNetwork"
@@ -80,7 +76,8 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     private static final long  serialVersionUID       = 1L;
 
     public static List<Relationship> getUsedRelationships(EntityManager em) {
-        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class).getResultList();
+        return em.createNamedQuery(GET_USED_RELATIONSHIPS, Relationship.class)
+                 .getResultList();
     }
 
     // bi-directional many-to-one association to ProductNetworkAttribute
@@ -91,20 +88,20 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Product                      child;
+    private Product child;
 
     //bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent")
-    private Product                      parent;
+    private Product parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise1")
-    private ProductNetwork               premise1;
+    private ProductNetwork premise1;
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "premise2")
-    private ProductNetwork               premise2;
+    private ProductNetwork premise2;
 
     public ProductNetwork() {
     }
@@ -198,15 +195,6 @@ public class ProductNetwork extends NetworkRuleform<Product> implements
     @JsonGetter
     public ProductNetwork getPremise2() {
         return premise2;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductNetwork> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productNetwork;
     }
 
     @Override

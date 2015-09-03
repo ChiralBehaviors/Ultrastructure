@@ -34,9 +34,6 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product attributes
@@ -157,15 +154,6 @@ public class ProductNetworkAttribute extends NetworkAttribute<ProductNetwork> {
     @Override
     public Class<ProductNetwork> getRuleformClass() {
         return ProductNetwork.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productNetworkAttribute;
     }
 
     public void setNetwork(ProductNetwork network) {

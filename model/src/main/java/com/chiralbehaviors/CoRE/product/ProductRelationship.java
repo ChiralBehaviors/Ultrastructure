@@ -33,14 +33,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attributable;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -56,15 +53,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                      + "FROM ProductRelationship n "
                                                                      + "WHERE n.relationship = :relationship "
                                                                      + "AND n.child = :child"), })
-public class ProductRelationship extends Ruleform implements
-        Attributable<ProductRelationshipAttribute> {
-    public static final String                PRODUCTS_AT_RELATIONSHIP = "productRelationship.productsAtRelationship";
-    private static final long                 serialVersionUID         = 1L;
+public class ProductRelationship extends Ruleform
+        implements Attributable<ProductRelationshipAttribute> {
+    public static final String PRODUCTS_AT_RELATIONSHIP = "productRelationship.productsAtRelationship";
+    private static final long  serialVersionUID         = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "agency")
-    private Agency                            agency;
+    private Agency agency;
 
     // bi-directional many-to-one association to ProductRelationshipAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productRelationship")
@@ -74,17 +71,17 @@ public class ProductRelationship extends Ruleform implements
     // bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child")
-    private Relationship                      child;
+    private Relationship child;
 
     // bi-directional many-to-one association to Product
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
-    private Product                           product;
+    private Product product;
 
     // bi-directional many-to-one association to Relationship
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "relationship")
-    private Relationship                      relationship;
+    private Relationship relationship;
 
     public ProductRelationship() {
     }
@@ -132,15 +129,6 @@ public class ProductRelationship extends Ruleform implements
 
     public Relationship getRelationship() {
         return relationship;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, ProductRelationship> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.productRelationship;
     }
 
     public void setAgency(Agency agency2) {

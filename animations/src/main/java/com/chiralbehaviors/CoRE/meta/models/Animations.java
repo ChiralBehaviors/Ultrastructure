@@ -450,6 +450,8 @@ public class Animations implements Triggers {
     }
 
     public void rollback() {
+        em.getTransaction()
+          .setRollbackOnly();
         reset();
         model.flushWorkspaces();
     }

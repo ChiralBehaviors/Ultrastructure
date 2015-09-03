@@ -32,9 +32,6 @@ import javax.persistence.metamodel.SingularAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for unit networks
@@ -50,7 +47,7 @@ public class UnitNetworkAttribute extends NetworkAttribute<UnitNetwork> {
     // bi-directional many-to-one association to UnitNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private UnitNetwork       network;
+    private UnitNetwork network;
 
     public UnitNetworkAttribute() {
     }
@@ -102,7 +99,8 @@ public class UnitNetworkAttribute extends NetworkAttribute<UnitNetwork> {
      * @param value
      * @param updatedBy
      */
-    public UnitNetworkAttribute(Attribute attribute, int value, Agency updatedBy) {
+    public UnitNetworkAttribute(Attribute attribute, int value,
+                                Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -154,15 +152,6 @@ public class UnitNetworkAttribute extends NetworkAttribute<UnitNetwork> {
     @Override
     public Class<UnitNetwork> getRuleformClass() {
         return UnitNetwork.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, UnitNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.unitNetworkAttribute;
     }
 
     public void setNetwork(UnitNetwork network) {

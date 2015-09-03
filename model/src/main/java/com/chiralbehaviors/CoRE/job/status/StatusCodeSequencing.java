@@ -38,50 +38,45 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the status_code_sequencing database table.
  *
  */
-@NamedQueries({
-               @NamedQuery(name = ENSURE_VALID_SERVICE_STATUS, query = "SELECT COUNT(scs.id) "
-                                                                       + "FROM StatusCodeSequencing AS scs "
-                                                                       + "WHERE scs.service = :service "
-                                                                       + "  AND (scs.parentCode = :code "
-                                                                       + "       OR scs.childCode = :code)"),
-               @NamedQuery(name = IS_VALID_NEXT_STATUS, query = "SELECT COUNT(scs.id) "
-                                                                + "FROM StatusCodeSequencing AS scs "
-                                                                + "WHERE scs.service = :service "
-                                                                + "  AND scs.parentCode = :parentCode "
-                                                                + "  AND scs.childCode = :childCode"),
-               @NamedQuery(name = GET_PARENT_STATUS_CODES_SERVICE, query = "SELECT DISTINCT(scs.parentCode) "
+@NamedQueries({ @NamedQuery(name = ENSURE_VALID_SERVICE_STATUS, query = "SELECT COUNT(scs.id) "
+                                                                        + "FROM StatusCodeSequencing AS scs "
+                                                                        + "WHERE scs.service = :service "
+                                                                        + "  AND (scs.parentCode = :code "
+                                                                        + "       OR scs.childCode = :code)"),
+                @NamedQuery(name = IS_VALID_NEXT_STATUS, query = "SELECT COUNT(scs.id) "
+                                                                 + "FROM StatusCodeSequencing AS scs "
+                                                                 + "WHERE scs.service = :service "
+                                                                 + "  AND scs.parentCode = :parentCode "
+                                                                 + "  AND scs.childCode = :childCode"),
+                @NamedQuery(name = GET_PARENT_STATUS_CODES_SERVICE, query = "SELECT DISTINCT(scs.parentCode) "
+                                                                            + " FROM StatusCodeSequencing scs "
+                                                                            + " WHERE scs.service = :service"),
+                @NamedQuery(name = GET_CHILD_STATUS_CODES_SERVICE, query = "SELECT DISTINCT(scs.childCode) "
                                                                            + " FROM StatusCodeSequencing scs "
                                                                            + " WHERE scs.service = :service"),
-               @NamedQuery(name = GET_CHILD_STATUS_CODES_SERVICE, query = "SELECT DISTINCT(scs.childCode) "
-                                                                          + " FROM StatusCodeSequencing scs "
-                                                                          + " WHERE scs.service = :service"),
-               @NamedQuery(name = GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE, query = "SELECT scs FROM StatusCodeSequencing scs "
-                                                                                    + " WHERE scs.service = :service"
-                                                                                    + "   AND scs.childCode = :statusCode"),
-               @NamedQuery(name = GET_PARENT_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
-                                                                             + " WHERE scs.parentCode = :statusCode"),
-               @NamedQuery(name = GET_CHILD_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
-                                                                            + " WHERE scs.childCode = :statusCode"),
-               @NamedQuery(name = GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE, query = "SELECT scs FROM StatusCodeSequencing scs "
+                @NamedQuery(name = GET_CHILD_STATUS_CODE_SEQUENCING_SERVICE, query = "SELECT scs FROM StatusCodeSequencing scs "
                                                                                      + " WHERE scs.service = :service"
-                                                                                     + "   AND scs.parentCode = :statusCode"),
-               @NamedQuery(name = GET_ALL_STATUS_CODE_SEQUENCING, query = "SELECT scs "
-                                                                          + " FROM StatusCodeSequencing scs "
-                                                                          + " WHERE scs.service = :service") })
+                                                                                     + "   AND scs.childCode = :statusCode"),
+                @NamedQuery(name = GET_PARENT_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
+                                                                              + " WHERE scs.parentCode = :statusCode"),
+                @NamedQuery(name = GET_CHILD_STATUS_CODE_SEQUENCING, query = "SELECT scs FROM StatusCodeSequencing scs "
+                                                                             + " WHERE scs.childCode = :statusCode"),
+                @NamedQuery(name = GET_PARENT_STATUS_CODE_SEQUENCING_SERVICE, query = "SELECT scs FROM StatusCodeSequencing scs "
+                                                                                      + " WHERE scs.service = :service"
+                                                                                      + "   AND scs.parentCode = :statusCode"),
+                @NamedQuery(name = GET_ALL_STATUS_CODE_SEQUENCING, query = "SELECT scs "
+                                                                           + " FROM StatusCodeSequencing scs "
+                                                                           + " WHERE scs.service = :service") })
 @Entity
 @Table(name = "status_code_sequencing", schema = "ruleform")
 public class StatusCodeSequencing extends Ruleform {
@@ -95,23 +90,23 @@ public class StatusCodeSequencing extends Ruleform {
     public static final String GET_PARENT_STATUS_CODES_SERVICE           = "statusCodeSequencing.getParentStatusCodes";
     public static final String IS_VALID_NEXT_STATUS                      = "statusCodeSequencing.isValidNextStatus";
 
-    private static final long  serialVersionUID                          = 1L;
+    private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to StatusCode
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "child_code")
-    private StatusCode         childCode;
+    private StatusCode childCode;
 
     // bi-directional many-to-one association to StatusCode
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "parent_code")
-    private StatusCode         parentCode;
+    private StatusCode parentCode;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(optional = false, cascade = { CascadeType.PERSIST,
-            CascadeType.DETACH })
+                                             CascadeType.DETACH })
     @JoinColumn(name = "service")
-    private Product            service;
+    private Product service;
 
     public StatusCodeSequencing() {
     }
@@ -174,15 +169,6 @@ public class StatusCodeSequencing extends Ruleform {
      */
     public Product getService() {
         return service;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, StatusCodeSequencing> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.statusCodeSequencing;
     }
 
     @Override

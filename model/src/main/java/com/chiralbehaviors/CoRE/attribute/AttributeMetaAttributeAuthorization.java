@@ -27,13 +27,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The authorization for attributes on attributes
@@ -43,10 +39,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "attr_meta_attr_auth", schema = "ruleform")
-public class AttributeMetaAttributeAuthorization extends
-        AttributeAuthorization<Attribute, AttributeNetwork> {
+public class AttributeMetaAttributeAuthorization
+        extends AttributeAuthorization<Attribute, AttributeNetwork> {
 
-    private static final long             serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
@@ -86,15 +82,6 @@ public class AttributeMetaAttributeAuthorization extends
     @Override
     public NetworkAuthorization<Attribute> getNetworkAuthorization() {
         return networkAuthorization;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, AttributeMetaAttributeAuthorization> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.attributeMetaAttributeAuthorization;
     }
 
     @Override

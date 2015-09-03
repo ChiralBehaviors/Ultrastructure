@@ -27,14 +27,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 
 /**
  * @author hhildebrand
@@ -42,21 +38,21 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
  */
 @Table(name = "agency_product_authorization", schema = "ruleform")
 @Entity
-public class AgencyProductAuthorization extends
-        XDomainNetworkAuthorization<Agency, Product> {
+public class AgencyProductAuthorization
+        extends XDomainNetworkAuthorization<Agency, Product> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Agency
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "from_parent")
-    private Agency            fromParent;
+    private Agency fromParent;
 
     // bi-directional many-to-one association to AgencyProduct
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @NotNull
     @JoinColumn(name = "to_parent")
-    private Product           toParent;
+    private Product toParent;
 
     public AgencyProductAuthorization() {
         super();
@@ -78,14 +74,6 @@ public class AgencyProductAuthorization extends
     @Override
     public Product getToParent() {
         return toParent;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    public SingularAttribute<WorkspaceAuthorization, ? extends Ruleform> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.agencyProductAuthorization;
     }
 
     @Override

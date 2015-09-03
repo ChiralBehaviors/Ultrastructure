@@ -37,10 +37,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author hhildebrand
@@ -57,7 +54,7 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     // bi-directional many-to-one association to Interval
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "interval")
-    private Interval           interval;
+    private Interval interval;
 
     public IntervalAttribute() {
         super();
@@ -85,7 +82,8 @@ public class IntervalAttribute extends AttributeValue<Interval> {
         super(attribute, value, updatedBy);
     }
 
-    public IntervalAttribute(Attribute attribute, String value, Agency updatedBy) {
+    public IntervalAttribute(Attribute attribute, String value,
+                             Agency updatedBy) {
         super(attribute, value, updatedBy);
     }
 
@@ -127,15 +125,6 @@ public class IntervalAttribute extends AttributeValue<Interval> {
     @Override
     public Class<Interval> getRuleformClass() {
         return Interval.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, IntervalAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.intervalAttribute;
     }
 
     public void setInterval(Interval interval) {

@@ -55,12 +55,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform_;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
@@ -925,8 +925,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.select(networkRoot)
              .where(cb.and(cb.and(cb.equal(workspaces.get(WorkspaceAuthorization_.definingProduct),
                                            workspace),
-                                  cb.equal(workspaces.get(getNetAuthWorkspaceAttribute()),
-                                           networkRoot)),
+                                  cb.equal(networkRoot.get(Ruleform_.workspace),
+                                           workspaces)),
                            cb.and(cb.isNotNull(networkRoot.get("classifier")),
                                   cb.isNotNull(networkRoot.get("classification")),
                                   cb.isNull(networkRoot.get("childRelationship")),
@@ -1633,8 +1633,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             return null;
         }
     }
-
-    abstract protected SingularAttribute<? super WorkspaceAuthorization, ?> getNetAuthWorkspaceAttribute();
 
     abstract protected Class<?> getNetworkAuthClass();
 }

@@ -33,9 +33,6 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The attribute value for product attributes
@@ -45,13 +42,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "interval_network_attribute", schema = "ruleform")
-public class IntervalNetworkAttribute extends NetworkAttribute<IntervalNetwork> {
+public class IntervalNetworkAttribute
+        extends NetworkAttribute<IntervalNetwork> {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to IntervalNetwork
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "network_rule")
-    private IntervalNetwork   network;
+    private IntervalNetwork network;
 
     public IntervalNetworkAttribute() {
     }
@@ -156,15 +154,6 @@ public class IntervalNetworkAttribute extends NetworkAttribute<IntervalNetwork> 
     @Override
     public Class<IntervalNetwork> getRuleformClass() {
         return IntervalNetwork.class;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.Ruleform#getWorkspaceAuthAttribute()
-     */
-    @Override
-    @JsonIgnore
-    public SingularAttribute<WorkspaceAuthorization, IntervalNetworkAttribute> getWorkspaceAuthAttribute() {
-        return WorkspaceAuthorization_.intervalNetworkAttribute;
     }
 
     public void setNetwork(IntervalNetwork network) {

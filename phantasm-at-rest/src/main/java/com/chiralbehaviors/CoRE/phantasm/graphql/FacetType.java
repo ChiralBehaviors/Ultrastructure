@@ -133,9 +133,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         query.field(instance(facet, type));
         query.field(instances(facet));
 
-        mutation.field(createInstance(facet));
+        mutation.field(createInstance(facet, updateTemplate));
         mutation.field(apply(facet));
-        mutation.field(update(facet));
+        mutation.field(update(facet, updateTemplate));
         mutation.field(remove(facet));
         Set<NetworkAuthorization<?>> referenced = references;
         clear();
@@ -501,10 +501,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private void clear() {
         this.references = null;
         this.typeBuilder = null;
+        this.updateTypeBuilder = null;
+        this.updateTemplate = null;
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition createInstance(NetworkAuthorization<RuleForm> facet) {
+    private GraphQLFieldDefinition createInstance(NetworkAuthorization<RuleForm> facet,
+                                                  Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate) {
         return newFieldDefinition().name(String.format(CREATE_MUTATION,
                                                        facet.getName()))
                                    .type(new GraphQLTypeReference(facet.getName()))
@@ -523,7 +526,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                        return ruleform == null ? null
                                                                : update(ruleform,
                                                                         updateState,
-                                                                        crud);
+                                                                        crud,
+                                                                        updateTemplate);
                                    })
                                    .build();
     }
@@ -596,7 +600,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition update(NetworkAuthorization<RuleForm> facet) {
+    private GraphQLFieldDefinition update(NetworkAuthorization<RuleForm> facet,
+                                          Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate) {
         return newFieldDefinition().name(String.format(UPDATE_QUERY,
                                                        facet.getName()))
                                    .type(new GraphQLTypeReference(facet.getName()))
@@ -610,13 +615,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                        RuleForm ruleform = (RuleForm) crud.lookup(facet,
                                                                                   (String) updateState.get(ID));
                                        return update(ruleform, updateState,
-                                                     crud);
+                                                     crud, updateTemplate);
                                    })
                                    .build();
     }
 
     private Object update(RuleForm ruleform, Map<String, Object> updateState,
-                          PhantasmCRUD<RuleForm, Network> crud) {
+                          PhantasmCRUD<RuleForm, Network> crud,
+                          Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate) {
         updateState.put(AT_RULEFORM, ruleform);
         for (String field : updateState.keySet()) {
             if (!field.equals(ID) && !field.equals(AT_RULEFORM)

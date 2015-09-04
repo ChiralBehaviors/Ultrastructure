@@ -224,18 +224,15 @@ public class GraphQlResource extends TransactionalResource {
             @SuppressWarnings({ "unchecked", "rawtypes" })
             FacetType<?, ?> type = new FacetType(facet);
             resolved.put(facet, type);
-            for (NetworkAuthorization<?> auth : type.build(topLevelQuery,
-                                                           topLevelMutation,
-                                                           facet,
-                                                           plugins.stream()
-                                                                  .filter(plugin -> facet.getName()
-                                                                                         .equals(plugin.getFacetName()))
-                                                                  .collect(Collectors.toList()),
-                                                           model)) {
-                if (!resolved.containsKey(auth)) {
-                    unresolved.add(auth);
-                }
-            }
+            List<Plugin> facetPlugins = plugins.stream()
+                                               .filter(plugin -> facet.getName()
+                                                                      .equals(plugin.getFacetName()))
+                                               .collect(Collectors.toList());
+            type.build(topLevelQuery, topLevelMutation, facet, facetPlugins,
+                       model)
+                .stream()
+                .filter(auth -> !resolved.containsKey(auth))
+                .forEach(auth -> unresolved.add(auth));
         }
         GraphQLSchema schema = GraphQLSchema.newSchema()
                                             .query(topLevelQuery.build())

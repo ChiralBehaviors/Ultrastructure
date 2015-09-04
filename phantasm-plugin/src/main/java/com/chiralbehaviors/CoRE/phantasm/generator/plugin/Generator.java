@@ -49,16 +49,13 @@ public class Generator extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Generating Phantasms");
         if (generator == null) {
-            throw new MojoFailureException(
-                                           "No phantasm generator configuration supplied");
+            throw new MojoFailureException("No phantasm generator configuration supplied");
         }
         try {
             new PhantasmGenerator(generator).generate();
         } catch (Exception e) {
-            MojoFailureException ex = new MojoFailureException(
-                                                               "Unable to generate phantasms",
+            MojoFailureException ex = new MojoFailureException("Unable to generate phantasms",
                                                                e);
-            ex.initCause(e);
             throw ex;
         }
     }

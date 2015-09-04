@@ -1,30 +1,90 @@
 workspace: "urn:uuid:00000000-0000-0004-0000-000000000003" 
            "Ultrastructure Kernel Workspace" 
            "The Kernel Ontology for Ultrastructure"
-           
+
+
 agencies {
+    CoreUser = "CoRE User" "Ultrastructure CoRE API user";
+    SuperUser = "Ultrastructure Super User" "Ye Root";
+    UnauthenticatedAgency = "Unauthenticated" "The unauthenticaed agency";
     edges {
         SuperUser.IsA.CoreUser
     }
     facets {
         IsA.CoreUser { Login PasswordRounds PasswordHash AccessToken }
     }
+}      
+
+attributes {
+    Namespace = "Namespace" "The namespace of an import" text;
+    IRI = "IRI" "The Attribute that contains an International Resource Indicator" text;
+    JsonldType = "JSONLD Type" "The Attribute that contains the JSON-LD type" text;
+    Login = "Login" "The Attribute that contains the login name of the agency" text;
+    PasswordRounds = "Password Rounds" "The number of rounds to hash the password" int;
+    PasswordHash = "Password Hash" "The hash the password" text;
+    AccessToken = "Access Token" "The last access timestamp bearer token" indexed: true timestamp;
+    
+    FacetName = "Facet Name" "The name of a phantasm facet in a workspace" text;
+    JAR = "JVM Archive" "A compiled JVM class jar providing phantasm plugin implementation" binary;
+    InputType = "Input Type" "The input type of an argument" text;
+    ReturnType = "Return Type" "The return type of an method" text;
+    ImplementationClass = "Implementation Class" "The implementing class" text;
+    ImplementationMethod = "Implementation Method" "The name of the implementing method" text;
 }
 
-products {
+products { 
+    Plugin = "Plugin" "A plugin for the Ultrastructure Phantasm API";
+    Argument = "Argument" "An input argument to a method";
+    InstanceMethod = "Instance Method" "An exposed instance method on a phatasm facet";
+    StaticMethod = "Static method" "A phantasm facet scoped static method in a workspace";
+    Constructor = "Constructor" "A constructor that is called when the phantasm facet is applied";
+    CodeSource = "Code Source" "A JVM code source that provides JVM executable implementation logic";
+    
     edges {
         KernelWorkspace.IsA.Workspace
     }
     facets {
         IsA.Workspace { IRI }
             constraints {
-                n Imports: IsA.Workspace  named import 
+                n HasPlugin: IsA.Plugin
+                n Imports: IsA.Workspace named import 
                     { Namespace }
             }
+            
+        IsA.Plugin { FacetName }
+            constraints {
+                n HasCodeSource: IsA.CodeSource
+                n HasStaticMethod: IsA.StaticMethod
+                one HasConstructor: IsA.Constructor
+                n HasInstanceMethod: IsA.InstanceMethod
+            }
+        
+        IsA.Argument { InputType }
+        
+        IsA.InstanceMethod { ReturnType ImplementationClass ImplementationMethod }
+            constraints {
+                n HasArgument: IsA.Argument
+            }
+            
+       IsA.StaticMethod { ReturnType ImplementationClass ImplementationMethod }
+            constraints {
+                n HasArgument: IsA.Argument
+            }
+            
+        IsA.Constructor { ImplementationClass ImplementationMethod }
+        
+        IsA.CodeSource { JAR }
     }
 }
 
 relationships {
+    IsPluginOf = "Is Plugin Of" "A is a plugin of the workspace B" | HasPlugin = "Has Plugin" "A has a plugin B";
+    IsArgumentOf = "Is Argument Of" "A is an argument for the method B" | HasArgument = "Has Argument" "A has an argument B";
+    IsInstanceMethodOf = "Is Instance Method Of" "A is an instance method of B" | HasInstanceMethod = "Has Instance Method" "A has an instance method B";
+    IsStaticMethodOf = "Is Static Method Of" "A is a static method of B" | HasStaticMethod = "Has Static Method" "A has a static method B";
+    IsCodeSourceOf = "Is Code Source Of" "A is a JVM code source of B" | HasCodeSource = "Has Code Source" "A has code source B";
+    IsConstructorOf = "Is Constructor Of" "A is a constructor of B" | HasConstructor = "HasConstructor" "A has constructor B";
+    
     edges {
         APPLY.IsA.Capability
         REMOVE.IsA.Capability
@@ -33,4 +93,4 @@ relationships {
         UPDATE.IsA.Capability
         DELETE.IsA.Capability
     }
-}
+} 

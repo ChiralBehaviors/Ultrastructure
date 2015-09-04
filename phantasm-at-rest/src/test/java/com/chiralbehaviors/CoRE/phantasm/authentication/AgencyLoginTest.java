@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.kernel.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.google.common.base.Optional;
@@ -40,9 +41,9 @@ public class AgencyLoginTest extends AbstractModelTest {
         String password = "give me food or give me slack or kill me";
         CoreUser bob = (CoreUser) model.construct(CoreUser.class, "Bob",
                                                   "Test Dummy");
-        bob.setUserName(username);
+        bob.setLogin(username);
         bob.setPasswordRounds(10);
-        bob.resetPassword(password);
+        AgencyBasicAuthenticator.resetPassword(bob, password);
 
         em.flush();
         em.clear();

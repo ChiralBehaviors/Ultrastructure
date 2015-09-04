@@ -136,6 +136,11 @@ public class FacetImpl implements Facet {
         resolveRelationships(presentation, facets);
     }
 
+    @Override
+    public String toString() {
+        return String.format("FacetImpl [%s]", getClassName());
+    }
+
     private void resolve(ConstraintContext constraint,
                          Map<FacetKey, Facet> facets) {
         Facet type = null;
@@ -156,7 +161,8 @@ public class FacetImpl implements Facet {
         }
         ScopedName key = new ScopedName(constraint.childRelationship);
         Cardinality cardinality = Enum.valueOf(Cardinality.class,
-                                               constraint.cardinality.getText().toUpperCase());
+                                               constraint.cardinality.getText()
+                                                                     .toUpperCase());
         String className = type.getClassName();
         String baseName = WorkspaceImporter.networkAuthNameOf(constraint);
         baseName = Character.toUpperCase(baseName.charAt(0))
@@ -181,7 +187,8 @@ public class FacetImpl implements Facet {
             case N: {
                 resolveList(key, baseName, parameterName, className,
                             constraint.inferredGet == null ? false
-                                                           : constraint.inferredGet.getText().equals("inferred"));
+                                                           : constraint.inferredGet.getText()
+                                                                                   .equals("inferred"));
                 break;
             }
             default:
@@ -223,13 +230,20 @@ public class FacetImpl implements Facet {
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName().forEach(name -> {
-            ScopedName key = new ScopedName(name);
-            MappedAttribute attribute = mapped.get(key);
-            primitiveGetters.add(new Getter(key, attribute));
-            primitiveSetters.add(new Setter(key, attribute));
-            imports.addAll(attribute.getImports());
-        });
+        classifiedAttributes.qualifiedName()
+                            .forEach(name -> {
+                                ScopedName key = new ScopedName(name);
+                                MappedAttribute attribute = mapped.get(key);
+                                if (attribute == null) {
+                                    throw new IllegalStateException(String.format("attribute not found: %s",
+                                                                                  key));
+                                }
+                                primitiveGetters.add(new Getter(key,
+                                                                attribute));
+                                primitiveSetters.add(new Setter(key,
+                                                                attribute));
+                                imports.addAll(attribute.getImports());
+                            });
     }
 
     private void resolveList(ScopedName key, String baseName,
@@ -282,8 +296,9 @@ public class FacetImpl implements Facet {
         if (networkConstraints == null) {
             return;
         }
-        networkConstraints.constraint().forEach(constraint -> {
-            resolve(constraint, facets);
-        });
+        networkConstraints.constraint()
+                          .forEach(constraint -> {
+                              resolve(constraint, facets);
+                          });
     }
 }

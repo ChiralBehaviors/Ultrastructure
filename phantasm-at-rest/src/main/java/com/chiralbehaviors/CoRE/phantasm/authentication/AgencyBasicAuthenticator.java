@@ -25,9 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
+import com.chiralbehaviors.CoRE.kernel.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.chiralbehaviors.bcrypt.BCrypt;
 import com.google.common.base.Optional;
 
 import io.dropwizard.auth.AuthenticationException;
@@ -41,6 +43,23 @@ import io.dropwizard.auth.basic.BasicCredentials;
 public class AgencyBasicAuthenticator
         implements Authenticator<BasicCredentials, AuthorizedPrincipal> {
     private final static Logger log = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
+
+    public static boolean authenticate(CoreUser user, String password) {
+        return BCrypt.checkpw(password, user.getPasswordHash());
+    }
+
+    public static void resetPassword(CoreUser user, String newPassword) {
+        user.setPasswordHash(BCrypt.hashpw(newPassword,
+                                           BCrypt.gensalt(user.getPasswordRounds())));
+    }
+
+    public static void updatePassword(CoreUser user, String newPassword,
+                                      String oldPassword) {
+        if (BCrypt.checkpw(oldPassword, user.getPasswordHash())) {
+            user.setPasswordHash(BCrypt.hashpw(newPassword,
+                                               BCrypt.gensalt(user.getPasswordRounds())));
+        }
+    }
 
     private final EntityManagerFactory emf;
 
@@ -73,8 +92,9 @@ public class AgencyBasicAuthenticator
             CoreUser user = (CoreUser) model.wrap(CoreUser.class,
                                                   agencies.get(0));
 
-            return user.authenticate(credentials.getPassword()) ? Optional.of(new AuthorizedPrincipal(user.getRuleform()))
-                                                                : Optional.absent();
+            return authenticate(user,
+                                credentials.getPassword()) ? Optional.of(new AuthorizedPrincipal(user.getRuleform()))
+                                                           : Optional.absent();
         } finally {
             model.getEntityManager()
                  .close();

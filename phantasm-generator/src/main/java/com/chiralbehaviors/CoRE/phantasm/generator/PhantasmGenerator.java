@@ -51,12 +51,7 @@ public class PhantasmGenerator {
     }
 
     public void generate() throws IOException {
-        try {
-            generateFacets();
-        } catch (IOException e) {
-            throw new IOException(String.format("Unable to load workspace: %s",
-                                                configuration.resource));
-        }
+        generateFacets();
         for (Facet facet : facets.values()) {
             File file = getOutputFile(facet);
             STGroup group = new STGroupFile(TEMPLATES_FACET_STG);
@@ -74,11 +69,11 @@ public class PhantasmGenerator {
     }
 
     private Facet constructFacet(FacetContext facet, String ruleformType,
-                                     String uri) {
+                                 String uri) {
         String packageName = configuration.appendTypeToPackage ? String.format("%s.%s",
                                                                                configuration.packageName,
                                                                                ruleformType.toLowerCase())
-                                                              : configuration.packageName;
+                                                               : configuration.packageName;
         return new FacetImpl(packageName, ruleformType, facet, uri);
     }
 
@@ -86,88 +81,80 @@ public class PhantasmGenerator {
         FileOutputStream os;
         try {
             Files.deleteIfExists(file.toPath());
-            os = new FileOutputStream(Files.createFile(file.toPath()).toFile());
+            os = new FileOutputStream(Files.createFile(file.toPath())
+                                           .toFile());
         } catch (FileNotFoundException e) {
-            throw new IllegalStateException(
-                                            String.format("Cannot find file for create %s",
+            throw new IllegalStateException(String.format("Cannot find file for create %s",
                                                           file.getAbsolutePath(),
                                                           e));
         } catch (IOException e) {
 
-            throw new IllegalStateException(
-                                            String.format("Error creating file %s\nCause: %s",
+            throw new IllegalStateException(String.format("Error creating file %s\nCause: %s",
                                                           file.getAbsolutePath(),
                                                           e.getMessage()));
         }
         try {
-            os.write(template.render().getBytes());
+            os.write(template.render()
+                             .getBytes());
             os.close();
         } catch (IOException e) {
-            throw new IllegalStateException(
-                                            String.format("Error writing file %s",
+            throw new IllegalStateException(String.format("Error writing file %s",
                                                           file.getAbsolutePath(),
                                                           e));
         }
     }
 
     private void generateFacets() throws IOException {
-        WorkspacePresentation wsp = new WorkspacePresentation(
-                                                              Utils.resolveResource(getClass(),
+        WorkspacePresentation wsp = new WorkspacePresentation(Utils.resolveResource(getClass(),
                                                                                     configuration.resource));
 
         String uri = wsp.getWorkspaceDefinition().uri.getText();
-        wsp.getAgencyFacets().forEach(facet -> {
-                                          facets.put(new FacetKey(facet),
-                                                     constructFacet(facet,
-                                                                    "Agency",
-                                                                    uri));
-                                      });
-        wsp.getAttributeFacets().forEach(facet -> {
-                                             facets.put(new FacetKey(facet),
-                                                        constructFacet(facet,
-                                                                       "Attribute",
-                                                                       uri));
-                                         });
-        wsp.getIntervalFacets().forEach(facet -> {
-                                            facets.put(new FacetKey(facet),
-                                                       constructFacet(facet,
-                                                                      "Interval",
-                                                                      uri));
-                                        });
-        wsp.getLocationFacets().forEach(facet -> {
-                                            facets.put(new FacetKey(facet),
-                                                       constructFacet(facet,
-                                                                      "Location",
-                                                                      uri));
-                                        });
-        wsp.getProductFacets().forEach(facet -> {
-                                           facets.put(new FacetKey(facet),
-                                                      constructFacet(facet,
-                                                                     "Product",
-                                                                     uri));
-                                       });
-        wsp.getRelationshipFacets().forEach(facet -> {
-                                                facets.put(new FacetKey(facet),
-                                                           constructFacet(facet,
-                                                                          "Relationship",
-                                                                          uri));
-                                            });
-        wsp.getStatusCodeFacets().forEach(facet -> {
-                                              facets.put(new FacetKey(facet),
-                                                         constructFacet(facet,
-                                                                        "StatusCode",
-                                                                        uri));
-                                          });
-        wsp.getUnitFacets().forEach(facet -> {
-                                        facets.put(new FacetKey(facet),
-                                                   constructFacet(facet,
-                                                                  "Unit", uri));
-                                    });
+        wsp.getAgencyFacets()
+           .forEach(facet -> {
+               facets.put(new FacetKey(facet),
+                          constructFacet(facet, "Agency", uri));
+           });
+        wsp.getAttributeFacets()
+           .forEach(facet -> {
+               facets.put(new FacetKey(facet),
+                          constructFacet(facet, "Attribute", uri));
+           });
+        wsp.getIntervalFacets()
+           .forEach(facet -> {
+               facets.put(new FacetKey(facet),
+                          constructFacet(facet, "Interval", uri));
+           });
+        wsp.getLocationFacets()
+           .forEach(facet -> {
+               facets.put(new FacetKey(facet),
+                          constructFacet(facet, "Location", uri));
+           });
+        wsp.getProductFacets()
+           .forEach(facet -> {
+               facets.put(new FacetKey(facet),
+                          constructFacet(facet, "Product", uri));
+           });
+        wsp.getRelationshipFacets()
+           .forEach(facet -> {
+               facets.put(new FacetKey(facet),
+                          constructFacet(facet, "Relationship", uri));
+           });
+        wsp.getStatusCodeFacets()
+           .forEach(facet -> {
+               facets.put(new FacetKey(facet),
+                          constructFacet(facet, "StatusCode", uri));
+           });
+        wsp.getUnitFacets()
+           .forEach(facet -> {
+               facets.put(new FacetKey(facet),
+                          constructFacet(facet, "Unit", uri));
+           });
         resolve(wsp);
     }
 
     private File getOutputFile(Facet facet) {
-        String packageDirectory = facet.getPackageName().replace('.', '/');
+        String packageDirectory = facet.getPackageName()
+                                       .replace('.', '/');
         File file = new File(configuration.outputDirectory,
                              String.format("%s/%s.java", packageDirectory,
                                            facet.getClassName()));
@@ -176,22 +163,21 @@ public class PhantasmGenerator {
         try {
             Files.createDirectories(parentDir.toPath());
         } catch (IOException e) {
-            throw new IllegalStateException(
-                                            String.format("Cannot create parent directories %s",
-                                                          file.getParent()), e);
+            throw new IllegalStateException(String.format("Cannot create parent directories %s",
+                                                          file.getParent()),
+                                            e);
         }
         return file;
     }
 
     public static Map<ScopedName, MappedAttribute> mapAttributes(WorkspacePresentation workspace) {
         Map<ScopedName, MappedAttribute> mapped = new HashMap<>();
-        workspace.getAttributes().forEach(attribute -> {
-                                              mapped.put(new ScopedName(
-                                                                        "",
-                                                                        attribute.existentialRuleform().workspaceName.getText()),
-                                                         new MappedAttribute(
-                                                                             attribute));
-                                          });
+        workspace.getAttributes()
+                 .forEach(attribute -> {
+                     mapped.put(new ScopedName("",
+                                               attribute.existentialRuleform().workspaceName.getText()),
+                                new MappedAttribute(attribute));
+                 });
         return mapped;
     }
 }

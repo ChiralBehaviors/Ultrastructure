@@ -145,7 +145,8 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setRuleform(Ruleform ruleform, EntityManager em) {
-        type = ruleform.getClass()
+        type = Ruleform.initializeAndUnproxy(ruleform)
+                       .getClass()
                        .getSimpleName();
         reference = ruleform.getId();
         em.persist(ruleform);

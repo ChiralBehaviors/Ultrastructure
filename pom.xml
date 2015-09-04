@@ -77,6 +77,7 @@
         <module>phantasm-at-rest</module>
         <module>thing-ontology</module>
         <module>browser</module>
+        <module>kernel-phantasms</module>
     </modules>
 
     <dependencyManagement>
@@ -176,6 +177,11 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>0.9.10</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>kernel-phantasms</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>

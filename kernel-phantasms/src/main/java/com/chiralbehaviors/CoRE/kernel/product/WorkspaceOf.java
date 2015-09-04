@@ -18,17 +18,18 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.plugin;
+package com.chiralbehaviors.CoRE.kernel.product;
 
-import java.util.List;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
  * @author hhildebrand
  *
  */
-public class Plugin {
-    public String               phantasm;
-    public Constructor          construct;
-    public List<InstanceMethod> instance;
-    public List<StaticMethod>   statics;
+public interface WorkspaceOf {
+    static Workspace workspaceOf(Model model, Ruleform ruleform) {
+        return model.wrap(Workspace.class, ruleform.getWorkspace()
+                                                   .getDefiningProduct());
+    }
 }

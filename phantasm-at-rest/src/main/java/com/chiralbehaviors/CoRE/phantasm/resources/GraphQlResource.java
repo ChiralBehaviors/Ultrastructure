@@ -121,10 +121,11 @@ public class GraphQlResource extends TransactionalResource {
                 continue;
             }
             @SuppressWarnings({ "unchecked", "rawtypes" })
-            FacetType<?, ?> type = new FacetType(facet, model);
+            FacetType<?, ?> type = new FacetType(facet);
             resolved.put(facet, type);
             for (NetworkAuthorization<?> auth : type.build(topLevelQuery,
-                                                           topLevelMutation)) {
+                                                           topLevelMutation,
+                                                           facet, model)) {
                 if (!resolved.containsKey(auth)) {
                     unresolved.add(auth);
                 }

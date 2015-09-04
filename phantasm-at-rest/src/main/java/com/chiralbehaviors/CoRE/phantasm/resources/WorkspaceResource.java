@@ -44,7 +44,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
@@ -125,7 +125,7 @@ public class WorkspaceResource extends TransactionalResource {
         try {
             workspaceUUID = UUID.fromString(workspace);
         } catch (IllegalArgumentException e) {
-            workspaceUUID = Workspace.uuidOf(workspace);
+            workspaceUUID = WorkspaceAccessor.uuidOf(workspace);
         }
         return workspaceUUID;
     }
@@ -296,6 +296,6 @@ public class WorkspaceResource extends TransactionalResource {
     @Path("translate/{uri}")
     @GET
     public UUID translate(@PathParam("uri") String uri) {
-        return Workspace.uuidOf(uri);
+        return WorkspaceAccessor.uuidOf(uri);
     }
 }

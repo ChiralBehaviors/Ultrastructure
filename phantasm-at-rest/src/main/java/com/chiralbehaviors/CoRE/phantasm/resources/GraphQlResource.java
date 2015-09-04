@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import static com.chiralbehaviors.CoRE.kernel.product.WorkspaceOf.workspaceOf;
 import static graphql.schema.GraphQLObjectType.newObject;
 
 import java.util.ArrayDeque;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -48,9 +50,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.product.Plugin;
+import com.chiralbehaviors.CoRE.kernel.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
@@ -103,44 +107,6 @@ public class GraphQlResource extends TransactionalResource {
         super(emf);
     }
 
-    public GraphQLSchema build(Workspace workspace, Model model) {
-        Deque<NetworkAuthorization<?>> unresolved = initialState(workspace,
-                                                                 model);
-        Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved = new HashMap<>();
-        Builder topLevelQuery = newObject().name("Query")
-                                           .description(String.format("Top level query for %s",
-                                                                      workspace.getDefiningProduct()
-                                                                               .getName()));
-        Builder topLevelMutation = newObject().name("Mutation")
-                                              .description(String.format("Top level mutation for %s",
-                                                                         workspace.getDefiningProduct()
-                                                                                  .getName()));
-        while (!unresolved.isEmpty()) {
-            NetworkAuthorization<?> facet = unresolved.pop();
-            if (resolved.containsKey(facet)) {
-                continue;
-            }
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            FacetType<?, ?> type = new FacetType(facet);
-            resolved.put(facet, type);
-            for (NetworkAuthorization<?> auth : type.build(topLevelQuery,
-                                                           topLevelMutation,
-                                                           facet, model)) {
-                if (!resolved.containsKey(auth)) {
-                    unresolved.add(auth);
-                }
-            }
-        }
-        GraphQLSchema schema = GraphQLSchema.newSchema()
-                                            .query(topLevelQuery.build())
-                                            .mutation(topLevelMutation.build())
-                                            .build();
-        cache.put(workspace.getDefiningProduct()
-                           .getId(),
-                  schema);
-        return schema;
-    }
-
     @Timed
     @GET
     @Path("workspace")
@@ -177,7 +143,7 @@ public class GraphQlResource extends TransactionalResource {
         }
         return perform(principal, model -> {
             Map<String, Object> result = new HashMap<>();
-            UUID uuid = Workspace.uuidOf(workspace);
+            UUID uuid = WorkspaceAccessor.uuidOf(workspace);
             GraphQLSchema schema = cache.get(uuid);
             if (schema == null) {
                 WorkspaceScope scoped;
@@ -214,7 +180,7 @@ public class GraphQlResource extends TransactionalResource {
 
     }
 
-    private Deque<NetworkAuthorization<?>> initialState(Workspace workspace,
+    private Deque<NetworkAuthorization<?>> initialState(WorkspaceAccessor workspace,
                                                         Model model) {
         Product definingProduct = workspace.getDefiningProduct();
         Deque<NetworkAuthorization<?>> unresolved = new ArrayDeque<>();
@@ -235,5 +201,47 @@ public class GraphQlResource extends TransactionalResource {
         unresolved.addAll(model.getUnitModel()
                                .getFacets(definingProduct));
         return unresolved;
+    }
+
+    protected GraphQLSchema build(WorkspaceAccessor accessor, Model model) {
+        Deque<NetworkAuthorization<?>> unresolved = initialState(accessor,
+                                                                 model);
+        Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved = new HashMap<>();
+        Product definingProduct = accessor.getDefiningProduct();
+        Workspace workspace = workspaceOf(model, definingProduct);
+        Builder topLevelQuery = newObject().name("Query")
+                                           .description(String.format("Top level query for %s",
+                                                                      definingProduct.getName()));
+        Builder topLevelMutation = newObject().name("Mutation")
+                                              .description(String.format("Top level mutation for %s",
+                                                                         definingProduct.getName()));
+        List<Plugin> plugins = workspace.getPlugins();
+        while (!unresolved.isEmpty()) {
+            NetworkAuthorization<?> facet = unresolved.pop();
+            if (resolved.containsKey(facet)) {
+                continue;
+            }
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            FacetType<?, ?> type = new FacetType(facet);
+            resolved.put(facet, type);
+            for (NetworkAuthorization<?> auth : type.build(topLevelQuery,
+                                                           topLevelMutation,
+                                                           facet,
+                                                           plugins.stream()
+                                                                  .filter(plugin -> facet.getName()
+                                                                                         .equals(plugin.getFacetName()))
+                                                                  .collect(Collectors.toList()),
+                                                           model)) {
+                if (!resolved.containsKey(auth)) {
+                    unresolved.add(auth);
+                }
+            }
+        }
+        GraphQLSchema schema = GraphQLSchema.newSchema()
+                                            .query(topLevelQuery.build())
+                                            .mutation(topLevelMutation.build())
+                                            .build();
+        cache.put(definingProduct.getId(), schema);
+        return schema;
     }
 }

@@ -67,7 +67,7 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
@@ -167,7 +167,7 @@ public class WorkspaceImporter {
         this.em = model.getEntityManager();
     }
 
-    public Workspace addToWorkspace() {
+    public WorkspaceAccessor addToWorkspace() {
         scope = model.getWorkspaceModel()
                      .getScoped(getWorkspaceProduct());
         workspace = (EditableWorkspace) scope.getWorkspace();
@@ -175,7 +175,7 @@ public class WorkspaceImporter {
         return workspace;
     }
 
-    public Workspace createWorkspace() {
+    public WorkspaceAccessor createWorkspace() {
         scope = model.getWorkspaceModel()
                      .createWorkspace(createWorkspaceProduct(),
                                       model.getCurrentPrincipal()
@@ -185,7 +185,7 @@ public class WorkspaceImporter {
         return workspace;
     }
 
-    public Workspace getWorkspace() {
+    public WorkspaceAccessor getWorkspace() {
         return workspace;
     }
 
@@ -587,7 +587,7 @@ public class WorkspaceImporter {
                                                                    : stripQuotes(description.getText()),
                                                model.getCurrentPrincipal()
                                                     .getPrincipal());
-        uuid = Workspace.uuidOf(workspaceUri);
+        uuid = WorkspaceAccessor.uuidOf(workspaceUri);
         workspaceProduct.setId(uuid);
         em.persist(workspaceProduct);
         return workspaceProduct;
@@ -595,7 +595,7 @@ public class WorkspaceImporter {
 
     private Product getWorkspaceProduct() {
         workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
-        uuid = Workspace.uuidOf(workspaceUri);
+        uuid = WorkspaceAccessor.uuidOf(workspaceUri);
         Product product = model.getProductModel()
                                .find(uuid);
         if (product == null) {
@@ -1052,7 +1052,7 @@ public class WorkspaceImporter {
     private void processImports() {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = stripQuotes(w.uri.getText());
-            UUID uuid = Workspace.uuidOf(uri);
+            UUID uuid = WorkspaceAccessor.uuidOf(uri);
             workspace.addImport(w.namespace.getText(), model.getEntityManager()
                                                             .find(Product.class,
                                                                   uuid));

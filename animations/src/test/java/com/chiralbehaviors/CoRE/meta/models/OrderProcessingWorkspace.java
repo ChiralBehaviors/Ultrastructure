@@ -29,7 +29,7 @@ import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 
@@ -112,7 +112,7 @@ public class OrderProcessingWorkspace {
         super();
     }
 
-    public Workspace createWorkspace(Model model)
+    public WorkspaceAccessor createWorkspace(Model model)
                                                  throws IllegalArgumentException,
                                                  IllegalAccessException {
         EditableWorkspace workspace = (EditableWorkspace) model.getWorkspaceModel().getScoped(orderEntryWorkspace).getWorkspace();

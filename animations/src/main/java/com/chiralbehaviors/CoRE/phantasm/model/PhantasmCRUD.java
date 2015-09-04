@@ -465,6 +465,10 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                              .collect(Collectors.toList());
     }
 
+    public Model getModel() {
+        return model;
+    }
+
     /**
      * Answer the singular network child of the instance
      * 

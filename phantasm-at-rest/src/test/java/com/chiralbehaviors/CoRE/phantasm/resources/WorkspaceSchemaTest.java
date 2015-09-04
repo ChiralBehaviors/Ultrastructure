@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphQl;
+package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -46,7 +46,6 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
-import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;

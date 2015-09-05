@@ -34,10 +34,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -56,6 +58,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 
@@ -81,24 +84,25 @@ import graphql.schema.GraphQLTypeReference;
 public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         implements PhantasmTraversal.PhantasmVisitor<RuleForm, Network> {
 
-    private static final String ADD_TEMPLATE       = "add%s";
-    private static final String APPLY_MUTATION     = "Apply%s";
-    private static final String AT_RULEFORM        = "@ruleform";
-    private static final String CREATE_MUTATION    = "Create%s";
-    private static final String DESCRIPTION        = "description";
-    private static final String ID                 = "id";
-    private static final String IMMEDIATE_TEMPLATE = "immediate%s";
-    private static final String INSTANCES_OF_QUERY = "InstancesOf%s";
-    private static final Logger log                = LoggerFactory.getLogger(FacetType.class);
-    private static final String NAME               = "name";
-    private static final String REMOVE_MUTATION    = "Remove%s";
-    private static final String REMOVE_TEMPLATE    = "remove%s";
+    private static final String ADD_TEMPLATE          = "add%s";
+    private static final String APPLY_MUTATION        = "Apply%s";
+    private static final String AT_RULEFORM           = "@ruleform";
+    private static final String CREATE_MUTATION       = "Create%s";
+    private static final String DESCRIPTION           = "description";
+    private static final String ID                    = "id";
+    private static final String IMMEDIATE_TEMPLATE    = "immediate%s";
+    private static final String INSTANCES_OF_QUERY    = "InstancesOf%s";
+    private static final Logger log                   = LoggerFactory.getLogger(FacetType.class);
+    private static final String NAME                  = "name";
+    private static final String REMOVE_MUTATION       = "Remove%s";
+    private static final String REMOVE_TEMPLATE       = "remove%s";
+    private static final String S_S_PLUGIN_CONVENTION = "%s.%s_Plugin";
     private static final String SET_DESCRIPTION;
     private static final String SET_NAME;
-    private static final String SET_TEMPLATE       = "set%s";
-    private static final String STATE              = "state";
-    private static final String UPDATE_QUERY       = "Update%s";
-    private static final String UPDATE_TYPE        = "%sUpdate";
+    private static final String SET_TEMPLATE          = "set%s";
+    private static final String STATE                 = "state";
+    private static final String UPDATE_QUERY          = "Update%s";
+    private static final String UPDATE_TYPE           = "%sUpdate";
 
     static {
         SET_NAME = String.format(SET_TEMPLATE, capitalized(NAME));
@@ -116,7 +120,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     public static Object invoke(Method method, DataFetchingEnvironment env,
-                                @SuppressWarnings("rawtypes") ExistentialRuleform instance) {
+                                @SuppressWarnings("rawtypes") Phantasm instance) {
         try {
             return method.invoke(null, env, instance);
         } catch (IllegalAccessException | IllegalArgumentException e) {
@@ -493,13 +497,20 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             ClassLoader executionScope = executionScopes.get(plugin);
             assert executionScope != null : String.format("%s execution scope is null!",
                                                           plugin);
-            build(plugin.getConstructor(), null);
+            String defaultImplementation = Optional.of(plugin.getPackageName())
+                                                   .map(pkg -> String.format(S_S_PLUGIN_CONVENTION,
+                                                                             pkg,
+                                                                             capitalized(facet.getName())))
+                                                   .orElse(null);
+            build(plugin.getConstructor(), defaultImplementation,
+                  executionScope);
             plugin.getStaticMethods()
                   .forEach(method -> {
-                build(method, executionScope);
+                build(method, executionScope, defaultImplementation);
             });
             plugin.getInstanceMethods()
-                  .forEach(method -> build(facet, method, executionScope));
+                  .forEach(method -> build(facet, method, defaultImplementation,
+                                           executionScope));
         });
     }
 
@@ -518,16 +529,19 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .build();
     }
 
-    private void build(Constructor constructor, ClassLoader executionScope) {
-        String implementationClass = constructor.getImplementationClass();
-        String implementationMethod = constructor.getImplementationMethod();
-        Method method = getInstanceMethod(implementationClass,
-                                          implementationMethod,
+    private void build(Constructor constructor, String defaultImplementation,
+                       ClassLoader executionScope) {
+        Method method = getInstanceMethod(Optional.of(constructor.getImplementationClass())
+                                                  .orElse(defaultImplementation),
+                                          constructor.getImplementationMethod(),
                                           constructor.toString(),
                                           executionScope);
 
         constructors.add((env, instance) -> {
-            return invoke(method, env, instance);
+            @SuppressWarnings("unchecked")
+            Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
+            return invoke(method, env, ctx(env).getModel()
+                                               .wrap(phantasm, instance));
         });
     }
 
@@ -573,8 +587,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     private void build(NetworkAuthorization<RuleForm> facet,
                        InstanceMethod instanceMethod,
+                       String defaultImplementation,
                        ClassLoader executionScope) {
-        Method method = getInstanceMethod(instanceMethod.getImplementationClass(),
+        Method method = getInstanceMethod(Optional.of(instanceMethod.getImplementationClass())
+                                                  .orElse(defaultImplementation),
                                           instanceMethod.getImplementationMethod(),
                                           instanceMethod.toString(),
                                           executionScope);
@@ -591,6 +607,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .description("id of the facet")
                                    .type(GraphQLString)
                                    .build());
+        @SuppressWarnings("unchecked")
+        Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
         typeBuilder.field(newFieldDefinition().type(type)
                                               .argument(arguments)
                                               .name(instanceMethod.getName())
@@ -601,14 +619,18 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                   return instance == null ? null
                                                                           : invoke(method,
                                                                                    env,
-                                                                                   instance);
+                                                                                   ctx(env).getModel()
+                                                                                           .wrap(phantasm,
+                                                                                                 instance));
                                               })
                                               .description(instanceMethod.getDescription())
                                               .build());
     }
 
-    private void build(StaticMethod staticMethod, ClassLoader executionScope) {
-        Method method = getStaticMethod(staticMethod.getImplementationClass(),
+    private void build(StaticMethod staticMethod, ClassLoader executionScope,
+                       String defaultImplementation) {
+        Method method = getStaticMethod(Optional.of(staticMethod.getImplementationClass())
+                                                .orElse(defaultImplementation),
                                         staticMethod.getImplementationMethod(),
                                         staticMethod.toString(),
                                         executionScope);
@@ -668,6 +690,11 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     private Class<?> getImplementation(String implementationClass, String type,
                                        ClassLoader executionScope) {
+        if (implementationClass == null) {
+
+            throw new IllegalStateException(String.format("No implementation class could be determined for %s in %s",
+                                                          type, getName()));
+        }
         Class<?> clazz;
         try {
             clazz = executionScope.loadClass(implementationClass);
@@ -685,21 +712,36 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private Method getInstanceMethod(String implementationClass,
                                      String implementationMethod, String type,
                                      ClassLoader executionScope) {
-        Method method;
-        try {
-            method = getImplementation(implementationClass, type,
-                                       executionScope).getDeclaredMethod(implementationMethod,
-                                                                         DataFetchingEnvironment.class,
-                                                                         ExistentialRuleform.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            log.warn("Error plugging in {} into {}", type, getName(), e);
-            throw new IllegalStateException(String.format("Error plugging in %s into %s: %s",
+
+        Class<?> clazz = getImplementation(implementationClass, type,
+                                           executionScope);
+        List<Method> candidates = Arrays.asList(clazz.getDeclaredMethods())
+                                        .stream()
+                                        .filter(method -> Modifier.isStatic(method.getModifiers()))
+                                        .filter(method -> method.getName()
+                                                                .equals(implementationMethod))
+                                        .filter(method -> method.getParameterTypes().length == 3)
+                                        .filter(method -> method.getParameterTypes()[0].equals(DataFetchingEnvironment.class))
+                                        .collect(Collectors.toList());
+        if (candidates.isEmpty()) {
+            log.warn("Error plugging in {} into {}, no matches for {} in {}",
+                     type, getName(), implementationMethod,
+                     implementationClass);
+            throw new IllegalStateException(String.format("Error plugging in %s into %s, no matches for %s in %s",
                                                           type, getName(),
-                                                          e.toString()),
-                                            e);
+                                                          implementationMethod,
+                                                          implementationClass));
         }
-        validateStatic(type, method);
-        return method;
+        if (candidates.size() > 1) {
+            log.warn("Error plugging in {} into {}, multiple matches for {} in {}",
+                     type, getName(), implementationMethod,
+                     implementationClass);
+            throw new IllegalStateException(String.format("Error plugging in %s into %s, multiple matches for %s in %s",
+                                                          type, getName(),
+                                                          implementationMethod,
+                                                          implementationClass));
+        }
+        return candidates.get(0);
     }
 
     private Method getStaticMethod(String implementationClass,

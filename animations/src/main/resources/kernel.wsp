@@ -24,6 +24,7 @@ attributes {
     PasswordHash = "Password Hash" "The hash the password" text;
     AccessToken = "Access Token" "The last access timestamp bearer token" indexed: true timestamp;
     
+    PackageName = "Package Name" "The base package name" text;
     FacetName = "Facet Name" "The name of a phantasm facet in a workspace" text;
     JAR = "JVM Archive" "A compiled JVM class jar providing phantasm plugin implementation" binary;
     InputType = "Input Type" "The input type of an argument" text;
@@ -51,7 +52,7 @@ products {
                     { Namespace }
             }
             
-        IsA.Plugin { FacetName }
+        IsA.Plugin { FacetName PackageName }
             constraints {
                 n HasCodeSource: IsA.CodeSource
                 n HasStaticMethod: IsA.StaticMethod

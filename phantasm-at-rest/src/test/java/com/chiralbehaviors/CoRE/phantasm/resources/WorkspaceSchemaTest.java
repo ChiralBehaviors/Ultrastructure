@@ -343,7 +343,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing1.setThing2(thing2);
         variables = new HashMap<>();
         variables.put("id", thing1ID);
-        Thing1_Plugin.passThrough.set(hello);
         request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name instanceMethod } }",
                                    variables);
         result = resource.query(null, TEST_SCENARIO_URI, request);

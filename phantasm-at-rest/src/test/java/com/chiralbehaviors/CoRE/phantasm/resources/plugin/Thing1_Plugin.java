@@ -33,7 +33,19 @@ import graphql.schema.DataFetchingEnvironment;
 public class Thing1_Plugin {
     public static final AtomicReference<String> passThrough = new AtomicReference<>();
 
-    void constructor(DataFetchingEnvironment env, Thing1 instance) {
+    public static void constructor(DataFetchingEnvironment env,
+                                   Thing1 instance) {
+        instance.getRuleform()
+                .setDescription(passThrough.get());
+    }
 
+    public static String instanceMethod(DataFetchingEnvironment env,
+                                        Thing1 instance) {
+        return instance.getThing2()
+                       .getName();
+    }
+
+    public static String staticMethod(DataFetchingEnvironment env) {
+        return passThrough.get();
     }
 }

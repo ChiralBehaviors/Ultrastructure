@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import static com.chiralbehaviors.CoRE.kernel.product.WorkspaceOf.workspaceOf;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,12 +38,18 @@ import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.kernel.product.Constructor;
+import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
+import com.chiralbehaviors.CoRE.kernel.product.Plugin;
+import com.chiralbehaviors.CoRE.kernel.product.StaticMethod;
+import com.chiralbehaviors.CoRE.kernel.product.Workspace;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
+import com.chiralbehaviors.CoRE.phantasm.resources.plugin.Thing1_Plugin;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -288,6 +295,32 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         assertEquals(newUri, thing1.getURI());
     }
 
+    @Test
+    public void testPluginConstructor() throws InstantiationException {
+
+        EntityManagerFactory mockedEmf = mockedEmf();
+
+        Workspace workspace = workspaceOf(model, scope.getWorkspace()
+                                                      .getDefiningProduct());
+        workspace.addPlugin(constructPlugin());
+
+        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("name", "hello");
+        variables.put("description", "goodbye");
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String) { "
+                                                + "CreateThing1("
+                                                + "  state: { "
+                                                + "     setName: $name, "
+                                                + "     setDescription: $description"
+                                                + "   }) { id name description } }",
+                                                variables);
+        Thing1_Plugin.passThrough.set("Give me food or give me slack or kill me");
+        Map<String, Object> result = resource.query(null, TEST_SCENARIO_URI,
+                                                    request);
+        System.out.println(result);
+    }
+
     @SuppressWarnings("rawtypes")
     @Test
     public void testWorkspaceSchema() throws Exception {
@@ -385,5 +418,23 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                            .toString(),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
+    }
+
+    private Plugin constructPlugin() throws InstantiationException {
+        Plugin testPlugin = model.construct(Plugin.class, "Test Plugin",
+                                            "My super green test plugin");
+        testPlugin.setFacetName("Thing1");
+        testPlugin.setPackageName("com.chiralbehaviors.CoRE.phantasm.resources.plugin");
+        testPlugin.setConstructor(model.construct(Constructor.class,
+                                                  "constructor",
+                                                  "For all your construction needs"));
+        testPlugin.addInstanceMethod(model.construct(InstanceMethod.class,
+                                                     "instanceMethod",
+                                                     "For instance"));
+
+        testPlugin.addStaticMethod(model.construct(StaticMethod.class,
+                                                   "staticMethod",
+                                                   "Never changes"));
+        return testPlugin;
     }
 }

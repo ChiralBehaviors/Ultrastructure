@@ -80,14 +80,20 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = (NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?>) model.getNetworkedModel(form);
         for (StateDefinition<RuleForm> facet : facets.values()) {
             for (Aspect<RuleForm> aspect : facet.getAspects(model)) {
-                if (aspect.getClassifier().isAny()
-                    || aspect.getClassification().isAny()) {
+                if (aspect.getClassifier()
+                          .isAny()
+                    || aspect.getClassification()
+                             .isAny()) {
                     continue;
                 }
                 networkedModel.initialize((RuleForm) form, aspect);
             }
         }
         return wrap(ruleform, model);
+    }
+
+    public Class<Phantasm<RuleForm>> getPhantasm() {
+        return phantasm;
     }
 
     @SuppressWarnings("unchecked")

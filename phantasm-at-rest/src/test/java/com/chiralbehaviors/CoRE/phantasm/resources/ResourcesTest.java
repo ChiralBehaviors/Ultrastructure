@@ -42,12 +42,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
@@ -76,14 +73,6 @@ public class ResourcesTest extends ThingWorkspaceTest {
     @AfterClass
     public static void shutdown() {
         application.stop();
-    }
-
-    private WorkspaceScope scope;
-
-    @Before
-    public void setScope() {
-        scope = model.getWorkspaceModel()
-                     .getScoped(WorkspaceAccessor.uuidOf(TEST_SCENARIO_URI));
     }
 
     @Test

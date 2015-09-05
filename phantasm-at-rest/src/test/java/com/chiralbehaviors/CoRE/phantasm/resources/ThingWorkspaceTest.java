@@ -25,6 +25,7 @@ import java.io.IOException;
 import org.junit.Before;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 
 /**
@@ -35,11 +36,15 @@ public class ThingWorkspaceTest extends AbstractModelTest {
 
     public static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
 
+    protected WorkspaceScope scope;
+
     @Before
     public void loadWorkspace() throws IOException {
         em.getTransaction()
           .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
+        scope = WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+                                                  model)
+                                 .getWorkspace()
+                                 .getScope();
     }
 }

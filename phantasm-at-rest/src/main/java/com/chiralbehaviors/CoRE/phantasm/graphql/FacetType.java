@@ -500,7 +500,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             String defaultImplementation = Optional.of(plugin.getPackageName())
                                                    .map(pkg -> String.format(S_S_PLUGIN_CONVENTION,
                                                                              pkg,
-                                                                             capitalized(facet.getName())))
+                                                                             plugin.getFacetName()))
                                                    .orElse(null);
             build(plugin.getConstructor(), defaultImplementation,
                   executionScope);
@@ -531,15 +531,16 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     private void build(Constructor constructor, String defaultImplementation,
                        ClassLoader executionScope) {
-        Method method = getInstanceMethod(Optional.of(constructor.getImplementationClass())
+        Method method = getInstanceMethod(Optional.ofNullable(constructor.getImplementationClass())
                                                   .orElse(defaultImplementation),
-                                          constructor.getImplementationMethod(),
+                                          Optional.ofNullable(constructor.getImplementationMethod())
+                                                  .orElse(constructor.getName()),
                                           constructor.toString(),
                                           executionScope);
 
         constructors.add((env, instance) -> {
             @SuppressWarnings("unchecked")
-            Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
+            Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[1];
             return invoke(method, env, ctx(env).getModel()
                                                .wrap(phantasm, instance));
         });
@@ -589,13 +590,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                        InstanceMethod instanceMethod,
                        String defaultImplementation,
                        ClassLoader executionScope) {
-        Method method = getInstanceMethod(Optional.of(instanceMethod.getImplementationClass())
+        Method method = getInstanceMethod(Optional.ofNullable(instanceMethod.getImplementationClass())
                                                   .orElse(defaultImplementation),
-                                          instanceMethod.getImplementationMethod(),
+                                          Optional.ofNullable(instanceMethod.getImplementationMethod())
+                                                  .orElse(instanceMethod.getName()),
                                           instanceMethod.toString(),
                                           executionScope);
-        GraphQLOutputType type = new GraphQLTypeReference(instanceMethod.getReturnType());
-        type = new GraphQLList(type);
         List<GraphQLArgument> arguments = instanceMethod.getArguments()
                                                         .stream()
                                                         .map(arg -> newArgument().name(arg.getName())
@@ -608,8 +608,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .type(GraphQLString)
                                    .build());
         @SuppressWarnings("unchecked")
-        Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
-        typeBuilder.field(newFieldDefinition().type(type)
+        Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[1];
+        typeBuilder.field(newFieldDefinition().type(outputTypeOf(instanceMethod.getReturnType()))
                                               .argument(arguments)
                                               .name(instanceMethod.getName())
                                               .dataFetcher(env -> {
@@ -629,12 +629,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     private void build(StaticMethod staticMethod, ClassLoader executionScope,
                        String defaultImplementation) {
-        Method method = getStaticMethod(Optional.of(staticMethod.getImplementationClass())
+        Method method = getStaticMethod(Optional.ofNullable(staticMethod.getImplementationClass())
                                                 .orElse(defaultImplementation),
-                                        staticMethod.getImplementationMethod(),
+                                        Optional.ofNullable(staticMethod.getImplementationMethod())
+                                                .orElse(staticMethod.getName()),
                                         staticMethod.toString(),
                                         executionScope);
-        GraphQLOutputType type = new GraphQLTypeReference(staticMethod.getReturnType());
+        GraphQLOutputType type = outputTypeOf(staticMethod.getReturnType());
         type = new GraphQLList(type);
         List<GraphQLArgument> arguments = staticMethod.getArguments()
                                                       .stream()
@@ -717,17 +718,25 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                            executionScope);
         List<Method> candidates = Arrays.asList(clazz.getDeclaredMethods())
                                         .stream()
+                                        .peek(method -> System.out.println("1: "
+                                                                           + method.toGenericString()))
                                         .filter(method -> Modifier.isStatic(method.getModifiers()))
+                                        .peek(method -> System.out.println("2: "
+                                                                           + method.toGenericString()))
                                         .filter(method -> method.getName()
                                                                 .equals(implementationMethod))
-                                        .filter(method -> method.getParameterTypes().length == 3)
+                                        .peek(method -> System.out.println("3: "
+                                                                           + method.toGenericString()))
+                                        .filter(method -> method.getParameterTypes().length == 2)
+                                        .peek(method -> System.out.println("4: "
+                                                                           + method.toGenericString()))
                                         .filter(method -> method.getParameterTypes()[0].equals(DataFetchingEnvironment.class))
                                         .collect(Collectors.toList());
         if (candidates.isEmpty()) {
-            log.warn("Error plugging in {} into {}, no matches for {} in {}",
+            log.warn("Error plugging in {} into {}, no static method matches for {} in {}",
                      type, getName(), implementationMethod,
                      implementationClass);
-            throw new IllegalStateException(String.format("Error plugging in %s into %s, no matches for %s in %s",
+            throw new IllegalStateException(String.format("Error plugging in %s into %s, no static method matches for method '%s' in %s",
                                                           type, getName(),
                                                           implementationMethod,
                                                           implementationClass));
@@ -736,7 +745,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             log.warn("Error plugging in {} into {}, multiple matches for {} in {}",
                      type, getName(), implementationMethod,
                      implementationClass);
-            throw new IllegalStateException(String.format("Error plugging in %s into %s, multiple matches for %s in %s",
+            throw new IllegalStateException(String.format("Error plugging in %s into %s, multiple matches for static method '%s' in %s",
                                                           type, getName(),
                                                           implementationMethod,
                                                           implementationClass));
@@ -762,7 +771,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         if (method == null) {
             log.warn("No implementation found to plug {} into {}", type,
                      getName());
-            throw new IllegalStateException(String.format("No implementation found to plug %s into %s",
+            throw new IllegalStateException(String.format("No static method implementation found to plug %s into %s",
                                                           type, getName()));
         }
         validateStatic(type, method);
@@ -810,6 +819,29 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .dataFetcher(context -> ctx(context).getInstances(facet))
                                    .build();
 
+    }
+
+    private GraphQLOutputType outputTypeOf(String type) {
+        if (type == null) {
+            return new GraphQLTypeReference(getName());
+        }
+        type = type.trim();
+        if (type.startsWith("[")) {
+            return new GraphQLList(inputTypeOf(type.substring(1, type.length()
+                                                                 - 1)));
+        }
+        switch (type) {
+            case "Int":
+                return Scalars.GraphQLInt;
+            case "String":
+                return Scalars.GraphQLString;
+            case "Boolean":
+                return Scalars.GraphQLBoolean;
+            case "Float":
+                return Scalars.GraphQLBoolean;
+            default:
+                return new GraphQLTypeReference(type);
+        }
     }
 
     @SuppressWarnings("unchecked")

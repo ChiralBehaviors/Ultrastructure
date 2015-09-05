@@ -120,7 +120,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
             StateDefinition<RuleForm> stateDefinition = definition.facets.get(method.getDeclaringClass());
             WorkspaceScope scope = null;
             if (stateDefinition != null) {
-                scope = model.getWorkspaceModel().getScoped(stateDefinition.getWorkspace());
+                scope = model.getWorkspaceModel()
+                             .getScoped(stateDefinition.getWorkspace());
             }
             return function.invoke(this, scope, args);
         }
@@ -129,12 +130,22 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
             return invokeDefault(proxy, method, args, declaringClass);
         }
         // equals() and hashCode().  Becauase invariance.
-        if (method.getName().equals("equals") && args.length == 1
+        if (method.getName()
+                  .equals("equals")
+            && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
             return (args[0] instanceof Phantasm) ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
                                                  : false;
-        } else if (method.getName().equals("hashCode") && args.length == 0) {
+        } else if (method.getName()
+                         .equals("hashCode")
+                   && (args == null || args.length == 0)) {
             return ruleform.hashCode();
+        } else if (method.getName()
+                         .equals("toString")
+                   && (args == null || args.length == 0)) {
+            return String.format("%s[%s]", definition.getPhantasm()
+                                                     .getSimpleName(),
+                                 ruleform.getName());
         }
         try {
             return method.invoke(this, args);
@@ -201,7 +212,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                        int i) {
         AttributeValue<RuleForm> value = getNetworkedModel().create(ruleform,
                                                                     attribute,
-                                                                    model.getCurrentPrincipal().getPrincipal());
+                                                                    model.getCurrentPrincipal()
+                                                                         .getPrincipal());
         value.setSequenceNumber(i);
         return value;
     }
@@ -213,7 +225,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                                          relationship,
                                                                          child.getRuleform());
         if (link != null) {
-            model.getEntityManager().remove(link);
+            model.getEntityManager()
+                 .remove(link);
         }
     }
 
@@ -221,7 +234,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                           AttributeValue<RuleForm> existing, Object newValue) {
         if (existing == null) {
             existing = newAttributeValue(attribute, i);
-            model.getEntityManager().persist(existing);
+            model.getEntityManager()
+                 .persist(existing);
         }
         existing.setValue(newValue);
     }
@@ -272,7 +286,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                               WorkspaceScope scope) {
         getNetworkedModel().link(ruleform,
                                  getRelationship(namespace, name, scope), child,
-                                 model.getCurrentPrincipal().getPrincipal());
+                                 model.getCurrentPrincipal()
+                                      .getPrincipal());
         return null;
     }
 
@@ -283,7 +298,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         Relationship relationship = getRelationship(s, key, scope);
         for (Phantasm<RuleForm> child : children) {
             networkedModel.link(ruleform, relationship, child.getRuleform(),
-                                model.getCurrentPrincipal().getPrincipal());
+                                model.getCurrentPrincipal()
+                                     .getPrincipal());
         }
         return null;
     }
@@ -437,7 +453,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         }
         Map<String, ?> map = new HashMap<>();
         for (Map.Entry<String, AttributeValue<RuleForm>> entry : getValueMap(attribute).entrySet()) {
-            map.put(entry.getKey(), entry.getValue().getValue());
+            map.put(entry.getKey(), entry.getValue()
+                                         .getValue());
         }
         return map;
     }
@@ -460,7 +477,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                                                : namespace,
                                                              name));
         }
-        return values.get(0).getValue();
+        return values.get(0)
+                     .getValue();
     }
 
     protected Object getChild(String namespace, String name,
@@ -563,7 +581,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
     }
 
     protected WorkspaceScope getScope(StateDefinition<RuleForm> definition) {
-        return model.getWorkspaceModel().getScoped(definition.getWorkspace());
+        return model.getWorkspaceModel()
+                    .getScoped(definition.getWorkspace());
     }
 
     /**
@@ -642,8 +661,10 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                                                                           int.class);
         constructor.setAccessible(true);
         return constructor.newInstance(declaringClass,
-                                       MethodHandles.Lookup.PRIVATE).unreflectSpecial(method,
-                                                                                      declaringClass).bindTo(proxy).invokeWithArguments(args);
+                                       MethodHandles.Lookup.PRIVATE)
+                          .unreflectSpecial(method, declaringClass)
+                          .bindTo(proxy)
+                          .invokeWithArguments(args);
     }
 
     /**
@@ -818,7 +839,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         if (values == null) {
             if (old != null) {
                 for (AttributeValue<RuleForm> value : old) {
-                    model.getEntityManager().remove(value);
+                    model.getEntityManager()
+                         .remove(value);
                 }
             }
         } else if (old == null) {
@@ -843,7 +865,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                 setValue(attribute, i, old[i], values[i]);
             }
             for (; i < old.length; i++) {
-                model.getEntityManager().remove(old[i]);
+                model.getEntityManager()
+                     .remove(old[i]);
             }
         }
         return null;
@@ -858,7 +881,10 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                           namespace, key));
         }
         Map<String, AttributeValue<RuleForm>> valueMap = getValueMap(attribute);
-        values.keySet().stream().filter(keyName -> !valueMap.containsKey(keyName)).forEach(keyName -> valueMap.remove(keyName));
+        values.keySet()
+              .stream()
+              .filter(keyName -> !valueMap.containsKey(keyName))
+              .forEach(keyName -> valueMap.remove(keyName));
         int maxSeq = 0;
         for (AttributeValue<RuleForm> value : valueMap.values()) {
             maxSeq = Math.max(maxSeq, value.getSequenceNumber());
@@ -867,7 +893,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
             AttributeValue<RuleForm> value = valueMap.get(entry.getKey());
             if (value == null) {
                 value = newAttributeValue(attribute, ++maxSeq);
-                model.getEntityManager().persist(value);
+                model.getEntityManager()
+                     .persist(value);
                 value.setKey(entry.getKey());
             }
             value.setValue(entry.getValue());
@@ -892,7 +919,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                                                : namespace,
                                                              key));
         }
-        values.get(0).setValue(value);
+        values.get(0)
+              .setValue(value);
         return null;
     }
 
@@ -910,8 +938,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         networkedModel.setImmediateChild(ruleform,
                                          getRelationship(namespace, name,
                                                          scope),
-                                         child,
-                                         model.getCurrentPrincipal().getPrincipal());
+                                         child, model.getCurrentPrincipal()
+                                                     .getPrincipal());
         return null;
     }
 
@@ -929,7 +957,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
             RuleForm child = phantasm.getRuleform();
             NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networkedModel = getNetworkedModel();
             networkedModel.setImmediateChild(ruleform, relationship, child,
-                                             model.getCurrentPrincipal().getPrincipal());
+                                             model.getCurrentPrincipal()
+                                                  .getPrincipal());
         }
         return null;
     }

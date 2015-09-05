@@ -42,7 +42,6 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.kernel.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.product.Plugin;
-import com.chiralbehaviors.CoRE.kernel.product.StaticMethod;
 import com.chiralbehaviors.CoRE.kernel.product.Workspace;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
@@ -343,8 +342,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing1.setThing2(thing2);
         variables = new HashMap<>();
         variables.put("id", thing1ID);
-        Thing1_Plugin.passThrough.set(hello);
-        request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name instanceMethod staticMethod } }",
+        request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name instanceMethod } }",
                                    variables);
         result = resource.query(null, TEST_SCENARIO_URI, request);
 
@@ -355,7 +353,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing1Result = (Map<String, Object>) result.get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(apple, thing1Result.get("instanceMethod"));
-        assertEquals(hello, thing1Result.get("staticMethod"));
     }
 
     @SuppressWarnings("rawtypes")
@@ -468,10 +465,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         testPlugin.addInstanceMethod(model.construct(InstanceMethod.class,
                                                      "instanceMethod",
                                                      "For instance"));
-
-        testPlugin.addStaticMethod(model.construct(StaticMethod.class,
-                                                   "staticMethod",
-                                                   "Never changes"));
         return testPlugin;
     }
 }

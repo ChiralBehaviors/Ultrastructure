@@ -51,8 +51,4 @@ public class Thing1_Plugin {
         return instance.getThing2()
                        .getName();
     }
-
-    public static String staticMethod(DataFetchingEnvironment env) {
-        return passThrough.get();
-    }
 }

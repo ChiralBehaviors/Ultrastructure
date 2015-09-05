@@ -53,7 +53,6 @@ import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.kernel.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.product.Plugin;
-import com.chiralbehaviors.CoRE.kernel.product.StaticMethod;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -140,14 +139,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         return new String(chars);
     }
 
-    private List<BiFunction<DataFetchingEnvironment, RuleForm, Object>> constructors = new ArrayList<>();
-    private String                                                      name;
-    private Set<NetworkAuthorization<?>>                                references   = new HashSet<>();
-
+    private List<BiFunction<DataFetchingEnvironment, RuleForm, Object>>                             constructors   = new ArrayList<>();
+    private String                                                                                  name;
+    private Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
     private Builder                                                                                 typeBuilder;
     private Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
-
-    private graphql.schema.GraphQLInputObjectType.Builder updateTypeBuilder;
+    private graphql.schema.GraphQLInputObjectType.Builder                                           updateTypeBuilder;
 
     public FacetType(NetworkAuthorization<RuleForm> facet) {
         this.name = facet.getName();
@@ -508,10 +505,6 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                    .orElse(null);
             build(plugin.getConstructor(), defaultImplementation,
                   executionScope);
-            plugin.getStaticMethods()
-                  .forEach(method -> {
-                build(method, executionScope, defaultImplementation);
-            });
             plugin.getInstanceMethods()
                   .forEach(method -> build(facet, method, defaultImplementation,
                                            executionScope));
@@ -626,30 +619,6 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .build());
     }
 
-    private void build(StaticMethod staticMethod, ClassLoader executionScope,
-                       String defaultImplementation) {
-        Method method = getStaticMethod(Optional.ofNullable(staticMethod.getImplementationClass())
-                                                .orElse(defaultImplementation),
-                                        Optional.ofNullable(staticMethod.getImplementationMethod())
-                                                .orElse(staticMethod.getName()),
-                                        staticMethod.toString(),
-                                        executionScope);
-        List<GraphQLArgument> arguments = staticMethod.getArguments()
-                                                      .stream()
-                                                      .map(arg -> newArgument().name(arg.getName())
-                                                                               .description(arg.getDescription())
-                                                                               .type(inputTypeOf(arg.getInputType()))
-                                                                               .build())
-                                                      .collect(Collectors.toList());
-        typeBuilder.field(newFieldDefinition().type(outputTypeOf(staticMethod.getReturnType()))
-                                              .argument(arguments)
-                                              .name(staticMethod.getName())
-                                              .dataFetcher(env -> invoke(method,
-                                                                         env))
-                                              .description(staticMethod.getDescription())
-                                              .build());
-    }
-
     private void clear() {
         this.references = null;
         this.typeBuilder = null;
@@ -740,31 +709,6 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           implementationClass));
         }
         return candidates.get(0);
-    }
-
-    private Method getStaticMethod(String implementationClass,
-                                   String implementationMethod, String type,
-                                   ClassLoader executionScope) {
-        Method method;
-        try {
-            method = getImplementation(implementationClass, type,
-                                       executionScope).getDeclaredMethod(implementationMethod,
-                                                                         DataFetchingEnvironment.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            log.warn("Error plugging in  {} into {}", type, getName(), e);
-            throw new IllegalStateException(String.format("Error plugging in %s into %s: %s",
-                                                          type, getName(),
-                                                          e.toString()),
-                                            e);
-        }
-        if (method == null) {
-            log.warn("No implementation found to plug {} into {}", type,
-                     getName());
-            throw new IllegalStateException(String.format("No static method implementation found to plug %s into %s",
-                                                          type, getName()));
-        }
-        validateStatic(type, method);
-        return method;
     }
 
     private GraphQLInputType inputTypeOf(String type) {
@@ -912,13 +856,5 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                    .forEach(field -> updateTemplate.get(field)
                                                    .apply(crud, updateState));
 
-    }
-
-    private void validateStatic(String type, Method method) {
-        if (!Modifier.isStatic(method.getModifiers())) {
-            throw new IllegalStateException(String.format("Method %s is not a static method.  Cannot plugin %s",
-                                                          method.toGenericString(),
-                                                          type));
-        }
     }
 }

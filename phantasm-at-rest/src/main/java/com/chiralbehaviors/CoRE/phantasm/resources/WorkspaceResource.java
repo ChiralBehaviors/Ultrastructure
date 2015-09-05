@@ -104,7 +104,7 @@ public class WorkspaceResource extends TransactionalResource {
                                                                 qualifiedName,
                                                                 scope));
             }
-            return resolved;
+            return Ruleform.initializeAndUnproxy(resolved);
         } else if (key.countTokens() == 2) {
             Ruleform resolved = scope.lookup(key.nextToken(), key.nextToken());
             if (resolved == null) {
@@ -112,7 +112,7 @@ public class WorkspaceResource extends TransactionalResource {
                                                                 qualifiedName,
                                                                 scope));
             }
-            return resolved;
+            return Ruleform.initializeAndUnproxy(resolved);
         } else {
             throw new WebApplicationException(String.format("The workspace key [%s] is not defined in %s",
                                                             qualifiedName,
@@ -220,7 +220,9 @@ public class WorkspaceResource extends TransactionalResource {
                                                                             .getInverse())) {
                 Map<String, Object> ctx = new TreeMap<>();
                 ctx.put(Constants.ID,
-                        Facet.getInstanceIri(aspect, definingProduct, uriInfo));
+                        Facet.getInstanceIri(aspect,
+                                             Ruleform.initializeAndUnproxy(definingProduct),
+                                             uriInfo));
                 ctx.put(Constants.TYPE, Facet.getFullFacetIri(aspect, uriInfo));
                 Map<String, Object> wsp = new TreeMap<>();
                 wsp.put(Constants.ID,

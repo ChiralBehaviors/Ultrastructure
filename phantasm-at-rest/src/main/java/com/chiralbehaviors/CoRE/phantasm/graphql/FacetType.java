@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,9 @@ import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 
+import graphql.Scalars;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
@@ -69,7 +72,8 @@ import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLTypeReference;
 
 /**
- * Cannonical tranform of Phantasm metadata into GraphQL metadata.
+ * Cannonical tranform of Phantasm metadata into GraphQL metadata. Provides
+ * framework for Phantasm Plugin model;
  * 
  * @author hhildebrand
  *
@@ -101,10 +105,20 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         SET_DESCRIPTION = String.format(SET_TEMPLATE, capitalized(DESCRIPTION));
     }
 
+    public static Object invoke(Method method, DataFetchingEnvironment env) {
+        try {
+            return method.invoke(null, env);
+        } catch (IllegalAccessException | IllegalArgumentException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e.getTargetException());
+        }
+    }
+
     public static Object invoke(Method method, DataFetchingEnvironment env,
                                 @SuppressWarnings("rawtypes") ExistentialRuleform instance) {
         try {
-            return method.invoke(null, env);
+            return method.invoke(null, env, instance);
         } catch (IllegalAccessException | IllegalArgumentException e) {
             throw new IllegalStateException(e);
         } catch (InvocationTargetException e) {
@@ -148,23 +162,23 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
      */
     public Set<NetworkAuthorization<?>> build(Builder query, Builder mutation,
                                               NetworkAuthorization<?> facetUntyped,
-                                              List<Plugin> plugins,
-                                              Model model) {
+                                              List<Plugin> plugins, Model model,
+                                              Map<Plugin, ClassLoader> executionScopes) {
         @SuppressWarnings("unchecked")
         NetworkAuthorization<RuleForm> facet = (NetworkAuthorization<RuleForm>) facetUntyped;
-        buildRuleformAttributes(facet);
+        build(facet);
         new PhantasmTraversal<RuleForm, Network>(model).traverse(facet, this);
 
-        addPlugins(plugins);
+        addPlugins(facet, plugins, executionScopes);
 
         GraphQLObjectType type = typeBuilder.build();
 
         query.field(instance(facet, type));
         query.field(instances(facet));
 
-        mutation.field(createInstance(facet, updateTemplate));
+        mutation.field(createInstance(facet));
         mutation.field(apply(facet));
-        mutation.field(update(facet, updateTemplate));
+        mutation.field(update(facet));
         mutation.field(remove(facet));
         Set<NetworkAuthorization<?>> referenced = references;
         clear();
@@ -472,46 +486,20 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         references.add(child);
     }
 
-    private void addConstructor(Constructor constructor) {
-
-        String implementationClass = constructor.getImplementationClass();
-        String implementationMethod = constructor.getImplementationMethod();
-        String type = constructor.toString();
-        Method method = getMethod(implementationClass, implementationMethod,
-                                  type);
-
-        constructors.add((env, instance) -> {
-            return invoke(method, env, instance);
-        });
-    }
-
-    private void addMethod(InstanceMethod instanceMethod) {
-
-        String implementationClass = instanceMethod.getImplementationClass();
-        String implementationMethod = instanceMethod.getImplementationMethod();
-        String type = instanceMethod.toString();
-        @SuppressWarnings("unused")
-        Method method = getMethod(implementationClass, implementationMethod,
-                                  type);
-    }
-
-    private void addMethod(StaticMethod staticMethod) {
-
-        String implementationClass = staticMethod.getImplementationClass();
-        String implementationMethod = staticMethod.getImplementationMethod();
-        String type = staticMethod.toString();
-        @SuppressWarnings("unused")
-        Method method = getMethod(implementationClass, implementationMethod,
-                                  type);
-    }
-
-    private void addPlugins(List<Plugin> plugins) {
+    private void addPlugins(NetworkAuthorization<RuleForm> facet,
+                            List<Plugin> plugins,
+                            Map<Plugin, ClassLoader> executionScopes) {
         plugins.forEach(plugin -> {
-            addConstructor(plugin.getConstructor());
+            ClassLoader executionScope = executionScopes.get(plugin);
+            assert executionScope != null : String.format("%s execution scope is null!",
+                                                          plugin);
+            build(plugin.getConstructor(), null);
             plugin.getStaticMethods()
-                  .forEach(method -> addMethod(method));
+                  .forEach(method -> {
+                build(method, executionScope);
+            });
             plugin.getInstanceMethods()
-                  .forEach(method -> addMethod(method));
+                  .forEach(method -> build(facet, method, executionScope));
         });
     }
 
@@ -530,8 +518,21 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .build();
     }
 
+    private void build(Constructor constructor, ClassLoader executionScope) {
+        String implementationClass = constructor.getImplementationClass();
+        String implementationMethod = constructor.getImplementationMethod();
+        Method method = getInstanceMethod(implementationClass,
+                                          implementationMethod,
+                                          constructor.toString(),
+                                          executionScope);
+
+        constructors.add((env, instance) -> {
+            return invoke(method, env, instance);
+        });
+    }
+
     @SuppressWarnings("unchecked")
-    private void buildRuleformAttributes(NetworkAuthorization<RuleForm> facet) {
+    private void build(NetworkAuthorization<RuleForm> facet) {
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(ID)
                                               .description("The id of the facet instance")
@@ -570,16 +571,77 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                            (String) update.get(SET_DESCRIPTION)));
     }
 
+    private void build(NetworkAuthorization<RuleForm> facet,
+                       InstanceMethod instanceMethod,
+                       ClassLoader executionScope) {
+        Method method = getInstanceMethod(instanceMethod.getImplementationClass(),
+                                          instanceMethod.getImplementationMethod(),
+                                          instanceMethod.toString(),
+                                          executionScope);
+        GraphQLOutputType type = new GraphQLTypeReference(instanceMethod.getReturnType());
+        type = new GraphQLList(type);
+        List<GraphQLArgument> arguments = instanceMethod.getArguments()
+                                                        .stream()
+                                                        .map(arg -> newArgument().name(arg.getName())
+                                                                                 .description(arg.getDescription())
+                                                                                 .type(inputTypeOf(arg.getInputType()))
+                                                                                 .build())
+                                                        .collect(Collectors.toList());
+        arguments.add(newArgument().name(ID)
+                                   .description("id of the facet")
+                                   .type(GraphQLString)
+                                   .build());
+        typeBuilder.field(newFieldDefinition().type(type)
+                                              .argument(arguments)
+                                              .name(instanceMethod.getName())
+                                              .dataFetcher(env -> {
+                                                  @SuppressWarnings("unchecked")
+                                                  RuleForm instance = (RuleForm) ctx(env).lookup(facet,
+                                                                                                 (String) env.getArgument(ID));
+                                                  return instance == null ? null
+                                                                          : invoke(method,
+                                                                                   env,
+                                                                                   instance);
+                                              })
+                                              .description(instanceMethod.getDescription())
+                                              .build());
+    }
+
+    private void build(StaticMethod staticMethod, ClassLoader executionScope) {
+        Method method = getStaticMethod(staticMethod.getImplementationClass(),
+                                        staticMethod.getImplementationMethod(),
+                                        staticMethod.toString(),
+                                        executionScope);
+        GraphQLOutputType type = new GraphQLTypeReference(staticMethod.getReturnType());
+        type = new GraphQLList(type);
+        List<GraphQLArgument> arguments = staticMethod.getArguments()
+                                                      .stream()
+                                                      .map(arg -> newArgument().name(arg.getName())
+                                                                               .description(arg.getDescription())
+                                                                               .type(inputTypeOf(arg.getInputType()))
+                                                                               .build())
+                                                      .collect(Collectors.toList());
+        typeBuilder.field(newFieldDefinition().type(type)
+                                              .argument(arguments)
+                                              .name(staticMethod.getName())
+                                              .dataFetcher(env -> invoke(method,
+                                                                         env))
+                                              .description(staticMethod.getDescription())
+                                              .build());
+    }
+
     private void clear() {
         this.references = null;
         this.typeBuilder = null;
         this.updateTypeBuilder = null;
         this.updateTemplate = null;
+        this.constructors = null;
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition createInstance(NetworkAuthorization<RuleForm> facet,
-                                                  Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate) {
+    private GraphQLFieldDefinition createInstance(NetworkAuthorization<RuleForm> facet) {
+        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdate = updateTemplate;
+        List<BiFunction<DataFetchingEnvironment, RuleForm, Object>> detachedConstructors = constructors;
         return newFieldDefinition().name(String.format(CREATE_MUTATION,
                                                        facet.getName()))
                                    .type(new GraphQLTypeReference(facet.getName()))
@@ -596,48 +658,94 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                        updateState.remove(SET_NAME);
                                        updateState.remove(SET_DESCRIPTION);
                                        update(ruleform, updateState, crud,
-                                              updateTemplate);
-                                       constructors.forEach(constructor -> constructor.apply(env,
-                                                                                             ruleform));
+                                              detachedUpdate);
+                                       detachedConstructors.forEach(constructor -> constructor.apply(env,
+                                                                                                     ruleform));
                                        return ruleform;
                                    })
                                    .build();
     }
 
-    private Method getMethod(String implementationClass,
-                             String implementationMethod, String type) {
-        ClassLoader contextLoader = Thread.currentThread()
-                                          .getContextClassLoader();
+    private Class<?> getImplementation(String implementationClass, String type,
+                                       ClassLoader executionScope) {
         Class<?> clazz;
         try {
-            clazz = contextLoader.loadClass(implementationClass);
+            clazz = executionScope.loadClass(implementationClass);
         } catch (ClassNotFoundException e) {
             log.warn("Error plugging in constructor {} into {}", type,
                      getName(), e);
-            throw new IllegalStateException(String.format("Error plugging in constructor %s into %s: %s",
+            throw new IllegalStateException(String.format("Error plugging in %s into %s: %s",
                                                           type, getName(),
                                                           e.toString()),
                                             e);
         }
+        return clazz;
+    }
+
+    private Method getInstanceMethod(String implementationClass,
+                                     String implementationMethod, String type,
+                                     ClassLoader executionScope) {
         Method method;
         try {
-            method = clazz.getDeclaredMethod(implementationMethod,
-                                             DataFetchingEnvironment.class,
-                                             ExistentialRuleform.class);
+            method = getImplementation(implementationClass, type,
+                                       executionScope).getDeclaredMethod(implementationMethod,
+                                                                         DataFetchingEnvironment.class,
+                                                                         ExistentialRuleform.class);
         } catch (NoSuchMethodException | SecurityException e) {
-            log.warn("Error plugging in constructor {} into {}", type,
-                     getName(), e);
-            throw new IllegalStateException(String.format("Error plugging in constructor %s into %s: %s",
+            log.warn("Error plugging in {} into {}", type, getName(), e);
+            throw new IllegalStateException(String.format("Error plugging in %s into %s: %s",
                                                           type, getName(),
                                                           e.toString()),
                                             e);
         }
-        if (!Modifier.isStatic(method.getModifiers())) {
-            throw new IllegalStateException(String.format("Method %s is not a static method.  Cannot plugin %s",
-                                                          method.toGenericString(),
-                                                          type));
-        }
+        validateStatic(type, method);
         return method;
+    }
+
+    private Method getStaticMethod(String implementationClass,
+                                   String implementationMethod, String type,
+                                   ClassLoader executionScope) {
+        Method method;
+        try {
+            method = getImplementation(implementationClass, type,
+                                       executionScope).getDeclaredMethod(implementationMethod,
+                                                                         DataFetchingEnvironment.class);
+        } catch (NoSuchMethodException | SecurityException e) {
+            log.warn("Error plugging in  {} into {}", type, getName(), e);
+            throw new IllegalStateException(String.format("Error plugging in %s into %s: %s",
+                                                          type, getName(),
+                                                          e.toString()),
+                                            e);
+        }
+        if (method == null) {
+            log.warn("No implementation found to plug {} into {}", type,
+                     getName());
+            throw new IllegalStateException(String.format("No implementation found to plug %s into %s",
+                                                          type, getName()));
+        }
+        validateStatic(type, method);
+        return method;
+    }
+
+    private GraphQLInputType inputTypeOf(String type) {
+        type = type.trim();
+        if (type.startsWith("[")) {
+            return new GraphQLList(inputTypeOf(type.substring(1, type.length()
+                                                                 - 1)));
+        }
+        switch (type) {
+            case "Int":
+                return Scalars.GraphQLInt;
+            case "String":
+                return Scalars.GraphQLString;
+            case "Boolean":
+                return Scalars.GraphQLBoolean;
+            case "Float":
+                return Scalars.GraphQLBoolean;
+            default:
+                throw new IllegalStateException(String.format("Invalid GraphQLType: %s",
+                                                              type));
+        }
     }
 
     private GraphQLFieldDefinition instance(NetworkAuthorization<RuleForm> facet,
@@ -708,8 +816,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition update(NetworkAuthorization<RuleForm> facet,
-                                          Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate) {
+    private GraphQLFieldDefinition update(NetworkAuthorization<RuleForm> facet) {
+        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdateTemplate = updateTemplate;
         return newFieldDefinition().name(String.format(UPDATE_QUERY,
                                                        facet.getName()))
                                    .type(new GraphQLTypeReference(facet.getName()))
@@ -723,7 +831,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                        RuleForm ruleform = (RuleForm) crud.lookup(facet,
                                                                                   (String) updateState.get(ID));
                                        update(ruleform, updateState, crud,
-                                              updateTemplate);
+                                              detachedUpdateTemplate);
                                        return ruleform;
                                    })
                                    .build();
@@ -733,13 +841,21 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                         PhantasmCRUD<RuleForm, Network> crud,
                         Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate) {
         updateState.put(AT_RULEFORM, ruleform);
-        for (String field : updateState.keySet()) {
-            if (!field.equals(ID) && !field.equals(AT_RULEFORM)
-                && updateState.containsKey(field)) {
-                updateTemplate.get(field)
-                              .apply(crud, updateState);
-            }
+        updateState.keySet()
+                   .stream()
+                   .filter(field -> !field.equals(ID)
+                                    && !field.equals(AT_RULEFORM)
+                                    && updateState.containsKey(field))
+                   .forEach(field -> updateTemplate.get(field)
+                                                   .apply(crud, updateState));
+
+    }
+
+    private void validateStatic(String type, Method method) {
+        if (!Modifier.isStatic(method.getModifiers())) {
+            throw new IllegalStateException(String.format("Method %s is not a static method.  Cannot plugin %s",
+                                                          method.toGenericString(),
+                                                          type));
         }
-        ;
     }
 }

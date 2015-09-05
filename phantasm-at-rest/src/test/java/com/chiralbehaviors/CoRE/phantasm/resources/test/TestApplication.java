@@ -15,10 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.phantasm.resources.test;
 
-import java.util.Map;
-
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
@@ -84,11 +81,6 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         this.environment = environment;
         environment.lifecycle()
                    .addServerLifecycleListener(server -> jettyServer = server);
-        JpaConfiguration jpaConfig = configuration.getCrudServiceConfiguration();
-
-        String unit = jpaConfig.getPersistenceUnit();
-        Map<String, String> properties = jpaConfig.getProperties();
-        emf = Persistence.createEntityManagerFactory(unit, properties);
         environment.jersey()
                    .register(AuthFactory.binder(new NullAuthenticationFactory()));
         environment.jersey()
@@ -103,6 +95,10 @@ public class TestApplication extends Application<TestServiceConfiguration> {
                    .register(new GraphQlResource(emf));
         environment.healthChecks()
                    .register("EMF Health", new EmfHealthCheck(emf));
+    }
+
+    public void setEmf(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 
     public void stop() {

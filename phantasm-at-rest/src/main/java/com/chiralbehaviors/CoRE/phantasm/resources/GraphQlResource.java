@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
@@ -100,8 +101,10 @@ public class GraphQlResource extends TransactionalResource {
         }
     }
 
-    private static final Logger            log   = LoggerFactory.getLogger(GraphQlResource.class);
-    private final Map<UUID, GraphQLSchema> cache = new ConcurrentHashMap<>();
+    private static final Logger log = LoggerFactory.getLogger(GraphQlResource.class);
+
+    private final ConcurrentMap<UUID, GraphQLSchema> cache             = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Plugin, ClassLoader> executionContexts = new ConcurrentHashMap<>();
 
     public GraphQlResource(EntityManagerFactory emf) {
         super(emf);
@@ -144,21 +147,26 @@ public class GraphQlResource extends TransactionalResource {
         return perform(principal, model -> {
             Map<String, Object> result = new HashMap<>();
             UUID uuid = WorkspaceAccessor.uuidOf(workspace);
-            GraphQLSchema schema = cache.get(uuid);
-            if (schema == null) {
+
+            GraphQLSchema schema = cache.computeIfAbsent(uuid, id -> {
                 WorkspaceScope scoped;
                 try {
                     scoped = model.getWorkspaceModel()
-                                  .getScoped(uuid);
+                                  .getScoped(id);
                 } catch (IllegalArgumentException e) {
                     result.put("errors",
-                               String.format("Workspace %s does not exist",
-                                             workspace));
-                    return result;
+                               String.format("Workspace %s does not exist {%s}",
+                                             workspace, id));
+                    return null;
                 }
 
-                schema = build(scoped.getWorkspace(), model);
+                return build(scoped.getWorkspace(), model);
+            });
+
+            if (schema == null) {
+                return result;
             }
+
             @SuppressWarnings("rawtypes")
             PhantasmCRUD crud = new PhantasmCRUD(model);
             ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
@@ -178,6 +186,11 @@ public class GraphQlResource extends TransactionalResource {
             return result;
         });
 
+    }
+
+    private ClassLoader buildExecutionContext(Plugin plugin) {
+        return Thread.currentThread()
+                     .getContextClassLoader();
     }
 
     private Deque<NetworkAuthorization<?>> initialState(WorkspaceAccessor workspace,
@@ -216,6 +229,9 @@ public class GraphQlResource extends TransactionalResource {
                                               .description(String.format("Top level mutation for %s",
                                                                          definingProduct.getName()));
         List<Plugin> plugins = workspace.getPlugins();
+        plugins.stream()
+               .forEach(plugin -> executionContexts.computeIfAbsent(plugin,
+                                                                    p -> buildExecutionContext(p)));
         while (!unresolved.isEmpty()) {
             NetworkAuthorization<?> facet = unresolved.pop();
             if (resolved.containsKey(facet)) {
@@ -229,7 +245,7 @@ public class GraphQlResource extends TransactionalResource {
                                                                       .equals(plugin.getFacetName()))
                                                .collect(Collectors.toList());
             type.build(topLevelQuery, topLevelMutation, facet, facetPlugins,
-                       model)
+                       model, executionContexts)
                 .stream()
                 .filter(auth -> !resolved.containsKey(auth))
                 .forEach(auth -> unresolved.add(auth));
@@ -238,7 +254,6 @@ public class GraphQlResource extends TransactionalResource {
                                             .query(topLevelQuery.build())
                                             .mutation(topLevelMutation.build())
                                             .build();
-        cache.put(definingProduct.getId(), schema);
         return schema;
     }
 }

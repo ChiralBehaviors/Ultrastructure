@@ -37,14 +37,11 @@ import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
-import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 
 import graphql.ExecutionResult;
@@ -57,17 +54,10 @@ import graphql.validation.ValidationErrorType;
  * @author hhildebrand
  *
  */
-public class WorkspaceSchemaTest extends AbstractModelTest {
-
-    private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
+public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     @Test
     public void testBadQueries() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
-
         EntityManagerFactory mockedEmf = mockedEmf();
         GraphQlResource resource = new GraphQlResource(mockedEmf);
         Map<String, Object> variables = new HashMap<>();
@@ -89,10 +79,6 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     @Test
     public void testCreate() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
                                         "a favorite thing");
@@ -150,10 +136,6 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     @Test
     public void testGraphQlResource() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
@@ -237,12 +219,8 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     @Test
     public void testMutation() throws Exception {
-        em.getTransaction()
-          .begin();
         String[] newAliases = new String[] { "jones", "smith" };
         String newUri = "new iri";
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
@@ -313,10 +291,6 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
     @SuppressWarnings("rawtypes")
     @Test
     public void testWorkspaceSchema() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",

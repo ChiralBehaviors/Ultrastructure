@@ -37,6 +37,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
@@ -273,7 +274,8 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
     private final Map<String, Typed> terms = new TreeMap<>();
 
     public Facet(Aspect<RuleForm> aspect, Model model, UriInfo uriInfo) {
-        super(aspect.getClassifier(), aspect.getClassification());
+        super(Ruleform.initializeAndUnproxy(aspect.getClassifier()),
+              Ruleform.initializeAndUnproxy(aspect.getClassification()));
         context = getContextIri(this, uriInfo).toASCIIString();
         collectRuleformAttributes(model, uriInfo);
         collectAttributes(model, uriInfo);

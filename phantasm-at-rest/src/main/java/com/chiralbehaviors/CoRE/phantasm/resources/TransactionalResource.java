@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
@@ -78,6 +79,7 @@ public class TransactionalResource {
                                                             relationship),
                                               Status.NOT_FOUND);
         }
+        classifier = Ruleform.initializeAndUnproxy(classifier);
         ExistentialRuleform classification = readOnlyModel.getEntityManager()
                                                           .find(ruleformClass,
                                                                 ruleform);
@@ -86,6 +88,7 @@ public class TransactionalResource {
                                                             ruleform),
                                               Status.NOT_FOUND);
         }
+        classification = Ruleform.initializeAndUnproxy(classification);
         Aspect aspect = new Aspect(classifier, classification);
         return aspect;
     }

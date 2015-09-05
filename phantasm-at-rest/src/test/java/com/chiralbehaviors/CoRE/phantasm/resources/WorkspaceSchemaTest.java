@@ -343,7 +343,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing1.setThing2(thing2);
         variables = new HashMap<>();
         variables.put("id", thing1ID);
-        request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name instanceMethod } }",
+        Thing1_Plugin.passThrough.set(hello);
+        request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name instanceMethod staticMethod } }",
                                    variables);
         result = resource.query(null, TEST_SCENARIO_URI, request);
 
@@ -354,6 +355,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing1Result = (Map<String, Object>) result.get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(apple, thing1Result.get("instanceMethod"));
+        assertEquals(hello, thing1Result.get("staticMethod"));
     }
 
     @SuppressWarnings("rawtypes")

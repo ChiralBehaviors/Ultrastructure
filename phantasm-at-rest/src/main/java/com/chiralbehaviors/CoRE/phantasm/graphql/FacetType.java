@@ -634,8 +634,6 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                 .orElse(staticMethod.getName()),
                                         staticMethod.toString(),
                                         executionScope);
-        GraphQLOutputType type = outputTypeOf(staticMethod.getReturnType());
-        type = new GraphQLList(type);
         List<GraphQLArgument> arguments = staticMethod.getArguments()
                                                       .stream()
                                                       .map(arg -> newArgument().name(arg.getName())
@@ -643,7 +641,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                .type(inputTypeOf(arg.getInputType()))
                                                                                .build())
                                                       .collect(Collectors.toList());
-        typeBuilder.field(newFieldDefinition().type(type)
+        typeBuilder.field(newFieldDefinition().type(outputTypeOf(staticMethod.getReturnType()))
                                               .argument(arguments)
                                               .name(staticMethod.getName())
                                               .dataFetcher(env -> invoke(method,

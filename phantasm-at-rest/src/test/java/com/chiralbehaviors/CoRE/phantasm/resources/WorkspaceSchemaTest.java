@@ -39,6 +39,7 @@ import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.kernel.product.Argument;
 import com.chiralbehaviors.CoRE.kernel.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.product.Plugin;
@@ -342,7 +343,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing1.setThing2(thing2);
         variables = new HashMap<>();
         variables.put("id", thing1ID);
-        request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name instanceMethod } }",
+        variables.put("test", "me");
+        request = new QueryRequest("query it($id: String, $test: String) { Thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
                                    variables);
         result = resource.query(null, TEST_SCENARIO_URI, request);
 
@@ -353,6 +355,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing1Result = (Map<String, Object>) result.get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(apple, thing1Result.get("instanceMethod"));
+        assertEquals("me", Thing1_Plugin.passThrough.get());
+        assertEquals(apple, thing1Result.get("instanceMethodWithArgument"));
     }
 
     @SuppressWarnings("rawtypes")
@@ -465,6 +469,14 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         testPlugin.addInstanceMethod(model.construct(InstanceMethod.class,
                                                      "instanceMethod",
                                                      "For instance"));
+        InstanceMethod methodWithArg = model.construct(InstanceMethod.class,
+                                                       "instanceMethodWithArgument",
+                                                       "For all your argument needs");
+        Argument argument = model.construct(Argument.class, "arg1",
+                                            "Who needs an argument?");
+        methodWithArg.addArgument(argument);
+        argument.setInputType("String");
+        testPlugin.addInstanceMethod(methodWithArg);
         return testPlugin;
     }
 }

@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
@@ -50,6 +51,7 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.plugin.Thing1_Plugin;
+import com.chiralbehaviors.CoRE.product.Product;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -295,8 +297,9 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         assertEquals(newUri, thing1.getURI());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testPluginConstructor() throws InstantiationException {
+    public void testPlugin() throws InstantiationException {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
@@ -307,7 +310,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         GraphQlResource resource = new GraphQlResource(mockedEmf);
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "hello");
-        variables.put("description", "goodbye");
+        String hello = "goodbye";
+        variables.put("description", hello);
         QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String) { "
                                                 + "CreateThing1("
                                                 + "  state: { "
@@ -315,10 +319,42 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                 + "     setDescription: $description"
                                                 + "   }) { id name description } }",
                                                 variables);
-        Thing1_Plugin.passThrough.set("Give me food or give me slack or kill me");
+        String bob = "Give me food or give me slack or kill me";
+        Thing1_Plugin.passThrough.set(bob);
         Map<String, Object> result = resource.query(null, TEST_SCENARIO_URI,
                                                     request);
-        System.out.println(result);
+
+        assertNull(result.get("errors") == null ? "" : result.get("errors")
+                                                             .toString(),
+                   result.get("errors"));
+
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        assertNotNull(thing1Result);
+        assertEquals(bob, thing1Result.get("description"));
+        String thing1ID = (String) thing1Result.get("id");
+        assertNotNull(thing1ID);
+        Thing1 thing1 = model.wrap(Thing1.class, model.getEntityManager()
+                                                      .find(Product.class,
+                                                            UUID.fromString(thing1ID)));
+        assertEquals(bob, thing1.getDescription());
+
+        String apple = "Connie";
+        Thing2 thing2 = model.construct(Thing2.class, apple, "Her Dobbsness");
+        thing1.setThing2(thing2);
+        variables = new HashMap<>();
+        variables.put("id", thing1ID);
+        Thing1_Plugin.passThrough.set(hello);
+        request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name instanceMethod } }",
+                                   variables);
+        result = resource.query(null, TEST_SCENARIO_URI, request);
+
+        assertNull(result.get("errors") == null ? "" : result.get("errors")
+                                                             .toString(),
+                   result.get("errors"));
+
+        thing1Result = (Map<String, Object>) result.get("Thing1");
+        assertNotNull(thing1Result);
+        assertEquals(apple, thing1Result.get("instanceMethod"));
     }
 
     @SuppressWarnings("rawtypes")

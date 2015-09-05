@@ -123,10 +123,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                 @SuppressWarnings("rawtypes") Phantasm instance) {
         try {
             return method.invoke(null, env, instance);
-        } catch (IllegalAccessException | IllegalArgumentException e) {
-            throw new IllegalStateException(e);
         } catch (InvocationTargetException e) {
-            throw new IllegalStateException(e.getTargetException());
+            log.error("error invoking {} plugin {}", instance.toString(),
+                      method.toGenericString(), e.getTargetException());
+            return null;
+        } catch (Throwable e) {
+            log.error("error invoking {} plugin {}", instance.toString(),
+                      method.toGenericString(), e);
+            return null;
         }
     }
 
@@ -603,10 +607,6 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                  .type(inputTypeOf(arg.getInputType()))
                                                                                  .build())
                                                         .collect(Collectors.toList());
-        arguments.add(newArgument().name(ID)
-                                   .description("id of the facet")
-                                   .type(GraphQLString)
-                                   .build());
         @SuppressWarnings("unchecked")
         Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[1];
         typeBuilder.field(newFieldDefinition().type(outputTypeOf(instanceMethod.getReturnType()))
@@ -614,8 +614,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .name(instanceMethod.getName())
                                               .dataFetcher(env -> {
                                                   @SuppressWarnings("unchecked")
-                                                  RuleForm instance = (RuleForm) ctx(env).lookup(facet,
-                                                                                                 (String) env.getArgument(ID));
+                                                  RuleForm instance = (RuleForm) env.getSource();
                                                   return instance == null ? null
                                                                           : invoke(method,
                                                                                    env,
@@ -718,18 +717,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                            executionScope);
         List<Method> candidates = Arrays.asList(clazz.getDeclaredMethods())
                                         .stream()
-                                        .peek(method -> System.out.println("1: "
-                                                                           + method.toGenericString()))
                                         .filter(method -> Modifier.isStatic(method.getModifiers()))
-                                        .peek(method -> System.out.println("2: "
-                                                                           + method.toGenericString()))
                                         .filter(method -> method.getName()
                                                                 .equals(implementationMethod))
-                                        .peek(method -> System.out.println("3: "
-                                                                           + method.toGenericString()))
                                         .filter(method -> method.getParameterTypes().length == 2)
-                                        .peek(method -> System.out.println("4: "
-                                                                           + method.toGenericString()))
                                         .filter(method -> method.getParameterTypes()[0].equals(DataFetchingEnvironment.class))
                                         .collect(Collectors.toList());
         if (candidates.isEmpty()) {
@@ -823,7 +814,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     private GraphQLOutputType outputTypeOf(String type) {
         if (type == null) {
-            return new GraphQLTypeReference(getName());
+            return Scalars.GraphQLString;
         }
         type = type.trim();
         if (type.startsWith("[")) {

@@ -45,6 +45,13 @@ public class Thing1_Plugin {
                        .getName();
     }
 
+    public static String instanceMethodWithArgument(DataFetchingEnvironment env,
+                                                    Thing1 instance) {
+        passThrough.set(env.getArgument("arg1"));
+        return instance.getThing2()
+                       .getName();
+    }
+
     public static String staticMethod(DataFetchingEnvironment env) {
         return passThrough.get();
     }

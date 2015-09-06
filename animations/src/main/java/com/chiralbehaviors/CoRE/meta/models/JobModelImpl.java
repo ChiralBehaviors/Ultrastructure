@@ -163,8 +163,8 @@ public class JobModelImpl implements JobModel {
     public void createStatusCodeChain(Product service, StatusCode[] codes,
                                       Agency updatedBy) {
         for (int i = 0; i < codes.length - 1; i++) {
-            em.persist(new StatusCodeSequencing(service, codes[i],
-                                                codes[i + 1], updatedBy));
+            em.persist(new StatusCodeSequencing(service, codes[i], codes[i + 1],
+                                                updatedBy));
         }
     }
 
@@ -180,25 +180,23 @@ public class JobModelImpl implements JobModel {
     @Override
     public void ensureNextStateIsValid(Job job, Product service,
                                        StatusCode currentStatus,
-                                       StatusCode nextStatus)
-                                                             throws SQLException {
+                                       StatusCode nextStatus) throws SQLException {
         if (log.isTraceEnabled()) {
             log.trace(String.format("Updating %s, current: %s, next: %s", job,
                                     currentStatus, nextStatus));
         }
-        if (kernel.getUnset().equals(currentStatus)) {
+        if (kernel.getUnset()
+                  .equals(currentStatus)) {
             StatusCode initialState;
             try {
                 initialState = getInitialState(service);
             } catch (NoResultException e) {
-                throw new SQLException(
-                                       String.format("%s is not allowed as a next state for Service %s coming from %s.  There is no initial state defined for the service.  Please consult the Status Code Sequencing rules.",
+                throw new SQLException(String.format("%s is not allowed as a next state for Service %s coming from %s.  There is no initial state defined for the service.  Please consult the Status Code Sequencing rules.",
                                                      nextStatus, service,
                                                      currentStatus));
             }
             if (!nextStatus.equals(initialState)) {
-                throw new SQLException(
-                                       String.format("%s is not allowed as a next state for Service %s coming from %s.  The only allowable state is the initial state of %s  Please consult the Status Code Sequencing rules.",
+                throw new SQLException(String.format("%s is not allowed as a next state for Service %s coming from %s.  The only allowable state is the initial state of %s  Please consult the Status Code Sequencing rules.",
                                                      nextStatus, service,
                                                      currentStatus,
                                                      initialState));
@@ -206,8 +204,7 @@ public class JobModelImpl implements JobModel {
             return;
         }
         if (!getNextStatusCodes(service, currentStatus).contains(nextStatus)) {
-            throw new SQLException(
-                                   String.format("%s is not allowed as a next state for Service %s coming from %s.  Please consult the Status Code Sequencing rules.",
+            throw new SQLException(String.format("%s is not allowed as a next state for Service %s coming from %s.  Please consult the Status Code Sequencing rules.",
                                                  nextStatus, service,
                                                  currentStatus));
         }
@@ -216,22 +213,20 @@ public class JobModelImpl implements JobModel {
     @Override
     public void ensureValidParentStatus(Job parent) throws SQLException {
         if (!isTerminalState(parent.getStatus(), parent.getService())) {
-            throw new SQLException(
-                                   String.format("'Cannot insert a job because parent %s is in a terminal state %s.'",
+            throw new SQLException(String.format("'Cannot insert a job because parent %s is in a terminal state %s.'",
                                                  parent, parent.getStatus()));
         }
     }
 
     @Override
-    public void ensureValidServiceAndStatus(Product service, StatusCode status)
-                                                                               throws SQLException {
+    public void ensureValidServiceAndStatus(Product service,
+                                            StatusCode status) throws SQLException {
         TypedQuery<Long> query = em.createNamedQuery(StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS,
                                                      Long.class);
         query.setParameter("service", service);
         query.setParameter("code", status);
         if (query.getSingleResult() == 0) {
-            throw new SQLException(
-                                   String.format("'service and status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!'",
+            throw new SQLException(String.format("'service and status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!'",
                                                  service, status));
         }
     }
@@ -325,9 +320,11 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public void generateImplicitJobsForExplicitJobs(Job job, Agency updatedBy) {
-        if (job.getStatus().getPropagateChildren()) {
+        if (job.getStatus()
+               .getPropagateChildren()) {
             if (log.isTraceEnabled()) {
-                log.trace(String.format("Generating implicit jobs for %s", job));
+                log.trace(String.format("Generating implicit jobs for %s",
+                                        job));
             }
             generateImplicitJobs(job, updatedBy);
         } else {
@@ -386,17 +383,11 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> getActiveSubJobsForService(Job job, Product service) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_CHILD_JOBS_FOR_SERVICE,
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_CHILD_JOBS_FOR_SERVICE,
                                                     Job.class);
         query.setParameter("parent", job);
         query.setParameter("service", service);
-        List<Job> active = new ArrayList<>();
-        for (Job j : query.getResultList()) {
-            if (isActive(j)) {
-                active.add(j);
-            }
-        }
-        return active;
+        return query.getResultList();
     }
 
     @Override
@@ -404,7 +395,8 @@ public class JobModelImpl implements JobModel {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_CHILD_JOBS,
                                                     Job.class);
         query.setParameter("parent", job);
-        List<Job> jobs = new ArrayList<>(query.getResultList().size());
+        List<Job> jobs = new ArrayList<>(query.getResultList()
+                                              .size());
         for (Job j : query.getResultList()) {
             if (isActive(j)) {
                 jobs.add(j);
@@ -447,7 +439,8 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void getAllActiveSubJobsOf(Job parent, Agency agency, List<Job> jobs) {
+    public void getAllActiveSubJobsOf(Job parent, Agency agency,
+                                      List<Job> jobs) {
         TypedQuery<Job> query = em.createNamedQuery(Job.GET_SUB_JOBS_ASSIGNED_TO,
                                                     Job.class);
         query.setParameter("parent", parent);
@@ -461,7 +454,8 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally) {
+    public Collection<Job> getAllActiveSubJobsOf(Job job,
+                                                 Collection<Job> tally) {
         List<Job> myJobs = getActiveSubJobsOf(job);
         if (tally.addAll(myJobs)) {
             for (Job j : myJobs) {
@@ -538,7 +532,9 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<JobChronology> getChronologyForJob(Job job) {
         return em.createNamedQuery(JobChronology.FIND_FOR_JOB,
-                                   JobChronology.class).setParameter("job", job).getResultList();
+                                   JobChronology.class)
+                 .setParameter("job", job)
+                 .getResultList();
     }
 
     /**
@@ -566,8 +562,7 @@ public class JobModelImpl implements JobModel {
         try {
             return query.getSingleResult();
         } catch (NonUniqueResultException e) {
-            throw new IllegalStateException(
-                                            String.format("Service %s has multiple initial states: %s",
+            throw new IllegalStateException(String.format("Service %s has multiple initial states: %s",
                                                           service,
                                                           query.getResultList()));
         }
@@ -597,8 +592,9 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<MetaProtocol> getMetaProtocolsFor(Product service) {
-        return em.createNamedQuery(MetaProtocol.FOR_JOB, MetaProtocol.class).setParameter("service",
-                                                                                          service).getResultList();
+        return em.createNamedQuery(MetaProtocol.FOR_JOB, MetaProtocol.class)
+                 .setParameter("service", service)
+                 .getResultList();
     }
 
     /*
@@ -623,9 +619,10 @@ public class JobModelImpl implements JobModel {
         if (parent.equals(kernel.getUnset())) {
             return Arrays.asList(getInitialState(service));
         }
-        return em.createNamedQuery(Job.GET_NEXT_STATUS_CODES, StatusCode.class).setParameter("service",
-                                                                                             service).setParameter("parent",
-                                                                                                                   parent).getResultList();
+        return em.createNamedQuery(Job.GET_NEXT_STATUS_CODES, StatusCode.class)
+                 .setParameter("service", service)
+                 .setParameter("parent", parent)
+                 .getResultList();
     }
 
     /**
@@ -635,9 +632,10 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<ProductParentSequencingAuthorization> getParentActions(Job job) {
         return em.createNamedQuery(ProductParentSequencingAuthorization.GET_PARENT_ACTIONS,
-                                   ProductParentSequencingAuthorization.class).setParameter("service",
-                                                                                            job.getService()).setParameter("status",
-                                                                                                                           job.getStatus()).getResultList();
+                                   ProductParentSequencingAuthorization.class)
+                 .setParameter("service", job.getService())
+                 .setParameter("status", job.getStatus())
+                 .getResultList();
     }
 
     /*
@@ -710,7 +708,8 @@ public class JobModelImpl implements JobModel {
     public Map<Protocol, InferenceMap> getProtocols(Job job,
                                                     MetaProtocol metaProtocol) {
         Map<Protocol, InferenceMap> protocols = new LinkedHashMap<>();
-        for (Protocol protocol : createMaskQuery(metaProtocol, job).getResultList()) {
+        for (Protocol protocol : createMaskQuery(metaProtocol,
+                                                 job).getResultList()) {
             if (!protocols.containsKey(protocol)) {
                 protocols.put(protocol, map(protocol, metaProtocol));
             }
@@ -727,8 +726,9 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<Protocol> getProtocolsFor(Product service) {
-        return em.createNamedQuery(Protocol.GET_FOR_SERVICE, Protocol.class).setParameter("service",
-                                                                                          service).getResultList();
+        return em.createNamedQuery(Protocol.GET_FOR_SERVICE, Protocol.class)
+                 .setParameter("service", service)
+                 .getResultList();
     }
 
     /**
@@ -870,7 +870,8 @@ public class JobModelImpl implements JobModel {
                                                            StatusCode.class);
         query.setParameter("service", service);
         query.setMaxResults(1);
-        return !query.getResultList().isEmpty();
+        return !query.getResultList()
+                     .isEmpty();
     }
 
     /**
@@ -897,7 +898,8 @@ public class JobModelImpl implements JobModel {
         Query query = em.createNamedQuery(Job.HAS_SCS);
         query.setParameter("service", service);
         query.setMaxResults(1);
-        return !query.getResultList().isEmpty();
+        return !query.getResultList()
+                     .isEmpty();
     }
 
     /**
@@ -914,24 +916,24 @@ public class JobModelImpl implements JobModel {
 
     public List<Job> insert(Job parent, Protocol protocol, InferenceMap txfm) {
         if (parent.getDepth() > MAXIMUM_JOB_DEPTH) {
-            throw new IllegalStateException(
-                                            String.format("Maximum job depth exceeded.  parent: %s, protocol: %s",
+            throw new IllegalStateException(String.format("Maximum job depth exceeded.  parent: %s, protocol: %s",
                                                           parent, protocol));
         }
         List<Job> jobs = new ArrayList<>();
-        if (protocol.getChildrenRelationship().equals(kernel.getNotApplicableRelationship())) {
-            Job job = new Job(model.getCurrentPrincipal().getPrincipal());
-            insert(job,
-                   parent,
-                   protocol,
-                   txfm,
+        if (protocol.getChildrenRelationship()
+                    .equals(kernel.getNotApplicableRelationship())) {
+            Job job = new Job(model.getCurrentPrincipal()
+                                   .getPrincipal());
+            insert(job, parent, protocol, txfm,
                    resolve(txfm.product, protocol.getProduct(),
                            parent.getProduct(), protocol.getChildProduct()));
             jobs.add(job);
         } else {
-            for (Product child : model.getProductModel().getChildren(parent.getProduct(),
-                                                                     protocol.getChildrenRelationship())) {
-                Job job = new Job(model.getCurrentPrincipal().getPrincipal());
+            for (Product child : model.getProductModel()
+                                      .getChildren(parent.getProduct(),
+                                                   protocol.getChildrenRelationship())) {
+                Job job = new Job(model.getCurrentPrincipal()
+                                       .getPrincipal());
                 insert(job, parent, protocol, txfm, child);
                 jobs.add(job);
             }
@@ -989,8 +991,8 @@ public class JobModelImpl implements JobModel {
         job.setStatus(kernel.getUnset());
         em.persist(job);
 
-        JobChronology entry = new JobChronology(job,
-                                                "Initial insertion of job", 1);
+        JobChronology entry = new JobChronology(job, "Initial insertion of job",
+                                                1);
         em.persist(entry);
         return job;
     }
@@ -1043,14 +1045,14 @@ public class JobModelImpl implements JobModel {
         if (log.isTraceEnabled()) {
             log.trace(String.format("Processing children of Job %s", job));
         }
-        Deque<ProductChildSequencingAuthorization> actions = new ArrayDeque<>(
-                                                                              getChildActions(job));
+        Deque<ProductChildSequencingAuthorization> actions = new ArrayDeque<>(getChildActions(job));
         while (!actions.isEmpty()) {
             ProductChildSequencingAuthorization auth = actions.pop();
             List<ProductChildSequencingAuthorization> grouped = new ArrayList<>();
             grouped.add(auth);
-            while (!actions.isEmpty()
-                   && actions.peekFirst().getNextChild().equals(auth.getNextChild())) {
+            while (!actions.isEmpty() && actions.peekFirst()
+                                                .getNextChild()
+                                                .equals(auth.getNextChild())) {
                 grouped.add(actions.pop());
             }
             processChildren(job, grouped);
@@ -1082,14 +1084,14 @@ public class JobModelImpl implements JobModel {
             log.trace(String.format("Processing parent of Job %s", job));
         }
 
-        Deque<ProductParentSequencingAuthorization> actions = new ArrayDeque<>(
-                                                                               getParentActions(job));
+        Deque<ProductParentSequencingAuthorization> actions = new ArrayDeque<>(getParentActions(job));
         while (!actions.isEmpty()) {
             ProductParentSequencingAuthorization auth = actions.pop();
             List<ProductParentSequencingAuthorization> grouped = new ArrayList<>();
             grouped.add(auth);
-            while (!actions.isEmpty()
-                   && actions.peekFirst().getParent().equals(auth.getParent())) {
+            while (!actions.isEmpty() && actions.peekFirst()
+                                                .getParent()
+                                                .equals(auth.getParent())) {
                 grouped.add(actions.pop());
             }
             processParents(job, grouped);
@@ -1110,12 +1112,14 @@ public class JobModelImpl implements JobModel {
                 ensureNextStateIsValid(job, job.getService(), job.getStatus(),
                                        seq.getStatusToSet());
                 changeStatus(job, seq.getStatusToSet(),
-                             model.getCurrentPrincipal().getPrincipal(),
+                             model.getCurrentPrincipal()
+                                  .getPrincipal(),
                              "Automatically switching staus via direct communication from sibling jobs");
             } catch (Throwable e) {
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("invalid self status sequencing %s",
-                                            job), e);
+                                            job),
+                              e);
                 }
                 log(job,
                     String.format("error changing status of job of %s to: %s in self sequencing %s\n%s",
@@ -1137,14 +1141,14 @@ public class JobModelImpl implements JobModel {
             log.trace(String.format("Processing siblings of Job %s", job));
         }
 
-        Deque<ProductSiblingSequencingAuthorization> actions = new ArrayDeque<>(
-                                                                                getSiblingActions(job));
+        Deque<ProductSiblingSequencingAuthorization> actions = new ArrayDeque<>(getSiblingActions(job));
         while (!actions.isEmpty()) {
             ProductSiblingSequencingAuthorization auth = actions.pop();
             List<ProductSiblingSequencingAuthorization> grouped = new ArrayList<>();
             grouped.add(auth);
-            while (!actions.isEmpty()
-                   && actions.peekFirst().getNextSibling().equals(auth.getNextSibling())) {
+            while (!actions.isEmpty() && actions.peekFirst()
+                                                .getNextSibling()
+                                                .equals(auth.getNextSibling())) {
                 grouped.add(actions.pop());
             }
             processSiblings(job, grouped);
@@ -1156,8 +1160,7 @@ public class JobModelImpl implements JobModel {
      * @throws SQLException
      */
     @Override
-    public void validateStateGraph(Collection<Product> modifiedServices)
-                                                                        throws SQLException {
+    public void validateStateGraph(Collection<Product> modifiedServices) throws SQLException {
         if (log.isTraceEnabled()) {
             log.trace(String.format("modified services %s", modifiedServices));
         }
@@ -1180,25 +1183,21 @@ public class JobModelImpl implements JobModel {
                 continue;
             }
             if (hasNonTerminalSCCs(modifiedService)) {
-                throw new SQLException(
-                                       String.format("Event '%s' has at least one non terminal SCC defined in its status code graph",
+                throw new SQLException(String.format("Event '%s' has at least one non terminal SCC defined in its status code graph",
                                                      modifiedService.getName()));
             }
             List<StatusCode> initialStates = getInitialStates(modifiedService);
             if (initialStates.isEmpty()) {
-                throw new SQLException(
-                                       String.format("Event '%s' has no initial state defined in its status code graph",
+                throw new SQLException(String.format("Event '%s' has no initial state defined in its status code graph",
                                                      modifiedService.getName()));
             }
             if (initialStates.size() > 1) {
-                throw new SQLException(
-                                       String.format("Event '%s' has multiple initial state defined in its status code graph: %s",
+                throw new SQLException(String.format("Event '%s' has multiple initial state defined in its status code graph: %s",
                                                      modifiedService.getName(),
                                                      initialStates));
             }
             if (hasNonTerminalSCCs(modifiedService)) {
-                throw new SQLException(
-                                       String.format("Event '%s' has at least one non terminal SCC defined in its status code graph",
+                throw new SQLException(String.format("Event '%s' has at least one non terminal SCC defined in its status code graph",
                                                      modifiedService.getName()));
             }
         }
@@ -1219,18 +1218,22 @@ public class JobModelImpl implements JobModel {
         child.setService(resolve(false, protocol.getService(),
                                  parent.getService(),
                                  protocol.getChildService()));
-        if (inferred.requester || protocol.getRequester().isAnyOrSame()) {
+        if (inferred.requester || protocol.getRequester()
+                                          .isAnyOrSame()) {
             child.setRequester(parent.getRequester());
         } else {
             child.setRequester(protocol.getRequester());
         }
 
-        if (protocol.getChildQuantityUnit().isSame()) {
-            if (inferred.quantityUnit || protocol.getQuantityUnit().isAny()) {
+        if (protocol.getChildQuantityUnit()
+                    .isSame()) {
+            if (inferred.quantityUnit || protocol.getQuantityUnit()
+                                                 .isAny()) {
                 child.setQuantity(parent.getQuantity());
                 child.setQuantityUnit(parent.getQuantityUnit());
             }
-        } else if (protocol.getChildQuantityUnit().isCopy()) {
+        } else if (protocol.getChildQuantityUnit()
+                           .isCopy()) {
             child.setQuantity(parent.getQuantity());
             child.setQuantityUnit(parent.getQuantityUnit());
         } else {
@@ -1258,18 +1261,20 @@ public class JobModelImpl implements JobModel {
         List<Predicate> masks = new ArrayList<>();
 
         // Service gets special handling.  we don't want infinite jobs due to ANY
-        if (metaprotocol.getServiceType().getId().equals(WellKnownRelationship.SAME.id())) {
+        if (metaprotocol.getServiceType()
+                        .getId()
+                        .equals(WellKnownRelationship.SAME.id())) {
             masks.add(cb.equal(protocol.get(AbstractProtocol_.service),
                                job.getService()));
         } else {
-            masks.add(protocol.get(AbstractProtocol_.service).in(inferenceSubquery(job.getService(),
-                                                                                   metaprotocol.getServiceType(),
-                                                                                   Product.class,
-                                                                                   ProductNetwork.class,
-                                                                                   ProductNetwork_.parent,
-                                                                                   ProductNetwork_.child,
-                                                                                   cb,
-                                                                                   query)));
+            masks.add(protocol.get(AbstractProtocol_.service)
+                              .in(inferenceSubquery(job.getService(),
+                                                    metaprotocol.getServiceType(),
+                                                    Product.class,
+                                                    ProductNetwork.class,
+                                                    ProductNetwork_.parent,
+                                                    ProductNetwork_.child, cb,
+                                                    query)));
         }
 
         // Deliver From
@@ -1297,7 +1302,8 @@ public class JobModelImpl implements JobModel {
                 AbstractProtocol_.quantityUnit, cb, query, protocol, masks);
 
         query.where(masks.toArray(new Predicate[masks.size()]));
-        query.select(protocol).distinct(true);
+        query.select(protocol)
+             .distinct(true);
         TypedQuery<Protocol> tq = em.createQuery(query);
         return tq;
     }
@@ -1309,16 +1315,20 @@ public class JobModelImpl implements JobModel {
      */
     private List<String> findGaps(Job job, Protocol p) {
         List<String> missingFields = new LinkedList<>();
-        if (!job.getRequester().equals(p.getRequester())) {
+        if (!job.getRequester()
+                .equals(p.getRequester())) {
             missingFields.add("Requester");
         }
-        if (!job.getProduct().equals(p.getProduct())) {
+        if (!job.getProduct()
+                .equals(p.getProduct())) {
             missingFields.add("Product");
         }
-        if (!job.getDeliverTo().equals(p.getDeliverTo())) {
+        if (!job.getDeliverTo()
+                .equals(p.getDeliverTo())) {
             missingFields.add("DeliverTo");
         }
-        if (!job.getDeliverFrom().equals(p.getDeliverFrom())) {
+        if (!job.getDeliverFrom()
+                .equals(p.getDeliverFrom())) {
             missingFields.add("DeliverFrom");
         }
         return missingFields;
@@ -1359,8 +1369,10 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     private boolean isTxfm(Relationship relationship) {
-        return !WellKnownRelationship.ANY.id().equals(relationship.getId())
-               && !WellKnownRelationship.SAME.id().equals(relationship.getId());
+        return !WellKnownRelationship.ANY.id()
+                                         .equals(relationship.getId())
+               && !WellKnownRelationship.SAME.id()
+                                             .equals(relationship.getId());
     }
 
     /**
@@ -1409,8 +1421,8 @@ public class JobModelImpl implements JobModel {
         if (grouped.isEmpty()) {
             return;
         }
-        for (Job child : getActiveSubJobsForService(job,
-                                                    grouped.get(0).getNextChild())) {
+        for (Job child : getActiveSubJobsForService(job, grouped.get(0)
+                                                                .getNextChild())) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Processing child %s", child));
             }
@@ -1423,7 +1435,8 @@ public class JobModelImpl implements JobModel {
                                            child.getStatus(),
                                            seq.getNextChildStatus());
                     changeStatus(child, seq.getNextChildStatus(),
-                                 model.getCurrentPrincipal().getPrincipal(),
+                                 model.getCurrentPrincipal()
+                                      .getPrincipal(),
                                  "Automatically switching status via direct communication from parent job");
                     if (seq.isReplaceProduct()) {
                         child.setProduct(job.getProduct());
@@ -1432,7 +1445,8 @@ public class JobModelImpl implements JobModel {
                 } catch (Throwable e) {
                     if (log.isTraceEnabled()) {
                         log.trace(String.format("invalid child status sequencing %s",
-                                                child), e);
+                                                child),
+                                  e);
                     }
                     log(child,
                         String.format("error changing status of child of %s to: %s in child sequencing %s\n%s",
@@ -1459,25 +1473,30 @@ public class JobModelImpl implements JobModel {
                 log.trace(String.format("Processing %s", seq));
             }
             if (seq.getSetIfActiveSiblings() || !hasActiveSiblings(job)) {
-                if (seq.getParent() == null
-                    && seq.getService().equals(job.getParent().getService())) {
+                if (seq.getParent() == null && seq.getService()
+                                                  .equals(job.getParent()
+                                                             .getService())) {
                     try {
-                        ensureNextStateIsValid(job.getParent(),
-                                               job.getParent().getService(),
-                                               job.getParent().getStatus(),
+                        ensureNextStateIsValid(job.getParent(), job.getParent()
+                                                                   .getService(),
+                                               job.getParent()
+                                                  .getStatus(),
                                                seq.getParentStatusToSet());
                         changeStatus(job.getParent(),
                                      seq.getParentStatusToSet(),
-                                     model.getCurrentPrincipal().getPrincipal(),
+                                     model.getCurrentPrincipal()
+                                          .getPrincipal(),
                                      "Automatically switching status via direct communication from child job");
                         if (seq.isReplaceProduct()) {
-                            job.getParent().setProduct(job.getProduct());
+                            job.getParent()
+                               .setProduct(job.getProduct());
                         }
                         return;
                     } catch (Throwable e) {
                         //if (log.isTraceEnabled()) {
                         log.trace(String.format("invalid parent status sequencing %s",
-                                                job.getParent()), e);
+                                                job.getParent()),
+                                  e);
                         //}
                         log(job.getParent(),
                             String.format("error changing status of parent of %s to: %s in parent sequencing %s \n %s",
@@ -1486,23 +1505,29 @@ public class JobModelImpl implements JobModel {
                                           seq.getId(), e));
                     }
                     break;
-                } else if (seq.getParent().equals(job.getParent().getService())) {
+                } else if (seq.getParent()
+                              .equals(job.getParent()
+                                         .getService())) {
                     try {
-                        ensureNextStateIsValid(job.getParent(),
-                                               job.getParent().getService(),
-                                               job.getParent().getStatus(),
+                        ensureNextStateIsValid(job.getParent(), job.getParent()
+                                                                   .getService(),
+                                               job.getParent()
+                                                  .getStatus(),
                                                seq.getParentStatusToSet());
                         changeStatus(job.getParent(),
                                      seq.getParentStatusToSet(),
-                                     model.getCurrentPrincipal().getPrincipal(),
+                                     model.getCurrentPrincipal()
+                                          .getPrincipal(),
                                      "Automatically switching status via direct communication from child job");
                         if (seq.isReplaceProduct()) {
-                            job.getParent().setProduct(job.getProduct());
+                            job.getParent()
+                               .setProduct(job.getProduct());
                         }
                     } catch (Throwable e) {
                         //if (log.isTraceEnabled()) {
                         log.trace(String.format("invalid parent status sequencing %s",
-                                                job.getParent()), e);
+                                                job.getParent()),
+                                  e);
                         //}
                         log(job.getParent(),
                             String.format("error changing status of parent of %s to: %s in parent sequencing %s\n%s",
@@ -1536,7 +1561,8 @@ public class JobModelImpl implements JobModel {
             return;
         }
         for (Job sibling : getActiveSubJobsForService(job.getParent(),
-                                                      grouped.get(0).getNextSibling())) {
+                                                      grouped.get(0)
+                                                             .getNextSibling())) {
             if (job.equals(sibling)) {
                 break; // we don't operate on the job triggering the processing
             }
@@ -1553,7 +1579,8 @@ public class JobModelImpl implements JobModel {
                                            sibling.getStatus(),
                                            seq.getNextSiblingStatus());
                     changeStatus(sibling, seq.getNextSiblingStatus(),
-                                 model.getCurrentPrincipal().getPrincipal(),
+                                 model.getCurrentPrincipal()
+                                      .getPrincipal(),
                                  "Automatically switching staus via direct communication from sibling jobs");
                     if (seq.isReplaceProduct()) {
                         sibling.setProduct(job.getProduct());
@@ -1562,7 +1589,8 @@ public class JobModelImpl implements JobModel {
                 } catch (Throwable e) {
                     if (log.isTraceEnabled()) {
                         log.trace(String.format("invalid sibling status sequencing %s",
-                                                job), e);
+                                                job),
+                                  e);
                     }
                     log(sibling,
                         String.format("error changing status of sibling of %s to: %s in sibling sequencing %s\n%s",
@@ -1643,14 +1671,15 @@ public class JobModelImpl implements JobModel {
                                                                                                                                   CriteriaBuilder cb,
                                                                                                                                   CriteriaQuery<Protocol> query,
                                                                                                                                   Root<Protocol> protocol) {
-        if (!relationship.getId().equals(WellKnownRelationship.ANY.id())) {
+        if (!relationship.getId()
+                         .equals(WellKnownRelationship.ANY.id())) {
             Predicate mask;
             Path<RuleForm> columnPath = protocol.get(column);
-            if (relationship.getId().equals(WellKnownRelationship.SAME.id())) {
+            if (relationship.getId()
+                            .equals(WellKnownRelationship.SAME.id())) {
                 mask = cb.equal(columnPath, ruleform);
             } else {
-                mask = columnPath.in(inferenceSubquery(ruleform,
-                                                       relationship,
+                mask = columnPath.in(inferenceSubquery(ruleform, relationship,
                                                        ruleform.getRuleformClass(),
                                                        ruleform.getNetworkClass(),
                                                        ruleform.getNetworkParentAttribute(),
@@ -1662,7 +1691,8 @@ public class JobModelImpl implements JobModel {
                          cb.equal(columnPath.get(Ruleform_.id),
                                   ruleform.getSameId()),
                          cb.equal(columnPath.get(Ruleform_.id),
-                                  ruleform.getNotApplicableId()), mask);
+                                  ruleform.getNotApplicableId()),
+                         mask);
         }
         return null;
     }

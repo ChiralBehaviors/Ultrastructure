@@ -21,6 +21,7 @@ package com.chiralbehaviors.CoRE.job;
 
 import static com.chiralbehaviors.CoRE.job.Job.EXISTING_JOB_WITH_PARENT_AND_PROTOCOL;
 import static com.chiralbehaviors.CoRE.job.Job.FIND_ALL;
+import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_CHILD_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS;
 import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES;
 import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
@@ -81,6 +82,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                        + "FROM Job AS j "
                                                                        + "WHERE j.parent = :parent "
                                                                        + "  AND j.service = :service"),
+                @NamedQuery(name = GET_ACTIVE_CHILD_JOBS_FOR_SERVICE, query = "SELECT j "
+                                                                              + "FROM Job AS j"
+                                                                              + " WHERE j.parent = :parent "
+                                                                              + "  AND j.service = :service"
+                                                                              + "  AND NOT EXISTS ( "
+                                                                              + "   SELECT seq "
+                                                                              + "    FROM StatusCodeSequencing AS seq"
+                                                                              + "     WHERE seq.childCode = j.status"
+                                                                              + "     AND NOT EXISTS ( "
+                                                                              + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                              + "       WHERE seq2.service = seq.service "
+                                                                              + "       AND seq2.parentCode = seq.childCode "
+                                                                              + "     ) "
+                                                                              + "    AND seq.service = :service "
+                                                                              + "  ) "),
                 @NamedQuery(name = GET_CHILD_JOBS, query = "SELECT j "
                                                            + "FROM Job AS j "
                                                            + "WHERE j.parent = :parent"),
@@ -141,6 +157,7 @@ public class Job extends AbstractProtocol {
     public static final String GET_ATTRIBUTE_VALUE                    = "job.getAttributeValue";
     public static final String GET_ATTRIBUTES_FOR_JOB                 = "job.getAttributesForJob";
     public static final String GET_CHILD_JOBS                         = "job.getChildJobs";
+    public static final String GET_ACTIVE_CHILD_JOBS_FOR_SERVICE      = "job.getActiveChildJobsForService";
     public static final String GET_CHILD_JOBS_FOR_SERVICE             = "job.getChildJobsForService";
     public static final String GET_NEXT_STATUS_CODES                  = "job.getNextStatusCodes";
     public static final String GET_STATUS_CODE_IDS                    = "job.getStatusCodeIds";

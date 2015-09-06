@@ -34,14 +34,14 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 public class TestImport extends AbstractModelTest {
     @Test
     public void testExampleWorkspace() throws Exception {
-        em.getTransaction().begin();
         WorkspaceImporter importer = WorkspaceImporter.createWorkspace(getClass().getResourceAsStream("/thing.wsp"),
                                                                        model);
         em.flush();
-        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(
-                                                                        importer.getWorkspace().getDefiningProduct(),
+        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
+                                                                                .getDefiningProduct(),
                                                                         model);
         assertNotNull(workspace);
-        assertNotNull(workspace.getScope().lookup("kernel", "IsA"));
+        assertNotNull(workspace.getScope()
+                               .lookup("kernel", "IsA"));
     }
 }

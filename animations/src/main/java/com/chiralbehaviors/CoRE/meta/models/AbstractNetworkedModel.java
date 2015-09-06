@@ -236,8 +236,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  )",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                getAttributeAuthorizationClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("facet", stateAuth.getNetworkAuthorization());
         query.setParameter("attribute", stateAuth.getAuthorizedAttribute());
@@ -269,8 +268,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  ) ",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                getNetworkAuthClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("classifier", stateAuth.getClassifier());
         query.setParameter("classification", stateAuth.getClassification());
@@ -329,8 +327,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  )",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                Ruleform.initializeAndUnproxy(stateAuth)
+                                                                        .getClass()
+                                                                        .getSimpleName()),
                                                   Agency.class);
         query.setParameter("facet", stateAuth.getNetworkAuthorization());
         query.setParameter("attribute", stateAuth.getAuthorizedAttribute());
@@ -362,8 +361,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  ) ",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                Ruleform.initializeAndUnproxy(stateAuth)
+                                                                        .getClass()
+                                                                        .getSimpleName()),
                                                   Agency.class);
         query.setParameter("fromRelationship", stateAuth.getFromRelationship());
         query.setParameter("fromParent", stateAuth.getFromParent());
@@ -397,8 +397,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  ) ",
-                                                                facet.getClass()
-                                                                     .getSimpleName()),
+                                                                getNetworkAuthClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("classifier", facet.getClassifier());
         query.setParameter("classification", facet.getClassification());
@@ -427,8 +426,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  )",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                getAttributeAuthorizationClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("auth", stateAuth.getNetworkAuthorization());
         query.setParameter("attribute",
@@ -1141,20 +1139,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public List<RuleForm> getNotInGroup(RuleForm parent,
                                         Relationship relationship) {
-        /*
-         * SELECT e FROM product AS e, ProductNetwork AS n WHERE n.parent <>
-         * :parent AND n.relationship = :relationship AND n.child <> e;
-         */
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<RuleForm> query = cb.createQuery(entity);
-        Root<RuleForm> form = query.from(entity);
-        Root<NetworkRuleform<RuleForm>> networkForm = query.from(network);
-        query.where(cb.equal(networkForm.get("parent"), parent),
-                    cb.equal(networkForm.get("relationship"), relationship),
-                    cb.notEqual(networkForm.get("child"), form));
-        query.select(form);
-        return em.createQuery(query)
-                 .getResultList();
+        TypedQuery<RuleForm> query = em.createQuery(String.format("SELECT DISTINCT e from %s AS e WHERE NOT EXISTS("
+                                                                  + "SELECT n from %s AS n  WHERE n.parent = :parent "
+                                                                  + " AND n.relationship = :relationship "
+                                                                  + " AND n.child = e)",
+                                                                  entity.getSimpleName(),
+                                                                  network.getSimpleName()),
+                                                    entity);
+        query.setParameter("parent", parent);
+        query.setParameter("relationship", relationship);
+        return query.getResultList();
     }
 
     /*

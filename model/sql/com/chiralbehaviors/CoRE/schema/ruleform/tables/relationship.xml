@@ -21,7 +21,6 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
-            <column name="operator" type="relational_operator" />
         </createTable>
         <rollback>
             <dropTable tableName="relationship" />

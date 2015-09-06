@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.security;
 
 import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -44,7 +45,8 @@ abstract public class AgencyGrouping<RuleForm extends ExistentialRuleform<RuleFo
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "grouping_agency")
     private Agency groupingAgency;
 

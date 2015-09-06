@@ -37,9 +37,9 @@ public class SmartMergeTest extends AbstractModelTest {
 
     @Test
     public void testCircularity() {
-        em.getTransaction().begin();
-        Job job = model.getJobModel().newInitializedJob(kernel.getAnyProduct(),
-                                                        kernel.getCore());
+        Job job = model.getJobModel()
+                       .newInitializedJob(kernel.getAnyProduct(),
+                                          kernel.getCore());
         job.setAssignTo(kernel.getCore());
         job.setProduct(kernel.getAnyProduct());
         job.setDeliverTo(kernel.getAnyLocation());

@@ -81,7 +81,12 @@
     </modules>
 
     <dependencyManagement>
-        <dependencies>  
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>3.3.0.Final</version>
+            </dependency>
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>phantasm-at-rest</artifactId>
@@ -110,7 +115,7 @@
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.18.1-GA</version>
+                <version>3.19.0-GA</version>
             </dependency>
             <dependency>
                 <groupId>com.github.jsonld-java</groupId>
@@ -171,6 +176,11 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-jpamodelgen</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-c3p0</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
             <dependency>
@@ -336,11 +346,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.persistence</groupId>
-                <artifactId>javax.persistence</artifactId>
-                <version>2.0.0</version>
-            </dependency>
-            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>1.9.5</version>
@@ -363,12 +368,12 @@
             <dependency>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-runtime</artifactId>
-                <version>4.5</version>
+                <version>4.5.1-1</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.1.3.Final</version>
+                <version>5.1.3.Final</version> 
             </dependency>
             <dependency>
                 <groupId>com.graphql-java</groupId>
@@ -639,7 +644,7 @@
                                     <pluginExecutionFilter>
                                         <groupId>com.chiralbehaviors.CoRE</groupId>
                                         <artifactId>network-inference-generator</artifactId>
-                                        <versionRange>[2.0.0-SNAPSHOT,)</versionRange>
+                                        <versionRange>[${project.version},)</versionRange>
                                         <goals>
                                             <goal>generate</goal>
                                         </goals>
@@ -652,7 +657,7 @@
                                     <pluginExecutionFilter>
                                         <groupId>org.hibernate.orm.tooling</groupId>
                                         <artifactId>hibernate-enhance-maven-plugin</artifactId>
-                                        <versionRange>[4.3.10.Final,)</versionRange>
+                                        <versionRange>[${hibernate.version},)</versionRange>
                                         <goals>
                                             <goal>enhance</goal>
                                         </goals>
@@ -684,5 +689,5 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+    </profiles> 
 </project>

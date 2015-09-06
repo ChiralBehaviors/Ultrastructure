@@ -58,29 +58,26 @@ public class ProductRelationship extends Ruleform
     public static final String PRODUCTS_AT_RELATIONSHIP = "productRelationship.productsAtRelationship";
     private static final long  serialVersionUID         = 1L;
 
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "agency")
-    private Agency agency;
-
     // bi-directional many-to-one association to ProductRelationshipAttribute
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "productRelationship")
     @JsonIgnore
     private Set<ProductRelationshipAttribute> attributes;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "child")
     private Relationship child;
 
     // bi-directional many-to-one association to Product
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product")
     private Product product;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship")
     private Relationship relationship;
 
@@ -94,14 +91,12 @@ public class ProductRelationship extends Ruleform
         super(updatedBy);
     }
 
-    public ProductRelationship(Agency agency, Product product,
-                               Relationship relationship, Relationship child,
-                               Agency updatedBy) {
+    public ProductRelationship(Product product, Relationship relationship,
+                               Relationship child, Agency updatedBy) {
         super(updatedBy);
         this.product = product;
         this.relationship = relationship;
         this.child = child;
-        this.agency = agency;
     }
 
     /**
@@ -109,10 +104,6 @@ public class ProductRelationship extends Ruleform
      */
     public ProductRelationship(UUID id) {
         super(id);
-    }
-
-    public Agency getAgency() {
-        return agency;
     }
 
     @Override
@@ -130,10 +121,6 @@ public class ProductRelationship extends Ruleform
 
     public Relationship getRelationship() {
         return relationship;
-    }
-
-    public void setAgency(Agency agency2) {
-        agency = agency2;
     }
 
     @SuppressWarnings("unchecked")

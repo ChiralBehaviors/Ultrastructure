@@ -45,8 +45,6 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
     @Test
     public void testSerializeWorkspaceSnapshot() throws Exception {
-        em.getTransaction()
-          .begin();
         Agency pseudoScientist = new Agency("Behold the Pseudo Scientist!");
         pseudoScientist.setUpdatedBy(pseudoScientist);
         Product definingProduct = new Product("zee product", pseudoScientist);
@@ -79,8 +77,6 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
     @Test
     public void testWorkspaceSnapshot() {
-        em.getTransaction()
-          .begin();
         Agency pseudoScientist = new Agency("Behold the Pseudo Scientist!");
         pseudoScientist.setUpdatedBy(pseudoScientist);
         em.persist(pseudoScientist);

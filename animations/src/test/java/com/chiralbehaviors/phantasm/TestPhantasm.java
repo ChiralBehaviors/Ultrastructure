@@ -66,8 +66,6 @@ public class TestPhantasm extends AbstractModelTest {
 
     @Before
     public void before() throws Exception {
-        em.getTransaction()
-          .begin();
         WorkspaceImporter.createWorkspace(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
                                           model);
         em.flush();

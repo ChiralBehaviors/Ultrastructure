@@ -26,6 +26,7 @@ import java.util.UUID;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -57,7 +58,8 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     private static final long serialVersionUID = 1L;
 
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute")
     private Attribute attribute;
 
@@ -86,7 +88,8 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     private Timestamp timestampValue;
 
     // bi-directional many-to-one association to Unit
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit")
     private Unit unit;
 

@@ -247,6 +247,31 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     /**
+     * Check the capability of an agency on an instance.
+     */
+    @Override
+    public boolean checkCapability(Agency agency,
+                                   @SuppressWarnings("rawtypes") ExistentialRuleform instance,
+                                   Relationship capability) {
+        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
+        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
+                                                                + "  WHERE required.entity = :instance "
+                                                                + "    AND NOT EXISTS( "
+                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
+                                                                + "         WHERE authorized.parent = :agency "
+                                                                + "         AND authorized.relationship = :capability "
+                                                                + "         AND authorized.child = required.groupingAgency "
+                                                                + "  )",
+                                                                getAgencyGroupingClass().getSimpleName()),
+                                                  Agency.class);
+        query.setParameter("instance", instance);
+        query.setParameter("agency", agency);
+        query.setParameter("capability", capability);
+        return query.getResultList()
+                    .isEmpty();
+    }
+
+    /**
      * Check the capability of an agency on the authorized relationship of the
      * facet child relationship.
      */
@@ -277,31 +302,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.setParameter("authorizedRelationship",
                            stateAuth.getAuthorizedRelationship());
         query.setParameter("authorizedParent", stateAuth.getAuthorizedParent());
-        query.setParameter("agency", agency);
-        query.setParameter("capability", capability);
-        return query.getResultList()
-                    .isEmpty();
-    }
-
-    /**
-     * Check the capability of an agency on an instance.
-     */
-    @Override
-    public boolean checkCapability(Agency agency,
-                                   @SuppressWarnings("rawtypes") ExistentialRuleform instance,
-                                   Relationship capability) {
-        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
-        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
-                                                                + "  WHERE required.entity = :instance "
-                                                                + "    AND NOT EXISTS( "
-                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
-                                                                + "         WHERE authorized.parent = :agency "
-                                                                + "         AND authorized.relationship = :capability "
-                                                                + "         AND authorized.child = required.groupingAgency "
-                                                                + "  )",
-                                                                getAgencyGroupingClass().getSimpleName()),
-                                                  Agency.class);
-        query.setParameter("instance", instance);
         query.setParameter("agency", agency);
         query.setParameter("capability", capability);
         return query.getResultList()

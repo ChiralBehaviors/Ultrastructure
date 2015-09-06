@@ -67,14 +67,16 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createAgencyNetworks() {
-        model.getAgencyModel().link(georgeTownUniversity, customerType,
-                                    externalCust, core);
-        model.getAgencyModel().link(georgeTownUniversity, salesTaxStatus,
-                                    exempt, core);
-        model.getAgencyModel().link(orgA, customerType, externalCust, core);
-        model.getAgencyModel().link(cafleurBon, customerType, externalCust,
-                                    core);
-        model.getAgencyModel().link(orgA, salesTaxStatus, nonExemptAgency, core);
+        model.getAgencyModel()
+             .link(georgeTownUniversity, customerType, externalCust, core);
+        model.getAgencyModel()
+             .link(georgeTownUniversity, salesTaxStatus, exempt, core);
+        model.getAgencyModel()
+             .link(orgA, customerType, externalCust, core);
+        model.getAgencyModel()
+             .link(cafleurBon, customerType, externalCust, core);
+        model.getAgencyModel()
+             .link(orgA, salesTaxStatus, nonExemptAgency, core);
     }
 
     public void createAgencys() {
@@ -135,16 +137,26 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createLocationNetworks() {
-        model.getLocationModel().link(bin1, area, factory1, core);
-        model.getLocationModel().link(bin15, area, factory1, core);
-        model.getLocationModel().link(factory1, street, bht37, core);
-        model.getLocationModel().link(rsb225, city, dc, core);
-        model.getLocationModel().link(bht37, city, dc, core);
-        model.getLocationModel().link(rc31, city, paris, core);
-        model.getLocationModel().link(dc, region, east_coast, core);
-        model.getLocationModel().link(east_coast, area, us, core);
-        model.getLocationModel().link(paris, region, france, core);
-        model.getLocationModel().link(france, area, euro, core);
+        model.getLocationModel()
+             .link(bin1, area, factory1, core);
+        model.getLocationModel()
+             .link(bin15, area, factory1, core);
+        model.getLocationModel()
+             .link(factory1, street, bht37, core);
+        model.getLocationModel()
+             .link(rsb225, city, dc, core);
+        model.getLocationModel()
+             .link(bht37, city, dc, core);
+        model.getLocationModel()
+             .link(rc31, city, paris, core);
+        model.getLocationModel()
+             .link(dc, region, east_coast, core);
+        model.getLocationModel()
+             .link(east_coast, area, us, core);
+        model.getLocationModel()
+             .link(paris, region, france, core);
+        model.getLocationModel()
+             .link(france, area, euro, core);
     }
 
     public void createLocations() {
@@ -177,8 +189,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createMetaProtocols() {
-        MetaProtocol m1 = model.getJobModel().newInitializedMetaProtocol(deliver,
-                                                                         core);
+        MetaProtocol m1 = model.getJobModel()
+                               .newInitializedMetaProtocol(deliver, core);
         m1.setSequenceNumber(1);
         m1.setProduct(anyRelationship);
         m1.setDeliverTo(state);
@@ -186,8 +198,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
         em.persist(m1);
 
-        MetaProtocol m2 = model.getJobModel().newInitializedMetaProtocol(pick,
-                                                                         core);
+        MetaProtocol m2 = model.getJobModel()
+                               .newInitializedMetaProtocol(pick, core);
         m2.setSequenceNumber(1);
         m2.setProduct(anyRelationship);
         m2.setRequester(customerType);
@@ -196,16 +208,16 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
         em.persist(m2);
 
-        MetaProtocol m3 = model.getJobModel().newInitializedMetaProtocol(ship,
-                                                                         core);
+        MetaProtocol m3 = model.getJobModel()
+                               .newInitializedMetaProtocol(ship, core);
         m3.setSequenceNumber(1);
         m3.setProduct(anyRelationship);
         m3.setRequester(customerType);
         m3.setDeliverTo(area);
         m3.setDeliverFrom(area);
 
-        MetaProtocol m5 = model.getJobModel().newInitializedMetaProtocol(fee,
-                                                                         core);
+        MetaProtocol m5 = model.getJobModel()
+                               .newInitializedMetaProtocol(fee, core);
         m5.setSequenceNumber(1);
         m5.setProduct(anyRelationship);
         m5.setRequester(salesTaxStatus);
@@ -213,8 +225,9 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
         em.persist(m5);
 
-        MetaProtocol m6 = model.getJobModel().newInitializedMetaProtocol(printPurchaseOrder,
-                                                                         core);
+        MetaProtocol m6 = model.getJobModel()
+                               .newInitializedMetaProtocol(printPurchaseOrder,
+                                                           core);
         m6.setSequenceNumber(1);
         m6.setProduct(anyRelationship);
         m6.setRequester(anyRelationship);
@@ -241,8 +254,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                                              areaOf, core);
         em.persist(areaToStreet);
 
-        NetworkInference regionToState = new NetworkInference(regionOf,
-                                                              stateOf,
+        NetworkInference regionToState = new NetworkInference(regionOf, stateOf,
                                                               regionOf, core);
         em.persist(regionToState);
 
@@ -259,8 +271,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                                             stateOf, core);
         em.persist(stateToCity);
 
-        NetworkInference stateToStreet = new NetworkInference(stateOf,
-                                                              streetOf,
+        NetworkInference stateToStreet = new NetworkInference(stateOf, streetOf,
                                                               stateOf, core);
         em.persist(stateToStreet);
 
@@ -270,9 +281,12 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createProductNetworks() {
-        model.getProductModel().link(abc486, storageType, roomTemp, core);
-        model.getProductModel().link(abc486, salesTaxStatus, nonExempt, core);
-        model.getProductModel().link(chemB, storageType, frozen, core);
+        model.getProductModel()
+             .link(abc486, storageType, roomTemp, core);
+        model.getProductModel()
+             .link(abc486, salesTaxStatus, nonExempt, core);
+        model.getProductModel()
+             .link(chemB, storageType, frozen, core);
     }
 
     public void createProducts() {
@@ -293,16 +307,14 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
     public void createProductSequencingAuthorizations() {
 
-        ProductSiblingSequencingAuthorization activatePrintCustomsDeclaration = new ProductSiblingSequencingAuthorization(
-                                                                                                                          core);
+        ProductSiblingSequencingAuthorization activatePrintCustomsDeclaration = new ProductSiblingSequencingAuthorization(core);
         activatePrintCustomsDeclaration.setParent(printPurchaseOrder);
         activatePrintCustomsDeclaration.setStatusCode(completed);
         activatePrintCustomsDeclaration.setNextSibling(printCustomsDeclaration);
         activatePrintCustomsDeclaration.setNextSiblingStatus(available);
         em.persist(activatePrintCustomsDeclaration);
 
-        ProductParentSequencingAuthorization productPicked = new ProductParentSequencingAuthorization(
-                                                                                                      core);
+        ProductParentSequencingAuthorization productPicked = new ProductParentSequencingAuthorization(core);
         productPicked.setService(pick);
         productPicked.setStatusCode(completed);
         productPicked.setParent(deliver);
@@ -310,24 +322,21 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         productPicked.setSetIfActiveSiblings(false);
         em.persist(productPicked);
 
-        ProductParentSequencingAuthorization checkCreditCompleted = new ProductParentSequencingAuthorization(
-                                                                                                             core);
+        ProductParentSequencingAuthorization checkCreditCompleted = new ProductParentSequencingAuthorization(core);
         checkCreditCompleted.setService(checkCredit);
         checkCreditCompleted.setStatusCode(completed);
         checkCreditCompleted.setParent(pick);
         checkCreditCompleted.setParentStatusToSet(available);
         em.persist(checkCreditCompleted);
 
-        ProductSiblingSequencingAuthorization activateShip = new ProductSiblingSequencingAuthorization(
-                                                                                                       core);
+        ProductSiblingSequencingAuthorization activateShip = new ProductSiblingSequencingAuthorization(core);
         activateShip.setParent(pick);
         activateShip.setStatusCode(completed);
         activateShip.setNextSibling(ship);
         activateShip.setNextSiblingStatus(waitingOnPurchaseOrder);
         em.persist(activateShip);
 
-        ProductParentSequencingAuthorization activateShipFromPrintCustomsDeclaration = new ProductParentSequencingAuthorization(
-                                                                                                                                core);
+        ProductParentSequencingAuthorization activateShipFromPrintCustomsDeclaration = new ProductParentSequencingAuthorization(core);
         activateShipFromPrintCustomsDeclaration.setService(printCustomsDeclaration);
         activateShipFromPrintCustomsDeclaration.setStatusCode(completed);
         activateShipFromPrintCustomsDeclaration.setParent(ship);
@@ -335,8 +344,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activateShipFromPrintCustomsDeclaration.setSetIfActiveSiblings(false);
         em.persist(activateShipFromPrintCustomsDeclaration);
 
-        ProductParentSequencingAuthorization activateShipFromPrintPurchaseOrder = new ProductParentSequencingAuthorization(
-                                                                                                                           core);
+        ProductParentSequencingAuthorization activateShipFromPrintPurchaseOrder = new ProductParentSequencingAuthorization(core);
         activateShipFromPrintPurchaseOrder.setService(printPurchaseOrder);
         activateShipFromPrintPurchaseOrder.setStatusCode(completed);
         activateShipFromPrintPurchaseOrder.setParent(ship);
@@ -344,48 +352,42 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activateShipFromPrintPurchaseOrder.setSetIfActiveSiblings(false);
         em.persist(activateShipFromPrintPurchaseOrder);
 
-        ProductChildSequencingAuthorization activatePrintPurchaseOrder = new ProductChildSequencingAuthorization(
-                                                                                                                 core);
+        ProductChildSequencingAuthorization activatePrintPurchaseOrder = new ProductChildSequencingAuthorization(core);
         activatePrintPurchaseOrder.setParent(ship);
         activatePrintPurchaseOrder.setStatusCode(waitingOnPurchaseOrder);
         activatePrintPurchaseOrder.setNextChild(printPurchaseOrder);
         activatePrintPurchaseOrder.setNextChildStatus(waitingOnFee);
         em.persist(activatePrintPurchaseOrder);
 
-        ProductChildSequencingAuthorization activateCreditCheck = new ProductChildSequencingAuthorization(
-                                                                                                          core);
+        ProductChildSequencingAuthorization activateCreditCheck = new ProductChildSequencingAuthorization(core);
         activateCreditCheck.setParent(pick);
         activateCreditCheck.setStatusCode(waitingOnCreditCheck);
         activateCreditCheck.setNextChild(checkCredit);
         activateCreditCheck.setNextChildStatus(available);
         em.persist(activateCreditCheck);
 
-        ProductChildSequencingAuthorization activateFee = new ProductChildSequencingAuthorization(
-                                                                                                  core);
+        ProductChildSequencingAuthorization activateFee = new ProductChildSequencingAuthorization(core);
         activateFee.setParent(printPurchaseOrder);
         activateFee.setStatusCode(waitingOnFee);
         activateFee.setNextChild(fee);
         activateFee.setNextChildStatus(available);
         em.persist(activateFee);
 
-        ProductChildSequencingAuthorization activatePick = new ProductChildSequencingAuthorization(
-                                                                                                   core);
+        ProductChildSequencingAuthorization activatePick = new ProductChildSequencingAuthorization(core);
         activatePick.setParent(deliver);
         activatePick.setStatusCode(available);
         activatePick.setNextChild(pick);
         activatePick.setNextChildStatus(waitingOnCreditCheck);
         em.persist(activatePick);
 
-        ProductSiblingSequencingAuthorization activateDiscount = new ProductSiblingSequencingAuthorization(
-                                                                                                           core);
+        ProductSiblingSequencingAuthorization activateDiscount = new ProductSiblingSequencingAuthorization(core);
         activateDiscount.setParent(fee);
         activateDiscount.setStatusCode(completed);
         activateDiscount.setNextSibling(discount);
         activateDiscount.setNextSiblingStatus(available);
         em.persist(activateDiscount);
 
-        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromFee = new ProductParentSequencingAuthorization(
-                                                                                                                          core);
+        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromFee = new ProductParentSequencingAuthorization(core);
         activatePrintPurchaseOrderFromFee.setService(fee);
         activatePrintPurchaseOrderFromFee.setStatusCode(completed);
         activatePrintPurchaseOrderFromFee.setParent(printPurchaseOrder);
@@ -393,8 +395,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activatePrintPurchaseOrderFromFee.setSetIfActiveSiblings(false);
         em.persist(activatePrintPurchaseOrderFromFee);
 
-        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromDiscount = new ProductParentSequencingAuthorization(
-                                                                                                                               core);
+        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromDiscount = new ProductParentSequencingAuthorization(core);
         activatePrintPurchaseOrderFromDiscount.setService(discount);
         activatePrintPurchaseOrderFromDiscount.setStatusCode(completed);
         activatePrintPurchaseOrderFromDiscount.setParent(printPurchaseOrder);
@@ -402,8 +403,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activatePrintPurchaseOrderFromDiscount.setSetIfActiveSiblings(false);
         em.persist(activatePrintPurchaseOrderFromDiscount);
 
-        ProductParentSequencingAuthorization completeDeliverFromShip = new ProductParentSequencingAuthorization(
-                                                                                                                core);
+        ProductParentSequencingAuthorization completeDeliverFromShip = new ProductParentSequencingAuthorization(core);
         completeDeliverFromShip.setService(ship);
         completeDeliverFromShip.setStatusCode(completed);
         completeDeliverFromShip.setParent(deliver);
@@ -414,8 +414,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
     public void createProtocols() {
 
-        Protocol pickProtocol = model.getJobModel().newInitializedProtocol(deliver,
-                                                                           core);
+        Protocol pickProtocol = model.getJobModel()
+                                     .newInitializedProtocol(deliver, core);
         pickProtocol.setService(deliver);
         pickProtocol.setRequester(anyAgency);
         pickProtocol.setProduct(anyProduct);
@@ -426,8 +426,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         pickProtocol.setChildProduct(sameProduct);
         em.persist(pickProtocol);
 
-        Protocol chkCreditProtocol = model.getJobModel().newInitializedProtocol(pick,
-                                                                                core);
+        Protocol chkCreditProtocol = model.getJobModel()
+                                          .newInitializedProtocol(pick, core);
         chkCreditProtocol.setService(pick);
         chkCreditProtocol.setRequester(externalCust);
         chkCreditProtocol.setProduct(anyProduct);
@@ -438,8 +438,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         chkCreditProtocol.setChildProduct(sameProduct);
         em.persist(chkCreditProtocol);
 
-        Protocol chkLtrCrdtProtocol = model.getJobModel().newInitializedProtocol(pick,
-                                                                                 core);
+        Protocol chkLtrCrdtProtocol = model.getJobModel()
+                                           .newInitializedProtocol(pick, core);
         chkLtrCrdtProtocol.setService(pick);
         chkLtrCrdtProtocol.setRequester(externalCust);
         chkLtrCrdtProtocol.setProduct(anyProduct);
@@ -450,8 +450,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         chkLtrCrdtProtocol.setChildProduct(sameProduct);
         em.persist(chkLtrCrdtProtocol);
 
-        Protocol shipProtocol = model.getJobModel().newInitializedProtocol(deliver,
-                                                                           core);
+        Protocol shipProtocol = model.getJobModel()
+                                     .newInitializedProtocol(deliver, core);
         shipProtocol.setService(deliver);
         shipProtocol.setRequester(anyAgency);
         shipProtocol.setProduct(anyProduct);
@@ -462,8 +462,9 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         shipProtocol.setChildProduct(sameProduct);
         em.persist(shipProtocol);
 
-        Protocol printCustDeclProtocol = model.getJobModel().newInitializedProtocol(ship,
-                                                                                    core);
+        Protocol printCustDeclProtocol = model.getJobModel()
+                                              .newInitializedProtocol(ship,
+                                                                      core);
         printCustDeclProtocol.setService(ship);
         printCustDeclProtocol.setRequester(externalCust);
         printCustDeclProtocol.setProduct(abc486);
@@ -474,8 +475,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         printCustDeclProtocol.setChildProduct(sameProduct);
         em.persist(printCustDeclProtocol);
 
-        Protocol printPoProtocol = model.getJobModel().newInitializedProtocol(ship,
-                                                                              core);
+        Protocol printPoProtocol = model.getJobModel()
+                                        .newInitializedProtocol(ship, core);
         printPoProtocol.setService(ship);
         printPoProtocol.setRequester(externalCust);
         printPoProtocol.setProduct(abc486);
@@ -486,8 +487,9 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         printPoProtocol.setChildProduct(sameProduct);
         em.persist(printPoProtocol);
 
-        Protocol feeProtocol = model.getJobModel().newInitializedProtocol(printPurchaseOrder,
-                                                                          core);
+        Protocol feeProtocol = model.getJobModel()
+                                    .newInitializedProtocol(printPurchaseOrder,
+                                                            core);
         feeProtocol.setService(printPurchaseOrder);
         feeProtocol.setRequester(anyAgency);
         feeProtocol.setProduct(abc486);
@@ -498,8 +500,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         feeProtocol.setChildProduct(sameProduct);
         em.persist(feeProtocol);
 
-        Protocol salesTaxProtocol = model.getJobModel().newInitializedProtocol(fee,
-                                                                               core);
+        Protocol salesTaxProtocol = model.getJobModel()
+                                         .newInitializedProtocol(fee, core);
         salesTaxProtocol.setService(fee);
         salesTaxProtocol.setRequester(nonExemptAgency);
         salesTaxProtocol.setProduct(nonExempt);
@@ -510,8 +512,8 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         salesTaxProtocol.setChildProduct(sameProduct);
         em.persist(salesTaxProtocol);
 
-        Protocol discountProtocol = model.getJobModel().newInitializedProtocol(fee,
-                                                                               core);
+        Protocol discountProtocol = model.getJobModel()
+                                         .newInitializedProtocol(fee, core);
         discountProtocol.setService(fee);
         discountProtocol.setRequester(externalCust);
         discountProtocol.setProduct(abc486);
@@ -522,8 +524,9 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         discountProtocol.setChildProduct(sameProduct);
         em.persist(discountProtocol);
 
-        Protocol gtuDiscountedPriceProtocol = model.getJobModel().newInitializedProtocol(fee,
-                                                                                         core);
+        Protocol gtuDiscountedPriceProtocol = model.getJobModel()
+                                                   .newInitializedProtocol(fee,
+                                                                           core);
         gtuDiscountedPriceProtocol.setService(fee);
         gtuDiscountedPriceProtocol.setRequester(georgeTownUniversity);
         gtuDiscountedPriceProtocol.setProduct(abc486);
@@ -584,8 +587,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         salesTaxStatus.setInverse(salesTaxStatusOf);
         em.persist(salesTaxStatusOf);
 
-        storageType = new Relationship(
-                                       "StorageType",
+        storageType = new Relationship("StorageType",
                                        "The type of storage required for A is B",
                                        core);
         em.persist(storageType);
@@ -649,8 +651,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         active = new StatusCode("Active", "Working on it now", core);
         em.persist(active);
 
-        waitingOnCreditCheck = new StatusCode(
-                                              "Waiting on Credit Check",
+        waitingOnCreditCheck = new StatusCode("Waiting on Credit Check",
                                               "Waiting for credit check to be completed",
                                               core);
         em.persist(waitingOnCreditCheck);
@@ -667,26 +668,22 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                        "Pick product has been completed", core);
         em.persist(pickCompleted);
 
-        waitingOnPurchaseOrder = new StatusCode(
-                                                "WaitingOnPurchaseOrder",
+        waitingOnPurchaseOrder = new StatusCode("WaitingOnPurchaseOrder",
                                                 "Waiting for purchase order to be completed",
                                                 core);
         em.persist(waitingOnPurchaseOrder);
 
-        waitingOnPricing = new StatusCode(
-                                          "Waiting on pricing",
+        waitingOnPricing = new StatusCode("Waiting on pricing",
                                           "Waiting for pricing to be completed",
                                           core);
         em.persist(waitingOnPricing);
 
-        waitingOnFee = new StatusCode(
-                                      "Waiting on fee calculation",
+        waitingOnFee = new StatusCode("Waiting on fee calculation",
                                       "Waiting for fee calculation to be completed",
                                       core);
         em.persist(waitingOnFee);
 
-        abandoned = new StatusCode(
-                                   "Abandoned",
+        abandoned = new StatusCode("Abandoned",
                                    "We were going to do it, something happened in earlier processing that will prevent us.  This can be garbage-collected now",
                                    core);
         em.persist(abandoned);
@@ -756,12 +753,12 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                      available, core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(printCustomsDeclaration, available,
-                                     active, core);
+        s = new StatusCodeSequencing(printCustomsDeclaration, available, active,
+                                     core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(printCustomsDeclaration, active,
-                                     completed, core);
+        s = new StatusCodeSequencing(printCustomsDeclaration, active, completed,
+                                     core);
         em.persist(s);
 
         s = new StatusCodeSequencing(printPurchaseOrder, waitingOnFee,

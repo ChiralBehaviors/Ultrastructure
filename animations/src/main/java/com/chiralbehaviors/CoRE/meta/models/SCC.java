@@ -65,7 +65,8 @@ public class SCC {
                     Math.min(low.get(StatusCode), low.get(successor)));
         }
 
-        if (num == low.get(StatusCode).intValue()) {
+        if (num == low.get(StatusCode)
+                      .intValue()) {
             List<StatusCode> component = stack.subList(stackPos, stack.size());
             stack = stack.subList(0, stackPos);
 

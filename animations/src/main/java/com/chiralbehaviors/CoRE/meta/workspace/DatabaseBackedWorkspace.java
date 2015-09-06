@@ -25,9 +25,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -75,7 +77,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         }
     }
 
-    private final Product                 definingProduct;
+    private final UUID                    definingProduct;
     protected final Map<String, Ruleform> cache = new HashMap<String, Ruleform>();
     protected final EntityManager         em;
     protected final Model                 model;
@@ -83,9 +85,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     public DatabaseBackedWorkspace(Product definingProduct, Model model) {
         assert definingProduct != null;
-        this.definingProduct = model.getEntityManager()
-                                    .getReference(Product.class,
-                                                  definingProduct.getId());
+        this.definingProduct = definingProduct.getId();
         this.model = model;
         this.em = model.getEntityManager();
         this.scope = new WorkspaceScope(this);
@@ -166,16 +166,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         if (cached != null) {
             return (T) cached;
         }
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
-        Root<WorkspaceAuthorization> from = query.from(WorkspaceAuthorization.class);
-        query.select(from)
-             .where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.key), key),
-                           cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
-                                    getDefiningProduct())));
+        TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATION_BY_ID,
+                                                                       WorkspaceAuthorization.class);
+        query.setParameter("productId", definingProduct);
+        query.setParameter("key", key);
         try {
-            WorkspaceAuthorization authorization = em.createQuery(query)
-                                                     .getSingleResult();
+            WorkspaceAuthorization authorization = query.getSingleResult();
             T ruleform = authorization.getEntity(em);
             cache.put(key, ruleform);
             return ruleform;
@@ -211,7 +207,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     @Override
     public Product getDefiningProduct() {
-        return definingProduct;
+        return model.getEntityManager()
+                    .getReference(Product.class, definingProduct);
     }
 
     /* (non-Javadoc)

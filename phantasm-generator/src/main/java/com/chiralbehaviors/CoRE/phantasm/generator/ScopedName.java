@@ -36,8 +36,8 @@ public class ScopedName {
     }
 
     public ScopedName(String namespace, String name) {
-        this.namespace = (namespace != null
-                          && namespace.equals("")) ? null : namespace;
+        this.namespace = (namespace != null && namespace.equals("")) ? null
+                                                                    : namespace;
         this.name = name;
     }
 

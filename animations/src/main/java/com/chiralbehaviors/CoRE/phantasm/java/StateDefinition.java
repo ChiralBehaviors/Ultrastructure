@@ -85,8 +85,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             throw new IllegalStateException("Ruleform cannot be null");
         }
         NetworkedModel<RuleForm, NetworkRuleform<RuleForm>, ?, ?> networked = model.getNetworkedModel(ruleform);
-        WorkspaceScope scope = model.getWorkspaceModel()
-                                    .getScoped(workspace);
+        WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
         if (scope == null) {
             throw new IllegalStateException(String.format("Cannot obtain workspace for state interface %s",
                                                           stateInterface));
@@ -125,8 +124,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
      */
     @SuppressWarnings("unchecked")
     public List<Aspect<RuleForm>> getAspects(Model model) {
-        WorkspaceScope scope = model.getWorkspaceModel()
-                                    .getScoped(workspace);
+        WorkspaceScope scope = model.getWorkspaceModel().getScoped(workspace);
         List<Aspect<RuleForm>> specs = new ArrayList<>();
         for (ScopedFacet facet : facets) {
             specs.add(new Aspect<RuleForm>((Relationship) facet.resolveClassifier(scope),
@@ -207,11 +205,9 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Edge edge, Method method) {
-        if (method.getName()
-                  .startsWith("add")) {
+        if (method.getName().startsWith("add")) {
             processAdd(edge, method);
-        } else if (method.getName()
-                         .startsWith("remove")) {
+        } else if (method.getName().startsWith("remove")) {
             processRemove(edge, method);
         } else if (method.getParameterTypes().length == 0
                    && List.class.isAssignableFrom(method.getReturnType())) {
@@ -226,12 +222,10 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Key annotation, Method method) {
-        if (method.getName()
-                  .startsWith(GET)) {
+        if (method.getName().startsWith(GET)) {
             processPrimitiveGetter(annotation.namespace(), annotation.name(),
                                    method);
-        } else if (method.getName()
-                         .startsWith(SET)) {
+        } else if (method.getName().startsWith(SET)) {
             processPrimitiveSetter(annotation.namespace(), annotation.name(),
                                    method);
         } else {
@@ -241,10 +235,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void process(Method method) {
-        if (method.getName()
-                  .equals("getScope")
-            && method.getDeclaringClass()
-                     .equals(ScopedPhantasm.class)) {
+        if (method.getName().equals("getScope")
+            && method.getDeclaringClass().equals(ScopedPhantasm.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
                          Object[] arguments) -> state.getScope(this));
@@ -276,10 +268,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (getRuleformClass().equals(ruleformClass)) {
                 methods.put(method,
                             (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                             Object[] arguments) -> state.addChildren(annotation.value()
-                                                                                .namespace(),
-                                                                      annotation.value()
-                                                                                .name(),
+                             Object[] arguments) -> state.addChildren(annotation.value().namespace(),
+                                                                      annotation.value().name(),
                                                                       (List<Phantasm<RuleForm>>) arguments[0],
                                                                       scope));
             } else {
@@ -293,10 +283,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (getRuleformClass().equals(ruleformClass)) {
                 methods.put(method,
                             (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                             Object[] arguments) -> state.addChild(annotation.value()
-                                                                             .namespace(),
-                                                                   annotation.value()
-                                                                             .name(),
+                             Object[] arguments) -> state.addChild(annotation.value().namespace(),
+                                                                   annotation.value().name(),
                                                                    ((Phantasm<RuleForm>) arguments[0]).getRuleform(),
                                                                    scope));
             } else {
@@ -311,37 +299,29 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         if (ruleformClass.equals(Agency.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.addAgencyAuth(annotation.value()
-                                                                              .namespace(),
-                                                                    annotation.value()
-                                                                              .name(),
+                         Object[] arguments) -> state.addAgencyAuth(annotation.value().namespace(),
+                                                                    annotation.value().name(),
                                                                     (Phantasm<Agency>) arguments[0],
                                                                     scope));
         } else if (ruleformClass.equals(Location.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.addLocationAuth(annotation.value()
-                                                                                .namespace(),
-                                                                      annotation.value()
-                                                                                .name(),
+                         Object[] arguments) -> state.addLocationAuth(annotation.value().namespace(),
+                                                                      annotation.value().name(),
                                                                       (Phantasm<Location>) arguments[0],
                                                                       scope));
         } else if (ruleformClass.equals(Product.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.addProductAuth(annotation.value()
-                                                                               .namespace(),
-                                                                     annotation.value()
-                                                                               .name(),
+                         Object[] arguments) -> state.addProductAuth(annotation.value().namespace(),
+                                                                     annotation.value().name(),
                                                                      (Phantasm<Product>) arguments[0],
                                                                      scope));
         } else if (ruleformClass.equals(Relationship.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.addRelationshipAuth(annotation.value()
-                                                                                    .namespace(),
-                                                                          annotation.value()
-                                                                                    .name(),
+                         Object[] arguments) -> state.addRelationshipAuth(annotation.value().namespace(),
+                                                                          annotation.value().name(),
                                                                           (Phantasm<Relationship>) arguments[0],
                                                                           scope));
         } else {
@@ -357,37 +337,29 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         if (ruleformClass.equals(Agency.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.addAgencyAuths(annotation.value()
-                                                                               .namespace(),
-                                                                     annotation.value()
-                                                                               .name(),
+                         Object[] arguments) -> state.addAgencyAuths(annotation.value().namespace(),
+                                                                     annotation.value().name(),
                                                                      (List<Phantasm<Agency>>) arguments[0],
                                                                      scope));
         } else if (ruleformClass.equals(Location.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.addLocationAuths(annotation.value()
-                                                                                 .namespace(),
-                                                                       annotation.value()
-                                                                                 .name(),
+                         Object[] arguments) -> state.addLocationAuths(annotation.value().namespace(),
+                                                                       annotation.value().name(),
                                                                        (List<Phantasm<Location>>) arguments[0],
                                                                        scope));
         } else if (ruleformClass.equals(Product.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.addProductAuths(annotation.value()
-                                                                                .namespace(),
-                                                                      annotation.value()
-                                                                                .name(),
+                         Object[] arguments) -> state.addProductAuths(annotation.value().namespace(),
+                                                                      annotation.value().name(),
                                                                       (List<Phantasm<Product>>) arguments[0],
                                                                       scope));
         } else if (ruleformClass.equals(Relationship.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.addRelationshipAuths(annotation.value()
-                                                                                     .namespace(),
-                                                                           annotation.value()
-                                                                                     .name(),
+                         Object[] arguments) -> state.addRelationshipAuths(annotation.value().namespace(),
+                                                                           annotation.value().name(),
                                                                            (List<Phantasm<Relationship>>) arguments[0],
                                                                            scope));
         } else {
@@ -456,19 +428,15 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (method.getAnnotation(Inferred.class) != null) {
                 methods.put(method,
                             (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                             Object[] arguments) -> state.getChildren(annotation.value()
-                                                                                .namespace(),
-                                                                      annotation.value()
-                                                                                .name(),
+                             Object[] arguments) -> state.getChildren(annotation.value().namespace(),
+                                                                      annotation.value().name(),
                                                                       phantasm,
                                                                       scope));
             } else {
                 methods.put(method,
                             (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                             Object[] arguments) -> state.getImmediateChildren(annotation.value()
-                                                                                         .namespace(),
-                                                                               annotation.value()
-                                                                                         .name(),
+                             Object[] arguments) -> state.getImmediateChildren(annotation.value().namespace(),
+                                                                               annotation.value().name(),
                                                                                phantasm,
                                                                                scope));
             }
@@ -523,14 +491,12 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             throw new IllegalStateException(String.format("getter method has arguments %s",
                                                           method.toGenericString()));
         }
-        if (method.getReturnType()
-                  .isArray()) {
+        if (method.getReturnType().isArray()) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
                          Object[] arguments) -> state.getAttributeArray(namespace,
                                                                         name,
-                                                                        method.getReturnType()
-                                                                              .getComponentType(),
+                                                                        method.getReturnType().getComponentType(),
                                                                         scope));
         } else if (Map.class.isAssignableFrom(method.getReturnType())) {
             methods.put(method,
@@ -544,8 +510,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
                          Object[] arguments) -> Arrays.asList(state.getAttributeArray(namespace,
                                                                                       name,
-                                                                                      method.getReturnType()
-                                                                                            .getComponentType(),
+                                                                                      method.getReturnType().getComponentType(),
                                                                                       scope)));
         } else {
             methods.put(method,
@@ -606,10 +571,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (getRuleformClass().equals(ruleformClass)) {
                 methods.put(method,
                             (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                             Object[] arguments) -> state.removeChildren(annotation.value()
-                                                                                   .namespace(),
-                                                                         annotation.value()
-                                                                                   .name(),
+                             Object[] arguments) -> state.removeChildren(annotation.value().namespace(),
+                                                                         annotation.value().name(),
                                                                          (List<Phantasm<RuleForm>>) arguments[0],
                                                                          scope));
             } else {
@@ -623,10 +586,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (getRuleformClass().equals(ruleformClass)) {
                 methods.put(method,
                             (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                             Object[] arguments) -> state.removeChild(annotation.value()
-                                                                                .namespace(),
-                                                                      annotation.value()
-                                                                                .name(),
+                             Object[] arguments) -> state.removeChild(annotation.value().namespace(),
+                                                                      annotation.value().name(),
                                                                       ((Phantasm<RuleForm>) arguments[0]).getRuleform(),
                                                                       scope));
             } else {
@@ -731,37 +692,29 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         if (ruleformClass.equals(Agency.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.setAgencyAuths(annotation.value()
-                                                                               .namespace(),
-                                                                     annotation.value()
-                                                                               .name(),
+                         Object[] arguments) -> state.setAgencyAuths(annotation.value().namespace(),
+                                                                     annotation.value().name(),
                                                                      (List<Phantasm<Agency>>) arguments[0],
                                                                      scope));
         } else if (ruleformClass.equals(Location.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.setLocationAuths(annotation.value()
-                                                                                 .namespace(),
-                                                                       annotation.value()
-                                                                                 .name(),
+                         Object[] arguments) -> state.setLocationAuths(annotation.value().namespace(),
+                                                                       annotation.value().name(),
                                                                        (List<Phantasm<Location>>) arguments[0],
                                                                        scope));
         } else if (ruleformClass.equals(Product.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.setProductAuths(annotation.value()
-                                                                                .namespace(),
-                                                                      annotation.value()
-                                                                                .name(),
+                         Object[] arguments) -> state.setProductAuths(annotation.value().namespace(),
+                                                                      annotation.value().name(),
                                                                       (List<Phantasm<Product>>) arguments[0],
                                                                       scope));
         } else if (ruleformClass.equals(Relationship.class)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.setRelationshipAuths(annotation.value()
-                                                                                     .namespace(),
-                                                                           annotation.value()
-                                                                                     .name(),
+                         Object[] arguments) -> state.setRelationshipAuths(annotation.value().namespace(),
+                                                                           annotation.value().name(),
                                                                            (List<Phantasm<Relationship>>) arguments[0],
                                                                            scope));
         } else {
@@ -782,10 +735,8 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         if (getRuleformClass().equals(ruleformClass)) {
             methods.put(method,
                         (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                         Object[] arguments) -> state.setImmediateChildren(annotation.value()
-                                                                                     .namespace(),
-                                                                           annotation.value()
-                                                                                     .name(),
+                         Object[] arguments) -> state.setImmediateChildren(annotation.value().namespace(),
+                                                                           annotation.value().name(),
                                                                            (List<Phantasm<RuleForm>>) arguments[0],
                                                                            scope));
         } else {
@@ -853,8 +804,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     @SuppressWarnings("unchecked")
     private void processSingular(Edge annotation, Method method) {
         Key value = annotation.value();
-        if (method.getReturnType()
-                  .equals(Void.TYPE)) {
+        if (method.getReturnType().equals(Void.TYPE)) {
             processSetSingular(method, value);
             return;
         }
@@ -879,19 +829,15 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     }
 
     private void processUnknown(Method method) {
-        if (method.getName()
-                  .startsWith(GET)) {
-            processPrimitiveGetter(null, method.getName()
-                                               .substring(GET.length(),
-                                                          method.getName()
-                                                                .length()),
+        if (method.getName().startsWith(GET)) {
+            processPrimitiveGetter(null,
+                                   method.getName().substring(GET.length(),
+                                                              method.getName().length()),
                                    method);
-        } else if (method.getName()
-                         .startsWith(SET)) {
-            processPrimitiveSetter(null, method.getName()
-                                               .substring(SET.length(),
-                                                          method.getName()
-                                                                .length()),
+        } else if (method.getName().startsWith(SET)) {
+            processPrimitiveSetter(null,
+                                   method.getName().substring(SET.length(),
+                                                              method.getName().length()),
                                    method);
         }
     }

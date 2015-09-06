@@ -584,9 +584,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Propagate the network inferences based on the tracked additions,
      * deletions and modifications
-     * 
-     * @param initial
-     *            TODO
+     * @param initial TODO
      *
      * @throws SQLException
      */

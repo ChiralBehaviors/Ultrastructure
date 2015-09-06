@@ -45,10 +45,11 @@ import com.hellblazer.utils.Tuple;
  */
 public interface JobModel {
     final static int          MAXIMUM_JOB_DEPTH = 20;
-    final static InferenceMap NO_TRANSFORMATION = new InferenceMap(false, false,
-                                                                   false, false,
+    final static InferenceMap NO_TRANSFORMATION = new InferenceMap(false,
                                                                    false,
-                                                                   false);
+                                                                   false,
+                                                                   false,
+                                                                   false, false);
 
     /**
      * Sets the status of the given Job. This should not be done directly on the
@@ -99,8 +100,8 @@ public interface JobModel {
      * @throws SQLException
      */
     void ensureNextStateIsValid(Job job, Product service,
-                                StatusCode currentStatus,
-                                StatusCode nextStatus) throws SQLException;
+                                StatusCode currentStatus, StatusCode nextStatus)
+                                                                                throws SQLException;
 
     /**
      * @param parent
@@ -115,7 +116,8 @@ public interface JobModel {
      * @throws SQLException
      */
     void ensureValidServiceAndStatus(Product nextSibling,
-                                     StatusCode nextSiblingStatus) throws SQLException;
+                                     StatusCode nextSiblingStatus)
+                                                                  throws SQLException;
 
     Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job);
 
@@ -376,8 +378,7 @@ public interface JobModel {
      *         the meta protocol. The list is a Tuple of protocols, and a
      *         boolean map indicating which field was inferred in the protocol.
      */
-    Map<Protocol, InferenceMap> getProtocols(Job job,
-                                             MetaProtocol metaprotocol);
+    Map<Protocol, InferenceMap> getProtocols(Job job, MetaProtocol metaprotocol);
 
     /**
      * @param service
@@ -586,6 +587,7 @@ public interface JobModel {
      * @param modifiedProducts
      * @throws SQLException
      */
-    void validateStateGraph(Collection<Product> modifiedProducts) throws SQLException;
+    void validateStateGraph(Collection<Product> modifiedProducts)
+                                                                 throws SQLException;
 
 }

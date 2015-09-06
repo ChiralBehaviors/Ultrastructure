@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
-
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -98,19 +98,6 @@ public class AbstractModelTest {
         em = model.getEntityManager();
     }
 
-    public static EntityManagerFactory mockedEmf() {
-        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
-        EntityManager mockedEm = mock(EntityManager.class,
-                                      AdditionalAnswers.delegatesTo(em));
-        EntityTransaction mockedTxn = mock(EntityTransaction.class);
-        doReturn(mockedTxn).when(mockedEm)
-                           .getTransaction();
-        doNothing().when(mockedEm)
-                   .close();
-        when(mockedEmf.createEntityManager()).thenReturn(mockedEm);
-        return mockedEmf;
-    }
-
     private static EntityManager getEntityManager() throws IOException,
                                                     SQLException {
         if (emf == null) {
@@ -125,6 +112,19 @@ public class AbstractModelTest {
         }
         EntityManager em = emf.createEntityManager();
         return em;
+    }
+
+    public static EntityManagerFactory mockedEmf() {
+        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
+        EntityManager mockedEm = mock(EntityManager.class,
+                                      AdditionalAnswers.delegatesTo(em));
+        EntityTransaction mockedTxn = mock(EntityTransaction.class);
+        doReturn(mockedTxn).when(mockedEm)
+                           .getTransaction();
+        doNothing().when(mockedEm)
+                   .close();
+        when(mockedEmf.createEntityManager()).thenReturn(mockedEm);
+        return mockedEmf;
     }
 
     public AbstractModelTest() {

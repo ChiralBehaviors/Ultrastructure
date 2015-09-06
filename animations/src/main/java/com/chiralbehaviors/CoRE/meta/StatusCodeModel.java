@@ -33,7 +33,8 @@ import com.chiralbehaviors.CoRE.product.Product;
  * @author hhildebrand
  *
  */
-public interface StatusCodeModel extends
+public interface StatusCodeModel
+        extends
         NetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute> {
 
     /**

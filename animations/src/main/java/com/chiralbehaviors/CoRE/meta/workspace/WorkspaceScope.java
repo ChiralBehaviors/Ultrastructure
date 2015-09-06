@@ -35,8 +35,7 @@ public class WorkspaceScope {
     private final Map<String, WorkspaceAccessor> imports = new HashMap<>();
     private final WorkspaceAccessor              workspace;
 
-    public WorkspaceScope(Map<String, WorkspaceAccessor> imports,
-                          WorkspaceAccessor workspace) {
+    public WorkspaceScope(Map<String, WorkspaceAccessor> imports, WorkspaceAccessor workspace) {
         if (imports != null)
             this.imports.putAll(imports);
         this.workspace = workspace;

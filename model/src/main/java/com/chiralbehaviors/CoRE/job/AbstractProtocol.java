@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
  *
-
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "assign_to")
-    private Agency assignTo;
+    private Agency            assignTo;
 
     /**
      * The location where the product will be delivered from
@@ -69,14 +69,14 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_from")
-    private Location deliverFrom;
+    private Location          deliverFrom;
     /**
      * The location to deliver the product of this job
      */
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "deliver_to")
-    private Location deliverTo;
+    private Location          deliverTo;
 
     /**
      * The product of this job
@@ -84,15 +84,15 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "product")
-    private Product product;
+    private Product           product;
 
     @Column(name = "quantity")
-    private BigDecimal quantity = BigDecimal.ZERO;
+    private BigDecimal        quantity         = BigDecimal.ZERO;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "quantity_unit")
-    private Unit quantityUnit;
+    private Unit              quantityUnit;
 
     /**
      * The consumer of this job's product
@@ -100,7 +100,7 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "requester")
-    private Agency requester;
+    private Agency            requester;
 
     /**
      * The service this job is performing
@@ -108,7 +108,7 @@ public abstract class AbstractProtocol extends Ruleform {
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "service")
-    private Product service;
+    private Product           service;
 
     public AbstractProtocol() {
         super();

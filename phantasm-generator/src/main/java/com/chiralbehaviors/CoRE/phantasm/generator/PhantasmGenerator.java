@@ -41,23 +41,10 @@ import com.hellblazer.utils.Utils;
  *
  */
 public class PhantasmGenerator {
-    private static final String FACET               = "facet";
-    private static final String TEMPLATES_FACET_STG = "templates/facet.stg";
-
-    public static Map<ScopedName, MappedAttribute> mapAttributes(WorkspacePresentation workspace) {
-        Map<ScopedName, MappedAttribute> mapped = new HashMap<>();
-        workspace.getAttributes()
-                 .forEach(attribute -> {
-                     mapped.put(new ScopedName("",
-                                               attribute.existentialRuleform().workspaceName.getText()),
-                                new MappedAttribute(attribute));
-                 });
-        return mapped;
-    }
-
-    private final Configuration configuration;
-
-    private final Map<FacetKey, Facet> facets = new HashMap<>();
+    private static final String        FACET               = "facet";
+    private static final String        TEMPLATES_FACET_STG = "templates/facet.stg";
+    private final Configuration        configuration;
+    private final Map<FacetKey, Facet> facets              = new HashMap<>();
 
     public PhantasmGenerator(Configuration configuration) {
         this.configuration = configuration;
@@ -71,6 +58,13 @@ public class PhantasmGenerator {
             ST template = group.getInstanceOf(FACET);
             template.add(FACET, facet);
             generate(template, file);
+        }
+    }
+
+    private void resolve(WorkspacePresentation presentation) {
+        Map<ScopedName, MappedAttribute> mapped = mapAttributes(presentation);
+        for (Facet facet : facets.values()) {
+            facet.resolve(facets, presentation, mapped);
         }
     }
 
@@ -176,10 +170,14 @@ public class PhantasmGenerator {
         return file;
     }
 
-    private void resolve(WorkspacePresentation presentation) {
-        Map<ScopedName, MappedAttribute> mapped = mapAttributes(presentation);
-        for (Facet facet : facets.values()) {
-            facet.resolve(facets, presentation, mapped);
-        }
+    public static Map<ScopedName, MappedAttribute> mapAttributes(WorkspacePresentation workspace) {
+        Map<ScopedName, MappedAttribute> mapped = new HashMap<>();
+        workspace.getAttributes()
+                 .forEach(attribute -> {
+                     mapped.put(new ScopedName("",
+                                               attribute.existentialRuleform().workspaceName.getText()),
+                                new MappedAttribute(attribute));
+                 });
+        return mapped;
     }
 }

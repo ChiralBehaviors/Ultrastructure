@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
-
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -41,11 +41,9 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
 public class ModelTest extends AbstractModelTest {
     @Test
     public void testCreateFromAspects() {
-        em.getTransaction()
-          .begin();
+        em.getTransaction().begin();
 
-        Agency classification = new Agency("aspect classifer",
-                                           kernel.getCore());
+        Agency classification = new Agency("aspect classifer", kernel.getCore());
         em.persist(classification);
         Relationship classifier = new Relationship("aspect classifier",
                                                    kernel.getCore());
@@ -59,32 +57,27 @@ public class ModelTest extends AbstractModelTest {
 
         Aspect<Agency> aspect = new Aspect<Agency>(classifier, classification);
 
-        model.getAgencyModel()
-             .authorize(aspect, attribute);
+        model.getAgencyModel().authorize(aspect, attribute);
         em.flush();
 
         @SuppressWarnings("unchecked")
-        Agency agency = model.getAgencyModel()
-                             .create("aspect test", "testy", aspect,
-                                     kernel.getCore());
+        Agency agency = model.getAgencyModel().create("aspect test", "testy",
+                                                      aspect, kernel.getCore());
         em.flush();
 
         assertNotNull(agency);
 
-        List<AgencyAttribute> attributes = model.getAgencyModel()
-                                                .getAttributesClassifiedBy(agency,
-                                                                           aspect);
+        List<AgencyAttribute> attributes = model.getAgencyModel().getAttributesClassifiedBy(agency,
+                                                                                            aspect);
 
         assertEquals(1, attributes.size());
 
-        assertEquals(attribute, attributes.get(0)
-                                          .getAttribute());
+        assertEquals(attribute, attributes.get(0).getAttribute());
     }
 
     @Test
     public void testFindAgencyViaAttribute() {
-        em.getTransaction()
-          .begin();
+        em.getTransaction().begin();
 
         Agency agency = new Agency("Test Agency", kernel.getCore());
         em.persist(agency);

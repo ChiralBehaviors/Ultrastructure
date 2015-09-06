@@ -69,18 +69,15 @@ public interface ScopedFacet {
 
             @Override
             public String toClassificationString() {
-                return String.format("%s::%s", facet.classification()
-                                                    .namespace(),
-                                     facet.classification()
-                                          .name());
+                return String.format("%s::%s",
+                                     facet.classification().namespace(),
+                                     facet.classification().name());
             }
 
             @Override
             public String toClassifierString() {
-                return String.format("%s::%s", facet.classifier()
-                                                    .namespace(),
-                                     facet.classifier()
-                                          .name());
+                return String.format("%s::%s", facet.classifier().namespace(),
+                                     facet.classifier().name());
             }
         };
     }

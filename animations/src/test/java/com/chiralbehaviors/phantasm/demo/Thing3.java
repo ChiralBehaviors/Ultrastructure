@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- *
-
+ * 
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  *
  */
 // we can define the facets, if it isn't the default
-@State(facets = { @Facet(classifier = @Key(namespace = "kernel", name = "IsA") , classification = @Key(name = "Thing3") ) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
+@State(facets = { @Facet(classifier = @Key(namespace = "kernel", name = "IsA"), classification = @Key(name = "Thing3")) }, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
 public interface Thing3 extends Phantasm<Product> {
 
 }

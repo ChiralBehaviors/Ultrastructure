@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
-
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -78,9 +78,7 @@ public class KernelTest extends AbstractModelTest {
         assertNotNull(kernel.getUnset());
         assertNotNull(kernel.getInverseSoftware());
 
-        assertEquals(ValueType.TEXT, kernel.getPasswordHash()
-                                           .getValueType());
-        assertEquals(ValueType.TEXT, kernel.getLogin()
-                                           .getValueType());
+        assertEquals(ValueType.TEXT, kernel.getPasswordHash().getValueType());
+        assertEquals(ValueType.TEXT, kernel.getLogin().getValueType());
     }
 }

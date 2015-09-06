@@ -1,7 +1,7 @@
-/**
+/** 
  * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
- *
-
+ * 
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import org.junit.Test;
 
 /**
  * @author hhildebrand
- *
+ * 
  */
 public class NetworkInferenceQueryGeneratorTest {
 
@@ -34,7 +34,9 @@ public class NetworkInferenceQueryGeneratorTest {
 
     @Test
     public void testGeneration() throws Exception {
-        NetworkInferenceQueryGenerator generator = new NetworkInferenceQueryGenerator(new File(TARGET_GENERATED_QUERIES));
+        NetworkInferenceQueryGenerator generator = new NetworkInferenceQueryGenerator(
+                                                                                      new File(
+                                                                                               TARGET_GENERATED_QUERIES));
         generator.execute();
     }
 }

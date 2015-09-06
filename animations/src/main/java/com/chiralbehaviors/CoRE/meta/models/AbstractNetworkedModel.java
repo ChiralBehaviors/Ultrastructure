@@ -1141,20 +1141,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public List<RuleForm> getNotInGroup(RuleForm parent,
                                         Relationship relationship) {
-        /*
-         * SELECT e FROM product AS e, ProductNetwork AS n WHERE n.parent <>
-         * :parent AND n.relationship = :relationship AND n.child <> e;
-         */
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<RuleForm> query = cb.createQuery(entity);
-        Root<RuleForm> form = query.from(entity);
-        Root<NetworkRuleform<RuleForm>> networkForm = query.from(network);
-        query.where(cb.equal(networkForm.get("parent"), parent),
-                    cb.equal(networkForm.get("relationship"), relationship),
-                    cb.notEqual(networkForm.get("child"), form));
-        query.select(form);
-        return em.createQuery(query)
-                 .getResultList();
+        TypedQuery<RuleForm> query = em.createQuery(String.format("SELECT DISTINCT e from %s AS e WHERE NOT EXISTS("
+                                                                  + "SELECT n from %s AS n  WHERE n.parent = :parent "
+                                                                  + " AND n.relationship = :relationship "
+                                                                  + " AND n.child = e)",
+                                                                  entity.getSimpleName(),
+                                                                  network.getSimpleName()),
+                                                    entity);
+        query.setParameter("parent", parent);
+        query.setParameter("relationship", relationship);
+        return query.getResultList();
     }
 
     /*

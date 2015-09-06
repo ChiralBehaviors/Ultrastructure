@@ -40,8 +40,6 @@ public class ThingWorkspaceTest extends AbstractModelTest {
 
     @Before
     public void loadWorkspace() throws IOException {
-        em.getTransaction()
-          .begin();
         scope = WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
                                                   model)
                                  .getWorkspace()

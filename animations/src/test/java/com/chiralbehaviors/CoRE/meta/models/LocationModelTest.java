@@ -42,10 +42,12 @@ public class LocationModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() {
-        Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
-
-        em.getTransaction().begin();
+        em.createQuery("DELETE FROM LocationNetwork")
+          .executeUpdate();
+        Agency core = model.getKernel()
+                           .getCore();
+        Relationship equals = model.getKernel()
+                                   .getEquals();
 
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);

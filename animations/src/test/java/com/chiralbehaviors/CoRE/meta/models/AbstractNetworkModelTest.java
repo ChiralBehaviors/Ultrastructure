@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -42,10 +43,8 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
 
     @Test
     public void testCascadedDeleteInference() throws Exception {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
-        Agency core = model.getKernel().getCore();
-
-        em.getTransaction().begin();
+        Agency core = model.getKernel()
+                           .getCore();
 
         Relationship equals = new Relationship("= a", "an alias for equals",
                                                core);
@@ -96,23 +95,25 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
 
         em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
+        assertEquals(8, model.getAgencyModel()
+                             .getChildren(a, equals)
+                             .size());
         aEqualsA = em.find(NetworkInference.class, aEqualsA.getId());
         em.remove(aEqualsA);
         em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(1, model.getAgencyModel().getChildren(a, equals).size());
+        assertEquals(1, model.getAgencyModel()
+                             .getChildren(a, equals)
+                             .size());
     }
 
     @Test
     public void testCascadedDeletePremise() throws Exception {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
+        Agency core = model.getKernel()
+                           .getCore();
 
-        em.getTransaction().begin();
-        Agency core = model.getKernel().getCore();
-
-        Relationship equals = new Relationship("= again",
-                                               "an alias for equals", core);
+        Relationship equals = new Relationship("= again", "an alias for equals",
+                                               core);
         equals.setInverse(equals);
         em.persist(equals);
 
@@ -160,24 +161,29 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
 
         em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
+        assertEquals(8, model.getAgencyModel()
+                             .getChildren(a, equals)
+                             .size());
         edgeA = em.find(AgencyNetwork.class, edgeA.getId());
         em.remove(edgeA);
         em.flush();
         a = em.find(Agency.class, a.getId());
-        List<Agency> children = model.getAgencyModel().getChildren(a, equals);
+        List<Agency> children = model.getAgencyModel()
+                                     .getChildren(a, equals);
         assertEquals(children.toString(), 1, children.size());
-        assertEquals(0, model.getAgencyModel().getChildren(a, equals2).size());
+        assertEquals(0, model.getAgencyModel()
+                             .getChildren(a, equals2)
+                             .size());
         b = em.find(Agency.class, b.getId());
-        assertEquals(1, model.getAgencyModel().getChildren(b, equals2).size());
+        assertEquals(1, model.getAgencyModel()
+                             .getChildren(b, equals2)
+                             .size());
     }
 
     @Test
     public void testCascadedDeletePremise2() throws Exception {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
-        Agency core = model.getKernel().getCore();
-
-        em.getTransaction().begin();
+        Agency core = model.getKernel()
+                           .getCore();
         Relationship equals = new Relationship("= d", "an alias for equals",
                                                core);
         equals.setInverse(equals);
@@ -227,35 +233,38 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
 
         em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
+        assertEquals(8, model.getAgencyModel()
+                             .getChildren(a, equals)
+                             .size());
         edgeB = em.find(AgencyNetwork.class, edgeB.getId());
         em.remove(edgeB);
         em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(1, model.getAgencyModel().getChildren(a, equals).size());
+        assertEquals(1, model.getAgencyModel()
+                             .getChildren(a, equals)
+                             .size());
     }
 
     @Test
     public void testDeduction() throws Exception {
         // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
-        Agency core = model.getKernel().getCore();
+        Agency core = model.getKernel()
+                           .getCore();
 
-        em.getTransaction().begin();
-
-        Relationship a = model.getRelationshipModel().create("a", "a", "a'",
-                                                             "a'");
-        Relationship b = model.getRelationshipModel().create("b", "b", "b'",
-                                                             "b'");
-        Relationship c = model.getRelationshipModel().create("c", "c", "c'",
-                                                             "c'");
-        Relationship d = model.getRelationshipModel().create("d", "d", "d'",
-                                                             "d'");
-        Relationship e = model.getRelationshipModel().create("e", "e", "e'",
-                                                             "e'");
-        Relationship f = model.getRelationshipModel().create("f", "f", "f'",
-                                                             "f'");
-        Relationship g = model.getRelationshipModel().create("g", "g", "g'",
-                                                             "g'");
+        Relationship a = model.getRelationshipModel()
+                              .create("a", "a", "a'", "a'");
+        Relationship b = model.getRelationshipModel()
+                              .create("b", "b", "b'", "b'");
+        Relationship c = model.getRelationshipModel()
+                              .create("c", "c", "c'", "c'");
+        Relationship d = model.getRelationshipModel()
+                              .create("d", "d", "d'", "d'");
+        Relationship e = model.getRelationshipModel()
+                              .create("e", "e", "e'", "e'");
+        Relationship f = model.getRelationshipModel()
+                              .create("f", "f", "f'", "f'");
+        Relationship g = model.getRelationshipModel()
+                              .create("g", "g", "g'", "g'");
 
         NetworkInference aIsB = new NetworkInference(a, b, a, core);
         em.persist(aIsB);
@@ -302,16 +311,15 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
 
         em.flush();
         A = em.find(Agency.class, A.getId());
-        List<Agency> children = model.getAgencyModel().getChildren(A, a);
+        List<Agency> children = model.getAgencyModel()
+                                     .getChildren(A, a);
         assertEquals(String.format("%s", children), 7, children.size());
     }
 
     @Test
     public void testGetImmediateRelationships() throws Exception {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
-
-        em.getTransaction().begin();
-        Agency core = model.getKernel().getCore();
+        Agency core = model.getKernel()
+                           .getCore();
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);
 
@@ -337,19 +345,19 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
 
         em.flush();
         em.refresh(a);
-        assertEquals(1,
-                     model.getAgencyModel().getImmediateRelationships(a).size());
+        assertEquals(1, model.getAgencyModel()
+                             .getImmediateRelationships(a)
+                             .size());
     }
 
     @Test
     public void testGetTransitiveRelationships() throws SQLException {
-        Agency core = model.getKernel().getCore();
+        Agency core = model.getKernel()
+                           .getCore();
         Relationship equals = new Relationship("so equals so",
                                                "an alias for equals", core);
         equals.setInverse(equals);
         em.persist(equals);
-
-        em.getTransaction().begin();
 
         Relationship equals2 = new Relationship("so equals",
                                                 "an alias for equals", core);
@@ -374,35 +382,34 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.refresh(a);
         em.refresh(b);
         em.refresh(c);
-        assertEquals(2,
-                     model.getAgencyModel().getTransitiveRelationships(a).size());
+        assertEquals(2, model.getAgencyModel()
+                             .getTransitiveRelationships(a)
+                             .size());
     }
 
     @Test
     public void testInGroup() {
-        em.getTransaction().begin();
         Relationship classifier = new Relationship("test group classifier",
                                                    kernel.getCore());
         em.persist(classifier);
-        Relationship inverse = new Relationship(
-                                                "inverse test group classifier",
+        Relationship inverse = new Relationship("inverse test group classifier",
                                                 kernel.getCore());
         em.persist(inverse);
         classifier.setInverse(inverse);
         inverse.setInverse(classifier);
-        Agency classification = new Agency(
-                                           "test in group agency classification",
+        Agency classification = new Agency("test in group agency classification",
                                            kernel.getCore());
         em.persist(classification);
-        Aspect<Agency> myAspect = new Aspect<Agency>(classifier, classification);
+        Aspect<Agency> myAspect = new Aspect<Agency>(classifier,
+                                                     classification);
         @SuppressWarnings("unchecked")
-        Agency testAgency = model.getAgencyModel().create("test agency in group",
-                                                          "test", myAspect,
-                                                          kernel.getCore());
+        Agency testAgency = model.getAgencyModel()
+                                 .create("test agency in group", "test",
+                                         myAspect, kernel.getCore());
         em.persist(testAgency);
         em.flush();
-        List<Agency> inGroup = model.getAgencyModel().getInGroup(classification,
-                                                                 inverse);
+        List<Agency> inGroup = model.getAgencyModel()
+                                    .getInGroup(classification, inverse);
         assertNotNull(inGroup);
         assertEquals(1, inGroup.size());
         assertEquals(testAgency, inGroup.get(0));
@@ -410,10 +417,8 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
 
     @Test
     public void testIterativeInference() throws Exception {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
-        Agency core = model.getKernel().getCore();
-
-        em.getTransaction().begin();
+        Agency core = model.getKernel()
+                           .getCore();
         Relationship equals = new Relationship("= c", "an alias for equals",
                                                core);
         equals.setInverse(equals);
@@ -463,30 +468,28 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
 
         em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(8, model.getAgencyModel().getChildren(a, equals).size());
+        assertEquals(8, model.getAgencyModel()
+                             .getChildren(a, equals)
+                             .size());
     }
 
-    // @Test
+    @Test
     public void testNotInGroup() {
-        em.getTransaction().begin();
-        Relationship classifier = new Relationship(
-                                                   "test not in group classifier",
+        Relationship classifier = new Relationship("test not in group classifier",
                                                    kernel.getCore());
         em.persist(classifier);
-        Relationship inverse = new Relationship(
-                                                "inverse test not in group classifier",
+        Relationship inverse = new Relationship("inverse test not in group classifier",
                                                 kernel.getCore());
         em.persist(inverse);
         classifier.setInverse(inverse);
         inverse.setInverse(classifier);
-        Agency classification = new Agency(
-                                           "test not in group agency classification",
+        Agency classification = new Agency("test not in group agency classification",
                                            kernel.getCore());
         em.persist(classification);
         em.flush();
-        List<Agency> notInGroup = model.getAgencyModel().getNotInGroup(classification,
-                                                                       inverse);
+        List<Agency> notInGroup = model.getAgencyModel()
+                                       .getNotInGroup(classification, inverse);
         assertNotNull(notInGroup);
-        assertEquals(1, notInGroup.size());
+        assertTrue(!notInGroup.isEmpty());
     }
 }

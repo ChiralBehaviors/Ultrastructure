@@ -411,10 +411,8 @@ public class JobModelImpl implements JobModel {
         query.setParameter("parent", parent);
         query.setParameter("agency", agency);
         for (Job subJob : query.getResultList()) {
-            if (isActive(subJob)) {
-                jobs.add(subJob);
-                getAllActiveSubJobsOf(subJob, agency);
-            }
+            jobs.add(subJob);
+            getAllActiveSubJobsOf(subJob, agency);
         }
         return jobs;
     }
@@ -427,10 +425,8 @@ public class JobModelImpl implements JobModel {
         query.setParameter("parent", parent);
         query.setParameter("agency", agency);
         for (Job subJob : query.getResultList()) {
-            if (isActive(subJob)) {
-                jobs.add(subJob);
-                getAllActiveSubJobsOf(parent, agency, jobs);
-            }
+            jobs.add(subJob);
+            getAllActiveSubJobsOf(parent, agency, jobs);
         }
     }
 

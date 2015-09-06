@@ -36,7 +36,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
@@ -62,18 +62,19 @@ import com.hellblazer.utils.Tuple;
  */
 public class JobModelTest extends AbstractModelTest {
 
-    private JobModel jobModel;
+    private static JobModel jobModel;
 
     private static OrderProcessing scenario;
 
-    @Before
-    public void before() throws Exception {
+    @BeforeClass
+    public static void before() throws Exception {
         EntityTransaction txn = em.getTransaction();
         txn.begin();
         OrderProcessingLoader loader = new OrderProcessingLoader(model);
         loader.load();
         scenario = loader.createWorkspace(model)
                          .getAccessor(OrderProcessing.class);
+        txn.commit();
         jobModel = model.getJobModel();
         // model.setLogConfiguration(Utils.getDocument(JobModelTest.class.getResourceAsStream("/test-log-db.xml")));
     }
@@ -198,8 +199,6 @@ public class JobModelTest extends AbstractModelTest {
 
         List<Job> jobs = jobModel.generateImplicitJobs(job, kernel.getCore());
         TestDebuggingUtil.printJobs(jobs);
-        em.getTransaction()
-          .rollback();
     }
 
     @Test
@@ -617,8 +616,6 @@ public class JobModelTest extends AbstractModelTest {
     }
 
     public void testSelfSequencing() {
-        em.getTransaction()
-          .begin();
         Product service = new Product("My Service", null, kernel.getCore());
         em.persist(service);
         StatusCode a = new StatusCode("A", null, kernel.getCore());

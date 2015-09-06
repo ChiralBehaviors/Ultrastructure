@@ -42,10 +42,10 @@ public class AgencyModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() throws SQLException {
-
-        em.getTransaction().begin();
-        Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
+        Agency core = model.getKernel()
+                           .getCore();
+        Relationship equals = model.getKernel()
+                                   .getEquals();
 
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);

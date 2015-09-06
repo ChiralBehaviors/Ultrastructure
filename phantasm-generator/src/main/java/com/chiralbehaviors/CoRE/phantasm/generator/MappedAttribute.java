@@ -57,9 +57,9 @@ public class MappedAttribute {
 
     private final List<String> imports = new ArrayList<>();
 
-    private final String name;
+    private final String       name;
 
-    private final String type;
+    private final String       type;
 
     public MappedAttribute(AttributeRuleformContext attribute) {
         this.name = normalize(stripQuotes(attribute.existentialRuleform().name.getText()));

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
-
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -58,13 +58,12 @@ public class AgencyTest extends DatabaseTest {
         Agency foo = query.getSingleResult();
 
         System.out.println("Test Class: " + test.getClass());
-        System.out.println("Foo Updated By Class (Proxy): " + foo.getUpdatedBy()
-                                                                 .getClass());
+        System.out.println("Foo Updated By Class (Proxy): "
+                           + foo.getUpdatedBy().getClass());
         Assert.assertEquals(test, foo.getUpdatedBy());
 
         Assert.assertTrue(test.equals(foo.getUpdatedBy()));
-        Assert.assertTrue(foo.getUpdatedBy()
-                             .equals(test));
+        Assert.assertTrue(foo.getUpdatedBy().equals(test));
 
     }
 

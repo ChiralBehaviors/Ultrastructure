@@ -38,14 +38,10 @@ public class TestDebuggingUtil {
     public static void printJobs(List<Job> jobs) {
         for (Job j : jobs) {
             System.out.println(String.format("%s: Status: %s, Parent: %s",
-                                             j.getService()
-                                              .getName(),
-                                             j.getStatus()
-                                              .getName(),
-                                             j.getParent() != null ? j.getParent()
-                                                                      .getService()
-                                                                      .getName()
-                                                                   : "null"));
+                                             j.getService().getName(),
+                                             j.getStatus().getName(),
+                                             j.getParent() != null ? j.getParent().getService().getName()
+                                                                  : "null"));
         }
     }
 
@@ -55,18 +51,12 @@ public class TestDebuggingUtil {
     public static void printMetaProtocolGaps(Map<Protocol, Map<MetaProtocol, List<String>>> gaps) {
         for (Map.Entry<Protocol, Map<MetaProtocol, List<String>>> e : gaps.entrySet()) {
             System.out.println(String.format("requested service: %s, service: %s",
-                                             e.getKey()
-                                              .getService()
-                                              .getName(),
-                                             e.getKey()
-                                              .getService()
-                                              .getName()));
+                                             e.getKey().getService().getName(),
+                                             e.getKey().getService().getName()));
 
-            for (Map.Entry<MetaProtocol, List<String>> mpe : e.getValue()
-                                                              .entrySet()) {
+            for (Map.Entry<MetaProtocol, List<String>> mpe : e.getValue().entrySet()) {
                 System.out.println(String.format("MetaProtocol: %s",
-                                                 mpe.getKey()
-                                                    .getId()));
+                                                 mpe.getKey().getId()));
                 System.out.println("Unmatched fields: ");
                 for (String f : mpe.getValue()) {
                     System.out.println(f);
@@ -82,12 +72,8 @@ public class TestDebuggingUtil {
     public static void printProtocolGaps(Map<Protocol, List<String>> gaps) {
         for (Map.Entry<Protocol, List<String>> e : gaps.entrySet()) {
             System.out.println(String.format("childService: %s, service: %s",
-                                             e.getKey()
-                                              .getChildService()
-                                              .getName(),
-                                             e.getKey()
-                                              .getService()
-                                              .getName()));
+                                             e.getKey().getChildService().getName(),
+                                             e.getKey().getService().getName()));
             System.out.println("Unmatched fields: ");
             for (String f : e.getValue()) {
                 System.out.println(f);
@@ -99,20 +85,17 @@ public class TestDebuggingUtil {
     public static void printProtocols(List<Protocol> protocols) {
         for (Protocol p : protocols) {
             System.out.println(String.format("Requested Service: %s, Service: %s",
-                                             p.getChildService()
-                                              .getName(),
+                                             p.getChildService().getName(),
                                              p.getService()));
         }
     }
 
     public static void printSequencings(List<StatusCodeSequencing> seqs) {
         for (StatusCodeSequencing s : seqs) {
-            System.out.println(String.format("%s: %s -> %s", s.getService()
-                                                              .getName(),
-                                             s.getParentCode()
-                                              .getName(),
-                                             s.getChildCode()
-                                              .getName()));
+            System.out.println(String.format("%s: %s -> %s",
+                                             s.getService().getName(),
+                                             s.getParentCode().getName(),
+                                             s.getChildCode().getName()));
         }
     }
 

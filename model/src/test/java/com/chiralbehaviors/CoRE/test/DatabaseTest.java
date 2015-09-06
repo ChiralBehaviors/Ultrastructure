@@ -1,7 +1,7 @@
-/**
+/** 
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- *
-
+ * 
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ import org.junit.BeforeClass;
 
 /**
  * @author hhildebrand
- *
+ * 
  */
 abstract public class DatabaseTest {
     protected static Connection           connection;
@@ -43,10 +43,8 @@ abstract public class DatabaseTest {
 
     @AfterClass
     public static void afterClass() {
-        if (em != null && em.getTransaction()
-                            .isActive()) {
-            em.getTransaction()
-              .rollback();
+        if (em != null && em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
             em.clear();
             em.close();
         }
@@ -58,18 +56,15 @@ abstract public class DatabaseTest {
         properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
         emf = Persistence.createEntityManagerFactory("CoRE", properties);
         em = emf.createEntityManager();
-        em.getTransaction()
-          .begin();
+        em.getTransaction().begin();
     }
 
     /**
      * Initiates a database transaction.
      */
     protected static void beginTransaction() {
-        if (!em.getTransaction()
-               .isActive()) {
-            em.getTransaction()
-              .begin();
+        if (!em.getTransaction().isActive()) {
+            em.getTransaction().begin();
         }
     }
 
@@ -77,19 +72,15 @@ abstract public class DatabaseTest {
      * Commits the current transaction, if it is still active.
      */
     protected static final void commitTransaction() {
-        if (em.getTransaction()
-              .isActive()) {
-            em.getTransaction()
-              .commit();
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().commit();
         }
     }
 
     @After
     public void after() {
-        if (em.getTransaction()
-              .isActive()) {
-            em.getTransaction()
-              .rollback();
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback();
         }
         em.clear();
     }

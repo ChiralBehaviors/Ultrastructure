@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- *
-
+ * 
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -40,13 +40,7 @@ public final class NullAuthenticationFactory
     }
 
     @Override
-    public AuthFactory<BasicCredentials, AuthorizedPrincipal> clone(boolean required) {
-        return this;
-    }
-
-    @Override
-    public Class<AuthorizedPrincipal> getGeneratedClass() {
-        return AuthorizedPrincipal.class;
+    public void setRequest(HttpServletRequest request) {
     }
 
     @Override
@@ -55,6 +49,12 @@ public final class NullAuthenticationFactory
     }
 
     @Override
-    public void setRequest(HttpServletRequest request) {
+    public Class<AuthorizedPrincipal> getGeneratedClass() {
+        return AuthorizedPrincipal.class;
+    }
+
+    @Override
+    public AuthFactory<BasicCredentials, AuthorizedPrincipal> clone(boolean required) {
+        return this;
     }
 }

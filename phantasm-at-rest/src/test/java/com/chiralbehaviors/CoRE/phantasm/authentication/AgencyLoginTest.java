@@ -1,16 +1,16 @@
-/**
+/** 
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *     
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
 
@@ -30,14 +30,15 @@ import io.dropwizard.auth.basic.BasicCredentials;
 
 /**
  * @author hhildebrand
- *
+ * 
  */
 public class AgencyLoginTest extends AbstractModelTest {
     @Test
     public void testGoodUser() throws Exception {
         String username = "bob@slack.com";
         String password = "give me food or give me slack or kill me";
-        CoreUser bob = model.construct(CoreUser.class, "Bob", "Test Dummy");
+        CoreUser bob = (CoreUser) model.construct(CoreUser.class, "Bob",
+                                                  "Test Dummy");
         bob.setLogin(username);
         bob.setPasswordRounds(10);
         AgencyBasicAuthenticator.resetPassword(bob, password);

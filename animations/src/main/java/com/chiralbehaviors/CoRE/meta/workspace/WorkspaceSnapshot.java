@@ -55,20 +55,16 @@ public class WorkspaceSnapshot {
     }
 
     @JsonProperty
-    protected Product        definingProduct;
+    protected List<Ruleform> ruleforms;
     @JsonProperty
     protected List<Ruleform> frontier;
     @JsonProperty
-    protected List<Ruleform> ruleforms;
+    protected Product        definingProduct;
 
     public WorkspaceSnapshot() {
         ruleforms = null;
         definingProduct = null;
         frontier = new ArrayList<>();
-    }
-
-    public WorkspaceSnapshot(Product definingProduct, EntityManager em) {
-        this(definingProduct, getAuthorizations(definingProduct, em), em);
     }
 
     public WorkspaceSnapshot(Product definingProduct,
@@ -102,12 +98,16 @@ public class WorkspaceSnapshot {
         frontier = new ArrayList<>(exits.values());
     }
 
-    public List<Ruleform> getFrontier() {
-        return frontier;
+    public WorkspaceSnapshot(Product definingProduct, EntityManager em) {
+        this(definingProduct, getAuthorizations(definingProduct, em), em);
     }
 
     public List<Ruleform> getRuleforms() {
         return ruleforms;
+    }
+
+    public List<Ruleform> getFrontier() {
+        return frontier;
     }
 
     public void retarget(EntityManager em) {

@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
 @Target(TYPE)
 @Retention(RUNTIME)
 public @interface State {
-    Facet[]facets() default {};
+    Facet[] facets() default {};
 
     String workspace();
 }

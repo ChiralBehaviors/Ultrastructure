@@ -28,7 +28,8 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  * @author hhildebrand
  *
  */
-public interface IntervalModel extends
+public interface IntervalModel
+        extends
         NetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute> {
 
 }

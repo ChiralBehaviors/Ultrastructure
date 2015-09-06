@@ -1,7 +1,7 @@
-/**
+/** 
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- *
-
+ * 
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 /**
  * @author hhildebrand
- *
+ * 
  */
 public class Configuration {
     public static String JDBC_URL = "jdbc:postgresql://%s:%s/%s";
@@ -48,79 +48,79 @@ public class Configuration {
     /**
      * The comma seperated list of contexts to use for loading ("local" or
      * "aws")
-     *
+     * 
      * @parameter
      */
     public String contexts = "local";
 
     /**
      * the name the core database
-     *
+     * 
      * @parameter
      */
     public String coreDb = "core";
 
     /**
      * the password of the core user
-     *
+     * 
      * @parameter
      */
     public String corePassword;
 
     /**
      * the port of the core database
-     *
+     * 
      * @parameter
      */
     public int corePort;
 
     /**
      * the server host of the core database
-     *
+     * 
      * @parameter
      */
     public String coreServer;
 
     /**
      * the core user name
-     *
+     * 
      * @parameter
      */
     public String coreUsername;
 
     /**
      * the dba database
-     *
+     * 
      * @parameter
      */
     public String  dbaDb        = "postgres";
     /**
      * the dba password
-     *
+     * 
      * @parameter
      */
     public String  dbaPassword;
     /**
      * the port of the dba database
-     *
+     * 
      * @parameter
      */
     public int     dbaPort;
     /**
      * the host name of the dba database
-     *
+     * 
      * @parameter
      */
     public String  dbaServer;
     /**
      * the dba username
-     *
+     * 
      * @parameter
      */
     public String  dbaUsername;
     /**
      * drop the database
-     *
+     * 
      * @parameter
      */
     public boolean dropDatabase = false;

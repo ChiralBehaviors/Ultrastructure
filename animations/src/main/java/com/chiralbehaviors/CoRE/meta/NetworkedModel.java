@@ -149,17 +149,17 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
-     * Check the capability of an agency on an instance.
-     */
-    boolean checkCapability(Agency agency,
-                            @SuppressWarnings("rawtypes") ExistentialRuleform instance,
-                            Relationship capability);
-
-    /**
      * Check the capability of an agency on the authorized relationship of the
      * facet child relationship.
      */
     boolean checkCapability(Agency agency, NetworkAuthorization<RuleForm> auth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of an agency on an instance.
+     */
+    boolean checkCapability(Agency agency,
+                            @SuppressWarnings("rawtypes") ExistentialRuleform instance,
                             Relationship capability);
 
     /**
@@ -562,14 +562,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                     EditableWorkspace workspace);
 
     /**
-     * @param instance
-     * @param facet
-     * @param principal
-     */
-    void initialize(RuleForm instance, NetworkAuthorization<RuleForm> facet,
-                    Agency principal);
-
-    /**
      *
      * @param parent
      * @param relationship
@@ -592,9 +584,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
     /**
      * Propagate the network inferences based on the tracked additions,
      * deletions and modifications
-     * 
-     * @param initial
-     *            TODO
+     * @param initial TODO
      *
      * @throws SQLException
      */
@@ -634,5 +624,13 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                            RuleForm child, Agency updatedBy);
 
     void unlink(RuleForm parent, Relationship r, RuleForm child);
+
+    /**
+     * @param instance
+     * @param facet
+     * @param principal
+     */
+    void initialize(RuleForm instance, NetworkAuthorization<RuleForm> facet,
+                    Agency principal);
 
 }

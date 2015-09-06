@@ -28,7 +28,8 @@ import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
  * @author hhildebrand
  *
  */
-public interface UnitModel extends
+public interface UnitModel
+        extends
         NetworkedModel<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute> {
 
 }

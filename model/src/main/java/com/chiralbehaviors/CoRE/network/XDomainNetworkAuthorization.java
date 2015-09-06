@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
-
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -37,14 +37,14 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
 /**
  *
  * The abstract super class of all network authorizations.
- *
+ * 
  * from left to right: fromRelationship, fromParent, toRelationship, toParent,
  * connection relationship, cardinality
- *
+ * 
  * {fromRelationship, fromParent} is the “from” parent
- *
+ * 
  * {toRelationship, toParent} is the “child”
- *
+ * 
  * The connection relationship is the authorized relationship between the from
  * and the to. The cardinality is the cardinality of the number of from, through
  * the connecting relationship
@@ -132,20 +132,12 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
         return toRelationship;
     }
 
-    public boolean isForward() {
-        return forward;
-    }
-
     public void setCardinality(Cardinality cardinality) {
         this.cardinality = cardinality;
     }
 
     public void setConnection(Relationship connection) {
         this.connection = connection;
-    }
-
-    public void setForward(boolean forward) {
-        this.forward = forward;
     }
 
     abstract public void setFromParent(From to);
@@ -166,5 +158,13 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
 
     public void setToRelationship(Relationship toRelationship) {
         this.toRelationship = toRelationship;
+    }
+
+    public boolean isForward() {
+        return forward;
+    }
+
+    public void setForward(boolean forward) {
+        this.forward = forward;
     }
 }

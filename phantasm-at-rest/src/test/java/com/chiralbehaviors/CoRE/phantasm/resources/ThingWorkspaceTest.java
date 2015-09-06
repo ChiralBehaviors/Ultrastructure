@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- *
-
+ * 
+ 
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -38,7 +38,8 @@ public class ThingWorkspaceTest extends AbstractModelTest {
 
     public static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
 
-    private static boolean initialized = false;
+    private static boolean   initialized = false;
+    protected WorkspaceScope scope;
 
     @BeforeClass
     public static void loadWorkspace() throws IOException {
@@ -53,8 +54,6 @@ public class ThingWorkspaceTest extends AbstractModelTest {
         em.getTransaction()
           .commit();
     }
-
-    protected WorkspaceScope scope;
 
     @Before
     public void initializeScope() {

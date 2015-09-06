@@ -25,11 +25,11 @@ import com.codahale.metrics.health.HealthCheck;
  *
  */
 public class EmfHealthCheck extends HealthCheck {
-    private final EntityManagerFactory emf;
-
     public EmfHealthCheck(EntityManagerFactory emf) {
         this.emf = emf;
     }
+
+    private final EntityManagerFactory emf;
 
     /* (non-Javadoc)
      * @see com.codahale.metrics.health.HealthCheck#check()
@@ -37,7 +37,7 @@ public class EmfHealthCheck extends HealthCheck {
     @Override
     protected Result check() throws Exception {
         return emf.isOpen() ? Result.healthy()
-                            : Result.unhealthy("Entity Manager Factory is closed");
+                           : Result.unhealthy("Entity Manager Factory is closed");
     }
 
 }

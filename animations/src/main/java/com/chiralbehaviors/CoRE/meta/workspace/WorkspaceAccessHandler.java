@@ -51,8 +51,8 @@ public class WorkspaceAccessHandler implements InvocationHandler {
      * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
      */
     @Override
-    public Object invoke(Object proxy, Method method,
-                         Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args)
+                                                                    throws Throwable {
         Key key = method.getAnnotation(Key.class);
         if (key != null) {
             return workspace.lookup(key);
@@ -60,16 +60,19 @@ public class WorkspaceAccessHandler implements InvocationHandler {
         return getAsBeanAccessor(method);
     }
 
-    protected Ruleform getAsBeanAccessor(Method method) throws InvalidKeyException {
+    protected Ruleform getAsBeanAccessor(Method method)
+                                                       throws InvalidKeyException {
         String name = method.getName();
         if (!name.startsWith("get")) {
-            throw new UnsupportedOperationException(String.format("Cannot create key for method: %s",
+            throw new UnsupportedOperationException(
+                                                    String.format("Cannot create key for method: %s",
                                                                   method));
         }
         name = name.substring("get".length());
         Ruleform ruleform = workspace.lookup(name);
         if (ruleform == null) {
-            throw new InvalidKeyException(String.format("Cannot find %s in this workspace",
+            throw new InvalidKeyException(
+                                          String.format("Cannot find %s in this workspace",
                                                         name));
         }
         return ruleform;

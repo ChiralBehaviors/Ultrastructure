@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -44,17 +45,20 @@ public class NetworkInference extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "inference")
     private Relationship inference;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "premise1")
     private Relationship premise1;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "premise2")
     private Relationship premise2;
 

@@ -30,6 +30,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -66,7 +67,8 @@ public class JobChronology extends AbstractProtocol {
 
     // bi-directional many-to-one association to Job
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
     private Job job;
 
@@ -74,7 +76,8 @@ public class JobChronology extends AbstractProtocol {
     private int sequenceNumber = 0;
 
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
     private StatusCode status;
 

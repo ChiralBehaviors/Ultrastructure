@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.security;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -35,7 +36,8 @@ public class AgencyUnitGrouping extends AgencyGrouping<Unit, UnitNetwork> {
 
     private static final long serialVersionUID = 1L;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "entity")
     private Unit entity;
 

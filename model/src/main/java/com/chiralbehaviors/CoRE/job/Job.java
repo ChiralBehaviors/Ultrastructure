@@ -174,7 +174,8 @@ public class Job extends AbstractProtocol {
     /**
      * The parent of this job
      */
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
     private Job parent;
 
@@ -187,7 +188,8 @@ public class Job extends AbstractProtocol {
      * This job's status
      */
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
     private StatusCode status;
 

@@ -59,7 +59,8 @@ public class AgencyLocation extends Ruleform
     private static final long  serialVersionUID     = 1L;
 
     // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency")
     private Agency agency;
 
@@ -69,12 +70,14 @@ public class AgencyLocation extends Ruleform
     private Set<AgencyLocationAttribute> attributes;
 
     // bi-directional many-to-one association to Location
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "location")
     private Location location;
 
     // bi-directional many-to-one association to Relationship
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship")
     private Relationship relationship;
 

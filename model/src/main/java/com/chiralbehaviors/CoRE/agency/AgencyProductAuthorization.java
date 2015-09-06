@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -44,12 +45,12 @@ public class AgencyProductAuthorization
 
     // bi-directional many-to-one association to Agency
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "from_parent")
     private Agency fromParent;
 
     // bi-directional many-to-one association to AgencyProduct
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
     @NotNull
     @JoinColumn(name = "to_parent")
     private Product toParent;

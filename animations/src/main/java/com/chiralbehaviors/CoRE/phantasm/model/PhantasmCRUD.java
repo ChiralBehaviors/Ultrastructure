@@ -32,6 +32,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
@@ -265,14 +266,14 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
         RuleForm instance;
         try {
-            instance = (RuleForm) facet.getClassification()
-                                       .getClass()
-                                       .getConstructor(String.class,
-                                                       String.class,
-                                                       Agency.class)
-                                       .newInstance(name, description,
-                                                    model.getCurrentPrincipal()
-                                                         .getPrincipal());
+            instance = (RuleForm) Ruleform.initializeAndUnproxy(facet.getClassification())
+                                          .getClass()
+                                          .getConstructor(String.class,
+                                                          String.class,
+                                                          Agency.class)
+                                          .newInstance(name, description,
+                                                       model.getCurrentPrincipal()
+                                                            .getPrincipal());
         } catch (IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException | InstantiationException
                 | NoSuchMethodException e) {

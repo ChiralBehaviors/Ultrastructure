@@ -236,8 +236,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  )",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                getAttributeAuthorizationClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("facet", stateAuth.getNetworkAuthorization());
         query.setParameter("attribute", stateAuth.getAuthorizedAttribute());
@@ -269,8 +268,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  ) ",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                getNetworkAuthClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("classifier", stateAuth.getClassifier());
         query.setParameter("classification", stateAuth.getClassification());
@@ -329,8 +327,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  )",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                Ruleform.initializeAndUnproxy(stateAuth)
+                                                                        .getClass()
+                                                                        .getSimpleName()),
                                                   Agency.class);
         query.setParameter("facet", stateAuth.getNetworkAuthorization());
         query.setParameter("attribute", stateAuth.getAuthorizedAttribute());
@@ -362,8 +361,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  ) ",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                Ruleform.initializeAndUnproxy(stateAuth)
+                                                                        .getClass()
+                                                                        .getSimpleName()),
                                                   Agency.class);
         query.setParameter("fromRelationship", stateAuth.getFromRelationship());
         query.setParameter("fromParent", stateAuth.getFromParent());
@@ -397,8 +397,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  ) ",
-                                                                facet.getClass()
-                                                                     .getSimpleName()),
+                                                                getNetworkAuthClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("classifier", facet.getClassifier());
         query.setParameter("classification", facet.getClassification());
@@ -427,8 +426,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                                 + "         AND authorized.relationship = :capability "
                                                                 + "         AND authorized.child = required.groupingAgency "
                                                                 + "  )",
-                                                                stateAuth.getClass()
-                                                                         .getSimpleName()),
+                                                                getAttributeAuthorizationClass().getSimpleName()),
                                                   Agency.class);
         query.setParameter("auth", stateAuth.getNetworkAuthorization());
         query.setParameter("attribute",

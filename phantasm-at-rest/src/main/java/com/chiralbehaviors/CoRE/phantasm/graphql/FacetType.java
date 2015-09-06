@@ -65,6 +65,7 @@ import graphql.Scalars;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLInputObjectField;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
@@ -87,6 +88,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private static final String APPLY_MUTATION        = "Apply%s";
     private static final String AT_RULEFORM           = "@ruleform";
     private static final String CREATE_MUTATION       = "Create%s";
+    private static final String CREATE_TYPE           = "%sCreate";
     private static final String DESCRIPTION           = "description";
     private static final String ID                    = "id";
     private static final String IMMEDIATE_TEMPLATE    = "immediate%s";
@@ -140,6 +142,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     private List<BiFunction<DataFetchingEnvironment, RuleForm, Object>>                             constructors   = new ArrayList<>();
+    private graphql.schema.GraphQLInputObjectType.Builder                                           createTypeBuilder;
     private String                                                                                  name;
     private Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
     private Builder                                                                                 typeBuilder;
@@ -151,6 +154,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         typeBuilder = newObject().name(facet.getName())
                                  .description(facet.getNotes());
         updateTypeBuilder = newInputObject().name(String.format(UPDATE_TYPE,
+                                                                facet.getName()))
+                                            .description(facet.getNotes());
+        createTypeBuilder = newInputObject().name(String.format(CREATE_TYPE,
                                                                 facet.getName()))
                                             .description(facet.getNotes());
     }
@@ -248,10 +254,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                   (Object) update.get(setter)));
             inputType = GraphQLString;
         }
-        updateTypeBuilder.field(newInputObjectField().type(inputType)
-                                                     .name(setter)
-                                                     .description(auth.getNotes())
-                                                     .build());
+        GraphQLInputObjectField field = newInputObjectField().type(inputType)
+                                                             .name(setter)
+                                                             .description(auth.getNotes())
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
     }
 
     @SuppressWarnings("unchecked")
@@ -278,74 +286,11 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                                 auth))
                                               .description(auth.getNotes())
                                               .build());
-        String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
-        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
-                                                     .name(setter)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(setter,
-                           (crud,
-                            update) -> crud.setChildren(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
-                                                                                             (List<String>) update.get(setter))));
-
-        String add = String.format(ADD_TEMPLATE,
-                                   capitalized(singularFieldName));
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(add)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(add,
-                           (crud,
-                            update) -> crud.addChild(facet,
-                                                     (RuleForm) update.get(AT_RULEFORM),
-                                                     auth,
-                                                     (RuleForm) crud.lookup(auth,
-                                                                            (String) update.get(add))));
-
-        String remove = String.format(REMOVE_TEMPLATE,
-                                      capitalized(singularFieldName));
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(remove)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(remove,
-                           (crud,
-                            update) -> crud.removeChild(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        (RuleForm) crud.lookup(auth,
-                                                                               (String) update.get(remove))));
-
-        String removeChildren = String.format(REMOVE_TEMPLATE,
-                                              capitalized(fieldName));
-        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
-                                                     .name(removeChildren)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(removeChildren,
-                           (crud,
-                            update) -> crud.removeChildren(facet,
-                                                           (RuleForm) update.get(AT_RULEFORM),
-                                                           auth,
-                                                           (List<RuleForm>) crud.lookupRuleForm(auth,
-                                                                                                (List<String>) update.get(removeChildren))));
-
-        String addChildren = String.format(ADD_TEMPLATE,
-                                           capitalized(fieldName));
-        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
-                                                     .name(addChildren)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(addChildren,
-                           (crud,
-                            update) -> crud.addChildren(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
-                                                                                             (List<String>) update.get(addChildren))));
+        setChildren(facet, auth, fieldName);
+        addChild(facet, auth, singularFieldName);
+        addChildren(facet, auth, fieldName);
+        removeChild(facet, auth, singularFieldName);
+        removeChildren(facet, auth, fieldName);
         references.add(child);
     }
 
@@ -363,74 +308,11 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                        (RuleForm) env.getSource(),
                                                                                        auth))
                                               .build());
-        String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
-        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
-                                                     .name(setter)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(setter,
-                           (crud,
-                            update) -> crud.setChildren(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        crud.lookup(child,
-                                                                    (List<String>) update.get(setter))));
-
-        String add = String.format(ADD_TEMPLATE,
-                                   capitalized(singularFieldName));
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(add)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(add,
-                           (crud,
-                            update) -> crud.addChild(facet,
-                                                     (RuleForm) update.get(AT_RULEFORM),
-                                                     auth,
-                                                     crud.lookup(child,
-                                                                 (String) update.get(add))));
-
-        String remove = String.format(REMOVE_TEMPLATE,
-                                      capitalized(singularFieldName));
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(remove)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(remove,
-                           (crud,
-                            update) -> crud.removeChild(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        crud.lookup(child,
-                                                                    (String) update.get(remove))));
-
-        String removeChildren = String.format(REMOVE_TEMPLATE,
-                                              capitalized(fieldName));
-        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
-                                                     .name(removeChildren)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(removeChildren,
-                           (crud,
-                            update) -> crud.removeChildren(facet,
-                                                           (RuleForm) update.get(AT_RULEFORM),
-                                                           auth,
-                                                           crud.lookup(child,
-                                                                       (List<String>) update.get(removeChildren))));
-
-        String addChildren = String.format(ADD_TEMPLATE,
-                                           capitalized(fieldName));
-        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
-                                                     .name(addChildren)
-                                                     .description(auth.getNotes())
-                                                     .build());
-        updateTemplate.put(addChildren,
-                           (crud,
-                            update) -> crud.addChildren(facet,
-                                                        (RuleForm) update.get(AT_RULEFORM),
-                                                        auth,
-                                                        crud.lookup(child,
-                                                                    (List<String>) update.get(addChildren))));
+        setChildren(facet, auth, fieldName, child);
+        addChild(facet, auth, child, singularFieldName);
+        addChiildren(facet, auth, fieldName, child);
+        removeChild(facet, auth, child, singularFieldName);
+        removeChildren(facet, auth, fieldName, child);
         references.add(child);
     }
 
@@ -449,10 +331,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .description(auth.getNotes())
                                               .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(setter)
-                                                     .description(auth.getNotes())
-                                                     .build());
+        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
+                                                             .name(setter)
+                                                             .description(auth.getNotes())
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
         updateTemplate.put(setter,
                            (crud,
                             update) -> crud.setSingularChild(facet,
@@ -477,10 +361,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                             facet))
                                               .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(setter)
-                                                     .description(auth.getNotes())
-                                                     .build());
+        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
+                                                             .name(setter)
+                                                             .description(auth.getNotes())
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
         updateTemplate.put(setter,
                            (crud,
                             update) -> crud.setSingularChild(facet,
@@ -489,6 +375,91 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                              crud.lookup(child,
                                                                          (String) update.get(setter))));
         references.add(child);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addChiildren(NetworkAuthorization<RuleForm> facet,
+                              XDomainNetworkAuthorization<?, ?> auth,
+                              String fieldName, NetworkAuthorization<?> child) {
+        String addChildren = String.format(ADD_TEMPLATE,
+                                           capitalized(fieldName));
+        GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                             .name(addChildren)
+                                                             .description(auth.getNotes())
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
+        updateTemplate.put(addChildren,
+                           (crud,
+                            update) -> crud.addChildren(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth,
+                                                        crud.lookup(child,
+                                                                    (List<String>) update.get(addChildren))));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addChild(NetworkAuthorization<RuleForm> facet,
+                          NetworkAuthorization<RuleForm> auth,
+                          String singularFieldName) {
+        String add = String.format(ADD_TEMPLATE,
+                                   capitalized(singularFieldName));
+        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
+                                                             .name(add)
+                                                             .description(auth.getNotes())
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
+        updateTemplate.put(add,
+                           (crud,
+                            update) -> crud.addChild(facet,
+                                                     (RuleForm) update.get(AT_RULEFORM),
+                                                     auth,
+                                                     (RuleForm) crud.lookup(auth,
+                                                                            (String) update.get(add))));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addChild(NetworkAuthorization<RuleForm> facet,
+                          XDomainNetworkAuthorization<?, ?> auth,
+                          NetworkAuthorization<?> child,
+                          String singularFieldName) {
+        String add = String.format(ADD_TEMPLATE,
+                                   capitalized(singularFieldName));
+        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
+                                                             .name(add)
+                                                             .description(auth.getNotes())
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
+        updateTemplate.put(add,
+                           (crud,
+                            update) -> crud.addChild(facet,
+                                                     (RuleForm) update.get(AT_RULEFORM),
+                                                     auth,
+                                                     crud.lookup(child,
+                                                                 (String) update.get(add))));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addChildren(NetworkAuthorization<RuleForm> facet,
+                             NetworkAuthorization<RuleForm> auth,
+                             String fieldName) {
+        String addChildren = String.format(ADD_TEMPLATE,
+                                           capitalized(fieldName));
+        GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                             .name(addChildren)
+                                                             .description(auth.getNotes())
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
+        updateTemplate.put(addChildren,
+                           (crud,
+                            update) -> crud.addChildren(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth,
+                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
+                                                                                             (List<String>) update.get(addChildren))));
     }
 
     private void addPlugins(NetworkAuthorization<RuleForm> facet,
@@ -558,7 +529,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .description("The description of the facet instance")
                                               .build());
 
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+        updateTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
                                                      .name(ID)
                                                      .description(String.format("the id of the updated %s",
                                                                                 facet.getName()))
@@ -568,15 +539,22 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                      .description(String.format("the name to update on %s",
                                                                                 facet.getName()))
                                                      .build());
+        createTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
+                                                     .name(SET_NAME)
+                                                     .description(String.format("the name to update on %s",
+                                                                                facet.getName()))
+                                                     .build());
         updateTemplate.put(SET_NAME,
                            (crud,
                             update) -> crud.setName((RuleForm) update.get(AT_RULEFORM),
                                                     (String) update.get(SET_NAME)));
-        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
-                                                     .name(SET_DESCRIPTION)
-                                                     .description(String.format("the description to update on %s",
-                                                                                facet.getName()))
-                                                     .build());
+        GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
+                                                             .name(SET_DESCRIPTION)
+                                                             .description(String.format("the description to update on %s",
+                                                                                        facet.getName()))
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
         updateTemplate.put(SET_DESCRIPTION,
                            (crud,
                             update) -> crud.setDescription((RuleForm) update.get(AT_RULEFORM),
@@ -623,6 +601,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         this.references = null;
         this.typeBuilder = null;
         this.updateTypeBuilder = null;
+        this.createTypeBuilder = null;
         this.updateTemplate = null;
         this.constructors = null;
     }
@@ -636,7 +615,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .type(new GraphQLTypeReference(facet.getName()))
                                    .argument(newArgument().name(STATE)
                                                           .description("the update state to apply to the new instance")
-                                                          .type(new GraphQLNonNull(updateTypeBuilder.build()))
+                                                          .type(new GraphQLNonNull(createTypeBuilder.build()))
                                                           .build())
                                    .dataFetcher(env -> {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
@@ -791,6 +770,124 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                                   (String) env.getArgument(ID)),
                                                                        true))
                                    .build();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void removeChild(NetworkAuthorization<RuleForm> facet,
+                             NetworkAuthorization<RuleForm> auth,
+                             String singularFieldName) {
+        String remove = String.format(REMOVE_TEMPLATE,
+                                      capitalized(singularFieldName));
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(remove)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(remove,
+                           (crud,
+                            update) -> crud.removeChild(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth,
+                                                        (RuleForm) crud.lookup(auth,
+                                                                               (String) update.get(remove))));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void removeChild(NetworkAuthorization<RuleForm> facet,
+                             XDomainNetworkAuthorization<?, ?> auth,
+                             NetworkAuthorization<?> child,
+                             String singularFieldName) {
+        String remove = String.format(REMOVE_TEMPLATE,
+                                      capitalized(singularFieldName));
+        updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
+                                                     .name(remove)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(remove,
+                           (crud,
+                            update) -> crud.removeChild(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth,
+                                                        crud.lookup(child,
+                                                                    (String) update.get(remove))));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void removeChildren(NetworkAuthorization<RuleForm> facet,
+                                NetworkAuthorization<RuleForm> auth,
+                                String fieldName) {
+        String removeChildren = String.format(REMOVE_TEMPLATE,
+                                              capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                     .name(removeChildren)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(removeChildren,
+                           (crud,
+                            update) -> crud.removeChildren(facet,
+                                                           (RuleForm) update.get(AT_RULEFORM),
+                                                           auth,
+                                                           (List<RuleForm>) crud.lookupRuleForm(auth,
+                                                                                                (List<String>) update.get(removeChildren))));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void removeChildren(NetworkAuthorization<RuleForm> facet,
+                                XDomainNetworkAuthorization<?, ?> auth,
+                                String fieldName,
+                                NetworkAuthorization<?> child) {
+        String removeChildren = String.format(REMOVE_TEMPLATE,
+                                              capitalized(fieldName));
+        updateTypeBuilder.field(newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                     .name(removeChildren)
+                                                     .description(auth.getNotes())
+                                                     .build());
+        updateTemplate.put(removeChildren,
+                           (crud,
+                            update) -> crud.removeChildren(facet,
+                                                           (RuleForm) update.get(AT_RULEFORM),
+                                                           auth,
+                                                           crud.lookup(child,
+                                                                       (List<String>) update.get(removeChildren))));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setChildren(NetworkAuthorization<RuleForm> facet,
+                             NetworkAuthorization<RuleForm> auth,
+                             String fieldName) {
+        String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
+        GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                             .name(setter)
+                                                             .description(auth.getNotes())
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
+        updateTemplate.put(setter,
+                           (crud,
+                            update) -> crud.setChildren(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth,
+                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
+                                                                                             (List<String>) update.get(setter))));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setChildren(NetworkAuthorization<RuleForm> facet,
+                             XDomainNetworkAuthorization<?, ?> auth,
+                             String fieldName, NetworkAuthorization<?> child) {
+        String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
+        GraphQLInputObjectField field = newInputObjectField().type(new GraphQLList(GraphQLString))
+                                                             .name(setter)
+                                                             .description(auth.getNotes())
+                                                             .build();
+        updateTypeBuilder.field(field);
+        createTypeBuilder.field(field);
+        updateTemplate.put(setter,
+                           (crud,
+                            update) -> crud.setChildren(facet,
+                                                        (RuleForm) update.get(AT_RULEFORM),
+                                                        auth,
+                                                        crud.lookup(child,
+                                                                    (List<String>) update.get(setter))));
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {

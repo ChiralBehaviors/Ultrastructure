@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -76,7 +75,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         }
     }
 
-    private final UUID                    definingProduct;
+    private final Product                 definingProduct;
     protected final Map<String, Ruleform> cache = new HashMap<String, Ruleform>();
     protected final EntityManager         em;
     protected final Model                 model;
@@ -84,7 +83,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     public DatabaseBackedWorkspace(Product definingProduct, Model model) {
         assert definingProduct != null;
-        this.definingProduct = definingProduct.getId();
+        this.definingProduct = model.getEntityManager()
+                                    .getReference(Product.class,
+                                                  definingProduct.getId());
         this.model = model;
         this.em = model.getEntityManager();
         this.scope = new WorkspaceScope(this);
@@ -210,7 +211,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     @Override
     public Product getDefiningProduct() {
-        return em.find(Product.class, definingProduct);
+        return definingProduct;
     }
 
     /* (non-Javadoc)

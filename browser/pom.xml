@@ -12,17 +12,8 @@
     <description>Angular.js browser for Ultrastructure systems</description>
     <dependencies>
         <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>phantasm-at-rest</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-assets</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -44,6 +35,10 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>phantasm-at-rest</artifactId>
         </dependency>
     </dependencies>
 </project>

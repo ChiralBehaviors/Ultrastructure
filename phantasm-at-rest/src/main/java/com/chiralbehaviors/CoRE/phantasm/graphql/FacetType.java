@@ -725,7 +725,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             case "Boolean":
                 return Scalars.GraphQLBoolean;
             case "Float":
-                return Scalars.GraphQLBoolean;
+                return Scalars.GraphQLFloat;
             default:
                 throw new IllegalStateException(String.format("Invalid GraphQLType: %s",
                                                               type));
@@ -771,7 +771,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             case "Boolean":
                 return Scalars.GraphQLBoolean;
             case "Float":
-                return Scalars.GraphQLBoolean;
+                return Scalars.GraphQLFloat;
             default:
                 return new GraphQLTypeReference(type);
         }

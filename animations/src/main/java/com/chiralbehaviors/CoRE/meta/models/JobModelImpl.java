@@ -337,29 +337,17 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> getActiveExplicitJobs() {
-        TypedQuery<Job> query = em.createNamedQuery(Job.TOP_LEVEL_JOBS,
+        TypedQuery<Job> query = em.createNamedQuery(Job.TOP_LEVEL_ACTIVE_JOBS,
                                                     Job.class);
-        List<Job> active = new ArrayList<>();
-        for (Job j : query.getResultList()) {
-            if (isActive(j)) {
-                active.add(j);
-            }
-        }
-        return active;
+        return query.getResultList();
     }
 
     @Override
     public List<Job> getActiveJobsFor(Agency agency) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ASSIGNED_TO,
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_ASSIGNED_TO,
                                                     Job.class);
         query.setParameter("agency", agency);
-        List<Job> active = new ArrayList<>();
-        for (Job j : query.getResultList()) {
-            if (isActive(j)) {
-                active.add(j);
-            }
-        }
-        return active;
+        return query.getResultList();
     }
 
     @Override
@@ -392,17 +380,10 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<Job> getActiveSubJobsOf(Job job) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_CHILD_JOBS,
+        TypedQuery<Job> query = em.createNamedQuery(Job.GET_ACTIVE_CHILD_JOBS,
                                                     Job.class);
         query.setParameter("parent", job);
-        List<Job> jobs = new ArrayList<>(query.getResultList()
-                                              .size());
-        for (Job j : query.getResultList()) {
-            if (isActive(j)) {
-                jobs.add(j);
-            }
-        }
-        return jobs;
+        return query.getResultList();
     }
 
     /**
@@ -853,15 +834,11 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public boolean hasActiveSiblings(Job job) {
-        TypedQuery<Job> query = em.createNamedQuery(Job.GET_CHILD_JOBS,
-                                                    Job.class);
+        TypedQuery<Long> query = em.createNamedQuery(Job.HAS_ACTIVE_CHILD_JOBS,
+                                                     Long.class);
         query.setParameter("parent", job.getParent());
-        for (Job j : query.getResultList()) {
-            if (isActive(j)) {
-                return true;
-            }
-        }
-        return false;
+
+        return query.getSingleResult() > 0;
     }
 
     @Override

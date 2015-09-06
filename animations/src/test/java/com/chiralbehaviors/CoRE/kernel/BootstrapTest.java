@@ -26,7 +26,7 @@ package com.chiralbehaviors.CoRE.kernel;
  */
 public class BootstrapTest {
     // uncomment to test zee bootstrapping. commented out because pretty much everything tests bootstrapping
-    // @Test 
+    // @Test
     public void testBootstrap() throws Exception {
         Bootstrap.main(new String[] { "target/test-classes/jpa.properties",
                                       "target/bootstrap-out.json" });

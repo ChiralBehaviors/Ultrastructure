@@ -18,8 +18,9 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.graphQl;
+package com.chiralbehaviors.CoRE.phantasm.resources;
 
+import static com.chiralbehaviors.CoRE.kernel.product.WorkspaceOf.workspaceOf;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,22 +32,26 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.kernel.product.Argument;
+import com.chiralbehaviors.CoRE.kernel.product.Constructor;
+import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
+import com.chiralbehaviors.CoRE.kernel.product.Plugin;
+import com.chiralbehaviors.CoRE.kernel.product.Workspace;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
-import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
-import com.chiralbehaviors.CoRE.phantasm.resources.ResourcesTest;
+import com.chiralbehaviors.CoRE.phantasm.resources.plugin.Thing1_Plugin;
+import com.chiralbehaviors.CoRE.product.Product;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -58,17 +63,10 @@ import graphql.validation.ValidationErrorType;
  * @author hhildebrand
  *
  */
-public class WorkspaceSchemaTest extends AbstractModelTest {
-
-    private static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
+public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     @Test
     public void testBadQueries() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
-
         EntityManagerFactory mockedEmf = mockedEmf();
         GraphQlResource resource = new GraphQlResource(mockedEmf);
         Map<String, Object> variables = new HashMap<>();
@@ -90,10 +88,6 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     @Test
     public void testCreate() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
                                         "a favorite thing");
@@ -151,10 +145,6 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     @Test
     public void testGraphQlResource() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
@@ -238,12 +228,8 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
 
     @Test
     public void testMutation() throws Exception {
-        em.getTransaction()
-          .begin();
         String[] newAliases = new String[] { "jones", "smith" };
         String newUri = "new iri";
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
@@ -311,13 +297,71 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
         assertEquals(newUri, thing1.getURI());
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testPlugin() throws InstantiationException {
+
+        EntityManagerFactory mockedEmf = mockedEmf();
+
+        Workspace workspace = workspaceOf(model, scope.getWorkspace()
+                                                      .getDefiningProduct());
+        workspace.addPlugin(constructPlugin());
+
+        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("name", "hello");
+        String hello = "goodbye";
+        variables.put("description", hello);
+        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String) { "
+                                                + "CreateThing1("
+                                                + "  state: { "
+                                                + "     setName: $name, "
+                                                + "     setDescription: $description"
+                                                + "   }) { id name description } }",
+                                                variables);
+        String bob = "Give me food or give me slack or kill me";
+        Thing1_Plugin.passThrough.set(bob);
+        Map<String, Object> result = resource.query(null, TEST_SCENARIO_URI,
+                                                    request);
+
+        assertNull(result.get("errors") == null ? "" : result.get("errors")
+                                                             .toString(),
+                   result.get("errors"));
+
+        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        assertNotNull(thing1Result);
+        assertEquals(bob, thing1Result.get("description"));
+        String thing1ID = (String) thing1Result.get("id");
+        assertNotNull(thing1ID);
+        Thing1 thing1 = model.wrap(Thing1.class, model.getEntityManager()
+                                                      .find(Product.class,
+                                                            UUID.fromString(thing1ID)));
+        assertEquals(bob, thing1.getDescription());
+
+        String apple = "Connie";
+        Thing2 thing2 = model.construct(Thing2.class, apple, "Her Dobbsness");
+        thing1.setThing2(thing2);
+        variables = new HashMap<>();
+        variables.put("id", thing1ID);
+        variables.put("test", "me");
+        request = new QueryRequest("query it($id: String, $test: String) { Thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
+                                   variables);
+        result = resource.query(null, TEST_SCENARIO_URI, request);
+
+        assertNull(result.get("errors") == null ? "" : result.get("errors")
+                                                             .toString(),
+                   result.get("errors"));
+
+        thing1Result = (Map<String, Object>) result.get("Thing1");
+        assertNotNull(thing1Result);
+        assertEquals(apple, thing1Result.get("instanceMethod"));
+        assertEquals("me", Thing1_Plugin.passThrough.get());
+        assertEquals(apple, thing1Result.get("instanceMethodWithArgument"));
+    }
+
     @SuppressWarnings("rawtypes")
     @Test
     public void testWorkspaceSchema() throws Exception {
-        em.getTransaction()
-          .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
-                                          model);
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
         Thing3 thing3 = model.construct(Thing3.class, "Thingy",
@@ -412,5 +456,27 @@ public class WorkspaceSchemaTest extends AbstractModelTest {
                            .toString(),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
+    }
+
+    private Plugin constructPlugin() throws InstantiationException {
+        Plugin testPlugin = model.construct(Plugin.class, "Test Plugin",
+                                            "My super green test plugin");
+        testPlugin.setFacetName("Thing1");
+        testPlugin.setPackageName("com.chiralbehaviors.CoRE.phantasm.resources.plugin");
+        testPlugin.setConstructor(model.construct(Constructor.class,
+                                                  "constructor",
+                                                  "For all your construction needs"));
+        testPlugin.addInstanceMethod(model.construct(InstanceMethod.class,
+                                                     "instanceMethod",
+                                                     "For instance"));
+        InstanceMethod methodWithArg = model.construct(InstanceMethod.class,
+                                                       "instanceMethodWithArgument",
+                                                       "For all your argument needs");
+        Argument argument = model.construct(Argument.class, "arg1",
+                                            "Who needs an argument?");
+        methodWithArg.addArgument(argument);
+        argument.setInputType("String");
+        testPlugin.addInstanceMethod(methodWithArg);
+        return testPlugin;
     }
 }

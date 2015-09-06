@@ -60,6 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Ruleform_;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
@@ -572,7 +573,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             throw new IllegalArgumentException(String.format("classification %s does not exist",
                                                              classification));
         }
-        return new Aspect<RuleForm>(rel, rf);
+        return new Aspect<RuleForm>(Ruleform.initializeAndUnproxy(rel),
+                                    Ruleform.initializeAndUnproxy(rf));
     }
 
     /*

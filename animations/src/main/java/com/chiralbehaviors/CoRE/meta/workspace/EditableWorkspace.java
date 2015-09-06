@@ -28,7 +28,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  * @author hhildebrand
  *
  */
-public interface EditableWorkspace extends Workspace {
+public interface EditableWorkspace extends WorkspaceAccessor {
     <T extends Ruleform> void add(T ruleform);
 
     void addImport(String namespace, Product workspace);

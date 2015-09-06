@@ -30,24 +30,40 @@ import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.kernel.product.Constructor;
+import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
+import com.chiralbehaviors.CoRE.kernel.product.Plugin;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 
+import graphql.Scalars;
 import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
@@ -58,7 +74,8 @@ import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLTypeReference;
 
 /**
- * Cannonical tranform of Phantasm metadata into GraphQL metadata.
+ * Cannonical tranform of Phantasm metadata into GraphQL metadata. Provides
+ * framework for Phantasm Plugin model;
  * 
  * @author hhildebrand
  *
@@ -66,27 +83,54 @@ import graphql.schema.GraphQLTypeReference;
 public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         implements PhantasmTraversal.PhantasmVisitor<RuleForm, Network> {
 
-    private static final String ADD_TEMPLATE       = "add%s";
-    private static final String APPLY_MUTATION     = "Apply%s";
-    private static final String AT_RULEFORM        = "@ruleform";
-    private static final String CREATE_MUTATION    = "Create%s";
-    private static final String DESCRIPTION        = "description";
-    private static final String ID                 = "id";
-    private static final String IMMEDIATE_TEMPLATE = "immediate%s";
-    private static final String INSTANCES_OF_QUERY = "InstancesOf%s";
-    private static final String NAME               = "name";
-    private static final String REMOVE_MUTATION    = "Remove%s";
-    private static final String REMOVE_TEMPLATE    = "remove%s";
+    private static final String ADD_TEMPLATE          = "add%s";
+    private static final String APPLY_MUTATION        = "Apply%s";
+    private static final String AT_RULEFORM           = "@ruleform";
+    private static final String CREATE_MUTATION       = "Create%s";
+    private static final String DESCRIPTION           = "description";
+    private static final String ID                    = "id";
+    private static final String IMMEDIATE_TEMPLATE    = "immediate%s";
+    private static final String INSTANCES_OF_QUERY    = "InstancesOf%s";
+    private static final Logger log                   = LoggerFactory.getLogger(FacetType.class);
+    private static final String NAME                  = "name";
+    private static final String REMOVE_MUTATION       = "Remove%s";
+    private static final String REMOVE_TEMPLATE       = "remove%s";
+    private static final String S_S_PLUGIN_CONVENTION = "%s.%s_Plugin";
     private static final String SET_DESCRIPTION;
     private static final String SET_NAME;
-    private static final String SET_TEMPLATE       = "set%s";
-    private static final String STATE              = "state";
-    private static final String UPDATE_QUERY       = "Update%s";
-    private static final String UPDATE_TYPE        = "%sUpdate";
+    private static final String SET_TEMPLATE          = "set%s";
+    private static final String STATE                 = "state";
+    private static final String UPDATE_QUERY          = "Update%s";
+    private static final String UPDATE_TYPE           = "%sUpdate";
 
     static {
         SET_NAME = String.format(SET_TEMPLATE, capitalized(NAME));
         SET_DESCRIPTION = String.format(SET_TEMPLATE, capitalized(DESCRIPTION));
+    }
+
+    public static Object invoke(Method method, DataFetchingEnvironment env) {
+        try {
+            return method.invoke(null, env);
+        } catch (IllegalAccessException | IllegalArgumentException e) {
+            throw new IllegalStateException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e.getTargetException());
+        }
+    }
+
+    public static Object invoke(Method method, DataFetchingEnvironment env,
+                                @SuppressWarnings("rawtypes") Phantasm instance) {
+        try {
+            return method.invoke(null, env, instance);
+        } catch (InvocationTargetException e) {
+            log.error("error invoking {} plugin {}", instance.toString(),
+                      method.toGenericString(), e.getTargetException());
+            return null;
+        } catch (Throwable e) {
+            log.error("error invoking {} plugin {}", instance.toString(),
+                      method.toGenericString(), e);
+            return null;
+        }
     }
 
     private static String capitalized(String field) {
@@ -95,17 +139,15 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         return new String(chars);
     }
 
-    private NetworkAuthorization<RuleForm>                                                          facet;
-    private Model                                                                                   model;
+    private List<BiFunction<DataFetchingEnvironment, RuleForm, Object>>                             constructors   = new ArrayList<>();
+    private String                                                                                  name;
     private Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
     private Builder                                                                                 typeBuilder;
     private Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
+    private graphql.schema.GraphQLInputObjectType.Builder                                           updateTypeBuilder;
 
-    private graphql.schema.GraphQLInputObjectType.Builder updateTypeBuilder;
-
-    public FacetType(NetworkAuthorization<RuleForm> facet, Model model) {
-        this.model = model;
-        this.facet = facet;
+    public FacetType(NetworkAuthorization<RuleForm> facet) {
+        this.name = facet.getName();
         typeBuilder = newObject().name(facet.getName())
                                  .description(facet.getNotes());
         updateTypeBuilder = newInputObject().name(String.format(UPDATE_TYPE,
@@ -120,20 +162,29 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
      *            - top level query
      * @param mutation
      *            - top level mutation
+     * @param facet
      * @return the references this facet has to other facets.
      */
-    public Set<NetworkAuthorization<?>> build(Builder query, Builder mutation) {
-        buildRuleformAttributes();
+    public Set<NetworkAuthorization<?>> build(Builder query, Builder mutation,
+                                              NetworkAuthorization<?> facetUntyped,
+                                              List<Plugin> plugins, Model model,
+                                              Map<Plugin, ClassLoader> executionScopes) {
+        @SuppressWarnings("unchecked")
+        NetworkAuthorization<RuleForm> facet = (NetworkAuthorization<RuleForm>) facetUntyped;
+        build(facet);
         new PhantasmTraversal<RuleForm, Network>(model).traverse(facet, this);
+
+        addPlugins(facet, plugins, executionScopes);
+
         GraphQLObjectType type = typeBuilder.build();
 
-        query.field(instance(type));
-        query.field(instances());
+        query.field(instance(facet, type));
+        query.field(instances(facet));
 
-        mutation.field(createInstance());
-        mutation.field(apply());
-        mutation.field(update());
-        mutation.field(remove());
+        mutation.field(createInstance(facet));
+        mutation.field(apply(facet));
+        mutation.field(update(facet));
+        mutation.field(remove(facet));
         Set<NetworkAuthorization<?>> referenced = references;
         clear();
         return referenced;
@@ -144,12 +195,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         return (PhantasmCRUD) env.getContext();
     }
 
-    public NetworkAuthorization<RuleForm> getFacet() {
-        return facet;
-    }
-
     public String getName() {
-        return facet.getName();
+        return name;
     }
 
     @Override
@@ -159,7 +206,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void visit(AttributeAuthorization<RuleForm, Network> auth,
+    public void visit(NetworkAuthorization<RuleForm> facet,
+                      AttributeAuthorization<RuleForm, Network> auth,
                       String fieldName) {
         Attribute attribute = auth.getAuthorizedAttribute();
         GraphQLOutputType type = typeOf(attribute);
@@ -208,7 +256,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void visitChildren(NetworkAuthorization<RuleForm> auth,
+    public void visitChildren(NetworkAuthorization<RuleForm> facet,
+                              NetworkAuthorization<RuleForm> auth,
                               String fieldName,
                               NetworkAuthorization<RuleForm> child,
                               String singularFieldName) {
@@ -302,7 +351,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void visitChildren(XDomainNetworkAuthorization<?, ?> auth,
+    public void visitChildren(NetworkAuthorization<RuleForm> facet,
+                              XDomainNetworkAuthorization<?, ?> auth,
                               String fieldName, NetworkAuthorization<?> child,
                               String singularFieldName) {
         GraphQLList type = new GraphQLList(new GraphQLTypeReference(child.getName()));
@@ -386,7 +436,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void visitSingular(NetworkAuthorization<RuleForm> auth,
+    public void visitSingular(NetworkAuthorization<RuleForm> facet,
+                              NetworkAuthorization<RuleForm> auth,
                               String fieldName,
                               NetworkAuthorization<RuleForm> child) {
         GraphQLOutputType type = new GraphQLTypeReference(child.getName());
@@ -414,7 +465,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     @Override
-    public void visitSingular(XDomainNetworkAuthorization<?, ?> auth,
+    public void visitSingular(NetworkAuthorization<RuleForm> facet,
+                              XDomainNetworkAuthorization<?, ?> auth,
                               String fieldName, NetworkAuthorization<?> child) {
         GraphQLTypeReference type = new GraphQLTypeReference(child.getName());
         typeBuilder.field(newFieldDefinition().type(type)
@@ -439,8 +491,28 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         references.add(child);
     }
 
+    private void addPlugins(NetworkAuthorization<RuleForm> facet,
+                            List<Plugin> plugins,
+                            Map<Plugin, ClassLoader> executionScopes) {
+        plugins.forEach(plugin -> {
+            ClassLoader executionScope = executionScopes.get(plugin);
+            assert executionScope != null : String.format("%s execution scope is null!",
+                                                          plugin);
+            String defaultImplementation = Optional.of(plugin.getPackageName())
+                                                   .map(pkg -> String.format(S_S_PLUGIN_CONVENTION,
+                                                                             pkg,
+                                                                             plugin.getFacetName()))
+                                                   .orElse(null);
+            build(plugin.getConstructor(), defaultImplementation,
+                  executionScope);
+            plugin.getInstanceMethods()
+                  .forEach(method -> build(facet, method, defaultImplementation,
+                                           executionScope));
+        });
+    }
+
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition apply() {
+    private GraphQLFieldDefinition apply(NetworkAuthorization<RuleForm> facet) {
         return newFieldDefinition().name(String.format(APPLY_MUTATION,
                                                        facet.getName()))
                                    .type(new GraphQLTypeReference(facet.getName()))
@@ -454,8 +526,25 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .build();
     }
 
+    private void build(Constructor constructor, String defaultImplementation,
+                       ClassLoader executionScope) {
+        Method method = getInstanceMethod(Optional.ofNullable(constructor.getImplementationClass())
+                                                  .orElse(defaultImplementation),
+                                          Optional.ofNullable(constructor.getImplementationMethod())
+                                                  .orElse(constructor.getName()),
+                                          constructor.toString(),
+                                          executionScope);
+
+        constructors.add((env, instance) -> {
+            @SuppressWarnings("unchecked")
+            Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[1];
+            return invoke(method, env, ctx(env).getModel()
+                                               .wrap(phantasm, instance));
+        });
+    }
+
     @SuppressWarnings("unchecked")
-    private void buildRuleformAttributes() {
+    private void build(NetworkAuthorization<RuleForm> facet) {
         typeBuilder.field(newFieldDefinition().type(GraphQLString)
                                               .name(ID)
                                               .description("The id of the facet instance")
@@ -494,14 +583,54 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                            (String) update.get(SET_DESCRIPTION)));
     }
 
+    private void build(NetworkAuthorization<RuleForm> facet,
+                       InstanceMethod instanceMethod,
+                       String defaultImplementation,
+                       ClassLoader executionScope) {
+        Method method = getInstanceMethod(Optional.ofNullable(instanceMethod.getImplementationClass())
+                                                  .orElse(defaultImplementation),
+                                          Optional.ofNullable(instanceMethod.getImplementationMethod())
+                                                  .orElse(instanceMethod.getName()),
+                                          instanceMethod.toString(),
+                                          executionScope);
+        List<GraphQLArgument> arguments = instanceMethod.getArguments()
+                                                        .stream()
+                                                        .map(arg -> newArgument().name(arg.getName())
+                                                                                 .description(arg.getDescription())
+                                                                                 .type(inputTypeOf(arg.getInputType()))
+                                                                                 .build())
+                                                        .collect(Collectors.toList());
+        @SuppressWarnings("unchecked")
+        Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[1];
+        typeBuilder.field(newFieldDefinition().type(outputTypeOf(instanceMethod.getReturnType()))
+                                              .argument(arguments)
+                                              .name(instanceMethod.getName())
+                                              .dataFetcher(env -> {
+                                                  @SuppressWarnings("unchecked")
+                                                  RuleForm instance = (RuleForm) env.getSource();
+                                                  return instance == null ? null
+                                                                          : invoke(method,
+                                                                                   env,
+                                                                                   ctx(env).getModel()
+                                                                                           .wrap(phantasm,
+                                                                                                 instance));
+                                              })
+                                              .description(instanceMethod.getDescription())
+                                              .build());
+    }
+
     private void clear() {
-        this.model = null;
         this.references = null;
         this.typeBuilder = null;
+        this.updateTypeBuilder = null;
+        this.updateTemplate = null;
+        this.constructors = null;
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition createInstance() {
+    private GraphQLFieldDefinition createInstance(NetworkAuthorization<RuleForm> facet) {
+        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdate = updateTemplate;
+        List<BiFunction<DataFetchingEnvironment, RuleForm, Object>> detachedConstructors = constructors;
         return newFieldDefinition().name(String.format(CREATE_MUTATION,
                                                        facet.getName()))
                                    .type(new GraphQLTypeReference(facet.getName()))
@@ -517,15 +646,94 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                (String) updateState.get(SET_DESCRIPTION));
                                        updateState.remove(SET_NAME);
                                        updateState.remove(SET_DESCRIPTION);
-                                       return ruleform == null ? null
-                                                               : update(ruleform,
-                                                                        updateState,
-                                                                        crud);
+                                       update(ruleform, updateState, crud,
+                                              detachedUpdate);
+                                       detachedConstructors.forEach(constructor -> constructor.apply(env,
+                                                                                                     ruleform));
+                                       return ruleform;
                                    })
                                    .build();
     }
 
-    private GraphQLFieldDefinition instance(GraphQLObjectType type) {
+    private Class<?> getImplementation(String implementationClass, String type,
+                                       ClassLoader executionScope) {
+        if (implementationClass == null) {
+
+            throw new IllegalStateException(String.format("No implementation class could be determined for %s in %s",
+                                                          type, getName()));
+        }
+        Class<?> clazz;
+        try {
+            clazz = executionScope.loadClass(implementationClass);
+        } catch (ClassNotFoundException e) {
+            log.warn("Error plugging in constructor {} into {}", type,
+                     getName(), e);
+            throw new IllegalStateException(String.format("Error plugging in %s into %s: %s",
+                                                          type, getName(),
+                                                          e.toString()),
+                                            e);
+        }
+        return clazz;
+    }
+
+    private Method getInstanceMethod(String implementationClass,
+                                     String implementationMethod, String type,
+                                     ClassLoader executionScope) {
+
+        Class<?> clazz = getImplementation(implementationClass, type,
+                                           executionScope);
+        List<Method> candidates = Arrays.asList(clazz.getDeclaredMethods())
+                                        .stream()
+                                        .filter(method -> Modifier.isStatic(method.getModifiers()))
+                                        .filter(method -> method.getName()
+                                                                .equals(implementationMethod))
+                                        .filter(method -> method.getParameterTypes().length == 2)
+                                        .filter(method -> method.getParameterTypes()[0].equals(DataFetchingEnvironment.class))
+                                        .collect(Collectors.toList());
+        if (candidates.isEmpty()) {
+            log.warn("Error plugging in {} into {}, no static method matches for {} in {}",
+                     type, getName(), implementationMethod,
+                     implementationClass);
+            throw new IllegalStateException(String.format("Error plugging in %s into %s, no static method matches for method '%s' in %s",
+                                                          type, getName(),
+                                                          implementationMethod,
+                                                          implementationClass));
+        }
+        if (candidates.size() > 1) {
+            log.warn("Error plugging in {} into {}, multiple matches for {} in {}",
+                     type, getName(), implementationMethod,
+                     implementationClass);
+            throw new IllegalStateException(String.format("Error plugging in %s into %s, multiple matches for static method '%s' in %s",
+                                                          type, getName(),
+                                                          implementationMethod,
+                                                          implementationClass));
+        }
+        return candidates.get(0);
+    }
+
+    private GraphQLInputType inputTypeOf(String type) {
+        type = type.trim();
+        if (type.startsWith("[")) {
+            return new GraphQLList(inputTypeOf(type.substring(1, type.length()
+                                                                 - 1)));
+        }
+        switch (type) {
+            case "Int":
+                return Scalars.GraphQLInt;
+            case "String":
+                return Scalars.GraphQLString;
+            case "Boolean":
+                return Scalars.GraphQLBoolean;
+            case "Float":
+                return Scalars.GraphQLFloat;
+            default:
+                throw new IllegalStateException(String.format("Invalid GraphQLType: %s",
+                                                              type));
+        }
+    }
+
+    private GraphQLFieldDefinition instance(NetworkAuthorization<RuleForm> facet,
+                                            GraphQLObjectType type) {
         return newFieldDefinition().name(facet.getName())
                                    .type(type)
                                    .argument(newArgument().name(ID)
@@ -537,7 +745,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .build();
     }
 
-    private GraphQLFieldDefinition instances() {
+    private GraphQLFieldDefinition instances(NetworkAuthorization<RuleForm> facet) {
         return newFieldDefinition().name(String.format(INSTANCES_OF_QUERY,
                                                        facet.getName()))
                                    .type(new GraphQLList(new GraphQLTypeReference(facet.getName())))
@@ -546,8 +754,31 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     }
 
+    private GraphQLOutputType outputTypeOf(String type) {
+        if (type == null) {
+            return Scalars.GraphQLString;
+        }
+        type = type.trim();
+        if (type.startsWith("[")) {
+            return new GraphQLList(inputTypeOf(type.substring(1, type.length()
+                                                                 - 1)));
+        }
+        switch (type) {
+            case "Int":
+                return Scalars.GraphQLInt;
+            case "String":
+                return Scalars.GraphQLString;
+            case "Boolean":
+                return Scalars.GraphQLBoolean;
+            case "Float":
+                return Scalars.GraphQLFloat;
+            default:
+                return new GraphQLTypeReference(type);
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition remove() {
+    private GraphQLFieldDefinition remove(NetworkAuthorization<RuleForm> facet) {
         return newFieldDefinition().name(String.format(REMOVE_MUTATION,
                                                        facet.getName()))
                                    .type(new GraphQLTypeReference(facet.getName()))
@@ -592,7 +823,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     @SuppressWarnings("unchecked")
-    private GraphQLFieldDefinition update() {
+    private GraphQLFieldDefinition update(NetworkAuthorization<RuleForm> facet) {
+        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdateTemplate = updateTemplate;
         return newFieldDefinition().name(String.format(UPDATE_QUERY,
                                                        facet.getName()))
                                    .type(new GraphQLTypeReference(facet.getName()))
@@ -605,22 +837,24 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                        PhantasmCRUD<RuleForm, Network> crud = ctx(env);
                                        RuleForm ruleform = (RuleForm) crud.lookup(facet,
                                                                                   (String) updateState.get(ID));
-                                       return update(ruleform, updateState,
-                                                     crud);
+                                       update(ruleform, updateState, crud,
+                                              detachedUpdateTemplate);
+                                       return ruleform;
                                    })
                                    .build();
     }
 
-    private Object update(RuleForm ruleform, Map<String, Object> updateState,
-                          PhantasmCRUD<RuleForm, Network> crud) {
+    private void update(RuleForm ruleform, Map<String, Object> updateState,
+                        PhantasmCRUD<RuleForm, Network> crud,
+                        Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate) {
         updateState.put(AT_RULEFORM, ruleform);
-        for (String field : updateState.keySet()) {
-            if (!field.equals(ID) && !field.equals(AT_RULEFORM)
-                && updateState.containsKey(field)) {
-                updateTemplate.get(field)
-                              .apply(crud, updateState);
-            }
-        }
-        return ruleform;
+        updateState.keySet()
+                   .stream()
+                   .filter(field -> !field.equals(ID)
+                                    && !field.equals(AT_RULEFORM)
+                                    && updateState.containsKey(field))
+                   .forEach(field -> updateTemplate.get(field)
+                                                   .apply(crud, updateState));
+
     }
 }

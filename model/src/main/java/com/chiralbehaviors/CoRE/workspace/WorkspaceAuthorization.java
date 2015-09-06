@@ -107,13 +107,7 @@ public class WorkspaceAuthorization extends Ruleform {
 
     @SuppressWarnings("unchecked")
     public <T extends Ruleform> T getEntity(EntityManager em) {
-        T found = (T) em.find(CONCRETE_SUBCLASSES.get(type), reference);
-        if (found != null) {
-            return found;
-        } else {
-            throw new IllegalStateException(String.format("%s not found",
-                                                          this));
-        }
+        return (T) em.getReference(CONCRETE_SUBCLASSES.get(type), reference);
     }
 
     public String getKey() {
@@ -145,7 +139,8 @@ public class WorkspaceAuthorization extends Ruleform {
     }
 
     public void setRuleform(Ruleform ruleform, EntityManager em) {
-        type = ruleform.getClass()
+        type = Ruleform.initializeAndUnproxy(ruleform)
+                       .getClass()
                        .getSimpleName();
         reference = ruleform.getId();
         em.persist(ruleform);

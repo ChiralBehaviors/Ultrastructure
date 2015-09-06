@@ -41,7 +41,7 @@ import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
@@ -66,7 +66,7 @@ public class StateDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
     public StateDefinition(Class<Phantasm<RuleForm>> stateInterface) {
         this.stateInterface = stateInterface;
         State state = stateInterface.getAnnotation(State.class);
-        workspace = Workspace.uuidOf(state.workspace());
+        workspace = WorkspaceAccessor.uuidOf(state.workspace());
         construct();
     }
 

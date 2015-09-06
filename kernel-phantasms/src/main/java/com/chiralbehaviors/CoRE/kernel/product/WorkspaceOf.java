@@ -18,33 +18,18 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.meta.workspace;
+package com.chiralbehaviors.CoRE.kernel.product;
 
-import java.util.List;
-
-import com.chiralbehaviors.CoRE.annotations.Edge;
-import com.chiralbehaviors.CoRE.annotations.Key;
-import com.chiralbehaviors.CoRE.annotations.State;
+import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
  * @author hhildebrand
  *
  */
-@State(workspace = Workspace.KERNEL_URN)
-public interface WorkspaceAspect {
-    String getURI();
-
-    void setURI(String uri);
-
-    @Edge(@Key(name = "Imports"))
-    List<WorkspaceAspect> getImports();
-
-    @Edge(@Key(name = "Imports"))
-    void setImports(List<WorkspaceAspect> imports);
-
-    @Edge(@Key(name = "Imports"))
-    void addImport(WorkspaceAspect workspace);
-
-    @Edge(@Key(name = "Imports"))
-    void removeImport(WorkspaceAspect workspace);
+public interface WorkspaceOf {
+    static Workspace workspaceOf(Model model, Ruleform ruleform) {
+        return model.wrap(Workspace.class, ruleform.getWorkspace()
+                                                   .getDefiningProduct());
+    }
 }

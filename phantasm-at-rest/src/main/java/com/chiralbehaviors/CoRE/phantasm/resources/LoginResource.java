@@ -39,9 +39,10 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
+import com.chiralbehaviors.CoRE.kernel.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.phantasm.authentication.CoreUser;
+import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 
 /**
  * @author hhildebrand
@@ -90,7 +91,7 @@ public class LoginResource {
             CoreUser user = (CoreUser) model.wrap(CoreUser.class,
                                                   agencies.get(0));
 
-            if (!user.authenticate(password)) {
+            if (!AgencyBasicAuthenticator.authenticate(user, password)) {
                 log.warn(String.format("Invalid attempt to login from username %s",
                                        username));
                 throw new WebApplicationException(Status.UNAUTHORIZED);

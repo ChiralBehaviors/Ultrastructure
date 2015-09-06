@@ -99,6 +99,10 @@
             <artifactId>dropwizard-client</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>kernel-phantasms</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -108,7 +112,8 @@
                 <version>${project.version}</version>
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <id>test-phantasms</id>
+                        <phase>generate-test-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>

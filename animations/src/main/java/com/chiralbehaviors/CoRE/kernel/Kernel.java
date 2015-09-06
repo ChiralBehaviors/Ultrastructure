@@ -54,7 +54,13 @@ public interface Kernel {
 
     Relationship getAPPLY();
 
+    Product getArgument();
+
     Relationship getCapability();
+
+    Product getCodeSource();
+
+    Product getConstructor();
 
     Relationship getContains();
 
@@ -94,6 +100,8 @@ public interface Kernel {
 
     Relationship getEquals();
 
+    Attribute getFacetName();
+
     Relationship getFormerMemberOf();
 
     Relationship getGreaterThan();
@@ -102,11 +110,21 @@ public interface Kernel {
 
     Relationship getHadMember();
 
+    Relationship getHasArgument();
+
+    Relationship getHasCodeSource();
+
+    Relationship getHasConstructor();
+
     Relationship getHasException();
 
     Relationship getHasHead();
 
     Relationship getHasMember();
+
+    Relationship getHasMethod();
+
+    Relationship getHasPlugin();
 
     Relationship getHasVersion();
 
@@ -119,6 +137,10 @@ public interface Kernel {
     Relationship getImports();
 
     Relationship getIncludes();
+
+    Attribute getInputType();
+
+    Product getInstanceMethod();
 
     Agency getInverseSoftware();
 
@@ -135,6 +157,8 @@ public interface Kernel {
     Relationship getIsLocationOf();
 
     Relationship getIsValidatedBy();
+
+    Attribute getJAR();
 
     Attribute getJsonldType();
 
@@ -184,6 +208,8 @@ public interface Kernel {
 
     Attribute getPasswordRounds();
 
+    Product getPlugin();
+
     Agency getPropagationSoftware();
 
     Relationship getPrototype();
@@ -193,6 +219,8 @@ public interface Kernel {
     Relationship getREAD();
 
     Relationship getREMOVE();
+
+    Attribute getReturnType();
 
     Agency getSameAgency();
 
@@ -213,6 +241,8 @@ public interface Kernel {
     Unit getSeconds();
 
     Agency getSpecialSystemAgency();
+
+    Product getStaticMethod();
 
     Agency getSuperUser();
 

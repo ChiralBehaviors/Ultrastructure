@@ -44,7 +44,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
-import com.chiralbehaviors.CoRE.meta.workspace.Workspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
@@ -104,7 +104,7 @@ public class WorkspaceResource extends TransactionalResource {
                                                                 qualifiedName,
                                                                 scope));
             }
-            return resolved;
+            return Ruleform.initializeAndUnproxy(resolved);
         } else if (key.countTokens() == 2) {
             Ruleform resolved = scope.lookup(key.nextToken(), key.nextToken());
             if (resolved == null) {
@@ -112,7 +112,7 @@ public class WorkspaceResource extends TransactionalResource {
                                                                 qualifiedName,
                                                                 scope));
             }
-            return resolved;
+            return Ruleform.initializeAndUnproxy(resolved);
         } else {
             throw new WebApplicationException(String.format("The workspace key [%s] is not defined in %s",
                                                             qualifiedName,
@@ -125,7 +125,7 @@ public class WorkspaceResource extends TransactionalResource {
         try {
             workspaceUUID = UUID.fromString(workspace);
         } catch (IllegalArgumentException e) {
-            workspaceUUID = Workspace.uuidOf(workspace);
+            workspaceUUID = WorkspaceAccessor.uuidOf(workspace);
         }
         return workspaceUUID;
     }
@@ -220,7 +220,9 @@ public class WorkspaceResource extends TransactionalResource {
                                                                             .getInverse())) {
                 Map<String, Object> ctx = new TreeMap<>();
                 ctx.put(Constants.ID,
-                        Facet.getInstanceIri(aspect, definingProduct, uriInfo));
+                        Facet.getInstanceIri(aspect,
+                                             Ruleform.initializeAndUnproxy(definingProduct),
+                                             uriInfo));
                 ctx.put(Constants.TYPE, Facet.getFullFacetIri(aspect, uriInfo));
                 Map<String, Object> wsp = new TreeMap<>();
                 wsp.put(Constants.ID,
@@ -296,6 +298,6 @@ public class WorkspaceResource extends TransactionalResource {
     @Path("translate/{uri}")
     @GET
     public UUID translate(@PathParam("uri") String uri) {
-        return Workspace.uuidOf(uri);
+        return WorkspaceAccessor.uuidOf(uri);
     }
 }

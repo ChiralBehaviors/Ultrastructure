@@ -115,22 +115,6 @@ public interface WellKnownObject {
                 }
 
             },
-            CORE_USER() {
-
-                @Override
-                public String description() {
-                    return "Users allowed to log into the CoRE system";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return WellKnownObject.CORE_USER;
-                }
-
-            },
             INVERSE_SOFTWARE() {
 
                 @Override
@@ -210,38 +194,6 @@ public interface WellKnownObject {
                     return WellKnownObject.SPECIAL_SYSTEM_AGENCY;
                 }
 
-            },
-            SUPER_USER() {
-
-                @Override
-                public String description() {
-                    return "The god user that we can actually use to authenticate and log into the system";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return WellKnownObject.SUPER_USER;
-                }
-
-            },
-            UNAUTHENTICATED() {
-
-                @Override
-                public String description() {
-                    return "The unauthenticated agency";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "Unauthenticated";
-                }
-
             };
 
         /* (non-Javadoc)
@@ -311,54 +263,6 @@ public interface WellKnownObject {
                 }
 
             },
-            LOGIN() {
-
-                @Override
-                public String description() {
-                    return "The Attribute that contains the CoRE login name of the agency";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
-                 */
-                @Override
-                public ValueType valueType() {
-                    return ValueType.TEXT;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return WellKnownObject.LOGIN;
-                }
-
-            },
-            NAMESPACE() {
-
-                @Override
-                public String description() {
-                    return "A special Attribute that stands for the namespace attribute";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
-                 */
-                @Override
-                public ValueType valueType() {
-                    return ValueType.TEXT;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return WellKnownObject.NAMESPACE;
-                }
-
-            },
             NOT_APPLICABLE() {
 
                 @Override
@@ -407,54 +311,6 @@ public interface WellKnownObject {
                 }
 
             },
-            PASSWORD_HASH() {
-
-                @Override
-                public String description() {
-                    return "The Attribute that contains the password hash of the CoRE user";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
-                 */
-                @Override
-                public ValueType valueType() {
-                    return ValueType.TEXT;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return WellKnownObject.PASSWORD_HASH;
-                }
-
-            },
-            PASSWORD_ROUNDS() {
-
-                @Override
-                public String description() {
-                    return "The Attribute that contains the required rounds for password hash of the CoRE user";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
-                 */
-                @Override
-                public ValueType valueType() {
-                    return ValueType.INTEGER;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return WellKnownObject.PASSWORD_ROUNDS;
-                }
-
-            },
             SAME() {
 
                 @Override
@@ -478,81 +334,6 @@ public interface WellKnownObject {
                     return WellKnownObject.SAME;
                 }
 
-            },
-            IRI() {
-
-                @Override
-                public String description() {
-                    return "A special Attribute that stands for the Internationalized Resource Indicator";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
-                 */
-                @Override
-                public ValueType valueType() {
-                    return ValueType.TEXT;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return WellKnownObject.IRI;
-                }
-
-            },
-            JSONLD_TYPE() {
-
-                @Override
-                public String description() {
-                    return "A special Attribute that stands for the JSON-LD @type";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
-                 */
-                @Override
-                public ValueType valueType() {
-                    return ValueType.TEXT;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return WellKnownObject.JSONLD_TYPE;
-                }
-            },
-            ACCESS_TOKEN() {
-
-                @Override
-                public String description() {
-                    return "An attribute that represents access tokens";
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject.WellKnownAttribute#valueType()
-                 */
-                @Override
-                public ValueType valueType() {
-                    return ValueType.TIMESTAMP;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "Access Token";
-                }
-
-                @Override
-                public boolean indexed() {
-                    return true;
-                }
             };
 
         /* (non-Javadoc)

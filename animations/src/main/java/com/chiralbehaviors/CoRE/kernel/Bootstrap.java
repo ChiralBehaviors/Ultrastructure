@@ -432,8 +432,6 @@ public class Bootstrap {
     }
 
     private void populateAgencies(Agency core, Product kernelWorkspace) {
-        populate("CoreUser", find(WellKnownAgency.CORE_USER), core,
-                 kernelWorkspace);
         populate("AnyAgency", find(WellKnownAgency.ANY), core, kernelWorkspace);
         populate("CopyAgency", find(WellKnownAgency.COPY), core,
                  kernelWorkspace);
@@ -449,15 +447,11 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("CoreModel", find(WellKnownAgency.CORE_MODEL), core,
                  kernelWorkspace);
-        populate("SuperUser", find(WellKnownAgency.SUPER_USER), core,
-                 kernelWorkspace);
         populate("InverseSoftware", find(WellKnownAgency.INVERSE_SOFTWARE),
                  core, kernelWorkspace);
         populate("SameAgency", find(WellKnownAgency.SAME), core,
                  kernelWorkspace);
         populate("NotApplicableAgency", find(WellKnownAgency.NOT_APPLICABLE),
-                 core, kernelWorkspace);
-        populate("UnauthenticatedAgency", find(WellKnownAgency.UNAUTHENTICATED),
                  core, kernelWorkspace);
     }
 
@@ -471,19 +465,7 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("SameAttribute", find(WellKnownAttribute.SAME), core,
                  kernelWorkspace);
-        populate("Login", find(WellKnownAttribute.LOGIN), core,
-                 kernelWorkspace);
-        populate("PasswordHash", find(WellKnownAttribute.PASSWORD_HASH), core,
-                 kernelWorkspace);
-        populate("PasswordRounds", find(WellKnownAttribute.PASSWORD_ROUNDS),
-                 core, kernelWorkspace);
-        populate("Namespace", find(WellKnownAttribute.NAMESPACE), core,
-                 kernelWorkspace);
-        populate("IRI", find(WellKnownAttribute.IRI), core, kernelWorkspace);
-        populate("JsonldType", find(WellKnownAttribute.JSONLD_TYPE), core,
-                 kernelWorkspace);
-        populate("AccessToken", find(WellKnownAttribute.ACCESS_TOKEN), core,
-                 kernelWorkspace);
+
     }
 
     private void populateIntervals(Agency core, Product kernelWorkspace) {

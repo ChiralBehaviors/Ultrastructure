@@ -32,27 +32,27 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class WorkspaceScope {
-    private final Map<String, Workspace> imports = new HashMap<>();
-    private final Workspace              workspace;
+    private final Map<String, WorkspaceAccessor> imports = new HashMap<>();
+    private final WorkspaceAccessor              workspace;
 
-    public WorkspaceScope(Map<String, Workspace> imports, Workspace workspace) {
+    public WorkspaceScope(Map<String, WorkspaceAccessor> imports, WorkspaceAccessor workspace) {
         if (imports != null)
             this.imports.putAll(imports);
         this.workspace = workspace;
     }
 
-    public WorkspaceScope(Workspace workspace) {
+    public WorkspaceScope(WorkspaceAccessor workspace) {
         this.workspace = workspace;
     }
 
     /**
      * @param workspace
      */
-    public void add(String name, Workspace workspace) {
+    public void add(String name, WorkspaceAccessor workspace) {
         imports.put(name, workspace);
     }
 
-    public Workspace getWorkspace() {
+    public WorkspaceAccessor getWorkspace() {
         return workspace;
     }
 
@@ -92,7 +92,7 @@ public class WorkspaceScope {
         if (namespace == null || namespace.length() == 0) {
             return (T) lookup(name);
         }
-        Workspace workspace = imports.get(namespace);
+        WorkspaceAccessor workspace = imports.get(namespace);
         if (workspace == null) {
             throw new IllegalArgumentException(String.format("Namespace %s does not exist",
                                                              namespace));
@@ -105,13 +105,13 @@ public class WorkspaceScope {
         return member;
     }
 
-    public Workspace remove(String key) {
+    public WorkspaceAccessor remove(String key) {
         return imports.remove(key);
     }
 
-    public void remove(Workspace scope) {
+    public void remove(WorkspaceAccessor scope) {
         String key = null;
-        for (Map.Entry<String, Workspace> entry : imports.entrySet()) {
+        for (Map.Entry<String, WorkspaceAccessor> entry : imports.entrySet()) {
             if (entry.getValue()
                      .equals(scope)) {
                 key = entry.getKey();

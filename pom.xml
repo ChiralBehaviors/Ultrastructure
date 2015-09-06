@@ -81,7 +81,7 @@
     </modules>
 
     <dependencyManagement>
-        <dependencies>  
+        <dependencies>
             <dependency>
                 <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>phantasm-at-rest</artifactId>
@@ -171,6 +171,11 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-jpamodelgen</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-c3p0</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
             <dependency>

@@ -149,8 +149,6 @@ public class Relationship
     @JsonIgnore
     private Set<RelationshipNetwork> networkByParent;
 
-    private String operator;
-
     public Relationship() {
     }
 
@@ -343,10 +341,6 @@ public class Relationship
         return WellKnownRelationship.NOT_APPLICABLE.id();
     }
 
-    public String getOperator() {
-        return operator;
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.ExistentialRuleform#getSameId()
      */
@@ -461,9 +455,5 @@ public class Relationship
     @Override
     public void setNetworkByParent(Set<RelationshipNetwork> theNetworkByParent) {
         networkByParent = theNetworkByParent;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
     }
 }

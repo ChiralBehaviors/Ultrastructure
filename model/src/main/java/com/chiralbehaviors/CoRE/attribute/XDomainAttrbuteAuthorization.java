@@ -57,7 +57,8 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
     private static final long serialVersionUID = 1L;
 
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "authorized_attribute")
     private Attribute authorizedAttribute;
 

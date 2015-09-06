@@ -21,6 +21,9 @@ package com.chiralbehaviors.CoRE.job;
 
 import static com.chiralbehaviors.CoRE.job.Job.EXISTING_JOB_WITH_PARENT_AND_PROTOCOL;
 import static com.chiralbehaviors.CoRE.job.Job.FIND_ALL;
+import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_ASSIGNED_TO;
+import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_CHILD_JOBS;
+import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_CHILD_JOBS_FOR_SERVICE;
 import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS;
 import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES;
 import static com.chiralbehaviors.CoRE.job.Job.GET_ACTIVE_OR_TERMINATED_SUB_JOBS;
@@ -32,8 +35,10 @@ import static com.chiralbehaviors.CoRE.job.Job.GET_STATUS_CODE_SEQUENCES;
 import static com.chiralbehaviors.CoRE.job.Job.GET_SUB_JOBS_ASSIGNED_TO;
 import static com.chiralbehaviors.CoRE.job.Job.GET_TERMINAL_STATES;
 import static com.chiralbehaviors.CoRE.job.Job.GET_UNSET_SIBLINGS;
+import static com.chiralbehaviors.CoRE.job.Job.HAS_ACTIVE_CHILD_JOBS;
 import static com.chiralbehaviors.CoRE.job.Job.HAS_SCS;
 import static com.chiralbehaviors.CoRE.job.Job.INITIAL_STATE;
+import static com.chiralbehaviors.CoRE.job.Job.TOP_LEVEL_ACTIVE_JOBS;
 import static com.chiralbehaviors.CoRE.job.Job.TOP_LEVEL_JOBS;
 
 import java.util.Set;
@@ -62,6 +67,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @NamedQueries({ @NamedQuery(name = FIND_ALL, query = "select j from Job j"),
                 @NamedQuery(name = TOP_LEVEL_JOBS, query = "SELECT j  FROM Job AS j  WHERE j.parent IS NULL"),
+                @NamedQuery(name = TOP_LEVEL_ACTIVE_JOBS, query = "SELECT j  "
+                                                                  + " FROM Job AS j  "
+                                                                  + " WHERE j.parent IS NULL"
+                                                                  + "  AND NOT EXISTS ( "
+                                                                  + "   SELECT seq "
+                                                                  + "    FROM StatusCodeSequencing AS seq"
+                                                                  + "     WHERE seq.childCode = j.status"
+                                                                  + "     AND NOT EXISTS ( "
+                                                                  + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                  + "       WHERE seq2.service = seq.service "
+                                                                  + "       AND seq2.parentCode = seq.childCode "
+                                                                  + "     ) "
+                                                                  + "    AND seq.service = j.service "
+                                                                  + "  ) "),
                 @NamedQuery(name = EXISTING_JOB_WITH_PARENT_AND_PROTOCOL, query = "SELECT COUNT(j) from Job as j "
                                                                                   + "WHERE j.parent = :parent "
                                                                                   + "AND j.protocol = :protocol"),
@@ -72,18 +91,83 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                 @NamedQuery(name = GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS, query = "SELECT j "
                                                                                  + "FROM Job AS j "
                                                                                  + "WHERE j.assignTo = :agency "
-                                                                                 + "  AND j.status = :status"),
+                                                                                 + "  AND j.status = :status"
+                                                                                 + "  AND NOT EXISTS ( "
+                                                                                 + "   SELECT seq "
+                                                                                 + "    FROM StatusCodeSequencing AS seq"
+                                                                                 + "     WHERE seq.childCode = j.status"
+                                                                                 + "     AND NOT EXISTS ( "
+                                                                                 + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                                 + "       WHERE seq2.service = seq.service "
+                                                                                 + "       AND seq2.parentCode = seq.childCode "
+                                                                                 + "     ) "
+                                                                                 + "    AND seq.service = j.service "
+                                                                                 + "  ) "),
                 @NamedQuery(name = GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES, query = "SELECT j "
                                                                                    + "FROM Job AS j "
                                                                                    + "WHERE j.assignTo = :agency "
-                                                                                   + "  AND j.status IN :statuses"),
+                                                                                   + "  AND j.status IN :statuses"
+                                                                                   + "  AND NOT EXISTS ( "
+                                                                                   + "   SELECT seq "
+                                                                                   + "    FROM StatusCodeSequencing AS seq"
+                                                                                   + "     WHERE seq.childCode = j.status"
+                                                                                   + "     AND NOT EXISTS ( "
+                                                                                   + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                                   + "       WHERE seq2.service = seq.service "
+                                                                                   + "       AND seq2.parentCode = seq.childCode "
+                                                                                   + "     ) "
+                                                                                   + "    AND seq.service = j.service "
+                                                                                   + "  ) "),
                 @NamedQuery(name = GET_CHILD_JOBS_FOR_SERVICE, query = "SELECT j "
                                                                        + "FROM Job AS j "
                                                                        + "WHERE j.parent = :parent "
                                                                        + "  AND j.service = :service"),
+                @NamedQuery(name = GET_ACTIVE_CHILD_JOBS_FOR_SERVICE, query = "SELECT j "
+                                                                              + "FROM Job AS j"
+                                                                              + " WHERE j.parent = :parent "
+                                                                              + "  AND j.service = :service"
+                                                                              + "  AND NOT EXISTS ( "
+                                                                              + "   SELECT seq "
+                                                                              + "    FROM StatusCodeSequencing AS seq"
+                                                                              + "     WHERE seq.childCode = j.status"
+                                                                              + "     AND NOT EXISTS ( "
+                                                                              + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                              + "       WHERE seq2.service = seq.service "
+                                                                              + "       AND seq2.parentCode = seq.childCode "
+                                                                              + "     ) "
+                                                                              + "    AND seq.service = j.service "
+                                                                              + "  ) "),
                 @NamedQuery(name = GET_CHILD_JOBS, query = "SELECT j "
                                                            + "FROM Job AS j "
                                                            + "WHERE j.parent = :parent"),
+                @NamedQuery(name = GET_ACTIVE_CHILD_JOBS, query = "SELECT j "
+                                                                  + "FROM Job AS j "
+                                                                  + "WHERE j.parent = :parent"
+                                                                  + "  AND NOT EXISTS ( "
+                                                                  + "   SELECT seq "
+                                                                  + "    FROM StatusCodeSequencing AS seq"
+                                                                  + "     WHERE seq.childCode = j.status"
+                                                                  + "     AND NOT EXISTS ( "
+                                                                  + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                  + "       WHERE seq2.service = seq.service "
+                                                                  + "       AND seq2.parentCode = seq.childCode "
+                                                                  + "     ) "
+                                                                  + "    AND seq.service = j.service "
+                                                                  + "  ) "),
+                @NamedQuery(name = HAS_ACTIVE_CHILD_JOBS, query = "SELECT COUNT(j) "
+                                                                  + "FROM Job AS j "
+                                                                  + "WHERE j.parent = :parent"
+                                                                  + "  AND NOT EXISTS ( "
+                                                                  + "   SELECT seq "
+                                                                  + "    FROM StatusCodeSequencing AS seq"
+                                                                  + "     WHERE seq.childCode = j.status"
+                                                                  + "     AND NOT EXISTS ( "
+                                                                  + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                  + "       WHERE seq2.service = seq.service "
+                                                                  + "       AND seq2.parentCode = seq.childCode "
+                                                                  + "     ) "
+                                                                  + "    AND seq.service = j.service "
+                                                                  + "  ) "),
                 @NamedQuery(name = HAS_SCS, query = "SELECT scs from StatusCodeSequencing scs where scs.service = :service "),
                 @NamedQuery(name = GET_NEXT_STATUS_CODES, query = "SELECT code "
                                                                   + "FROM StatusCodeSequencing AS sequencing, StatusCode AS code "
@@ -102,10 +186,24 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                 @NamedQuery(name = GET_ASSIGNED_TO, query = "SELECT j "
                                                             + "FROM Job AS j "
                                                             + "  WHERE j.assignTo = :agency"),
+                @NamedQuery(name = GET_ACTIVE_ASSIGNED_TO, query = "SELECT j "
+                                                                   + "FROM Job AS j "
+                                                                   + "  WHERE j.assignTo = :agency"),
                 @NamedQuery(name = GET_SUB_JOBS_ASSIGNED_TO, query = "SELECT j "
                                                                      + "FROM Job AS j "
                                                                      + "WHERE j.parent = :parent "
-                                                                     + "  AND j.assignTo = :agency"),
+                                                                     + "  AND j.assignTo = :agency"
+                                                                     + "  AND NOT EXISTS ( "
+                                                                     + "   SELECT seq "
+                                                                     + "    FROM StatusCodeSequencing AS seq"
+                                                                     + "     WHERE seq.childCode = j.status"
+                                                                     + "     AND NOT EXISTS ( "
+                                                                     + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                     + "       WHERE seq2.service = seq.service "
+                                                                     + "       AND seq2.parentCode = seq.childCode "
+                                                                     + "     ) "
+                                                                     + "    AND seq.service = j.service "
+                                                                     + "  ) "),
                 @NamedQuery(name = INITIAL_STATE, query = "SELECT distinct(sc) "
                                                           + "FROM StatusCodeSequencing AS seq, StatusCode AS sc "
                                                           + "WHERE seq.parentCode = sc "
@@ -138,9 +236,13 @@ public class Job extends AbstractProtocol {
     public static final String GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES = "job.getActiveJobsForAgencyInStatuses";
     public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS      = "job.getActiveOrTerminatedSubJobs";
     public static final String GET_ASSIGNED_TO                        = "job.getAssignedTo";
+    public static final String GET_ACTIVE_ASSIGNED_TO                 = "job.getActiveAssignedTo";
     public static final String GET_ATTRIBUTE_VALUE                    = "job.getAttributeValue";
     public static final String GET_ATTRIBUTES_FOR_JOB                 = "job.getAttributesForJob";
     public static final String GET_CHILD_JOBS                         = "job.getChildJobs";
+    public static final String HAS_ACTIVE_CHILD_JOBS                  = "job.hasActiveChildJobs";
+    public static final String GET_ACTIVE_CHILD_JOBS                  = "job.getActiveChildJobs";
+    public static final String GET_ACTIVE_CHILD_JOBS_FOR_SERVICE      = "job.getActiveChildJobsForService";
     public static final String GET_CHILD_JOBS_FOR_SERVICE             = "job.getChildJobsForService";
     public static final String GET_NEXT_STATUS_CODES                  = "job.getNextStatusCodes";
     public static final String GET_STATUS_CODE_IDS                    = "job.getStatusCodeIds";
@@ -151,6 +253,7 @@ public class Job extends AbstractProtocol {
     public static final String HAS_SCS                                = "job.hasScs";
     public static final String INITIAL_STATE                          = "job.initialState";
     public static final String TOP_LEVEL_JOBS                         = "job.topLevelJobs";
+    public static final String TOP_LEVEL_ACTIVE_JOBS                  = "job.topLevelActiveJobs";
 
     private static final long serialVersionUID = 1L;
 
@@ -174,7 +277,8 @@ public class Job extends AbstractProtocol {
     /**
      * The parent of this job
      */
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
     private Job parent;
 
@@ -187,7 +291,8 @@ public class Job extends AbstractProtocol {
      * This job's status
      */
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
     private StatusCode status;
 

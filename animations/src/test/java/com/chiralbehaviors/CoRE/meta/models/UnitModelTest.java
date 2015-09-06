@@ -41,10 +41,10 @@ public class UnitModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() {
-        Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
-
-        em.getTransaction().begin();
+        Agency core = model.getKernel()
+                           .getCore();
+        Relationship equals = model.getKernel()
+                                   .getEquals();
 
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);

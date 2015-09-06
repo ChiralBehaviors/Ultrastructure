@@ -12,7 +12,7 @@
             </column>
             <column name="workspace" type="uuid" />
             <column name="sequence_number" remarks="Ordering and uniqueness, for when an service / key combination can have multiple protocol rules"
-                type="sequence_number"
+                type="INT4"
             >
                 <constraints nullable="false" />
             </column>

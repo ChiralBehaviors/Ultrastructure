@@ -94,12 +94,14 @@ public class StatusCodeSequencing extends Ruleform {
     private static final long serialVersionUID = 1L;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "child_code")
     private StatusCode childCode;
 
     // bi-directional many-to-one association to StatusCode
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_code")
     private StatusCode parentCode;
 

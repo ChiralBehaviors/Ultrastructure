@@ -56,7 +56,8 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     @JoinColumn(name = "inference")
     private NetworkInference inference;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship")
     private Relationship relationship;
 

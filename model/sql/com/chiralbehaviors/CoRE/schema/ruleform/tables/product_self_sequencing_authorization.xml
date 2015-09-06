@@ -20,7 +20,7 @@
                 <constraints nullable="false" />
             </column>
             <column defaultValueComputed="1" name="sequence_number"
-                remarks="Ordering and uniqueness, for when a product / Status Code combination can trigger multiple child products" type="sequence_number"
+                remarks="Ordering and uniqueness, for when a product / Status Code combination can trigger multiple child products" type="INT4"
             >
                 <constraints nullable="false" />
             </column>

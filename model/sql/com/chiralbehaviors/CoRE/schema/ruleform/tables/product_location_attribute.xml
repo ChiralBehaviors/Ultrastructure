@@ -24,7 +24,7 @@
             <column name="text_value" type="TEXT" />
             <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
             <column name="binary_value" type="BYTEA" />
-            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
+            <column defaultValueComputed="1" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
             <column name="unit" type="uuid" />

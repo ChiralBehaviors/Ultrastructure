@@ -53,15 +53,16 @@ public class ProductTest extends DatabaseTest {
     @Override
     @After
     public void after() {
-        em.getTransaction().rollback();
+        em.getTransaction()
+          .rollback();
         em.clear();
     }
 
     @Test
     public void createEntity() {
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
-                                                       Agency.class).setParameter("name",
-                                                                                  "CoREd");
+                                                       Agency.class)
+                                     .setParameter("name", "CoREd");
         Agency r = query.getSingleResult();
 
         LOG.debug(String.format("Agency: %s", r));
@@ -85,8 +86,8 @@ public class ProductTest extends DatabaseTest {
         em.clear();
 
         TypedQuery<Product> productQuery = em.createNamedQuery("product.findByName",
-                                                               Product.class).setParameter("name",
-                                                                                           name);
+                                                               Product.class)
+                                             .setParameter("name", name);
 
         Product b2 = productQuery.getSingleResult();
 
@@ -128,29 +129,29 @@ public class ProductTest extends DatabaseTest {
         attribute.setNumericValue(BigDecimal.valueOf(123));
         em.persist(attribute);
         em.flush();
-        em.clear();
     }
 
     @SuppressWarnings("boxing")
     @Test
     public void testAttributes() {
         TypedQuery<Product> findProduct = em.createNamedQuery("product.findByName",
-                                                              Product.class).setParameter("name",
-                                                                                          "Peptide Foo");
+                                                              Product.class)
+                                            .setParameter("name",
+                                                          "Peptide Foo");
         Product b = findProduct.getSingleResult();
         assertNotNull(b);
         assertEquals(b.getName(), "Peptide Foo");
         LOG.debug(String.format("Product is: %s", b));
 
         TypedQuery<Attribute> findAttribute = em.createNamedQuery("attribute.findByName",
-                                                                  Attribute.class).setParameter("name",
-                                                                                                "Length");
+                                                                  Attribute.class)
+                                                .setParameter("name", "Length");
 
         Attribute a = findAttribute.getSingleResult();
         assertNotNull(a);
         assertEquals(a.getName(), "Length");
         LOG.debug(String.format("Attribute is: %s", a));
-
+        em.refresh(b);
         Set<ProductAttribute> productAttributes = b.getAttributes();
         assertNotNull(productAttributes);
         assertEquals(1, productAttributes.size());

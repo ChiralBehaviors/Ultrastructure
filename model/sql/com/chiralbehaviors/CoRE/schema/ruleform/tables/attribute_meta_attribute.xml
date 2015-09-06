@@ -31,7 +31,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
-            <column defaultValueComputed="1" name="sequence_number" type="sequence_number">
+            <column defaultValueComputed="1" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
         </createTable>

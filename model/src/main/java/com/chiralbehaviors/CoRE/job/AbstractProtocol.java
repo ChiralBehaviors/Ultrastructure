@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -59,56 +60,63 @@ public abstract class AbstractProtocol extends Ruleform {
      * The agency assigned to this job
      */
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "assign_to")
-    private Agency            assignTo;
+    private Agency assignTo;
 
     /**
      * The location where the product will be delivered from
      */
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "deliver_from")
-    private Location          deliverFrom;
+    private Location deliverFrom;
     /**
      * The location to deliver the product of this job
      */
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "deliver_to")
-    private Location          deliverTo;
+    private Location deliverTo;
 
     /**
      * The product of this job
      */
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "product")
-    private Product           product;
+    private Product product;
 
     @Column(name = "quantity")
-    private BigDecimal        quantity         = BigDecimal.ZERO;
+    private BigDecimal quantity = BigDecimal.ZERO;
 
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "quantity_unit")
-    private Unit              quantityUnit;
+    private Unit quantityUnit;
 
     /**
      * The consumer of this job's product
      */
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "requester")
-    private Agency            requester;
+    private Agency requester;
 
     /**
      * The service this job is performing
      */
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "service")
-    private Product           service;
+    private Product service;
 
     public AbstractProtocol() {
         super();

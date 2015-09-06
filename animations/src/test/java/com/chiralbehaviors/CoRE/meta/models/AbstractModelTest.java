@@ -39,6 +39,7 @@ import javax.persistence.PersistenceException;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.mockito.AdditionalAnswers;
 import org.slf4j.LoggerFactory;
@@ -98,6 +99,19 @@ public class AbstractModelTest {
         em = model.getEntityManager();
     }
 
+    public static EntityManagerFactory mockedEmf() {
+        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
+        EntityManager mockedEm = mock(EntityManager.class,
+                                      AdditionalAnswers.delegatesTo(em));
+        EntityTransaction mockedTxn = mock(EntityTransaction.class);
+        doReturn(mockedTxn).when(mockedEm)
+                           .getTransaction();
+        doNothing().when(mockedEm)
+                   .close();
+        when(mockedEmf.createEntityManager()).thenReturn(mockedEm);
+        return mockedEmf;
+    }
+
     private static EntityManager getEntityManager() throws IOException,
                                                     SQLException {
         if (emf == null) {
@@ -112,19 +126,6 @@ public class AbstractModelTest {
         }
         EntityManager em = emf.createEntityManager();
         return em;
-    }
-
-    public static EntityManagerFactory mockedEmf() {
-        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
-        EntityManager mockedEm = mock(EntityManager.class,
-                                      AdditionalAnswers.delegatesTo(em));
-        EntityTransaction mockedTxn = mock(EntityTransaction.class);
-        doReturn(mockedTxn).when(mockedEm)
-                           .getTransaction();
-        doNothing().when(mockedEm)
-                   .close();
-        when(mockedEmf.createEntityManager()).thenReturn(mockedEm);
-        return mockedEmf;
     }
 
     public AbstractModelTest() {
@@ -144,5 +145,16 @@ public class AbstractModelTest {
                                    e);
             }
         }
+    }
+
+    @Before
+    public void beginTxnBefore() {
+        if (em.getTransaction()
+              .isActive()) {
+            em.getTransaction()
+              .rollback();
+        }
+        em.getTransaction()
+          .begin();
     }
 }

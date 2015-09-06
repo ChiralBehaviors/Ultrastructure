@@ -29,6 +29,7 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -165,16 +166,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         if (cached != null) {
             return (T) cached;
         }
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
-        Root<WorkspaceAuthorization> from = query.from(WorkspaceAuthorization.class);
-        query.select(from)
-             .where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.key), key),
-                           cb.equal(from.get(WorkspaceAuthorization_.definingProduct),
-                                    getDefiningProduct())));
+        TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATION_BY_ID,
+                                                                       WorkspaceAuthorization.class);
+        query.setParameter("productId", definingProduct);
+        query.setParameter("key", key);
         try {
-            WorkspaceAuthorization authorization = em.createQuery(query)
-                                                     .getSingleResult();
+            WorkspaceAuthorization authorization = query.getSingleResult();
             T ruleform = authorization.getEntity(em);
             cache.put(key, ruleform);
             return ruleform;
@@ -210,7 +207,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     @Override
     public Product getDefiningProduct() {
-        return em.find(Product.class, definingProduct);
+        return model.getEntityManager()
+                    .getReference(Product.class, definingProduct);
     }
 
     /* (non-Javadoc)

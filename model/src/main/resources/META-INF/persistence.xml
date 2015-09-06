@@ -98,5 +98,8 @@
         <class>com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization</class>
         <class>com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization</class>
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+        	<property name="javax.persistence.validation.mode" value='AUTO'/>
+        </properties>
     </persistence-unit>
 </persistence>

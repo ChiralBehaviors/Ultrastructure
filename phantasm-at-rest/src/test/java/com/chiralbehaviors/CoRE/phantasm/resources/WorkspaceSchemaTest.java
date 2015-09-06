@@ -56,35 +56,12 @@ import com.chiralbehaviors.CoRE.product.Product;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
-import graphql.validation.ValidationError;
-import graphql.validation.ValidationErrorType;
 
 /**
  * @author hhildebrand
  *
  */
 public class WorkspaceSchemaTest extends ThingWorkspaceTest {
-
-    @Test
-    public void testBadQueries() throws Exception {
-        EntityManagerFactory mockedEmf = mockedEmf();
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
-        Map<String, Object> variables = new HashMap<>();
-        QueryRequest request = new QueryRequest("mutation m($id: String) { UpdateThing1(state: { id: $id, setName: \"foo\"}) { name } }",
-                                                variables);
-        Map<String, Object> result;
-        result = resource.query(null, TEST_SCENARIO_URI, request);
-        assertNotNull(result);
-        @SuppressWarnings("unchecked")
-        List<ValidationError> errors = (List<ValidationError>) result.get("errors");
-        assertNotNull(errors);
-        assertEquals(1, errors.size());
-        ValidationError error = errors.get(0);
-        assertEquals(ValidationErrorType.UnboundVariable,
-                     error.getValidationErrorType());
-        assertEquals("Validation error of type UnboundVariable: Variable not bound: '$id'",
-                     error.getMessage());
-    }
 
     @Test
     public void testCreate() throws Exception {

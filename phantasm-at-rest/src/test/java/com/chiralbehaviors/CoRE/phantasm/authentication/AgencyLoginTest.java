@@ -35,8 +35,6 @@ import io.dropwizard.auth.basic.BasicCredentials;
 public class AgencyLoginTest extends AbstractModelTest {
     @Test
     public void testGoodUser() throws Exception {
-        em.getTransaction()
-          .begin();
         String username = "bob@slack.com";
         String password = "give me food or give me slack or kill me";
         CoreUser bob = (CoreUser) model.construct(CoreUser.class, "Bob",

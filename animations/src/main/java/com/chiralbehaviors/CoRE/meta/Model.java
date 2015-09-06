@@ -254,6 +254,14 @@ public interface Model {
     UnitModel getUnitModel();
 
     /**
+     * Answer the appropriate networked model for the existential ruleform
+     * 
+     * @param ruleform
+     * @return
+     */
+    <RuleForm extends ExistentialRuleform<?, ?>> NetworkedModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform);
+
+    /**
      * @return the UnitCode model
      */
     WorkspaceModel getWorkspaceModel();
@@ -285,13 +293,5 @@ public interface Model {
      */
     <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R wrap(Class<R> phantasm,
                                                                         ExistentialRuleform<T, ?> ruleform);
-
-    /**
-     * Answer the appropriate networked model for the existential ruleform
-     * 
-     * @param ruleform
-     * @return
-     */
-    <RuleForm extends ExistentialRuleform<?, ?>> NetworkedModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform);
 
 }

@@ -50,7 +50,8 @@ public class AnyFacet implements Facet {
      */
     @Override
     public String getImport() {
-        return String.format("%s.Any%s", AnyAgency.class.getPackage().getName(),
+        return String.format("%s.Any%s", AnyAgency.class.getPackage()
+                                                        .getName(),
                              ruleform.getSimpleName());
     }
 
@@ -59,7 +60,8 @@ public class AnyFacet implements Facet {
      */
     @Override
     public String getPackageName() {
-        return ruleform.getPackage().getName();
+        return ruleform.getPackage()
+                       .getName();
     }
 
     @Override

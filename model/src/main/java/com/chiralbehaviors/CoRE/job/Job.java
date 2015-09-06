@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -232,17 +232,16 @@ public class Job extends AbstractProtocol {
     public static final String CLASSIFIED                             = "event.classified";
     public static final String EXISTING_JOB_WITH_PARENT_AND_PROTOCOL  = "job.existingJobWithParentAndProtocol";
     public static final String FIND_ALL                               = "job.findAll";
+    public static final String GET_ACTIVE_ASSIGNED_TO                 = "job.getActiveAssignedTo";
+    public static final String GET_ACTIVE_CHILD_JOBS                  = "job.getActiveChildJobs";
+    public static final String GET_ACTIVE_CHILD_JOBS_FOR_SERVICE      = "job.getActiveChildJobsForService";
     public static final String GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS   = "job.getActiveJobsForAgencyInStatus";
     public static final String GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUSES = "job.getActiveJobsForAgencyInStatuses";
     public static final String GET_ACTIVE_OR_TERMINATED_SUB_JOBS      = "job.getActiveOrTerminatedSubJobs";
     public static final String GET_ASSIGNED_TO                        = "job.getAssignedTo";
-    public static final String GET_ACTIVE_ASSIGNED_TO                 = "job.getActiveAssignedTo";
     public static final String GET_ATTRIBUTE_VALUE                    = "job.getAttributeValue";
     public static final String GET_ATTRIBUTES_FOR_JOB                 = "job.getAttributesForJob";
     public static final String GET_CHILD_JOBS                         = "job.getChildJobs";
-    public static final String HAS_ACTIVE_CHILD_JOBS                  = "job.hasActiveChildJobs";
-    public static final String GET_ACTIVE_CHILD_JOBS                  = "job.getActiveChildJobs";
-    public static final String GET_ACTIVE_CHILD_JOBS_FOR_SERVICE      = "job.getActiveChildJobsForService";
     public static final String GET_CHILD_JOBS_FOR_SERVICE             = "job.getChildJobsForService";
     public static final String GET_NEXT_STATUS_CODES                  = "job.getNextStatusCodes";
     public static final String GET_STATUS_CODE_IDS                    = "job.getStatusCodeIds";
@@ -250,10 +249,11 @@ public class Job extends AbstractProtocol {
     public static final String GET_SUB_JOBS_ASSIGNED_TO               = "job.getSubJobsAssignedTo";
     public static final String GET_TERMINAL_STATES                    = "job.getTerminalStates";
     public static final String GET_UNSET_SIBLINGS                     = "job.getUnsetSiblings";
+    public static final String HAS_ACTIVE_CHILD_JOBS                  = "job.hasActiveChildJobs";
     public static final String HAS_SCS                                = "job.hasScs";
     public static final String INITIAL_STATE                          = "job.initialState";
-    public static final String TOP_LEVEL_JOBS                         = "job.topLevelJobs";
     public static final String TOP_LEVEL_ACTIVE_JOBS                  = "job.topLevelActiveJobs";
+    public static final String TOP_LEVEL_JOBS                         = "job.topLevelJobs";
 
     private static final long serialVersionUID = 1L;
 

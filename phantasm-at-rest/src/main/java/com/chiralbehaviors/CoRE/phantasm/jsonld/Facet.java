@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -119,30 +119,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return ub.build();
     }
 
-    public static URI getFullFacetIri(Aspect<?> aspect, UriInfo uriInfo) {
-        UriBuilder ub = uriInfo.getBaseUriBuilder();
-        ub.path(FacetResource.class);
-        try {
-            ub.path(FacetResource.class.getMethod("getFacet",
-                                                  AuthorizedPrincipal.class,
-                                                  String.class, UUID.class,
-                                                  UUID.class));
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot retrieve getFacet method",
-                                            e);
-        }
-        ub.resolveTemplate("ruleform-type", aspect.getClassification()
-                                                  .getClass()
-                                                  .getSimpleName());
-        ub.resolveTemplate("classifier", aspect.getClassifier()
-                                               .getId()
-                                               .toString());
-        ub.resolveTemplate("classification", aspect.getClassification()
-                                                   .getId()
-                                                   .toString());
-        return ub.build();
-    }
-
     public static String getFacetIri(Aspect<?> aspect) {
         return String.format("%s/%s/%s", aspect.getClassification()
                                                .getClass()
@@ -166,6 +142,30 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             throw new IllegalStateException("Unable to getFacets", e);
         }
         ub.resolveTemplate("ruleform-type", ruleform.getSimpleName());
+        return ub.build();
+    }
+
+    public static URI getFullFacetIri(Aspect<?> aspect, UriInfo uriInfo) {
+        UriBuilder ub = uriInfo.getBaseUriBuilder();
+        ub.path(FacetResource.class);
+        try {
+            ub.path(FacetResource.class.getMethod("getFacet",
+                                                  AuthorizedPrincipal.class,
+                                                  String.class, UUID.class,
+                                                  UUID.class));
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Cannot retrieve getFacet method",
+                                            e);
+        }
+        ub.resolveTemplate("ruleform-type", aspect.getClassification()
+                                                  .getClass()
+                                                  .getSimpleName());
+        ub.resolveTemplate("classifier", aspect.getClassifier()
+                                               .getId()
+                                               .toString());
+        ub.resolveTemplate("classification", aspect.getClassification()
+                                                   .getId()
+                                                   .toString());
         return ub.build();
     }
 
@@ -207,11 +207,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return getInstanceIri(aspect, child.getId(), uriInfo);
     }
 
-    public static URI getInstanceIri(Aspect<?> aspect, UUID instance,
-                                     UriInfo uriInfo) {
-        return getInstanceIri(aspect, instance.toString(), uriInfo, null);
-    }
-
     public static URI getInstanceIri(Aspect<?> aspect, String instance,
                                      UriInfo uriInfo, List<String> selection) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
@@ -249,6 +244,11 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             ub.queryParam("select", (Object[]) elements);
         }
         return ub.build();
+    }
+
+    public static URI getInstanceIri(Aspect<?> aspect, UUID instance,
+                                     UriInfo uriInfo) {
+        return getInstanceIri(aspect, instance.toString(), uriInfo, null);
     }
 
     public static String getTermIri(Aspect<?> aspect, String term,
@@ -299,6 +299,14 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
         return String.format("%s:%s", Constants.FACET, ruleform.getId());
     }
 
+    public Map<String, Object> getMicro(RuleForm instance, UriInfo uriInfo) {
+        Map<String, Object> shorty = getShort();
+        shorty.remove(Constants.TYPE);
+        shorty.remove(Constants.CONTEXT);
+        shorty.put(Constants.ID, getId(instance, uriInfo));
+        return shorty;
+    }
+
     public NetworkAuthorization<RuleForm> getNetworkAuth(String property) {
         return networkAuths.get(property);
     }
@@ -334,14 +342,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
 
     public Map<String, Object> getShort(RuleForm instance, UriInfo uriInfo) {
         Map<String, Object> shorty = getShort();
-        shorty.put(Constants.ID, getId(instance, uriInfo));
-        return shorty;
-    }
-
-    public Map<String, Object> getMicro(RuleForm instance, UriInfo uriInfo) {
-        Map<String, Object> shorty = getShort();
-        shorty.remove(Constants.TYPE);
-        shorty.remove(Constants.CONTEXT);
         shorty.put(Constants.ID, getId(instance, uriInfo));
         return shorty;
     }
@@ -421,6 +421,21 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                              getClassification().getName());
     }
 
+    @SuppressWarnings("unchecked")
+    public <RF extends ExistentialRuleform<RF, ?>> Map<String, Object> toCompactInstance(RF instance,
+                                                                                         Model model,
+                                                                                         UriInfo uriInfo) {
+        RuleForm instance1 = (RuleForm) instance;
+        Map<String, Object> node = new TreeMap<>();
+        node.put(Constants.ID, getId(instance1, uriInfo));
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance1);
+        addRuleformAttributes(instance1, node, uriInfo);
+        addAttributes(instance1, networkedModel, node, uriInfo);
+        addNetworkAuths(node, instance1, networkedModel, model, uriInfo);
+        addXdAuths(instance1, model, node, uriInfo);
+        return node;
+    }
+
     public Map<String, Object> toContext(UriInfo uriInfo) {
         Map<String, Object> object = new TreeMap<>();
         Map<String, Object> context = new TreeMap<>();
@@ -438,21 +453,6 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
                                            .toMap());
         }
         return object;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <RF extends ExistentialRuleform<RF, ?>> Map<String, Object> toCompactInstance(RF instance,
-                                                                                         Model model,
-                                                                                         UriInfo uriInfo) {
-        RuleForm instance1 = (RuleForm) instance;
-        Map<String, Object> node = new TreeMap<>();
-        node.put(Constants.ID, getId(instance1, uriInfo));
-        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance1);
-        addRuleformAttributes(instance1, node, uriInfo);
-        addAttributes(instance1, networkedModel, node, uriInfo);
-        addNetworkAuths(node, instance1, networkedModel, model, uriInfo);
-        addXdAuths(instance1, model, node, uriInfo);
-        return node;
     }
 
     private void addAgencyAuths(RuleForm instance, Map<String, Object> node,

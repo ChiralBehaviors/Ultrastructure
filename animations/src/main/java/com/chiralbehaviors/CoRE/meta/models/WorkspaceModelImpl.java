@@ -62,7 +62,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         Kernel kernel = model.getKernel();
         Aspect<Product> aspect = new Aspect<Product>(kernel.getIsA(),
                                                      kernel.getWorkspace());
-        model.getProductModel().initialize(definingProduct, aspect);
+        model.getProductModel()
+             .initialize(definingProduct, aspect);
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         return scope;
@@ -74,7 +75,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     @Override
     public void flush() {
         for (WorkspaceScope scope : scopes.values()) {
-            scope.getWorkspace().flushCache();
+            scope.getWorkspace()
+                 .flushCache();
         }
     }
 
@@ -109,9 +111,12 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         WorkspaceScope scope = new DatabaseBackedWorkspace(definingProduct,
                                                            model).getScope();
         scopes.put(definingProduct.getId(), scope);
-        if (!definingProduct.getId().equals(WellKnownProduct.KERNEL_WORKSPACE.id())) { // special handling of kernel ::sigh::
-            for (Product workspace : model.getProductModel().getChildren(definingProduct,
-                                                                         model.getKernel().getImports())) {
+        if (!definingProduct.getId()
+                            .equals(WellKnownProduct.KERNEL_WORKSPACE.id())) { // special handling of kernel ::sigh::
+            for (Product workspace : model.getProductModel()
+                                          .getChildren(definingProduct,
+                                                       model.getKernel()
+                                                            .getImports())) {
                 scope.add("", getScoped(workspace).getWorkspace());
             }
         }

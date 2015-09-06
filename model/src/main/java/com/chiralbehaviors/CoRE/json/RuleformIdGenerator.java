@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -66,8 +66,7 @@ public class RuleformIdGenerator extends ObjectIdGenerator<String> {
     @Override
     public ObjectIdGenerator<String> forScope(Class<?> scope) {
         return this.scope == scope ? this
-                                  : new RuleformIdGenerator(
-                                                            (Class<? extends Ruleform>) scope);
+                                   : new RuleformIdGenerator((Class<? extends Ruleform>) scope);
     }
 
     /*
@@ -79,7 +78,8 @@ public class RuleformIdGenerator extends ObjectIdGenerator<String> {
      */
     @Override
     public String generateId(Object forPojo) {
-        return String.format("%s-%s", forPojo.getClass().getSimpleName(),
+        return String.format("%s-%s", forPojo.getClass()
+                                             .getSimpleName(),
                              ((Ruleform) forPojo).getId());
     }
 

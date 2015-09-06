@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -344,6 +344,14 @@ public interface WellKnownObject {
             return new UUID(WellKnownTypes.ATTRIBUTE.ordinal(), ordinal() + 1);
         }
 
+        public boolean indexed() {
+            return false;
+        }
+
+        public boolean keyed() {
+            return false;
+        }
+
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
          */
@@ -353,14 +361,6 @@ public interface WellKnownObject {
         }
 
         abstract public ValueType valueType();
-
-        public boolean indexed() {
-            return false;
-        }
-
-        public boolean keyed() {
-            return false;
-        }
     }
 
     public static enum WellKnownInterval
@@ -663,6 +663,44 @@ public interface WellKnownObject {
                 }
 
             },
+            APPLY() {
+                @Override
+                public String description() {
+                    return "The apply capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_APPLIED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "Apply";
+                }
+            },
+            CAPABILITY() {
+                @Override
+                public String description() {
+                    return "The classification of capabilities";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.CAPABILITY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "Capability";
+                }
+            },
             CONTAINS() {
 
                 @Override
@@ -704,6 +742,44 @@ public interface WellKnownObject {
                     return WellKnownObject.COPY;
                 }
 
+            },
+            CREATE() {
+                @Override
+                public String description() {
+                    return "The create capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_CREATED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "CREATE";
+                }
+            },
+            DELETE() {
+                @Override
+                public String description() {
+                    return "The delete capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_DELETED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "DELETE";
+                }
             },
             DEVELOPED() {
 
@@ -1188,6 +1264,120 @@ public interface WellKnownObject {
                 }
 
             },
+            MAY_BE_APPLIED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse apply capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.APPLY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Applied By";
+                }
+            },
+            MAY_BE_CREATED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse create capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.CREATE;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Created By";
+                }
+            },
+            MAY_BE_DELETED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse delete capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.DELETE;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Deleted By";
+                }
+            },
+            MAY_BE_READ_BY() {
+                @Override
+                public String description() {
+                    return "The inverse read capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.READ;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Read By";
+                }
+            },
+            MAY_BE_REMOVED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse remove capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.REMOVE;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Removed By";
+                }
+            },
+            MAY_BE_UPDATED_BY() {
+                @Override
+                public String description() {
+                    return "The inverse update capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.UPDATE;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "May Be Updated By";
+                }
+            },
             MEMBER_OF() {
 
                 @Override
@@ -1310,6 +1500,44 @@ public interface WellKnownObject {
                 }
 
             },
+            READ() {
+                @Override
+                public String description() {
+                    return "The read capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_READ_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "READ";
+                }
+            },
+            REMOVE() {
+                @Override
+                public String description() {
+                    return "The remove capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_REMOVED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "Remove";
+                }
+            },
             SAME() {
 
                 @Override
@@ -1330,6 +1558,25 @@ public interface WellKnownObject {
                     return WellKnownObject.SAME;
                 }
 
+            },
+            UPDATE() {
+                @Override
+                public String description() {
+                    return "The update capability";
+                }
+
+                @Override
+                public WellKnownRelationship inverse() {
+                    return WellKnownRelationship.MAY_BE_UPDATED_BY;
+                }
+
+                /* (non-Javadoc)
+                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
+                 */
+                @Override
+                public String wkoName() {
+                    return "UPDATE";
+                }
             },
             VALIDATES() {
 
@@ -1370,253 +1617,6 @@ public interface WellKnownObject {
                 @Override
                 public String wkoName() {
                     return WellKnownObject.VERSION_OF;
-                }
-            },
-            CAPABILITY() {
-                @Override
-                public String description() {
-                    return "The classification of capabilities";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.CAPABILITY;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "Capability";
-                }
-            },
-            CREATE() {
-                @Override
-                public String description() {
-                    return "The create capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.MAY_BE_CREATED_BY;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "CREATE";
-                }
-            },
-            MAY_BE_CREATED_BY() {
-                @Override
-                public String description() {
-                    return "The inverse create capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.CREATE;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "May Be Created By";
-                }
-            },
-            READ() {
-                @Override
-                public String description() {
-                    return "The read capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.MAY_BE_READ_BY;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "READ";
-                }
-            },
-            MAY_BE_READ_BY() {
-                @Override
-                public String description() {
-                    return "The inverse read capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.READ;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "May Be Read By";
-                }
-            },
-            UPDATE() {
-                @Override
-                public String description() {
-                    return "The update capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.MAY_BE_UPDATED_BY;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "UPDATE";
-                }
-            },
-            MAY_BE_UPDATED_BY() {
-                @Override
-                public String description() {
-                    return "The inverse update capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.UPDATE;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "May Be Updated By";
-                }
-            },
-            DELETE() {
-                @Override
-                public String description() {
-                    return "The delete capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.MAY_BE_DELETED_BY;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "DELETE";
-                }
-            },
-            MAY_BE_DELETED_BY() {
-                @Override
-                public String description() {
-                    return "The inverse delete capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.DELETE;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "May Be Deleted By";
-                }
-            },
-            APPLY() {
-                @Override
-                public String description() {
-                    return "The apply capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.MAY_BE_APPLIED_BY;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "Apply";
-                }
-            },
-            MAY_BE_APPLIED_BY() {
-                @Override
-                public String description() {
-                    return "The inverse apply capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.APPLY;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "May Be Applied By";
-                }
-            },
-            REMOVE() {
-                @Override
-                public String description() {
-                    return "The remove capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.MAY_BE_REMOVED_BY;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "Remove";
-                }
-            },
-            MAY_BE_REMOVED_BY() {
-                @Override
-                public String description() {
-                    return "The inverse remove capability";
-                }
-
-                @Override
-                public WellKnownRelationship inverse() {
-                    return WellKnownRelationship.REMOVE;
-                }
-
-                /* (non-Javadoc)
-                 * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#productName()
-                 */
-                @Override
-                public String wkoName() {
-                    return "May Be Removed By";
                 }
             };
 

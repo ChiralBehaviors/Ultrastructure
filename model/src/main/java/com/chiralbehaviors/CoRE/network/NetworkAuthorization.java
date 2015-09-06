@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -40,14 +40,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  *
  * The abstract super class of all network authorizations.
- * 
+ *
  * from left to right: classifier, classification, auth relationship, auth
  * parent, child relationship, cardinality
- * 
+ *
  * {classifier, classification} is the “parent”
- * 
+ *
  * {auth parent, auth relationship} is the “child”
- * 
+ *
  * The child relationship is the authorized relationship between the parent and
  * the child. The child cardinality is the cardinality of those children
  *
@@ -135,6 +135,10 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
         return groupingAgency;
     }
 
+    public String getName() {
+        return name;
+    }
+
     abstract public void setAuthorizedParent(RuleForm parent);
 
     public void setAuthorizedRelationship(Relationship authorizedRelationship) {
@@ -157,10 +161,6 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     public void setGroupingAgency(Agency groupingAgency) {
         this.groupingAgency = groupingAgency;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {

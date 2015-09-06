@@ -84,7 +84,7 @@ public class EmWrapper implements EntityManager {
         }
     }
 
-    private final Animations    animations;
+    private final Animations animations;
 
     private final EntityManager em;
     private final EtWrapper     etxn = new EtWrapper();
@@ -173,7 +173,8 @@ public class EmWrapper implements EntityManager {
     }
 
     @Override
-    public <T> TypedQuery<T> createQuery(String paramString, Class<T> paramClass) {
+    public <T> TypedQuery<T> createQuery(String paramString,
+                                         Class<T> paramClass) {
         return em.createQuery(paramString, paramClass);
     }
 

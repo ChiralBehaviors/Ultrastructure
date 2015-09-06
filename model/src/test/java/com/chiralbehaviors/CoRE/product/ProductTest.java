@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -53,15 +53,16 @@ public class ProductTest extends DatabaseTest {
     @Override
     @After
     public void after() {
-        em.getTransaction().rollback();
+        em.getTransaction()
+          .rollback();
         em.clear();
     }
 
     @Test
     public void createEntity() {
         TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
-                                                       Agency.class).setParameter("name",
-                                                                                  "CoREd");
+                                                       Agency.class)
+                                     .setParameter("name", "CoREd");
         Agency r = query.getSingleResult();
 
         LOG.debug(String.format("Agency: %s", r));
@@ -85,8 +86,8 @@ public class ProductTest extends DatabaseTest {
         em.clear();
 
         TypedQuery<Product> productQuery = em.createNamedQuery("product.findByName",
-                                                               Product.class).setParameter("name",
-                                                                                           name);
+                                                               Product.class)
+                                             .setParameter("name", name);
 
         Product b2 = productQuery.getSingleResult();
 
@@ -135,16 +136,17 @@ public class ProductTest extends DatabaseTest {
     @Test
     public void testAttributes() {
         TypedQuery<Product> findProduct = em.createNamedQuery("product.findByName",
-                                                              Product.class).setParameter("name",
-                                                                                          "Peptide Foo");
+                                                              Product.class)
+                                            .setParameter("name",
+                                                          "Peptide Foo");
         Product b = findProduct.getSingleResult();
         assertNotNull(b);
         assertEquals(b.getName(), "Peptide Foo");
         LOG.debug(String.format("Product is: %s", b));
 
         TypedQuery<Attribute> findAttribute = em.createNamedQuery("attribute.findByName",
-                                                                  Attribute.class).setParameter("name",
-                                                                                                "Length");
+                                                                  Attribute.class)
+                                                .setParameter("name", "Length");
 
         Attribute a = findAttribute.getSingleResult();
         assertNotNull(a);

@@ -454,8 +454,7 @@ public class FacetResource extends TransactionalResource {
                 Map<String, Object> object = childFacet.getShort(child,
                                                                  uriInfo);
                 if (!traversal.isEmpty()) {
-                    object = (Map<String, Object>) childFacet.getShort(child,
-                                                                       uriInfo);
+                    object = childFacet.getShort(child, uriInfo);
                     object.put(traversal.get(0)
                                         .getPath(),
                                getProperty(childFacet, child, traversal,
@@ -477,8 +476,7 @@ public class FacetResource extends TransactionalResource {
                 Map<String, Object> object = childFacet.getShort(child,
                                                                  uriInfo);
                 if (!traversal.isEmpty()) {
-                    object = (Map<String, Object>) childFacet.getShort(child,
-                                                                       uriInfo);
+                    object = childFacet.getShort(child, uriInfo);
                     object.put(traversal.get(0)
                                         .getPath(),
                                getProperty(childFacet, child, traversal,
@@ -520,8 +518,7 @@ public class FacetResource extends TransactionalResource {
                 Map<String, Object> object = childFacet.getShort(child,
                                                                  uriInfo);
                 if (!traversal.isEmpty()) {
-                    object = (Map<String, Object>) childFacet.getShort(child,
-                                                                       uriInfo);
+                    object = childFacet.getShort(child, uriInfo);
                     object.put(traversal.get(0)
                                         .getPath(),
                                getProperty(childFacet, child, traversal,
@@ -543,8 +540,7 @@ public class FacetResource extends TransactionalResource {
                 Map<String, Object> object = childFacet.getShort(child,
                                                                  uriInfo);
                 if (!traversal.isEmpty()) {
-                    object = (Map<String, Object>) childFacet.getShort(child,
-                                                                       uriInfo);
+                    object = childFacet.getShort(child, uriInfo);
                     object.put(traversal.get(0)
                                         .getPath(),
                                getProperty(childFacet, child, traversal,
@@ -601,8 +597,7 @@ public class FacetResource extends TransactionalResource {
                 Map<String, Object> object = childFacet.getShort(child,
                                                                  uriInfo);
                 if (!traversal.isEmpty()) {
-                    object = (Map<String, Object>) childFacet.getShort(child,
-                                                                       uriInfo);
+                    object = childFacet.getShort(child, uriInfo);
                     object.put(traversal.get(0)
                                         .getPath(),
                                getProperty(childFacet, child, traversal,
@@ -623,8 +618,7 @@ public class FacetResource extends TransactionalResource {
             Map<String, Object> object = childFacet.getShort(immediateChild,
                                                              uriInfo);
             if (!traversal.isEmpty()) {
-                object = (Map<String, Object>) childFacet.getShort(immediateChild,
-                                                                   uriInfo);
+                object = childFacet.getShort(immediateChild, uriInfo);
                 object.put(traversal.get(0)
                                     .getPath(),
                            getProperty(childFacet, immediateChild, traversal,
@@ -689,8 +683,7 @@ public class FacetResource extends TransactionalResource {
                 Map<String, Object> object = childFacet.getShort(child,
                                                                  uriInfo);
                 if (!traversal.isEmpty()) {
-                    object = (Map<String, Object>) childFacet.getShort(child,
-                                                                       uriInfo);
+                    object = childFacet.getShort(child, uriInfo);
                     object.put(traversal.get(0)
                                         .getPath(),
                                getProperty(childFacet, child, traversal,
@@ -712,8 +705,7 @@ public class FacetResource extends TransactionalResource {
                 Map<String, Object> object = childFacet.getShort(child,
                                                                  uriInfo);
                 if (!traversal.isEmpty()) {
-                    object = (Map<String, Object>) childFacet.getShort(child,
-                                                                       uriInfo);
+                    object = childFacet.getShort(child, uriInfo);
                     object.put(traversal.get(0)
                                         .getPath(),
                                getProperty(childFacet, child, traversal,
@@ -754,8 +746,7 @@ public class FacetResource extends TransactionalResource {
                 Map<String, Object> object = childFacet.getShort(child,
                                                                  uriInfo);
                 if (!traversal.isEmpty()) {
-                    object = (Map<String, Object>) childFacet.getShort(child,
-                                                                       uriInfo);
+                    object = childFacet.getShort(child, uriInfo);
                     object.put(traversal.get(0)
                                         .getPath(),
                                getProperty(childFacet, child, traversal,
@@ -777,8 +768,7 @@ public class FacetResource extends TransactionalResource {
                 Map<String, Object> object = childFacet.getShort(child,
                                                                  uriInfo);
                 if (!traversal.isEmpty()) {
-                    object = (Map<String, Object>) childFacet.getShort(child,
-                                                                       uriInfo);
+                    object = childFacet.getShort(child, uriInfo);
                     object.put(traversal.get(0)
                                         .getPath(),
                                getProperty(childFacet, child, traversal,

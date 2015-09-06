@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ import graphql.schema.GraphQLTypeReference;
 /**
  * Cannonical tranform of Phantasm metadata into GraphQL metadata. Provides
  * framework for Phantasm Plugin model;
- * 
+ *
  * @author hhildebrand
  *
  */
@@ -157,7 +157,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     /**
      * Build the top level queries and mutations
-     * 
+     *
      * @param query
      *            - top level query
      * @param mutation
@@ -245,7 +245,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                 update) -> crud.setAttributeValue(facet,
                                                                   (RuleForm) update.get(AT_RULEFORM),
                                                                   auth,
-                                                                  (Object) update.get(setter)));
+                                                                  update.get(setter)));
             inputType = GraphQLString;
         }
         updateTypeBuilder.field(newInputObjectField().type(inputType)
@@ -288,8 +288,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.setChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
-                                                                                             (List<String>) update.get(setter))));
+                                                        crud.lookupRuleForm(auth,
+                                                                            (List<String>) update.get(setter))));
 
         String add = String.format(ADD_TEMPLATE,
                                    capitalized(singularFieldName));
@@ -330,8 +330,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.removeChildren(facet,
                                                            (RuleForm) update.get(AT_RULEFORM),
                                                            auth,
-                                                           (List<RuleForm>) crud.lookupRuleForm(auth,
-                                                                                                (List<String>) update.get(removeChildren))));
+                                                           crud.lookupRuleForm(auth,
+                                                                               (List<String>) update.get(removeChildren))));
 
         String addChildren = String.format(ADD_TEMPLATE,
                                            capitalized(fieldName));
@@ -344,8 +344,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.addChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
-                                                                                             (List<String>) update.get(addChildren))));
+                                                        crud.lookupRuleForm(auth,
+                                                                            (List<String>) update.get(addChildren))));
         references.add(child);
     }
 

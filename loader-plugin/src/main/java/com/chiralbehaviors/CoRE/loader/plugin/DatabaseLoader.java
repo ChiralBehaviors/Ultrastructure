@@ -1,7 +1,7 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -29,12 +29,12 @@ import com.chiralbehaviors.CoRE.loader.Loader;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 /*
  * Copyright (c) 2009, 2011 Hal Hildebrand, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -53,15 +53,15 @@ import com.chiralbehaviors.CoRE.loader.Loader;
 
 /**
  * @author hhildebrand
- * 
+ *
  * @goal load
- * 
+ *
  * @phase package
  */
 public class DatabaseLoader extends AbstractMojo {
     /**
      * the loading configuration
-     * 
+     *
      * @parameter
      */
     private Configuration loader;
@@ -78,8 +78,7 @@ public class DatabaseLoader extends AbstractMojo {
         try {
             new Loader(loader).bootstrap();
         } catch (Exception e) {
-            MojoFailureException ex = new MojoFailureException(
-                                                               "Unable to load database");
+            MojoFailureException ex = new MojoFailureException("Unable to load database");
             ex.initCause(e);
             throw ex;
         }

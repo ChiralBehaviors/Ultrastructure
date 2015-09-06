@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ public interface Thing2 extends Phantasm<Product> {
     @Edge(@Key(name = "thing2Of"))
     void add(List<Thing3> thing3s);
 
-    // 
+    //
     @Edge(@Key(name = "thing2Of"))
     void add(Thing3 thing3);
 

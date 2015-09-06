@@ -47,7 +47,8 @@ public interface WorkspaceModel {
 
     WorkspaceAuthorization get(Product definingProduct, String key);
 
-    List<WorkspaceAuthorization> getByType(Product definingProduct, String type);
+    List<WorkspaceAuthorization> getByType(Product definingProduct,
+                                           String type);
 
     WorkspaceScope getScoped(Product definingProduct);
 

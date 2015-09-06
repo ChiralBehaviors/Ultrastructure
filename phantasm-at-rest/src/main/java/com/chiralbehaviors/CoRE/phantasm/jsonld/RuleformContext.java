@@ -135,6 +135,16 @@ public class RuleformContext {
         gatherTerms(uriInfo);
     }
 
+    public Map<String, Object> getShort(Ruleform instance, UriInfo uriInfo) {
+        Map<String, Object> object = new TreeMap<>();
+        object.put(Constants.CONTEXT, getContextIri(ruleformClass, uriInfo));
+        object.put(Constants.TYPENAME, instance.getClass()
+                                               .getSimpleName());
+        object.put(Constants.TYPE, Constants.RULEFORM);
+        object.put(Constants.ID, getIri(instance));
+        return object;
+    }
+
     public Map<String, Object> toContext(UriInfo uriInfo) {
         Map<String, Object> context = new TreeMap<>();
         Map<String, Object> t = new TreeMap<>();
@@ -183,16 +193,6 @@ public class RuleformContext {
                 }
             }
         }
-        return object;
-    }
-
-    public Map<String, Object> getShort(Ruleform instance, UriInfo uriInfo) {
-        Map<String, Object> object = new TreeMap<>();
-        object.put(Constants.CONTEXT, getContextIri(ruleformClass, uriInfo));
-        object.put(Constants.TYPENAME, instance.getClass()
-                                               .getSimpleName());
-        object.put(Constants.TYPE, Constants.RULEFORM);
-        object.put(Constants.ID, getIri(instance));
         return object;
     }
 

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -47,13 +47,14 @@ public class AttributeModelTest extends AbstractModelTest {
 
     @Test
     public void testEnumValues() {
-        Agency core = model.getKernel().getCore();
-        em.getTransaction().begin();
+        Agency core = model.getKernel()
+                           .getCore();
+        em.getTransaction()
+          .begin();
         Attribute attr = new Attribute("Attribute", "A", ValueType.TEXT, core);
         em.persist(attr);
 
-        Attribute validValues = new Attribute(
-                                              "ValidValues",
+        Attribute validValues = new Attribute("ValidValues",
                                               "Valid enumeration values for this attribute",
                                               ValueType.TEXT, core);
         em.persist(validValues);
@@ -69,12 +70,12 @@ public class AttributeModelTest extends AbstractModelTest {
         c.setSequenceNumber(100);
         c.setMetaAttribute(validValues);
         em.persist(c);
-        model.getAttributeModel().link(attr,
-                                       model.getKernel().getIsValidatedBy(),
-                                       validValues, core);
+        model.getAttributeModel()
+             .link(attr, model.getKernel()
+                              .getIsValidatedBy(),
+                   validValues, core);
 
-        Product validatedProduct = new Product(
-                                               "ValidatedProduct",
+        Product validatedProduct = new Product("ValidatedProduct",
                                                "A product supertype with validation",
                                                core);
         em.persist(validatedProduct);
@@ -83,10 +84,9 @@ public class AttributeModelTest extends AbstractModelTest {
         em.persist(myProduct);
 
         // set value
-        ProductAttribute attributeValue = new ProductAttribute(
-                                                               attr,
-                                                               "a",
-                                                               model.getKernel().getCore());
+        ProductAttribute attributeValue = new ProductAttribute(attr, "a",
+                                                               model.getKernel()
+                                                                    .getCore());
         attributeValue.setProduct(myProduct);
 
         em.persist(attributeValue);
@@ -104,10 +104,13 @@ public class AttributeModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() {
-        Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
+        Agency core = model.getKernel()
+                           .getCore();
+        Relationship equals = model.getKernel()
+                                   .getEquals();
 
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
 
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);

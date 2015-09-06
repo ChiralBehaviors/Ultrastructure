@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     @Key(name = "aliases")
     String[] getAliases();
 
-    // Singular product-location authorization 
+    // Singular product-location authorization
     @Edge(@Key(name = "derivedFrom"))
     MavenArtifact getArtifact();
 
@@ -64,7 +64,7 @@ public interface Thing1 extends ScopedPhantasm<Product> {
     @Key(name = "properties")
     Map<String, String> getProperties();
 
-    // Singular child product 
+    // Singular child product
     @Edge(@Key(name = "thing1Of"))
     Thing2 getThing2();
 
@@ -75,14 +75,14 @@ public interface Thing1 extends ScopedPhantasm<Product> {
         Ruleform lookup = getScope().lookup("kernel", "IsA");
         System.out.println(lookup);
         Model model = getModel();
-        return (Thing1) model.wrap(Thing1.class, getRuleform());
+        return model.wrap(Thing1.class, getRuleform());
     }
 
     // array attributes of the ruleform
     @Key(name = "aliases")
     void setAliases(String[] aliases);
 
-    // Singular product-location authorization 
+    // Singular product-location authorization
     @Edge(@Key(name = "derivedFrom"))
     void setArtifact(MavenArtifact artifact);
 

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -51,7 +51,8 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
 
     @Test
     public void testHasNoSccs() throws Exception {
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
         JobModel jobModel = model.getJobModel();
 
         StatusCode startState = new StatusCode("top-level", kernel.getCore());
@@ -71,22 +72,19 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         em.persist(service);
         em.flush();
 
-        StatusCodeSequencing sequence1 = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
                                                                   startState,
                                                                   state1,
                                                                   kernel.getCore());
         em.persist(sequence1);
 
-        StatusCodeSequencing sequence2 = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
                                                                   state1,
                                                                   state2,
                                                                   kernel.getCore());
         em.persist(sequence2);
 
-        StatusCodeSequencing sequence3 = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing sequence3 = new StatusCodeSequencing(service,
                                                                   state2,
                                                                   terminalState,
                                                                   kernel.getCore());
@@ -100,15 +98,14 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
                                                              kernel.getCore());
         em.persist(loop);
 
-        StatusCodeSequencing terminate = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing terminate = new StatusCodeSequencing(service,
                                                                   loopState,
                                                                   terminalState,
                                                                   kernel.getCore());
         em.persist(terminate);
 
-        StatusCodeSequencing back = new StatusCodeSequencing(service,
-                                                             loopState, state1,
+        StatusCodeSequencing back = new StatusCodeSequencing(service, loopState,
+                                                             state1,
                                                              kernel.getCore());
         em.persist(back);
         em.persist(terminate);
@@ -120,16 +117,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     @Test
     public void testHasNoTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+        StatusCode[] codes = new StatusCode[] { new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -145,7 +141,8 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
 
     @Test
     public void testHasSccs() throws SQLException {
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
 
         JobModel jobModel = model.getJobModel();
 
@@ -166,22 +163,19 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         em.persist(service);
         em.flush();
 
-        StatusCodeSequencing sequence1 = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
                                                                   startState,
                                                                   state1,
                                                                   kernel.getCore());
         em.persist(sequence1);
 
-        StatusCodeSequencing sequence2 = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
                                                                   state1,
                                                                   state2,
                                                                   kernel.getCore());
         em.persist(sequence2);
 
-        StatusCodeSequencing sequence3 = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing sequence3 = new StatusCodeSequencing(service,
                                                                   state2,
                                                                   terminalState,
                                                                   kernel.getCore());
@@ -204,24 +198,23 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
             fail("Did not catch event with non terminal loop");
         } catch (SQLException e) {
             // expected
-            assertTrue(e.getMessage(),
-                       e.getMessage().endsWith("has at least one non terminal SCC defined in its status code graph"));
+            assertTrue(e.getMessage(), e.getMessage()
+                                        .endsWith("has at least one non terminal SCC defined in its status code graph"));
         }
     }
 
     @Test
     public void testHasTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+        StatusCode[] codes = new StatusCode[] { new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -233,16 +226,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     @Test
     public void testLoop() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = new StatusCode[] {
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()),
-                new StatusCode(UUID.randomUUID()) };
+        StatusCode[] codes = new StatusCode[] { new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[3]));
@@ -254,14 +246,16 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
 
     @Test
     public void testMultipleInitialStates() throws SQLException {
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
 
         JobModel jobModel = model.getJobModel();
 
         StatusCode startState = new StatusCode("top-level", kernel.getCore());
         em.persist(startState);
 
-        StatusCode startState2 = new StatusCode("top-level 2", kernel.getCore());
+        StatusCode startState2 = new StatusCode("top-level 2",
+                                                kernel.getCore());
         em.persist(startState2);
 
         StatusCode state1 = new StatusCode("state-1", kernel.getCore());
@@ -278,29 +272,25 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         em.persist(service);
         em.flush();
 
-        StatusCodeSequencing sequence1 = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing sequence1 = new StatusCodeSequencing(service,
                                                                   startState,
                                                                   state1,
                                                                   kernel.getCore());
         em.persist(sequence1);
 
-        StatusCodeSequencing sequence1a = new StatusCodeSequencing(
-                                                                   service,
+        StatusCodeSequencing sequence1a = new StatusCodeSequencing(service,
                                                                    startState2,
                                                                    state1,
                                                                    kernel.getCore());
         em.persist(sequence1a);
 
-        StatusCodeSequencing sequence2 = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing sequence2 = new StatusCodeSequencing(service,
                                                                   state1,
                                                                   state2,
                                                                   kernel.getCore());
         em.persist(sequence2);
 
-        StatusCodeSequencing sequence3 = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing sequence3 = new StatusCodeSequencing(service,
                                                                   state2,
                                                                   terminalState,
                                                                   kernel.getCore());
@@ -316,8 +306,8 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
             fail("Did not catch event with non terminal loop");
         } catch (SQLException e) {
             // expected
-            assertTrue(e.getMessage(),
-                       e.getMessage().contains("has multiple initial state defined in its status code graph"));
+            assertTrue(e.getMessage(), e.getMessage()
+                                        .contains("has multiple initial state defined in its status code graph"));
         }
     }
 }

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -46,10 +46,15 @@ public class SccTest {
     public void testScc() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
         StatusCode[] codes = new StatusCode[] { new StatusCode(new UUID(0, 1)),
-                new StatusCode(new UUID(0, 2)), new StatusCode(new UUID(0, 3)),
-                new StatusCode(new UUID(0, 4)), new StatusCode(new UUID(0, 5)),
-                new StatusCode(new UUID(0, 6)), new StatusCode(new UUID(0, 7)),
-                new StatusCode(new UUID(0, 8)), new StatusCode(new UUID(0, 9)) };
+                                                new StatusCode(new UUID(0, 2)),
+                                                new StatusCode(new UUID(0, 3)),
+                                                new StatusCode(new UUID(0, 4)),
+                                                new StatusCode(new UUID(0, 5)),
+                                                new StatusCode(new UUID(0, 6)),
+                                                new StatusCode(new UUID(0, 7)),
+                                                new StatusCode(new UUID(0, 8)),
+                                                new StatusCode(new UUID(0,
+                                                                        9)) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -66,11 +71,13 @@ public class SccTest {
 
             @Override
             public int compare(StatusCode o1, StatusCode o2) {
-                return o1.getId().compareTo(o2.getId());
+                return o1.getId()
+                         .compareTo(o2.getId());
             }
         };
 
-        StatusCode[] expected = new StatusCode[] { codes[6], codes[7], codes[8] };
+        StatusCode[] expected = new StatusCode[] { codes[6], codes[7],
+                                                   codes[8] };
         Arrays.sort(expected, scComparator);
         StatusCode[] got = sccs.get(0);
         Arrays.sort(got, scComparator);

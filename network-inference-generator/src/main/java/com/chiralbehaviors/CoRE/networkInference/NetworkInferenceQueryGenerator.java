@@ -1,7 +1,7 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -35,36 +35,51 @@ import org.stringtemplate.v4.STGroupFile;
 /**
  * A class for generating JPA native queries for network inference for
  * existential ruleforms.
- * 
+ *
  * @author hhildebrand
- * 
+ *
  * @goal generate
- * 
+ *
  * @phase generate-sources
- * 
- * 
+ *
+ *
  */
 public class NetworkInferenceQueryGenerator extends AbstractMojo {
 
     private static final String     ENTITY_NAME                     = "entityName";
     private static final String     ENTITY_PACKAGE                  = "entityPackage";
-    private static final String[][] GENERATED                       = {
-            { "AgencyNetwork", "com.chiralbehaviors.CoRE.agency",
-            "agency_network", "agencyNetwork" },
-            { "AttributeNetwork", "com.chiralbehaviors.CoRE.attribute",
-            "attribute_network", "attributeNetwork" },
-            { "UnitNetwork", "com.chiralbehaviors.CoRE.attribute.unit",
-            "unit_network", "unitNetwork" },
-            { "StatusCodeNetwork", "com.chiralbehaviors.CoRE.job.status",
-            "status_code_network", "statusCodeNetwork" },
-            { "LocationNetwork", "com.chiralbehaviors.CoRE.location",
-            "location_network", "locationNetwork" },
-            { "RelationshipNetwork", "com.chiralbehaviors.CoRE.relationship",
-            "relationship_network", "relationshipNetwork" },
-            { "ProductNetwork", "com.chiralbehaviors.CoRE.product",
-            "product_network", "productNetwork" },
-            { "IntervalNetwork", "com.chiralbehaviors.CoRE.time",
-            "interval_network", "intervalNetwork" }                };
+    private static final String[][] GENERATED                       = { { "AgencyNetwork",
+                                                                          "com.chiralbehaviors.CoRE.agency",
+                                                                          "agency_network",
+                                                                          "agencyNetwork" },
+                                                                        { "AttributeNetwork",
+                                                                          "com.chiralbehaviors.CoRE.attribute",
+                                                                          "attribute_network",
+                                                                          "attributeNetwork" },
+                                                                        { "UnitNetwork",
+                                                                          "com.chiralbehaviors.CoRE.attribute.unit",
+                                                                          "unit_network",
+                                                                          "unitNetwork" },
+                                                                        { "StatusCodeNetwork",
+                                                                          "com.chiralbehaviors.CoRE.job.status",
+                                                                          "status_code_network",
+                                                                          "statusCodeNetwork" },
+                                                                        { "LocationNetwork",
+                                                                          "com.chiralbehaviors.CoRE.location",
+                                                                          "location_network",
+                                                                          "locationNetwork" },
+                                                                        { "RelationshipNetwork",
+                                                                          "com.chiralbehaviors.CoRE.relationship",
+                                                                          "relationship_network",
+                                                                          "relationshipNetwork" },
+                                                                        { "ProductNetwork",
+                                                                          "com.chiralbehaviors.CoRE.product",
+                                                                          "product_network",
+                                                                          "productNetwork" },
+                                                                        { "IntervalNetwork",
+                                                                          "com.chiralbehaviors.CoRE.time",
+                                                                          "interval_network",
+                                                                          "intervalNetwork" } };
     private static final String     NETWORK_INFERENCE               = "networkInference";
     private static final String     QUERY_PREFIX                    = "queryPrefix";
     private static final String     TABLE_NAME                      = "tableName";
@@ -73,7 +88,7 @@ public class NetworkInferenceQueryGenerator extends AbstractMojo {
     /**
      * @parameter
      */
-    private File                    outputDirectory;
+    private File outputDirectory;
 
     public NetworkInferenceQueryGenerator() {
     }
@@ -88,8 +103,7 @@ public class NetworkInferenceQueryGenerator extends AbstractMojo {
         try {
             Files.createDirectories(outputDirectory.toPath());
         } catch (IOException e) {
-            throw new MojoExecutionException(
-                                             String.format("Cannot create output directory %s",
+            throw new MojoExecutionException(String.format("Cannot create output directory %s",
                                                            outputDirectory.getAbsoluteFile()),
                                              e);
         }
@@ -103,23 +117,23 @@ public class NetworkInferenceQueryGenerator extends AbstractMojo {
     }
 
     private void generate(String entityName, String entityPackage,
-                          String tableName, String queryPrefix, File output)
-                                                                            throws MojoExecutionException {
+                          String tableName, String queryPrefix,
+                          File output) throws MojoExecutionException {
         getLog().info(String.format("Generating %s to %s", entityName, output));
         try {
-            Files.createDirectories(output.getParentFile().toPath());
+            Files.createDirectories(output.getParentFile()
+                                          .toPath());
         } catch (IOException e) {
-            throw new MojoExecutionException(
-                                             String.format("Cannot create generated file parent directories %s",
-                                                           output.getParentFile().getAbsoluteFile()),
+            throw new MojoExecutionException(String.format("Cannot create generated file parent directories %s",
+                                                           output.getParentFile()
+                                                                 .getAbsoluteFile()),
                                              e);
         }
 
         try {
             Files.deleteIfExists(output.toPath());
         } catch (IOException e) {
-            throw new MojoExecutionException(
-                                             String.format("Cannot delete generated file %s",
+            throw new MojoExecutionException(String.format("Cannot delete generated file %s",
                                                            output.getAbsoluteFile()),
                                              e);
         }
@@ -131,15 +145,14 @@ public class NetworkInferenceQueryGenerator extends AbstractMojo {
         inference.add(TABLE_NAME, tableName);
         inference.add(QUERY_PREFIX, queryPrefix);
         try (OutputStream os = new FileOutputStream(output)) {
-            os.write(inference.render().getBytes());
+            os.write(inference.render()
+                              .getBytes());
         } catch (FileNotFoundException e) {
-            throw new MojoExecutionException(
-                                             String.format("Cannot find generated file for write %s",
+            throw new MojoExecutionException(String.format("Cannot find generated file for write %s",
                                                            output.getAbsoluteFile()),
                                              e);
         } catch (IOException e) {
-            throw new MojoExecutionException(
-                                             String.format("Error generating file %s",
+            throw new MojoExecutionException(String.format("Error generating file %s",
                                                            output.getAbsoluteFile()),
                                              e);
         }

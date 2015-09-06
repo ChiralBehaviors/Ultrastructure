@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2015 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -38,9 +38,12 @@ public class TestParse {
         WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
         p.addErrorListener(new BaseErrorListener() {
             @Override
-            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
-                                    int charPositionInLine, String msg, RecognitionException e) {
-                throw new IllegalStateException("failed to parse at line " + line + " due to " + msg, e);
+            public void syntaxError(Recognizer<?, ?> recognizer,
+                                    Object offendingSymbol, int line,
+                                    int charPositionInLine, String msg,
+                                    RecognitionException e) {
+                throw new IllegalStateException("failed to parse at line "
+                                                + line + " due to " + msg, e);
             }
         });
         p.workspace();

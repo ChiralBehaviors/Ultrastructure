@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -112,14 +112,17 @@ public class OrderProcessingWorkspace {
         super();
     }
 
-    public WorkspaceAccessor createWorkspace(Model model)
-                                                 throws IllegalArgumentException,
-                                                 IllegalAccessException {
-        EditableWorkspace workspace = (EditableWorkspace) model.getWorkspaceModel().getScoped(orderEntryWorkspace).getWorkspace();
+    public WorkspaceAccessor createWorkspace(Model model) throws IllegalArgumentException,
+                                                          IllegalAccessException {
+        EditableWorkspace workspace = (EditableWorkspace) model.getWorkspaceModel()
+                                                               .getScoped(orderEntryWorkspace)
+                                                               .getWorkspace();
         for (Field field : OrderProcessingWorkspace.class.getDeclaredFields()) {
             ExistentialRuleform<?, ?> extRuleform = (ExistentialRuleform<?, ?>) field.get(this);
             workspace.put(extRuleform.getName(), extRuleform);
         }
-        return model.getWorkspaceModel().getScoped(orderEntryWorkspace).getWorkspace();
+        return model.getWorkspaceModel()
+                    .getScoped(orderEntryWorkspace)
+                    .getWorkspace();
     }
 }

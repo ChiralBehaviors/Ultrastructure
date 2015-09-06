@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -50,10 +50,13 @@ public class StatusCodeTest extends AbstractModelTest {
 
     @Before
     public void before() {
-        if (em.getTransaction().isActive()) {
-            em.getTransaction().rollback();
+        if (em.getTransaction()
+              .isActive()) {
+            em.getTransaction()
+              .rollback();
         }
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
     }
 
     @Test
@@ -81,8 +84,8 @@ public class StatusCodeTest extends AbstractModelTest {
         sequences.add(new Tuple<StatusCode, StatusCode>(state1, state2));
         sequences.add(new Tuple<StatusCode, StatusCode>(state2, terminalState));
 
-        model.getJobModel().createStatusCodeSequencings(service, sequences,
-                                                        kernel.getCore());
+        model.getJobModel()
+             .createStatusCodeSequencings(service, sequences, kernel.getCore());
 
         em.flush();
 
@@ -94,7 +97,8 @@ public class StatusCodeTest extends AbstractModelTest {
                     jobModel.isTerminalState(state1, service));
         assertFalse(String.format("%s is a terminal state", state2),
                     jobModel.isTerminalState(state2, service));
-        assertEquals(4, jobModel.getStatusCodesFor(service).size());
+        assertEquals(4, jobModel.getStatusCodesFor(service)
+                                .size());
 
         StatusCodeSequencing loop = new StatusCodeSequencing(service,
                                                              terminalState,
@@ -121,16 +125,14 @@ public class StatusCodeTest extends AbstractModelTest {
         loop = new StatusCodeSequencing(service, state2, loopState, core);
         em.persist(loop);
 
-        StatusCodeSequencing terminate = new StatusCodeSequencing(
-                                                                  service,
+        StatusCodeSequencing terminate = new StatusCodeSequencing(service,
                                                                   loopState,
                                                                   terminalState,
                                                                   core);
         em.persist(terminate);
 
-        StatusCodeSequencing back = new StatusCodeSequencing(service,
-                                                             loopState, state1,
-                                                             core);
+        StatusCodeSequencing back = new StatusCodeSequencing(service, loopState,
+                                                             state1, core);
         em.persist(back);
         em.persist(terminate);
         em.flush();
@@ -163,13 +165,13 @@ public class StatusCodeTest extends AbstractModelTest {
         sequences.add(new Tuple<StatusCode, StatusCode>(state1, state2));
         sequences.add(new Tuple<StatusCode, StatusCode>(state2, terminalState));
 
-        model.getJobModel().createStatusCodeSequencings(service, sequences,
-                                                        kernel.getCore());
-        model.getJobModel().createStatusCodeSequencings(service2, sequences,
-                                                        kernel.getCore());
+        model.getJobModel()
+             .createStatusCodeSequencings(service, sequences, kernel.getCore());
+        model.getJobModel()
+             .createStatusCodeSequencings(service2, sequences,
+                                          kernel.getCore());
 
-        ProductChildSequencingAuthorization invalidSeq = new ProductChildSequencingAuthorization(
-                                                                                                 service,
+        ProductChildSequencingAuthorization invalidSeq = new ProductChildSequencingAuthorization(service,
                                                                                                  startState,
                                                                                                  service2,
                                                                                                  terminalState,
@@ -183,7 +185,8 @@ public class StatusCodeTest extends AbstractModelTest {
         em.refresh(child);
         assertNotNull("Parent is null", child.getParent());
         assertTrue("Child is not considered active", jobModel.isActive(child));
-        assertEquals(1, jobModel.getActiveSubJobsOf(parent).size());
+        assertEquals(1, jobModel.getActiveSubJobsOf(parent)
+                                .size());
         jobModel.changeStatus(parent, startState, kernel.getCore(),
                               "transition from test");
         em.flush();

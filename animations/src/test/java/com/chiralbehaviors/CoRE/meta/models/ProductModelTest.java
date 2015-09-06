@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -42,10 +42,13 @@ public class ProductModelTest extends AbstractModelTest {
 
     @Test
     public void testSimpleNetworkPropagation() {
-        Agency core = model.getKernel().getCore();
-        Relationship equals = model.getKernel().getEquals();
+        Agency core = model.getKernel()
+                           .getCore();
+        Relationship equals = model.getKernel()
+                                   .getEquals();
 
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
 
         Relationship equals2 = new Relationship("equals 2",
                                                 "an alias for equals", core);

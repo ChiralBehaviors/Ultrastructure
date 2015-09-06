@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -37,9 +37,11 @@ public class SmartMergeTest extends AbstractModelTest {
 
     @Test
     public void testCircularity() {
-        em.getTransaction().begin();
-        Job job = model.getJobModel().newInitializedJob(kernel.getAnyProduct(),
-                                                        kernel.getCore());
+        em.getTransaction()
+          .begin();
+        Job job = model.getJobModel()
+                       .newInitializedJob(kernel.getAnyProduct(),
+                                          kernel.getCore());
         job.setAssignTo(kernel.getCore());
         job.setProduct(kernel.getAnyProduct());
         job.setDeliverTo(kernel.getAnyLocation());

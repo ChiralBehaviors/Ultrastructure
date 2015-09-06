@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -108,7 +108,8 @@ public class RelationshipTest extends DatabaseTest {
         System.out.println("I1: " + r1.getInverse());
 
         System.out.println("R1 Class: " + r1.getClass());
-        System.out.println("I1 Class: " + r1.getInverse().getClass());
+        System.out.println("I1 Class: " + r1.getInverse()
+                                            .getClass());
 
         assertNotNull(r1.getInverse());
     }

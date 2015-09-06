@@ -20,8 +20,8 @@ import graphql.validation.Validator;
 
 public class GraphQL {
 
-    private final GraphQLSchema   graphQLSchema;
     private final ExecutorService executorService;
+    private final GraphQLSchema   graphQLSchema;
 
     public GraphQL(GraphQLSchema graphQLSchema) {
         this(graphQLSchema, null);
@@ -42,15 +42,15 @@ public class GraphQL {
                        Collections.<String, Object> emptyMap());
     }
 
+    public ExecutionResult execute(String requestString, Object context,
+                                   Map<String, Object> arguments) {
+        return execute(requestString, null, context, arguments);
+    }
+
     public ExecutionResult execute(String requestString, String operationName,
                                    Object context) {
         return execute(requestString, operationName, context,
                        Collections.<String, Object> emptyMap());
-    }
-
-    public ExecutionResult execute(String requestString, Object context,
-                                   Map<String, Object> arguments) {
-        return execute(requestString, null, context, arguments);
     }
 
     public ExecutionResult execute(String requestString, String operationName,

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -36,7 +36,8 @@ public class ProductAttributeAuthorizationTest extends AbstractModelTest {
 
     @Test
     public void testAllowedNumericValues() throws Exception {
-        em.getTransaction().begin();
+        em.getTransaction()
+          .begin();
 
         Agency agency = new Agency();
         agency.setName("Primordial Agency");
@@ -63,10 +64,11 @@ public class ProductAttributeAuthorizationTest extends AbstractModelTest {
         authorizedAttribute.setValueType(ValueType.NUMERIC);
         em.persist(authorizedAttribute);
 
-        model.getProductModel().getAllowedValues(authorizedAttribute,
-                                                 new Aspect<Product>(
-                                                                     classifier,
-                                                                     classificationProduct));
-        em.getTransaction().rollback();
+        model.getProductModel()
+             .getAllowedValues(authorizedAttribute,
+                               new Aspect<Product>(classifier,
+                                                   classificationProduct));
+        em.getTransaction()
+          .rollback();
     }
 }

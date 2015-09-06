@@ -59,8 +59,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceDefinitio
  */
 public class WorkspacePresentation {
 
-    public static WorkspaceContext getWorkspaceContext(InputStream source)
-                                                                          throws IOException {
+    public static WorkspaceContext getWorkspaceContext(InputStream source) throws IOException {
         WorkspaceLexer l = new WorkspaceLexer(new ANTLRInputStream(source));
         WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
         p.addErrorListener(new BaseErrorListener() {
@@ -79,8 +78,7 @@ public class WorkspacePresentation {
 
     private final WorkspaceContext context;
 
-    public WorkspacePresentation(InputStream workspaceResource)
-                                                               throws IOException {
+    public WorkspacePresentation(InputStream workspaceResource) throws IOException {
         this(getWorkspaceContext(workspaceResource));
     }
 
@@ -103,7 +101,8 @@ public class WorkspacePresentation {
         if (context.agencies.facets() == null) {
             return Collections.emptyList();
         }
-        return context.agencies.facets().facet();
+        return context.agencies.facets()
+                               .facet();
     }
 
     public List<EdgeContext> getAgencyNetworks() {
@@ -113,7 +112,8 @@ public class WorkspacePresentation {
         if (context.agencies.edges() == null) {
             return Collections.emptyList();
         }
-        return context.agencies.edges().edge();
+        return context.agencies.edges()
+                               .edge();
     }
 
     public List<FacetContext> getAttributeFacets() {
@@ -123,7 +123,8 @@ public class WorkspacePresentation {
         if (context.attributes.facets() == null) {
             return Collections.emptyList();
         }
-        return context.attributes.facets().facet();
+        return context.attributes.facets()
+                                 .facet();
     }
 
     public List<EdgeContext> getAttributeNetworks() {
@@ -133,7 +134,8 @@ public class WorkspacePresentation {
         if (context.attributes.edges() == null) {
             return Collections.emptyList();
         }
-        return context.attributes.edges().edge();
+        return context.attributes.edges()
+                                 .edge();
     }
 
     public List<AttributeRuleformContext> getAttributes() {
@@ -150,7 +152,7 @@ public class WorkspacePresentation {
         }
         ChildSequencingsContext children = context.sequencingAuthorizations.childSequencings();
         return children == null ? Collections.emptyList()
-                               : children.childSequencing();
+                                : children.childSequencing();
     }
 
     public List<ImportedWorkspaceContext> getImports() {
@@ -177,7 +179,8 @@ public class WorkspacePresentation {
         if (context.intervals.facets() == null) {
             return Collections.emptyList();
         }
-        return context.intervals.facets().facet();
+        return context.intervals.facets()
+                                .facet();
     }
 
     public List<EdgeContext> getIntervalNetworks() {
@@ -187,7 +190,8 @@ public class WorkspacePresentation {
         if (context.intervals.edges() == null) {
             return Collections.emptyList();
         }
-        return context.intervals.edges().edge();
+        return context.intervals.edges()
+                                .edge();
     }
 
     public List<AttributedExistentialRuleformContext> getIntervals() {
@@ -204,7 +208,8 @@ public class WorkspacePresentation {
         if (context.locations.facets() == null) {
             return Collections.emptyList();
         }
-        return context.locations.facets().facet();
+        return context.locations.facets()
+                                .facet();
     }
 
     public List<EdgeContext> getLocationNetworks() {
@@ -214,7 +219,8 @@ public class WorkspacePresentation {
         if (context.locations.edges() == null) {
             return Collections.emptyList();
         }
-        return context.locations.edges().edge();
+        return context.locations.edges()
+                                .edge();
     }
 
     public List<AttributedExistentialRuleformContext> getLocations() {
@@ -236,7 +242,8 @@ public class WorkspacePresentation {
         if (context.sequencingAuthorizations == null) {
             return Collections.emptyList();
         }
-        return context.sequencingAuthorizations.parentSequencings().parentSequencing();
+        return context.sequencingAuthorizations.parentSequencings()
+                                               .parentSequencing();
     }
 
     public List<FacetContext> getProductFacets() {
@@ -246,7 +253,8 @@ public class WorkspacePresentation {
         if (context.products.facets() == null) {
             return Collections.emptyList();
         }
-        return context.products.facets().facet();
+        return context.products.facets()
+                               .facet();
     }
 
     public List<EdgeContext> getProductNetworks() {
@@ -256,7 +264,8 @@ public class WorkspacePresentation {
         if (context.products.edges() == null) {
             return Collections.emptyList();
         }
-        return context.products.edges().edge();
+        return context.products.edges()
+                               .edge();
     }
 
     public List<AttributedExistentialRuleformContext> getProducts() {
@@ -281,7 +290,8 @@ public class WorkspacePresentation {
         if (context.relationships.facets() == null) {
             return Collections.emptyList();
         }
-        return context.relationships.facets().facet();
+        return context.relationships.facets()
+                                    .facet();
     }
 
     public List<EdgeContext> getRelationshipNetworks() {
@@ -291,7 +301,8 @@ public class WorkspacePresentation {
         if (context.relationships.edges() == null) {
             return Collections.emptyList();
         }
-        return context.relationships.edges().edge();
+        return context.relationships.edges()
+                                    .edge();
     }
 
     public List<RelationshipPairContext> getRelationships() {
@@ -307,7 +318,7 @@ public class WorkspacePresentation {
         }
         SelfSequencingsContext selfSequencings = context.sequencingAuthorizations.selfSequencings();
         return selfSequencings == null ? Collections.emptyList()
-                                      : selfSequencings.selfSequencing();
+                                       : selfSequencings.selfSequencing();
     }
 
     public List<SiblingSequencingContext> getSiblingSequencings() {
@@ -316,7 +327,7 @@ public class WorkspacePresentation {
         }
         SiblingSequencingsContext siblings = context.sequencingAuthorizations.siblingSequencings();
         return siblings == null ? Collections.emptyList()
-                               : siblings.siblingSequencing();
+                                : siblings.siblingSequencing();
     }
 
     public List<FacetContext> getStatusCodeFacets() {
@@ -326,7 +337,8 @@ public class WorkspacePresentation {
         if (context.statusCodes.facets() == null) {
             return Collections.emptyList();
         }
-        return context.statusCodes.facets().facet();
+        return context.statusCodes.facets()
+                                  .facet();
     }
 
     public List<EdgeContext> getStatusCodeNetworks() {
@@ -336,7 +348,8 @@ public class WorkspacePresentation {
         if (context.statusCodes.edges() == null) {
             return Collections.emptyList();
         }
-        return context.statusCodes.edges().edge();
+        return context.statusCodes.edges()
+                                  .edge();
     }
 
     public List<AttributedExistentialRuleformContext> getStatusCodes() {
@@ -361,7 +374,8 @@ public class WorkspacePresentation {
         if (context.units.facets() == null) {
             return Collections.emptyList();
         }
-        return context.units.facets().facet();
+        return context.units.facets()
+                            .facet();
     }
 
     public List<EdgeContext> getUnitNetworks() {
@@ -371,7 +385,8 @@ public class WorkspacePresentation {
         if (context.units.edges() == null) {
             return Collections.emptyList();
         }
-        return context.units.edges().edge();
+        return context.units.edges()
+                            .edge();
     }
 
     public List<UnitContext> getUnits() {

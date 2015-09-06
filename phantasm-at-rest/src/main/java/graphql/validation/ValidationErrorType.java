@@ -2,13 +2,13 @@ package graphql.validation;
 
 public enum ValidationErrorType {
 
-    DefaultForNonNullArgument, WrongType, UnknownType, SubSelectionRequired,
-    SubSelectionNotAllowed, InvalidSyntax, BadValueForDefaultArg,
-    FieldUndefined, InlineFragmentTypeConditionInvalid,
-    FragmentTypeConditionInvalid, UnknownArgument, UndefinedFragment,
-    NonInputTypeOnVariable, UnusedFragment, MissingFieldArgument,
-    MissingDirectiveArgument, VariableTypeMismatch, UnknownDirective,
-    MisplacedDirective, UndefinedVariable, UnusedVariable, FragmentCycle,
-    FieldsConflict, InvalidFragmentType, UnboundVariable
+    BadValueForDefaultArg, DefaultForNonNullArgument, FieldsConflict,
+    FieldUndefined, FragmentCycle, FragmentTypeConditionInvalid,
+    InlineFragmentTypeConditionInvalid, InvalidFragmentType, InvalidSyntax,
+    MisplacedDirective, MissingDirectiveArgument, MissingFieldArgument,
+    NonInputTypeOnVariable, SubSelectionNotAllowed, SubSelectionRequired,
+    UnboundVariable, UndefinedFragment, UndefinedVariable, UnknownArgument,
+    UnknownDirective, UnknownType, UnusedFragment, UnusedVariable,
+    VariableTypeMismatch, WrongType
 
 }

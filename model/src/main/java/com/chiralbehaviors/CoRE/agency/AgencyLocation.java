@@ -68,12 +68,6 @@ public class AgencyLocation extends Ruleform
     @JsonIgnore
     private Set<AgencyLocationAttribute> attributes;
 
-    // bi-directional many-to-one association to Agency
-    @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "authority")
-    private Agency authority;
-
     // bi-directional many-to-one association to Location
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH })
     @JoinColumn(name = "location")
@@ -94,11 +88,9 @@ public class AgencyLocation extends Ruleform
         super(updatedBy);
     }
 
-    public AgencyLocation(Agency authority, Agency agency,
-                          Relationship relationship, Location location,
-                          Agency updatedBy) {
+    public AgencyLocation(Agency agency, Relationship relationship,
+                          Location location, Agency updatedBy) {
         super(updatedBy);
-        this.authority = authority;
         this.relationship = relationship;
         this.location = location;
         this.agency = agency;

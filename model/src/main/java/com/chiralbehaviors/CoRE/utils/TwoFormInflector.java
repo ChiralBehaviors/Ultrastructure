@@ -96,20 +96,18 @@ public abstract class TwoFormInflector {
                                                      + "$"),
                                      "$1" + plural.substring(1)));
         } else {
-            rules.add(new RegExpRule(
-                                     Pattern.compile(Character.toUpperCase(singular.charAt(0))
+            rules.add(new RegExpRule(Pattern.compile(Character.toUpperCase(singular.charAt(0))
                                                      + "(?i)"
                                                      + singular.substring(1)
                                                      + "$"),
                                      Character.toUpperCase(plural.charAt(0))
-                                             + plural.substring(1)));
-            rules.add(new RegExpRule(
-                                     Pattern.compile(Character.toLowerCase(singular.charAt(0))
+                                                             + plural.substring(1)));
+            rules.add(new RegExpRule(Pattern.compile(Character.toLowerCase(singular.charAt(0))
                                                      + "(?i)"
                                                      + singular.substring(1)
                                                      + "$"),
                                      Character.toLowerCase(plural.charAt(0))
-                                             + plural.substring(1)));
+                                                             + plural.substring(1)));
         }
     }
 

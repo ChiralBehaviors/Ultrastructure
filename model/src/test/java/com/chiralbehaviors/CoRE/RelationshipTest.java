@@ -108,7 +108,8 @@ public class RelationshipTest extends DatabaseTest {
         System.out.println("I1: " + r1.getInverse());
 
         System.out.println("R1 Class: " + r1.getClass());
-        System.out.println("I1 Class: " + r1.getInverse().getClass());
+        System.out.println("I1 Class: " + r1.getInverse()
+                                            .getClass());
 
         assertNotNull(r1.getInverse());
     }

@@ -49,7 +49,8 @@ public class AgencyProductAttribute extends AttributeValue<AgencyProduct> {
 
     // bi-directional many-to-one association to AgencyProduct
     @NotNull
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.DETACH }, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.PERSIST,
+                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "agency_product")
     private AgencyProduct agencyProduct;
 

@@ -195,8 +195,7 @@
                         </goals>
                     </execution>
                 </executions>
-                <dependencies>
-                    Yes, you really must have an explicit dependency on the thing you want to enhance
+                <dependencies> 
                     <dependency>
                         <groupId>${project.groupId}</groupId>
                         <artifactId>${project.artifactId}</artifactId>

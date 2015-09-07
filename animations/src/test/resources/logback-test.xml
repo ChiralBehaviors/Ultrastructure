@@ -13,19 +13,10 @@
         <level value="WARN" />
     </logger>
     <logger name="org.hibernate">
-        <level value="ERROR" />
-    </logger>
-    <logger name="org.hibernate.SQL">
-        <level value="ERROR" />
-    </logger>
-    <logger name="org.hibernate.type">
-        <level value="ERROR" />
-    </logger>
-    <logger name="org.hibernate.cache">
-        <level value="ERROR" />
-    </logger>
+        <level value="WARN" />
+    </logger> 
     <root>
-        <level value="ERROR" />
+        <level value="WARN" />
         <appender-ref ref="C" />
     </root>
 

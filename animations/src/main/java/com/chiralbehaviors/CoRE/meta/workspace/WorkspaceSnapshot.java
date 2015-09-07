@@ -76,10 +76,11 @@ public class WorkspaceSnapshot {
                              EntityManager em) {
         this.definingProduct = definingProduct;
         Predicate<Ruleform> systemDefinition = traversing -> {
-            return traversing instanceof WorkspaceAuthorization
-                   || traversing == definingProduct || traversing.getWorkspace()
-                                                                 .getDefiningProduct()
-                                                                 .equals(definingProduct);
+            return (traversing instanceof WorkspaceAuthorization
+                    && definingProduct.equals(((WorkspaceAuthorization) traversing).getDefiningProduct()))
+                   || (traversing.getWorkspace() != null
+                       && definingProduct.equals(traversing.getWorkspace()
+                                                           .getDefiningProduct()));
         };
 
         this.ruleforms = new ArrayList<>(auths.size());

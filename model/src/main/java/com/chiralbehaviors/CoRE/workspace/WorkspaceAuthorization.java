@@ -39,8 +39,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.product.Product;
@@ -75,7 +73,6 @@ public class WorkspaceAuthorization extends Ruleform {
     private Product definingProduct;
 
     private String key;
-    @Type(type = "pg-uuid")
     private UUID   reference; // teh pointer ;)
     private String type;
 

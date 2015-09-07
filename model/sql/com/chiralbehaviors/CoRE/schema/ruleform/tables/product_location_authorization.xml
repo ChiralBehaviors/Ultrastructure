@@ -27,7 +27,7 @@
             <column name="to_relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="cardinality" type="SMALLINT">
+            <column name="cardinality" type="INT4">
                 <constraints nullable="false"/>
             </column>
             <column name="connection" type="uuid">

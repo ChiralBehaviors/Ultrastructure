@@ -40,7 +40,6 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Type;
 import org.hibernate.proxy.HibernateProxy;
 import org.reflections.Reflections;
 
@@ -106,7 +105,6 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     @Id
-    @Type(type = "pg-uuid")
     private UUID id = GENERATOR.generate();
 
     @Basic(fetch = FetchType.LAZY)

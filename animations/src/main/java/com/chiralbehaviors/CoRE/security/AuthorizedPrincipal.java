@@ -65,6 +65,7 @@ public class AuthorizedPrincipal implements Cloneable {
     }
 
     public AuthorizedPrincipal merge(EntityManager em) {
-        return new AuthorizedPrincipal(em.merge(principal));
+        return new AuthorizedPrincipal(em.getReference(Agency.class,
+                                                       principal.getId()));
     }
 }

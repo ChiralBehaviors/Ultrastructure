@@ -69,7 +69,7 @@
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="agency_product_authorization" constraintName="agency_product_authorization_updated_by_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
             columnNames="from_relationship, from_parent, to_parent, to_relationship, connection, grouping_agency" constraintName="agency_product_unique_key"

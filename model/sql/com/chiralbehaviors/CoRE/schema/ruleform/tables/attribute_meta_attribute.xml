@@ -52,7 +52,7 @@
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="attribute_meta_attribute" constraintName="attribute_attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="attribute, meta_attribute, sequence_number"
             constraintName="attribute_attribute_base_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true"

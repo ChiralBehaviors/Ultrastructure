@@ -43,7 +43,7 @@
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="agency_network" constraintName="agency_network_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, inference, premise1, premise2"
             constraintName="agency_network_parent_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="agency_network" />
         <createIndex schemaName="ruleform" indexName="agency_network_child_fkey_idx" tableName="agency_network" unique="false">

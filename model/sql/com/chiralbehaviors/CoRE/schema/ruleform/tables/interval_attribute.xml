@@ -48,7 +48,7 @@
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="interval_attribute" constraintName="interval_attribute_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="interval, attribute" constraintName="interval_attribute_interval_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="interval_attribute" />
         <createIndex schemaName="ruleform" indexName="interval_attribute_updated_by_fkey_idx" tableName="interval_attribute"

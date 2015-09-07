@@ -45,7 +45,7 @@
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product_relationship" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="product_relationship_attribute" constraintName="product_relationship_attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="product_relationship, attribute, sequence_number"
             constraintName="product_relationship_attribute_agency_key" deferrable="false" disabled="false" initiallyDeferred="true"

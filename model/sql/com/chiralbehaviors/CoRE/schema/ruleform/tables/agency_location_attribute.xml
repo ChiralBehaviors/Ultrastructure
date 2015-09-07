@@ -48,7 +48,7 @@
             referencedTableName="agency_location" /> 
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="agency_location_attribute" constraintName="agency_location_attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
             referencedTableName="agency" /> 
         <addUniqueConstraint schemaName="ruleform" columnNames="agency_location, attribute, sequence_number"
             constraintName="agency_location_attribute_agency_key" deferrable="false" disabled="false" initiallyDeferred="true"

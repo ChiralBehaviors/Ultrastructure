@@ -57,7 +57,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="location_attribute_authorization" constraintName="location_attribute_authorization_updated_by_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
             columnNames="network_authorization, authorized_attribute, authorized_network_attribute, grouping_agency" constraintName="location_attribute_authorizatio_agency_classification_attri_key"

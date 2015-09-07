@@ -26,7 +26,7 @@
         </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="location" constraintName="location_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />
         <createIndex schemaName="ruleform" indexName="location_updated_by_fkey_idx" tableName="location" unique="false">
             <column name="updated_by" />
         </createIndex>

@@ -19,36 +19,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class TwoFormInflector {
-    private interface Rule {
-        String getPlural(String singular);
-    }
-
-    private static class RegExpRule implements Rule {
-        private final Pattern singular;
-        private final String  plural;
-
-        private RegExpRule(Pattern singular, String plural) {
-            this.singular = singular;
-            this.plural = plural;
-        }
-
-        @Override
-        public String getPlural(String word) {
-            StringBuffer buffer = new StringBuffer();
-            Matcher matcher = singular.matcher(word);
-            if (matcher.find()) {
-                matcher.appendReplacement(buffer, plural);
-                matcher.appendTail(buffer);
-                return buffer.toString();
-            }
-            return null;
-        }
-    }
-
     private static class CategoryRule implements Rule {
         private final String[] list;
-        private final String   singular;
         private final String   plural;
+        private final String   singular;
 
         public CategoryRule(String[] list, String singular, String plural) {
             this.list = list;
@@ -72,7 +46,37 @@ public abstract class TwoFormInflector {
         }
     }
 
+    private static class RegExpRule implements Rule {
+        private final String  plural;
+        private final Pattern singular;
+
+        private RegExpRule(Pattern singular, String plural) {
+            this.singular = singular;
+            this.plural = plural;
+        }
+
+        @Override
+        public String getPlural(String word) {
+            StringBuffer buffer = new StringBuffer();
+            Matcher matcher = singular.matcher(word);
+            if (matcher.find()) {
+                matcher.appendReplacement(buffer, plural);
+                matcher.appendTail(buffer);
+                return buffer.toString();
+            }
+            return null;
+        }
+    }
+
+    private interface Rule {
+        String getPlural(String singular);
+    }
+
     private final List<Rule> rules = new ArrayList<Rule>();
+
+    protected void categoryRule(String[] list, String singular, String plural) {
+        rules.add(new CategoryRule(list, singular, plural));
+    }
 
     protected String getPlural(String word) {
         for (Rule rule : rules) {
@@ -82,10 +86,6 @@ public abstract class TwoFormInflector {
             }
         }
         return null;
-    }
-
-    protected void uncountable(String[] list) {
-        rules.add(new CategoryRule(list, "", ""));
     }
 
     protected void irregular(String singular, String plural) {
@@ -131,7 +131,7 @@ public abstract class TwoFormInflector {
         }
     }
 
-    protected void categoryRule(String[] list, String singular, String plural) {
-        rules.add(new CategoryRule(list, singular, plural));
+    protected void uncountable(String[] list) {
+        rules.add(new CategoryRule(list, "", ""));
     }
 }

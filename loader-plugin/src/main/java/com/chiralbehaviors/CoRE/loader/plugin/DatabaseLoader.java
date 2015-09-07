@@ -78,8 +78,7 @@ public class DatabaseLoader extends AbstractMojo {
         try {
             new Loader(loader).bootstrap();
         } catch (Exception e) {
-            MojoFailureException ex = new MojoFailureException(
-                                                               "Unable to load database");
+            MojoFailureException ex = new MojoFailureException("Unable to load database");
             ex.initCause(e);
             throw ex;
         }

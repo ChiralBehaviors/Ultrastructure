@@ -99,20 +99,6 @@ public class Loader {
                 Utils.getDocument(getClass().getResourceAsStream(DROP_ROLES_SQL)));
     }
 
-    private void executeWithError(Connection connection,
-                                  String sqlFile) throws SQLException {
-        StringTokenizer tokes = new StringTokenizer(sqlFile, ";");
-        while (tokes.hasMoreTokens()) {
-            String line = tokes.nextToken();
-            PreparedStatement exec = connection.prepareStatement(line);
-            try {
-                exec.execute();
-            } finally {
-                exec.close();
-            }
-        }
-    }
-
     private void execute(Connection connection,
                          String sqlFile) throws Exception {
         StringTokenizer tokes = new StringTokenizer(sqlFile, ";");
@@ -128,11 +114,26 @@ public class Loader {
         }
     }
 
+    private void executeWithError(Connection connection,
+                                  String sqlFile) throws SQLException {
+        StringTokenizer tokes = new StringTokenizer(sqlFile, ";");
+        while (tokes.hasMoreTokens()) {
+            String line = tokes.nextToken();
+            PreparedStatement exec = connection.prepareStatement(line);
+            try {
+                exec.execute();
+            } finally {
+                exec.close();
+            }
+        }
+    }
+
     private void load(String changeLog,
                       Connection connection) throws Exception {
         Liquibase liquibase = null;
         try {
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            Database database = DatabaseFactory.getInstance()
+                                               .findCorrectDatabaseImplementation(new JdbcConnection(connection));
             liquibase = new Liquibase(changeLog,
                                       new ClassLoaderResourceAccessor(getClass().getClassLoader()),
                                       database);

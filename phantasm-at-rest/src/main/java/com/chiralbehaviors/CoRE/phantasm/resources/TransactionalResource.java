@@ -50,16 +50,6 @@ public class TransactionalResource {
         this.emf = emf;
     }
 
-    protected <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(UUID classifier,
-                                                                                             UUID classification,
-                                                                                             NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        try {
-            return networkedModel.getAspect(classifier, classification);
-        } catch (IllegalArgumentException e) {
-            throw new WebApplicationException(e, Response.Status.NOT_FOUND);
-        }
-    }
-
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> Aspect<RuleForm> getAspect(String ruleformType,
                                                                                                                                               UUID relationship,
@@ -91,6 +81,16 @@ public class TransactionalResource {
         classification = Ruleform.initializeAndUnproxy(classification);
         Aspect aspect = new Aspect(classifier, classification);
         return aspect;
+    }
+
+    protected <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(UUID classifier,
+                                                                                             UUID classification,
+                                                                                             NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+        try {
+            return networkedModel.getAspect(classifier, classification);
+        } catch (IllegalArgumentException e) {
+            throw new WebApplicationException(e, Response.Status.NOT_FOUND);
+        }
     }
 
     protected Model getNewModel() {

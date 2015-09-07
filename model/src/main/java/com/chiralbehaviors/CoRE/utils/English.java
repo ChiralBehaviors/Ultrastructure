@@ -37,32 +37,58 @@ public class English extends TwoFormInflector {
         ENGLISH_ANGLICIZED, ENGLISH_CLASSICAL
     }
 
+    private static final String[] CATEGORY_A_AE = { "alumna", "alga",
+                                                    "vertebra", "persona" };
+
+    // -a to -as (anglicized) or -ata (classical)
+    private static final String[] CATEGORY_A_ATA = { "anathema", "enema",
+                                                     "oedema", "bema", "enigma",
+                                                     "sarcoma", "carcinoma",
+                                                     "gumma", "schema",
+                                                     "charisma", "lemma",
+                                                     "soma", "diploma",
+                                                     "lymphoma", "stigma",
+                                                     "dogma", "magma", "stoma",
+                                                     "drama", "melisma",
+                                                     "trauma", "edema",
+                                                     "miasma" };
+
+    private static final String[] CATEGORY_EN_INA = { "stamen", "foramen",
+                                                      "lumen" };
+
+    private static final String[] CATEGORY_EX_EXES = { "apex", "latex",
+                                                       "vertex", "cortex",
+                                                       "pontifex", "vortex",
+                                                       "index", "simplex" };
+
     private static final String[] CATEGORY_EX_ICES = { "codex", "murex",
                                                        "silex", };
 
+    private static final String[] CATEGORY_IS_IDES = { "iris", "clitoris" };
+
     private static final String[] CATEGORY_IX_ICES = { "radix", "helix", };
 
-    private static final String[] CATEGORY_UM_A = { "bacterium", "agendum",
-                                                    "desideratum", "erratum",
-                                                    "stratum", "datum", "ovum",
-                                                    "extremum",
-                                                    "candelabrum", };
+    private static final String[] CATEGORY_IX_IXES = { "appendix" };
 
-    // Always us -> i
-    private static final String[] CATEGORY_US_I = { "alumnus", "alveolus",
-                                                    "bacillus", "bronchus",
-                                                    "locus", "nucleus",
-                                                    "stimulus", "meniscus",
-                                                    "thesaurus", };
+    private static final String[] CATEGORY_MAN_MANS = { "human", "Alabaman",
+                                                        "Bahaman", "Burman",
+                                                        "German", "Hiroshiman",
+                                                        "Liman", "Nakayaman",
+                                                        "Oklahoman", "Panaman",
+                                                        "Selman", "Sonaman",
+                                                        "Tacoman", "Yakiman",
+                                                        "Yokohaman", "Yuman" };
 
-    private static final String[] CATEGORY_ON_A = { "criterion", "perihelion",
-                                                    "aphelion", "phenomenon",
-                                                    "prolegomenon", "noumenon",
-                                                    "organon", "asyndeton",
-                                                    "hyperbaton", };
+    private static final String[] CATEGORY_NONE_I = { "afreet", "afrit",
+                                                      "efreet" };
 
-    private static final String[] CATEGORY_A_AE = { "alumna", "alga",
-                                                    "vertebra", "persona" };
+    private static final String[] CATEGORY_NONE_IM = { "cherub", "goy",
+                                                       "seraph" };
+
+    // Classical o -> i  (normally -> os)
+    private static final String[] CATEGORY_O_I = { "solo", "soprano", "basso",
+                                                   "alto", "contralto", "tempo",
+                                                   "piano", "virtuoso", };
 
     // Always o -> os
     private static final String[] CATEGORY_O_OS = { "albino", "archipelago",
@@ -79,48 +105,11 @@ public class English extends TwoFormInflector {
                                                     "rhino", "casino", "auto",
                                                     "macro", "zero", "todo" };
 
-    // Classical o -> i  (normally -> os)
-    private static final String[] CATEGORY_O_I = { "solo", "soprano", "basso",
-                                                   "alto", "contralto", "tempo",
-                                                   "piano", "virtuoso", };
-
-    private static final String[] CATEGORY_EN_INA = { "stamen", "foramen",
-                                                      "lumen" };
-
-    // -a to -as (anglicized) or -ata (classical)
-    private static final String[] CATEGORY_A_ATA = { "anathema", "enema",
-                                                     "oedema", "bema", "enigma",
-                                                     "sarcoma", "carcinoma",
-                                                     "gumma", "schema",
-                                                     "charisma", "lemma",
-                                                     "soma", "diploma",
-                                                     "lymphoma", "stigma",
-                                                     "dogma", "magma", "stoma",
-                                                     "drama", "melisma",
-                                                     "trauma", "edema",
-                                                     "miasma" };
-
-    private static final String[] CATEGORY_IS_IDES = { "iris", "clitoris" };
-
-    // -us to -uses (anglicized) or -us (classical)
-    private static final String[] CATEGORY_US_US = { "apparatus", "impetus",
-                                                     "prospectus", "cantus",
-                                                     "nexus", "sinus", "coitus",
-                                                     "plexus", "status",
-                                                     "hiatus" };
-
-    private static final String[] CATEGORY_NONE_I = { "afreet", "afrit",
-                                                      "efreet" };
-
-    private static final String[] CATEGORY_NONE_IM = { "cherub", "goy",
-                                                       "seraph" };
-
-    private static final String[] CATEGORY_EX_EXES = { "apex", "latex",
-                                                       "vertex", "cortex",
-                                                       "pontifex", "vortex",
-                                                       "index", "simplex" };
-
-    private static final String[] CATEGORY_IX_IXES = { "appendix" };
+    private static final String[] CATEGORY_ON_A = { "criterion", "perihelion",
+                                                    "aphelion", "phenomenon",
+                                                    "prolegomenon", "noumenon",
+                                                    "organon", "asyndeton",
+                                                    "hyperbaton", };
 
     private static final String[] CATEGORY_S_ES = { "acropolis", "chaos",
                                                     "lens", "aegis", "cosmos",
@@ -136,16 +125,77 @@ public class English extends TwoFormInflector {
                                                     "sassafras", "canvas",
                                                     "ibis", "trellis" };
 
-    private static final String[] CATEGORY_MAN_MANS = { "human", "Alabaman",
-                                                        "Bahaman", "Burman",
-                                                        "German", "Hiroshiman",
-                                                        "Liman", "Nakayaman",
-                                                        "Oklahoman", "Panaman",
-                                                        "Selman", "Sonaman",
-                                                        "Tacoman", "Yakiman",
-                                                        "Yokohaman", "Yuman" };
+    private static final String[] CATEGORY_UM_A = { "bacterium", "agendum",
+                                                    "desideratum", "erratum",
+                                                    "stratum", "datum", "ovum",
+                                                    "extremum",
+                                                    "candelabrum", };
+
+    // Always us -> i
+    private static final String[] CATEGORY_US_I = { "alumnus", "alveolus",
+                                                    "bacillus", "bronchus",
+                                                    "locus", "nucleus",
+                                                    "stimulus", "meniscus",
+                                                    "thesaurus", };
+
+    // -us to -uses (anglicized) or -us (classical)
+    private static final String[] CATEGORY_US_US = { "apparatus", "impetus",
+                                                     "prospectus", "cantus",
+                                                     "nexus", "sinus", "coitus",
+                                                     "plexus", "status",
+                                                     "hiatus" };
 
     private static English inflector = new English();
+
+    /**
+     * Returns plural form of the given word.
+     * <p>
+     * For instance:
+     * 
+     * <pre>
+     * {@code
+     * English.plural("cat") == "cats";
+     * }
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param word
+     *            word in singular form
+     * @return plural form of given word
+     */
+    public static String plural(String word) {
+        return inflector.getPlural(word);
+    }
+
+    /**
+     * Returns singular or plural form of the word based on count.
+     * <p>
+     * For instance:
+     * 
+     * <pre>
+     * {@code
+     * English.plural("cat", 1) == "cat";
+     * English.plural("cat", 2) == "cats";
+     * }
+     * </pre>
+     * 
+     * </p>
+     * 
+     * @param word
+     *            word in singular form
+     * @param count
+     *            word count
+     * @return form of the word correct for given count
+     */
+    public static String plural(String word, int count) {
+        return inflector.getPlural(word, count);
+    }
+
+    public static void setMode(MODE mode) {
+        English newInflector = new English(mode);
+        inflector = newInflector;
+    }
 
     public English() {
         this(MODE.ENGLISH_ANGLICIZED);
@@ -308,55 +358,5 @@ public class English extends TwoFormInflector {
             return word;
         }
         return getPlural(word);
-    }
-
-    /**
-     * Returns plural form of the given word.
-     * <p>
-     * For instance:
-     * 
-     * <pre>
-     * {@code
-     * English.plural("cat") == "cats";
-     * }
-     * </pre>
-     * 
-     * </p>
-     * 
-     * @param word
-     *            word in singular form
-     * @return plural form of given word
-     */
-    public static String plural(String word) {
-        return inflector.getPlural(word);
-    }
-
-    /**
-     * Returns singular or plural form of the word based on count.
-     * <p>
-     * For instance:
-     * 
-     * <pre>
-     * {@code
-     * English.plural("cat", 1) == "cat";
-     * English.plural("cat", 2) == "cats";
-     * }
-     * </pre>
-     * 
-     * </p>
-     * 
-     * @param word
-     *            word in singular form
-     * @param count
-     *            word count
-     * @return form of the word correct for given count
-     */
-    public static String plural(String word, int count) {
-        return inflector.getPlural(word, count);
-    }
-
-    public static void setMode(MODE mode) {
-        English newInflector = new English(mode);
-        inflector = newInflector;
     }
 }

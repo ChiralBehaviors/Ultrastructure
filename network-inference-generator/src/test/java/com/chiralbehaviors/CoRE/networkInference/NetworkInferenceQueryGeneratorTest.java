@@ -34,9 +34,7 @@ public class NetworkInferenceQueryGeneratorTest {
 
     @Test
     public void testGeneration() throws Exception {
-        NetworkInferenceQueryGenerator generator = new NetworkInferenceQueryGenerator(
-                                                                                      new File(
-                                                                                               TARGET_GENERATED_QUERIES));
+        NetworkInferenceQueryGenerator generator = new NetworkInferenceQueryGenerator(new File(TARGET_GENERATED_QUERIES));
         generator.execute();
     }
 }

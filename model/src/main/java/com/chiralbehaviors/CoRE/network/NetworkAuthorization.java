@@ -135,6 +135,10 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
         return groupingAgency;
     }
 
+    public String getName() {
+        return name;
+    }
+
     abstract public void setAuthorizedParent(RuleForm parent);
 
     public void setAuthorizedRelationship(Relationship authorizedRelationship) {
@@ -157,10 +161,6 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
 
     public void setGroupingAgency(Agency groupingAgency) {
         this.groupingAgency = groupingAgency;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {

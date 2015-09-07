@@ -38,9 +38,12 @@ public class TestGenerator {
     private static final String THING_WSP                                         = "/thing.wsp";
 
     @Test
-    public void testResource() throws IOException {
+    public void testFile() throws IOException {
         Configuration configuration = new Configuration();
-        configuration.resource = THING_WSP;
+        configuration.resource = "target/thing.wsp.tst";
+        FileOutputStream fos = new FileOutputStream(configuration.resource);
+        Utils.copy(getClass().getResourceAsStream(THING_WSP), fos);
+        fos.close();
         configuration.appendTypeToPackage = true;
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;
@@ -49,12 +52,9 @@ public class TestGenerator {
     }
 
     @Test
-    public void testFile() throws IOException {
+    public void testResource() throws IOException {
         Configuration configuration = new Configuration();
-        configuration.resource = "target/thing.wsp.tst";
-        FileOutputStream fos = new FileOutputStream(configuration.resource);
-        Utils.copy(getClass().getResourceAsStream(THING_WSP), fos);
-        fos.close();
+        configuration.resource = THING_WSP;
         configuration.appendTypeToPackage = true;
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;

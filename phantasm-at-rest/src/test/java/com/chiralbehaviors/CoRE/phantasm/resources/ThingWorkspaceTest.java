@@ -39,8 +39,6 @@ public class ThingWorkspaceTest extends AbstractModelTest {
     public static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
 
     private static boolean   initialized = false;
-    protected WorkspaceScope scope;
-
     @BeforeClass
     public static void loadWorkspace() throws IOException {
         if (initialized) {
@@ -54,6 +52,8 @@ public class ThingWorkspaceTest extends AbstractModelTest {
         em.getTransaction()
           .commit();
     }
+
+    protected WorkspaceScope scope;
 
     @Before
     public void initializeScope() {

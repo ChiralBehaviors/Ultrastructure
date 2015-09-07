@@ -29,11 +29,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class JpaConfiguration extends Configuration {
     @JsonProperty
-    private boolean             debug = false;
+    private boolean debug = false;
 
     @NotEmpty
     @JsonProperty
-    private String              persistenceUnit;
+    private String persistenceUnit;
 
     @NotEmpty
     @JsonProperty

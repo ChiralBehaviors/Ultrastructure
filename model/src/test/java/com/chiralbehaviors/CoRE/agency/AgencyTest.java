@@ -58,12 +58,13 @@ public class AgencyTest extends DatabaseTest {
         Agency foo = query.getSingleResult();
 
         System.out.println("Test Class: " + test.getClass());
-        System.out.println("Foo Updated By Class (Proxy): "
-                           + foo.getUpdatedBy().getClass());
+        System.out.println("Foo Updated By Class (Proxy): " + foo.getUpdatedBy()
+                                                                 .getClass());
         Assert.assertEquals(test, foo.getUpdatedBy());
 
         Assert.assertTrue(test.equals(foo.getUpdatedBy()));
-        Assert.assertTrue(foo.getUpdatedBy().equals(test));
+        Assert.assertTrue(foo.getUpdatedBy()
+                             .equals(test));
 
     }
 

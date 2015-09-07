@@ -40,12 +40,8 @@ public final class NullAuthenticationFactory
     }
 
     @Override
-    public void setRequest(HttpServletRequest request) {
-    }
-
-    @Override
-    public AuthorizedPrincipal provide() {
-        return null;
+    public AuthFactory<BasicCredentials, AuthorizedPrincipal> clone(boolean required) {
+        return this;
     }
 
     @Override
@@ -54,7 +50,11 @@ public final class NullAuthenticationFactory
     }
 
     @Override
-    public AuthFactory<BasicCredentials, AuthorizedPrincipal> clone(boolean required) {
-        return this;
+    public AuthorizedPrincipal provide() {
+        return null;
+    }
+
+    @Override
+    public void setRequest(HttpServletRequest request) {
     }
 }

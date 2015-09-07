@@ -593,18 +593,6 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
-    private Product getWorkspaceProduct() {
-        workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
-        uuid = WorkspaceAccessor.uuidOf(workspaceUri);
-        Product product = model.getProductModel()
-                               .find(uuid);
-        if (product == null) {
-            throw new IllegalArgumentException(String.format("Unknown workspace: %s",
-                                                             workspaceUri));
-        }
-        return product;
-    }
-
     private void defineFacets(@SuppressWarnings("rawtypes") NetworkedModel networkedModel,
                               List<FacetContext> facets) {
         for (FacetContext facet : facets) {
@@ -620,6 +608,18 @@ public class WorkspaceImporter {
                 }
             }
         }
+    }
+
+    private Product getWorkspaceProduct() {
+        workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
+        uuid = WorkspaceAccessor.uuidOf(workspaceUri);
+        Product product = model.getProductModel()
+                               .find(uuid);
+        if (product == null) {
+            throw new IllegalArgumentException(String.format("Unknown workspace: %s",
+                                                             workspaceUri));
+        }
+        return product;
     }
 
     private void intervalFacets() {

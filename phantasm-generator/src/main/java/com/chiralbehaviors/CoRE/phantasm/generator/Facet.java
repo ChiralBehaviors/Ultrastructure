@@ -54,7 +54,8 @@ public interface Facet {
 
     String getParameterName();
 
-    void resolve(Map<FacetKey, Facet> facets, WorkspacePresentation presentation,
+    void resolve(Map<FacetKey, Facet> facets,
+                 WorkspacePresentation presentation,
                  Map<ScopedName, MappedAttribute> mapped);
 
 }

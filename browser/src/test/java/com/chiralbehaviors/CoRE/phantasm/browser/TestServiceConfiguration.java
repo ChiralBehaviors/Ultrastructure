@@ -26,12 +26,12 @@ import io.dropwizard.Configuration;
  * 
  */
 public class TestServiceConfiguration extends Configuration {
-    @JsonProperty
-    private Boolean randomPort = false;
-
     @NotNull
     @JsonProperty
     private JpaConfiguration jpa = new JpaConfiguration();
+
+    @JsonProperty
+    private Boolean randomPort = false;
 
     public JpaConfiguration getCrudServiceConfiguration() {
         return jpa;

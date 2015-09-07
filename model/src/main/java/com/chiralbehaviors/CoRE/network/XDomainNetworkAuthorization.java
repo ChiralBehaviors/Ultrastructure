@@ -132,12 +132,20 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
         return toRelationship;
     }
 
+    public boolean isForward() {
+        return forward;
+    }
+
     public void setCardinality(Cardinality cardinality) {
         this.cardinality = cardinality;
     }
 
     public void setConnection(Relationship connection) {
         this.connection = connection;
+    }
+
+    public void setForward(boolean forward) {
+        this.forward = forward;
     }
 
     abstract public void setFromParent(From to);
@@ -158,13 +166,5 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
 
     public void setToRelationship(Relationship toRelationship) {
         this.toRelationship = toRelationship;
-    }
-
-    public boolean isForward() {
-        return forward;
-    }
-
-    public void setForward(boolean forward) {
-        this.forward = forward;
     }
 }

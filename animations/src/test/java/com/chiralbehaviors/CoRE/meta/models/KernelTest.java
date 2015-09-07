@@ -78,7 +78,9 @@ public class KernelTest extends AbstractModelTest {
         assertNotNull(kernel.getUnset());
         assertNotNull(kernel.getInverseSoftware());
 
-        assertEquals(ValueType.TEXT, kernel.getPasswordHash().getValueType());
-        assertEquals(ValueType.TEXT, kernel.getLogin().getValueType());
+        assertEquals(ValueType.TEXT, kernel.getPasswordHash()
+                                           .getValueType());
+        assertEquals(ValueType.TEXT, kernel.getLogin()
+                                           .getValueType());
     }
 }

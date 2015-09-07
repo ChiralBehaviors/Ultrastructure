@@ -77,7 +77,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         }
     }
 
-    private final UUID                    definingProduct;
+    private final UUID                    definingProductId;
+    private Product                       definingProductCache;
     protected final Map<String, Ruleform> cache = new HashMap<String, Ruleform>();
     protected final EntityManager         em;
     protected final Model                 model;
@@ -85,7 +86,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     public DatabaseBackedWorkspace(Product definingProduct, Model model) {
         assert definingProduct != null;
-        this.definingProduct = definingProduct.getId();
+        this.definingProductId = definingProduct.getId();
         this.model = model;
         this.em = model.getEntityManager();
         this.scope = new WorkspaceScope(this);
@@ -151,6 +152,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void flushCache() {
         cache.clear();
+        definingProductCache = null;
     }
 
     /* (non-Javadoc)
@@ -168,7 +170,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         }
         TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATION_BY_ID,
                                                                        WorkspaceAuthorization.class);
-        query.setParameter("productId", definingProduct);
+        query.setParameter("productId", definingProductId);
         query.setParameter("key", key);
         try {
             WorkspaceAuthorization authorization = query.getSingleResult();
@@ -207,8 +209,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     @Override
     public Product getDefiningProduct() {
-        return model.getEntityManager()
-                    .getReference(Product.class, definingProduct);
+        if (definingProductCache == null) {
+            definingProductCache = model.getEntityManager()
+                                        .getReference(Product.class,
+                                                      definingProductId);
+        }
+        return definingProductCache;
     }
 
     /* (non-Javadoc)

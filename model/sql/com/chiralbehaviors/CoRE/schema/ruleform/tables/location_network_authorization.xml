@@ -22,7 +22,7 @@
             </column>
             <column name="authorized_parent" type="uuid" />
             <column name="authorized_relationship" type="uuid" />
-            <column name="cardinality" type="SMALLINT" />
+            <column name="cardinality" type="INT4" />
             <column name="child_relationship" remarks="the relationship between the classified child and its child" type="uuid" />
             <column name="grouping_agency" remarks="A network parent an Location is expected to have" type="uuid" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />

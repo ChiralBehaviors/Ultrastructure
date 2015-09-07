@@ -26,7 +26,7 @@
             <column defaultValueBoolean="false" name="inheritable" type="boolean">
                 <constraints nullable="false" />
             </column>
-            <column name="value_type" type="SMALLINT">
+            <column name="value_type" type="INT4">
                 <constraints nullable="false" />
             </column>
             <column name="keyed" type="boolean">

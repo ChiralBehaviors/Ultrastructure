@@ -40,6 +40,7 @@ abstract public class DatabaseTest {
     protected static Connection           connection;
     protected static EntityManager        em;
     protected static EntityManagerFactory emf;
+    private static boolean                initialized = false;
 
     @AfterClass
     public static void afterClass() {
@@ -56,7 +57,12 @@ abstract public class DatabaseTest {
     public static void setup() throws Exception {
         Properties properties = new Properties();
         properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
-        emf = Persistence.createEntityManagerFactory("CoRE", properties);
+        if (!initialized) {
+            initialized = true;
+            emf = Persistence.createEntityManagerFactory("CoRE", properties);
+        } else {
+            em.close();
+        }
         em = emf.createEntityManager();
         em.getTransaction()
           .begin();

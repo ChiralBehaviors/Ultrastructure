@@ -38,7 +38,7 @@
             <column name="quantity_unit" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="depth" type="SMALLINT" />
+            <column name="depth" type="INT4" />
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
             <column name="updated_by" remarks="The agency that last updated this rule" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000001'">
                 <constraints nullable="false" />

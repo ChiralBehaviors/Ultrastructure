@@ -44,9 +44,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <skipTests>false</skipTests>
-                    <excludes>
-                        <exclude>**/TestImport.java</exclude>
-                    </excludes>
                 </configuration>
             </plugin>
             <plugin>

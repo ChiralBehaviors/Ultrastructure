@@ -221,6 +221,15 @@ public class Facet<RuleForm extends ExistentialRuleform<RuleForm, Network>, Netw
             throw new IllegalStateException("Cannot retrieve getInstance method",
                                             e);
         }
+        if (aspect.getClassification()
+                  .getClass()
+                  .getSimpleName()
+                  .contains("$$")) {
+            throw new RuntimeException(String.format("Bad class name: %s",
+                                                     aspect.getClassification()
+                                                           .getClass()
+                                                           .getSimpleName()));
+        }
         ub.resolveTemplate("ruleform-type", aspect.getClassification()
                                                   .getClass()
                                                   .getSimpleName());

@@ -43,10 +43,6 @@ import io.dropwizard.setup.Environment;
  */
 public class TestApplication extends Application<TestServiceConfiguration> {
 
-    public static void main(String[] argv) throws Exception {
-        new TestApplication().run(argv);
-    }
-
     private EntityManagerFactory emf;
     private Environment          environment;
     private Server               jettyServer;

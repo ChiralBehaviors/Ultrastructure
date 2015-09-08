@@ -70,7 +70,7 @@ public class WorkspaceResource extends TransactionalResource {
     public static String keysIri(UUID definingProduct, UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
-            ub.path(WorkspaceResource.class.getMethod("getKeys", UUID.class));
+            ub.path(WorkspaceResource.class.getMethod("getKeys", AuthorizedPrincipal.class, UUID.class));
             ub.resolveTemplate("workspace", definingProduct);
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Unable to get all instances method",
@@ -84,7 +84,7 @@ public class WorkspaceResource extends TransactionalResource {
                                 UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
-            ub.path(WorkspaceResource.class.getMethod("lookup", UUID.class,
+            ub.path(WorkspaceResource.class.getMethod("lookup", AuthorizedPrincipal.class, UUID.class,
                                                       String.class));
             ub.resolveTemplate("workspace", definingProduct);
             ub.resolveTemplate("member", key);
@@ -133,7 +133,7 @@ public class WorkspaceResource extends TransactionalResource {
     public static URI workspaceIri(UUID definingProduct, UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
-            ub.path(WorkspaceResource.class.getMethod("getWorkspaces"));
+            ub.path(WorkspaceResource.class.getMethod("getWorkspaces", AuthorizedPrincipal.class));
             ub.resolveTemplate("uuid", definingProduct);
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Unable to retrieve getWorkspaces method",

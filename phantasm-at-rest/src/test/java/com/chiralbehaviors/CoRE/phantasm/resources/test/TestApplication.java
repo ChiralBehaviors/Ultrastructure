@@ -82,10 +82,6 @@ public class TestApplication extends Application<TestServiceConfiguration> {
                                                                                              .get(0)).setPort(0);
         }
         this.environment = environment;
-        JpaConfiguration jpaConfig = configuration.getCrudServiceConfiguration();
-        String unit = jpaConfig.getPersistenceUnit();
-        Map<String, String> properties = jpaConfig.getProperties();
-        emf = Persistence.createEntityManagerFactory(unit, properties);
         environment.lifecycle()
                    .addServerLifecycleListener(server -> jettyServer = server);
         environment.jersey()

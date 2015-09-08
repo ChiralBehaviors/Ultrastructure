@@ -22,11 +22,13 @@ package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -267,13 +269,22 @@ public class ResourcesTest extends ThingWorkspaceTest {
         assertNotNull(jsonObject.get("ruleforms"));
         assertNotNull(jsonObject.get("frontier"));
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Test
     public void testGetWorkspaces() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/workspace",
                                         application.getPort()));
         Map<?, ?> jsonObject = (Map<?, ?>) JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject.get("@graph"));
+        assertFalse("Bad URL: "
+                    + ((ArrayList<Map<String, Map<String, String>>>) jsonObject.get("@graph")).get(0)
+                                                                                              .get("definingProduct")
+                                                                                              .get("@id"),
+                    ((ArrayList<Map<String, Map<String, String>>>) jsonObject.get("@graph")).get(0)
+                                                                                            .get("definingProduct")
+                                                                                            .get("@id")
+                                                                                            .contains("$$"));
     }
 
     @Test

@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="protocol" replaceIfExists="true"><![CDATA[
-             SELECT base_table.id,
+             SELECT 
+                w.name AS workspace,
+                base_table.id,
                 base_table.name,
                 s.name AS service,
                 p.name AS product,
@@ -43,6 +45,8 @@
                JOIN ruleform.location cdt ON base_table.child_deliver_to = cdt.id
                JOIN ruleform.location cdf ON base_table.child_deliver_from = cdf.id
                JOIN ruleform.agency up ON base_table.updated_by = up.id
+               LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
+               LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]></createView>
         <rollback>
             <dropView viewName="readable.protocol" />

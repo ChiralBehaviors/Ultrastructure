@@ -7,9 +7,11 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="product" replaceIfExists="true"><![CDATA[
-			 SELECT b.id, b.name, b.description, b.notes, up.name AS updated_by, b.version
+			 SELECT w.name AS workspace, b.id, b.name, b.description, b.notes, up.name AS updated_by, b.version
 			   FROM product b
 			   JOIN agency up ON b.updated_by = up.id
+             LEFT JOIN ruleform.workspace_authorization wa ON b.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

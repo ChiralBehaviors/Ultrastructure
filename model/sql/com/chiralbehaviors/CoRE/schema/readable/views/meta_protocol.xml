@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="meta_protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
-                 SELECT base_table.id, 
+                 SELECT 
+                w.name AS workspace,
+                 base_table.id, 
                         s.name AS service,  
                         st.name AS service_type, 
                         rr.name AS requester, 
@@ -29,7 +31,9 @@
                    LEFT JOIN relationship df ON base_table.deliver_from = df.id 
                    LEFT JOIN relationship at ON base_table.assign_to = at.id 
                    LEFT JOIN relationship u ON base_table.quantity_unit = u.id
-                   JOIN agency up ON base_table.updated_by = up.id;
+                   JOIN agency up ON base_table.updated_by = up.id
+             LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
         ]]>
         </createView>
         <rollback>

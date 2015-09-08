@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView schemaName="readable" viewName="workspace_authorization" replaceIfExists="true"><![CDATA[ 
+			 SELECT  
+                 b.id, 
+			     dp.name AS defining_product, 
+                 b.key, 
+			     b.reference,
+                 b.type,
+			     b.notes, 
+			     up.name AS updated_by,
+			     b.version
+			   FROM ruleform.workspace_authorization b
+			   JOIN ruleform.agency up ON b.updated_by = up.id
+               JOIN ruleform.product dp ON b.defining_product = dp.id 
+            ]]>
+        </createView>
+        <rollback>
+            <dropView viewName="readable.workspace_authorization" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

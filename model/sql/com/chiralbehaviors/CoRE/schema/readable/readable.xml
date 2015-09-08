@@ -90,4 +90,16 @@
     <include relativeToChangelogFile="true" file="views/agency_product_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/product_location_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="views/product_relationship_attribute_authorization.xml" />
+    
+    <include relativeToChangelogFile="true" file="views/workspace_authorization.xml" />
+    
+    <include relativeToChangelogFile="true" file="views/agency_agency_grouping.xml" />
+    <include relativeToChangelogFile="true" file="views/agency_attribute_grouping.xml" />
+    <include relativeToChangelogFile="true" file="views/agency_interval_grouping.xml" />
+    <include relativeToChangelogFile="true" file="views/agency_location_grouping.xml" />
+    <include relativeToChangelogFile="true" file="views/agency_product_grouping.xml" />
+    <include relativeToChangelogFile="true" file="views/agency_relationship_grouping.xml" />
+    <include relativeToChangelogFile="true" file="views/agency_status_code_grouping.xml" />
+    <include relativeToChangelogFile="true" file="views/agency_unit_grouping.xml" />
+    
 </databaseChangeLog>

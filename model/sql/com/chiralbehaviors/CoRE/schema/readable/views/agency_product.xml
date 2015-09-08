@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="agency_product" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT bl.id, 
+			 SELECT  
+                w.name AS workspace,
+                bl.id, 
                     res.name AS agency, 
                     rel.name AS relationship, 
                     p.name AS product, 
@@ -18,7 +20,9 @@
 			   JOIN agency res ON bl.agency = res.id 
 			   JOIN relationship rel ON bl.relationship = rel.id
 			   JOIN product p ON bl.product = p.id
-			   JOIN agency up ON bl.updated_by = up.id; 
+			   JOIN agency up ON bl.updated_by = up.id
+             LEFT JOIN ruleform.workspace_authorization wa ON bl.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

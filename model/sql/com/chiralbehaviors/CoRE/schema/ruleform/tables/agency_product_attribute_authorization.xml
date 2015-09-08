@@ -46,7 +46,7 @@
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="agency_product_attribute_authorization" constraintName="agency_product_attribute_authorization_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="network_authorization, authorized_attribute, grouping_agency"
             constraintName="agency_product_attribute_authorization_unique_key" deferrable="false" disabled="false" initiallyDeferred="true"

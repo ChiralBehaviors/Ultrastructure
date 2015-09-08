@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="job_chronology"><![CDATA[ 
-             SELECT base.id, 
+             SELECT 
+                w.name AS workspace,
+                 base.id, 
                     base.job,
                     base.sequence_number,
                     sc.name AS status,
@@ -30,13 +32,9 @@
                JOIN location df ON base.deliver_from = df.id
                JOIN status_code sc ON base.status = sc.id
                JOIN agency up ON base.updated_by = up.id
-               JOIN unit u ON base.quantity_unit = u.id;
-			
-			ALTER TABLE readable.job_chronology
-			  OWNER TO core;
-			GRANT ALL ON TABLE readable.job_chronology TO core;
-			GRANT SELECT ON TABLE readable.job_chronology TO core_read_write;
-			GRANT SELECT ON TABLE readable.job_chronology TO core_read_only;
+               JOIN unit u ON base.quantity_unit = u.id
+             LEFT JOIN ruleform.workspace_authorization wa ON base.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

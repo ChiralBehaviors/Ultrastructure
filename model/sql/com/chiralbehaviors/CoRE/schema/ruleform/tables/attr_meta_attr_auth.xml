@@ -59,7 +59,7 @@
             referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="attr_meta_attr_auth" constraintName="attr_meta_attr_auth_updated_by_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" onUpdate="CASCADE" referencedColumnNames="id"
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
             referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
             columnNames="network_authorization, authorized_attribute, authorized_network_attribute, grouping_agency" constraintName="attr_meta_attr_auth_classification_attri_key"

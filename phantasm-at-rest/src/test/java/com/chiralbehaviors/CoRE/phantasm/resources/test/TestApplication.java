@@ -15,10 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.phantasm.resources.test;
 
-import java.util.Map;
-
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;

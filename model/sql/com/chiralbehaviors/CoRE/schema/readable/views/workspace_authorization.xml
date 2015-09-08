@@ -6,28 +6,23 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView schemaName="readable" viewName="unit" replaceIfExists="true"><![CDATA[ 
-			 SELECT 
-                w.name AS workspace,
+        <createView schemaName="readable" viewName="workspace_authorization" replaceIfExists="true"><![CDATA[ 
+			 SELECT  
                  b.id, 
-			     b.name, 
-                 b.description, 
-			     b.abbreviation,
-			     b.datatype,
-			     b.min,
-			     b.max,
-			     b.enumerated,
+			     dp.name AS defining_product, 
+                 b.key, 
+			     b.reference,
+                 b.type,
 			     b.notes, 
 			     up.name AS updated_by,
 			     b.version
-			   FROM unit b
-			   JOIN agency up ON b.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON b.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   FROM ruleform.workspace_authorization b
+			   JOIN ruleform.agency up ON b.updated_by = up.id
+               JOIN ruleform.product dp ON b.defining_product = dp.id 
             ]]>
         </createView>
         <rollback>
-            <dropView viewName="readable.unit" />
+            <dropView viewName="readable.workspace_authorization" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

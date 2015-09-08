@@ -8,6 +8,8 @@
     <changeSet id="2.0.0" author="hparry">
         <createView viewName="agency_product_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
             SELECT 
+                w.name AS workspace,
+                 auth.id,
                 f_r.name as from_relationship,
                 f_p.name as from_parent,
                 bridge.name as connection,
@@ -19,7 +21,9 @@
                 join ruleform.relationship f_p on auth.from_parent = f_p.id
                 join ruleform.relationship bridge on auth.connection = bridge.id
                 join ruleform.location t_p on auth.to_parent = t_p.id
-                join ruleform.relationship t_r on auth.to_relationship = t_r.id;
+                join ruleform.relationship t_r on auth.to_relationship = t_r.id
+             LEFT JOIN ruleform.workspace_authorization wa ON auth.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

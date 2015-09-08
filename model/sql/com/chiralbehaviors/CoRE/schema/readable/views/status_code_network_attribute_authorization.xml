@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="status_code_network_attribute_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
-             SELECT     base_table.id ,
+             SELECT 
+                w.name AS workspace,
+                base_table.id ,
                 res.name AS grouping_agency, 
                 cls.name AS classifier, 
                 b.name AS classification, 
@@ -31,7 +33,9 @@
              LEFT JOIN relationship ap ON na.authorized_parent = ap.id
              LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
              LEFT JOIN agency up ON base_table.updated_by = up.id
-             WHERE base_table.authorized_network_attribute IS NOT NULL;
+             LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+             WHERE base_table.authorized_network_attribute IS NOT NULL
             ]]>
         </createView>
         <rollback>

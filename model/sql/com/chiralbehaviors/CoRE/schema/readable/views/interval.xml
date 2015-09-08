@@ -7,9 +7,11 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="interval"><![CDATA[ 
-			 SELECT r.id, r.name, r.description, r.notes, up.name AS updated_by, r.version
+			 SELECT w.name AS workspace, r.id, r.name, r.description, r.notes, up.name AS updated_by, r.version
 			   FROM interval r
-			   JOIN interval up ON r.updated_by = up.id 
+			   JOIN interval up ON r.updated_by = up.id
+             LEFT JOIN ruleform.workspace_authorization wa ON r.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

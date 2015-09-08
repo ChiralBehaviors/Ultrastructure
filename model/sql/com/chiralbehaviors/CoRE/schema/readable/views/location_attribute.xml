@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="location_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT la.id, 
+			 SELECT 
+                w.name AS workspace,
+                 la.id, 
                     l.name AS location, 
                     a.name AS attribute,
                     la.key AS key, 
@@ -18,7 +20,9 @@
 			   FROM location_attribute la
 			   JOIN location l ON la.location = l.id
 			   JOIN attribute a ON la.attribute = a.id
-			   JOIN agency r ON la.updated_by = r.id;
+			   JOIN agency r ON la.updated_by = r.id
+             LEFT JOIN ruleform.workspace_authorization wa ON la.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

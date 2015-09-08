@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="product_child_sequencing_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT base_table.id, p.name AS parent, sc.name AS status_code, 
+			 SELECT 
+                w.name AS workspace,
+                 base_table.id, p.name AS parent, sc.name AS status_code, 
 			        base_table.sequence_number, nc.name AS next_child, 
 			        ncs.name AS next_child_status, base_table.notes, 
 			        up.name AS updated_by, base_table.version
@@ -16,7 +18,9 @@
 			   JOIN status_code sc ON base_table.status_code = sc.id
 			   LEFT JOIN product nc ON base_table.next_child = nc.id
 			   LEFT JOIN status_code ncs ON base_table.next_child_status = ncs.id
-			   JOIN agency up ON base_table.updated_by = up.id;
+			   JOIN agency up ON base_table.updated_by = up.id
+             LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

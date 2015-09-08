@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT a.id, 
+			 SELECT 
+                w.name AS workspace,
+                 a.id, 
 			     a.name, 
 			     a.description, 
 			     a.notes, 
@@ -16,7 +18,9 @@
 			     up.name AS updated_by, 
 			     a.version
 			   FROM attribute a
-			   JOIN agency up ON a.updated_by = up.id;
+			   JOIN agency up ON a.updated_by = up.id
+             LEFT JOIN ruleform.workspace_authorization wa ON a.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

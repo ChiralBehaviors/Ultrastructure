@@ -7,12 +7,22 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="agency_location" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT bl.id, res.name AS agency, rel.name AS relationship, l.name AS location, bl.notes, up.name AS updated_by, bl.version
+			 SELECT w.name AS workspace, 
+               bl.id, 
+               res.name AS agency, 
+               rel.name AS relationship, 
+               l.name AS location, 
+               bl.notes, 
+               up.name AS updated_by, 
+               bl.version
+               
 			   FROM agency_location bl
 			   JOIN agency res ON bl.agency = res.id 
 			   JOIN relationship rel ON bl.relationship = rel.id
 			   JOIN location l ON bl.location = l.id
-			   JOIN agency up ON bl.updated_by = up.id;
+			   JOIN agency up ON bl.updated_by = up.id
+             LEFT JOIN ruleform.workspace_authorization wa ON bl.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

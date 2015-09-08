@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="agency_product_attribute_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
-             SELECT     base_table.id ,
+             SELECT 
+                w.name AS workspace, 
+                base_table.id ,
                 res.name AS grouping_agency, 
                 from_r.name AS from_relationship, 
                 from_p.name AS from_parent, 
@@ -31,6 +33,8 @@
              LEFT JOIN location to_p ON na.to_parent = to_p.id
              LEFT JOIN attribute att ON base_table.authorized_attribute = att.id
              LEFT JOIN agency up ON base_table.updated_by = up.id
+             LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
         <rollback>

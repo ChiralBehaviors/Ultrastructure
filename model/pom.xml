@@ -86,6 +86,10 @@
             <groupId>com.hellblazer</groupId>
             <artifactId>utils</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -188,21 +192,21 @@
                 <artifactId>hibernate-enhance-maven-plugin</artifactId>
                 <version>${hibernate.version}</version>
                 <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>enhance</goal>
-                        </goals>
-                    </execution>
+                <execution>
+                <phase>compile</phase>
+                <goals>
+                <goal>enhance</goal>
+                </goals>
+                </execution>
                 </executions>
-                <dependencies> 
-                    <dependency>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>${project.artifactId}</artifactId>
-                        <version>${project.version}</version>
-                    </dependency>
+                <dependencies>
+                <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${project.version}</version>
+                </dependency>
                 </dependencies>
-            </plugin> -->
+                </plugin> -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>

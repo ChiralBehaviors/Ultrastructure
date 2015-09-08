@@ -67,7 +67,7 @@ import com.fasterxml.uuid.NoArgGenerator;
 @JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
 @JsonAutoDetect(getterVisibility = Visibility.PUBLIC_ONLY)
 @JsonInclude(Include.NON_NULL)
-@Cacheable
+@Cacheable(true)
 abstract public class Ruleform implements Serializable, Cloneable {
     public static final Map<String, Class<? extends Ruleform>> CONCRETE_SUBCLASSES;
     public static final String                                 FIND_ALL_SUFFIX       = ".findAll";

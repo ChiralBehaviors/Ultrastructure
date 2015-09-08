@@ -267,6 +267,14 @@ public class ResourcesTest extends ThingWorkspaceTest {
         assertNotNull(jsonObject.get("ruleforms"));
         assertNotNull(jsonObject.get("frontier"));
     }
+    
+    @Test
+    public void testGetWorkspaces() throws Exception {
+        URL url = new URL(String.format("http://localhost:%s/json-ld/workspace",
+                                        application.getPort()));
+        Map<?, ?> jsonObject = (Map<?, ?>) JsonUtils.fromInputStream(url.openStream());
+        assertNotNull(jsonObject.get("@graph"));
+    }
 
     @Test
     public void testRuleformContext() throws Exception {

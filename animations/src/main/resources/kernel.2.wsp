@@ -1,6 +1,7 @@
-workspace: "urn:uuid:00000000-0000-0004-0000-000000000003" 
+workspace: "urn:uuid:00000000-0000-0004-0000-000000000003"  
+           version: 2
            "Ultrastructure Kernel Workspace" 
-           "The Kernel Ontology for Ultrastructure"
+           "The Kernel Ontology for Ultrastructure [Ain Soph Ur]"
 
 
 agencies {

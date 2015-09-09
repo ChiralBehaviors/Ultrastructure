@@ -35,7 +35,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  * @author hhildebrand
  *
  */
-@State(workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
+@State(workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm")
 public interface Thing1 extends ScopedPhantasm<Product> {
 
     // Default methods are used to add functional behavior

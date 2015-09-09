@@ -64,6 +64,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                                                      kernel.getWorkspace());
         model.getProductModel()
              .initialize(definingProduct, aspect);
+        em.persist(definingProduct);
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         return scope;

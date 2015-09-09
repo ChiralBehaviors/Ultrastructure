@@ -136,6 +136,11 @@ public class Bootstrap {
         for (WellKnownUnit wko : WellKnownUnit.values()) {
             insert(wko);
         }
+        connection.commit();
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
         constructKernelWorkspace();
     }
 
@@ -149,8 +154,8 @@ public class Bootstrap {
         Product workspace = find(WellKnownProduct.WORKSPACE);
         Relationship isA = find(WellKnownRelationship.IS_A);
 
+        // Ain
         createKernelWorkspace(core, kernelWorkspace, workspace, isA);
-
         populateAgencies(core, kernelWorkspace);
         populateAttributes(core, kernelWorkspace);
         populateIntervals(core, kernelWorkspace);
@@ -160,22 +165,27 @@ public class Bootstrap {
         populateStatusCodes(core, kernelWorkspace);
         populateUnits(core, kernelWorkspace);
         populateAnyFacets(core, kernelWorkspace);
-        connection.commit();
         em.getTransaction()
           .commit();
+
+        // Ain Soph
         ModelImpl model = new ModelImpl(em.getEntityManagerFactory());
         model.getEntityManager()
              .getTransaction()
              .begin();
-        new WorkspaceImporter(getClass().getResourceAsStream("/kernel.wsp"),
-                              model).addToWorkspace();
+
+        new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
+                              model).manifest();
         model.getEntityManager()
              .getTransaction()
              .commit();
         model.getEntityManager()
              .close();
+
+        // Ain Soph Aur
         em.getTransaction()
           .begin();
+
     }
 
     private void createKernelWorkspace(Agency core, Product kernelWorkspace,
@@ -184,17 +194,13 @@ public class Bootstrap {
         ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
                                                core);
         populate(pn, core, kernelWorkspace);
-        em.flush();
         ProductNetwork pnR = new ProductNetwork(workspace, isA.getInverse(),
                                                 kernelWorkspace, core);
         populate(pnR, core, kernelWorkspace);
-        em.flush();
-
         ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
         netAuth.setClassification(workspace);
         netAuth.setClassifier(isA);
         populate(netAuth, core, workspace);
-        em.flush();
     }
 
     /**

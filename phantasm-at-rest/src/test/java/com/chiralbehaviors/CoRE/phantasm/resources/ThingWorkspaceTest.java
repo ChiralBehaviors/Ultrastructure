@@ -36,7 +36,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
  */
 public class ThingWorkspaceTest extends AbstractModelTest {
 
-    public static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1";
+    public static final String TEST_SCENARIO_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
 
     private static boolean   initialized = false;
     @BeforeClass
@@ -47,7 +47,7 @@ public class ThingWorkspaceTest extends AbstractModelTest {
         initialized = true;
         em.getTransaction()
           .begin();
-        WorkspaceImporter.createWorkspace(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
+        WorkspaceImporter.manifest(ResourcesTest.class.getResourceAsStream("/thing.wsp"),
                                           model);
         em.getTransaction()
           .commit();

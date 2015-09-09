@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.resources;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -39,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.kernel.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
@@ -54,11 +56,20 @@ public class LoginResource {
     private static final Logger        log = LoggerFactory.getLogger(LoginResource.class);
     private final List<String>         allowedGrantTypes;
     private final EntityManagerFactory emf;
+    private final Attribute            login;
 
     public LoginResource(List<String> allowedGrantTypes,
                          EntityManagerFactory emf) {
         this.allowedGrantTypes = allowedGrantTypes;
         this.emf = emf;
+        Model model = new ModelImpl(emf);
+        try {
+            login = model.getKernel()
+                         .getLogin();
+        } finally {
+            model.getEntityManager()
+                 .close();
+        }
     }
 
     @POST
@@ -74,8 +85,7 @@ public class LoginResource {
         }
         Model model = new ModelImpl(emf);
         try {
-            AgencyAttribute attributeValue = new AgencyAttribute(model.getKernel()
-                                                                      .getLogin());
+            AgencyAttribute attributeValue = new AgencyAttribute(login);
             attributeValue.setTextValue(username);
             List<Agency> agencies = model.find(attributeValue);
             if (agencies.size() > 1) {
@@ -105,6 +115,9 @@ public class LoginResource {
     }
 
     private AgencyAttribute generateToken(CoreUser user, Model model) {
+        EntityManager em = model.getEntityManager();
+        em.getTransaction()
+          .begin();
         List<AgencyAttribute> values = model.getAgencyModel()
                                             .getAttributeValues(user.getRuleform(),
                                                                 model.getKernel()
@@ -121,6 +134,8 @@ public class LoginResource {
         accessToken.setSequenceNumber(seqNum);
         model.getEntityManager()
              .persist(accessToken);
+        em.getTransaction()
+          .commit();
         return accessToken;
     }
 }

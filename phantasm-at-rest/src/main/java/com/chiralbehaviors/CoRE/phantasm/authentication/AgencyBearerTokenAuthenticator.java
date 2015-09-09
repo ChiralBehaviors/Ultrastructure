@@ -23,11 +23,13 @@ package com.chiralbehaviors.CoRE.phantasm.authentication;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
@@ -58,7 +60,6 @@ public class AgencyBearerTokenAuthenticator
 
     @Override
     public Optional<AuthorizedPrincipal> authenticate(String id) throws AuthenticationException {
-        Model model = new ModelImpl(emf);
         UUID uuid;
         try {
             uuid = UUID.fromString(id);
@@ -67,17 +68,31 @@ public class AgencyBearerTokenAuthenticator
             // Must be a valid UUID
             return Optional.absent();
         }
-        AgencyAttribute accessToken = model.getEntityManager()
-                                           .find(AgencyAttribute.class, uuid);
-
-        if (accessToken.getTimestampValue()
-                       .compareTo(new Timestamp(System.currentTimeMillis())) < 0) {
-            model.getEntityManager()
-                 .remove(accessToken);
-            return Optional.absent();
+        Model model = new ModelImpl(emf);
+        EntityManager em = model.getEntityManager();
+        try {
+            AgencyAttribute accessToken = em.find(AgencyAttribute.class, uuid);
+            if (accessToken == null) {
+                return Optional.absent();
+            }
+            em.getTransaction()
+              .begin();
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            if (accessToken.getTimestampValue()
+                           .compareTo(currentTime) < 0) {
+                log.info("requested access token {} timed out", id);
+                em.remove(accessToken);
+                return Optional.absent();
+            }
+            accessToken.setValue(currentTime);
+            Agency agency = accessToken.getAgency();
+            log.info("requested access token {} refreshed for {}", id, agency);
+            em.getTransaction()
+              .commit();
+            return Optional.of(new AuthorizedPrincipal(agency));
+        } finally {
+            em.close();
         }
-
-        return Optional.of(new AuthorizedPrincipal(accessToken.getAgency()));
     }
 
 }

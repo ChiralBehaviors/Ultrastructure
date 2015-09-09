@@ -586,6 +586,12 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .dataFetcher(env -> {
                                                   @SuppressWarnings("unchecked")
                                                   RuleForm instance = (RuleForm) env.getSource();
+                                                  PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                                                  if (!checkInvoke(instanceMethod,
+                                                                   instance,
+                                                                   crud)) {
+
+                                                  }
                                                   return instance == null ? null
                                                                           : invoke(method,
                                                                                    env,
@@ -595,6 +601,15 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               })
                                               .description(instanceMethod.getDescription())
                                               .build());
+    }
+
+    private boolean checkInvoke(InstanceMethod method, RuleForm ruleform,
+                                PhantasmCRUD<RuleForm, Network> crud) {
+        Model model = crud.getModel();
+        return model.getNetworkedModel(ruleform)
+                    .checkCapability(model.getCurrentPrincipal()
+                                          .getPrincipal(),
+                                     ruleform, crud.getINVOKE());
     }
 
     private void clear() {

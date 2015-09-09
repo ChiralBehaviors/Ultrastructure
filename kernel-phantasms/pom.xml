@@ -23,7 +23,7 @@
                         </goals>
                         <configuration>
                             <generator>
-                                <resource>/kernel.wsp</resource>
+                                <resource>/kernel.2.wsp</resource>
                                 <outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
                                 <packageName>com.chiralbehaviors.CoRE.kernel</packageName>
                                 <appendTypeToPackage>true</appendTypeToPackage>

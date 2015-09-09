@@ -19,6 +19,7 @@
  */
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hparry
@@ -35,7 +37,7 @@ public class TestImport extends AbstractModelTest {
     @Test
     public void testExampleWorkspace() throws Exception {
         WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
-                                                                       model);
+                                                                model);
         em.flush();
         DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
                                                                                 .getDefiningProduct(),
@@ -43,5 +45,28 @@ public class TestImport extends AbstractModelTest {
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
                                .lookup("kernel", "IsA"));
+    }
+
+    @Test
+    public void testIncrementalVersionUpdate() throws Exception {
+        // load version 1
+        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+                                                                model);
+        em.flush();
+        // load version 1
+
+        importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
+                                              model);
+        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
+                                                                                .getDefiningProduct(),
+                                                                        model);
+        assertNotNull(workspace);
+        assertNotNull(workspace.getScope()
+                               .lookup("TheDude"));
+        Product definingProduct = workspace.getDefiningProduct();
+        assertEquals(2, definingProduct.getVersion());
+        assertEquals("Phantasm Demo V2", definingProduct.getName());
+        assertEquals("Test of Workspace versioning",
+                     definingProduct.getDescription());
     }
 }

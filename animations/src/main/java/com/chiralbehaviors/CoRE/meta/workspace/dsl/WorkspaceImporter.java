@@ -179,7 +179,7 @@ public class WorkspaceImporter {
     public WorkspaceAccessor manifest() {
         initialize();
         int version = Integer.parseInt(wsp.getWorkspaceDefinition().version.getText());
-        return version == 0 ? createWorkspace() : addToWorkspace(version);
+        return version == 1 ? createWorkspace() : addToWorkspace(version);
     }
 
     public void setScope(WorkspaceScope scope) {
@@ -200,6 +200,10 @@ public class WorkspaceImporter {
                                                           version));
         }
         definingProduct.setVersion(version);
+        definingProduct.setName(stripQuotes(wsp.getWorkspaceDefinition().name.getText()));
+        Token description = wsp.getWorkspaceDefinition().description;
+        definingProduct.setDescription(description == null ? null
+                                                           : stripQuotes(description.getText()));
         scope = model.getWorkspaceModel()
                      .getScoped(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();
@@ -617,7 +621,6 @@ public class WorkspaceImporter {
                                                model.getCurrentPrincipal()
                                                     .getPrincipal());
         workspaceProduct.setId(uuid);
-        em.persist(workspaceProduct);
         return workspaceProduct;
     }
 
@@ -639,7 +642,7 @@ public class WorkspaceImporter {
     }
 
     private Product getWorkspaceProduct() {
-        return em.find(Product.class, uuid);
+        return Ruleform.initializeAndUnproxy(em.find(Product.class, uuid));
     }
 
     private void intervalFacets() {

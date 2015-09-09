@@ -1087,9 +1087,13 @@ public class WorkspaceImporter {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = stripQuotes(w.uri.getText());
             UUID uuid = WorkspaceAccessor.uuidOf(uri);
-            workspace.addImport(w.namespace.getText(), model.getEntityManager()
-                                                            .find(Product.class,
-                                                                  uuid));
+            int lookupOrder = 0;
+            if (w.lookupOrder != null) {
+                lookupOrder = Integer.parseInt(w.lookupOrder.getText());
+            }
+            workspace.addImport(w.namespace.getText(), lookupOrder,
+                                model.getEntityManager()
+                                     .find(Product.class, uuid));
         }
     }
 

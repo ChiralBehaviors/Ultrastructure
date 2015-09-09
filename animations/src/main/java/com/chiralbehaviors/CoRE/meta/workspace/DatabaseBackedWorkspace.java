@@ -117,7 +117,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#addImport(com.chiralbehaviors.CoRE.product.Product)
      */
     @Override
-    public void addImport(String namespace, Product workspace) {
+    public void addImport(String namespace, int lookupOrder,
+                          Product workspace) {
         ProductModel productModel = model.getProductModel();
         if (!productModel.isAccessible(getDefiningProduct(), model.getKernel()
                                                                   .getIsA(),
@@ -143,6 +144,15 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         attribute.setNetwork(link);
         em.persist(attribute);
         add(link);
+        add(attribute);
+
+        attribute = new ProductNetworkAttribute(model.getKernel()
+                                                     .getLookupOrder(),
+                                                lookupOrder,
+                                                model.getCurrentPrincipal()
+                                                     .getPrincipal());
+        attribute.setNetwork(link);
+        em.persist(attribute);
         add(attribute);
     }
 

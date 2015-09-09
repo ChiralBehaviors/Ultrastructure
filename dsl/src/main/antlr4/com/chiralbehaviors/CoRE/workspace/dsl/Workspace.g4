@@ -73,7 +73,8 @@ imported:
 importedWorkspace: 
     uri =  QuotedText 
     'as '
-    namespace = ObjectName;
+    namespace = ObjectName
+    ('order:' lookupOrder = Number) ?;
     
 statusCodeSequencingSet:
     service = qualifiedName

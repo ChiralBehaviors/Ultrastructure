@@ -20,7 +20,9 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -32,8 +34,9 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class WorkspaceScope {
-    private final Map<String, WorkspaceAccessor> imports = new HashMap<>();
+    private final Map<String, WorkspaceAccessor> imports       = new HashMap<>();
     private final WorkspaceAccessor              workspace;
+    private List<WorkspaceAccessor>              sortedImports = new ArrayList<>();
 
     public WorkspaceScope(Map<String, WorkspaceAccessor> imports,
                           WorkspaceAccessor workspace) {
@@ -44,13 +47,6 @@ public class WorkspaceScope {
 
     public WorkspaceScope(WorkspaceAccessor workspace) {
         this.workspace = workspace;
-    }
-
-    /**
-     * @param workspace
-     */
-    public void add(String name, WorkspaceAccessor workspace) {
-        imports.put(name, workspace);
     }
 
     public WorkspaceAccessor getWorkspace() {
@@ -130,6 +126,14 @@ public class WorkspaceScope {
         return String.format("WorkspaceScope[%s]",
                              workspace.getDefiningProduct()
                                       .getName());
+    }
+
+    /**
+     * @param workspace
+     */
+    protected void add(String name, WorkspaceAccessor workspace) {
+        imports.put(name, workspace);
+        sortedImports.add(workspace);
     }
 
     protected Ruleform localLookup(String key, Model model) {

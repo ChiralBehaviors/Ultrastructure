@@ -22,9 +22,11 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -45,6 +47,7 @@ import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -93,12 +96,32 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         // We need the kernel workspace to lookup workspaces, so special case the kernel
         if (!definingProduct.getId()
                             .equals(WellKnownProduct.KERNEL_WORKSPACE.id())) {
-            for (Map.Entry<String, Product> entry : getImports().entrySet()) {
+            List<Entry<String, Tuple<Product, Integer>>> imports = getSortedImports();
+            for (Entry<String, Tuple<Product, Integer>> entry : imports) {
                 scope.add(entry.getKey(), model.getWorkspaceModel()
-                                               .getScoped(entry.getValue())
+                                               .getScoped(entry.getValue().a)
                                                .getWorkspace());
             }
         }
+    }
+
+    public List<Entry<String, Tuple<Product, Integer>>> getSortedImports() {
+        List<Entry<String, Tuple<Product, Integer>>> imports = new ArrayList<>(getImports().entrySet());
+        Collections.sort(imports, (a, b) -> {
+            Integer aOrdering = a.getValue().b;
+            Integer bOrdering = b.getValue().b;
+            if (aOrdering.equals(bOrdering)) {
+                return 0;
+            }
+            if (aOrdering < 0) {
+                return -1;
+            }
+            if (bOrdering < 0) {
+                return 1;
+            }
+            return aOrdering.compareTo(bOrdering);
+        });
+        return imports;
     }
 
     /* (non-Javadoc)
@@ -117,8 +140,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#addImport(com.chiralbehaviors.CoRE.product.Product)
      */
     @Override
-    public void addImport(String namespace, int lookupOrder,
-                          Product workspace) {
+    public void addImport(String namespace, Product workspace) {
         ProductModel productModel = model.getProductModel();
         if (!productModel.isAccessible(getDefiningProduct(), model.getKernel()
                                                                   .getIsA(),
@@ -148,7 +170,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
         attribute = new ProductNetworkAttribute(model.getKernel()
                                                      .getLookupOrder(),
-                                                lookupOrder,
+                                                getImports().size(),
                                                 model.getCurrentPrincipal()
                                                      .getPrincipal());
         attribute.setNetwork(link);
@@ -231,21 +253,28 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#getImports()
      */
     @Override
-    public Map<String, Product> getImports() {
-        Map<String, Product> imports = new HashMap<>();
+    public Map<String, Tuple<Product, Integer>> getImports() {
+        Map<String, Tuple<Product, Integer>> imports = new HashMap<>();
         for (ProductNetwork link : model.getProductModel()
                                         .getImmediateChildrenLinks(getDefiningProduct(),
                                                                    model.getKernel()
                                                                         .getImports())) {
-            NetworkAttribute<?> attribute = model.getProductModel()
+            NetworkAttribute<?> namespace = model.getProductModel()
                                                  .getAttributeValue(link,
                                                                     model.getKernel()
                                                                          .getNamespace());
-            if (attribute == null) {
+            NetworkAttribute<?> lookupOrder = model.getProductModel()
+                                                   .getAttributeValue(link,
+                                                                      model.getKernel()
+                                                                           .getLookupOrder());
+            if (namespace == null) {
                 throw new IllegalStateException(String.format("Import has no namespace attribute defined: %s",
                                                               link));
             }
-            imports.put(attribute.getValue(), link.getChild());
+            Integer lookupOrderValue = lookupOrder == null ? -1
+                                                           : lookupOrder.getValue();
+            imports.put(namespace.getValue(),
+                        new Tuple<>(link.getChild(), lookupOrderValue));
         }
         return imports;
     }

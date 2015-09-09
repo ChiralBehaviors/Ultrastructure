@@ -86,6 +86,15 @@ relationships {
     IsCodeSourceOf = "Is Code Source Of" "A is a JVM code source of B" | HasCodeSource = "Has Code Source" "A has code source B";
     IsConstructorOf = "Is Constructor Of" "A is a constructor of B" | HasConstructor = "HasConstructor" "A has constructor B";
     
+    Capability = "Capability" "The defining capability classification";
+    CREATE = "Create" "The create capability" | MayBeCreatedBy = "May Be Created By" "May Be Created By";
+    READ = "Read" "The read capability" | MayBeReadBy = "May Be Read By" "The inverse read capability";
+    UPDATE = "Update" "The update capability" | MayBeUpdatedBy = "May Be Updated By" "The inverse update capability";
+    DELETE = "Delete" "The delete capability" | MayBeDeletedBy = "May Be Deleted By" "The inverse delete capability";
+    APPLY = "Apply" "The apply capability" | MayBeAppliedBy = "May Be Applied By" "The inverse apply capability";
+    REMOVE = "Remove" "The remove capability" | MayBeRemovedBy = "May Be Removed By" "The inverse remove capability";
+    INVOKE = "Invoke" "The invoke capability" | MayBeInvokedBy = "May Be Invoked By" "The inverse invoke capability"; 
+    
     edges {
         APPLY.IsA.Capability
         REMOVE.IsA.Capability
@@ -93,5 +102,6 @@ relationships {
         READ.IsA.Capability
         UPDATE.IsA.Capability
         DELETE.IsA.Capability
+        INVOKE.IsA.Capability
     }
 } 

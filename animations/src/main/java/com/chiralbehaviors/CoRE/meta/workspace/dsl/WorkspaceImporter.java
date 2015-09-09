@@ -891,18 +891,29 @@ public class WorkspaceImporter {
 
     private void loadRelationships() {
         for (RelationshipPairContext ctx : wsp.getRelationships()) {
-            Relationship relA = model.getRelationshipModel()
-                                     .create(stripQuotes(ctx.primary.existentialRuleform().name.getText()),
-                                             ctx.primary.existentialRuleform().description == null ? null
-                                                                                                   : stripQuotes(ctx.primary.existentialRuleform().description.getText()),
+            if (ctx.inverse == null) {
+                Relationship rel = model.getRelationshipModel()
+                                        .create(stripQuotes(ctx.primary.existentialRuleform().name.getText()),
+                                                ctx.primary.existentialRuleform().description == null ? null
+                                                                                                      : stripQuotes(ctx.primary.existentialRuleform().description.getText()));
+                rel.setInverse(rel);
+                workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
+                              rel);
+            } else {
+                Relationship relA = model.getRelationshipModel()
+                                         .create(stripQuotes(ctx.primary.existentialRuleform().name.getText()),
+                                                 ctx.primary.existentialRuleform().description == null ? null
+                                                                                                       : stripQuotes(ctx.primary.existentialRuleform().description.getText()),
 
-            stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
-                                             ctx.inverse.existentialRuleform().description == null ? null
-                                                                                                   : stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
-            workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
-                          relA);
-            workspace.put(ctx.inverse.existentialRuleform().workspaceName.getText(),
-                          relA.getInverse());
+                stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
+                                                 ctx.inverse.existentialRuleform().description == null ? null
+                                                                                                       : stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
+
+                workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
+                              relA);
+                workspace.put(ctx.inverse.existentialRuleform().workspaceName.getText(),
+                              relA.getInverse());
+            }
         }
     }
 

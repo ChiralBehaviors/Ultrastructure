@@ -114,7 +114,7 @@ attributeValue:
     (sequenceNumber = Number)?;
     
 relationshipPair:
-    primary=attributedExistentialRuleform '|' inverse=attributedExistentialRuleform; 
+    primary=attributedExistentialRuleform ('|' inverse=attributedExistentialRuleform)?; 
 
 qualifiedName:
     (namespace=ObjectName '::')?

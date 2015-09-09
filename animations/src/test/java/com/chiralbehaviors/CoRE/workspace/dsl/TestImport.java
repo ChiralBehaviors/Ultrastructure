@@ -34,7 +34,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 public class TestImport extends AbstractModelTest {
     @Test
     public void testExampleWorkspace() throws Exception {
-        WorkspaceImporter importer = WorkspaceImporter.createWorkspace(getClass().getResourceAsStream("/thing.wsp"),
+        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
                                                                        model);
         em.flush();
         DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()

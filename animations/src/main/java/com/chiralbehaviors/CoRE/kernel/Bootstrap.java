@@ -136,6 +136,11 @@ public class Bootstrap {
         for (WellKnownUnit wko : WellKnownUnit.values()) {
             insert(wko);
         }
+        connection.commit();
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
         constructKernelWorkspace();
     }
 
@@ -160,7 +165,6 @@ public class Bootstrap {
         populateStatusCodes(core, kernelWorkspace);
         populateUnits(core, kernelWorkspace);
         populateAnyFacets(core, kernelWorkspace);
-        connection.commit();
         em.getTransaction()
           .commit();
         ModelImpl model = new ModelImpl(em.getEntityManagerFactory());
@@ -168,7 +172,7 @@ public class Bootstrap {
              .getTransaction()
              .begin();
         new WorkspaceImporter(getClass().getResourceAsStream("/kernel.wsp"),
-                              model).addToWorkspace();
+                              model).manifest();
         model.getEntityManager()
              .getTransaction()
              .commit();
@@ -184,17 +188,13 @@ public class Bootstrap {
         ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
                                                core);
         populate(pn, core, kernelWorkspace);
-        em.flush();
         ProductNetwork pnR = new ProductNetwork(workspace, isA.getInverse(),
                                                 kernelWorkspace, core);
         populate(pnR, core, kernelWorkspace);
-        em.flush();
-
         ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
         netAuth.setClassification(workspace);
         netAuth.setClassifier(isA);
         populate(netAuth, core, workspace);
-        em.flush();
     }
 
     /**
@@ -260,7 +260,7 @@ public class Bootstrap {
     }
 
     private void insert(WellKnownAttribute wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, value_type, indexed, keyed, version) VALUES (?, ?, ?, ?, ?, ?, ?, 0)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, value_type, indexed, keyed, version) VALUES (?, ?, ?, ?, ?, ?, ?, -1)",
                                                                         wko.tableName()));
         try {
             s.setObject(1, wko.id());
@@ -280,7 +280,7 @@ public class Bootstrap {
     }
 
     private void insert(WellKnownInterval wki) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, 0)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, -1)",
                                                                         wki.tableName()));
         try {
             s.setObject(1, wki.id());
@@ -295,7 +295,7 @@ public class Bootstrap {
     }
 
     private void insert(WellKnownLocation wkl) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, 0)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, -1)",
                                                                         wkl.tableName()));
         try {
             s.setObject(1, wkl.id());
@@ -310,7 +310,7 @@ public class Bootstrap {
     }
 
     private void insert(WellKnownObject wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, 0)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, version) VALUES (?, ?, ?, ?, -1)",
                                                                         wko.tableName()));
         try {
             s.setObject(1, wko.id());
@@ -325,7 +325,7 @@ public class Bootstrap {
     }
 
     private void insert(WellKnownRelationship wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, inverse, version) VALUES (?, ?, ?, ?, ?, 0)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, updated_by, inverse, version) VALUES (?, ?, ?, ?, ?, -1)",
                                                                         wko.tableName()));
         try {
             s.setObject(1, wko.id());
@@ -342,7 +342,7 @@ public class Bootstrap {
     }
 
     private void insert(WellKnownStatusCode wko) throws SQLException {
-        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, propagate_children, updated_by, version) VALUES (?, ?, ?, ?, ?, 0)",
+        PreparedStatement s = connection.prepareStatement(String.format("INSERT into %s (id, name, description, propagate_children, updated_by, version) VALUES (?, ?, ?, ?, ?, -1)",
                                                                         wko.tableName()));
         try {
             s.setObject(1, wko.id());

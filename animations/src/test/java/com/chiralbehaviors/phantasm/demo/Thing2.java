@@ -33,7 +33,7 @@ import com.chiralbehaviors.CoRE.product.Product;
  * @author hhildebrand
  *
  */
-@State(workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
+@State(workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm")
 public interface Thing2 extends Phantasm<Product> {
     @Edge(@Key(name = "thing2Of"))
     void add(List<Thing3> thing3s);

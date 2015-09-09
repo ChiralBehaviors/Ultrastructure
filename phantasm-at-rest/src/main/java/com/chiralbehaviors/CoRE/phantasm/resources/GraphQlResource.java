@@ -50,6 +50,7 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.product.Plugin;
 import com.chiralbehaviors.CoRE.kernel.product.Workspace;
@@ -169,6 +170,20 @@ public class GraphQlResource extends TransactionalResource {
 
             @SuppressWarnings("rawtypes")
             PhantasmCRUD crud = new PhantasmCRUD(model);
+            Product definingProduct = model.getEntityManager()
+                                           .find(Product.class, uuid);
+            Agency p = model.getCurrentPrincipal()
+                            .getPrincipal();
+            if (!model.getNetworkedModel(definingProduct)
+                      .checkCapability(p, definingProduct, crud.getREAD())
+                || !model.getNetworkedModel(definingProduct)
+                         .checkCapability(p, definingProduct, model.getKernel()
+                                                                   .getEXECUTE_QUERY())) {
+                log.info(String.format("Failed executing query on workspace [%s:%s] by: %s:%s",
+                                       definingProduct.getName(), uuid,
+                                       p.getName(), p.getId()));
+                return null;
+            }
             ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
                                                                   crud,
                                                                   request.getVariables());

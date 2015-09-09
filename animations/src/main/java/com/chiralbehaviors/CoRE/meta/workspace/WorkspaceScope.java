@@ -70,10 +70,23 @@ public class WorkspaceScope {
      * in the receiver, then through the ordered list of imported scopes
      * 
      * @param key
-     * @return the value associated with the key in the reciever scope, or null
+     *            the simple name of the ruleform
+     * @return the value associated with the key in the reciever scope, or from
+     *         an imported scope, or null if this simple name is not defined
      */
     public Ruleform lookup(String key) {
-        return workspace.get(key);
+        Ruleform ruleform = workspace.get(key);
+        if (ruleform != null) {
+            return ruleform;
+        }
+        for (WorkspaceAccessor accessor : sortedImports) {
+            ruleform = accessor.getScope()
+                               .lookup(key);
+            if (ruleform != null) {
+                return ruleform;
+            }
+        }
+        return null;
     }
 
     /**

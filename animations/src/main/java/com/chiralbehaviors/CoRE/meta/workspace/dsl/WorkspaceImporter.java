@@ -1176,7 +1176,7 @@ public class WorkspaceImporter {
                                        .equals(THIS)) {
             ruleform = (T) workspace.getDefiningProduct();
         } else {
-            ruleform = workspace.get(qualifiedName.member.getText());
+            ruleform = (T) scope.lookup(qualifiedName.member.getText());
         }
         if (ruleform == null) {
             if (ruleform == null) {

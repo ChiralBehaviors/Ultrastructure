@@ -144,6 +144,8 @@ public interface Kernel {
 
     Agency getInverseSoftware();
 
+    Relationship getINVOKE();
+
     Relationship getInWorkspace();
 
     Attribute getIRI();

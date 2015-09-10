@@ -31,6 +31,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.StringArgGenerator;
 import com.fasterxml.uuid.impl.NameBasedGenerator;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -58,7 +59,7 @@ public interface WorkspaceAccessor {
 
     Product getDefiningProduct();
 
-    Map<String, Product> getImports();
+    Map<String, Tuple<Product, Integer>> getImports();
 
     List<String> getKeys();
 

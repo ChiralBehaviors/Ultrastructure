@@ -18,6 +18,7 @@ agencies {
 
 attributes {
     Namespace = "Namespace" "The namespace of an import" text;
+    LookupOrder = "Lookup Order" "The lookup order for an import" int;
     IRI = "IRI" "The Attribute that contains an International Resource Indicator" text;
     JsonldType = "JSONLD Type" "The Attribute that contains the JSON-LD type" text;
     Login = "Login" "The Attribute that contains the login name of the agency" text;
@@ -50,7 +51,7 @@ products {
             constraints {
                 n HasPlugin: IsA.Plugin
                 n Imports: IsA.Workspace named import 
-                    { Namespace }
+                    { Namespace LookupOrder }
             }
             
         IsA.Plugin { FacetName PackageName }

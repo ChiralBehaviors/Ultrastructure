@@ -1087,9 +1087,13 @@ public class WorkspaceImporter {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = stripQuotes(w.uri.getText());
             UUID uuid = WorkspaceAccessor.uuidOf(uri);
-            workspace.addImport(w.namespace.getText(), model.getEntityManager()
-                                                            .find(Product.class,
-                                                                  uuid));
+            Product imported = model.getEntityManager()
+                                    .find(Product.class, uuid);
+            if (imported == null) {
+                throw new IllegalStateException(String.format("the import is not found: %s:%s",
+                                                              uuid, uri));
+            }
+            workspace.addImport(w.namespace.getText(), imported);
         }
     }
 
@@ -1176,7 +1180,7 @@ public class WorkspaceImporter {
                                        .equals(THIS)) {
             ruleform = (T) workspace.getDefiningProduct();
         } else {
-            ruleform = workspace.get(qualifiedName.member.getText());
+            ruleform = (T) scope.lookup(qualifiedName.member.getText());
         }
         if (ruleform == null) {
             if (ruleform == null) {

@@ -34,18 +34,6 @@ import com.chiralbehaviors.CoRE.product.Product;
  *
  */
 public class TestImport extends AbstractModelTest {
-    @Test
-    public void testNetworkAttributes() throws Exception {
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/network-attribute.wsp"),
-                                                                model);
-        em.flush();
-        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
-                                                                                .getDefiningProduct(),
-                                                                        model);
-        assertNotNull(workspace);
-        assertNotNull(workspace.getScope()
-                               .lookup("Thing1"));
-    }
 
     @Test
     public void testExampleWorkspace() throws Exception {

@@ -457,7 +457,6 @@ public class WorkspaceImporter {
         workspace.add(authorization);
         em.persist(authorization);
         ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
-        System.out.println(authorization.getName());
         if (classifiedAttributes == null) {
             return;
         }

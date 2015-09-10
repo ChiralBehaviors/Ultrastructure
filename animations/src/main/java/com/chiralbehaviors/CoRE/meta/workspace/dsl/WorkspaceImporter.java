@@ -116,10 +116,10 @@ public class WorkspaceImporter {
     private static final String STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
     private static final String THIS                          = "this";
 
-    public static WorkspaceImporter createWorkspace(InputStream source,
-                                                    Model model) throws IOException {
+    public static WorkspaceImporter manifest(InputStream source,
+                                             Model model) throws IOException {
         WorkspaceImporter importer = new WorkspaceImporter(source, model);
-        importer.createWorkspace();
+        importer.manifest();
         return importer;
     }
 
@@ -167,30 +167,48 @@ public class WorkspaceImporter {
         this.em = model.getEntityManager();
     }
 
-    public WorkspaceAccessor addToWorkspace() {
-        scope = model.getWorkspaceModel()
-                     .getScoped(getWorkspaceProduct());
-        workspace = (EditableWorkspace) scope.getWorkspace();
-        loadWorkspace();
-        return workspace;
-    }
-
-    public WorkspaceAccessor createWorkspace() {
-        scope = model.getWorkspaceModel()
-                     .createWorkspace(createWorkspaceProduct(),
-                                      model.getCurrentPrincipal()
-                                           .getPrincipal());
-        workspace = (EditableWorkspace) scope.getWorkspace();
-        loadWorkspace();
-        return workspace;
-    }
-
     public WorkspaceAccessor getWorkspace() {
         return workspace;
     }
 
+    public void initialize() {
+        workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
+        uuid = WorkspaceAccessor.uuidOf(workspaceUri);
+    }
+
+    public WorkspaceAccessor manifest() {
+        initialize();
+        int version = Integer.parseInt(wsp.getWorkspaceDefinition().version.getText());
+        return version == 1 ? createWorkspace() : addToWorkspace(version);
+    }
+
     public void setScope(WorkspaceScope scope) {
         this.scope = scope;
+    }
+
+    private WorkspaceAccessor addToWorkspace(int version) {
+        Product definingProduct = getWorkspaceProduct();
+        if (definingProduct == null) {
+            throw new IllegalStateException(String.format("Workspace %s does not exist, cannot update to version %s",
+                                                          wsp.getWorkspaceDefinition().name.getText(),
+                                                          version));
+        }
+        if (definingProduct.getVersion() != version - 1) {
+            throw new IllegalStateException(String.format("Workspace %s is at version %s, unable to update to %s",
+                                                          wsp.getWorkspaceDefinition().name.getText(),
+                                                          definingProduct.getVersion(),
+                                                          version));
+        }
+        definingProduct.setVersion(version);
+        definingProduct.setName(stripQuotes(wsp.getWorkspaceDefinition().name.getText()));
+        Token description = wsp.getWorkspaceDefinition().description;
+        definingProduct.setDescription(description == null ? null
+                                                           : stripQuotes(description.getText()));
+        scope = model.getWorkspaceModel()
+                     .getScoped(definingProduct);
+        workspace = (EditableWorkspace) scope.getWorkspace();
+        loadWorkspace();
+        return workspace;
     }
 
     private void agencyFacets() {
@@ -579,17 +597,30 @@ public class WorkspaceImporter {
                             });
     }
 
+    private WorkspaceAccessor createWorkspace() {
+        Product existing = getWorkspaceProduct();
+        if (existing != null) {
+            throw new IllegalStateException(String.format("Workspace %s already exists at version %s, not created",
+                                                          existing.getName(),
+                                                          existing.getVersion()));
+        }
+        scope = model.getWorkspaceModel()
+                     .createWorkspace(createWorkspaceProduct(),
+                                      model.getCurrentPrincipal()
+                                           .getPrincipal());
+        workspace = (EditableWorkspace) scope.getWorkspace();
+        loadWorkspace();
+        return workspace;
+    }
+
     private Product createWorkspaceProduct() {
-        workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
         Token description = wsp.getWorkspaceDefinition().description;
         Product workspaceProduct = new Product(stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
                                                description == null ? null
                                                                    : stripQuotes(description.getText()),
                                                model.getCurrentPrincipal()
                                                     .getPrincipal());
-        uuid = WorkspaceAccessor.uuidOf(workspaceUri);
         workspaceProduct.setId(uuid);
-        em.persist(workspaceProduct);
         return workspaceProduct;
     }
 
@@ -611,15 +642,7 @@ public class WorkspaceImporter {
     }
 
     private Product getWorkspaceProduct() {
-        workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
-        uuid = WorkspaceAccessor.uuidOf(workspaceUri);
-        Product product = model.getProductModel()
-                               .find(uuid);
-        if (product == null) {
-            throw new IllegalArgumentException(String.format("Unknown workspace: %s",
-                                                             workspaceUri));
-        }
-        return product;
+        return Ruleform.initializeAndUnproxy(em.find(Product.class, uuid));
     }
 
     private void intervalFacets() {
@@ -891,18 +914,29 @@ public class WorkspaceImporter {
 
     private void loadRelationships() {
         for (RelationshipPairContext ctx : wsp.getRelationships()) {
-            Relationship relA = model.getRelationshipModel()
-                                     .create(stripQuotes(ctx.primary.existentialRuleform().name.getText()),
-                                             ctx.primary.existentialRuleform().description == null ? null
-                                                                                                   : stripQuotes(ctx.primary.existentialRuleform().description.getText()),
+            if (ctx.inverse == null) {
+                Relationship rel = model.getRelationshipModel()
+                                        .create(stripQuotes(ctx.primary.existentialRuleform().name.getText()),
+                                                ctx.primary.existentialRuleform().description == null ? null
+                                                                                                      : stripQuotes(ctx.primary.existentialRuleform().description.getText()));
+                rel.setInverse(rel);
+                workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
+                              rel);
+            } else {
+                Relationship relA = model.getRelationshipModel()
+                                         .create(stripQuotes(ctx.primary.existentialRuleform().name.getText()),
+                                                 ctx.primary.existentialRuleform().description == null ? null
+                                                                                                       : stripQuotes(ctx.primary.existentialRuleform().description.getText()),
 
-            stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
-                                             ctx.inverse.existentialRuleform().description == null ? null
-                                                                                                   : stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
-            workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
-                          relA);
-            workspace.put(ctx.inverse.existentialRuleform().workspaceName.getText(),
-                          relA.getInverse());
+                stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
+                                                 ctx.inverse.existentialRuleform().description == null ? null
+                                                                                                       : stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
+
+                workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
+                              relA);
+                workspace.put(ctx.inverse.existentialRuleform().workspaceName.getText(),
+                              relA.getInverse());
+            }
         }
     }
 

@@ -30,7 +30,7 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
  * @author hhildebrand
  *
  */
-@State(workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm/v1")
+@State(workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm")
 public interface MavenArtifact extends Phantasm<Location> {
     String getArtifactId();
 

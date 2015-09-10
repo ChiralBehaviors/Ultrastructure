@@ -60,6 +60,8 @@ facets: 'facets' LB (facet)+ RB;
 workspaceDefinition: 
     'workspace:'
     uri =  QuotedText
+    'version:'
+    version =  Number
     name=QuotedText
     (description=QuotedText)?;
 
@@ -114,7 +116,7 @@ attributeValue:
     (sequenceNumber = Number)?;
     
 relationshipPair:
-    primary=attributedExistentialRuleform '|' inverse=attributedExistentialRuleform; 
+    primary=attributedExistentialRuleform ('|' inverse=attributedExistentialRuleform)?; 
 
 qualifiedName:
     (namespace=ObjectName '::')?
@@ -238,7 +240,7 @@ constraint:
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;
 QuotedText: '"' (' ' | '!' |'#'.. '~')+ '"'; 
 Boolean: ('true'|'false');
-Number: ('0'..'9')+;
+Number: ('0'..'9')+; 
  
 WS: (' ' | '\t')+ -> skip;
 NL: ('\r'? '\n')+ -> skip;

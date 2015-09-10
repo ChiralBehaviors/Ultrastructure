@@ -136,6 +136,11 @@ public class Bootstrap {
         for (WellKnownUnit wko : WellKnownUnit.values()) {
             insert(wko);
         }
+        connection.commit();
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
         constructKernelWorkspace();
     }
 
@@ -149,8 +154,8 @@ public class Bootstrap {
         Product workspace = find(WellKnownProduct.WORKSPACE);
         Relationship isA = find(WellKnownRelationship.IS_A);
 
+        // Ain
         createKernelWorkspace(core, kernelWorkspace, workspace, isA);
-
         populateAgencies(core, kernelWorkspace);
         populateAttributes(core, kernelWorkspace);
         populateIntervals(core, kernelWorkspace);
@@ -160,22 +165,27 @@ public class Bootstrap {
         populateStatusCodes(core, kernelWorkspace);
         populateUnits(core, kernelWorkspace);
         populateAnyFacets(core, kernelWorkspace);
-        connection.commit();
         em.getTransaction()
           .commit();
+
+        // Ain Soph
         ModelImpl model = new ModelImpl(em.getEntityManagerFactory());
         model.getEntityManager()
              .getTransaction()
              .begin();
-        new WorkspaceImporter(getClass().getResourceAsStream("/kernel.wsp"),
-                              model).addToWorkspace();
+
+        new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
+                              model).manifest();
         model.getEntityManager()
              .getTransaction()
              .commit();
         model.getEntityManager()
              .close();
+
+        // Ain Soph Aur
         em.getTransaction()
           .begin();
+
     }
 
     private void createKernelWorkspace(Agency core, Product kernelWorkspace,
@@ -184,17 +194,13 @@ public class Bootstrap {
         ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
                                                core);
         populate(pn, core, kernelWorkspace);
-        em.flush();
         ProductNetwork pnR = new ProductNetwork(workspace, isA.getInverse(),
                                                 kernelWorkspace, core);
         populate(pnR, core, kernelWorkspace);
-        em.flush();
-
         ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
         netAuth.setClassification(workspace);
         netAuth.setClassifier(isA);
         populate(netAuth, core, workspace);
-        em.flush();
     }
 
     /**
@@ -578,32 +584,6 @@ public class Bootstrap {
         populate("IsValidatedBy", find(WellKnownRelationship.IS_VALIDATED_BY),
                  core, kernelWorkspace);
         populate("Validates", find(WellKnownRelationship.VALIDATES), core,
-                 kernelWorkspace);
-        populate("Capability", find(WellKnownRelationship.CAPABILITY), core,
-                 kernelWorkspace);
-        populate("CREATE", find(WellKnownRelationship.CREATE), core,
-                 kernelWorkspace);
-        populate("READ", find(WellKnownRelationship.READ), core,
-                 kernelWorkspace);
-        populate("UPDATE", find(WellKnownRelationship.UPDATE), core,
-                 kernelWorkspace);
-        populate("DELETE", find(WellKnownRelationship.DELETE), core,
-                 kernelWorkspace);
-        populate("APPLY", find(WellKnownRelationship.APPLY), core,
-                 kernelWorkspace);
-        populate("REMOVE", find(WellKnownRelationship.REMOVE), core,
-                 kernelWorkspace);
-        populate(find(WellKnownRelationship.MAY_BE_CREATED_BY), core,
-                 kernelWorkspace);
-        populate(find(WellKnownRelationship.MAY_BE_READ_BY), core,
-                 kernelWorkspace);
-        populate(find(WellKnownRelationship.MAY_BE_UPDATED_BY), core,
-                 kernelWorkspace);
-        populate(find(WellKnownRelationship.MAY_BE_DELETED_BY), core,
-                 kernelWorkspace);
-        populate(find(WellKnownRelationship.MAY_BE_APPLIED_BY), core,
-                 kernelWorkspace);
-        populate(find(WellKnownRelationship.MAY_BE_REMOVED_BY), core,
                  kernelWorkspace);
     }
 

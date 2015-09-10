@@ -48,18 +48,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.kernel.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.product.Plugin;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 import graphql.Scalars;
 import graphql.schema.DataFetchingEnvironment;
@@ -507,6 +510,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                           executionScope);
 
         constructors.add((env, instance) -> {
+            PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+            if (!checkInvoke(constructor, crud)) {
+                log.info(String.format("Failed invoking %s by: %s", constructor,
+                                       crud.getModel()
+                                           .getCurrentPrincipal()));
+                return null;
+
+            }
             @SuppressWarnings("unchecked")
             Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[1];
             return invoke(method, env, ctx(env).getModel()
@@ -586,6 +597,18 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .dataFetcher(env -> {
                                                   @SuppressWarnings("unchecked")
                                                   RuleForm instance = (RuleForm) env.getSource();
+                                                  PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                                                  if (!checkInvoke(facet,
+                                                                   instanceMethod,
+                                                                   instance,
+                                                                   crud)) {
+                                                      log.info(String.format("Failed invoking %s by: %s",
+                                                                             instanceMethod,
+                                                                             crud.getModel()
+                                                                                 .getCurrentPrincipal()));
+                                                      return null;
+
+                                                  }
                                                   return instance == null ? null
                                                                           : invoke(method,
                                                                                    env,
@@ -595,6 +618,42 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               })
                                               .description(instanceMethod.getDescription())
                                               .build());
+    }
+
+    private boolean checkInvoke(NetworkAuthorization<RuleForm> facet,
+                                InstanceMethod method, RuleForm instance,
+                                PhantasmCRUD<RuleForm, Network> crud) {
+        Model model = crud.getModel();
+        Agency principal = model.getCurrentPrincipal()
+                                .getPrincipal();
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
+        Relationship invoke = crud.getINVOKE();
+        return networkedModel.checkCapability(principal, method.getRuleform(),
+                                              invoke)
+               && checkInvoke(facet, instance, crud);
+    }
+
+    private boolean checkInvoke(NetworkAuthorization<RuleForm> facet,
+                                RuleForm instance,
+                                PhantasmCRUD<RuleForm, Network> crud) {
+        Model model = crud.getModel();
+        Agency principal = model.getCurrentPrincipal()
+                                .getPrincipal();
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
+        Relationship invoke = crud.getINVOKE();
+        return networkedModel.checkCapability(principal, instance, invoke)
+               && networkedModel.checkFacetCapability(principal, facet, invoke);
+    }
+
+    private boolean checkInvoke(Constructor constructor,
+                                PhantasmCRUD<RuleForm, Network> crud) {
+        return crud.getModel()
+                   .getProductModel()
+                   .checkCapability(crud.getModel()
+                                        .getCurrentPrincipal()
+                                        .getPrincipal(),
+                                    constructor.getRuleform(),
+                                    crud.getINVOKE());
     }
 
     private void clear() {
@@ -627,6 +686,14 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                        updateState.remove(SET_DESCRIPTION);
                                        update(ruleform, updateState, crud,
                                               detachedUpdate);
+                                       if (!checkInvoke(facet, ruleform,
+                                                        crud)) {
+                                           log.info(String.format("Failed invoking constructors by: %s",
+                                                                  crud.getModel()
+                                                                      .getCurrentPrincipal()));
+                                           return null;
+
+                                       }
                                        detachedConstructors.forEach(constructor -> constructor.apply(env,
                                                                                                      ruleform));
                                        return ruleform;
@@ -717,7 +784,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .type(type)
                                    .argument(newArgument().name(ID)
                                                           .description("id of the facet")
-                                                          .type(GraphQLString)
+                                                          .type(new GraphQLNonNull(GraphQLString))
                                                           .build())
                                    .dataFetcher(env -> ctx(env).lookup(facet,
                                                                        (String) env.getArgument(ID)))

@@ -20,7 +20,9 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.Ruleform;
@@ -32,8 +34,9 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class WorkspaceScope {
-    private final Map<String, WorkspaceAccessor> imports = new HashMap<>();
+    private final Map<String, WorkspaceAccessor> imports       = new HashMap<>();
     private final WorkspaceAccessor              workspace;
+    private List<WorkspaceAccessor>              sortedImports = new ArrayList<>();
 
     public WorkspaceScope(Map<String, WorkspaceAccessor> imports,
                           WorkspaceAccessor workspace) {
@@ -44,13 +47,6 @@ public class WorkspaceScope {
 
     public WorkspaceScope(WorkspaceAccessor workspace) {
         this.workspace = workspace;
-    }
-
-    /**
-     * @param workspace
-     */
-    public void add(String name, WorkspaceAccessor workspace) {
-        imports.put(name, workspace);
     }
 
     public WorkspaceAccessor getWorkspace() {
@@ -74,10 +70,23 @@ public class WorkspaceScope {
      * in the receiver, then through the ordered list of imported scopes
      * 
      * @param key
-     * @return the value associated with the key in the reciever scope, or null
+     *            the simple name of the ruleform
+     * @return the value associated with the key in the reciever scope, or from
+     *         an imported scope, or null if this simple name is not defined
      */
     public Ruleform lookup(String key) {
-        return workspace.get(key);
+        Ruleform ruleform = workspace.get(key);
+        if (ruleform != null) {
+            return ruleform;
+        }
+        for (WorkspaceAccessor accessor : sortedImports) {
+            ruleform = accessor.getScope()
+                               .lookup(key);
+            if (ruleform != null) {
+                return ruleform;
+            }
+        }
+        return null;
     }
 
     /**
@@ -130,6 +139,14 @@ public class WorkspaceScope {
         return String.format("WorkspaceScope[%s]",
                              workspace.getDefiningProduct()
                                       .getName());
+    }
+
+    /**
+     * @param workspace
+     */
+    protected void add(String name, WorkspaceAccessor workspace) {
+        imports.put(name, workspace);
+        sortedImports.add(workspace);
     }
 
     protected Ruleform localLookup(String key, Model model) {

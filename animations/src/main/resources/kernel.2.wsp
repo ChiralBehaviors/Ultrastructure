@@ -50,8 +50,8 @@ products {
         IsA.Workspace { IRI }
             constraints {
                 n HasPlugin: IsA.Plugin
-                n Imports: IsA.Workspace named import 
-                    [ Namespace LookupOrder ]
+                n Imports: IsA.Workspace named import
+                    [ Namespace LookupOrder ] 
             }
             
         IsA.Plugin { FacetName PackageName }

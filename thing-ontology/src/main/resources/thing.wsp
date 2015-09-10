@@ -22,14 +22,14 @@ attributes {
         };
     version = "Version" "version" text;
     edges {
-        type.kernel::IsValidatedBy.typeValues
+        type.IsValidatedBy.typeValues
     }
     
 }
 locations {
     MavenArtifact = "MavenArtifact" "A maven artifact";
     facets {
-        kernel::IsA.MavenArtifact { artifactId classifier groupId type version }
+        IsA.MavenArtifact { artifactId classifier groupId type version }
     }
 }
 products {
@@ -37,26 +37,26 @@ products {
     Thing2 = "Thing2" "Thing 2";
     Thing3 = "Thing3" "Thing 3";
     edges {
-        this.kernel::HasMember.Thing1
+        this.HasMember.Thing1
     }
     facets {
-        kernel::IsA.Thing1 {aliases URI discount properties}
+        IsA.Thing1 {aliases URI discount properties}
             constraints {
-                one thing1Of: kernel::IsA.Thing2 named thing2 [ aliases ]
-                one derivedFrom: kernel::IsA.MavenArtifact named by relationship [ aliases ]
-                one kernel::HasMember: *Product
+                one thing1Of: IsA.Thing2 named thing2 [ aliases ]
+                one derivedFrom: IsA.MavenArtifact named by relationship [ aliases ]
+                one kernel::HasMember: *Product 
             }
-        kernel::IsA.Thing2 {aliases URI properties}
+        IsA.Thing2 {aliases URI properties}
             constraints {
-                one inThing1: kernel::IsA.Thing1
-                n derivedFrom: kernel::IsA.MavenArtifact named by relationship
-                n thing2Of get: inferred: kernel::IsA.Thing3
+                one inThing1: IsA.Thing1
+                n derivedFrom: IsA.MavenArtifact named by relationship
+                n thing2Of get: inferred: IsA.Thing3
             }
-        kernel::IsA.Thing3 {aliases URI properties}
+        IsA.Thing3 {aliases URI properties}
             constraints {
                 one inThing1: *Product named superFly
-                n derivedFrom: kernel::IsA.MavenArtifact named by relationship
-                n thing2Of get: inferred: kernel::IsA.Thing2
+                n derivedFrom: IsA.MavenArtifact named by relationship
+                n thing2Of get: inferred: IsA.Thing2
             }
     }
 }

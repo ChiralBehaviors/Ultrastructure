@@ -1,9 +1,12 @@
 workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/test/network-attribute" 
            version: 1
            "Network Attributes" "Simple test for network attributes" 
+imports {
+    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+}
 
 attributes {
-    attribute = "Aliases" "Alias Smith and Jones" indexed: true text;
+    aliases = "Aliases" "Alias Smith and Jones" indexed: true text;
 }
 
 products {

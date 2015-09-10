@@ -176,6 +176,8 @@ public interface Kernel {
 
     Attribute getLogin();
 
+    Attribute getLookupOrder();
+
     Relationship getMapsToLocation();
 
     Relationship getMemberOf();

@@ -27,7 +27,6 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
@@ -112,15 +111,6 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         WorkspaceScope scope = new DatabaseBackedWorkspace(definingProduct,
                                                            model).getScope();
         scopes.put(definingProduct.getId(), scope);
-        if (!definingProduct.getId()
-                            .equals(WellKnownProduct.KERNEL_WORKSPACE.id())) { // special handling of kernel ::sigh::
-            for (Product workspace : model.getProductModel()
-                                          .getChildren(definingProduct,
-                                                       model.getKernel()
-                                                            .getImports())) {
-                scope.add("", getScoped(workspace).getWorkspace());
-            }
-        }
         return scope;
     }
 

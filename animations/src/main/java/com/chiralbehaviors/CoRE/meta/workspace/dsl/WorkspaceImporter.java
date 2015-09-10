@@ -457,6 +457,7 @@ public class WorkspaceImporter {
         workspace.add(authorization);
         em.persist(authorization);
         ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        System.out.println(authorization.getName());
         if (classifiedAttributes == null) {
             return;
         }
@@ -1101,9 +1102,13 @@ public class WorkspaceImporter {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = stripQuotes(w.uri.getText());
             UUID uuid = WorkspaceAccessor.uuidOf(uri);
-            workspace.addImport(w.namespace.getText(), model.getEntityManager()
-                                                            .find(Product.class,
-                                                                  uuid));
+            Product imported = model.getEntityManager()
+                                    .find(Product.class, uuid);
+            if (imported == null) {
+                throw new IllegalStateException(String.format("the import is not found: %s:%s",
+                                                              uuid, uri));
+            }
+            workspace.addImport(w.namespace.getText(), imported);
         }
     }
 
@@ -1185,13 +1190,11 @@ public class WorkspaceImporter {
         if (qualifiedName.namespace != null) {
             ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
                                         qualifiedName.member.getText());
-            return ruleform;
         } else if (qualifiedName.member.getText()
                                        .equals(THIS)) {
             ruleform = (T) workspace.getDefiningProduct();
         } else {
-            ruleform = (T) workspace.getScope()
-                                    .lookup(qualifiedName.member.getText());
+            ruleform = (T) scope.lookup(qualifiedName.member.getText());
         }
         if (ruleform == null) {
             if (ruleform == null) {
@@ -1201,7 +1204,7 @@ public class WorkspaceImporter {
                                                             qualifiedName.member.getText()));
             }
         }
-        return ruleform;
+        return Ruleform.initializeAndUnproxy(ruleform);
     }
 
     private Class<? extends Ruleform> resolveAny(String anyType) {

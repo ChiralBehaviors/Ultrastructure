@@ -50,6 +50,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.utils.Tuple;
 
 /**
  * General idea of a location or address; where some agency, product or event
@@ -385,15 +386,17 @@ public class Location extends ExistentialRuleform<Location, LocationNetwork> {
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public LocationNetwork link(Relationship r, Location child,
-                                Agency updatedBy, Agency inverseSoftware,
-                                EntityManager em) {
+    public Tuple<LocationNetwork, LocationNetwork> link(Relationship r,
+                                                        Location child,
+                                                        Agency updatedBy,
+                                                        Agency inverseSoftware,
+                                                        EntityManager em) {
         LocationNetwork link = new LocationNetwork(this, r, child, updatedBy);
         em.persist(link);
         LocationNetwork inverse = new LocationNetwork(child, r.getInverse(),
                                                       this, inverseSoftware);
         em.persist(inverse);
-        return link;
+        return new Tuple<>(link, inverse);
     }
 
     @SuppressWarnings("unchecked")

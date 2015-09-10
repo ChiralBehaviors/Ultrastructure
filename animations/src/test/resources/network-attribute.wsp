@@ -1,0 +1,16 @@
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/test/network-attribute" 
+           version: 1
+           "Network Attributes" "Simple test for network attributes" 
+
+attributes {
+    attribute = "Aliases" "Alias Smith and Jones" indexed: true text;
+}
+
+products {
+    facets {
+        IsA.Thing1
+            constraints {
+                one IsA: IsA.Thing1 named thing2 [ aliases ] 
+            }
+    }
+}

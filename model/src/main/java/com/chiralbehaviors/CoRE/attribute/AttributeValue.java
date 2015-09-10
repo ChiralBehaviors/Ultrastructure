@@ -210,6 +210,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
      *
      * @return the concrete class that this attribute is associated with
      */
+    @JsonIgnore
     abstract public Class<RuleForm> getRuleformClass();
 
     public Integer getSequenceNumber() {

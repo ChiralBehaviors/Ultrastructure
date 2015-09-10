@@ -234,7 +234,7 @@ constraint:
     (authorizedRelationship = qualifiedName '.' authorizedParent = qualifiedName))
     (('named' name = ObjectName) | (methodType = ( 'named by relationship' | 'named by entity')))?
     ('sequence:' sequenceNumber = Number)?
-    (LB classifiedAttributes RB)?
+    ('[' classifiedAttributes ']')?
     ;
 
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;

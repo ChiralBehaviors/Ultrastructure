@@ -75,6 +75,7 @@ import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
@@ -604,11 +605,19 @@ public class WorkspaceImporter {
                                                           existing.getName(),
                                                           existing.getVersion()));
         }
+        Product definingProduct = createWorkspaceProduct();
         scope = model.getWorkspaceModel()
-                     .createWorkspace(createWorkspaceProduct(),
+                     .createWorkspace(definingProduct,
                                       model.getCurrentPrincipal()
                                            .getPrincipal());
         workspace = (EditableWorkspace) scope.getWorkspace();
+        ProductAttribute attributeValue = (ProductAttribute) model.getProductModel()
+                                                                  .getAttributeValue(definingProduct,
+                                                                                     model.getKernel()
+                                                                                          .getIRI());
+        attributeValue.setValue(stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
+        model.getProductModel()
+             .setAttributeValue(attributeValue);
         loadWorkspace();
         return workspace;
     }
@@ -624,8 +633,8 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
-    private void defineFacets(@SuppressWarnings("rawtypes") NetworkedModel networkedModel,
-                              List<FacetContext> facets) {
+    private void defineFacetClassificationss(@SuppressWarnings("rawtypes") NetworkedModel networkedModel,
+                                             List<FacetContext> facets) {
         for (FacetContext facet : facets) {
             if (facet.classification.namespace == null) {
                 if (scope.lookup(facet.classification.member.getText()) == null) {
@@ -682,7 +691,8 @@ public class WorkspaceImporter {
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           agency);
         }
-        defineFacets(model.getAgencyModel(), wsp.getAgencyFacets());
+        defineFacetClassificationss(model.getAgencyModel(),
+                                    wsp.getAgencyFacets());
     }
 
     private void loadAttributes() {
@@ -787,7 +797,8 @@ public class WorkspaceImporter {
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
-        defineFacets(model.getIntervalModel(), wsp.getIntervalFacets());
+        defineFacetClassificationss(model.getIntervalModel(),
+                                    wsp.getIntervalFacets());
     }
 
     private void loadLocationNetworks() {
@@ -805,7 +816,8 @@ public class WorkspaceImporter {
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
-        defineFacets(model.getLocationModel(), wsp.getLocationFacets());
+        defineFacetClassificationss(model.getLocationModel(),
+                                    wsp.getLocationFacets());
     }
 
     private void loadMetaprotocols() {
@@ -867,7 +879,8 @@ public class WorkspaceImporter {
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
-        defineFacets(model.getProductModel(), wsp.getProductFacets());
+        defineFacetClassificationss(model.getProductModel(),
+                                    wsp.getProductFacets());
     }
 
     private void loadProtocols() {
@@ -983,7 +996,8 @@ public class WorkspaceImporter {
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
-        defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
+        defineFacetClassificationss(model.getStatusCodeModel(),
+                                    wsp.getStatusCodeFacets());
     }
 
     private void loadStatusCodeSequencings() {
@@ -1038,8 +1052,8 @@ public class WorkspaceImporter {
         loadStatusCodeSequencings();
         loadUnits();
         loadIntervals();
-        loadEdges();
         loadFacets();
+        loadEdges();
         loadSequencingAuths();
         loadInferences();
         loadProtocols();
@@ -1176,7 +1190,8 @@ public class WorkspaceImporter {
                                        .equals(THIS)) {
             ruleform = (T) workspace.getDefiningProduct();
         } else {
-            ruleform = workspace.get(qualifiedName.member.getText());
+            ruleform = (T) workspace.getScope()
+                                    .lookup(qualifiedName.member.getText());
         }
         if (ruleform == null) {
             if (ruleform == null) {

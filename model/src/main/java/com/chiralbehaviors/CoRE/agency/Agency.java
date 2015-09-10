@@ -53,6 +53,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.utils.Tuple;
 
 /**
  * An agency that can provide information, produce products, or perform work.
@@ -410,8 +411,11 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public AgencyNetwork link(Relationship r, Agency child, Agency updatedBy,
-                              Agency inverseSoftware, EntityManager em) {
+    public Tuple<AgencyNetwork, AgencyNetwork> link(Relationship r,
+                                                    Agency child,
+                                                    Agency updatedBy,
+                                                    Agency inverseSoftware,
+                                                    EntityManager em) {
         assert r != null : "Relationship cannot be null";
         assert child != null;
         assert updatedBy != null;
@@ -422,7 +426,7 @@ public class Agency extends ExistentialRuleform<Agency, AgencyNetwork> {
         AgencyNetwork inverse = new AgencyNetwork(child, r.getInverse(), this,
                                                   inverseSoftware);
         em.persist(inverse);
-        return link;
+        return new Tuple<>(link, inverse);
     }
 
     @SuppressWarnings("unchecked")

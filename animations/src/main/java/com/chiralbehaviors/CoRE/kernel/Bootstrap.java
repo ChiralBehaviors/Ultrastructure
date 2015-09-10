@@ -60,7 +60,7 @@ import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
@@ -151,11 +151,8 @@ public class Bootstrap {
     private void constructKernelWorkspace() throws IOException, SQLException {
         Agency core = find(WellKnownAgency.CORE);
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
-        Product workspace = find(WellKnownProduct.WORKSPACE);
-        Relationship isA = find(WellKnownRelationship.IS_A);
 
-        // Ain
-        createKernelWorkspace(core, kernelWorkspace, workspace, isA);
+        // Ain 
         populateAgencies(core, kernelWorkspace);
         populateAttributes(core, kernelWorkspace);
         populateIntervals(core, kernelWorkspace);
@@ -176,9 +173,17 @@ public class Bootstrap {
 
         new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
                               model).manifest();
+        ProductAttribute attributeValue = (ProductAttribute) model.getProductModel()
+                                                                  .getAttributeValue(kernelWorkspace,
+                                                                                     model.getKernel()
+                                                                                          .getIRI());
+        attributeValue.setValue(Kernel.IRI);
+        model.getProductModel()
+             .setAttributeValue(attributeValue);
         model.getEntityManager()
              .getTransaction()
              .commit();
+
         model.getEntityManager()
              .close();
 
@@ -186,21 +191,6 @@ public class Bootstrap {
         em.getTransaction()
           .begin();
 
-    }
-
-    private void createKernelWorkspace(Agency core, Product kernelWorkspace,
-                                       Product workspace, Relationship isA) {
-        // Kernel workspace isA workspace
-        ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
-                                               core);
-        populate(pn, core, kernelWorkspace);
-        ProductNetwork pnR = new ProductNetwork(workspace, isA.getInverse(),
-                                                kernelWorkspace, core);
-        populate(pnR, core, kernelWorkspace);
-        ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
-        netAuth.setClassification(workspace);
-        netAuth.setClassifier(isA);
-        populate(netAuth, core, workspace);
     }
 
     /**

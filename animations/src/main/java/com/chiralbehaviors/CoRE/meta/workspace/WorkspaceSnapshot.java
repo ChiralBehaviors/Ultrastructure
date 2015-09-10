@@ -37,12 +37,15 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.utils.Util;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.hellblazer.utils.collections.OaHashSet;
 
 /**
  * @author hhildebrand
  *
  */
+@JsonPropertyOrder({ "name", "description", "version", "definingProduct",
+                     "frontier", "ruleforms" })
 public class WorkspaceSnapshot {
     public static List<WorkspaceAuthorization> getAuthorizations(Product definingProduct,
                                                                  EntityManager em) {
@@ -54,6 +57,12 @@ public class WorkspaceSnapshot {
         return authorizations;
     }
 
+    @JsonProperty
+    protected String         name;
+    @JsonProperty
+    protected String         description;
+    @JsonProperty
+    protected int            version;
     @JsonProperty
     protected Product        definingProduct;
     @JsonProperty
@@ -75,6 +84,9 @@ public class WorkspaceSnapshot {
                              List<WorkspaceAuthorization> auths,
                              EntityManager em) {
         this.definingProduct = definingProduct;
+        this.name = definingProduct.getName();
+        this.description = definingProduct.getDescription();
+        this.version = definingProduct.getVersion();
         Predicate<Ruleform> systemDefinition = traversing -> {
             return (traversing instanceof WorkspaceAuthorization
                     && definingProduct.equals(((WorkspaceAuthorization) traversing).getDefiningProduct()))

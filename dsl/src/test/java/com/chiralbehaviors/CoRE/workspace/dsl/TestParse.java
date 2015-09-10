@@ -20,12 +20,16 @@
 
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
+import static org.junit.Assert.assertEquals;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.junit.Test;
+
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributesContext;
 
 /**
  * @author hhildebrand
@@ -48,4 +52,30 @@ public class TestParse {
         });
         p.workspace();
     }
+
+    @Test
+    public void testNetworkAttributes() throws Exception {
+        WorkspaceLexer l = new WorkspaceLexer(new ANTLRInputStream(getClass().getResourceAsStream("/network-attribute.wsp")));
+        WorkspaceParser p = new WorkspaceParser(new CommonTokenStream(l));
+        p.addErrorListener(new BaseErrorListener() {
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer,
+                                    Object offendingSymbol, int line,
+                                    int charPositionInLine, String msg,
+                                    RecognitionException e) {
+                throw new IllegalStateException("failed to parse at line "
+                                                + line + " due to " + msg, e);
+            }
+        });
+        ClassifiedAttributesContext classifiedAttributes = p.workspace().products.facets()
+                                                                                 .facet(0)
+                                                                                 .networkConstraints()
+                                                                                 .constraint(0)
+                                                                                 .classifiedAttributes();
+        String attribute = classifiedAttributes.qualifiedName()
+                                               .get(0)
+                                               .getText();
+        assertEquals("aliases", attribute);
+    }
+
 }

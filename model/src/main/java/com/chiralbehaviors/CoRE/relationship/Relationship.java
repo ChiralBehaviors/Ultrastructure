@@ -51,6 +51,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.utils.Tuple;
 
 /**
  * The existential rule form that defines relationships between existential rule
@@ -403,9 +404,11 @@ public class Relationship
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public RelationshipNetwork link(Relationship r, Relationship child,
-                                    Agency updatedBy, Agency inverseSoftware,
-                                    EntityManager em) {
+    public Tuple<RelationshipNetwork, RelationshipNetwork> link(Relationship r,
+                                                                Relationship child,
+                                                                Agency updatedBy,
+                                                                Agency inverseSoftware,
+                                                                EntityManager em) {
         assert r != null : "Relationship cannot be null";
         assert child != null;
         assert updatedBy != null;
@@ -419,7 +422,7 @@ public class Relationship
                                                               this,
                                                               inverseSoftware);
         em.persist(inverse);
-        return link;
+        return new Tuple<>(link, inverse);
     }
 
     @SuppressWarnings("unchecked")

@@ -45,6 +45,7 @@ import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -129,20 +130,21 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         scope.add(namespace, model.getWorkspaceModel()
                                   .getScoped(workspace)
                                   .getWorkspace());
-        ProductNetwork link = productModel.link(getDefiningProduct(),
-                                                model.getKernel()
-                                                     .getImports(),
-                                                workspace,
-                                                model.getCurrentPrincipal()
-                                                     .getPrincipal());
+        Tuple<ProductNetwork, ProductNetwork> links = productModel.link(getDefiningProduct(),
+                                                                        model.getKernel()
+                                                                             .getImports(),
+                                                                        workspace,
+                                                                        model.getCurrentPrincipal()
+                                                                             .getPrincipal());
         ProductNetworkAttribute attribute = new ProductNetworkAttribute(model.getKernel()
                                                                              .getNamespace(),
                                                                         namespace,
                                                                         model.getCurrentPrincipal()
                                                                              .getPrincipal());
-        attribute.setNetwork(link);
+        attribute.setNetwork(links.a);
         em.persist(attribute);
-        add(link);
+        add(links.a);
+        add(links.b);
         add(attribute);
     }
 

@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAttribute;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.utils.Tuple;
 
 /**
  * Existential ruleform for all attributes in the CoRE database. This table
@@ -405,15 +406,17 @@ public class Attribute
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public AttributeNetwork link(Relationship r, Attribute child,
-                                 Agency updatedBy, Agency inverseSoftware,
-                                 EntityManager em) {
+    public Tuple<AttributeNetwork, AttributeNetwork> link(Relationship r,
+                                                          Attribute child,
+                                                          Agency updatedBy,
+                                                          Agency inverseSoftware,
+                                                          EntityManager em) {
         AttributeNetwork link = new AttributeNetwork(this, r, child, updatedBy);
         em.persist(link);
         AttributeNetwork inverse = new AttributeNetwork(child, r.getInverse(),
                                                         this, inverseSoftware);
         em.persist(inverse);
-        return link;
+        return new Tuple<>(link, inverse);
     }
 
     @SuppressWarnings("unchecked")

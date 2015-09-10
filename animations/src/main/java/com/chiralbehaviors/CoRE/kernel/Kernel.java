@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.time.Interval;
  *
  */
 public interface Kernel {
+    String IRI = "urn:uuid:00000000-0000-0004-0000-000000000003";
 
     Attribute getAccessToken();
 

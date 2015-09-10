@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.time.Interval;
  *
  */
 public interface Kernel {
+
     Attribute getAccessToken();
 
     Agency getAnyAgency();
@@ -99,6 +100,8 @@ public interface Kernel {
     Relationship getDevelopedBy();
 
     Relationship getEquals();
+
+    Relationship getEXECUTE_QUERY();
 
     Attribute getFacetName();
 

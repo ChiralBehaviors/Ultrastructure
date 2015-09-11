@@ -167,7 +167,7 @@ public final class Util {
 
         Ruleform reference = find(em, ruleform);
         if (reference != null) {
-            mapped.put(ruleform, reference);
+            mapped.put(ruleform, em.merge(ruleform));
         } else {
             mapped.put(ruleform, ruleform);
             traverse(em, ruleform, mapped);

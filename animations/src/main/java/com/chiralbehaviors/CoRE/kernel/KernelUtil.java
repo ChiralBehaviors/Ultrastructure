@@ -20,26 +20,17 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import javax.persistence.EntityManager;
 
 import org.hibernate.internal.SessionImpl;
 
-import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
-import com.hellblazer.utils.Utils;
 
 /**
  * Repository of immutable kernal rules
@@ -100,47 +91,14 @@ public class KernelUtil {
     }
 
     public static void loadKernel(EntityManager em) throws IOException {
-        loadKernel(em,
-                   getBits(KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)));
-    }
-
-    public static void loadKernel(EntityManager em,
-                                  InputStream is) throws IOException {
         if (!em.getTransaction()
                .isActive()) {
             em.getTransaction()
               .begin();
         }
-        WorkspaceSnapshot workspace = rehydrateKernel(is);
-        workspace.retarget(em);
+        WorkspaceSnapshot.load(em,
+                               Arrays.asList(KernelUtil.class.getResource(KERNEL_WORKSPACE_RESOURCE)));
         em.getTransaction()
           .commit();
-    }
-
-    /**
-     * This is a work around, as there's a weird edge case where the resource
-     * has been closed by someone (probably dropwizard).
-     * 
-     * @param resourceAsStream
-     * @return
-     * @throws IOException
-     */
-    private static InputStream getBits(InputStream resourceAsStream) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Utils.copy(resourceAsStream, baos);
-        return new ByteArrayInputStream(baos.toByteArray());
-    }
-
-    private static WorkspaceSnapshot rehydrateKernel(InputStream is) throws IOException,
-                                                                     JsonParseException,
-                                                                     JsonMappingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new CoREModule());
-        Hibernate4Module module = new Hibernate4Module();
-        module.enable(Feature.FORCE_LAZY_LOADING);
-        mapper.registerModule(module);
-        WorkspaceSnapshot workspace = mapper.readValue(is,
-                                                       WorkspaceSnapshot.class);
-        return workspace;
     }
 }

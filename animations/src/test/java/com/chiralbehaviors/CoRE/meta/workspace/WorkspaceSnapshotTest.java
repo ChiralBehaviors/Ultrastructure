@@ -134,14 +134,14 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         }
     }
 
-    // @Test
+    @Test
     public void testDeltaGeneration() throws Exception {
         File version1File = new File("target/version.1.json");
         File version2File = new File("target/version.2.json");
-        Model model = new ModelImpl(emf);
-        EntityManager em = model.getEntityManager();
-        em.getTransaction()
-          .begin();
+        Model myModel = new ModelImpl(emf);
+        EntityManager myEm = myModel.getEntityManager();
+        myEm.getTransaction()
+            .begin();
         WorkspaceImporter importer;
         Product definingProduct;
         WorkspaceSnapshot snapshot;
@@ -149,46 +149,51 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
             // load version 1
             importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
-                                                  model);
-            em.flush();
+                                                  myModel);
+            myEm.flush();
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
-            snapshot = new WorkspaceSnapshot(definingProduct, em);
+            snapshot = new WorkspaceSnapshot(definingProduct, myEm);
             try (FileOutputStream os = new FileOutputStream(version1File)) {
                 snapshot.serializeTo(os);
             }
         } finally {
-            em.close();
+            myEm.getTransaction()
+                .rollback();
+            myEm.close();
         }
 
-        model = new ModelImpl(emf);
-        em = model.getEntityManager();
-        em.getTransaction()
-          .begin();
+        myModel = new ModelImpl(emf);
+        myEm = myModel.getEntityManager();
+        myEm.getTransaction()
+            .begin();
         try {
-            WorkspaceSnapshot.load(em, Arrays.asList(version1File.toURI()
-                                                                 .toURL()));
+            WorkspaceSnapshot.load(myEm, Arrays.asList(version1File.toURI()
+                                                                   .toURL()));
 
-            em.flush();
+            myEm.flush();
+
             // load version 2
 
             importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
-                                                  model);
-            em.flush();
+                                                  myModel);
+            myEm.flush();
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
-            snapshot = new WorkspaceSnapshot(definingProduct, em);
+            snapshot = new WorkspaceSnapshot(definingProduct, myEm);
             try (FileOutputStream os = new FileOutputStream(version2File)) {
                 snapshot.serializeTo(os);
             }
         } finally {
-            em.close();
+            myEm.getTransaction()
+                .rollback();
+            myEm.close();
         }
 
-        model = new ModelImpl(emf);
-        em = model.getEntityManager();
-        em.getTransaction()
-          .begin();
+        myModel = new ModelImpl(emf);
+        myEm = myModel.getEntityManager();
+        myEm.getTransaction()
+            .begin();
 
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -206,7 +211,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                 snapshot.serializeTo(os);
             }
         } finally {
-            em.close();
+            myEm.close();
         }
     }
 }

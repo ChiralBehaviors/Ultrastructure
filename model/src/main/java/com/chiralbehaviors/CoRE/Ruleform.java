@@ -58,7 +58,6 @@ import org.reflections.Reflections;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.json.RuleformIdGenerator;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -67,6 +66,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,7 +83,7 @@ import com.fasterxml.uuid.NoArgGenerator;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = PropertyGenerator.class, property = "id")
 @JsonAutoDetect(getterVisibility = Visibility.PUBLIC_ONLY)
 @JsonInclude(Include.NON_NULL)
 @Cacheable(true)

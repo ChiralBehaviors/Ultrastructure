@@ -657,6 +657,8 @@ public class FacetResource extends TransactionalResource {
         returned.put(Constants.GRAPH, facets);
 
         for (Aspect<RuleForm> aspect : networkedModel.getAllFacets()) {
+            aspect = new Aspect<>(Ruleform.initializeAndUnproxy(aspect.getClassifier()),
+                                  Ruleform.initializeAndUnproxy(aspect.getClassification()));
             @SuppressWarnings({ "rawtypes", "unchecked" })
             Facet<RuleForm, ?> facet = new Facet(aspect, readOnlyModel,
                                                  uriInfo);

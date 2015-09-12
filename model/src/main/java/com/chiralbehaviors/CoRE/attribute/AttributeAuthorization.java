@@ -178,11 +178,8 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
         if (attribute == null) {
             attribute = getAuthorizedNetworkAttribute();
             if (attribute == null) {
-                return null; // Hack for serializing frontier of workspace
+                return null; // For serializing frontier of workspace
             }
-        }
-        if (attribute.getValueType() == null) {
-            return null; // Hack for serializing frontier of workspace
         }
         switch (attribute.getValueType()) {
             case BINARY:

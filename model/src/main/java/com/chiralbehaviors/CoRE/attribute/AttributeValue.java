@@ -41,6 +41,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The abstract attribute value.
@@ -154,31 +155,11 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         return attribute;
     }
 
-    @JsonIgnore
-    private byte[] getBinaryValue() {
-        return binaryValue;
-    }
-
-    @JsonIgnore
-    private Boolean getBooleanValue() {
-        return booleanValue;
-    }
-
-    @JsonIgnore
-    private Integer getIntegerValue() {
-        return integerValue;
-    }
-
     /**
      * @return the key
      */
     public String getKey() {
         return key;
-    }
-
-    @JsonIgnore
-    private BigDecimal getNumericValue() {
-        return numericValue;
     }
 
     @JsonIgnore
@@ -196,32 +177,17 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         return sequenceNumber;
     }
 
-    @JsonIgnore
-    private String getTextValue() {
-        return textValue;
-    }
-
-    @JsonIgnore
-    private Timestamp getTimestampValue() {
-        return timestampValue;
-    }
-
     public Unit getUnit() {
         return unit;
     }
 
     @SuppressWarnings("unchecked")
-    @JsonGetter
-    public <T> T getValue() {
-        Attribute attribute2 = getAttribute();
-        if (attribute2 == null) {
-            return null; // Done for frontier traversal on workspace serialization
+    @JsonProperty
+    public <T extends Object> T getValue() {
+        if (attribute == null) {
+            return null; // For frontier traversal on workspace serialization
         }
-        ValueType valueType = attribute2.getValueType();
-        if (valueType == null) {
-            return null; // Done for frontier traversal on workspace serialization
-        }
-        switch (valueType) {
+        switch (attribute.getValueType()) {
             case BINARY:
                 return (T) getBinaryValue();
             case BOOLEAN:
@@ -236,7 +202,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
                 return (T) getTimestampValue();
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
-                                                              valueType));
+                                                              attribute.getValueType()));
         }
     }
 
@@ -249,18 +215,6 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         this.attribute = attribute;
     }
 
-    private void setBinaryValue(byte[] binaryValue) {
-        this.binaryValue = binaryValue;
-    }
-
-    private void setBooleanValue(Boolean booleanValue) {
-        this.booleanValue = booleanValue;
-    }
-
-    private void setIntegerValue(Integer integerValue) {
-        this.integerValue = integerValue;
-    }
-
     /**
      * @param key
      *            the key to set
@@ -269,20 +223,8 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         this.key = key;
     }
 
-    private void setNumericValue(BigDecimal numericValue) {
-        this.numericValue = numericValue;
-    }
-
     public void setSequenceNumber(Integer sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
-    }
-
-    private void setTextValue(String textValue) {
-        this.textValue = textValue;
-    }
-
-    private void setTimestampValue(Timestamp timestampValue) {
-        this.timestampValue = timestampValue;
     }
 
     public void setUnit(Unit unit) {
@@ -344,5 +286,59 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     public String toString() {
         return String.format("%s[%s]: %s", getClass().getSimpleName(),
                              getAttribute().getName(), getValue());
+    }
+
+    @JsonIgnore
+    private byte[] getBinaryValue() {
+        return binaryValue;
+    }
+
+    @JsonIgnore
+    private Boolean getBooleanValue() {
+        return booleanValue;
+    }
+
+    @JsonIgnore
+    private Integer getIntegerValue() {
+        return integerValue;
+    }
+
+    @JsonIgnore
+    private BigDecimal getNumericValue() {
+        return numericValue;
+    }
+
+    @JsonIgnore
+    private String getTextValue() {
+        return textValue;
+    }
+
+    @JsonIgnore
+    private Timestamp getTimestampValue() {
+        return timestampValue;
+    }
+
+    private void setBinaryValue(byte[] binaryValue) {
+        this.binaryValue = binaryValue;
+    }
+
+    private void setBooleanValue(Boolean booleanValue) {
+        this.booleanValue = booleanValue;
+    }
+
+    private void setIntegerValue(Integer integerValue) {
+        this.integerValue = integerValue;
+    }
+
+    private void setNumericValue(BigDecimal numericValue) {
+        this.numericValue = numericValue;
+    }
+
+    private void setTextValue(String textValue) {
+        this.textValue = textValue;
+    }
+
+    private void setTimestampValue(Timestamp timestampValue) {
+        this.timestampValue = timestampValue;
     }
 }

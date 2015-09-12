@@ -207,7 +207,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                 version2 = mapper.readValue(is, WorkspaceSnapshot.class);
             }
             WorkspaceSnapshot delta = version2.deltaFrom(version1);
-            try (FileOutputStream os = new FileOutputStream(new File("/target/version.2-1.json"))) {
+            try (FileOutputStream os = new FileOutputStream(new File("target/version.2-1.json"))) {
                 snapshot.serializeTo(os);
             }
         } finally {

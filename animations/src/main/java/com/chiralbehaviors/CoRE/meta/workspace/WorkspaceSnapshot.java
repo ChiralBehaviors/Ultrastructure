@@ -234,8 +234,6 @@ public class WorkspaceSnapshot {
      * @param em
      */
     public void retarget(EntityManager em) {
-        WorkspaceAuthorization defining = definingProduct.getWorkspace();
-        definingProduct.setWorkspace(null);
         Map<UUID, Ruleform> theReplacements = new HashMap<>();
         for (Ruleform exit : frontier) {
             theReplacements.put(exit.getId(),
@@ -243,12 +241,10 @@ public class WorkspaceSnapshot {
         }
         definingProduct = Ruleform.smartMerge(em, definingProduct,
                                               theReplacements);
-        defining = Ruleform.smartMerge(em, defining, theReplacements);
         for (ListIterator<Ruleform> iterator = ruleforms.listIterator(); iterator.hasNext();) {
             iterator.set(Ruleform.smartMerge(em, iterator.next(),
                                              theReplacements));
         }
-        definingProduct.setWorkspace(defining);
     }
 
     private boolean isInSameVersionOfWorkspace(Ruleform ruleform) {

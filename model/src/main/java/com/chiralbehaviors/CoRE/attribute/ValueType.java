@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE.attribute;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * NOTE: DO NOT REORDER THE ENUMERATIONS IN THIS CLASS. Unfortunately, the
  * orderings are hard coded until we can find a better way of doing this.
@@ -30,37 +32,37 @@ import java.sql.Timestamp;
  *
  */
 public enum ValueType {
-    BINARY {
+    @JsonProperty BINARY {
         @Override
         public Class<?> valueClass() {
             return byte[].class;
         }
     },
-    BOOLEAN {
+    @JsonProperty BOOLEAN {
         @Override
         public Class<?> valueClass() {
             return Boolean.class;
         }
     },
-    INTEGER {
+    @JsonProperty INTEGER {
         @Override
         public Class<?> valueClass() {
             return Integer.class;
         }
     },
-    NUMERIC {
+    @JsonProperty NUMERIC {
         @Override
         public Class<?> valueClass() {
             return BigDecimal.class;
         }
     },
-    TEXT {
+    @JsonProperty TEXT {
         @Override
         public Class<?> valueClass() {
             return String.class;
         }
     },
-    TIMESTAMP {
+    @JsonProperty TIMESTAMP {
         @Override
         public Class<?> valueClass() {
             return Timestamp.class;

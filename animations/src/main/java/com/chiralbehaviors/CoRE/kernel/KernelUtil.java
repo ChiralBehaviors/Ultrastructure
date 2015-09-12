@@ -59,17 +59,19 @@ public class KernelUtil {
           .begin();
         try {
             connection.setAutoCommit(false);
-            connection.createStatement()
-                      .execute("TRUNCATE TABLE ruleform.agency CASCADE");
             ResultSet r = connection.createStatement()
                                     .executeQuery(KernelUtil.SELECT_TABLE);
             while (r.next()) {
                 String table = r.getString("name");
-                String query = String.format("TRUNCATE TABLE %s CASCADE",
-                                             table);
-                connection.createStatement()
-                          .execute(query);
+                if (!table.equals("ruleform.agency")) {
+                    String query = String.format("TRUNCATE TABLE %s CASCADE",
+                                                 table);
+                    connection.createStatement()
+                              .execute(query);
+                }
             }
+            connection.createStatement()
+                      .execute("TRUNCATE TABLE ruleform.agency CASCADE");
             r.close();
             connection.commit();
             em.getTransaction()

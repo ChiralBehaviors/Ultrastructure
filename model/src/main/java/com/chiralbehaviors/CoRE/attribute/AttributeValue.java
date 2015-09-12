@@ -239,7 +239,11 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     @SuppressWarnings("unchecked")
     @JsonGetter
     public <T> T getValue() {
-        ValueType valueType = getAttribute().getValueType();
+        Attribute attribute2 = getAttribute();
+        if (attribute2 == null) {
+            return null; // Done for frontier traversal on workspace serialization
+        }
+        ValueType valueType = attribute2.getValueType();
         if (valueType == null) {
             return null; // Done for frontier traversal on workspace serialization
         }

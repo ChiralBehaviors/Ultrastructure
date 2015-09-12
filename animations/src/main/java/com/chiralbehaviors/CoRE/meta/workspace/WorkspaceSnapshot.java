@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,10 +42,11 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.utils.Util;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.collections.OaHashSet;
 
@@ -66,7 +68,8 @@ public class WorkspaceSnapshot {
         return authorizations;
     }
 
-    public static boolean load(EntityManager em, List<URL> resources) {
+    public static void load(EntityManager em,
+                            List<URL> resources) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new CoREModule());
         for (URL resource : resources) {
@@ -76,7 +79,7 @@ public class WorkspaceSnapshot {
             } catch (IOException e) {
                 log.warn("Unable to load workspace: {}",
                          resource.toExternalForm(), e);
-                return false;
+                throw e;
             }
             Product definingProduct = workspace.getDefiningProduct();
             Product existing = em.find(Product.class, definingProduct.getId());
@@ -98,9 +101,7 @@ public class WorkspaceSnapshot {
                          definingProduct.getVersion(),
                          resource.toExternalForm());
             }
-            em.flush();
         }
-        return true;
     }
 
     protected Product definingProduct;
@@ -111,7 +112,7 @@ public class WorkspaceSnapshot {
     protected List<Ruleform> ruleforms;
 
     public WorkspaceSnapshot() {
-        ruleforms = null;
+        ruleforms = new ArrayList<>();
         definingProduct = null;
         frontier = new ArrayList<>();
     }
@@ -128,26 +129,27 @@ public class WorkspaceSnapshot {
 
         this.ruleforms = new ArrayList<>(auths.size());
         Set<UUID> included = new OaHashSet<>(1024);
-        Map<Ruleform, Ruleform> exits = new HashMap<>();
+        Map<UUID, Ruleform> exits = new HashMap<>();
         Set<UUID> traversed = new OaHashSet<UUID>(1024);
 
         included.add(definingProduct.getId());
 
         for (WorkspaceAuthorization auth : auths) {
             if (!auth.getDefiningProduct()
-                     .equals(definingProduct)) {
+                     .getId()
+                     .equals(definingProduct.getId())) {
                 throw new IllegalStateException(String.format("%s is not in the workspace %s",
                                                               auth.getDefiningProduct()
                                                                   .getName(),
                                                               definingProduct.getName()));
             }
-            Ruleform ruleform = auth.getRuleform(em);
+            Ruleform ruleform = Ruleform.initializeAndUnproxy(auth.getRuleform(em));
             included.add(ruleform.getId());
             ruleforms.add(ruleform);
         }
 
         for (Ruleform ruleform : ruleforms) {
-            Util.slice(ruleform, systemDefinition, exits, traversed);
+            Ruleform.slice(ruleform, systemDefinition, exits, traversed);
         }
 
         frontier = new ArrayList<>(exits.values());
@@ -176,13 +178,7 @@ public class WorkspaceSnapshot {
     public WorkspaceSnapshot deltaFrom(WorkspaceSnapshot otherVersion) {
         if (!otherVersion.getDefiningProduct()
                          .equals(definingProduct)) {
-            throw new IllegalArgumentException(String.format("%s:%s is not the same workspace as %s%s",
-                                                             otherVersion.getDefiningProduct()
-                                                                         .getName(),
-                                                             otherVersion.getDefiningProduct()
-                                                                         .getId(),
-                                                             definingProduct.getName(),
-                                                             definingProduct.getId()));
+            return this; // by workspace graph closure definition
         }
         Predicate<Ruleform> systemDefinition = traversing -> isInSameVersionOfWorkspace(traversing);
 
@@ -192,7 +188,7 @@ public class WorkspaceSnapshot {
 
         delta.ruleforms = new ArrayList<>();
         Set<UUID> included = new OaHashSet<>(1024);
-        Map<Ruleform, Ruleform> exits = new HashMap<>();
+        Map<UUID, Ruleform> exits = new HashMap<>();
         Set<UUID> traversed = new OaHashSet<UUID>(1024);
 
         included.add(definingProduct.getId());
@@ -205,7 +201,7 @@ public class WorkspaceSnapshot {
         }
 
         for (Ruleform ruleform : delta.ruleforms) {
-            Util.slice(ruleform, systemDefinition, exits, traversed);
+            Ruleform.slice(ruleform, systemDefinition, exits, traversed);
         }
 
         delta.frontier = new ArrayList<>(exits.values());
@@ -224,6 +220,14 @@ public class WorkspaceSnapshot {
         return ruleforms;
     }
 
+    public void serializeTo(OutputStream os) throws JsonGenerationException,
+                                             JsonMappingException, IOException {
+        ObjectMapper objMapper = new ObjectMapper();
+        objMapper.registerModule(new CoREModule());
+        objMapper.writerWithDefaultPrettyPrinter()
+                 .writeValue(os, this);
+    }
+
     /**
      * Merge the state of the workspace into the database
      * 
@@ -232,14 +236,17 @@ public class WorkspaceSnapshot {
     public void retarget(EntityManager em) {
         WorkspaceAuthorization defining = definingProduct.getWorkspace();
         definingProduct.setWorkspace(null);
-        Map<Ruleform, Ruleform> theReplacements = new HashMap<>();
+        Map<UUID, Ruleform> theReplacements = new HashMap<>();
         for (Ruleform exit : frontier) {
-            theReplacements.put(exit, em.find(exit.getClass(), exit.getId()));
+            theReplacements.put(exit.getId(),
+                                em.find(exit.getClass(), exit.getId()));
         }
-        definingProduct = Util.smartMerge(em, definingProduct, theReplacements);
-        defining = Util.smartMerge(em, defining, theReplacements);
+        definingProduct = Ruleform.smartMerge(em, definingProduct,
+                                              theReplacements);
+        defining = Ruleform.smartMerge(em, defining, theReplacements);
         for (ListIterator<Ruleform> iterator = ruleforms.listIterator(); iterator.hasNext();) {
-            iterator.set(Util.smartMerge(em, iterator.next(), theReplacements));
+            iterator.set(Ruleform.smartMerge(em, iterator.next(),
+                                             theReplacements));
         }
         definingProduct.setWorkspace(defining);
     }

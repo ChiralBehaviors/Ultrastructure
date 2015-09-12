@@ -139,7 +139,6 @@ public class Relationship
     @OneToOne(cascade = { CascadeType.PERSIST,
                           CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "inverse", unique = true)
-    @JsonIgnore
     private Relationship inverse;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")

@@ -24,15 +24,24 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -122,6 +131,82 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                              ruleform.getUpdatedBy()
                                      .getName());
             }
+        }
+    }
+
+    // @Test
+    public void testDeltaGeneration() throws Exception {
+        File version1File = new File("target/version.1.json");
+        File version2File = new File("target/version.2.json");
+        Model model = new ModelImpl(emf);
+        EntityManager em = model.getEntityManager();
+        em.getTransaction()
+          .begin();
+        WorkspaceImporter importer;
+        Product definingProduct;
+        WorkspaceSnapshot snapshot;
+        try {
+
+            // load version 1
+            importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+                                                  model);
+            em.flush();
+            definingProduct = importer.getWorkspace()
+                                      .getDefiningProduct();
+            snapshot = new WorkspaceSnapshot(definingProduct, em);
+            try (FileOutputStream os = new FileOutputStream(version1File)) {
+                snapshot.serializeTo(os);
+            }
+        } finally {
+            em.close();
+        }
+
+        model = new ModelImpl(emf);
+        em = model.getEntityManager();
+        em.getTransaction()
+          .begin();
+        try {
+            WorkspaceSnapshot.load(em, Arrays.asList(version1File.toURI()
+                                                                 .toURL()));
+
+            em.flush();
+            // load version 2
+
+            importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
+                                                  model);
+            em.flush();
+            definingProduct = importer.getWorkspace()
+                                      .getDefiningProduct();
+            snapshot = new WorkspaceSnapshot(definingProduct, em);
+            try (FileOutputStream os = new FileOutputStream(version2File)) {
+                snapshot.serializeTo(os);
+            }
+        } finally {
+            em.close();
+        }
+
+        model = new ModelImpl(emf);
+        em = model.getEntityManager();
+        em.getTransaction()
+          .begin();
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new CoREModule());
+            WorkspaceSnapshot version1;
+            WorkspaceSnapshot version2;
+            try (InputStream is = new FileInputStream(version1File);) {
+                version1 = mapper.readValue(is, WorkspaceSnapshot.class);
+            }
+            try (InputStream is = new FileInputStream(version2File);) {
+                version2 = mapper.readValue(is, WorkspaceSnapshot.class);
+            }
+            WorkspaceSnapshot delta = version2.deltaFrom(version1);
+            try (FileOutputStream os = new FileOutputStream(new File("/target/version.2-1.json"))) {
+                snapshot.serializeTo(os);
+            }
+        } finally {
+            em.close();
         }
     }
 }

@@ -38,9 +38,9 @@
     <properties>
         <db.context>local</db.context>
 
-        <dropwizard.version>0.8.2</dropwizard.version>
+        <dropwizard.version>0.8.4</dropwizard.version>
         <postgresql.driver.version>9.4-1202-jdbc42</postgresql.driver.version>
-        <jackson.version>2.5.1</jackson.version>
+        <jackson.version>2.6.1 </jackson.version>
         <hibernate.version>5.0.1.Final</hibernate.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

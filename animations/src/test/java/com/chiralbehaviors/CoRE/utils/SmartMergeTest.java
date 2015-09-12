@@ -26,6 +26,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.job.Job;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 
@@ -45,7 +46,7 @@ public class SmartMergeTest extends AbstractModelTest {
         job.setDeliverTo(kernel.getAnyLocation());
         job.setDeliverFrom(kernel.getAnyLocation());
         job.setRequester(kernel.getAnyAgency());
-        Job merged = Util.smartMerge(em, job, new HashMap<>());
+        Job merged = Ruleform.smartMerge(em, job, new HashMap<>());
         assertNotNull(merged);
     }
 }

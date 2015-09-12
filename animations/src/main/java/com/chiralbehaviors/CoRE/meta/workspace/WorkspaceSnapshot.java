@@ -180,26 +180,27 @@ public class WorkspaceSnapshot {
                          .equals(definingProduct)) {
             return this; // by workspace graph closure definition
         }
-        Predicate<Ruleform> systemDefinition = traversing -> isInSameVersionOfWorkspace(traversing);
 
         WorkspaceSnapshot delta = new WorkspaceSnapshot();
-        delta.ruleforms = new ArrayList<>();
         delta.definingProduct = definingProduct;
 
-        delta.ruleforms = new ArrayList<>();
-        Set<UUID> included = new OaHashSet<>(1024);
-        Map<UUID, Ruleform> exits = new HashMap<>();
-        Set<UUID> traversed = new OaHashSet<UUID>(1024);
-
-        included.add(definingProduct.getId());
+        Set<UUID> exclude = new OaHashSet<UUID>(1024);
+        for (Ruleform ruleform : otherVersion.ruleforms) {
+            if (!definingProduct.equals(ruleform)) {
+                exclude.add(ruleform.getId());
+            }
+        }
 
         for (Ruleform ruleform : ruleforms) {
-            if (isInSameVersionOfWorkspace(ruleform)) {
-                included.add(ruleform.getId());
+            if (!exclude.contains(ruleform.getId())) {
                 delta.ruleforms.add(ruleform);
             }
         }
 
+        Set<UUID> traversed = new OaHashSet<UUID>(1024);
+        Map<UUID, Ruleform> exits = new HashMap<>();
+        Predicate<Ruleform> systemDefinition = traversing -> !exclude.contains(traversing.getId())
+                                                             && sameWorkspace(traversing);
         for (Ruleform ruleform : delta.ruleforms) {
             Ruleform.slice(ruleform, systemDefinition, exits, traversed);
         }
@@ -245,19 +246,6 @@ public class WorkspaceSnapshot {
             iterator.set(Ruleform.smartMerge(em, iterator.next(),
                                              theReplacements));
         }
-    }
-
-    private boolean isInSameVersionOfWorkspace(Ruleform ruleform) {
-        return (ruleform instanceof WorkspaceAuthorization
-                && sameProductAndVersion(((WorkspaceAuthorization) ruleform).getDefiningProduct()))
-               || (ruleform.getWorkspace() != null
-                   && sameProductAndVersion((ruleform.getWorkspace()
-                                                     .getDefiningProduct())));
-    }
-
-    private boolean sameProductAndVersion(Product product) {
-        return definingProduct.equals(product)
-               && definingProduct.getVersion() == product.getVersion();
     }
 
     private boolean sameWorkspace(Ruleform traversing) {

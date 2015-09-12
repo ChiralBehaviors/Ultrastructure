@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.meta.workspace;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,6 +52,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class WorkspaceSnapshotTest extends AbstractModelTest {
+    private static final String THING_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
 
     @Test
     public void testSerializeWorkspaceSnapshot() throws Exception {
@@ -138,6 +140,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
     public void testDeltaGeneration() throws Exception {
         File version1File = new File("target/version.1.json");
         File version2File = new File("target/version.2.json");
+        File version2_1File = new File("target/version.2-1.json");
         Model myModel = new ModelImpl(emf);
         EntityManager myEm = myModel.getEntityManager();
         myEm.getTransaction()
@@ -207,7 +210,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                 version2 = mapper.readValue(is, WorkspaceSnapshot.class);
             }
             WorkspaceSnapshot delta = version2.deltaFrom(version1);
-            try (FileOutputStream os = new FileOutputStream(new File("target/version.2-1.json"))) {
+            try (FileOutputStream os = new FileOutputStream(version2_1File)) {
                 delta.serializeTo(os);
             }
             assertEquals(7, delta.getRuleforms()
@@ -217,5 +220,23 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         } finally {
             myEm.close();
         }
+
+        myModel = new ModelImpl(emf);
+        myEm = myModel.getEntityManager();
+        myEm.getTransaction()
+            .begin();
+
+        try {
+            WorkspaceSnapshot.load(myEm, Arrays.asList(version1File.toURI()
+                                                                   .toURL(),
+                                                       version2_1File.toURI()
+                                                                     .toURL()));
+            WorkspaceScope scope = myModel.getWorkspaceModel()
+                                          .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+            assertNotNull(scope.lookup("TheDude"));
+        } finally {
+            myEm.close();
+        }
+
     }
 }

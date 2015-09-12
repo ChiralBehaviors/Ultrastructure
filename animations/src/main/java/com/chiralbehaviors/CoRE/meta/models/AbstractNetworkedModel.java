@@ -1313,15 +1313,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             }
             boolean valid = false;
             for (AttributeMetaAttribute ama : attrs) {
-                if (ama.getTextValue() != null && ama.getTextValue()
-                                                     .equals(value.getTextValue())) {
+                if (ama.getValue() != null && ama.getValue()
+                                                 .equals(value.getValue())) {
                     valid = true;
                     em.persist(value);
                 }
             }
             if (!valid) {
                 throw new IllegalArgumentException(String.format("%s is not a valid value for attribute %s",
-                                                                 value.getTextValue(),
+                                                                 value.getValue(),
                                                                  attribute));
             }
         }

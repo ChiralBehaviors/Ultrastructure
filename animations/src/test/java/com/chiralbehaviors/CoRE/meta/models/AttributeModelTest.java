@@ -89,7 +89,7 @@ public class AttributeModelTest extends AbstractModelTest {
 
         em.persist(attributeValue);
         em.flush();
-        attributeValue.setTextValue("aaa");
+        attributeValue.setValue("aaa");
         try {
             em.persist(attributeValue);
             em.flush();

@@ -18,7 +18,10 @@
     <logger name="org.hibernate.test">
         <level value="WARN" />
     </logger> 
-    <logger name="org.hibernate.cache">
+    <logger name="org.hibernate.SQL">
+        <level value="WARN" />
+    </logger> 
+    <logger name="org.hibernate.type">
         <level value="WARN" />
     </logger> 
     <root>

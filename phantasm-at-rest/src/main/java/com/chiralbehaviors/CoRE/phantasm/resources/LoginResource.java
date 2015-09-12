@@ -86,7 +86,7 @@ public class LoginResource {
         Model model = new ModelImpl(emf);
         try {
             AgencyAttribute attributeValue = new AgencyAttribute(login);
-            attributeValue.setTextValue(username);
+            attributeValue.setValue(username);
             List<Agency> agencies = model.find(attributeValue);
             if (agencies.size() > 1) {
                 log.error(String.format("Multiple agencies with username %s",
@@ -130,7 +130,7 @@ public class LoginResource {
                                                                .getAccessToken(),
                                                           model.getCurrentPrincipal()
                                                                .getPrincipal());
-        accessToken.setTimestampValue(new Timestamp(System.currentTimeMillis()));
+        accessToken.setValue(new Timestamp(System.currentTimeMillis()));
         accessToken.setSequenceNumber(seqNum);
         model.getEntityManager()
              .persist(accessToken);

@@ -1,6 +1,6 @@
 workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm" 
            version: 2
-           "Phantasm Demo V2" "Test of Workspace versioning" 
+           "Phantasm Demo V2" "Test of Workspace versioning"
            
 agencies {
     TheDude = "The Dude" "Finally";

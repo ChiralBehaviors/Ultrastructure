@@ -165,6 +165,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                                              .getPrincipal());
         attribute.setNetwork(links.a);
         em.persist(attribute);
+        attribute.setValue(namespace);
         add(links.a);
         add(links.b);
         add(attribute);
@@ -261,6 +262,10 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                                            .getLookupOrder());
             if (namespace == null) {
                 throw new IllegalStateException(String.format("Import has no namespace attribute defined: %s",
+                                                              link));
+            }
+            if (namespace.getValue() == null) {
+                throw new IllegalStateException(String.format("Import has no name defined! : %s",
                                                               link));
             }
             Integer lookupOrderValue = lookupOrder == null ? -1

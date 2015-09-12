@@ -731,7 +731,7 @@ public class WorkspaceImporter {
                 ama.setMetaAttribute(attr);
                 ama.setUpdatedBy(model.getCurrentPrincipal()
                                       .getPrincipal());
-                ama.setTextValue(stripQuotes(ruleform.type.getText()));
+                ama.setValueFromString(stripQuotes(ruleform.type.getText()));
                 em.persist(ama);
                 workspace.add(ama);
             }

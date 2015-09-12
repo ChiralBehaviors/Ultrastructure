@@ -126,7 +126,7 @@ public class ProductTest extends DatabaseTest {
         ProductAttribute attribute = new ProductAttribute(peptideFoo, length,
                                                           core);
         attribute.setUnit(aminoAcids);
-        attribute.setNumericValue(BigDecimal.valueOf(123));
+        attribute.setValue(BigDecimal.valueOf(123));
         em.persist(attribute);
         em.flush();
     }
@@ -162,6 +162,6 @@ public class ProductTest extends DatabaseTest {
         assertEquals(b, bea.getProduct());
         assertEquals(a, bea.getAttribute());
 
-        assertEquals(new BigDecimal("123"), bea.getNumericValue());
+        assertEquals(new BigDecimal("123"), bea.getValue());
     }
 }

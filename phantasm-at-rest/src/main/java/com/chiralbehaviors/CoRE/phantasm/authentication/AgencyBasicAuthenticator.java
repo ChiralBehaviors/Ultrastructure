@@ -77,7 +77,7 @@ public class AgencyBasicAuthenticator
         try {
             AgencyAttribute attributeValue = new AgencyAttribute(model.getKernel()
                                                                       .getLogin());
-            attributeValue.setTextValue(username);
+            attributeValue.setValue(username);
             List<Agency> agencies = model.find(attributeValue);
             if (agencies.size() > 1) {
                 log.error(String.format("Multiple agencies with username %s",

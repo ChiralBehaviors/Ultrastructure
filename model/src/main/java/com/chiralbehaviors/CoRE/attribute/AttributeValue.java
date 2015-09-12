@@ -119,28 +119,27 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     public AttributeValue(Attribute attribute, BigDecimal value,
                           Agency updatedBy) {
         this(attribute, updatedBy);
-        numericValue = value;
+        setValue(value);
     }
 
     public AttributeValue(Attribute attribute, Boolean value,
                           Agency updatedBy) {
         this(attribute, updatedBy);
-        booleanValue = value;
+        setValue(value);
     }
 
     public AttributeValue(Attribute attribute, int value, Agency updatedBy) {
         this(attribute, updatedBy);
-        integerValue = value;
+        setValue(value);
     }
 
     public AttributeValue(Attribute attribute, String value, Agency updatedBy) {
         this(attribute, updatedBy);
-        textValue = value;
+        setValue(value);
     }
 
     public AttributeValue(Attribute attribute, Unit unit) {
         this(attribute);
-        this.unit = unit;
     }
 
     /**
@@ -156,32 +155,17 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     }
 
     @JsonIgnore
-    public byte[] getBinaryValue() {
-        if (getAttribute().getValueType() != ValueType.BINARY) {
-            throw new UnsupportedOperationException(String.format("May not retrieve %s value for a %s attribute",
-                                                                  ValueType.BINARY,
-                                                                  getAttribute().getValueType()));
-        }
+    private byte[] getBinaryValue() {
         return binaryValue;
     }
 
     @JsonIgnore
-    public Boolean getBooleanValue() {
-        if (getAttribute().getValueType() != ValueType.BOOLEAN) {
-            throw new UnsupportedOperationException(String.format("May not retrieve %s value for a %s attribute",
-                                                                  ValueType.BOOLEAN,
-                                                                  getAttribute().getValueType()));
-        }
+    private Boolean getBooleanValue() {
         return booleanValue;
     }
 
     @JsonIgnore
-    public Integer getIntegerValue() {
-        if (getAttribute().getValueType() != ValueType.INTEGER) {
-            throw new UnsupportedOperationException(String.format("May not retrieve %s value for a %s attribute",
-                                                                  ValueType.INTEGER,
-                                                                  getAttribute().getValueType()));
-        }
+    private Integer getIntegerValue() {
         return integerValue;
     }
 
@@ -193,12 +177,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     }
 
     @JsonIgnore
-    public BigDecimal getNumericValue() {
-        if (getAttribute().getValueType() != ValueType.NUMERIC) {
-            throw new UnsupportedOperationException(String.format("May not retrieve %s value for a %s attribute",
-                                                                  ValueType.NUMERIC,
-                                                                  getAttribute().getValueType()));
-        }
+    private BigDecimal getNumericValue() {
         return numericValue;
     }
 
@@ -218,17 +197,12 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     }
 
     @JsonIgnore
-    public String getTextValue() {
-        if (getAttribute().getValueType() != ValueType.TEXT) {
-            throw new UnsupportedOperationException(String.format("May not retrieve %s value for a %s attribute",
-                                                                  ValueType.TEXT,
-                                                                  getAttribute().getValueType()));
-        }
+    private String getTextValue() {
         return textValue;
     }
 
     @JsonIgnore
-    public Timestamp getTimestampValue() {
+    private Timestamp getTimestampValue() {
         return timestampValue;
     }
 
@@ -275,30 +249,15 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         this.attribute = attribute;
     }
 
-    public void setBinaryValue(byte[] binaryValue) {
-        if (getAttribute().getValueType() != ValueType.BINARY) {
-            throw new UnsupportedOperationException(String.format("May not set %s value for a %s attribute",
-                                                                  ValueType.BINARY,
-                                                                  getAttribute().getValueType()));
-        }
+    private void setBinaryValue(byte[] binaryValue) {
         this.binaryValue = binaryValue;
     }
 
-    public void setBooleanValue(Boolean booleanValue) {
-        if (getAttribute().getValueType() != ValueType.BOOLEAN) {
-            throw new UnsupportedOperationException(String.format("May not set %s value for a %s attribute",
-                                                                  ValueType.BOOLEAN,
-                                                                  getAttribute().getValueType()));
-        }
+    private void setBooleanValue(Boolean booleanValue) {
         this.booleanValue = booleanValue;
     }
 
-    public void setIntegerValue(Integer integerValue) {
-        if (getAttribute().getValueType() != ValueType.INTEGER) {
-            throw new UnsupportedOperationException(String.format("May not set %s value for a %s attribute",
-                                                                  ValueType.INTEGER,
-                                                                  getAttribute().getValueType()));
-        }
+    private void setIntegerValue(Integer integerValue) {
         this.integerValue = integerValue;
     }
 
@@ -310,12 +269,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         this.key = key;
     }
 
-    public void setNumericValue(BigDecimal numericValue) {
-        if (getAttribute().getValueType() != ValueType.NUMERIC) {
-            throw new UnsupportedOperationException(String.format("May not set %s value for a %s attribute",
-                                                                  ValueType.NUMERIC,
-                                                                  getAttribute().getValueType()));
-        }
+    private void setNumericValue(BigDecimal numericValue) {
         this.numericValue = numericValue;
     }
 
@@ -323,21 +277,11 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         this.sequenceNumber = sequenceNumber;
     }
 
-    public void setTextValue(String textValue) {
-        if (getAttribute().getValueType() != ValueType.TEXT) {
-            throw new UnsupportedOperationException(String.format("May not set %s value for a %s attribute",
-                                                                  ValueType.TEXT,
-                                                                  getAttribute().getValueType()));
-        }
+    private void setTextValue(String textValue) {
         this.textValue = textValue;
     }
 
-    public void setTimestampValue(Timestamp timestampValue) {
-        if (getAttribute().getValueType() != ValueType.TIMESTAMP) {
-            throw new UnsupportedOperationException(String.format("May not set %s value for a %s attribute",
-                                                                  ValueType.TIMESTAMP,
-                                                                  getAttribute().getValueType()));
-        }
+    private void setTimestampValue(Timestamp timestampValue) {
         this.timestampValue = timestampValue;
     }
 

@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,89 +53,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 public class WorkspaceSnapshotTest extends AbstractModelTest {
+
     private static final String THING_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
-
-    @Test
-    public void testSerializeWorkspaceSnapshot() throws Exception {
-        Agency pseudoScientist = new Agency("Behold the Pseudo Scientist!");
-        pseudoScientist.setUpdatedBy(pseudoScientist);
-        Product definingProduct = new Product("zee product", pseudoScientist);
-        WorkspaceAuthorization auth = new WorkspaceAuthorization(definingProduct,
-                                                                 definingProduct,
-                                                                 pseudoScientist,
-                                                                 em);
-        auth = new WorkspaceAuthorization(pseudoScientist, definingProduct,
-                                          pseudoScientist, em);
-        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
-                                                           Arrays.asList(auth),
-                                                           model.getEntityManager());
-        snapshot.retarget(em);
-        em.flush();
-        WorkspaceSnapshot retrieved = new WorkspaceSnapshot(definingProduct,
-                                                            em);
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new CoREModule());
-        mapper.writeValue(os, retrieved);
-        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-        WorkspaceSnapshot deserialized = mapper.readValue(is,
-                                                          WorkspaceSnapshot.class);
-        assertEquals(2, deserialized.getRuleforms()
-                                    .size());
-        assertEquals(pseudoScientist, deserialized.getRuleforms()
-                                                  .get(0));
-
-    }
-
-    @Test
-    public void testWorkspaceSnapshot() {
-        Agency pseudoScientist = new Agency("Behold the Pseudo Scientist!");
-        pseudoScientist.setUpdatedBy(pseudoScientist);
-        em.persist(pseudoScientist);
-        Product definingProduct = new Product("zee product", pseudoScientist);
-        em.persist(definingProduct);
-        new WorkspaceAuthorization(pseudoScientist, definingProduct,
-                                   pseudoScientist, em);
-        new WorkspaceAuthorization(definingProduct, definingProduct,
-                                   pseudoScientist, em);
-        Product aLeak = new Product("Snowden", kernel.getCore());
-        em.persist(aLeak);
-        new WorkspaceAuthorization(aLeak, definingProduct, pseudoScientist, em);
-        em.getTransaction()
-          .commit();
-        em.getTransaction()
-          .begin();
-        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
-                                                           model.getEntityManager());
-        em.getTransaction()
-          .rollback();
-        em.getTransaction()
-          .begin();
-        assertEquals("Did not find the leak!", 1, snapshot.getFrontier()
-                                                          .size());
-        Ruleform mole = snapshot.getFrontier()
-                                .get(0);
-        assertEquals("Imposter!", kernel.getCore(), mole);
-        em.getTransaction()
-          .rollback();
-        em.getTransaction()
-          .begin();
-        List<WorkspaceAuthorization> retrieved = WorkspaceSnapshot.getAuthorizations(definingProduct,
-                                                                                     em);
-        assertEquals(3, retrieved.size());
-        for (WorkspaceAuthorization a : retrieved) {
-            Ruleform ruleform = a.getRuleform(em);
-            if (ruleform instanceof Agency) {
-                assertEquals(pseudoScientist, ruleform);
-            } else if (!ruleform.equals(definingProduct)) {
-                assertEquals(aLeak, ruleform);
-                assertEquals("compromised!", kernel.getCore()
-                                                   .getName(),
-                             ruleform.getUpdatedBy()
-                                     .getName());
-            }
-        }
-    }
 
     @Test
     public void testDeltaGeneration() throws Exception {
@@ -217,16 +137,14 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                                  .size());
             assertEquals(7, delta.getFrontier()
                                  .size());
-        } finally {
-            myEm.close();
-        }
 
-        myModel = new ModelImpl(emf);
-        myEm = myModel.getEntityManager();
-        myEm.getTransaction()
-            .begin();
-
-        try {
+            try {
+                myModel.getWorkspaceModel()
+                       .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+                fail("Should not exist");
+            } catch (IllegalArgumentException e) {
+                // expected
+            }
             WorkspaceSnapshot.load(myEm, Arrays.asList(version1File.toURI()
                                                                    .toURL(),
                                                        version2_1File.toURI()
@@ -235,8 +153,92 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
             assertNotNull(scope.lookup("TheDude"));
         } finally {
+            myEm.getTransaction()
+                .rollback();
             myEm.close();
         }
 
+    }
+
+    @Test
+    public void testSerializeWorkspaceSnapshot() throws Exception {
+        Agency pseudoScientist = new Agency("Behold the Pseudo Scientist!");
+        pseudoScientist.setUpdatedBy(pseudoScientist);
+        Product definingProduct = new Product("zee product", pseudoScientist);
+        WorkspaceAuthorization auth = new WorkspaceAuthorization(definingProduct,
+                                                                 definingProduct,
+                                                                 pseudoScientist,
+                                                                 em);
+        auth = new WorkspaceAuthorization(pseudoScientist, definingProduct,
+                                          pseudoScientist, em);
+        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
+                                                           Arrays.asList(auth),
+                                                           model.getEntityManager());
+        snapshot.retarget(em);
+        em.flush();
+        WorkspaceSnapshot retrieved = new WorkspaceSnapshot(definingProduct,
+                                                            em);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new CoREModule());
+        mapper.writeValue(os, retrieved);
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+        WorkspaceSnapshot deserialized = mapper.readValue(is,
+                                                          WorkspaceSnapshot.class);
+        assertEquals(2, deserialized.getRuleforms()
+                                    .size());
+        assertEquals(pseudoScientist, deserialized.getRuleforms()
+                                                  .get(0));
+
+    }
+
+    @Test
+    public void testWorkspaceSnapshot() {
+        Agency pseudoScientist = new Agency("Behold the Pseudo Scientist!");
+        pseudoScientist.setUpdatedBy(pseudoScientist);
+        em.persist(pseudoScientist);
+        Product definingProduct = new Product("zee product", pseudoScientist);
+        em.persist(definingProduct);
+        new WorkspaceAuthorization(pseudoScientist, definingProduct,
+                                   pseudoScientist, em);
+        new WorkspaceAuthorization(definingProduct, definingProduct,
+                                   pseudoScientist, em);
+        Product aLeak = new Product("Snowden", kernel.getCore());
+        em.persist(aLeak);
+        new WorkspaceAuthorization(aLeak, definingProduct, pseudoScientist, em);
+        em.getTransaction()
+          .commit();
+        em.getTransaction()
+          .begin();
+        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
+                                                           model.getEntityManager());
+        em.getTransaction()
+          .rollback();
+        em.getTransaction()
+          .begin();
+        assertEquals("Did not find the leak!", 1, snapshot.getFrontier()
+                                                          .size());
+        Ruleform mole = snapshot.getFrontier()
+                                .get(0);
+        assertEquals("Imposter!", kernel.getCore(), mole);
+        em.getTransaction()
+          .rollback();
+        em.getTransaction()
+          .begin();
+        List<WorkspaceAuthorization> retrieved = WorkspaceSnapshot.getAuthorizations(definingProduct,
+                                                                                     em);
+        assertEquals(3, retrieved.size());
+        for (WorkspaceAuthorization a : retrieved) {
+            Ruleform ruleform = a.getRuleform(em);
+            if (ruleform instanceof Agency) {
+                assertEquals(pseudoScientist, ruleform);
+            } else if (!ruleform.equals(definingProduct)) {
+                assertEquals(aLeak, ruleform);
+                assertEquals("compromised!", kernel.getCore()
+                                                   .getName(),
+                             ruleform.getUpdatedBy()
+                                     .getName());
+            }
+        }
     }
 }

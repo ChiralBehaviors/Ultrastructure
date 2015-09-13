@@ -102,6 +102,13 @@ public class EmWrapper implements EntityManager {
 
     @Override
     public void close() {
+        if (em.getTransaction()
+              .isActive()) {
+            em.getTransaction()
+              .setRollbackOnly();
+            em.getTransaction()
+              .rollback();
+        }
         em.close();
     }
 

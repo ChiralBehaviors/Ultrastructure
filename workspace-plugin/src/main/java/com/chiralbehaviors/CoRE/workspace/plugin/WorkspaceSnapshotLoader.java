@@ -50,7 +50,13 @@ public class WorkspaceSnapshotLoader extends AbstractMojo {
      * @parameter
      */
     private Configuration database;
-    private List<String>  resources = new ArrayList<>();
+
+    /**
+     * the workspace snapshot resources
+     * 
+     * @parameter
+     */
+    private List<String> resources = new ArrayList<>();
 
     public WorkspaceSnapshotLoader() {
     }
@@ -66,6 +72,7 @@ public class WorkspaceSnapshotLoader extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        getLog().info("loading workspace snapshots resources ");
         List<URL> toLoad = new ArrayList<>();
         for (String resource : resources) {
             URL url;

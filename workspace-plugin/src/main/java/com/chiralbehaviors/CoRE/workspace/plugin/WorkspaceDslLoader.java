@@ -53,7 +53,13 @@ public class WorkspaceDslLoader extends AbstractMojo {
      * @parameter
      */
     private Configuration database;
-    private List<String>  resources = new ArrayList<>();
+
+    /**
+     * the workspace dsl resources
+     * 
+     * @parameter
+     */
+    private List<String> resources = new ArrayList<>();
 
     public WorkspaceDslLoader() {
     }
@@ -68,6 +74,7 @@ public class WorkspaceDslLoader extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        getLog().info("Creating workspaces from dsl resources ");
         List<URL> toLoad = new ArrayList<>();
         for (String resource : resources) {
             URL url;
@@ -101,7 +108,12 @@ public class WorkspaceDslLoader extends AbstractMojo {
                     try (InputStream is = url.openStream()) {
                         getLog().info(String.format("Loading dsl from: %s",
                                                     url.toExternalForm()));
-                        WorkspaceImporter.manifest(is, model);
+                        try {
+                            WorkspaceImporter.manifest(is, model);
+                        } catch (IllegalStateException e) {
+                            getLog().warn(String.format("Could not load : %s",
+                                                        e.getMessage()));
+                        }
                     }
                 } catch (IOException e) {
                     throw new MojoExecutionException(String.format("An error has occurred while creating workspace from resource: %s",

@@ -8,7 +8,7 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>phantasm-generator</artifactId>
-    <name>phantasm-generator</name>
+    <name>Phantasm Generator</name>
     <description>A code generator that produces Phantasm's from workspace facets.</description>
     <dependencies>
         <dependency>

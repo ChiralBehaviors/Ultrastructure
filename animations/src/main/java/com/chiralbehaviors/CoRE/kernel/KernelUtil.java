@@ -21,10 +21,14 @@
 package com.chiralbehaviors.CoRE.kernel;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
@@ -47,9 +51,17 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public class KernelUtil {
 
-    public static final String KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.2.json";
+    private static final String[] KERNEL_VERSIONS = { "/kernel-workspace.2.json" };
+    public static final List<URL> KERNEL_LOADS;
 
     public static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+
+    static {
+        KERNEL_LOADS = Collections.unmodifiableList(Arrays.asList(KERNEL_VERSIONS)
+                                                          .stream()
+                                                          .map(s -> KernelUtil.class.getResource(s))
+                                                          .collect(Collectors.toList()));
+    }
 
     public static void clear(EntityManager em) throws SQLException {
         boolean committed = false;
@@ -98,8 +110,7 @@ public class KernelUtil {
             em.getTransaction()
               .begin();
         }
-        WorkspaceSnapshot.load(em,
-                               Arrays.asList(KernelUtil.class.getResource(KERNEL_WORKSPACE_RESOURCE)));
+        WorkspaceSnapshot.load(em, KERNEL_LOADS);
         em.getTransaction()
           .commit();
     }

@@ -372,7 +372,6 @@ public class JobModelTest extends AbstractModelTest {
                 break;
             }
         }
-        System.out.println(String.format("Errors: %s", fieldErrors));
         assertEquals(0, fieldErrors.size());
     }
 
@@ -808,22 +807,12 @@ public class JobModelTest extends AbstractModelTest {
         for (String field : fieldsToMatch) {
             ExistentialRuleform<?, ?> jobRf = (ExistentialRuleform<?, ?>) PropertyUtils.getSimpleProperty(job,
                                                                                                           field);
-            System.out.println(String.format("Job %s: %s", field, jobRf));
             ExistentialRuleform<?, ?> chronoRf = (ExistentialRuleform<?, ?>) PropertyUtils.getSimpleProperty(jobChronology,
                                                                                                              field);
-
-            System.out.println(String.format("Chronology %s: %s", field,
-                                             chronoRf));
             if (chronoRf == null && jobRf == null) {
                 continue;
             }
             if (!chronoRf.equals(jobRf)) {
-                System.out.println(String.format("%s: job: %s, chronology: %s",
-                                                 field,
-                                                 jobRf == null ? "null"
-                                                               : jobRf.getName(),
-                                                 chronoRf == null ? "null"
-                                                                  : chronoRf.getName()));
                 unmatchedFields.add(field);
             }
         }

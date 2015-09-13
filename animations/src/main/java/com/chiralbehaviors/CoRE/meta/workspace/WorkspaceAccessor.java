@@ -28,6 +28,7 @@ import javax.persistence.EntityManager;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.StringArgGenerator;
 import com.fasterxml.uuid.impl.NameBasedGenerator;

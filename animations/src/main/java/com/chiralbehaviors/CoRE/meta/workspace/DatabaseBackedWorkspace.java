@@ -47,6 +47,7 @@ import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Tuple;
 
 /**

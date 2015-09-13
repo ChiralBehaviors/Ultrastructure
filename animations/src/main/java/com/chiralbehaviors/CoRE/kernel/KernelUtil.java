@@ -30,7 +30,7 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.internal.SessionImpl;
 
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * Repository of immutable kernal rules

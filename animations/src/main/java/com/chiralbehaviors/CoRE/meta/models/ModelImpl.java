@@ -44,6 +44,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -530,7 +531,8 @@ public class ModelImpl implements Model {
                  .getRollbackOnly()) {
             currentPrincipal = null;
         } else {
-            currentPrincipal = new AuthorizedPrincipal(kernel.getCoreAnimationSoftware());
+            currentPrincipal = new AuthorizedPrincipal(em.getReference(Agency.class,
+                                                                       WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()));
         }
     }
 }

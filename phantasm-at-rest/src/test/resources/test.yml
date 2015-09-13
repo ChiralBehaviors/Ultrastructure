@@ -1,6 +1,5 @@
 randomPort: true
 jpa:
-    debug: true
     persistenceUnit: CoRE
     properties: 
         javax.persistence.jdbc.user: ${db.login}
@@ -10,7 +9,11 @@ jpa:
         hibernate.cache.use_second_level_cache: true
         
 logging:
-    level: INFO
+    level: ERROR
     loggers:
         "org.hibernate": ERROR
-        "org.glassfish": ERROR 
+        "org.glassfish": ERROR
+
+server: 
+  requestLog:
+    appenders: [] #turns off request logging

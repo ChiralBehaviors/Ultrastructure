@@ -105,6 +105,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>logback-test.xml</exclude>
+                                <exclude>jpa.properties</exclude>
                             </excludes>
                         </configuration>
                     </execution>

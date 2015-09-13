@@ -43,6 +43,7 @@
                         </executions>
                         <groupId>${project.groupId}</groupId>
                         <artifactId>loader-plugin</artifactId>
+                        <version>${project.version}</version>
                     </plugin>
                 </plugins>
             </build>

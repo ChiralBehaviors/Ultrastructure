@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.workspace;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -79,8 +80,10 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                                           WorkspaceSnapshot.class);
         assertEquals(2, deserialized.getRuleforms()
                                     .size());
-        assertEquals(pseudoScientist, deserialized.getRuleforms()
-                                                  .get(0));
+        assertTrue(deserialized.getRuleforms()
+                               .contains(pseudoScientist));
+        assertTrue(deserialized.getRuleforms()
+                               .contains(definingProduct));
 
     }
 

@@ -44,6 +44,9 @@
         <hibernate.version>5.0.1.Final</hibernate.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <jdbc.url>jdbc:postgresql://${db.server}:${db.port}/core</jdbc.url>
+        <jdbc.driver>org.postgresql.Driver</jdbc.driver>
 
         <dba.db.database>postgres</dba.db.database>
         <dba.db.server>127.0.0.1</dba.db.server>
@@ -78,6 +81,8 @@
         <module>thing-ontology</module>
         <module>browser</module>
         <module>kernel-phantasms</module>
+        <module>workspace-plugin</module>
+        <module>schema</module>
     </modules>
 
     <dependencyManagement>
@@ -86,11 +91,6 @@
                 <groupId>org.jboss.logging</groupId>
                 <artifactId>jboss-logging</artifactId>
                 <version>3.3.0.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
-                <artifactId>phantasm-at-rest</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
@@ -195,6 +195,16 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
+                <artifactId>schema</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>phantasm-at-rest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>kernel-phantasms</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -271,11 +281,15 @@
                 <groupId>${project.groupId}</groupId>
                 <artifactId>model</artifactId>
                 <version>${project.version}</version>
+            </dependency> 
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>drop-database</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>model</artifactId>
-                <classifier>sql</classifier>
+                <artifactId>create-database</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

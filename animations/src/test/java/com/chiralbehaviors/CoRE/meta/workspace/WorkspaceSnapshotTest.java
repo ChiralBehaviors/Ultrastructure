@@ -49,13 +49,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WorkspaceSnapshotTest extends AbstractModelTest {
 
-    private static final String THING_URI = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
-
     @Test
     public void testDeltaGeneration() throws Exception {
-        File version1File = new File("target/version.1.json");
-        File version2File = new File("target/version.2.json");
-        File version2_1File = new File("target/version.2-1.json");
+        File version1File = new File(TARGET_CLASSES_THING_1_JSON);
+        File version2File = new File(TARGET_CLASSES_THING_2_JSON);
+        File version2_1File = new File(TARGET_CLASSES_THING_1_2_JSON);
         Model myModel = new ModelImpl(emf);
         EntityManager myEm = myModel.getEntityManager();
         myEm.getTransaction()

@@ -36,10 +36,10 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
  * @author hhildebrand
  *
  */
-public class WorspaceSnapshotLoaderTest extends AbstractModelTest {
+public class WorspacePluginTest extends AbstractModelTest {
 
     @Test
-    public void testLoad() throws Exception {
+    public void testSnapshotLoad() throws Exception {
         try {
             model.getWorkspaceModel()
                  .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
@@ -52,6 +52,26 @@ public class WorspaceSnapshotLoaderTest extends AbstractModelTest {
         List<String> toLoad = Arrays.asList("/thing.1.json", "/thing.2.json");
         WorkspaceSnapshotLoader loader = new WorkspaceSnapshotLoader(config,
                                                                      toLoad);
+        loader.execute();
+        WorkspaceScope scope = model.getWorkspaceModel()
+                                    .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+        assertNotNull(scope.lookup("TheDude"));
+
+    }
+
+    @Test
+    public void testDslLoad() throws Exception {
+        try {
+            model.getWorkspaceModel()
+                 .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+            fail("Should not exist");
+        } catch (IllegalArgumentException e) {
+            // expected
+        }
+        Configuration config = Configuration.fromYaml(getClass().getResourceAsStream("/db-configuration.yml"));
+        config.setEmf(mockedEmf());
+        List<String> toLoad = Arrays.asList("/thing.wsp", "/thing.2.wsp");
+        WorkspaceDslLoader loader = new WorkspaceDslLoader(config, toLoad);
         loader.execute();
         WorkspaceScope scope = model.getWorkspaceModel()
                                     .getScoped(WorkspaceAccessor.uuidOf(THING_URI));

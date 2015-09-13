@@ -38,7 +38,7 @@ import com.hellblazer.utils.Utils;
 /**
  * @author hhildebrand
  *
- * @goal differential-load
+ * @goal load-snapshots
  * 
  * @phase generate-sources
  */
@@ -66,13 +66,6 @@ public class WorkspaceSnapshotLoader extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        EntityManagerFactory emf;
-        try {
-            emf = database.getEmf();
-        } catch (IOException e) {
-            throw new MojoExecutionException("An error has occurred while initilizing the JPA required infrastructure",
-                                             e);
-        }
         List<URL> toLoad = new ArrayList<>();
         for (String resource : resources) {
             URL url;
@@ -88,6 +81,13 @@ public class WorkspaceSnapshotLoader extends AbstractMojo {
                                                                resource));
             }
             toLoad.add(url);
+        }
+        EntityManagerFactory emf;
+        try {
+            emf = database.getEmf();
+        } catch (IOException e) {
+            throw new MojoExecutionException("An error has occurred while initilizing the JPA required infrastructure",
+                                             e);
         }
         EntityManager em = emf.createEntityManager();
         try {

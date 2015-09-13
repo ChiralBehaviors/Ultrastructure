@@ -20,10 +20,106 @@
 
 package com.chiralbehaviors.CoRE.workspace.plugin;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.hellblazer.utils.Utils;
+
 /**
  * @author hhildebrand
  *
+ * @goal load-dsl
+ * 
+ * @phase generate-sources
  */
-public class WorkspaceDslLoader {
+public class WorkspaceDslLoader extends AbstractMojo {
+
+    /**
+     * the database configuration
+     * 
+     * @parameter
+     */
+    private Configuration database;
+    private List<String>  resources = new ArrayList<>();
+
+    public WorkspaceDslLoader() {
+    }
+
+    public WorkspaceDslLoader(Configuration database, List<String> resources) {
+        this.database = database;
+        this.resources = resources;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.maven.plugin.Mojo#execute()
+     */
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        List<URL> toLoad = new ArrayList<>();
+        for (String resource : resources) {
+            URL url;
+            try {
+                url = Utils.resolveResourceURL(getClass(), resource);
+            } catch (Exception e) {
+                throw new MojoExecutionException(String.format("An error has occurred while resolving resource: %s",
+                                                               resource),
+                                                 e);
+            }
+            if (url == null) {
+                throw new MojoExecutionException(String.format("Cannot resolve resource: %s",
+                                                               resource));
+            }
+            toLoad.add(url);
+        }
+        EntityManagerFactory emf;
+        try {
+            emf = database.getEmf();
+        } catch (IOException e) {
+            throw new MojoExecutionException("An error has occurred while initilizing the required JPA infrastructure",
+                                             e);
+        }
+        Model model = new ModelImpl(emf);
+        EntityManager em = model.getEntityManager();
+        em.getTransaction()
+          .begin();
+        try {
+            for (URL url : toLoad) {
+                try {
+                    try (InputStream is = url.openStream()) {
+                        getLog().info(String.format("Loading dsl from: %s",
+                                                    url.toExternalForm()));
+                        WorkspaceImporter.manifest(is, model);
+                    }
+                } catch (IOException e) {
+                    throw new MojoExecutionException(String.format("An error has occurred while creating workspace from resource: %s",
+                                                                   url.toExternalForm()),
+                                                     e);
+                }
+            }
+            em.getTransaction()
+              .commit();
+        } finally {
+            if (em.getTransaction()
+                  .isActive()) {
+                em.getTransaction()
+                  .rollback();
+            }
+            em.close();
+            emf.close();
+        }
+    }
 
 }

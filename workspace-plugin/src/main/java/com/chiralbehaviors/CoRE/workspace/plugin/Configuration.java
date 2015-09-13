@@ -31,6 +31,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.hellblazer.utils.Utils;
 
 /**
@@ -39,6 +43,13 @@ import com.hellblazer.utils.Utils;
  */
 public class Configuration {
     private static final String JPA_TEMPLATE_PROPERTIES = "/jpa-template.properties";
+
+    public static Configuration fromYaml(InputStream yaml) throws JsonParseException,
+                                                           JsonMappingException,
+                                                           IOException {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        return mapper.readValue(yaml, Configuration.class);
+    }
 
     /**
      * the name the core database
@@ -76,7 +87,7 @@ public class Configuration {
     public String coreUsername;
 
     // Used in testing to avoid creating emf and out of band txns
-    private final transient EntityManagerFactory emf;
+    private transient EntityManagerFactory emf;
 
     public Configuration() {
         emf = null;
@@ -108,6 +119,10 @@ public class Configuration {
         return Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                       properties);
 
+    }
+
+    public void setEmf(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 
 }

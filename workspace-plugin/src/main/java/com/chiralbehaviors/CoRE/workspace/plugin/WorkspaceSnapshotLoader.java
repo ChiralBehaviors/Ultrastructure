@@ -56,7 +56,7 @@ public class WorkspaceSnapshotLoader extends AbstractMojo {
     }
 
     public WorkspaceSnapshotLoader(Configuration database,
-                                       List<String> resources) {
+                                   List<String> resources) {
         this.database = database;
         this.resources = resources;
     }
@@ -87,6 +87,7 @@ public class WorkspaceSnapshotLoader extends AbstractMojo {
                 throw new MojoExecutionException(String.format("Cannot resolve resource: %s",
                                                                resource));
             }
+            toLoad.add(url);
         }
         EntityManager em = emf.createEntityManager();
         try {

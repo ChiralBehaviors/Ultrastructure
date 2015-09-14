@@ -50,7 +50,8 @@ public class HandiNAVIConfiguration extends Configuration {
     @NotNull
     public AuthType    auth   = AuthType.BEARER_TOKEN;
 
-    public CorsConfiguration CORS;
+    public boolean           useCORS;
+    public CORSConfiguration CORS = new CORSConfiguration();
 
     @NotNull
     public JpaConfiguration jpa = new JpaConfiguration();

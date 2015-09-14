@@ -62,7 +62,7 @@ import javax.validation.constraints.NotNull;
  *         </ul>
  *         </p>
  */
-public class CorsConfiguration {
+public class CORSConfiguration {
     public boolean      allowCredentials = false;
     @NotNull
     public List<String> allowedMethods   = Arrays.asList("GET", "POST", "HEAD");

@@ -145,11 +145,12 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                    .register(new LoginResource(emf));
         environment.healthChecks()
                    .register("EMF Health", new EmfHealthCheck(emf));
-        FilterRegistration.Dynamic filter = environment.servlets()
-                                                       .addFilter("CORS",
-                                                                  CrossOriginFilter.class);
-        CorsConfiguration cors = configuration.CORS;
-        if (cors != null) {
+
+        if (configuration.useCORS) {
+            CORSConfiguration cors = configuration.CORS;
+            FilterRegistration.Dynamic filter = environment.servlets()
+                                                           .addFilter("CORS",
+                                                                      CrossOriginFilter.class);
             log.warn("Using CORS configuration: %s", cors);
             // Add URL mapping
             filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class),

@@ -38,9 +38,9 @@ import com.hellblazer.utils.Utils;
 /**
  * @author hhildebrand
  *
- * @goal load-snapshots
+ * @goal load-snapshot
  * 
- * @phase generate-sources
+ * @phase compile
  */
 public class WorkspaceSnapshotLoader extends AbstractMojo {
 

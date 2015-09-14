@@ -42,9 +42,9 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 /**
  * @author hhildebrand
  *
- * @goal generate-snapshots
+ * @goal generate-snapshot
  * 
- * @phase generate-sources
+ * @phase process-classes
  */
 public class WorkspaceSnapshotGenerator extends AbstractMojo {
 
@@ -58,6 +58,9 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
          * @parameter
          */
         public File output;
+
+        public Export() {
+        }
 
         public Export(String iri, File output) {
             this.iri = iri;
@@ -101,37 +104,39 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
             throw new MojoExecutionException("An error has occurred while initilizing the JPA required infrastructure",
                                              e);
         }
-
-        for (Export export : exports) {
-            UUID uuid = WorkspaceAccessor.uuidOf(export.iri);
-            getLog().warn(String.format("Processing workspace: %s:%s", uuid,
-                                        export.iri));
-            Model model = new ModelImpl(emf);
-            EntityManager em = model.getEntityManager();
-            try {
-                em.getTransaction()
-                  .begin();
-                WorkspaceScope scope = model.getWorkspaceModel()
-                                            .getScoped(uuid);
-                if (scope == null) {
-                    getLog().warn("Could not find workspace");
-                    continue;
+        try {
+            for (Export export : exports) {
+                UUID uuid = WorkspaceAccessor.uuidOf(export.iri);
+                getLog().warn(String.format("Processing workspace: %s:%s", uuid,
+                                            export.iri));
+                Model model = new ModelImpl(emf);
+                EntityManager em = model.getEntityManager();
+                try {
+                    em.getTransaction()
+                      .begin();
+                    WorkspaceScope scope = model.getWorkspaceModel()
+                                                .getScoped(uuid);
+                    if (scope == null) {
+                        getLog().warn("Could not find workspace");
+                        continue;
+                    }
+                    getLog().warn(String.format("Serializing workspace: %s to:%s",
+                                                uuid, export.output));
+                    try (FileOutputStream os = new FileOutputStream(export.output)) {
+                        scope.getWorkspace()
+                             .getSnapshot()
+                             .serializeTo(os);
+                    } catch (IOException e) {
+                        throw new MojoFailureException("An error occurred while serializing the workspace",
+                                                       e);
+                    }
+                } finally {
+                    em.getTransaction()
+                      .rollback();
                 }
-                getLog().warn(String.format("Serializing workspace: %s to:%s",
-                                            uuid, export.output));
-                try (FileOutputStream os = new FileOutputStream(export.output)) {
-                    scope.getWorkspace()
-                         .getSnapshot()
-                         .serializeTo(os);
-                } catch (IOException e) {
-                    throw new MojoFailureException("An error occurred while serializing the workspace",
-                                                   e);
-                }
-            } finally {
-                em.getTransaction()
-                  .rollback();
-                emf.close();
             }
+        } finally {
+            emf.close();
         }
     }
 

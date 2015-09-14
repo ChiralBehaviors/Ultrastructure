@@ -43,7 +43,7 @@ import com.hellblazer.utils.Utils;
  *
  * @goal load-dsl
  * 
- * @phase generate-sources
+ * @phase compile
  */
 public class WorkspaceDslLoader extends AbstractMojo {
 

@@ -51,7 +51,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public class KernelUtil {
 
-    private static final String[] KERNEL_VERSIONS = { "/kernel-workspace.2.json" };
+    private static final String[] KERNEL_VERSIONS = { "/kernel.2.json" };
     public static final List<URL> KERNEL_LOADS;
 
     public static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";

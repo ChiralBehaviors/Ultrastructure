@@ -83,6 +83,7 @@
         <module>kernel-phantasms</module>
         <module>workspace-plugin</module>
         <module>schema</module>
+        <module>navi</module>
     </modules>
 
     <dependencyManagement>

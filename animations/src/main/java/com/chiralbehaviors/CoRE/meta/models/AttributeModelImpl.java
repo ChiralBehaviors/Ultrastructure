@@ -181,7 +181,7 @@ public class AttributeModelImpl extends
                                                            model.getKernel()
                                                                 .getJsonldType());
         if (type != null) {
-            return type.getTextValue();
+            return type.getValue();
         }
         switch (attribute.getValueType()) {
             case BINARY:

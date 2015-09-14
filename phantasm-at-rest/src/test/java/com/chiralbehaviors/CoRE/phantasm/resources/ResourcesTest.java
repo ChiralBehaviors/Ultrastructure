@@ -85,9 +85,7 @@ public class ResourcesTest extends ThingWorkspaceTest {
                                         scope.lookup("Thing1")
                                              .getId()
                                              .toString()));
-        Object jsonObject = JsonUtils.fromInputStream(url.openStream());
-        System.out.println("Thing1 facet context");
-        System.out.println(JsonUtils.toPrettyString(jsonObject));
+        JsonUtils.fromInputStream(url.openStream());
     }
 
     @SuppressWarnings("unchecked")
@@ -113,23 +111,12 @@ public class ResourcesTest extends ThingWorkspaceTest {
                                           .getId()));
         jsonObject = (Map<String, Object>) JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
-        System.out.println("Node value of an instance of Thing1");
-        System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object processed;
         URL contextUrl = new URL((String) jsonObject.get(Constants.CONTEXT));
         Map<String, Object> context = (Map<String, Object>) JsonUtils.fromInputStream(contextUrl.openStream());
-        processed = JsonLdProcessor.normalize(jsonObject, options);
-        System.out.println("Normalized node value selection");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.compact(jsonObject, context, options);
-        System.out.println("Compacted node value of an instance of Thing1");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.flatten(jsonObject, context, options);
-        System.out.println("Flattened node value of an instance of Thing1");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.expand(jsonObject, options);
-        System.out.println("Expanded node value of an instance of Thing1");
-        System.out.println(JsonUtils.toPrettyString(processed));
+        JsonLdProcessor.normalize(jsonObject, options);
+        JsonLdProcessor.compact(jsonObject, context, options);
+        JsonLdProcessor.flatten(jsonObject, context, options);
+        JsonLdProcessor.expand(jsonObject, options);
     }
 
     @SuppressWarnings("unchecked")
@@ -237,22 +224,10 @@ public class ResourcesTest extends ThingWorkspaceTest {
 
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
-        System.out.println("Node value of instances selection");
-        System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object processed = JsonLdProcessor.normalize(jsonObject, options);
-        System.out.println("Normalized node value instances selection");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
-                                            options);
-        System.out.println("Compacted node value of instances selection");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
-                                            options);
-        System.out.println("Flattened node value of instances selection");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.expand(jsonObject, options);
-        System.out.println("Expanded node value of instances selection");
-        System.out.println(JsonUtils.toPrettyString(processed));
+        JsonLdProcessor.normalize(jsonObject, options);
+        JsonLdProcessor.compact(jsonObject, new HashMap<>(), options);
+        JsonLdProcessor.flatten(jsonObject, new HashMap<>(), options);
+        JsonLdProcessor.expand(jsonObject, options);
     }
 
     @Test
@@ -272,9 +247,7 @@ public class ResourcesTest extends ThingWorkspaceTest {
     public void testRuleformContext() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform/Attribute/context",
                                         application.getPort()));
-        Object jsonObject = JsonUtils.fromInputStream(url.openStream());
-        System.out.println("Attribute @context");
-        System.out.println(JsonUtils.toPrettyString(jsonObject));
+        JsonUtils.fromInputStream(url.openStream());
     }
 
     @Test
@@ -289,31 +262,17 @@ public class ResourcesTest extends ThingWorkspaceTest {
         assertNotNull(jsonObject);
         JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/",
                                                                 application.getPort()));
-        System.out.println("Node value of an attribute");
-        System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object processed = JsonLdProcessor.normalize(jsonObject, options);
-        System.out.println("Normalized node value of an attribute");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
-                                            options);
-        System.out.println("Compacted node value of an attribute");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
-                                            options);
-        System.out.println("Flattened node value of an attribute");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.expand(jsonObject, options);
-        System.out.println("Expanded node value of an attribute");
-        System.out.println(JsonUtils.toPrettyString(processed));
+        JsonLdProcessor.normalize(jsonObject, options);
+        JsonLdProcessor.compact(jsonObject, new HashMap<>(), options);
+        JsonLdProcessor.flatten(jsonObject, new HashMap<>(), options);
+        JsonLdProcessor.expand(jsonObject, options);
     }
 
     @Test
     public void testRuleforms() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform",
                                         application.getPort()));
-        Object jsonObject = JsonUtils.fromInputStream(url.openStream());
-        System.out.println("Ruleform types:");
-        System.out.println(JsonUtils.toPrettyString(jsonObject));
+        JsonUtils.fromInputStream(url.openStream());
     }
 
     @Test
@@ -345,21 +304,9 @@ public class ResourcesTest extends ThingWorkspaceTest {
 
         jsonObject = JsonUtils.fromInputStream(url.openStream());
         assertNotNull(jsonObject);
-        System.out.println("Node value of selection");
-        System.out.println(JsonUtils.toPrettyString(jsonObject));
-        Object processed = JsonLdProcessor.normalize(jsonObject, options);
-        System.out.println("Normalized node value selection");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.compact(jsonObject, new HashMap<>(),
-                                            options);
-        System.out.println("Compacted node value of selection");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.flatten(jsonObject, new HashMap<>(),
-                                            options);
-        System.out.println("Flattened node value of selection");
-        System.out.println(JsonUtils.toPrettyString(processed));
-        processed = JsonLdProcessor.expand(jsonObject, options);
-        System.out.println("Expanded node value of selection");
-        System.out.println(JsonUtils.toPrettyString(processed));
+        JsonLdProcessor.normalize(jsonObject, options);
+        JsonLdProcessor.compact(jsonObject, new HashMap<>(), options);
+        JsonLdProcessor.flatten(jsonObject, new HashMap<>(), options);
+        JsonLdProcessor.expand(jsonObject, options);
     }
 }

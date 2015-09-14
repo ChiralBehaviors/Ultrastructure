@@ -83,6 +83,7 @@ import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
@@ -725,8 +726,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public AttributeValue<RuleForm> getAttributeValue(RuleForm ruleform,
-                                                      Attribute attribute) {
+    public AttributeType getAttributeValue(RuleForm ruleform,
+                                           Attribute attribute) {
         List<AttributeType> values = getAttributeValues(ruleform, attribute);
         if (values.size() > 1) {
             throw new IllegalStateException(String.format("%s has multiple values for %s",
@@ -1214,22 +1215,23 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         Agency principal = model.getCurrentPrincipal()
                                 .getPrincipal();
         if (getImmediateChildren(ruleform, aspect.getClassifier()).isEmpty()) {
-            Network link = ruleform.link(aspect.getClassifier(),
-                                         aspect.getClassification(), principal,
-                                         principal, em);
+            Tuple<Network, Network> links = ruleform.link(aspect.getClassifier(),
+                                                          aspect.getClassification(),
+                                                          principal, principal,
+                                                          em);
             if (workspace != null) {
-                workspace.add(link);
+                workspace.add(links.a);
+                workspace.add(links.b);
             }
         }
         for (AttributeAuth authorization : getAttributeAuthorizations(aspect,
                                                                       false)) {
-            if (!authorization.getAuthorizedAttribute()
-                              .getKeyed()
-                && !authorization.getAuthorizedAttribute()
-                                 .getIndexed()) {
-                if (getAttributeValue(ruleform, null) == null) {
+            Attribute authorizedAttribute = authorization.getAuthorizedAttribute();
+            if (!authorizedAttribute.getKeyed()
+                && !authorizedAttribute.getIndexed()) {
+                if (getAttributeValue(ruleform, authorizedAttribute) == null) {
                     AttributeType attribute = create(ruleform,
-                                                     authorization.getAuthorizedAttribute(),
+                                                     authorizedAttribute,
                                                      principal);
                     attribute.setValue(authorization.getValue());
                     em.persist(attribute);
@@ -1267,8 +1269,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public Network link(RuleForm parent, Relationship r, RuleForm child,
-                        Agency updatedBy) {
+    public Tuple<Network, Network> link(RuleForm parent, Relationship r,
+                                        RuleForm child, Agency updatedBy) {
         return parent.link(r, child, updatedBy, model.getCurrentPrincipal()
                                                      .getPrincipal(),
                            em);
@@ -1311,15 +1313,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             }
             boolean valid = false;
             for (AttributeMetaAttribute ama : attrs) {
-                if (ama.getTextValue() != null && ama.getTextValue()
-                                                     .equals(value.getTextValue())) {
+                if (ama.getValue() != null && ama.getValue()
+                                                 .equals(value.getValue())) {
                     valid = true;
                     em.persist(value);
                 }
             }
             if (!valid) {
                 throw new IllegalArgumentException(String.format("%s is not a valid value for attribute %s",
-                                                                 value.getTextValue(),
+                                                                 value.getValue(),
                                                                  attribute));
             }
         }

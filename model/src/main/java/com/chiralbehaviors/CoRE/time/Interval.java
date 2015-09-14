@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.utils.Tuple;
 
 /**
  * An interval in time.
@@ -362,9 +363,11 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
      * com.chiralbehaviors.CoRE.agency.Agency, javax.persistence.EntityManager)
      */
     @Override
-    public IntervalNetwork link(Relationship r, Interval child,
-                                Agency updatedBy, Agency inverseSoftware,
-                                EntityManager em) {
+    public Tuple<IntervalNetwork, IntervalNetwork> link(Relationship r,
+                                                        Interval child,
+                                                        Agency updatedBy,
+                                                        Agency inverseSoftware,
+                                                        EntityManager em) {
         assert r != null : "Relationship cannot be null";
         assert child != null;
         assert updatedBy != null;
@@ -375,7 +378,7 @@ public class Interval extends ExistentialRuleform<Interval, IntervalNetwork> {
         IntervalNetwork inverse = new IntervalNetwork(child, r.getInverse(),
                                                       this, inverseSoftware);
         em.persist(inverse);
-        return link;
+        return new Tuple<>(link, inverse);
     }
 
     @SuppressWarnings("unchecked")

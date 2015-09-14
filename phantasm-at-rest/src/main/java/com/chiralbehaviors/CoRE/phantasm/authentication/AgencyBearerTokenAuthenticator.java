@@ -78,8 +78,7 @@ public class AgencyBearerTokenAuthenticator
             em.getTransaction()
               .begin();
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            if (accessToken.getTimestampValue()
-                           .compareTo(currentTime) < 0) {
+            if (((Timestamp) accessToken.getValue()).compareTo(currentTime) < 0) {
                 log.info("requested access token {} timed out", id);
                 em.remove(accessToken);
                 return Optional.absent();

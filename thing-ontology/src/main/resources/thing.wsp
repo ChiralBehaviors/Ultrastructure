@@ -44,7 +44,7 @@ products {
             constraints {
                 one thing1Of: IsA.Thing2 named thing2 { aliases }
                 one derivedFrom: IsA.MavenArtifact named by relationship { aliases }
-                one HasMember: *Product
+                one kernel::HasMember: *Product 
             }
         IsA.Thing2 {aliases URI properties}
             constraints {

@@ -19,17 +19,29 @@
  */
 package com.chiralbehaviors.CoRE;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 import javax.persistence.Basic;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -37,6 +49,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import org.hibernate.Hibernate;
@@ -44,7 +57,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.reflections.Reflections;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.json.RuleformIdGenerator;
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -53,6 +66,12 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.NoArgGenerator;
 
@@ -64,7 +83,7 @@ import com.fasterxml.uuid.NoArgGenerator;
  */
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@JsonIdentityInfo(generator = RuleformIdGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = PropertyGenerator.class, property = "id")
 @JsonAutoDetect(getterVisibility = Visibility.PUBLIC_ONLY)
 @JsonInclude(Include.NON_NULL)
 @Cacheable(true)
@@ -90,6 +109,36 @@ abstract public class Ruleform implements Serializable, Cloneable {
         CONCRETE_SUBCLASSES = Collections.unmodifiableMap(concrete);
     }
 
+    public static <T extends Ruleform> T deserialize(InputStream is,
+                                                     Class<T> clazz) throws JsonParseException,
+                                                                     JsonMappingException,
+                                                                     IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new CoREModule());
+        mapper.registerModule(new Hibernate4Module());
+        return mapper.readValue(is, clazz);
+    }
+
+    public static Ruleform find(EntityManager em, Ruleform ruleform) {
+        return em.find(ruleform.getClass(), ruleform.id);
+    }
+
+    public static List<Field> getInheritedFields(Class<?> type) {
+        List<Field> fields = new ArrayList<Field>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            for (Field field : c.getDeclaredFields()) {
+                if (field.getName()
+                         .contains("$")
+                    || Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+                fields.add(field);
+            }
+        }
+        return fields;
+
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> T initializeAndUnproxy(T entity) {
         if (entity == null) {
@@ -102,6 +151,199 @@ abstract public class Ruleform implements Serializable, Cloneable {
                                                   .getImplementation();
         }
         return entity;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Ruleform> T sanitize(T ruleform) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        serialize(ruleform, os);
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+        return (T) deserialize(is, ruleform.getClass());
+    }
+
+    public static void serialize(Ruleform ruleform,
+                                 OutputStream os) throws IOException {
+        ObjectMapper objMapper = new ObjectMapper();
+        objMapper.registerModule(new CoREModule());
+        Hibernate4Module module = new Hibernate4Module();
+        module.enable(Feature.FORCE_LAZY_LOADING);
+        objMapper.registerModule(module);
+        objMapper.writerWithDefaultPrettyPrinter()
+                 .writeValue(os, ruleform);
+    }
+
+    public static Map<UUID, Ruleform> slice(Ruleform ruleform,
+                                            Predicate<Ruleform> systemDefinition,
+                                            Map<UUID, Ruleform> sliced,
+                                            Set<UUID> traversed) {
+        map(ruleform, systemDefinition, sliced, traversed);
+        return sliced;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Ruleform> T smartMerge(EntityManager em,
+                                                    T ruleform,
+                                                    Map<UUID, Ruleform> mapped) {
+        return (T) map(em, ruleform, mapped);
+    }
+
+    public static void traverse(Ruleform ruleform,
+                                BiConsumer<Ruleform, Field> traverser) {
+        for (Field field : getInheritedFields(ruleform.getClass())) {
+            if (field.getAnnotation(JoinColumn.class) == null) {
+                continue;
+            }
+            try {
+                field.setAccessible(true);
+                Ruleform value = (Ruleform) field.get(ruleform);
+                if (value != null && !ruleform.id.equals(value.id)) {
+                    traverser.accept(ruleform, field);
+                }
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException(String.format("IllegalAccess access foreign key field: %s",
+                                                              field),
+                                                e);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalStateException(String.format("Illegal mapped value for field: %s",
+                                                              field),
+                                                e);
+            }
+        }
+    }
+
+    private static Ruleform asFrontier(Ruleform ruleform) {
+        Ruleform mappedValue = ruleform.clone();
+        for (Field field : getInheritedFields(ruleform.getClass())) {
+            if (field.getAnnotation(JoinColumn.class) != null
+                || field.getAnnotation(OneToMany.class) != null) {
+                try {
+                    field.setAccessible(true);
+                    field.set(mappedValue, null);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalStateException(String.format("IllegalAccess access foreign key field: %s",
+                                                                  field),
+                                                    e);
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalStateException(String.format("Illegal mapped value for field: %s",
+                                                                  field),
+                                                    e);
+                }
+            }
+        }
+        mappedValue.setNotes("Mapped frontier stand in");
+        return mappedValue;
+    }
+
+    private static Ruleform map(EntityManager em, Ruleform ruleform,
+                                Map<UUID, Ruleform> mapped) {
+        if (mapped.containsKey(ruleform.id)) {
+            return mapped.get(ruleform.id);
+        }
+
+        if (em.contains(ruleform)) {
+            mapped.put(ruleform.id, ruleform);
+            return ruleform;
+        }
+
+        Ruleform reference = find(em, ruleform);
+        BiConsumer<Ruleform, Field> slicer = (r, f) -> slice(r, f, em, mapped);
+        if (reference != null) {
+            Ruleform merged = em.merge(ruleform);
+            mapped.put(ruleform.id, em.merge(ruleform));
+            traverse(merged, slicer);
+        } else {
+            mapped.put(ruleform.id,
+                       em.getReference(ruleform.getClass(), ruleform.id));
+            traverse(ruleform, slicer);
+            em.persist(ruleform);
+        }
+
+        return mapped.get(ruleform.id);
+    }
+
+    private static Ruleform map(Ruleform value,
+                                Predicate<Ruleform> systemDefinition,
+                                Map<UUID, Ruleform> sliced,
+                                Set<UUID> traversed) {
+        Ruleform mappedValue = sliced.get(value.id);
+        if (mappedValue != null) {
+            // this value has already been determined to be part of another system
+            return mappedValue;
+        }
+        if (!traversed.add(value.id)) {
+            // We've already traversed this value
+            return value;
+        }
+        if (systemDefinition.test(value)) {
+            // This value is in the system, traverse it 
+            traverse(value, (r, f) -> slice(r, f, systemDefinition, sliced,
+                                            traversed));
+            return value;
+        }
+
+        // This value is not in the system and has not been traversed, create a mapped value that stands for an exit from the system 
+        mappedValue = asFrontier(value);
+
+        // Mapped value has the same id, but null fields for everything else
+        mappedValue.setId(value.id);
+        sliced.put(value.id, mappedValue);
+        return mappedValue;
+    }
+
+    private static void slice(Ruleform ruleform, Field field, EntityManager em,
+                              Map<UUID, Ruleform> mapped) {
+        Ruleform value;
+        try {
+            value = (Ruleform) field.get(ruleform);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(String.format("IllegalAccess access foreign key field: %s",
+                                                          field),
+                                            e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException(String.format("Illegal mapped value for field: %s",
+                                                          field),
+                                            e);
+        }
+        if (value != null && !ruleform.id.equals(value.id)) {
+            Ruleform mappedValue = map(em, value, mapped);
+            if (mappedValue == null) {
+                throw new IllegalStateException(String.format("%s mapped to null",
+                                                              value));
+            }
+            if (mappedValue != value) {
+                try {
+                    field.set(ruleform, mappedValue);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalStateException(String.format("IllegalAccess access foreign key field: %s",
+                                                                  field),
+                                                    e);
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalStateException(String.format("Illegal mapped value for field: %s",
+                                                                  field),
+                                                    e);
+                }
+            }
+        }
+    }
+
+    private static void slice(Ruleform ruleform, Field field,
+                              Predicate<Ruleform> systemDefinition,
+                              Map<UUID, Ruleform> sliced, Set<UUID> traversed) {
+        try {
+            Ruleform value = (Ruleform) initializeAndUnproxy(field.get(ruleform));
+            if (value != null && !ruleform.id.equals(value.id)) {
+                field.set(ruleform,
+                          map(value, systemDefinition, sliced, traversed));
+            }
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(String.format("IllegalAccess access foreign key field: %s",
+                                                          field),
+                                            e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException(String.format("Illegal mapped value for field: %s",
+                                                          field),
+                                            e);
+        }
     }
 
     @Id
@@ -274,7 +516,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return String.format("%s[%s]", getClass(), getId());
+        return String.format("%s[%s]", getClass(), id);
     }
 
     public void update(Triggers triggers) {

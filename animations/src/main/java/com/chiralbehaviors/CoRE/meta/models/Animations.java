@@ -589,8 +589,8 @@ public class Animations implements Triggers {
                 }
                 boolean valid = false;
                 for (AttributeMetaAttribute ama : attrs) {
-                    if (ama.getTextValue() != null && ama.getTextValue()
-                                                         .equals(value.getTextValue())) {
+                    if (ama.getValue() != null && ama.getValue()
+                                                     .equals(value.getValue())) {
                         valid = true;
                         break;
                     }

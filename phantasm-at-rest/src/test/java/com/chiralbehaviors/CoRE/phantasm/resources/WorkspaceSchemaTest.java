@@ -109,8 +109,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         }
         assertNotNull(result);
 
-        System.out.println(result);
-
         assertNull(result.get("errors"));
         @SuppressWarnings("unchecked")
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
@@ -170,8 +168,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
             return;
         }
         assertNotNull(result);
-
-        System.out.println(result);
 
         @SuppressWarnings("unchecked")
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
@@ -260,8 +256,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
             return;
         }
         assertNotNull(result);
-
-        System.out.println(result);
 
         assertNull(result.get("errors"));
         assertEquals("hello", thing1.getName());
@@ -383,8 +377,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         Map<String, Object> result = execute.getData();
 
         assertNotNull(result);
-
-        System.out.println(result);
 
         @SuppressWarnings("unchecked")
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");

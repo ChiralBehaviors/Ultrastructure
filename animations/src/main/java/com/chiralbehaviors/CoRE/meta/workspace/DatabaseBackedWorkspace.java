@@ -47,6 +47,7 @@ import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -152,29 +153,22 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         scope.add(namespace, model.getWorkspaceModel()
                                   .getScoped(workspace)
                                   .getWorkspace());
-        ProductNetwork link = productModel.link(getDefiningProduct(),
-                                                model.getKernel()
-                                                     .getImports(),
-                                                workspace,
-                                                model.getCurrentPrincipal()
-                                                     .getPrincipal());
+        Tuple<ProductNetwork, ProductNetwork> links = productModel.link(getDefiningProduct(),
+                                                                        model.getKernel()
+                                                                             .getImports(),
+                                                                        workspace,
+                                                                        model.getCurrentPrincipal()
+                                                                             .getPrincipal());
         ProductNetworkAttribute attribute = new ProductNetworkAttribute(model.getKernel()
                                                                              .getNamespace(),
                                                                         namespace,
                                                                         model.getCurrentPrincipal()
                                                                              .getPrincipal());
-        attribute.setNetwork(link);
+        attribute.setNetwork(links.a);
         em.persist(attribute);
-        add(link);
-        add(attribute);
-
-        attribute = new ProductNetworkAttribute(model.getKernel()
-                                                     .getLookupOrder(),
-                                                getImports().size(),
-                                                model.getCurrentPrincipal()
-                                                     .getPrincipal());
-        attribute.setNetwork(link);
-        em.persist(attribute);
+        attribute.setValue(namespace);
+        add(links.a);
+        add(links.b);
         add(attribute);
     }
 
@@ -269,6 +263,10 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                                            .getLookupOrder());
             if (namespace == null) {
                 throw new IllegalStateException(String.format("Import has no namespace attribute defined: %s",
+                                                              link));
+            }
+            if (namespace.getValue() == null) {
+                throw new IllegalStateException(String.format("Import has no name defined! : %s",
                                                               link));
             }
             Integer lookupOrderValue = lookupOrder == null ? -1

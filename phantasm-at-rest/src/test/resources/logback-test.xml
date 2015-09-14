@@ -22,7 +22,7 @@
         <level value="WARN" />
     </logger>
     <root>
-        <level value="INFO" />
+        <level value="WARN" />
         <appender-ref ref="C" />
     </root>
 

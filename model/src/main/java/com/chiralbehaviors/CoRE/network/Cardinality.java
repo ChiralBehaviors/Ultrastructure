@@ -20,10 +20,12 @@
 
 package com.chiralbehaviors.CoRE.network;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author hhildebrand
  *
  */
 public enum Cardinality {
-    N, ONE, ZERO;
+    @JsonProperty N, @JsonProperty ONE, @JsonProperty ZERO;
 }

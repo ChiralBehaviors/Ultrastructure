@@ -1,0 +1,5 @@
+coreDb: ${db.database}
+coreServer: ${db.server}
+corePort: ${db.port}
+coreUsername: ${db.login}
+corePassword: ${db.password}

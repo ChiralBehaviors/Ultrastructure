@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.kernel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -53,23 +54,19 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
 import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
+import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
 import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hhildebrand
@@ -151,11 +148,8 @@ public class Bootstrap {
     private void constructKernelWorkspace() throws IOException, SQLException {
         Agency core = find(WellKnownAgency.CORE);
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
-        Product workspace = find(WellKnownProduct.WORKSPACE);
-        Relationship isA = find(WellKnownRelationship.IS_A);
 
-        // Ain
-        createKernelWorkspace(core, kernelWorkspace, workspace, isA);
+        // Ain 
         populateAgencies(core, kernelWorkspace);
         populateAttributes(core, kernelWorkspace);
         populateIntervals(core, kernelWorkspace);
@@ -176,9 +170,17 @@ public class Bootstrap {
 
         new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
                               model).manifest();
+        ProductAttribute attributeValue = (ProductAttribute) model.getProductModel()
+                                                                  .getAttributeValue(kernelWorkspace,
+                                                                                     model.getKernel()
+                                                                                          .getIRI());
+        attributeValue.setValue(Kernel.KERNEL_IRI);
+        model.getProductModel()
+             .setAttributeValue(attributeValue);
         model.getEntityManager()
              .getTransaction()
              .commit();
+
         model.getEntityManager()
              .close();
 
@@ -186,21 +188,6 @@ public class Bootstrap {
         em.getTransaction()
           .begin();
 
-    }
-
-    private void createKernelWorkspace(Agency core, Product kernelWorkspace,
-                                       Product workspace, Relationship isA) {
-        // Kernel workspace isA workspace
-        ProductNetwork pn = new ProductNetwork(kernelWorkspace, isA, workspace,
-                                               core);
-        populate(pn, core, kernelWorkspace);
-        ProductNetwork pnR = new ProductNetwork(workspace, isA.getInverse(),
-                                                kernelWorkspace, core);
-        populate(pnR, core, kernelWorkspace);
-        ProductNetworkAuthorization netAuth = new ProductNetworkAuthorization(core);
-        netAuth.setClassification(workspace);
-        netAuth.setClassifier(isA);
-        populate(netAuth, core, workspace);
     }
 
     /**
@@ -620,14 +607,10 @@ public class Bootstrap {
     }
 
     private void serialize(String fileName) throws IOException {
-        ObjectMapper objMapper = new ObjectMapper();
-        objMapper.registerModule(new CoREModule());
-        Hibernate4Module module = new Hibernate4Module();
-        module.enable(Feature.FORCE_LAZY_LOADING);
-        objMapper.registerModule(module);
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
         WorkspaceSnapshot snapshot = new WorkspaceSnapshot(kernelWorkspace, em);
-        objMapper.writerWithDefaultPrettyPrinter()
-                 .writeValue(new File(fileName), snapshot);
+        try (FileOutputStream os = new FileOutputStream(new File(fileName))) {
+            snapshot.serializeTo(os);
+        }
     }
 }

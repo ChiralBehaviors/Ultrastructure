@@ -53,6 +53,7 @@ import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.utils.Tuple;
 
 /**
  * A Thing. A product, or an artifact.
@@ -410,14 +411,17 @@ public class Product extends ExistentialRuleform<Product, ProductNetwork> {
     }
 
     @Override
-    public ProductNetwork link(Relationship r, Product child, Agency updatedBy,
-                               Agency inverseSoftware, EntityManager em) {
+    public Tuple<ProductNetwork, ProductNetwork> link(Relationship r,
+                                                      Product child,
+                                                      Agency updatedBy,
+                                                      Agency inverseSoftware,
+                                                      EntityManager em) {
         ProductNetwork link = new ProductNetwork(this, r, child, updatedBy);
         em.persist(link);
         ProductNetwork inverse = new ProductNetwork(child, r.getInverse(), this,
                                                     inverseSoftware);
         em.persist(inverse);
-        return link;
+        return new Tuple<>(link, inverse);
     }
 
     @SuppressWarnings("unchecked")

@@ -23,6 +23,8 @@ package com.chiralbehaviors.CoRE.meta.models;
 import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -42,6 +44,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
@@ -225,32 +228,32 @@ public class ModelImpl implements Model {
                               .getValueType()) {
             case BINARY: {
                 whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.binaryValue),
-                                                            attributeValue.getBinaryValue());
+                                                            (byte[]) attributeValue.getValue());
                 break;
             }
             case INTEGER: {
                 whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.integerValue),
-                                                            attributeValue.getIntegerValue());
+                                                            (Integer) attributeValue.getValue());
                 break;
             }
             case BOOLEAN: {
                 whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.booleanValue),
-                                                            attributeValue.getBooleanValue());
+                                                            (Boolean) attributeValue.getValue());
                 break;
             }
             case NUMERIC: {
                 whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.numericValue),
-                                                            attributeValue.getNumericValue());
+                                                            (BigDecimal) attributeValue.getValue());
                 break;
             }
             case TEXT: {
                 whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.textValue),
-                                                            attributeValue.getTextValue());
+                                                            (String) attributeValue.getValue());
                 break;
             }
             case TIMESTAMP: {
                 whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.timestampValue),
-                                                            attributeValue.getTimestampValue());
+                                                            (Timestamp) attributeValue.getValue());
                 break;
             }
         }
@@ -528,7 +531,8 @@ public class ModelImpl implements Model {
                  .getRollbackOnly()) {
             currentPrincipal = null;
         } else {
-            currentPrincipal = new AuthorizedPrincipal(kernel.getCoreAnimationSoftware());
+            currentPrincipal = new AuthorizedPrincipal(em.getReference(Agency.class,
+                                                                       WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()));
         }
     }
 }

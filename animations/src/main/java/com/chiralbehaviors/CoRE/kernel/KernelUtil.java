@@ -20,26 +20,21 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
 import org.hibernate.internal.SessionImpl;
 
-import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceSnapshot;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
-import com.hellblazer.utils.Utils;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * Repository of immutable kernal rules
@@ -56,9 +51,17 @@ import com.hellblazer.utils.Utils;
  */
 public class KernelUtil {
 
-    public static final String KERNEL_WORKSPACE_RESOURCE = "/kernel-workspace.json";
+    private static final String[] KERNEL_VERSIONS = { "/kernel.2.json" };
+    public static final List<URL> KERNEL_LOADS;
 
     public static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+
+    static {
+        KERNEL_LOADS = Collections.unmodifiableList(Arrays.asList(KERNEL_VERSIONS)
+                                                          .stream()
+                                                          .map(s -> KernelUtil.class.getResource(s))
+                                                          .collect(Collectors.toList()));
+    }
 
     public static void clear(EntityManager em) throws SQLException {
         boolean committed = false;
@@ -68,17 +71,19 @@ public class KernelUtil {
           .begin();
         try {
             connection.setAutoCommit(false);
-            connection.createStatement()
-                      .execute("TRUNCATE TABLE ruleform.agency CASCADE");
             ResultSet r = connection.createStatement()
                                     .executeQuery(KernelUtil.SELECT_TABLE);
             while (r.next()) {
                 String table = r.getString("name");
-                String query = String.format("TRUNCATE TABLE %s CASCADE",
-                                             table);
-                connection.createStatement()
-                          .execute(query);
+                if (!table.equals("ruleform.agency")) {
+                    String query = String.format("TRUNCATE TABLE %s CASCADE",
+                                                 table);
+                    connection.createStatement()
+                              .execute(query);
+                }
             }
+            connection.createStatement()
+                      .execute("TRUNCATE TABLE ruleform.agency CASCADE");
             r.close();
             connection.commit();
             em.getTransaction()
@@ -100,47 +105,13 @@ public class KernelUtil {
     }
 
     public static void loadKernel(EntityManager em) throws IOException {
-        loadKernel(em,
-                   getBits(KernelUtil.class.getResourceAsStream(KernelUtil.KERNEL_WORKSPACE_RESOURCE)));
-    }
-
-    public static void loadKernel(EntityManager em,
-                                  InputStream is) throws IOException {
         if (!em.getTransaction()
                .isActive()) {
             em.getTransaction()
               .begin();
         }
-        WorkspaceSnapshot workspace = rehydrateKernel(is);
-        workspace.retarget(em);
+        WorkspaceSnapshot.load(em, KERNEL_LOADS);
         em.getTransaction()
           .commit();
-    }
-
-    /**
-     * This is a work around, as there's a weird edge case where the resource
-     * has been closed by someone (probably dropwizard).
-     * 
-     * @param resourceAsStream
-     * @return
-     * @throws IOException
-     */
-    private static InputStream getBits(InputStream resourceAsStream) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Utils.copy(resourceAsStream, baos);
-        return new ByteArrayInputStream(baos.toByteArray());
-    }
-
-    private static WorkspaceSnapshot rehydrateKernel(InputStream is) throws IOException,
-                                                                     JsonParseException,
-                                                                     JsonMappingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new CoREModule());
-        Hibernate4Module module = new Hibernate4Module();
-        module.enable(Feature.FORCE_LAZY_LOADING);
-        mapper.registerModule(module);
-        WorkspaceSnapshot workspace = mapper.readValue(is,
-                                                       WorkspaceSnapshot.class);
-        return workspace;
     }
 }

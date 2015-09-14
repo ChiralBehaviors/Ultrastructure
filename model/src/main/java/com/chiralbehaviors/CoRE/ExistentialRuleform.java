@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hellblazer.utils.Tuple;
 
 /**
  * A ruleform that declares existence.
@@ -202,9 +203,10 @@ abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<R
     @JsonIgnore
     public abstract boolean isSame();
 
-    abstract public Network link(Relationship r, RuleForm child,
-                                 Agency updatedBy, Agency inverseSoftware,
-                                 EntityManager em);
+    abstract public Tuple<Network, Network> link(Relationship r, RuleForm child,
+                                                 Agency updatedBy,
+                                                 Agency inverseSoftware,
+                                                 EntityManager em);
 
     /**
      * @param description

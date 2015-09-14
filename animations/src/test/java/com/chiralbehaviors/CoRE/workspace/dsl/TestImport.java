@@ -30,10 +30,11 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.product.Product;
 
 /**
- * @author hparry
+ * @author hhildebrand
  *
  */
 public class TestImport extends AbstractModelTest {
+
     @Test
     public void testExampleWorkspace() throws Exception {
         WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),

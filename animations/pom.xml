@@ -105,6 +105,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>logback-test.xml</exclude>
+                                <exclude>jpa.properties</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -136,7 +137,7 @@
                             <mainClass>com.chiralbehaviors.CoRE.kernel.Bootstrap</mainClass>
                             <arguments>
                                 <argument>${project.build.directory}/test-classes/jpa.properties</argument>
-                                <argument>src/main/kernel/kernel-workspace.json</argument>
+                                <argument>src/main/kernel/kernel.2.json</argument>
                             </arguments>
                         </configuration>
                     </plugin>

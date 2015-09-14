@@ -62,7 +62,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         Aspect<Product> aspect = new Aspect<Product>(kernel.getIsA(),
                                                      kernel.getWorkspace());
         model.getProductModel()
-             .initialize(definingProduct, aspect);
+             .initialize(definingProduct, aspect, workspace);
         em.persist(definingProduct);
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);

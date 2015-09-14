@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.hellblazer.utils.Tuple;
 
 /**
  *
@@ -383,8 +384,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     NetworkAttribute<?> getAttributeValue(Network edge, Attribute attribute);
 
-    AttributeValue<RuleForm> getAttributeValue(RuleForm ruleform,
-                                               Attribute attribute);
+    AttributeType getAttributeValue(RuleForm ruleform, Attribute attribute);
 
     NetworkAttribute<?> getAttributeValue(RuleForm parent, Relationship r,
                                           RuleForm child, Attribute attribute);
@@ -585,8 +585,8 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param child
      * @param updatedBy
      */
-    Network link(RuleForm parent, Relationship r, RuleForm child,
-                 Agency updatedBy);
+    Tuple<Network, Network> link(RuleForm parent, Relationship r,
+                                 RuleForm child, Agency updatedBy);
 
     /**
      * Propagate the network inferences based on the tracked additions,

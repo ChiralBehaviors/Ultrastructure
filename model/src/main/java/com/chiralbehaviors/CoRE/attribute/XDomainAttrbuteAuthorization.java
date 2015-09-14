@@ -169,7 +169,10 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
     @SuppressWarnings("unchecked")
     @JsonGetter
     public <T> T getValue() {
-        switch (getAuthorizedAttribute().getValueType()) {
+        if (authorizedAttribute == null) {
+            return null; // For frontier traversal on workspace serialization
+        }
+        switch (authorizedAttribute.getValueType()) {
             case BINARY:
                 return (T) getBinaryValue();
             case BOOLEAN:
@@ -184,7 +187,7 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
                 return (T) getTimestampValue();
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
-                                                              getAuthorizedAttribute().getValueType()));
+                                                              authorizedAttribute.getValueType()));
         }
     }
 

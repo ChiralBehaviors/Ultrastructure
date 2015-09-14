@@ -10,11 +10,11 @@
         <level value="INFO" />
     </logger>
     <logger name="org.hibernate">
-        <level value="INFO" />
+        <level value="ERROR" />
     </logger>
 
     <root>
-        <level value="WARN" />
+        <level value="ERROR" />
         <appender-ref ref="C" />
     </root>
 </configuration>

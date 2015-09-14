@@ -89,12 +89,12 @@ public class ModelTest extends AbstractModelTest {
         AgencyAttribute agencyAttribute = new AgencyAttribute(kernel.getCore());
         agencyAttribute.setAgency(agency);
         agencyAttribute.setAttribute(attribute);
-        agencyAttribute.setTextValue("Hello World");
+        agencyAttribute.setValue("Hello World");
         em.persist(agencyAttribute);
         em.flush();
 
         AgencyAttribute queryAttribute = new AgencyAttribute(attribute);
-        queryAttribute.setTextValue("Hello World");
+        queryAttribute.setValue("Hello World");
         List<Agency> foundAgencies = model.find(queryAttribute);
         assertNotNull(foundAgencies);
         assertEquals(1, foundAgencies.size());

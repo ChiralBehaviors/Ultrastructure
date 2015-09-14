@@ -26,6 +26,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
@@ -51,7 +52,7 @@ public class SmartMergeTest extends DatabaseTest {
                                                    "A is a mass list that has B as a member",
                                                    core, massList);
 
-        Relationship merged = Util.smartMerge(em, massList,
+        Relationship merged = Ruleform.smartMerge(em, massList,
                                               new HashMap<>(1024));
         assertEquals(massList, merged);
         assertEquals(massListOf, merged.getInverse());

@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration.Asset;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
@@ -36,9 +37,9 @@ import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.auth.oauth.OAuthFactory;
@@ -76,8 +77,8 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
 
     @Override
     public void initialize(Bootstrap<HandiNAVIConfiguration> bootstrap) {
-        ObjectMapper objMapper = bootstrap.getObjectMapper();
-        objMapper.registerModule(new CoREModule());
+        bootstrap.getObjectMapper()
+                 .registerModule(new CoREModule());
     }
 
     /* (non-Javadoc)
@@ -118,6 +119,10 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                            .register(AuthFactory.binder(new OAuthFactory<AuthorizedPrincipal>(new AgencyBearerTokenAuthenticator(emf),
                                                                                               configuration.realm,
                                                                                               AuthorizedPrincipal.class)));
+        }
+        for (Asset asset : configuration.assets) {
+            new AssetsBundle(asset.path, asset.uri, asset.index,
+                             asset.name).run(environment);
         }
         environment.jersey()
                    .register(new FacetResource(emf));

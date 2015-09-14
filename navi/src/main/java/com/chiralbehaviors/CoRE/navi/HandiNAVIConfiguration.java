@@ -15,6 +15,9 @@
  */
 package com.chiralbehaviors.CoRE.navi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import io.dropwizard.Configuration;
@@ -24,9 +27,23 @@ import io.dropwizard.Configuration;
  * 
  */
 public class HandiNAVIConfiguration extends Configuration {
+    public static class Asset {
+        public String index = DEFAULT_INDEX_FILE;
+        public String name  = DEFAULT_ASSETS_NAME;
+        public String path  = DEFAULT_PATH;
+        @NotNull
+        public String uri;
+    }
+
     public static enum AuthType {
         BASIC_DIGEST, BEARER_TOKEN, NULL
     }
+
+    private static final String DEFAULT_ASSETS_NAME = "assets";
+    private static final String DEFAULT_INDEX_FILE  = "index.htm";
+    private static final String DEFAULT_PATH        = "/assets";
+
+    public List<Asset> assets = new ArrayList<>();
 
     @NotNull
     public AuthType auth = AuthType.BEARER_TOKEN;
@@ -37,4 +54,5 @@ public class HandiNAVIConfiguration extends Configuration {
     public Boolean randomPort = false;
 
     public String realm;
+
 }

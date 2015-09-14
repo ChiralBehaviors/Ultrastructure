@@ -64,6 +64,7 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
     private EntityManagerFactory emf;
     private Environment          environment;
     private Server               jettyServer;
+    private String               name;
 
     public EntityManagerFactory getEmf() {
         return emf;

@@ -44,12 +44,13 @@ public class HandiNAVIConfiguration extends Configuration {
     private static final String DEFAULT_PATH        = "/assets";
 
     public List<Asset> assets = new ArrayList<>();
-
     @NotNull
-    public AuthType auth = AuthType.BEARER_TOKEN;
+    public AuthType    auth   = AuthType.BEARER_TOKEN;
 
     @NotNull
     public JpaConfiguration jpa = new JpaConfiguration();
+
+    public String name;
 
     public Boolean randomPort = false;
 

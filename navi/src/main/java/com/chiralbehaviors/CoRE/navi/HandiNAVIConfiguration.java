@@ -20,6 +20,8 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.dropwizard.Configuration;
 
 /**
@@ -36,7 +38,8 @@ public class HandiNAVIConfiguration extends Configuration {
     }
 
     public static enum AuthType {
-        BASIC_DIGEST, BEARER_TOKEN, NULL
+        @JsonProperty BASIC_DIGEST, @JsonProperty BEARER_TOKEN,
+        @JsonProperty NULL;
     }
 
     private static final String DEFAULT_ASSETS_NAME = "assets";

@@ -64,7 +64,6 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
     private EntityManagerFactory emf;
     private Environment          environment;
     private Server               jettyServer;
-    private String               name;
 
     public EntityManagerFactory getEmf() {
         return emf;
@@ -109,17 +108,19 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                            .register(AuthFactory.binder(new NullAuthenticationFactory()));
                 break;
             case BASIC_DIGEST:
-                log.warn("Setting authentication to Agnecy based basic authentication");
+                log.warn("Setting authentication to Agency basic authentication");
                 environment.jersey()
                            .register(AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new AgencyBasicAuthenticator(emf),
                                                                                                   configuration.realm,
                                                                                                   AuthorizedPrincipal.class)));
+                break;
             case BEARER_TOKEN:
-                log.warn("Setting authentication to Ultrastructure OAuth2 bearer tokens");
+                log.warn("Setting authentication to Agency OAuth2 bearer token");
                 environment.jersey()
                            .register(AuthFactory.binder(new OAuthFactory<AuthorizedPrincipal>(new AgencyBearerTokenAuthenticator(emf),
                                                                                               configuration.realm,
                                                                                               AuthorizedPrincipal.class)));
+                break;
         }
         for (Asset asset : configuration.assets) {
             new AssetsBundle(asset.path, asset.uri, asset.index,

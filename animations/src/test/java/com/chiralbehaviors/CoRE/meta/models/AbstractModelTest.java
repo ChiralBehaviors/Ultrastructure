@@ -52,7 +52,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 /**
  * Common superclass for tests that need the initialized Kernel and model.
  *
- * @author hhildebrand
+ * @author hparry, hhildebrand
  *
  */
 public class AbstractModelTest {

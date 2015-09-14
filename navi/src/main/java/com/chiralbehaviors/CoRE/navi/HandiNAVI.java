@@ -15,13 +15,17 @@
  */
 package com.chiralbehaviors.CoRE.navi;
 
+import java.util.EnumSet;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +41,7 @@ import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.google.common.base.Joiner;
 
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
@@ -140,6 +145,35 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                    .register(new LoginResource(emf));
         environment.healthChecks()
                    .register("EMF Health", new EmfHealthCheck(emf));
+        FilterRegistration.Dynamic filter = environment.servlets()
+                                                       .addFilter("CORS",
+                                                                  CrossOriginFilter.class);
+        CorsConfiguration cors = configuration.CORS;
+        if (cors != null) {
+            log.warn("Using CORS configuration: %s", cors);
+            // Add URL mapping
+            filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class),
+                                            true, "/*");
+            filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM,
+                                    Joiner.on(",")
+                                          .join(cors.allowedOrigins));
+            filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM,
+                                    Joiner.on(",")
+                                          .join(cors.allowedMethods));
+            filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM,
+                                    Joiner.on(",")
+                                          .join(cors.allowedHeaders));
+            filter.setInitParameter(CrossOriginFilter.PREFLIGHT_MAX_AGE_PARAM,
+                                    Integer.toString(cors.preflightMaxAge));
+            filter.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM,
+                                    Boolean.toString(cors.allowCredentials));
+            filter.setInitParameter(CrossOriginFilter.EXPOSED_HEADERS_PARAM,
+                                    Joiner.on(",")
+                                          .join(cors.exposedHeaders));
+            filter.setInitParameter(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM,
+                                    Boolean.toString(cors.chainPreflight));
+
+        }
     }
 
     public void setEmf(EntityManagerFactory emf) {

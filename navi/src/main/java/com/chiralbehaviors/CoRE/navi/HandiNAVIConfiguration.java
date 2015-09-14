@@ -50,12 +50,14 @@ public class HandiNAVIConfiguration extends Configuration {
     @NotNull
     public AuthType    auth   = AuthType.BEARER_TOKEN;
 
+    public CorsConfiguration CORS;
+
     @NotNull
     public JpaConfiguration jpa = new JpaConfiguration();
 
     public String name;
 
-    public Boolean randomPort = false;
+    public boolean randomPort = false;
 
     public String realm;
 

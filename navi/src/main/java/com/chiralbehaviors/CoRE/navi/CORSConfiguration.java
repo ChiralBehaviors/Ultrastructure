@@ -63,9 +63,10 @@ import javax.validation.constraints.NotNull;
  *         </p>
  */
 public class CORSConfiguration {
-    public boolean      allowCredentials = false;
+    public boolean      allowCredentials = true;
     @NotNull
-    public List<String> allowedMethods   = Arrays.asList("GET", "POST", "HEAD");
+    public List<String> allowedMethods   = Arrays.asList("GET", "PUT", "POST",
+                                                         "OPTIONS");
     @NotNull
     public List<String> allowedHeaders   = Arrays.asList("X-Requested-With",
                                                          "Content-Type",

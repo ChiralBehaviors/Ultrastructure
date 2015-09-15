@@ -46,6 +46,7 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.google.common.base.Function;
 
 /**
  * CRUD for Phantasms. This class is the animation procedure that maintains and
@@ -81,7 +82,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         update = model.getKernel()
                       .getUPDATE();
         apply = model.getKernel()
-                    .getAPPLY();
+                     .getAPPLY();
     }
 
     /**
@@ -245,7 +246,8 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @throws SecurityException
      */
     public RuleForm apply(NetworkAuthorization<RuleForm> facet,
-                          RuleForm instance) throws SecurityException {
+                          RuleForm instance,
+                          Function<RuleForm, RuleForm> constructor) throws SecurityException {
         if (instance == null) {
             return null;
         }
@@ -259,7 +261,20 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                  .merge(facet),
                                   model.getCurrentPrincipal()
                                        .getPrincipal());
-        return instance;
+        if (!checkInvoke(facet, instance)) {
+            return null;
+        }
+        return constructor.apply(instance);
+    }
+
+    public boolean checkInvoke(NetworkAuthorization<RuleForm> facet,
+                               RuleForm instance) {
+        Agency principal = model.getCurrentPrincipal()
+                                .getPrincipal();
+        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
+        Relationship invoke = getINVOKE();
+        return networkedModel.checkCapability(principal, instance, invoke)
+               && networkedModel.checkFacetCapability(principal, facet, invoke);
     }
 
     /**
@@ -275,8 +290,8 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      */
     @SuppressWarnings("unchecked")
     public RuleForm createInstance(NetworkAuthorization<RuleForm> facet,
-                                   String name,
-                                   String description) throws SecurityException {
+                                   String name, String description,
+                                   Function<RuleForm, RuleForm> constructor) {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
         if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
                                                       .getPrincipal(),
@@ -305,7 +320,10 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                  .merge(facet),
                                   model.getCurrentPrincipal()
                                        .getPrincipal());
-        return instance;
+        if (!checkInvoke(facet, instance)) {
+            return null;
+        }
+        return constructor.apply(instance);
     }
 
     public Relationship getAPPLY() {

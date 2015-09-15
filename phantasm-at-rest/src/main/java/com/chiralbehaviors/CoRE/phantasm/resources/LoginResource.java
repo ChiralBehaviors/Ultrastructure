@@ -32,7 +32,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
@@ -54,13 +53,10 @@ import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator
 @Produces(MediaType.APPLICATION_JSON)
 public class LoginResource {
     private static final Logger        log = LoggerFactory.getLogger(LoginResource.class);
-    private final List<String>         allowedGrantTypes;
     private final EntityManagerFactory emf;
     private final Attribute            login;
 
-    public LoginResource(List<String> allowedGrantTypes,
-                         EntityManagerFactory emf) {
-        this.allowedGrantTypes = allowedGrantTypes;
+    public LoginResource(EntityManagerFactory emf) {
         this.emf = emf;
         Model model = new ModelImpl(emf);
         try {
@@ -74,15 +70,9 @@ public class LoginResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String postForToken(@FormParam("grant_type") String grantType,
-                               @FormParam("username") String username,
+    public String postForToken(@FormParam("username") String username,
                                @FormParam("password") String password,
                                @FormParam("client_id") String clientId) {
-        if (!allowedGrantTypes.contains(grantType)) {
-            Response response = Response.status(Status.METHOD_NOT_ALLOWED)
-                                        .build();
-            throw new WebApplicationException(response);
-        }
         Model model = new ModelImpl(emf);
         try {
             AgencyAttribute attributeValue = new AgencyAttribute(login);

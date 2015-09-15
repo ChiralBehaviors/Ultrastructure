@@ -487,6 +487,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition apply(NetworkAuthorization<RuleForm> facet) {
+        List<BiFunction<DataFetchingEnvironment, RuleForm, Object>> detachedConstructors = constructors;
         return newFieldDefinition().name(String.format(APPLY_MUTATION,
                                                        facet.getName()))
                                    .type(new GraphQLTypeReference(facet.getName()))
@@ -494,9 +495,17 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .description("the id of the instance")
                                                           .type(GraphQLString)
                                                           .build())
-                                   .dataFetcher(env -> ctx(env).apply(facet,
-                                                                      (RuleForm) ctx(env).lookup(facet,
-                                                                                                 (String) env.getArgument(ID))))
+                                   .dataFetcher(env -> {
+                                       RuleForm ruleform = (RuleForm) ctx(env).lookup(facet,
+                                                                                      (String) env.getArgument(ID));
+                                       PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                                       return crud.apply(facet, ruleform,
+                                                         instance -> {
+                                           detachedConstructors.forEach(constructor -> constructor.apply(env,
+                                                                                                         instance));
+                                           return ruleform;
+                                       });
+                                   })
                                    .build();
     }
 
@@ -620,6 +629,17 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .build());
     }
 
+    private boolean checkInvoke(Constructor constructor,
+                                PhantasmCRUD<RuleForm, Network> crud) {
+        return crud.getModel()
+                   .getProductModel()
+                   .checkCapability(crud.getModel()
+                                        .getCurrentPrincipal()
+                                        .getPrincipal(),
+                                    constructor.getRuleform(),
+                                    crud.getINVOKE());
+    }
+
     private boolean checkInvoke(NetworkAuthorization<RuleForm> facet,
                                 InstanceMethod method, RuleForm instance,
                                 PhantasmCRUD<RuleForm, Network> crud) {
@@ -630,30 +650,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         Relationship invoke = crud.getINVOKE();
         return networkedModel.checkCapability(principal, method.getRuleform(),
                                               invoke)
-               && checkInvoke(facet, instance, crud);
-    }
-
-    private boolean checkInvoke(NetworkAuthorization<RuleForm> facet,
-                                RuleForm instance,
-                                PhantasmCRUD<RuleForm, Network> crud) {
-        Model model = crud.getModel();
-        Agency principal = model.getCurrentPrincipal()
-                                .getPrincipal();
-        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        Relationship invoke = crud.getINVOKE();
-        return networkedModel.checkCapability(principal, instance, invoke)
-               && networkedModel.checkFacetCapability(principal, facet, invoke);
-    }
-
-    private boolean checkInvoke(Constructor constructor,
-                                PhantasmCRUD<RuleForm, Network> crud) {
-        return crud.getModel()
-                   .getProductModel()
-                   .checkCapability(crud.getModel()
-                                        .getCurrentPrincipal()
-                                        .getPrincipal(),
-                                    constructor.getRuleform(),
-                                    crud.getINVOKE());
+               && crud.checkInvoke(facet, instance);
     }
 
     private void clear() {
@@ -679,24 +676,19 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .dataFetcher(env -> {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
                                        PhantasmCRUD<RuleForm, Network> crud = ctx(env);
-                                       RuleForm ruleform = crud.createInstance(facet,
-                                                                               (String) updateState.get(SET_NAME),
-                                                                               (String) updateState.get(SET_DESCRIPTION));
-                                       updateState.remove(SET_NAME);
-                                       updateState.remove(SET_DESCRIPTION);
-                                       update(ruleform, updateState, crud,
-                                              detachedUpdate);
-                                       if (!checkInvoke(facet, ruleform,
-                                                        crud)) {
-                                           log.info(String.format("Failed invoking constructors by: %s",
-                                                                  crud.getModel()
-                                                                      .getCurrentPrincipal()));
-                                           return null;
+                                       return crud.createInstance(facet,
+                                                                  (String) updateState.get(SET_NAME),
+                                                                  (String) updateState.get(SET_DESCRIPTION),
+                                                                  instance -> {
+                                           updateState.remove(SET_NAME);
+                                           updateState.remove(SET_DESCRIPTION);
+                                           update(instance, updateState, crud,
+                                                  detachedUpdate);
+                                           detachedConstructors.forEach(constructor -> constructor.apply(env,
+                                                                                                         instance));
+                                           return instance;
+                                       });
 
-                                       }
-                                       detachedConstructors.forEach(constructor -> constructor.apply(env,
-                                                                                                     ruleform));
-                                       return ruleform;
                                    })
                                    .build();
     }

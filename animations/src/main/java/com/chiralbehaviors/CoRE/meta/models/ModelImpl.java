@@ -76,11 +76,11 @@ public class ModelImpl implements Model {
     private final static ConcurrentMap<Class<?>, FacetDefinition<?>> cache = new ConcurrentHashMap<>();
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static FacetDefinition<?> cached(Class<? extends Phantasm<?>> phantasm) {
+    public static FacetDefinition<?> cached(Class<? extends Phantasm<?>> phantasm,
+                                            Model model) {
         return cache.computeIfAbsent(phantasm,
-                                     (Class<?> p) -> new FacetDefinition(null,
-                                                                         p,
-                                                                         null));
+                                     (Class<?> p) -> new FacetDefinition(p,
+                                                                         model));
     }
 
     public static String prefixFor(Class<?> ruleform) {
@@ -134,7 +134,8 @@ public class ModelImpl implements Model {
     @Override
     public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Phantasm<? extends T> source,
                                                                                 Class<R> phantasm) {
-        FacetDefinition<? extends T> definition = (FacetDefinition<? extends T>) cached(phantasm);
+        FacetDefinition<? extends T> definition = (FacetDefinition<? extends T>) cached(phantasm,
+                                                                                        this);
         return (R) definition.construct(source.getRuleform(), this,
                                         getCurrentPrincipal().getPrincipal());
     }
@@ -156,7 +157,8 @@ public class ModelImpl implements Model {
     public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R construct(Class<R> phantasm,
                                                                                     String name,
                                                                                     String description) throws InstantiationException {
-        FacetDefinition<? extends T> definition = (FacetDefinition) cached(phantasm);
+        FacetDefinition<? extends T> definition = (FacetDefinition) cached(phantasm,
+                                                                           this);
         ExistentialRuleform<? extends T, ?> ruleform;
         try {
             ruleform = (T) Model.getExistentialRuleformConstructor(phantasm)
@@ -511,7 +513,8 @@ public class ModelImpl implements Model {
         if (ruleform == null) {
             return null;
         }
-        FacetDefinition<? extends T> definition = (FacetDefinition<? extends T>) cached(phantasm);
+        FacetDefinition<? extends T> definition = (FacetDefinition<? extends T>) cached(phantasm,
+                                                                                        this);
         return (Phantasm<? super T>) definition.wrap(ruleform, this);
     }
 
@@ -522,8 +525,14 @@ public class ModelImpl implements Model {
         if (ruleform == null) {
             return null;
         }
-        FacetDefinition<? extends T> definition = (FacetDefinition<? extends T>) cached(phantasm);
+        FacetDefinition<? extends T> definition = (FacetDefinition<? extends T>) cached(phantasm,
+                                                                                        this);
         return (R) definition.wrap(ruleform, this);
+    }
+
+    @Override
+    public FacetDefinition<?> cached(Class<? extends Phantasm<?>> phantasm) {
+        return cached(phantasm, this);
     }
 
     private void initializeCurrentPrincipal() {

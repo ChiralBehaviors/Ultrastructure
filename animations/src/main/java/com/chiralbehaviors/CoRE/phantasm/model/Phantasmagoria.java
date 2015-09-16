@@ -41,10 +41,8 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
 
     public final Map<String, AttributeAuthorization<RuleForm, Network>> attributes            = new HashMap<>();
     public final Map<String, NetworkAuthorization<RuleForm>>            childAuthorizations   = new HashMap<>();
-    public final Map<String, NetworkAuthorization<RuleForm>>            children              = new HashMap<>();
     public final NetworkAuthorization<RuleForm>                         facet;
     public final Map<String, XDomainNetworkAuthorization<?, ?>>         xdChildAuthorizations = new HashMap<>();
-    public final Map<String, NetworkAuthorization<?>>                   xdChildren            = new HashMap<>();
 
     public Phantasmagoria(NetworkAuthorization<RuleForm> facet,
                           PhantasmTraversal<RuleForm, Network> traverser) {
@@ -72,7 +70,6 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               NetworkAuthorization<RuleForm> child,
                               String singularFieldName) {
         childAuthorizations.put(fieldName, auth);
-        children.put(fieldName, child);
     }
 
     /* (non-Javadoc)
@@ -84,7 +81,6 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               String fieldName, NetworkAuthorization<?> child,
                               String singularFieldName) {
         xdChildAuthorizations.put(fieldName, auth);
-        xdChildren.put(fieldName, child);
     }
 
     /* (non-Javadoc)
@@ -96,7 +92,6 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               String fieldName,
                               NetworkAuthorization<RuleForm> child) {
         childAuthorizations.put(fieldName, auth);
-        children.put(fieldName, child);
     }
 
     /* (non-Javadoc)
@@ -107,7 +102,6 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               XDomainNetworkAuthorization<?, ?> auth,
                               String fieldName, NetworkAuthorization<?> child) {
         xdChildAuthorizations.put(fieldName, auth);
-        xdChildren.put(fieldName, child);
     }
 
 }

@@ -39,7 +39,7 @@ public class Setter {
         this.parameterType = attribute.getType();
         this.parameterName = Character.toLowerCase(name.charAt(0))
                              + (name.length() == 1 ? "" : name.substring(1));
-        this.fieldName = name;
+        this.fieldName = PhantasmGenerator.toFieldName(name);
         this.childType = null;
     }
 
@@ -50,7 +50,7 @@ public class Setter {
         this.parameterType = parameterType;
         this.parameterName = parameterName;
         this.childType = childType;
-        this.fieldName = baseName;
+        this.fieldName = PhantasmGenerator.toFieldName(baseName);
     }
 
     public ScopedName getAttribute() {

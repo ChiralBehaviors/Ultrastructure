@@ -42,7 +42,7 @@ public class Getter {
         this.methodName = methodName;
         this.returnType = returnType;
         this.childType = childType;
-        this.fieldName = fieldName;
+        this.fieldName = PhantasmGenerator.toFieldName(fieldName);
     }
 
     public ScopedName getAttribute() {

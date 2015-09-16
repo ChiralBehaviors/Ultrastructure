@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.generator;
 
+import java.beans.Introspector;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -53,6 +54,10 @@ public class PhantasmGenerator {
                                 new MappedAttribute(attribute));
                  });
         return mapped;
+    }
+
+    public static String toFieldName(String name) {
+        return Introspector.decapitalize(name.replaceAll("\\s", ""));
     }
 
     private final Configuration configuration;

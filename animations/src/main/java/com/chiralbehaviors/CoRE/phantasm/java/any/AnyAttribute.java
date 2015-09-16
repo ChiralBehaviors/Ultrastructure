@@ -18,24 +18,17 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.java.annotations;
+package com.chiralbehaviors.CoRE.phantasm.java.any;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 
 /**
  * @author hhildebrand
  *
  */
-@Documented
-@Target(METHOD)
-@Retention(RUNTIME)
-public @interface PrimitiveState {
-    Key attribute();
-
-    String fieldName();
+@Facet(classifier = @Key(name = "AnyRelationship") , classification = @Key(name = "AnyAttribute") , workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = Attribute.class)
+public interface AnyAttribute extends ScopedPhantasm<Attribute> {
 }

@@ -28,14 +28,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
+ * 
+ * marks an edge from one existential entity to another, via the authorized
+ * relationship
+ * 
  * @author hhildebrand
  *
  */
 @Documented
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface PrimitiveState {
-    Key attribute();
+public @interface Edge {
 
     String fieldName();
+
+    Class<?>wrappedChildType();
 }

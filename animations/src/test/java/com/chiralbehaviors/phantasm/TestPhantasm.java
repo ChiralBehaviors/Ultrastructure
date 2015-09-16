@@ -47,16 +47,16 @@ import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing2;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing3;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
-import com.chiralbehaviors.phantasm.demo.MavenArtifact;
-import com.chiralbehaviors.phantasm.demo.Thing1;
-import com.chiralbehaviors.phantasm.demo.Thing2;
-import com.chiralbehaviors.phantasm.demo.Thing3;
 
 /**
  * @author hhildebrand
@@ -213,8 +213,6 @@ public class TestPhantasm extends AbstractModelTest {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
         Thing2 thing2 = model.construct(Thing2.class, "tasty", "chips");
         assertNotNull(thing1);
-        assertEquals(thing1, thing1.doSomethingElse());
-        thing1.doSomething("hello");
         assertNotNull(thing1.getRuleform());
         assertEquals(thing1.getRuleform()
                            .getName(),
@@ -222,7 +220,6 @@ public class TestPhantasm extends AbstractModelTest {
         assertNull(thing1.getThing2());
         thing1.setThing2(thing2);
         assertNotNull(thing1.getThing2());
-        assertEquals(thing1, thing1.scopedAccess());
         assertNull(thing1.getPercentage());
         thing1.setPercentage(BigDecimal.ONE);
         assertEquals(BigDecimal.ONE, thing1.getPercentage());
@@ -250,10 +247,10 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(thing2.getThing3s());
         assertEquals(0, thing2.getThing3s()
                               .size());
-        thing2.add(thing3a);
+        thing2.addThing3(thing3a);
         assertEquals(1, thing2.getThing3s()
                               .size());
-        thing2.remove(thing3a);
+        thing2.removeThing3(thing3a);
         assertEquals(0, thing2.getThing3s()
                               .size());
 
@@ -264,46 +261,46 @@ public class TestPhantasm extends AbstractModelTest {
         aFewOfMyFavoriteThings.add(thing3a);
         aFewOfMyFavoriteThings.add(thing3b);
 
-        thing2.add(aFewOfMyFavoriteThings);
+        thing2.addThing3s(aFewOfMyFavoriteThings);
         assertEquals(2, thing2.getThing3s()
                               .size());
-        thing2.remove(aFewOfMyFavoriteThings);
+        thing2.removeThing3s(aFewOfMyFavoriteThings);
         assertEquals(0, thing2.getThing3s()
                               .size());
 
-        assertNull(thing1.getArtifact());
+        assertNull(thing1.getDerivedFrom());
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  "myartifact", "artifact");
         assertEquals("jar", artifact.getType());
         em.flush();
-        thing1.setArtifact(artifact);
+        thing1.setDerivedFrom(artifact);
         em.flush();
-        assertNotNull(thing1.getArtifact());
+        assertNotNull(thing1.getDerivedFrom());
 
-        assertEquals(0, thing2.getArtifacts()
+        assertEquals(0, thing2.getDerivedFroms()
                               .size());
-        thing2.addArtifact(artifact);
-        assertEquals(1, thing2.getArtifacts()
+        thing2.addDerivedFrom(artifact);
+        assertEquals(1, thing2.getDerivedFroms()
                               .size());
-        thing2.removeArtifact(artifact);
-        assertEquals(0, thing2.getArtifacts()
+        thing2.removeDerivedFrom(artifact);
+        assertEquals(0, thing2.getDerivedFroms()
                               .size());
-        thing2.addArtifacts(Arrays.asList(artifact));
-        assertEquals(1, thing2.getArtifacts()
+        thing2.addDerivedFroms(Arrays.asList(artifact));
+        assertEquals(1, thing2.getDerivedFroms()
                               .size());
 
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
                                                   "myartifact2", "artifact2");
         artifact2.setType("jar");
 
-        thing2.setArtifacts(Arrays.asList(artifact2));
-        assertEquals(1, thing2.getArtifacts()
+        thing2.setDerivedFroms(Arrays.asList(artifact2));
+        assertEquals(1, thing2.getDerivedFroms()
                               .size());
-        thing2.addArtifact(artifact);
-        assertEquals(2, thing2.getArtifacts()
+        thing2.addDerivedFrom(artifact);
+        assertEquals(2, thing2.getDerivedFroms()
                               .size());
-        thing2.setArtifacts(Collections.emptyList());
-        assertEquals(0, thing2.getArtifacts()
+        thing2.setDerivedFroms(Collections.emptyList());
+        assertEquals(0, thing2.getDerivedFroms()
                               .size());
 
         assertNotNull(thing1.getScope());

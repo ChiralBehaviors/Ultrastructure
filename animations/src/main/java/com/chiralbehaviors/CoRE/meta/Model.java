@@ -291,7 +291,7 @@ public interface Model {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                        ExistentialRuleform<T, ?> ruleform);
+    <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
+                                                                        ExistentialRuleform<?, ?> ruleform);
 
 }

@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.annotations;
 
-import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
@@ -31,11 +31,22 @@ import java.lang.annotation.Target;
  * @author hhildebrand
  *
  */
+/**
+ * 
+ * Marks the aspect oriented state and behavior associated with a facet
+ * 
+ * @author hhildebrand
+ *
+ */
 @Documented
-@Target(METHOD)
+@Target({ TYPE })
 @Retention(RUNTIME)
-public @interface PrimitiveState {
-    Key attribute();
+public @interface Facet {
+    Key classification();
 
-    String fieldName();
+    Key classifier();
+
+    Class<?>ruleformClass();
+
+    String workspace();
 }

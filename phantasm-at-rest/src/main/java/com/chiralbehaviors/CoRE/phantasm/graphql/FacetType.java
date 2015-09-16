@@ -359,9 +359,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .description(auth.getNotes())
-                                              .dataFetcher(env -> ctx(env).getSingularChild((RuleForm) env.getSource(),
-                                                                                            auth,
-                                                                                            facet))
+                                              .dataFetcher(env -> ctx(env).getSingularChild(facet,
+                                                                                            (RuleForm) env.getSource(),
+                                                                                            auth))
                                               .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
         GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)

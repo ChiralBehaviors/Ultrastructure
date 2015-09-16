@@ -1,13 +1,13 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
+ * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
+ *
  
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,22 +20,22 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.annotations;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 
+ * A namespace scoped (optional) name within a workspace
+ * 
  * @author hhildebrand
  *
  */
-@Documented
-@Target(METHOD)
-@Retention(RUNTIME)
-public @interface PrimitiveState {
-    Key attribute();
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Key {
+    String name();
 
-    String fieldName();
+    String namespace() default "";
 }

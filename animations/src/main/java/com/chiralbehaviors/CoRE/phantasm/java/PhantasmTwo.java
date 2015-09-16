@@ -42,10 +42,10 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
         extends PhantasmCRUD<RuleForm, NetworkRuleform<RuleForm>>
         implements InvocationHandler, ScopedPhantasm<RuleForm> {
-    private final FacetDefinition<RuleForm> definition;
+    private final PhantasmDefinition<RuleForm> definition;
     private final RuleForm                  ruleform;
 
-    public PhantasmTwo(RuleForm ruleform, FacetDefinition<RuleForm> definition,
+    public PhantasmTwo(RuleForm ruleform, PhantasmDefinition<RuleForm> definition,
                        Model model) {
         super(model);
         this.ruleform = ruleform;
@@ -83,7 +83,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         throw new IllegalStateException("This should have never been called");
     }
 
-    public Object getScope(FacetDefinition<RuleForm> facetDefinition) {
+    public Object getScope(PhantasmDefinition<RuleForm> facetDefinition) {
         return model.getWorkspaceModel()
                     .getScoped(facetDefinition.getWorkspace());
     }

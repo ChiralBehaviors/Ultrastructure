@@ -267,45 +267,45 @@ public class FacetImpl implements Facet {
                                                        String.format("get%s",
                                                                      plural),
                                                        listClassName, className,
-                                                       baseName));
+                                                       plural));
             relationshipGetters.add(new Getter(key,
                                                String.format("getImmediate%s",
                                                              plural),
                                                listClassName, className,
-                                               baseName));
+                                               plural));
             relationshipSetters.add(new Setter(key,
                                                String.format("setImmediate%s",
                                                              plural),
                                                listClassName,
                                                String.format("%s",
                                                              pluralParameter),
-                                               className, baseName));
+                                               className, plural));
         } else {
             relationshipGetters.add(new Getter(key,
                                                String.format("get%s", plural),
                                                listClassName, className,
-                                               baseName));
+                                               plural));
             relationshipSetters.add(new Setter(key,
                                                String.format("set%s", plural),
                                                listClassName, pluralParameter,
-                                               className, baseName));
+                                               className, plural));
         }
 
         relationshipSetters.add(new Setter(key,
                                            String.format("add%s", baseName),
                                            className, parameterName, className,
-                                           baseName));
+                                           plural));
         relationshipSetters.add(new Setter(key,
                                            String.format("remove%s", baseName),
                                            className, parameterName, className,
-                                           baseName));
+                                           plural));
         relationshipSetters.add(new Setter(key, String.format("add%s", plural),
                                            listClassName, pluralParameter,
-                                           className, baseName));
+                                           className, plural));
         relationshipSetters.add(new Setter(key,
                                            String.format("remove%s", plural),
                                            listClassName, pluralParameter,
-                                           className, baseName));
+                                           className, plural));
     }
 
     private void resolveRelationships(WorkspacePresentation presentation,

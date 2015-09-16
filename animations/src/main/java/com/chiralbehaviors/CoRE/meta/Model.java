@@ -36,7 +36,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
-import com.chiralbehaviors.CoRE.phantasm.java.FacetDefinition;
+import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 
 /**
@@ -301,6 +301,6 @@ public interface Model {
      * @param phantasm
      * @return
      */
-    FacetDefinition<?> cached(Class<? extends Phantasm<?>> phantasm);
+    PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm);
 
 }

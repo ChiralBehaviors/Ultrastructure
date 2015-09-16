@@ -271,6 +271,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNull(thing1.getDerivedFrom());
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  "myartifact", "artifact");
+        artifact.setType("jar");
         assertEquals("jar", artifact.getType());
         em.flush();
         thing1.setDerivedFrom(artifact);

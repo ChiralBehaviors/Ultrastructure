@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.phantasm.model;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -177,7 +176,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                 .filter(child -> checkREAD(child, networkedModel))
                 .forEach(child -> networkedModel.link(instance,
                                                       model.getEntityManager()
-                                                           .merge(auth.getAuthorizedRelationship()),
+                                                           .merge(auth.getChildRelationship()),
                                                       child,
                                                       model.getCurrentPrincipal()
                                                            .getPrincipal()));
@@ -360,9 +359,6 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         Object value = networkedModel.getAttributeValue(instance,
                                                         authorizedAttribute)
                                      .getValue();
-        if (value instanceof BigDecimal) {
-            value = ((BigDecimal) value).floatValue();
-        }
         return value;
     }
 
@@ -1002,7 +998,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             return instance;
         }
         networkedModel.setImmediateChild(instance, model.getEntityManager()
-                                                        .merge(auth.getAuthorizedRelationship()),
+                                                        .merge(auth.getChildRelationship()),
                                          child, model.getCurrentPrincipal()
                                                      .getPrincipal());
         return instance;
@@ -1129,7 +1125,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                                    authorizedAttribute,
                                                                    networkedModel);
 
-        Object[] values = (Object[]) Array.newInstance(Object.class,
+        Object[] values = (Object[]) Array.newInstance(authorizedAttribute.valueClass(),
                                                        attributeValues.length);
         for (AttributeValue<RuleForm> value : attributeValues) {
             values[value.getSequenceNumber()] = value.getValue();

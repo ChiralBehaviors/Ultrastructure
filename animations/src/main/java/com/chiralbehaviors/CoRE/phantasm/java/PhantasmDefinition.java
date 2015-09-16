@@ -52,7 +52,7 @@ import com.chiralbehaviors.CoRE.relationship.Relationship;
  * @author hhildebrand
  *
  */
-public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
+public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
         extends Phantasmagoria<RuleForm, NetworkRuleform<RuleForm>> {
 
     private static final String GET = "get";
@@ -85,15 +85,15 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                     .getFacetDeclaration(aspect);
     }
 
-    private Map<Class<Phantasm<?>>, FacetDefinition<?>> CACHE = new HashMap<>();
-    private final Facet                                 facetAnnotation;
-    private final Class<Phantasm<RuleForm>>             phantasm;
-    private final UUID                                  workspace;
+    private Map<Class<Phantasm<?>>, PhantasmDefinition<?>> CACHE = new HashMap<>();
+    private final Facet                                    facetAnnotation;
+    private final Class<Phantasm<RuleForm>>                phantasm;
+    private final UUID                                     workspace;
 
     protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
 
     @SuppressWarnings("unchecked")
-    public FacetDefinition(Class<Phantasm<RuleForm>> phantasm, Model model) {
+    public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm, Model model) {
         super((NetworkAuthorization<RuleForm>) facetFrom(phantasm.getAnnotation(Facet.class),
                                                          model),
               new PhantasmTraversal<>(model));
@@ -143,7 +143,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
         return wrap(form, model);
     }
 
-    public FacetDefinition<?> getCached(Class<? extends Phantasm<?>> returnPhantasm) {
+    public PhantasmDefinition<?> getCached(Class<? extends Phantasm<?>> returnPhantasm) {
         return CACHE.get(returnPhantasm);
     }
 
@@ -200,7 +200,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               fieldName,
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
             }
             return state.getChildren(facet, state.getRuleform(), auth)
                         .stream()
@@ -280,11 +280,14 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                 if (auth == null) {
                                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                                   edge.fieldName(),
-                                                                                  state.getRuleform()));
+                                                                                  phantasm.getSimpleName()));
                                 }
-                                return state.addChild(facet,
-                                                      state.getRuleform(), auth,
-                                                      ((Phantasm<RuleForm>) arguments[0]).getRuleform());
+                                return state.addChildren(facet,
+                                                         state.getRuleform(),
+                                                         auth,
+                                                         ((List<Phantasm<RuleForm>>) arguments[0]).stream()
+                                                                                                  .map(r -> r.getRuleform())
+                                                                                                  .collect(Collectors.toList()));
                             });
             } else {
                 processAddAuthorizations(edge, method, ruleformClass);
@@ -303,7 +306,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                 if (auth == null) {
                                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                                   edge.fieldName(),
-                                                                                  state.getRuleform()));
+                                                                                  phantasm.getSimpleName()));
                                 }
                                 return state.addChild(facet,
                                                       state.getRuleform(), auth,
@@ -323,7 +326,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               annotation.fieldName(),
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
             }
             return state.addChild(facet, state.getRuleform(), auth,
                                   ((Phantasm<?>) arguments[0]).getRuleform());
@@ -339,7 +342,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               annotation.fieldName(),
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
             }
             return state.addChildren(facet, state.getRuleform(), auth,
                                      ((List<Phantasm<?>>) arguments[0]).stream()
@@ -363,7 +366,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               fieldName,
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
             }
             return state.getChildren(facet, state.getRuleform(), auth)
                         .stream()
@@ -391,7 +394,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                 if (auth == null) {
                                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                                   edge.fieldName(),
-                                                                                  state.getRuleform()));
+                                                                                  phantasm.getSimpleName()));
                                 }
                                 return state.getChildren(facet,
                                                          state.getRuleform(),
@@ -409,7 +412,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                 if (auth == null) {
                                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                                   edge.fieldName(),
-                                                                                  state.getRuleform()));
+                                                                                  phantasm.getSimpleName()));
                                 }
                                 return state.getImmediateChildren(facet,
                                                                   state.getRuleform(),
@@ -436,7 +439,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               fieldName,
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
             }
             return state.getModel()
                         .wrap(phantasmReturned,
@@ -451,13 +454,19 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             throw new IllegalStateException(String.format("getter method has arguments %s",
                                                           method.toGenericString()));
         }
-        methods.put(method,
-                    (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
-                     Object[] arguments) -> state.getAttributeValue(facet,
-                                                                    state.getRuleform(),
-                                                                    attributes.get(annotation.fieldName())));
+        methods.put(method, (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
+                             Object[] arguments) -> {
+            AttributeAuthorization<RuleForm, NetworkRuleform<RuleForm>> auth = attributes.get(annotation.fieldName());
+            if (auth == null) {
+                throw new IllegalStateException(String.format("field %s does not exist on %s",
+                                                              annotation.fieldName(),
+                                                              phantasm.getSimpleName()));
+            }
+            return state.getAttributeValue(facet, state.getRuleform(), auth);
+        });
     }
 
+    @SuppressWarnings("unchecked")
     private void processPrimitiveSetter(PrimitiveState annotation,
                                         Method method) {
         methods.put(method, (PhantasmTwo<RuleForm> state, WorkspaceScope scope,
@@ -466,10 +475,20 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               annotation.fieldName(),
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
+            }
+            if (arguments[0] instanceof List) {
+                return state.setAttributeValue(facet, state.getRuleform(), auth,
+                                               (List<?>) arguments[0]);
+            } else if (arguments[0] instanceof Object[]) {
+                return state.setAttributeValue(facet, state.getRuleform(), auth,
+                                               (Object[]) arguments[0]);
+            } else if (arguments[0] instanceof Map) {
+                return state.setAttributeValue(facet, state.getRuleform(), auth,
+                                               (Map<String, Object>) arguments[0]);
             }
             return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                           (List<?>) arguments[0]);
+                                           arguments[0]);
         });
     }
 
@@ -506,7 +525,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                 if (auth == null) {
                                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                                   edge.fieldName(),
-                                                                                  state.getRuleform()));
+                                                                                  phantasm.getSimpleName()));
                                 }
                                 return state.removeChild(facet,
                                                          state.getRuleform(),
@@ -533,7 +552,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               fieldName,
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
             }
             return state.removeChild(facet, state.getRuleform(), auth,
                                      ((Phantasm<?>) arguments[0]).getRuleform());
@@ -554,7 +573,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               fieldName,
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
             }
             return state.removeChildren(facet, state.getRuleform(), auth,
                                         ((List<Phantasm<?>>) arguments[0]).stream()
@@ -577,7 +596,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               edge.fieldName(),
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
             }
             return state.setChildren(facet, state.getRuleform(), auth,
                                      ((List<Phantasm<?>>) arguments[0]).stream()
@@ -601,7 +620,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),
-                                                                  state.getRuleform()));
+                                                                  phantasm.getSimpleName()));
                 }
                 return state.setChildren(facet, state.getRuleform(), auth,
                                          ((List<Phantasm<RuleForm>>) arguments[0]).stream()
@@ -628,7 +647,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                 if (auth == null) {
                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                   edge.fieldName(),
-                                                                  state.getRuleform()));
+                                                                  phantasm.getSimpleName()));
                 }
                 return state.setSingularChild(facet, state.getRuleform(), auth,
                                               ((Phantasm<RuleForm>) arguments[0]).getRuleform());
@@ -648,7 +667,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
             if (auth == null) {
                 throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                               fieldName,
-                                                              state.getRuleform()));
+                                                              phantasm.getSimpleName()));
             }
             return state.setSingularChild(facet, state.getRuleform(), auth,
                                           ((Phantasm<?>) arguments[0]).getRuleform());
@@ -678,7 +697,7 @@ public class FacetDefinition<RuleForm extends ExistentialRuleform<RuleForm, Netw
                                 if (auth == null) {
                                     throw new IllegalStateException(String.format("field %s does not exist on %s",
                                                                                   edge.fieldName(),
-                                                                                  state.getRuleform()));
+                                                                                  phantasm.getSimpleName()));
                                 }
                                 return state.wrap(phantasmReturned,
                                                   state.getSingularChild(facet,

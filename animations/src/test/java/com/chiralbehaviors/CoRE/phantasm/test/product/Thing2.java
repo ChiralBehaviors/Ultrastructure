@@ -39,47 +39,47 @@ public interface Thing2 extends ScopedPhantasm<Product> {
     @Edge(fieldName = "thing1", wrappedChildType = Thing1.class)
     Thing1 getThing1();
 
-    @Edge(fieldName = "derivedFrom", wrappedChildType = MavenArtifact.class)
+    @Edge(fieldName = "derivedFroms", wrappedChildType = MavenArtifact.class)
     List<MavenArtifact> getDerivedFroms();
 
-    @Edge(fieldName = "thing3", wrappedChildType = Thing3.class)
+    @Edge(fieldName = "thing3s", wrappedChildType = Thing3.class)
     List<Thing3> getImmediateThing3s();
 
     @Inferred
-    @Edge(fieldName = "thing3", wrappedChildType = Thing3.class)
+    @Edge(fieldName = "thing3s", wrappedChildType = Thing3.class)
     List<Thing3> getThing3s();
 
     @Edge(fieldName = "thing1", wrappedChildType = Thing1.class)
     void setThing1(Thing1 thing1);
 
-    @Edge(fieldName = "derivedFrom", wrappedChildType = MavenArtifact.class)
+    @Edge(fieldName = "derivedFroms", wrappedChildType = MavenArtifact.class)
     void setDerivedFroms(List<MavenArtifact> mavenArtifacts);
 
-    @Edge(fieldName = "derivedFrom", wrappedChildType = MavenArtifact.class)
+    @Edge(fieldName = "derivedFroms", wrappedChildType = MavenArtifact.class)
     void addDerivedFrom(MavenArtifact mavenArtifact);
 
-    @Edge(fieldName = "derivedFrom", wrappedChildType = MavenArtifact.class)
+    @Edge(fieldName = "derivedFroms", wrappedChildType = MavenArtifact.class)
     void removeDerivedFrom(MavenArtifact mavenArtifact);
 
-    @Edge(fieldName = "derivedFrom", wrappedChildType = MavenArtifact.class)
+    @Edge(fieldName = "derivedFroms", wrappedChildType = MavenArtifact.class)
     void addDerivedFroms(List<MavenArtifact> mavenArtifacts);
 
-    @Edge(fieldName = "derivedFrom", wrappedChildType = MavenArtifact.class)
+    @Edge(fieldName = "derivedFroms", wrappedChildType = MavenArtifact.class)
     void removeDerivedFroms(List<MavenArtifact> mavenArtifacts);
 
-    @Edge(fieldName = "thing3", wrappedChildType = Thing3.class)
+    @Edge(fieldName = "thing3s", wrappedChildType = Thing3.class)
     void setImmediateThing3s(List<Thing3> thing3s);
 
-    @Edge(fieldName = "thing3", wrappedChildType = Thing3.class)
+    @Edge(fieldName = "thing3s", wrappedChildType = Thing3.class)
     void addThing3(Thing3 thing3);
 
-    @Edge(fieldName = "thing3", wrappedChildType = Thing3.class)
+    @Edge(fieldName = "thing3s", wrappedChildType = Thing3.class)
     void removeThing3(Thing3 thing3);
 
-    @Edge(fieldName = "thing3", wrappedChildType = Thing3.class)
+    @Edge(fieldName = "thing3s", wrappedChildType = Thing3.class)
     void addThing3s(List<Thing3> thing3s);
 
-    @Edge(fieldName = "thing3", wrappedChildType = Thing3.class)
+    @Edge(fieldName = "thing3s", wrappedChildType = Thing3.class)
     void removeThing3s(List<Thing3> thing3s);
 
 }

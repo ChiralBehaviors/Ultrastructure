@@ -26,6 +26,8 @@ import static com.chiralbehaviors.CoRE.attribute.Attribute.FIND_CLASSIFIED_ATTRI
 import static com.chiralbehaviors.CoRE.attribute.Attribute.GET_CHILD;
 import static com.chiralbehaviors.CoRE.attribute.Attribute.GET_CHILD_RULES_BY_RELATIONSHIP;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
@@ -445,5 +447,28 @@ public class Attribute
 
     public void setValueType(ValueType valueType) {
         this.valueType = valueType;
+    }
+
+    /**
+     * @return
+     */
+    public Class<?> valueClass() {
+        switch (valueType) {
+            case BINARY:
+                return byte[].class;
+            case BOOLEAN:
+                return Boolean.class;
+            case INTEGER:
+                return Integer.class;
+            case NUMERIC:
+                return BigDecimal.class;
+            case TEXT:
+                return String.class;
+            case TIMESTAMP:
+                return Timestamp.class;
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              valueType));
+        }
     }
 }

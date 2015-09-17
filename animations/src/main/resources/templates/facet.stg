@@ -1,0 +1,69 @@
+group phantasm;
+
+key(scoped) ::=  <<@Key(<if(scoped.namespace)>namespace="<scoped.namespace>", <endif>name="<scoped.name>")>>
+
+primitiveGetter(getter) ::= <<
+    @PrimitiveState(fieldName="<getter.fieldName>", attribute=<key(getter.attribute)>)
+    <getter.returnType> <getter.methodName>();
+
+>>
+
+primitiveSetter(setter) ::= <<
+    @PrimitiveState(fieldName="<setter.fieldName>", attribute=<key(setter.attribute)>)
+    void <setter.methodName>(<setter.parameterType> <setter.parameterName>);
+
+>>
+
+inferredRelationshipGetter(getter) ::= <<
+    @Inferred
+    @Edge(fieldName="<getter.fieldName>",
+           wrappedChildType = <getter.childType>.class)
+    <getter.returnType> <getter.methodName>();
+
+>>
+
+relationshipGetter(getter) ::= <<
+    @Edge(fieldName="<getter.fieldName>",
+           wrappedChildType = <getter.childType>.class)
+    <getter.returnType> <getter.methodName>();
+
+>>
+
+relationshipSetter(setter) ::= <<
+    @Edge(fieldName="<setter.fieldName>",
+           wrappedChildType = <setter.childType>.class)
+    void <setter.methodName>(<setter.parameterType> <setter.parameterName>);
+
+>>
+
+facet(facet) ::= <<
+/**
+ * Generated Phantasm
+ */
+package <facet.packageName>;
+
+import com.chiralbehaviors.CoRE.phantasm.*;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.*;
+import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.Attribute;
+import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+<facet.imports: {dec| import <dec>;<\n>}>
+
+@SuppressWarnings("unused")
+@Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>,
+        ruleformClass=<facet.ruleformType>.class,
+        workspace = <facet.uri>)
+public interface <facet.className> extends ScopedPhantasm\<<facet.ruleformType>\> {
+
+<facet.primitiveGetters: {getter| <primitiveGetter(getter)><\n>}>
+<facet.primitiveSetters: {setter| <primitiveSetter(setter)><\n>}>
+<facet.relationshipGetters: {getter| <relationshipGetter(getter)><\n>}>
+<facet.inferredRelationshipGetters: {getter| <inferredRelationshipGetter(getter)><\n>}>
+<facet.relationshipSetters: {setter| <relationshipSetter(setter)><\n>}>
+}
+>>

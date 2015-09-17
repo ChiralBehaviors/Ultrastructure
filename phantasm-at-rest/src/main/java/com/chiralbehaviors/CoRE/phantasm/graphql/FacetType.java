@@ -33,6 +33,7 @@ import static graphql.schema.GraphQLObjectType.newObject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -223,9 +224,15 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .description(attribute.getDescription())
-                                              .dataFetcher(env -> ctx(env).getAttributeValue(facet,
-                                                                                             (RuleForm) env.getSource(),
-                                                                                             auth))
+                                              .dataFetcher(env -> {
+                                                  Object value = ctx(env).getAttributeValue(facet,
+                                                                                            (RuleForm) env.getSource(),
+                                                                                            auth);
+                                                  if (value instanceof BigDecimal) {
+                                                      return ((BigDecimal) value).floatValue(); // TODO until we get this solved.
+                                                  }
+                                                  return value;
+                                              })
                                               .build());
 
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
@@ -359,9 +366,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .description(auth.getNotes())
-                                              .dataFetcher(env -> ctx(env).getSingularChild((RuleForm) env.getSource(),
-                                                                                            auth,
-                                                                                            facet))
+                                              .dataFetcher(env -> ctx(env).getSingularChild(facet,
+                                                                                            (RuleForm) env.getSource(),
+                                                                                            auth))
                                               .build());
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
         GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)

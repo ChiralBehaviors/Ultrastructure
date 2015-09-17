@@ -167,6 +167,11 @@ abstract public class NetworkAuthorization<RuleForm extends ExistentialRuleform<
         this.name = name;
     }
 
+    public String toFacetString() {
+        return String.format("%s.%s", getClassifier().getName(),
+                             getClassification().getName());
+    }
+
     @Override
     public String toString() {
         return String.format("NetworkAuthorization [name=%s, classifier=%s, classification=%s, cardinality=%s, childRelationship=%s, AuthorizedRelationship=%s, AuthorizedParent=%s, groupingAgency=%s]",

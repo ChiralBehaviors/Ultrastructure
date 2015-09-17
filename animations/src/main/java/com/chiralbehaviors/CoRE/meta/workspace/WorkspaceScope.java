@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.annotations.Key;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 
 /**
  * @author hhildebrand

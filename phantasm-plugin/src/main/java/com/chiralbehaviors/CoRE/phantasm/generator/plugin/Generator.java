@@ -24,8 +24,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import com.chiralbehaviors.CoRE.phantasm.generator.Configuration;
-import com.chiralbehaviors.CoRE.phantasm.generator.PhantasmGenerator;
+import com.chiralbehaviors.CoRE.phantasm.java.generator.Configuration;
+import com.chiralbehaviors.CoRE.phantasm.java.generator.PhantasmGenerator;
 
 /**
  * @author hhildebrand

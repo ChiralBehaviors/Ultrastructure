@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>phantasm-generator</artifactId>
+            <artifactId>animations</artifactId>
         </dependency>
     </dependencies>
     <build>

@@ -36,6 +36,7 @@ import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 
 /**
@@ -291,7 +292,15 @@ public interface Model {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                        ExistentialRuleform<T, ?> ruleform);
+    <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
+                                                                        ExistentialRuleform<?, ?> ruleform);
+
+    /**
+     * Answer the cached facet definition for a phantasm class
+     * 
+     * @param phantasm
+     * @return
+     */
+    PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm);
 
 }

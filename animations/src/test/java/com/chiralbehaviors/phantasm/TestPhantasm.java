@@ -207,7 +207,7 @@ public class TestPhantasm extends AbstractModelTest {
                                          kernel.getHadMember()));
     }
 
-    @Test
+    // @Test
     public void testDemo() throws Exception {
 
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");

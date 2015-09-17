@@ -120,7 +120,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     public static Ruleform find(EntityManager em, Ruleform ruleform) {
-        return em.find(ruleform.getClass(), ruleform.id);
+        return em.find(ruleform.getClass(), ruleform.getId());
     }
 
     public static List<Field> getInheritedFields(Class<?> type) {
@@ -230,47 +230,51 @@ abstract public class Ruleform implements Serializable, Cloneable {
                 }
             }
         }
+        mappedValue.setId(ruleform.getId());
         mappedValue.setNotes("Mapped frontier stand in");
         return mappedValue;
     }
 
     private static Ruleform map(EntityManager em, Ruleform ruleform,
                                 Map<UUID, Ruleform> mapped) {
-        if (mapped.containsKey(ruleform.id)) {
-            return mapped.get(ruleform.id);
+        if (mapped.containsKey(ruleform.getId())) {
+            Ruleform returned = mapped.get(ruleform.getId());
+            return returned;
         }
 
         if (em.contains(ruleform)) {
-            mapped.put(ruleform.id, ruleform);
+            mapped.put(ruleform.getId(), ruleform);
             return ruleform;
         }
 
-        Ruleform reference = find(em, ruleform);
         BiConsumer<Ruleform, Field> slicer = (r, f) -> slice(r, f, em, mapped);
+        Ruleform reference = find(em, ruleform);
         if (reference != null) {
             Ruleform merged = em.merge(ruleform);
-            mapped.put(ruleform.id, em.merge(ruleform));
+            mapped.put(ruleform.getId(), merged);
             traverse(merged, slicer);
+            return merged;
         } else {
-            mapped.put(ruleform.id,
-                       em.getReference(ruleform.getClass(), ruleform.id));
+            Ruleform selfReference = em.getReference(ruleform.getClass(),
+                                                     ruleform.getId());
+            mapped.put(ruleform.getId(), selfReference);
             traverse(ruleform, slicer);
             em.persist(ruleform);
+            return selfReference;
         }
-
-        return mapped.get(ruleform.id);
     }
 
     private static Ruleform map(Ruleform value,
                                 Predicate<Ruleform> systemDefinition,
                                 Map<UUID, Ruleform> sliced,
                                 Set<UUID> traversed) {
-        Ruleform mappedValue = sliced.get(value.id);
+        Ruleform mappedValue = sliced.get(value.getId());
         if (mappedValue != null) {
             // this value has already been determined to be part of another system
             return mappedValue;
         }
-        if (!traversed.add(value.id)) {
+        value = Ruleform.initializeAndUnproxy(value);
+        if (!traversed.add(value.getId())) {
             // We've already traversed this value
             return value;
         }
@@ -285,8 +289,8 @@ abstract public class Ruleform implements Serializable, Cloneable {
         mappedValue = asFrontier(value);
 
         // Mapped value has the same id, but null fields for everything else
-        mappedValue.setId(value.id);
-        sliced.put(value.id, mappedValue);
+        mappedValue.setId(value.getId());
+        sliced.put(value.getId(), mappedValue);
         return mappedValue;
     }
 
@@ -304,7 +308,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
                                                           field),
                                             e);
         }
-        if (value != null && !ruleform.id.equals(value.id)) {
+        if (value != null && ruleform != value) {
             Ruleform mappedValue = map(em, value, mapped);
             if (mappedValue == null) {
                 throw new IllegalStateException(String.format("%s mapped to null",
@@ -330,8 +334,8 @@ abstract public class Ruleform implements Serializable, Cloneable {
                               Predicate<Ruleform> systemDefinition,
                               Map<UUID, Ruleform> sliced, Set<UUID> traversed) {
         try {
-            Ruleform value = (Ruleform) initializeAndUnproxy(field.get(ruleform));
-            if (value != null && !ruleform.id.equals(value.id)) {
+            Ruleform value = (Ruleform) field.get(ruleform);
+            if (value != null && ruleform != value) {
                 field.set(ruleform,
                           map(value, systemDefinition, sliced, traversed));
             }
@@ -516,7 +520,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return String.format("%s[%s]", getClass(), id);
+        return String.format("%s[%s]", getClass(), getId());
     }
 
     public void update(Triggers triggers) {

@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
@@ -136,10 +138,16 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     public Phantasm construct(ExistentialRuleform ruleform, Model model,
                               Agency updatedBy) {
         RuleForm form = (RuleForm) ruleform;
+        EntityManager em = model.getEntityManager();
 
         model.getNetworkedModel(ruleform)
-             .initialize(form, new Aspect(facet.getClassifier(),
-                                          facet.getClassification()));
+             .initialize(form, new Aspect(em.getReference(Relationship.class,
+                                                          facet.getClassifier()
+                                                               .getId()),
+                                          em.getReference(facet.getClassification()
+                                                               .getClass(),
+                                                          facet.getClassification()
+                                                               .getId())));
         return wrap(form, model);
     }
 

@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.model;
 import java.beans.Introspector;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
@@ -91,7 +92,6 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
          * Visit the multiple child xd authorization
          * 
          * @param facet
-         *            TODO
          * @param auth
          *            - the authorization
          * @param fieldName
@@ -99,7 +99,6 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
          * @param child
          *            - the child facet
          * @param singularFieldName
-         *            TODO
          */
         void visitChildren(NetworkAuthorization<RuleForm> facet,
                            XDomainNetworkAuthorization<?, ?> auth,
@@ -137,8 +136,8 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
 
     }
 
-    public static NetworkAuthorization<?> resolveFrom(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
-                                                      Model model) {
+    private static NetworkAuthorization<?> resolveFrom(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
+                                                       Model model) {
         Aspect<?> aspect = new Aspect<>(auth.getFromRelationship(),
                                         auth.getFromParent());
         @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -151,8 +150,8 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
         return facet;
     }
 
-    public static NetworkAuthorization<?> resolveTo(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
-                                                    Model model) {
+    private static NetworkAuthorization<?> resolveTo(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
+                                                     Model model) {
         Aspect<?> aspect = new Aspect<>(auth.getToRelationship(),
                                         auth.getToParent());
         @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -219,6 +218,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
 
         for (AttributeAuthorization<RuleForm, Network> auth : networkedModel.getAttributeAuthorizations(facet,
                                                                                                         false)) {
+            auth = Ruleform.initializeAndUnproxy(auth);
             visitor.visit(facet, auth, toFieldName(auth.getAuthorizedAttribute()
                                                        .getName()));
         }
@@ -233,10 +233,12 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
                                              facet.getClassification());
         for (AgencyLocationAuthorization auth : locationModel.getLocationAgencyAuths(aspect,
                                                                                      false)) {
+            auth = Ruleform.initializeAndUnproxy(auth);
             traverseXdAuth(facet, auth, resolveFrom(auth, model), visitor);
         }
         for (ProductLocationAuthorization auth : locationModel.getLocationProductAuths(aspect,
                                                                                        false)) {
+            auth = Ruleform.initializeAndUnproxy(auth);
             traverseXdAuth(facet, auth, resolveFrom(auth, model), visitor);
         }
     }
@@ -249,8 +251,10 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
                                                facet.getClassification());
         for (NetworkAuthorization<RuleForm> auth : networkedModel.getNetworkAuthorizations(aspect,
                                                                                            false)) {
+            auth = Ruleform.initializeAndUnproxy(auth);
             NetworkAuthorization<RuleForm> child = resolve(auth,
                                                            networkedModel);
+            child = Ruleform.initializeAndUnproxy(child);
             String fieldName = toFieldName(auth.getName());
             if (auth.getCardinality() == Cardinality.N) {
                 visitor.visitChildren(facet, auth, English.plural(fieldName),
@@ -302,6 +306,8 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
                                 NetworkAuthorization<?> child,
                                 PhantasmVisitor<RuleForm, Network> visitor) {
         String fieldName = toFieldName(auth.getName());
+        auth = Ruleform.initializeAndUnproxy(auth);
+        child = Ruleform.initializeAndUnproxy(child);
         if (auth.getCardinality() == Cardinality.N) {
             visitor.visitChildren(facet, auth, English.plural(fieldName), child,
                                   fieldName);

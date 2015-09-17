@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -46,7 +47,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
 
     public Phantasmagoria(NetworkAuthorization<RuleForm> facet,
                           PhantasmTraversal<RuleForm, Network> traverser) {
-        this.facet = facet;
+        this.facet = Ruleform.initializeAndUnproxy(facet);
         traverser.traverse(facet, this);
     }
 

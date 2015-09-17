@@ -551,6 +551,7 @@ public class Animations implements Triggers {
         clearSequences();
         modifiedServices.clear();
         jobs.clear();
+        attributeValues.clear();
     }
 
     private void validateAttributeValues() {

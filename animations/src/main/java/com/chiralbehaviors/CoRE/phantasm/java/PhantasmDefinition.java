@@ -141,13 +141,8 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
         EntityManager em = model.getEntityManager();
 
         model.getNetworkedModel(ruleform)
-             .initialize(form, new Aspect(em.getReference(Relationship.class,
-                                                          facet.getClassifier()
-                                                               .getId()),
-                                          em.getReference(facet.getClassification()
-                                                               .getClass(),
-                                                          facet.getClassification()
-                                                               .getId())));
+             .initialize(form, new Aspect(em.merge(facet.getClassifier()),
+                                          em.merge(facet.getClassification())));
         return wrap(form, model);
     }
 

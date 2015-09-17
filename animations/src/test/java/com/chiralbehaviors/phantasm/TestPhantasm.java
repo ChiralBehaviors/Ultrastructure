@@ -38,8 +38,9 @@ import java.util.Map;
 
 import javax.persistence.TypedQuery;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.meta.Aspect;
@@ -64,11 +65,20 @@ import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
  */
 public class TestPhantasm extends AbstractModelTest {
 
-    @Before
-    public void before() throws Exception {
-        WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
-                                   model);
-        em.flush();
+    @BeforeClass
+    public static void before() throws Exception {
+        em.getTransaction()
+          .begin();
+        try {
+            WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
+                                       model);
+            em.getTransaction()
+              .commit();
+        } catch (IllegalStateException e) {
+            LoggerFactory.getLogger(TestPhantasm.class)
+                         .warn(String.format("Not loading thing workspace: %s",
+                                             e.getMessage()));
+        }
     }
 
     @Test
@@ -207,7 +217,7 @@ public class TestPhantasm extends AbstractModelTest {
                                          kernel.getHadMember()));
     }
 
-    // @Test
+    @Test
     public void testDemo() throws Exception {
 
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");

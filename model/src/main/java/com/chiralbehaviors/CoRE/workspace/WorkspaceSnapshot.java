@@ -53,7 +53,7 @@ import com.hellblazer.utils.collections.OaHashSet;
  * @author hhildebrand
  *
  */
-@JsonPropertyOrder({ "definingProduct", "frontier", "ruleforms" })
+@JsonPropertyOrder({ "frontier", "definingProduct", "ruleforms" })
 public class WorkspaceSnapshot {
     private final static Logger log = LoggerFactory.getLogger(WorkspaceSnapshot.class);
 
@@ -127,11 +127,8 @@ public class WorkspaceSnapshot {
         Predicate<Ruleform> systemDefinition = traversing -> sameWorkspace(traversing);
 
         this.ruleforms = new ArrayList<>(auths.size());
-        Set<UUID> included = new OaHashSet<>(1024);
         Map<UUID, Ruleform> exits = new HashMap<>();
         Set<UUID> traversed = new OaHashSet<UUID>(1024);
-
-        included.add(definingProduct.getId());
 
         for (WorkspaceAuthorization auth : auths) {
             if (!auth.getDefiningProduct()
@@ -143,7 +140,6 @@ public class WorkspaceSnapshot {
                                                               definingProduct.getName()));
             }
             Ruleform ruleform = Ruleform.initializeAndUnproxy(auth.getRuleform(em));
-            included.add(ruleform.getId());
             ruleforms.add(ruleform);
         }
 
@@ -236,8 +232,14 @@ public class WorkspaceSnapshot {
     public void retarget(EntityManager em) {
         Map<UUID, Ruleform> theReplacements = new HashMap<>();
         for (Ruleform exit : frontier) {
-            theReplacements.put(exit.getId(),
-                                em.find(exit.getClass(), exit.getId()));
+            Ruleform someDudeIKnow = em.find(exit.getClass(), exit.getId());
+            if (someDudeIKnow == null) {
+                throw new IllegalStateException(String.format("Workspace: %s, unable to locate frontier: %s:%s",
+                                                              definingProduct.getName(),
+                                                              exit,
+                                                              exit.getId()));
+            }
+            theReplacements.put(exit.getId(), someDudeIKnow);
         }
         definingProduct = Ruleform.smartMerge(em, definingProduct,
                                               theReplacements);

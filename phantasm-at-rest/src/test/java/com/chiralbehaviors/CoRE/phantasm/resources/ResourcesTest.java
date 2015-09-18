@@ -202,35 +202,6 @@ public class ResourcesTest extends ThingWorkspaceTest {
     }
 
     @Test
-    public void testInstancesSelect() throws Exception {
-        URL url;
-        Object jsonObject;
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        thing1.setURI("http://example.com");
-        thing2.setThing1(thing1);
-        thing1.setThing2(thing2);
-        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
-                                                                application.getPort()));
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/instances?select=;a=URI",
-                                    application.getPort(),
-                                    scope.lookup("kernel", "IsA")
-                                         .getId()
-                                         .toString(),
-                                    scope.lookup("Thing1")
-                                         .getId()
-                                         .toString()));
-
-        jsonObject = JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(jsonObject);
-        JsonLdProcessor.normalize(jsonObject, options);
-        JsonLdProcessor.compact(jsonObject, new HashMap<>(), options);
-        JsonLdProcessor.flatten(jsonObject, new HashMap<>(), options);
-        JsonLdProcessor.expand(jsonObject, options);
-    }
-
-    @Test
     public void testLookupWorkspace() throws Exception {
         URL url = new URL(String.format("http://localhost:%s/json-ld/workspace/%s",
                                         application.getPort(),
@@ -273,40 +244,5 @@ public class ResourcesTest extends ThingWorkspaceTest {
         URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform",
                                         application.getPort()));
         JsonUtils.fromInputStream(url.openStream());
-    }
-
-    @Test
-    public void testSelect() throws Exception {
-        URL url;
-        Object jsonObject;
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        thing1.setURI("http://example.com");
-        thing2.setThing1(thing1);
-        thing1.setThing2(thing2);
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 "myartifact", "artifact");
-        artifact.setType("jar");
-        thing2.addDerivedFrom(artifact);
-        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
-                                                                application.getPort()));
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s?select=thing2/derivedFroms;a=description;a=name",
-                                    application.getPort(),
-                                    scope.lookup("kernel", "IsA")
-                                         .getId()
-                                         .toString(),
-                                    scope.lookup("Thing1")
-                                         .getId()
-                                         .toString(),
-                                    thing1.getRuleform()
-                                          .getId()));
-
-        jsonObject = JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(jsonObject);
-        JsonLdProcessor.normalize(jsonObject, options);
-        JsonLdProcessor.compact(jsonObject, new HashMap<>(), options);
-        JsonLdProcessor.flatten(jsonObject, new HashMap<>(), options);
-        JsonLdProcessor.expand(jsonObject, options);
     }
 }

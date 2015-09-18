@@ -428,7 +428,7 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      */
     List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
 
-    NetworkAuthorization<RuleForm> getFacetDeclaration(Aspect<RuleForm> aspect);
+    NetworkAuthorization<RuleForm> getFacetDeclaration(@SuppressWarnings("rawtypes") Aspect aspect);
 
     /**
      * Answer the list of network authorizations that represent a facet defined

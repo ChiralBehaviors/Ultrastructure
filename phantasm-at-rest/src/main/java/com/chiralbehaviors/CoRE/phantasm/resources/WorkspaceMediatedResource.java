@@ -39,7 +39,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContext;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
@@ -88,7 +88,10 @@ public class WorkspaceMediatedResource extends TransactionalResource {
             @SuppressWarnings({ "unchecked", "rawtypes" })
             Aspect<?> aspect = new Aspect((Relationship) relationship,
                                           (ExistentialRuleform) ruleform);
-            return Response.seeOther(Facet.getAllInstancesIri(aspect, uriInfo))
+            return Response.seeOther(FacetContext.getAllInstancesIri(FacetContext.getFacet(aspect,
+                                                                                           readOnlyModel,
+                                                                                           uriInfo).facet,
+                                                                     uriInfo))
                            .build();
         });
     }
@@ -120,7 +123,10 @@ public class WorkspaceMediatedResource extends TransactionalResource {
             @SuppressWarnings({ "unchecked", "rawtypes" })
             Aspect<?> aspect = new Aspect((Relationship) relationship,
                                           (ExistentialRuleform) ruleform);
-            return Response.seeOther(Facet.getContextIri(aspect, uriInfo))
+            return Response.seeOther(FacetContext.getContextIri(FacetContext.getFacet(aspect,
+                                                                                      readOnlyModel,
+                                                                                      uriInfo).facet,
+                                                                uriInfo))
                            .build();
         });
     }
@@ -154,8 +160,10 @@ public class WorkspaceMediatedResource extends TransactionalResource {
             @SuppressWarnings({ "unchecked", "rawtypes" })
             Aspect<?> aspect = new Aspect((Relationship) relationship,
                                           (ExistentialRuleform) ruleform);
-            return Response.seeOther(Facet.getInstanceIri(aspect, instance,
-                                                          uriInfo, selection))
+            return Response.seeOther(FacetContext.getInstanceIri(aspect,
+                                                                 instance,
+                                                                 uriInfo,
+                                                                 selection))
                            .build();
         });
     }
@@ -188,8 +196,8 @@ public class WorkspaceMediatedResource extends TransactionalResource {
             @SuppressWarnings({ "unchecked", "rawtypes" })
             Aspect<?> aspect = new Aspect((Relationship) relationship,
                                           (ExistentialRuleform) ruleform);
-            return Response.seeOther(Facet.getFullTermIri(aspect, term,
-                                                          uriInfo))
+            return Response.seeOther(FacetContext.getFullTermIri(aspect, term,
+                                                                 uriInfo))
                            .build();
         });
     }

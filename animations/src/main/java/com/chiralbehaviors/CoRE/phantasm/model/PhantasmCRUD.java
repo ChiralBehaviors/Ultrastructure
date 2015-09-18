@@ -106,7 +106,9 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
 
         networkedModel.link(instance, model.getEntityManager()
-                                           .merge(auth.getChildRelationship()),
+                                           .getReference(Relationship.class,
+                                                         auth.getChildRelationship()
+                                                             .getId()),
                             child, model.getCurrentPrincipal()
                                         .getPrincipal());
         return instance;
@@ -184,7 +186,9 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                 .filter(child -> checkREAD(child, networkedModel))
                 .forEach(child -> networkedModel.link(instance,
                                                       model.getEntityManager()
-                                                           .merge(auth.getChildRelationship()),
+                                                           .getReference(Relationship.class,
+                                                                         auth.getChildRelationship()
+                                                                             .getId()),
                                                       child,
                                                       model.getCurrentPrincipal()
                                                            .getPrincipal()));
@@ -332,7 +336,8 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                             e);
         }
         networkedModel.initialize(instance, model.getEntityManager()
-                                                 .merge(facet),
+                                                 .getReference(facet.getClass(),
+                                                               facet.getId()),
                                   model.getCurrentPrincipal()
                                        .getPrincipal());
         if (!checkInvoke(facet, instance)) {
@@ -899,13 +904,14 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             model.getEntityManager()
                  .remove(childLink);
         }
-        Relationship merged = model.getEntityManager()
-                                   .getReference(Relationship.class,
-                                                 auth.getChildRelationship()
-                                                     .getId());
+        Relationship reference = model.getEntityManager()
+                                      .getReference(Relationship.class,
+                                                    auth.getChildRelationship()
+                                                        .getId());
         children.stream()
                 .filter(child -> checkREAD(child, networkedModel))
-                .forEach(child -> networkedModel.link(instance, merged, child,
+                .forEach(child -> networkedModel.link(instance, reference,
+                                                      child,
                                                       model.getCurrentPrincipal()
                                                            .getPrincipal()));
         return instance;

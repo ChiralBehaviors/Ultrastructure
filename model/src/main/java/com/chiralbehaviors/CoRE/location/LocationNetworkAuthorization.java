@@ -45,13 +45,13 @@ public class LocationNetworkAuthorization
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "authorized_parent")
     private Location authorizedParent;
 
     // bi-directional many-to-one association to Event
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "classification")
     private Location classification;
 

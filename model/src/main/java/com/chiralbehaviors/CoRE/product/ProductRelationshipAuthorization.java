@@ -44,13 +44,13 @@ public class ProductRelationshipAuthorization
     private static final long serialVersionUID = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "from_parent")
     private Product fromParent;
 
     // bi-directional many-to-one association to AgencyProduct
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "to_parent")
     private Relationship toParent;
 

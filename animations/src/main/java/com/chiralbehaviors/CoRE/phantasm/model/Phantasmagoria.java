@@ -61,7 +61,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
     public void visit(NetworkAuthorization<RuleForm> facet,
                       AttributeAuthorization<RuleForm, Network> auth,
                       String fieldName) {
-        attributes.put(fieldName, auth);
+        attributes.put(fieldName, Ruleform.initializeAndUnproxy(auth));
     }
 
     /* (non-Javadoc)
@@ -73,7 +73,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               String fieldName,
                               NetworkAuthorization<RuleForm> child,
                               String singularFieldName) {
-        childAuthorizations.put(fieldName, auth);
+        childAuthorizations.put(fieldName, Ruleform.initializeAndUnproxy(auth));
     }
 
     /* (non-Javadoc)
@@ -84,7 +84,8 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               XDomainNetworkAuthorization<?, ?> auth,
                               String fieldName, NetworkAuthorization<?> child,
                               String singularFieldName) {
-        xdChildAuthorizations.put(fieldName, auth);
+        xdChildAuthorizations.put(fieldName,
+                                  Ruleform.initializeAndUnproxy(auth));
     }
 
     /* (non-Javadoc)
@@ -95,7 +96,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               NetworkAuthorization<RuleForm> auth,
                               String fieldName,
                               NetworkAuthorization<RuleForm> child) {
-        childAuthorizations.put(fieldName, auth);
+        childAuthorizations.put(fieldName, Ruleform.initializeAndUnproxy(auth));
     }
 
     /* (non-Javadoc)
@@ -105,7 +106,8 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
     public void visitSingular(NetworkAuthorization<RuleForm> facet,
                               XDomainNetworkAuthorization<?, ?> auth,
                               String fieldName, NetworkAuthorization<?> child) {
-        xdChildAuthorizations.put(fieldName, auth);
+        xdChildAuthorizations.put(fieldName,
+                                  Ruleform.initializeAndUnproxy(auth));
     }
 
 }

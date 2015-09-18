@@ -45,13 +45,13 @@ public class ProductLocationAuthorization
 
     // bi-directional many-to-one association to Agency
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "from_parent")
     private Product fromParent;
 
     // bi-directional many-to-one association to AgencyProduct
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "to_parent")
     private Location toParent;
 

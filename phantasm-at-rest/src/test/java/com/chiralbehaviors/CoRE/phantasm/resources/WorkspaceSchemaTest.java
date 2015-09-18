@@ -97,7 +97,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                            .toString());
         variables.put("name", "hello");
         variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
         Map<String, Object> result;
         try {
@@ -156,7 +156,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         variables.put("id", thing1.getRuleform()
                                   .getId()
                                   .toString());
-        QueryRequest request = new QueryRequest("query it($id: String) { Thing1(id: $id) {id name thing2 {id name thing3s {id name  derivedFroms {id name}}} derivedFrom {id name}}}",
+        QueryRequest request = new QueryRequest("query it($id: String!) { Thing1(id: $id) {id name thing2 {id name thing3s {id name  derivedFroms {id name}}} derivedFrom {id name}}}",
                                                 variables);
         Map<String, Object> result;
         try {
@@ -245,7 +245,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);
-        QueryRequest request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
+        QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
                                                 variables);
         Map<String, Object> result;
         try {
@@ -283,7 +283,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         variables.put("name", "hello");
         String hello = "goodbye";
         variables.put("description", hello);
-        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String) { "
+        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String) { "
                                                 + "CreateThing1("
                                                 + "  state: { "
                                                 + "     setName: $name, "
@@ -315,7 +315,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         variables = new HashMap<>();
         variables.put("id", thing1ID);
         variables.put("test", "me");
-        request = new QueryRequest("query it($id: String, $test: String) { Thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
+        request = new QueryRequest("query it($id: String!, $test: String) { Thing1(id: $id) {id name instanceMethod instanceMethodWithArgument(arg1: $test) } }",
                                    variables);
         result = resource.query(null, TEST_SCENARIO_URI, request);
 
@@ -367,7 +367,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         variables.put("id", thing1.getRuleform()
                                   .getId()
                                   .toString());
-        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String) { Thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
+        ExecutionResult execute = new GraphQL(schema).execute("query it($id: String!) { Thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
 
         new PhantasmCRUD(model), variables);
         assertTrue(execute.getErrors()

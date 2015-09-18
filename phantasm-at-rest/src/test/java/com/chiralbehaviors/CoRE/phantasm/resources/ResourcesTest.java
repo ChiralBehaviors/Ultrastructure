@@ -152,7 +152,7 @@ public class ResourcesTest extends ThingWorkspaceTest {
                                            .toString());
         variables.put("name", "hello");
         variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
 
         Response response = invocationBuilder.post(Entity.entity(request,
@@ -182,7 +182,7 @@ public class ResourcesTest extends ThingWorkspaceTest {
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);
-        request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
+        request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
                                    variables);
         response = invocationBuilder.post(Entity.entity(request,
                                                         MediaType.APPLICATION_JSON_TYPE));

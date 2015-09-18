@@ -61,7 +61,8 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     private static final String SET = "set";
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static NetworkAuthorization<?> facetFrom(Facet facet, Model model) {
+    public static NetworkAuthorization<? extends ExistentialRuleform<?, ?>> facetFrom(Facet facet,
+                                                                                      Model model) {
         if (facet == null) {
             throw new IllegalStateException("Not a facet");
         }
@@ -97,8 +98,9 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     @SuppressWarnings("unchecked")
     public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm, Model model) {
         super((NetworkAuthorization<RuleForm>) facetFrom(phantasm.getAnnotation(Facet.class),
-                                                         model),
-              new PhantasmTraversal<>(model));
+                                                         model));
+
+        traverse(facet, new PhantasmTraversal<>(model));
         this.phantasm = phantasm;
         facetAnnotation = phantasm.getAnnotation(Facet.class);
         workspace = WorkspaceAccessor.uuidOf(facetAnnotation.workspace());

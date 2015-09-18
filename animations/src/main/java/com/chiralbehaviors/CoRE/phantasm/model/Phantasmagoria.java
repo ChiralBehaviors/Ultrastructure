@@ -45,9 +45,12 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
     public final NetworkAuthorization<RuleForm>                         facet;
     public final Map<String, XDomainNetworkAuthorization<?, ?>>         xdChildAuthorizations = new HashMap<>();
 
-    public Phantasmagoria(NetworkAuthorization<RuleForm> facet,
-                          PhantasmTraversal<RuleForm, Network> traverser) {
+    public Phantasmagoria(NetworkAuthorization<RuleForm> facet) {
         this.facet = Ruleform.initializeAndUnproxy(facet);
+    }
+
+    public void traverse(NetworkAuthorization<RuleForm> facet,
+                         PhantasmTraversal<RuleForm, Network> traverser) {
         traverser.traverse(facet, this);
     }
 

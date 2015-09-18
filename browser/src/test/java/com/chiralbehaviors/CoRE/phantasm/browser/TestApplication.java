@@ -25,7 +25,7 @@ import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
+import com.chiralbehaviors.CoRE.phantasm.health.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;

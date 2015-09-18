@@ -74,6 +74,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               NetworkAuthorization<RuleForm> child,
                               String singularFieldName) {
         childAuthorizations.put(fieldName, Ruleform.initializeAndUnproxy(auth));
+        Ruleform.initializeAndUnproxy(child);
     }
 
     /* (non-Javadoc)
@@ -86,6 +87,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               String singularFieldName) {
         xdChildAuthorizations.put(fieldName,
                                   Ruleform.initializeAndUnproxy(auth));
+        Ruleform.initializeAndUnproxy(child);
     }
 
     /* (non-Javadoc)
@@ -97,6 +99,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               String fieldName,
                               NetworkAuthorization<RuleForm> child) {
         childAuthorizations.put(fieldName, Ruleform.initializeAndUnproxy(auth));
+        Ruleform.initializeAndUnproxy(child);
     }
 
     /* (non-Javadoc)
@@ -108,6 +111,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               String fieldName, NetworkAuthorization<?> child) {
         xdChildAuthorizations.put(fieldName,
                                   Ruleform.initializeAndUnproxy(auth));
+        Ruleform.initializeAndUnproxy(child);
     }
 
 }

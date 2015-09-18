@@ -118,9 +118,9 @@ public class RuleformResource extends TransactionalResource {
                                            @PathParam("ruleform") String ruleform,
                                            @PathParam("instance") UUID instance) {
         return readOnly(principal, readOnlyModel -> {
-            Ruleform ruleformInstance = readOnlyModel.getEntityManager()
-                                                     .find(entityMap.get(ruleform),
-                                                           instance);
+            Ruleform ruleformInstance = Ruleform.initializeAndUnproxy(readOnlyModel.getEntityManager()
+                                                                                   .find(entityMap.get(ruleform),
+                                                                                         instance));
             if (ruleformInstance == null) {
                 throw new WebApplicationException(String.format("%s:%s does not exist",
                                                                 ruleform,

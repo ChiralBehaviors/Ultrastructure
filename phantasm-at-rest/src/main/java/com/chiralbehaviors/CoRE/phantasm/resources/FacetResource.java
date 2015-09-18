@@ -322,7 +322,7 @@ public class FacetResource extends TransactionalResource {
             Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                                 ruleform, readOnlyModel);
             NetworkedModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
-            RuleForm instance = networkedModel.find(existential);
+            RuleForm instance = Ruleform.initializeAndUnproxy(networkedModel.find(existential));
             if (instance == null) {
                 throw new WebApplicationException(String.format("node %s is not found %s (%s)",
                                                                 instance, this,

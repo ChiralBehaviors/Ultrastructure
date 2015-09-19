@@ -189,9 +189,12 @@ public class GraphQlResource extends TransactionalResource {
                                                                  crud,
                                                                  request.getVariables() == null ? Collections.emptyMap()
                                                                                                 : request.getVariables());
-
-            log.error("Query: {} Errors: {}", request.getQuery(),
-                      result.getErrors());
+            if (result.getErrors()
+                      .isEmpty()) {
+                return result;
+            }
+            log.info("Query: {} Errors: {}", request.getQuery(),
+                     result.getErrors());
             return result;
         });
 

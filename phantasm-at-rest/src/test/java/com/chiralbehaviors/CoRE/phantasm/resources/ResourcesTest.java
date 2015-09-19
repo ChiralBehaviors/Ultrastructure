@@ -23,12 +23,12 @@ package com.chiralbehaviors.CoRE.phantasm.resources;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -159,11 +159,11 @@ public class ResourcesTest extends ThingWorkspaceTest {
                                                                  MediaType.APPLICATION_JSON_TYPE));
         Map<String, Object> result = response.readEntity(Map.class);
 
-        assertNull(result.get("errors") == null ? "" : result.get("errors")
-                                                             .toString(),
-                   result.get("errors"));
+        assertEquals(result.get("errors")
+                           .toString(),
+                     0, ((List<?>) result.get("errors")).size());
 
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) result.get("data")).get("CreateThing1");
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
         Thing1 thing1 = model.wrap(Thing1.class,
@@ -188,8 +188,10 @@ public class ResourcesTest extends ThingWorkspaceTest {
                                                         MediaType.APPLICATION_JSON_TYPE));
         result = response.readEntity(Map.class);
 
-        assertNull(result.get("errors"));
-        thing1Result = (Map<String, Object>) result.get("UpdateThing1");
+        assertEquals(result.get("errors")
+                           .toString(),
+                     0, ((List<?>) result.get("errors")).size());
+        thing1Result = (Map<String, Object>) ((Map<String, Object>) result.get("data")).get("UpdateThing1");
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
         thing1 = model.wrap(Thing1.class,

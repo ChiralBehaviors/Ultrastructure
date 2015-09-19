@@ -24,7 +24,6 @@ import static com.chiralbehaviors.CoRE.kernel.product.WorkspaceOf.workspaceOf;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -63,6 +62,8 @@ import graphql.schema.GraphQLSchema;
  */
 public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
+    private static final String INTROSPECTION_QUERY = "\n  query IntrospectionQuery {\n    __schema {\n      queryType { name }\n      mutationType { name }\n      types {\n        ...FullType\n      }\n      directives {\n        name\n        description\n        args {\n          ...InputValue\n        }\n        onOperation\n        onFragment\n        onField\n      }\n    }\n  }\n\n  fragment FullType on __Type {\n    kind\n    name\n    description\n    fields {\n      name\n      description\n      args {\n        ...InputValue\n      }\n      type {\n        ...TypeRef\n      }\n      isDeprecated\n      deprecationReason\n    }\n    inputFields {\n      ...InputValue\n    }\n    interfaces {\n      ...TypeRef\n    }\n    enumValues {\n      name\n      description\n      isDeprecated\n      deprecationReason\n    }\n    possibleTypes {\n      ...TypeRef\n    }\n  }\n\n  fragment InputValue on __InputValue {\n    name\n    description\n    type { ...TypeRef }\n    defaultValue\n  }\n\n  fragment TypeRef on __Type {\n    kind\n    name\n    ofType {\n      kind\n      name\n      ofType {\n        kind\n        name\n        ofType {\n          kind\n          name\n        }\n      }\n    }\n  }\n";
+
     @Test
     public void testCreate() throws Exception {
         Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
@@ -99,7 +100,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         variables.put("description", "goodbye");
         QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
-        Map<String, Object> result;
+        ExecutionResult result;
         try {
             result = resource.query(null, TEST_SCENARIO_URI, request);
         } catch (WebApplicationException e) {
@@ -109,9 +110,13 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         }
         assertNotNull(result);
 
-        assertNull(result.get("errors"));
+        assertEquals(result.getErrors()
+                           .toString(),
+                     0, result.getErrors()
+                              .size());
         @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) result.getData()
+                                                                       .get("CreateThing1");
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
 
@@ -158,7 +163,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                   .toString());
         QueryRequest request = new QueryRequest("query it($id: String!) { Thing1(id: $id) {id name thing2 {id name thing3s {id name  derivedFroms {id name}}} derivedFrom {id name}}}",
                                                 variables);
-        Map<String, Object> result;
+        ExecutionResult result;
         try {
             result = resource.query(null, TEST_SCENARIO_URI, request);
         } catch (WebApplicationException e) {
@@ -170,7 +175,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         assertNotNull(result);
 
         @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) result.getData()
+                                                                       .get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
         assertEquals(thing1.getRuleform()
@@ -247,7 +253,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         variables.put("uri", newUri);
         QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
                                                 variables);
-        Map<String, Object> result;
+        ExecutionResult result;
         try {
             result = resource.query(null, TEST_SCENARIO_URI, request);
         } catch (WebApplicationException e) {
@@ -257,10 +263,12 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         }
         assertNotNull(result);
 
-        assertNull(result.get("errors"));
+        assertEquals(0, result.getErrors()
+                              .size());
         assertEquals("hello", thing1.getName());
         @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("UpdateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) result.getData()
+                                                                       .get("UpdateThing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
         assertEquals(artifact2, thing1.getDerivedFrom());
@@ -292,14 +300,16 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                 variables);
         String bob = "Give me food or give me slack or kill me";
         Thing1_Plugin.passThrough.set(bob);
-        Map<String, Object> result = resource.query(null, TEST_SCENARIO_URI,
-                                                    request);
+        ExecutionResult result = resource.query(null, TEST_SCENARIO_URI,
+                                                request);
 
-        assertNull(result.get("errors") == null ? "" : result.get("errors")
-                                                             .toString(),
-                   result.get("errors"));
+        assertEquals(result.getErrors()
+                           .toString(),
+                     0, result.getErrors()
+                              .size());
 
-        Map<String, Object> thing1Result = (Map<String, Object>) result.get("CreateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) result.getData()
+                                                                       .get("CreateThing1");
         assertNotNull(thing1Result);
         assertEquals(bob, thing1Result.get("description"));
         String thing1ID = (String) thing1Result.get("id");
@@ -319,11 +329,13 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                    variables);
         result = resource.query(null, TEST_SCENARIO_URI, request);
 
-        assertNull(result.get("errors") == null ? "" : result.get("errors")
-                                                             .toString(),
-                   result.get("errors"));
+        assertEquals(result.getErrors()
+                           .toString(),
+                     0, result.getErrors()
+                              .size());
 
-        thing1Result = (Map<String, Object>) result.get("Thing1");
+        thing1Result = (Map<String, Object>) result.getData()
+                                                   .get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(apple, thing1Result.get("instanceMethod"));
         assertEquals("me", Thing1_Plugin.passThrough.get());
@@ -425,6 +437,26 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                            .toString(),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
+    }
+
+    @Test
+    public void testIntrospection() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        EntityManagerFactory mockedEmf = mockedEmf();
+        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
+                                                                          .getWorkspace(),
+                                                                    model);
+        String query = INTROSPECTION_QUERY;
+        @SuppressWarnings("rawtypes")
+        ExecutionResult execute = new GraphQL(schema).execute(query,
+                                                              new PhantasmCRUD(model));
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        Map<String, Object> result = execute.getData();
+
+        assertNotNull(result);
     }
 
     private Plugin constructPlugin() throws InstantiationException {

@@ -434,7 +434,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
                                                                           .getWorkspace(),
                                                                     model);
-        String query = "query IntrospectionQueryTypeQuery { __schema { queryType {  fields { name  args { name description type { name ofType { name kind } } } } } } } ";
+        String query = "query IntrospectionQueryTypeQuery { __schema { queryType {  fields { name  args { name description type { name ofType { name kind } } defaultValue } } } } } ";
         @SuppressWarnings("rawtypes")
         ExecutionResult execute = new GraphQL(schema).execute(query,
                                                               new PhantasmCRUD(model));

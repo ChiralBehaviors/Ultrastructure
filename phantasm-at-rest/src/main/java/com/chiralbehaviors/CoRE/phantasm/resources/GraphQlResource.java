@@ -81,6 +81,7 @@ import io.dropwizard.auth.Auth;
 @Produces({ MediaType.APPLICATION_JSON, "text/json" })
 @Consumes({ MediaType.APPLICATION_JSON, "text/json" })
 public class GraphQlResource extends TransactionalResource {
+
     public static class QueryRequest {
         private String              query;
         private Map<String, Object> variables = Collections.emptyMap();
@@ -138,15 +139,14 @@ public class GraphQlResource extends TransactionalResource {
     @Timed
     @Path("workspace/{workspace}")
     @POST
-    public Map<String, Object> query(@Auth AuthorizedPrincipal principal,
-                                     @PathParam("workspace") String workspace,
-                                     QueryRequest request) {
+    public ExecutionResult query(@Auth AuthorizedPrincipal principal,
+                                 @PathParam("workspace") String workspace,
+                                 QueryRequest request) {
         if (request == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
         return perform(principal, model -> {
-            Map<String, Object> result = new HashMap<>();
             UUID uuid = WorkspaceAccessor.uuidOf(workspace);
 
             GraphQLSchema schema = cache.computeIfAbsent(uuid, id -> {
@@ -155,17 +155,18 @@ public class GraphQlResource extends TransactionalResource {
                     scoped = model.getWorkspaceModel()
                                   .getScoped(id);
                 } catch (IllegalArgumentException e) {
-                    result.put("errors",
-                               String.format("Workspace %s does not exist {%s}",
-                                             workspace, id));
-                    return null;
+                    throw new WebApplicationException(String.format("Workspace not found [%s] %s",
+                                                                    id,
+                                                                    workspace));
                 }
 
                 return build(scoped.getWorkspace(), model);
             });
 
             if (schema == null) {
-                return result;
+                throw new WebApplicationException(String.format("Workspace not found [%s] %s",
+                                                                uuid,
+                                                                workspace));
             }
 
             @SuppressWarnings("rawtypes")
@@ -184,20 +185,13 @@ public class GraphQlResource extends TransactionalResource {
                                        p.getName(), p.getId()));
                 return null;
             }
-            ExecutionResult execute = new GraphQL(schema).execute(request.getQuery(),
-                                                                  crud,
-                                                                  request.getVariables());
-
-            if (execute.getErrors()
-                       .isEmpty()) {
-                return execute.getData();
-            }
-
-            result.put("errors", execute.getErrors());
+            ExecutionResult result = new GraphQL(schema).execute(request.getQuery(),
+                                                                 crud,
+                                                                 request.getVariables() == null ? Collections.emptyMap()
+                                                                                                : request.getVariables());
 
             log.error("Query: {} Errors: {}", request.getQuery(),
-                      execute.getErrors());
-
+                      result.getErrors());
             return result;
         });
 

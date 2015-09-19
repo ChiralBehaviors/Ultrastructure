@@ -895,7 +895,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public NetworkAuthorization<RuleForm> getFacetDeclaration(Aspect<RuleForm> aspect) {
+    public NetworkAuthorization<RuleForm> getFacetDeclaration(@SuppressWarnings("rawtypes") Aspect aspect) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         @SuppressWarnings("unchecked")
         Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();

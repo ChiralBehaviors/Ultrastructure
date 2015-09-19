@@ -58,7 +58,7 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "authorized_attribute")
     private Attribute authorizedAttribute;
 

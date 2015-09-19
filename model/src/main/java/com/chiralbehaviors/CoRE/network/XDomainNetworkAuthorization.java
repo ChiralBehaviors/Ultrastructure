@@ -62,14 +62,14 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
     private Cardinality cardinality;
 
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "connection")
     private Relationship connection;
 
     private boolean forward = true;
 
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "from_relationship")
     private Relationship fromRelationship;
 
@@ -82,7 +82,7 @@ abstract public class XDomainNetworkAuthorization<From extends ExistentialRulefo
     private String name;
 
     @ManyToOne(cascade = { CascadeType.PERSIST,
-                           CascadeType.DETACH }, fetch = FetchType.LAZY)
+                           CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "to_relationship")
     private Relationship toRelationship;
 

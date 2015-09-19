@@ -152,7 +152,7 @@ public class ResourcesTest extends ThingWorkspaceTest {
                                            .toString());
         variables.put("name", "hello");
         variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
                                                 variables);
 
         Response response = invocationBuilder.post(Entity.entity(request,
@@ -182,7 +182,7 @@ public class ResourcesTest extends ThingWorkspaceTest {
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);
-        request = new QueryRequest("mutation m($id: String, $name: String, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
+        request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { id name } }",
                                    variables);
         response = invocationBuilder.post(Entity.entity(request,
                                                         MediaType.APPLICATION_JSON_TYPE));
@@ -199,35 +199,6 @@ public class ResourcesTest extends ThingWorkspaceTest {
         assertEquals(artifact2, thing1.getDerivedFrom());
         assertArrayEquals(newAliases, thing1.getAliases());
         assertEquals(newUri, thing1.getURI());
-    }
-
-    @Test
-    public void testInstancesSelect() throws Exception {
-        URL url;
-        Object jsonObject;
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        thing1.setURI("http://example.com");
-        thing2.setThing1(thing1);
-        thing1.setThing2(thing2);
-        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
-                                                                application.getPort()));
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/instances?select=;a=URI",
-                                    application.getPort(),
-                                    scope.lookup("kernel", "IsA")
-                                         .getId()
-                                         .toString(),
-                                    scope.lookup("Thing1")
-                                         .getId()
-                                         .toString()));
-
-        jsonObject = JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(jsonObject);
-        JsonLdProcessor.normalize(jsonObject, options);
-        JsonLdProcessor.compact(jsonObject, new HashMap<>(), options);
-        JsonLdProcessor.flatten(jsonObject, new HashMap<>(), options);
-        JsonLdProcessor.expand(jsonObject, options);
     }
 
     @Test
@@ -273,40 +244,5 @@ public class ResourcesTest extends ThingWorkspaceTest {
         URL url = new URL(String.format("http://localhost:%s/json-ld/ruleform",
                                         application.getPort()));
         JsonUtils.fromInputStream(url.openStream());
-    }
-
-    @Test
-    public void testSelect() throws Exception {
-        URL url;
-        Object jsonObject;
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
-        thing1.setAliases(new String[] { "smith", "jones" });
-        thing1.setURI("http://example.com");
-        thing2.setThing1(thing1);
-        thing1.setThing2(thing2);
-        MavenArtifact artifact = model.construct(MavenArtifact.class,
-                                                 "myartifact", "artifact");
-        artifact.setType("jar");
-        thing2.addDerivedFrom(artifact);
-        JsonLdOptions options = new JsonLdOptions(String.format("http://localhost:%s/json-ld/facet",
-                                                                application.getPort()));
-        url = new URL(String.format("http://localhost:%s/json-ld/facet/Product/%s/%s/%s?select=thing2/derivedFroms;a=description;a=name",
-                                    application.getPort(),
-                                    scope.lookup("kernel", "IsA")
-                                         .getId()
-                                         .toString(),
-                                    scope.lookup("Thing1")
-                                         .getId()
-                                         .toString(),
-                                    thing1.getRuleform()
-                                          .getId()));
-
-        jsonObject = JsonUtils.fromInputStream(url.openStream());
-        assertNotNull(jsonObject);
-        JsonLdProcessor.normalize(jsonObject, options);
-        JsonLdProcessor.compact(jsonObject, new HashMap<>(), options);
-        JsonLdProcessor.flatten(jsonObject, new HashMap<>(), options);
-        JsonLdProcessor.expand(jsonObject, options);
     }
 }

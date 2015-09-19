@@ -45,9 +45,12 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
     public final NetworkAuthorization<RuleForm>                         facet;
     public final Map<String, XDomainNetworkAuthorization<?, ?>>         xdChildAuthorizations = new HashMap<>();
 
-    public Phantasmagoria(NetworkAuthorization<RuleForm> facet,
-                          PhantasmTraversal<RuleForm, Network> traverser) {
+    public Phantasmagoria(NetworkAuthorization<RuleForm> facet) {
         this.facet = Ruleform.initializeAndUnproxy(facet);
+    }
+
+    public void traverse(NetworkAuthorization<RuleForm> facet,
+                         PhantasmTraversal<RuleForm, Network> traverser) {
         traverser.traverse(facet, this);
     }
 
@@ -58,7 +61,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
     public void visit(NetworkAuthorization<RuleForm> facet,
                       AttributeAuthorization<RuleForm, Network> auth,
                       String fieldName) {
-        attributes.put(fieldName, auth);
+        attributes.put(fieldName, Ruleform.initializeAndUnproxy(auth));
     }
 
     /* (non-Javadoc)
@@ -70,7 +73,8 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               String fieldName,
                               NetworkAuthorization<RuleForm> child,
                               String singularFieldName) {
-        childAuthorizations.put(fieldName, auth);
+        childAuthorizations.put(fieldName, Ruleform.initializeAndUnproxy(auth));
+        Ruleform.initializeAndUnproxy(child);
     }
 
     /* (non-Javadoc)
@@ -81,7 +85,9 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               XDomainNetworkAuthorization<?, ?> auth,
                               String fieldName, NetworkAuthorization<?> child,
                               String singularFieldName) {
-        xdChildAuthorizations.put(fieldName, auth);
+        xdChildAuthorizations.put(fieldName,
+                                  Ruleform.initializeAndUnproxy(auth));
+        Ruleform.initializeAndUnproxy(child);
     }
 
     /* (non-Javadoc)
@@ -92,7 +98,8 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
                               NetworkAuthorization<RuleForm> auth,
                               String fieldName,
                               NetworkAuthorization<RuleForm> child) {
-        childAuthorizations.put(fieldName, auth);
+        childAuthorizations.put(fieldName, Ruleform.initializeAndUnproxy(auth));
+        Ruleform.initializeAndUnproxy(child);
     }
 
     /* (non-Javadoc)
@@ -102,7 +109,9 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform<RuleForm, Netwo
     public void visitSingular(NetworkAuthorization<RuleForm> facet,
                               XDomainNetworkAuthorization<?, ?> auth,
                               String fieldName, NetworkAuthorization<?> child) {
-        xdChildAuthorizations.put(fieldName, auth);
+        xdChildAuthorizations.put(fieldName,
+                                  Ruleform.initializeAndUnproxy(auth));
+        Ruleform.initializeAndUnproxy(child);
     }
 
 }

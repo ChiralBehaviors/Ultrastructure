@@ -137,7 +137,7 @@ public class Relationship
     private Set<RelationshipAttribute> attributes;
 
     @OneToOne(cascade = { CascadeType.PERSIST,
-                          CascadeType.DETACH }, fetch = FetchType.LAZY)
+                          CascadeType.DETACH }, fetch = FetchType.EAGER)
     @JoinColumn(name = "inverse", unique = true)
     private Relationship inverse;
 

@@ -47,7 +47,7 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
-import com.chiralbehaviors.CoRE.phantasm.jsonld.Facet;
+import com.chiralbehaviors.CoRE.phantasm.jsonld.FacetContext;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.RuleformContext;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -70,7 +70,9 @@ public class WorkspaceResource extends TransactionalResource {
     public static String keysIri(UUID definingProduct, UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
-            ub.path(WorkspaceResource.class.getMethod("getKeys", AuthorizedPrincipal.class, UUID.class));
+            ub.path(WorkspaceResource.class.getMethod("getKeys",
+                                                      AuthorizedPrincipal.class,
+                                                      UUID.class));
             ub.resolveTemplate("workspace", definingProduct);
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Unable to get all instances method",
@@ -84,7 +86,9 @@ public class WorkspaceResource extends TransactionalResource {
                                 UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
-            ub.path(WorkspaceResource.class.getMethod("lookup", AuthorizedPrincipal.class, UUID.class,
+            ub.path(WorkspaceResource.class.getMethod("lookup",
+                                                      AuthorizedPrincipal.class,
+                                                      UUID.class,
                                                       String.class));
             ub.resolveTemplate("workspace", definingProduct);
             ub.resolveTemplate("member", key);
@@ -133,7 +137,8 @@ public class WorkspaceResource extends TransactionalResource {
     public static URI workspaceIri(UUID definingProduct, UriInfo uriInfo) {
         UriBuilder ub = UriBuilder.fromResource(WorkspaceResource.class);
         try {
-            ub.path(WorkspaceResource.class.getMethod("getWorkspaces", AuthorizedPrincipal.class));
+            ub.path(WorkspaceResource.class.getMethod("getWorkspaces",
+                                                      AuthorizedPrincipal.class));
             ub.resolveTemplate("uuid", definingProduct);
         } catch (NoSuchMethodException | SecurityException e) {
             throw new IllegalStateException("Unable to retrieve getWorkspaces method",
@@ -220,10 +225,14 @@ public class WorkspaceResource extends TransactionalResource {
                                                                             .getInverse())) {
                 Map<String, Object> ctx = new TreeMap<>();
                 ctx.put(Constants.ID,
-                        Facet.getInstanceIri(aspect,
-                                             Ruleform.initializeAndUnproxy(definingProduct),
-                                             uriInfo));
-                ctx.put(Constants.TYPE, Facet.getFullFacetIri(aspect, uriInfo));
+                        FacetContext.getInstanceIri(aspect,
+                                                    Ruleform.initializeAndUnproxy(definingProduct),
+                                                    uriInfo));
+                ctx.put(Constants.TYPE,
+                        FacetContext.getFullFacetIri(FacetContext.getFacet(aspect,
+                                                                           readOnlyModel,
+                                                                           uriInfo).facet,
+                                                     uriInfo));
                 Map<String, Object> wsp = new TreeMap<>();
                 wsp.put(Constants.ID,
                         workspaceIri(definingProduct.getId(), uriInfo));

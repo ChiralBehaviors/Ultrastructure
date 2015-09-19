@@ -299,33 +299,41 @@ public class Animations implements Triggers {
     }
 
     public void inferNetworks(ExistentialRuleform<?, ?> ruleform) {
-        switch (ruleform.getClass()
-                        .getSimpleName()) {
-            case "Agency":
-                inferAgencyNetwork = true;
-                return;
-            case "Attribute":
-                inferAttributeNetwork = true;
-                return;
-            case "Interval":
-                inferIntervalNetwork = true;
-                return;
-            case "Location":
-                inferLocationNetwork = true;
-                return;
-            case "Relationship":
-                inferRelationshipNetwork = true;
-                return;
-            case "StatusCode":
-                inferStatusCodeNetwork = true;
-                return;
-            case "Unit":
-                inferUnitNetwork = true;
-                return;
-            default:
-                throw new IllegalArgumentException(String.format("Unknown Existential Entity type: %s",
-                                                                 ruleform));
+        if (ruleform instanceof Agency) {
+            inferAgencyNetwork = true;
+            return;
         }
+        if (ruleform instanceof Attribute) {
+            inferAttributeNetwork = true;
+            return;
+        }
+        if (ruleform instanceof Interval) {
+            inferIntervalNetwork = true;
+            return;
+        }
+        if (ruleform instanceof Location) {
+            inferLocationNetwork = true;
+            return;
+        }
+        if (ruleform instanceof Product) {
+            inferProductNetwork = true;
+            return;
+        }
+        if (ruleform instanceof Relationship) {
+            inferRelationshipNetwork = true;
+            return;
+        }
+        if (ruleform instanceof StatusCode) {
+            inferStatusCodeNetwork = true;
+            return;
+        }
+        if (ruleform instanceof Unit) {
+            inferUnitNetwork = true;
+            return;
+        }
+        throw new IllegalStateException(String.format("Not a valid existential entity class %s",
+                                                      ruleform.getClass()
+                                                              .getSimpleName()));
     }
 
     public void log(StatusCodeSequencing scs) {

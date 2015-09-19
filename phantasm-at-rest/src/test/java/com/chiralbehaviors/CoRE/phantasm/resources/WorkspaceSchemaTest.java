@@ -251,7 +251,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         variables.put("aliases", Arrays.asList(newAliases));
         variables.put("name", "hello");
         variables.put("uri", newUri);
-        QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
+        QueryRequest request = new QueryRequest("mutation m($id: String!, $name: String!, $artifact: String!, $aliases: [String], $uri: String) { UpdateThing1(state: { id: $id, setName: $name, setDerivedFrom: $artifact, setAliases: $aliases, setURI: $uri}) { name } }",
                                                 variables);
         ExecutionResult result;
         try {

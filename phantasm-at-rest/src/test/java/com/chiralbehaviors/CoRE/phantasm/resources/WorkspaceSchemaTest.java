@@ -427,6 +427,26 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         assertEquals(uri, instance.get("URI"));
     }
 
+    @Test
+    public void testIntrospection() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        EntityManagerFactory mockedEmf = mockedEmf();
+        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
+                                                                          .getWorkspace(),
+                                                                    model);
+        String query = "query IntrospectionQueryTypeQuery { __schema { queryType {  fields { name  args { name description type { name ofType { name kind } } } } } } } ";
+        @SuppressWarnings("rawtypes")
+        ExecutionResult execute = new GraphQL(schema).execute(query,
+                                                              new PhantasmCRUD(model));
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        Map<String, Object> result = execute.getData();
+
+        assertNotNull(result);
+    }
+
     private Plugin constructPlugin() throws InstantiationException {
         Plugin testPlugin = model.construct(Plugin.class, "Test Plugin",
                                             "My super green test plugin");

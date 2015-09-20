@@ -1011,17 +1011,23 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         if (instance == null) {
             return null;
         }
+
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
         if (!checkUPDATE(facet, networkedModel)
             || !checkUPDATE(auth, networkedModel)) {
             return instance;
         }
-        networkedModel.setImmediateChild(instance, model.getEntityManager()
-                                                        .getReference(Relationship.class,
-                                                                      auth.getChildRelationship()
-                                                                          .getId()),
-                                         child, model.getCurrentPrincipal()
-                                                     .getPrincipal());
+
+        if (child == null) {
+            networkedModel.unlinkImmediate(child, auth.getChildRelationship());
+        } else {
+            networkedModel.setImmediateChild(instance, model.getEntityManager()
+                                                            .getReference(Relationship.class,
+                                                                          auth.getChildRelationship()
+                                                                              .getId()),
+                                             child, model.getCurrentPrincipal()
+                                                         .getPrincipal());
+        }
         return instance;
     }
 

@@ -1374,7 +1374,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void unlink(RuleForm parent, Relationship relationship,
                        RuleForm child) {
@@ -1393,6 +1392,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                  cb.isNull(networkRoot.get("inference")))));
         em.createQuery(query)
           .executeUpdate();
+        model.inferNetworks(parent);
+    }
+
+    @Override
+    public void unlinkImmediate(RuleForm parent, Relationship relationship) {
+        NetworkRuleform<RuleForm> link = getImmediateLink(parent, relationship);
+        em.remove(link);
+        em.remove(getImmediateChildLink(link.getChild(),
+                                        relationship.getInverse(), parent));
         model.inferNetworks(parent);
     }
 
@@ -1618,4 +1626,22 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     abstract protected Class<?> getAttributeAuthorizationClass();
 
     abstract protected Class<?> getNetworkAuthClass();
+
+    protected NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
+                                                         Relationship relationship) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<NetworkRuleform<RuleForm>> query = cb.createQuery(network);
+        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        query.select(networkRoot)
+             .where(cb.and(cb.equal(networkRoot.get("parent"), parent),
+                           cb.equal(networkRoot.get("relationship"),
+                                    relationship),
+                           cb.isNull(networkRoot.get("inference"))));
+        TypedQuery<NetworkRuleform<RuleForm>> q = em.createQuery(query);
+        try {
+            return q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

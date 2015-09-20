@@ -347,13 +347,15 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                              .build();
         updateTypeBuilder.field(field);
         createTypeBuilder.field(field);
-        updateTemplate.put(setter,
-                           (crud,
-                            update) -> crud.setSingularChild(facet,
-                                                             (RuleForm) update.get(AT_RULEFORM),
-                                                             auth,
-                                                             (RuleForm) crud.lookup(auth,
-                                                                                    (String) update.get(setter))));
+        updateTemplate.put(setter, (crud, update) -> {
+            String id = (String) update.get(setter);
+            return crud.setSingularChild(facet,
+                                         (RuleForm) update.get(AT_RULEFORM),
+                                         auth,
+                                         id == null ? null
+                                                    : (RuleForm) crud.lookup(auth,
+                                                                             id));
+        });
         references.add(child);
     }
 

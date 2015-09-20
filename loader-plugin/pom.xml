@@ -20,6 +20,14 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>loader</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>drop-database</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>create-database</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>

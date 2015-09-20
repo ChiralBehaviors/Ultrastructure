@@ -634,4 +634,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
 
     void unlink(RuleForm parent, Relationship r, RuleForm child);
 
+    /**
+     * @param parent
+     * @param relationship
+     */
+    void unlinkImmediate(RuleForm parent, Relationship relationship);
+
 }

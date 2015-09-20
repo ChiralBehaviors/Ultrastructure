@@ -1368,11 +1368,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     @Override
     public void setImmediateChild(RuleForm parent, Relationship relationship,
                                   RuleForm child, Agency updatedBy) {
-        NetworkRuleform<RuleForm> link = getImmediateLink(parent, relationship);
-        if (link != null) {
-            model.getEntityManager()
-                 .remove(link);
-        }
+
+        unlink(parent, relationship, child);
         link(parent, relationship, child, updatedBy);
 
     }
@@ -1383,13 +1380,27 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaDelete<NetworkRuleform<RuleForm>> query = cb.createCriteriaDelete(network);
         Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
-        query.where(cb.and(cb.equal(networkRoot.get("parent"), parent),
-                           cb.equal(networkRoot.get("relationship"),
-                                    relationship),
-                           cb.equal(networkRoot.get("child"), child),
-                           cb.isNull(networkRoot.get("inference"))));
+        query.where(cb.or(cb.and(cb.equal(networkRoot.get("parent"), parent),
+                                 cb.equal(networkRoot.get("relationship"),
+                                          relationship),
+                                 cb.equal(networkRoot.get("child"), child),
+                                 cb.isNull(networkRoot.get("inference"))),
+                          cb.and(cb.equal(networkRoot.get("parent"), child),
+                                 cb.equal(networkRoot.get("relationship"),
+                                          relationship.getInverse()),
+                                 cb.equal(networkRoot.get("child"), parent),
+                                 cb.isNull(networkRoot.get("inference")))));
         em.createQuery(query)
           .executeUpdate();
+        model.inferNetworks(parent);
+    }
+
+    @Override
+    public void unlinkImmediate(RuleForm parent, Relationship relationship) {
+        NetworkRuleform<RuleForm> link = getImmediateLink(parent, relationship);
+        em.remove(link);
+        em.remove(getImmediateChildLink(link.getChild(),
+                                        relationship.getInverse(), parent));
         model.inferNetworks(parent);
     }
 
@@ -1614,6 +1625,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     abstract protected Class<?> getAttributeAuthorizationClass();
 
+    abstract protected Class<?> getNetworkAuthClass();
+
     protected NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
                                                          Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -1631,6 +1644,4 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             return null;
         }
     }
-
-    abstract protected Class<?> getNetworkAuthClass();
 }

@@ -180,7 +180,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.setAuthorizedParent(stateAuth.getAuthorizedParent());
         accessAuth.setGroupingAgency(kernel.getAnyAgency());
         em.persist(accessAuth);
-        assertNotNull(stateAuth);
 
         assertFalse(model.getProductModel()
                          .checkCapability(kernel.getCore(), stateAuth,
@@ -202,7 +201,6 @@ public class TestPhantasm extends AbstractModelTest {
         accessAuth.setAuthorizedParent(stateAuth.getAuthorizedParent());
         accessAuth.setGroupingAgency(kernel.getSameAgency());
         em.persist(accessAuth);
-        assertNotNull(stateAuth);
 
         assertFalse(model.getProductModel()
                          .checkCapability(kernel.getCore(), stateAuth,

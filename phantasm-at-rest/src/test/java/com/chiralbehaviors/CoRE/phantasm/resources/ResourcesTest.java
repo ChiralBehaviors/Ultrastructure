@@ -152,7 +152,7 @@ public class ResourcesTest extends ThingWorkspaceTest {
                                            .toString());
         variables.put("name", "hello");
         variables.put("description", "goodbye");
-        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) { CreateThing1(state: { setName: $name, setDescription: $description, addDerivedFrom: $artifact}) { id name } }",
                                                 variables);
 
         Response response = invocationBuilder.post(Entity.entity(request,

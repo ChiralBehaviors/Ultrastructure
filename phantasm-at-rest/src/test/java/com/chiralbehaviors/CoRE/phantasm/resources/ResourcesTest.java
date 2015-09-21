@@ -201,6 +201,24 @@ public class ResourcesTest extends ThingWorkspaceTest {
         assertEquals(artifact2, thing1.getDerivedFrom());
         assertArrayEquals(newAliases, thing1.getAliases());
         assertEquals(newUri, thing1.getURI());
+        
+        variables = new HashMap<>();
+        variables.put("thing1", thing1.getRuleform()
+                                  .getId()
+                                  .toString());
+        variables.put("artifact", artifact2.getRuleform()
+                                           .getId()
+                                           .toString());
+        variables.put("name", "hello");
+        request = new QueryRequest("mutation m($name: String!, $artifact: String, $thing1: String!) { CreateThing2(state: {setName: $name, addDerivedFrom: $artifact, setThing1: $thing1}) { id name } }",
+                                   variables);
+        response = invocationBuilder.post(Entity.entity(request,
+                                                        MediaType.APPLICATION_JSON_TYPE));
+        result = response.readEntity(Map.class);
+
+        assertEquals(result.get("errors")
+                           .toString(),
+                     0, ((List<?>) result.get("errors")).size());
     }
 
     @Test

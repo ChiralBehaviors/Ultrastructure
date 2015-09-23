@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.phantasm;
+package com.chiralbehaviors.CoRE.phantasm;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -216,7 +216,7 @@ public class TestPhantasm extends AbstractModelTest {
     }
 
     @Test
-    public void testDemo() throws Exception {
+    public void testThingOntology() throws Exception {
 
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
         Thing2 thing2 = model.construct(Thing2.class, "tasty", "chips");

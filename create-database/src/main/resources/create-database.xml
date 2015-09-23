@@ -9,44 +9,38 @@
         <dbms type="postgresql" />
     </preConditions>
 
-    <!-- Liquibase stores absolute file paths in their change log with the location
-        of every changeset file. They figure that 200 characters is enough length
-        to hold this information, and I disagree. -->
-
-    <changeSet id="modify changelog column length" author="hparry">
+    <changeSet id="create-${db.login}-role-2.0.0" author="hhildebrand" runInTransaction="false" context="local">
         <sql><![CDATA[
-            ALTER TABLE databasechangelog
-            ALTER COLUMN filename TYPE varchar(4096);
-            ]]>
-
-        </sql>
-    </changeSet>
-
-    <changeSet id="create-core-role" author="hhildebrand" runInTransaction="false" context="local">
-        <sql><![CDATA[
-            CREATE ROLE core WITH SUPERUSER NOINHERIT CREATEROLE LOGIN PASSWORD 'password';
+            CREATE ROLE ${db.login} WITH SUPERUSER NOINHERIT CREATEROLE LOGIN PASSWORD '${db.password}';
             ]]>
         </sql>
+        <rollback>
+            <sql>DROP ROLE ${db.login};</sql>
+        </rollback>
     </changeSet>
 
-    <changeSet id="create-core-role-aws" author="hhildebrand" runInTransaction="false" context="aws">
+    <changeSet id="create-${db.login}-role-aws-2.0.0" author="hhildebrand" runInTransaction="false" context="aws">
         <sql><![CDATA[
-			CREATE ROLE core WITH NOINHERIT CREATEROLE LOGIN PASSWORD 'password';
-            GRANT rds_superuser TO core GRANTED BY ${dba.db.login};
+			CREATE ROLE ${db.login} WITH NOINHERIT CREATEROLE LOGIN PASSWORD '${db.password}';
+            GRANT rds_superuser TO ${db.login} GRANTED BY ${dba.db.login};
             ]]>
         </sql>
+        <rollback>
+            <sql>DROP ROLE ${db.login};</sql>
+        </rollback>
     </changeSet>
 
-    <changeSet id="create-database" author="hhildebrand" runInTransaction="false">
+    <changeSet id="create-database-${db.login}-2.0.0" author="hhildebrand" runInTransaction="false">
         <sql><![CDATA[
-            COMMENT ON ROLE core IS 'Owning role of the CoRE Ultra-Structure database';
-            ALTER ROLE core SET search_path TO ruleform, public, readable;
-            CREATE DATABASE core ENCODING 'UTF8';
-            GRANT CREATE ON DATABASE core TO core;
+            COMMENT ON ROLE ${db.login} IS 'Owning role of the ${db.login} Ultra-Structure database';
+            ALTER ROLE ${db.login} SET search_path TO ruleform, public, readable;
+            CREATE DATABASE ${db.login} ENCODING 'UTF8';
+            GRANT CREATE ON DATABASE ${db.login} TO ${db.login};
             ]]>
         </sql>
+        <rollback>
+            <sql>DROP DATABASE IF EXISTS ${db.login}</sql>
+        </rollback>
     </changeSet>
-
-    <include relativeToChangelogFile="true" file="roles.xml" />
 
 </databaseChangeLog>

@@ -66,7 +66,6 @@
                                     <onError>continue</onError>
                                     <srcFiles>
                                         <srcFile>${project.build.outputDirectory}/drop-roles.sql</srcFile>
-                                        <srcFile>${project.build.outputDirectory}/drop-liquibase.sql</srcFile>
                                     </srcFiles>
                                 </configuration>
                             </execution>

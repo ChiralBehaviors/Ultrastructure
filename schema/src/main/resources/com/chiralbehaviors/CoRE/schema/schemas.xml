@@ -8,7 +8,6 @@
     <changeSet id="readable schema" author="hhildebrand">
         <sql><![CDATA[
             CREATE SCHEMA readable; 
-            ALTER SCHEMA readable OWNER TO core;
             COMMENT ON SCHEMA readable IS 'Readable views of ruleforms';
             ]]>
         </sql>
@@ -20,7 +19,6 @@
     <changeSet id="ruleform schema" author="hhildebrand">
         <sql><![CDATA[
             CREATE SCHEMA ruleform; 
-            ALTER SCHEMA ruleform OWNER TO core;
             COMMENT ON SCHEMA ruleform IS 'CoRE Ultra-Structure ruleform tables';
             ]]>
         </sql>

@@ -12,5 +12,9 @@
     <include relativeToChangelogFile="true" file="schemas.xml" />
     <include relativeToChangelogFile="true" file="ruleform/ruleform.xml" />
     <include relativeToChangelogFile="true" file="readable/readable.xml" />
+ 
+    <changeSet author="hhildebrand" id="tag-2.0.0">
+        <tagDatabase tag="version_2.0.0" />
+    </changeSet>
 
 </databaseChangeLog>

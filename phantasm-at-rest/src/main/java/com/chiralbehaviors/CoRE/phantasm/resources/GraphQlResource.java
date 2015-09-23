@@ -107,14 +107,18 @@ public class GraphQlResource extends TransactionalResource {
         public Map<String, Object> toMap() {
             return new HashMap<String, Object>() {
                 {
-                    put("query", query);
-                    put("variables", variables);
+                    put(QUERY, query);
+                    put(VARIABLES, variables);
                 }
             };
         }
     }
 
     private static final Logger log = LoggerFactory.getLogger(GraphQlResource.class);
+
+    private static final String QUERY = "query";
+
+    private static final String VARIABLES = "variables";
 
     private final ConcurrentMap<UUID, GraphQLSchema> cache             = new ConcurrentHashMap<>();
     private final ConcurrentMap<Plugin, ClassLoader> executionContexts = new ConcurrentHashMap<>();
@@ -147,13 +151,6 @@ public class GraphQlResource extends TransactionalResource {
         });
     }
 
-    public ExecutionResult query(@Auth AuthorizedPrincipal principal,
-                                 @PathParam("workspace") String workspace,
-                                 QueryRequest request) {
-        return query(principal, workspace, request.toMap());
-
-    }
-
     @SuppressWarnings("unchecked")
     @Timed
     @Path("workspace/{workspace}")
@@ -165,7 +162,7 @@ public class GraphQlResource extends TransactionalResource {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
-        if (request.get("query") == null) {
+        if (request.get(QUERY) == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
@@ -211,12 +208,12 @@ public class GraphQlResource extends TransactionalResource {
                 return null;
             }
             Map<String, Object> variables = Collections.emptyMap();
-            if (request.get("variables") != null) {
-                if (request.get("variables") instanceof Map) {
-                    variables = (Map<String, Object>) request.get("variables");
-                } else if (request.get("variables") instanceof String) {
+            if (request.get(VARIABLES) != null) {
+                if (request.get(VARIABLES) instanceof Map) {
+                    variables = (Map<String, Object>) request.get(VARIABLES);
+                } else if (request.get(VARIABLES) instanceof String) {
                     try {
-                        variables = new ObjectMapper().readValue((String) request.get("variables"),
+                        variables = new ObjectMapper().readValue((String) request.get(VARIABLES),
                                                                  Map.class);
                     } catch (Exception e) {
                         throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
@@ -228,17 +225,25 @@ public class GraphQlResource extends TransactionalResource {
                                                       Status.BAD_REQUEST);
                 }
             }
-            ExecutionResult result = new GraphQL(schema).execute((String) request.get("query"),
+            ExecutionResult result = new GraphQL(schema).execute((String) request.get(QUERY),
                                                                  crud,
                                                                  variables);
             if (result.getErrors()
                       .isEmpty()) {
                 return result;
             }
-            log.info("Query: {} Errors: {}", request.get("variables"),
+            log.info("Query: {} Errors: {}", request.get(QUERY),
                      result.getErrors());
             return result;
         });
+    }
+
+    // here only because of insanity
+    public ExecutionResult query(@Auth AuthorizedPrincipal principal,
+                                 @PathParam("workspace") String workspace,
+                                 QueryRequest request) {
+        return query(principal, workspace, request.toMap());
+
     }
 
     private ClassLoader buildExecutionContext(Plugin plugin) {

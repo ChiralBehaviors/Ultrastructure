@@ -63,25 +63,60 @@ import graphql.schema.GraphQLSchema;
 public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     private static final String INTROSPECTION_QUERY = "\n  query IntrospectionQuery "
-            + "{\n    __schema "
-                + "{\n      queryType { name }\n      mutationType { name }\n      "
-                    + "types {\n        ...FullType\n      }\n      "
-                    + "directives {\n        name\n        description\n        "
-                        + "args {\n          ...InputValue\n        }\n        "
-                        + "onOperation\n        onFragment\n        onField\n      }\n    }\n  }\n\n  "
-            + "fragment FullType on __Type {\n    kind\n    name\n    description\n    "
-                + "fields {\n      name\n      description\n      args {\n        ...InputValue\n      }\n      "
-                    + "type {\n        ...TypeRef\n      }\n      isDeprecated\n      deprecationReason\n    }\n    "
-                + "inputFields {\n      ...InputValue\n    }\n    "
-                + "interfaces {\n      ...TypeRef\n    }\n    "
-                + "enumValues {\n      name\n      description\n      isDeprecated\n      deprecationReason\n    }\n    "
-                + "possibleTypes {\n      ...TypeRef\n    }\n  }\n\n  "
-            + "fragment InputValue on __InputValue {\n    name\n    description\n    "
-                + "type { ...TypeRef }\n    defaultValue\n  }\n\n  "
-            + "fragment TypeRef on __Type {\n    kind\n    name\n    "
-                + "ofType {\n      kind\n      name\n      "
-                    + "ofType {\n        kind\n        name\n        "
-                        + "ofType {\n          kind\n          name\n        }\n      }\n    }\n  }\n";
+                                                      + "{\n    __schema "
+                                                      + "{\n      queryType { name }\n      mutationType { name }\n      "
+                                                      + "types {\n        ...FullType\n      }\n      "
+                                                      + "directives {\n        name\n        description\n        "
+                                                      + "args {\n          ...InputValue\n        }\n        "
+                                                      + "onOperation\n        onFragment\n        onField\n      }\n    }\n  }\n\n  "
+                                                      + "fragment FullType on __Type {\n    kind\n    name\n    description\n    "
+                                                      + "fields {\n      name\n      description\n      args {\n        ...InputValue\n      }\n      "
+                                                      + "type {\n        ...TypeRef\n      }\n      isDeprecated\n      deprecationReason\n    }\n    "
+                                                      + "inputFields {\n      ...InputValue\n    }\n    "
+                                                      + "interfaces {\n      ...TypeRef\n    }\n    "
+                                                      + "enumValues {\n      name\n      description\n      isDeprecated\n      deprecationReason\n    }\n    "
+                                                      + "possibleTypes {\n      ...TypeRef\n    }\n  }\n\n  "
+                                                      + "fragment InputValue on __InputValue {\n    name\n    description\n    "
+                                                      + "type { ...TypeRef }\n    defaultValue\n  }\n\n  "
+                                                      + "fragment TypeRef on __Type {\n    kind\n    name\n    "
+                                                      + "ofType {\n      kind\n      name\n      "
+                                                      + "ofType {\n        kind\n        name\n        "
+                                                      + "ofType {\n          kind\n          name\n        }\n      }\n    }\n  }\n";
+
+    @Test
+    public void testCasting() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        Thing2 thing2 = model.construct(Thing2.class, "tester", "testier");
+        Thing3 thing3 = model.construct(Thing3.class, "Thingy",
+                                        "a favorite thing");
+        thing1.setThing2(thing2);
+        thing2.addThing3(thing3);
+
+        EntityManagerFactory mockedEmf = mockedEmf();
+
+        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("id", thing1.getRuleform()
+                                  .getId()
+                                  .toString());
+        variables.put("thing3", thing3.getRuleform()
+                                      .getId()
+                                      .toString());
+        QueryRequest request = new QueryRequest("mutation m($id: String!, $thing3: String!) { UpdateThing1(state: { id: $id, setThing2: $thing3}) { name } }",
+                                                variables);
+        ExecutionResult result = resource.query(null, TEST_SCENARIO_URI,
+                                                request);
+        assertNotNull(result);
+
+        assertEquals(result.getErrors()
+                           .toString(),
+                     1, result.getErrors()
+                              .size());
+        assertTrue(result.getErrors()
+                         .get(0)
+                         .getMessage()
+                         .contains("ClassCastException"));
+    }
 
     @Test
     public void testCreate() throws Exception {
@@ -222,6 +257,26 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                            .toString(),
                      thing3Result.get("id"));
 
+    }
+
+    @Test
+    public void testIntrospection() throws Exception {
+        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
+        EntityManagerFactory mockedEmf = mockedEmf();
+        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
+                                                                          .getWorkspace(),
+                                                                    model);
+        String query = INTROSPECTION_QUERY;
+        @SuppressWarnings("rawtypes")
+        ExecutionResult execute = new GraphQL(schema).execute(query,
+                                                              new PhantasmCRUD(model));
+        assertTrue(execute.getErrors()
+                          .toString(),
+                   execute.getErrors()
+                          .isEmpty());
+        Map<String, Object> result = execute.getData();
+
+        assertNotNull(result);
     }
 
     @Test
@@ -456,26 +511,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                            .toString(),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
-    }
-
-    @Test
-    public void testIntrospection() throws Exception {
-        Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
-        EntityManagerFactory mockedEmf = mockedEmf();
-        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
-                                                                          .getWorkspace(),
-                                                                    model);
-        String query = INTROSPECTION_QUERY;
-        @SuppressWarnings("rawtypes")
-        ExecutionResult execute = new GraphQL(schema).execute(query,
-                                                              new PhantasmCRUD(model));
-        assertTrue(execute.getErrors()
-                          .toString(),
-                   execute.getErrors()
-                          .isEmpty());
-        Map<String, Object> result = execute.getData();
-
-        assertNotNull(result);
     }
 
     private Plugin constructPlugin() throws InstantiationException {

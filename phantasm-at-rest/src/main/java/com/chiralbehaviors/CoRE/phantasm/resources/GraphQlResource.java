@@ -64,6 +64,7 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -101,6 +102,16 @@ public class GraphQlResource extends TransactionalResource {
         public Map<String, Object> getVariables() {
             return variables;
         }
+
+        @SuppressWarnings("serial")
+        public Map<String, Object> toMap() {
+            return new HashMap<String, Object>() {
+                {
+                    put("query", query);
+                    put("variables", variables);
+                }
+            };
+        }
     }
 
     private static final Logger log = LoggerFactory.getLogger(GraphQlResource.class);
@@ -136,13 +147,25 @@ public class GraphQlResource extends TransactionalResource {
         });
     }
 
+    public ExecutionResult query(@Auth AuthorizedPrincipal principal,
+                                 @PathParam("workspace") String workspace,
+                                 QueryRequest request) {
+        return query(principal, workspace, request.toMap());
+
+    }
+
+    @SuppressWarnings("unchecked")
     @Timed
     @Path("workspace/{workspace}")
     @POST
     public ExecutionResult query(@Auth AuthorizedPrincipal principal,
                                  @PathParam("workspace") String workspace,
-                                 QueryRequest request) {
+                                 @SuppressWarnings("rawtypes") Map request) {
         if (request == null) {
+            throw new WebApplicationException("Query cannot be null",
+                                              Status.BAD_REQUEST);
+        }
+        if (request.get("query") == null) {
             throw new WebApplicationException("Query cannot be null",
                                               Status.BAD_REQUEST);
         }
@@ -157,7 +180,8 @@ public class GraphQlResource extends TransactionalResource {
                 } catch (IllegalArgumentException e) {
                     throw new WebApplicationException(String.format("Workspace not found [%s] %s",
                                                                     id,
-                                                                    workspace));
+                                                                    workspace),
+                                                      Status.NOT_FOUND);
                 }
 
                 return build(scoped.getWorkspace(), model);
@@ -166,7 +190,8 @@ public class GraphQlResource extends TransactionalResource {
             if (schema == null) {
                 throw new WebApplicationException(String.format("Workspace not found [%s] %s",
                                                                 uuid,
-                                                                workspace));
+                                                                workspace),
+                                                  Status.NOT_FOUND);
             }
 
             @SuppressWarnings("rawtypes")
@@ -185,19 +210,35 @@ public class GraphQlResource extends TransactionalResource {
                                        p.getName(), p.getId()));
                 return null;
             }
-            ExecutionResult result = new GraphQL(schema).execute(request.getQuery(),
+            Map<String, Object> variables = Collections.emptyMap();
+            if (request.get("variables") != null) {
+                if (request.get("variables") instanceof Map) {
+                    variables = (Map<String, Object>) request.get("variables");
+                } else if (request.get("variables") instanceof String) {
+                    try {
+                        variables = new ObjectMapper().readValue((String) request.get("variables"),
+                                                                 Map.class);
+                    } catch (Exception e) {
+                        throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
+                                                                        e.getMessage()),
+                                                          Status.BAD_REQUEST);
+                    }
+                } else {
+                    throw new WebApplicationException("Invalid variables parameter",
+                                                      Status.BAD_REQUEST);
+                }
+            }
+            ExecutionResult result = new GraphQL(schema).execute((String) request.get("query"),
                                                                  crud,
-                                                                 request.getVariables() == null ? Collections.emptyMap()
-                                                                                                : request.getVariables());
+                                                                 variables);
             if (result.getErrors()
                       .isEmpty()) {
                 return result;
             }
-            log.info("Query: {} Errors: {}", request.getQuery(),
+            log.info("Query: {} Errors: {}", request.get("variables"),
                      result.getErrors());
             return result;
         });
-
     }
 
     private ClassLoader buildExecutionContext(Plugin plugin) {

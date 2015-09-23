@@ -23,9 +23,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.product.Product;
 
@@ -37,11 +39,22 @@ public class TestImport extends AbstractModelTest {
 
     @Test
     public void testExampleWorkspace() throws Exception {
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
-                                                                model);
+        Product definingProduct;
+        try {
+            WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+                                                                    model);
+            definingProduct = importer.getWorkspace()
+                                      .getDefiningProduct();
+        } catch (IllegalStateException e) {
+            LoggerFactory.getLogger(TestImport.class)
+                         .info("Not loading thing ontology version 1: {}",
+                               e.getMessage());
+            definingProduct = em.find(Product.class,
+                                      WorkspaceAccessor.uuidOf(THING_URI));
+        }
+
         em.flush();
-        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
-                                                                                .getDefiningProduct(),
+        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
                                                                         model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
@@ -50,14 +63,19 @@ public class TestImport extends AbstractModelTest {
 
     @Test
     public void testIncrementalVersionUpdate() throws Exception {
-        // load version 1
-        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
-                                                                model);
+        try {
+            WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+                                       model);
+        } catch (IllegalStateException e) {
+            LoggerFactory.getLogger(TestImport.class)
+                         .info("Not loading thing ontology version 1: {}",
+                               e.getMessage());
+        }
         em.flush();
-        // load version 1
+        // load version 2
 
-        importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
-                                              model);
+        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
+                                                                model);
         DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
                                                                                 .getDefiningProduct(),
                                                                         model);

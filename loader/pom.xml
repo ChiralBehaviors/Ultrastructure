@@ -44,13 +44,5 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>drop-database</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>create-database</artifactId>
-        </dependency>
     </dependencies>
 </project>

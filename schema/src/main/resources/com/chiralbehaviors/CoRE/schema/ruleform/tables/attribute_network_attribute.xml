@@ -94,14 +94,5 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="attribute_network_attribute" constraintName="attribute_network_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-        <sql> ALTER TABLE attribute_network_attribute OWNER TO core; </sql>
-        <rollback />
-        <sql><![CDATA[
-            GRANT ALL ON TABLE attribute_network_attribute TO core;
-            GRANT SELECT ON TABLE attribute_network_attribute TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE attribute_network_attribute TO core_read_write;
-            ]]>
-        </sql>
-        <rollback />
     </changeSet>
 </databaseChangeLog>

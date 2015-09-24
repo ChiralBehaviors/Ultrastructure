@@ -81,14 +81,5 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="status_code_attribute_authorization" constraintName="status_code_attribute_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-        <sql> ALTER TABLE status_code_attribute_authorization OWNER TO core; </sql>
-        <rollback />
-        <sql><![CDATA[
-            GRANT ALL ON TABLE status_code_attribute_authorization TO core;
-            GRANT SELECT ON TABLE status_code_attribute_authorization TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE status_code_attribute_authorization TO core_read_write;
-            ]]>
-        </sql>
-        <rollback />
     </changeSet>
 </databaseChangeLog>

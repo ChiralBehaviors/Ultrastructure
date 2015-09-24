@@ -43,6 +43,7 @@ import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.RollbackFailedException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
 /**
@@ -86,10 +87,21 @@ public class Loader {
             liquibase = new Liquibase(CREATE_DATABASE_XML,
                                       new ClassLoaderResourceAccessor(getClass().getClassLoader()),
                                       database);
+            liquibase.setChangeLogParameter("create.db.database",
+                                            configuration.coreDb);
+            liquibase.setChangeLogParameter("create.db.password",
+                                            configuration.corePassword);
             liquibase.rollback(String.format(INITIAL_DATABASE_CREATE_TEMPLATE,
                                              configuration.coreDb),
                                configuration.contexts);
 
+        } catch (RollbackFailedException e) {
+            if (e.getMessage()
+                 .contains("Could not find tag 'initial-database-create")) {
+                log.info(String.format("%s is new database, not dropping",
+                                       configuration.coreDb));
+                return;
+            }
         } finally {
             if (liquibase != null) {
                 liquibase.forceReleaseLocks();

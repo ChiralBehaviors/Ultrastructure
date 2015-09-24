@@ -33,8 +33,9 @@
 
                                         <coreServer>${db.server}</coreServer>
                                         <corePort>${db.port}</corePort>
-                                        <coreUsername>${db.login}</coreUsername>
+                                        <coreUsername>testMe</coreUsername>
                                         <corePassword>${db.password}</corePassword>
+                                        <coreDb>test</coreDb>
 
                                         <dropDatabase>true</dropDatabase>
                                     </loader>

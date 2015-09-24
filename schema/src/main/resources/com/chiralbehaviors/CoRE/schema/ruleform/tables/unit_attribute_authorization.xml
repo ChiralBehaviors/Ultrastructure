@@ -36,11 +36,6 @@
             </column>
             <column name="version" type="INT4" />
         </createTable>
-        <rollback>
-            <dropTable tableName="unit_attribute_authorization" />
-        </rollback>
-        <sql> ALTER TABLE unit_attribute_authorization OWNER TO core; </sql>
-        <rollback />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
@@ -83,12 +78,5 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-        <sql><![CDATA[
-            GRANT ALL ON TABLE unit_attribute_authorization TO core;
-            GRANT SELECT ON TABLE unit_attribute_authorization TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE unit_attribute_authorization TO core_read_write;
-            ]]>
-        </sql>
-        <rollback />
     </changeSet>
 </databaseChangeLog>

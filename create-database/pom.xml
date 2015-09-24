@@ -9,12 +9,16 @@
         <relativePath>..</relativePath>
     </parent>
     <artifactId>create-database</artifactId>
+    <name>Create Database</name>
+    <description>Perform the update on the DB</description>
+
     <dependencies>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>drop-database</artifactId>
         </dependency>
     </dependencies>
+
     <profiles>
         <profile>
             <id>database.active</id>
@@ -34,7 +38,21 @@
                                     <password>${dba.db.password}</password>
                                     <changeLogFile>create-database.xml</changeLogFile>
                                     <contexts>${db.context}</contexts>
-                                    <verbose>false</verbose>
+                                    <verbose>true</verbose>
+                                    <expressionVars>
+                                        <property>
+                                            <name>create.db.database</name>
+                                            <value>${db.database}</value>
+                                        </property>
+                                        <property>
+                                            <name>create.db.role</name>
+                                            <value>${db.login}</value>
+                                        </property>
+                                        <property>
+                                            <name>create.db.password</name>
+                                            <value>${db.password}</value>
+                                        </property>
+                                    </expressionVars>
                                 </configuration>
                                 <goals>
                                     <goal>update</goal>
@@ -50,43 +68,7 @@
                         </configuration>
                     </plugin>
                 </plugins>
-                <pluginManagement>
-                    <plugins>
-                        <!--This plugin's configuration is used to store Eclipse m2e settings
-                            only. It has no influence on the Maven build itself. -->
-                        <plugin>
-                            <groupId>org.eclipse.m2e</groupId>
-                            <artifactId>lifecycle-mapping</artifactId>
-                            <version>1.0.1-SNAPSHOT</version>
-                            <configuration>
-                                <lifecycleMappingMetadata>
-                                    <pluginExecutions>
-                                        <pluginExecution>
-                                            <pluginExecutionFilter>
-                                                <groupId>org.liquibase</groupId>
-                                                <artifactId>
-                                                    liquibase-maven-plugin
-                                                </artifactId>
-                                                <versionRange>
-                                                    [2.0.4,)
-                                                </versionRange>
-                                                <goals>
-                                                    <goal>update</goal>
-                                                </goals>
-                                            </pluginExecutionFilter>
-                                            <action>
-                                                <ignore></ignore>
-                                            </action>
-                                        </pluginExecution>
-                                    </pluginExecutions>
-                                </lifecycleMappingMetadata>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
             </build>
         </profile>
     </profiles>
-    <name>Create Database</name>
-    <description>Perform the update on the DB</description>
 </project>

@@ -258,9 +258,9 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>${project.groupId}</groupId>
+                <groupId>com.chiralbehaviors.CoRE</groupId>
                 <artifactId>network-inference-generator</artifactId>
-                <version>${project.version}</version>
+                <version>0.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>

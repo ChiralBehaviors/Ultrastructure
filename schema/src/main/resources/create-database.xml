@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <preConditions>
+        <dbms type="postgresql" />
+    </preConditions>
+
+    <!-- Tag so we can roll back the change of the db creation -->
+    <changeSet author="hhildebrand" id="tag_create-${create.db.database}-2.0.0">
+        <tagDatabase tag="initial-database-create-${create.db.database}" />
+    </changeSet>
+
+    <changeSet id="create-${create.db.role}-role-2.0.0" author="hhildebrand" runInTransaction="false" context="local">
+        <sql><![CDATA[
+            CREATE ROLE ${create.db.role} WITH SUPERUSER NOINHERIT CREATEROLE LOGIN PASSWORD '${create.db.password}';
+            ]]>
+        </sql>
+        <rollback>
+            <sql>DROP ROLE ${create.db.role};</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create-${create.db.role}-role-aws-2.0.0" author="hhildebrand" runInTransaction="false" context="aws">
+        <sql><![CDATA[
+			CREATE ROLE ${create.db.role} WITH NOINHERIT CREATEROLE LOGIN PASSWORD '${create.db.password}';
+            GRANT rds_superuser TO ${create.db.role} GRANTED BY ${create.db.role};
+            ]]>
+        </sql>
+        <rollback>
+            <sql>DROP ROLE ${create.db.role};</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create-database-${create.db.database}-2.0.0" author="hhildebrand" runInTransaction="false">
+        <sql><![CDATA[
+            COMMENT ON ROLE ${create.db.role} IS 'Owning role of the ${create.db.database} Ultra-Structure database';
+            ALTER ROLE ${create.db.role} SET search_path TO ruleform, public, readable;
+            CREATE DATABASE ${create.db.database} ENCODING 'UTF8';
+            GRANT CREATE ON DATABASE ${create.db.database} TO ${create.db.role};
+            ]]>
+        </sql>
+        <rollback>
+            <sql>DROP DATABASE IF EXISTS ${create.db.database}</sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

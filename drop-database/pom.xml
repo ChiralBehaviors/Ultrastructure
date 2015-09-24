@@ -15,15 +15,72 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>schema</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>
         <profile>
+            <id>drop-db</id>
             <activation>
                 <property>
                     <name>drop</name>
                 </property>
             </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.liquibase</groupId>
+                        <artifactId>liquibase-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <configuration>
+                                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                                    <driver>org.postgresql.Driver</driver>
+                                    <url>jdbc:postgresql://${dba.db.server}:${dba.db.port}/${dba.db.database}</url>
+                                    <username>${dba.db.login}</username>
+                                    <password>${dba.db.password}</password>
+                                    <rollbackTag>initial-database-create-${db.login}</rollbackTag>
+                                    <contexts>${db.context}</contexts>
+                                    <changeLogFile>create-database.xml</changeLogFile>
+                                    <verbose>true</verbose>
+                                    <expressionVars>
+                                        <property>
+                                            <name>create.db.database</name>
+                                            <value>${db.database}</value>
+                                        </property>
+                                        <property>
+                                            <name>create.db.role</name>
+                                            <value>${db.login}</value>
+                                        </property>
+                                        <property>
+                                            <name>create.db.password</name>
+                                            <value>${db.password}</value>
+                                        </property>
+                                    </expressionVars>
+                                </configuration>
+                                <goals>
+                                    <goal>rollback</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>sudo-drop-me</id>
             <build>
                 <plugins>
                     <plugin>

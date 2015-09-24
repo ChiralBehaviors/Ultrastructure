@@ -202,10 +202,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
         children.stream()
                 .filter(child -> checkREAD(child, networkedModel))
-                .filter(child -> {
-                    cast(child, auth);
-                    return true;
-                })
+                .peek(child -> cast(child, auth))
                 .forEach(child -> networkedModel.link(instance,
                                                       model.getEntityManager()
                                                            .getReference(Relationship.class,
@@ -234,10 +231,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         children.stream()
                 .filter(child -> checkREAD(child,
                                            model.getUnknownNetworkedModel(child)))
-                .filter(child -> {
-                    cast(child, auth);
-                    return true;
-                })
+                .peek(child -> cast(child, auth))
                 .forEach(child -> {
                     if (childAuthClassification instanceof Agency) {
                         networkedModel.authorize(instance,
@@ -970,10 +964,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                         .getId());
         children.stream()
                 .filter(child -> checkREAD(child, networkedModel))
-                .filter(child -> {
-                    cast(child, auth);
-                    return true;
-                })
+                .peek(child -> cast(child, auth))
                 .forEach(child -> networkedModel.link(instance, reference,
                                                       child,
                                                       model.getCurrentPrincipal()

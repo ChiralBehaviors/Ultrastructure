@@ -88,12 +88,5 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="relationship_attribute" constraintName="relationship_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-        <sql><![CDATA[
-            GRANT ALL ON TABLE relationship_attribute TO core;
-            GRANT SELECT ON TABLE relationship_attribute TO core_read_only;
-            GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE relationship_attribute TO core_read_write;
-            ]]>
-        </sql>
-        <rollback />
     </changeSet>
 </databaseChangeLog>

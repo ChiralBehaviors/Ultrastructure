@@ -16,7 +16,6 @@
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>drop-database</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -40,6 +39,16 @@
                                     <changeLogFile>create-database.xml</changeLogFile>
                                     <contexts>${db.context}</contexts>
                                     <verbose>true</verbose>
+                                    <expressionVars>
+                                        <property>
+                                            <name>create.db.database</name>
+                                            <value>${db.database}</value>
+                                        </property>
+                                        <property>
+                                            <name>create.db.password</name>
+                                            <value>${db.password}</value>
+                                        </property>
+                                    </expressionVars>
                                 </configuration>
                                 <goals>
                                     <goal>update</goal>

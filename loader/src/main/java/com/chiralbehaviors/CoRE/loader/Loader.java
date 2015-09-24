@@ -112,6 +112,10 @@ public class Loader {
             liquibase = new Liquibase(changeLog,
                                       new ClassLoaderResourceAccessor(getClass().getClassLoader()),
                                       database);
+            liquibase.setChangeLogParameter("create.db.database",
+                                            configuration.coreDb);
+            liquibase.setChangeLogParameter("create.db.password",
+                                            configuration.corePassword);
             liquibase.update(Integer.MAX_VALUE, configuration.contexts);
 
         } finally {

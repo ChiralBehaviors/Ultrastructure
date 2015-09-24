@@ -14,12 +14,10 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>schema</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -49,6 +47,16 @@
                                     <contexts>${db.context}</contexts>
                                     <changeLogFile>create-database.xml</changeLogFile>
                                     <verbose>true</verbose>
+                                    <expressionVars>
+                                        <property>
+                                            <name>create.db.database</name>
+                                            <value>${db.database}</value>
+                                        </property>
+                                        <property>
+                                            <name>create.db.password</name>
+                                            <value>${db.password}</value>
+                                        </property>
+                                    </expressionVars>
                                 </configuration>
                                 <goals>
                                     <goal>rollback</goal>

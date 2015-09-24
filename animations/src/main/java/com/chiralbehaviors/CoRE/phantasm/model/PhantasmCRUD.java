@@ -99,6 +99,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         if (instance == null) {
             return null;
         }
+        cast(child, auth);
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
         if (!checkUPDATE(facet, networkedModel)
             || !checkUPDATE(auth, networkedModel)) {
@@ -121,6 +122,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         if (instance == null) {
             return null;
         }
+        cast(child, auth);
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
         if (!checkUPDATE(facet, networkedModel)
             || !checkUPDATE(auth, networkedModel)) {
@@ -184,6 +186,10 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
         children.stream()
                 .filter(child -> checkREAD(child, networkedModel))
+                .filter(child -> {
+                    cast(child, auth);
+                    return true;
+                })
                 .forEach(child -> networkedModel.link(instance,
                                                       model.getEntityManager()
                                                            .getReference(Relationship.class,
@@ -212,6 +218,10 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         children.stream()
                 .filter(child -> checkREAD(child,
                                            model.getUnknownNetworkedModel(child)))
+                .filter(child -> {
+                    cast(child, auth);
+                    return true;
+                })
                 .forEach(child -> {
                     if (childAuthClassification instanceof Agency) {
                         networkedModel.authorize(instance,
@@ -284,6 +294,52 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             return null;
         }
         return constructor.apply(instance);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    /**
+     * Throws ClassCastException if not an instance of the authorized facet type
+     * 
+     * @param ruleform
+     * @param facet
+     */
+    public void cast(ExistentialRuleform ruleform,
+                     NetworkAuthorization authorization) {
+        NetworkedModel networkedModel = model.getUnknownNetworkedModel(ruleform);
+        if (!networkedModel.isAccessible(ruleform,
+                                         authorization.getAuthorizedRelationship(),
+                                         authorization.getAuthorizedParent())) {
+            throw new ClassCastException(String.format("%s not of facet type %s:%s",
+                                                       ruleform,
+                                                       authorization.getAuthorizedRelationship()
+                                                                    .getName(),
+                                                       authorization.getAuthorizedParent()
+                                                                    .getName()));
+        }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    /**
+     * Throws ClassCastException if not an instance of the to/from facet type,
+     * depending on directionality
+     * 
+     * @param ruleform
+     * @param facet
+     */
+    public void cast(ExistentialRuleform ruleform,
+                     XDomainNetworkAuthorization authorization) {
+        NetworkedModel networkedModel = model.getUnknownNetworkedModel(ruleform);
+        Relationship classifier = authorization.isForward() ? authorization.getToRelationship()
+                                                            : authorization.getFromRelationship();
+        ExistentialRuleform classification = authorization.isForward() ? authorization.getToParent()
+                                                                       : authorization.getFromParent();
+        if (!networkedModel.isAccessible(ruleform, classifier,
+                                         classification)) {
+            throw new ClassCastException(String.format("%s not of facet type %s:%s",
+                                                       ruleform,
+                                                       classifier.getName(),
+                                                       classification.getName()));
+        }
     }
 
     public boolean checkInvoke(NetworkAuthorization<RuleForm> facet,
@@ -898,6 +954,10 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                         .getId());
         children.stream()
                 .filter(child -> checkREAD(child, networkedModel))
+                .filter(child -> {
+                    cast(child, auth);
+                    return true;
+                })
                 .forEach(child -> networkedModel.link(instance, reference,
                                                       child,
                                                       model.getCurrentPrincipal()
@@ -913,7 +973,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param auth
      * @param children
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public RuleForm setChildren(NetworkAuthorization<RuleForm> facet,
                                 RuleForm instance,
                                 XDomainNetworkAuthorization<?, ?> auth,
@@ -926,7 +986,9 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             || !checkUPDATE(auth, networkedModel)) {
             return instance;
         }
-        @SuppressWarnings("rawtypes")
+        children.stream()
+                .forEach(child -> cast((ExistentialRuleform) child, auth));
+
         ExistentialRuleform childAuthClassification = auth.isForward() ? auth.getToParent()
                                                                        : auth.getFromParent();
         if (childAuthClassification instanceof Agency) {
@@ -1021,6 +1083,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         if (child == null) {
             networkedModel.unlinkImmediate(child, auth.getChildRelationship());
         } else {
+            cast(child, auth);
             networkedModel.setImmediateChild(instance, model.getEntityManager()
                                                             .getReference(Relationship.class,
                                                                           auth.getChildRelationship()
@@ -1053,6 +1116,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             || !checkUPDATE(auth, networkedModel)) {
             return instance;
         }
+        cast(child, auth);
         ExistentialRuleform<?, ?> childAuthClassification = auth.isForward() ? auth.getToParent()
                                                                              : auth.getFromParent();
         if (childAuthClassification instanceof Agency) {

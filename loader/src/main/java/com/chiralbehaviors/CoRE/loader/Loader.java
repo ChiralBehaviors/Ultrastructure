@@ -23,12 +23,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -53,12 +51,10 @@ import liquibase.resource.ClassLoaderResourceAccessor;
  */
 public class Loader {
 
-    private static final String CREATE_DATABASE_XML                             = "create-database.xml";
-    private static final String DROP_DATABASE_SQL                               = "/drop-database.sql";
-    private static final String DROP_LIQUIBASE_SQL                              = "/drop-liquibase.sql";
-    private static final String DROP_ROLES_SQL                                  = "/drop-roles.sql";
-    private static final Logger log                                             = LoggerFactory.getLogger(Loader.class);
-    private static final String MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
+    private static final String INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
+    private static final String CREATE_DATABASE_XML                            = "create-database.xml";
+    private static final Logger log                                            = LoggerFactory.getLogger(Loader.class);
+    private static final String MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
 
     public static void main(String[] argv) throws Exception {
         Loader loader = new Loader(Configuration.fromYaml(Utils.resolveResource(Loader.class,
@@ -83,45 +79,26 @@ public class Loader {
 
     private void dropDatabase() throws Exception {
         Connection connection = configuration.getDbaConnection();
-        connection.setAutoCommit(true);
-        log.info(String.format("Dropping db %s", configuration.coreDb));
-        executeWithError(connection,
-                         Utils.getDocument(getClass().getResourceAsStream(DROP_DATABASE_SQL)));
-        log.info(String.format("Dropping liquibase metadata in db %s",
-                               configuration.dbaDb));
-        execute(connection,
-                Utils.getDocument(getClass().getResourceAsStream(DROP_LIQUIBASE_SQL)));
-        log.info(String.format("Dropping roles in db %s",
-                               configuration.coreDb));
-        execute(connection,
-                Utils.getDocument(getClass().getResourceAsStream(DROP_ROLES_SQL)));
-    }
+        Liquibase liquibase = null;
+        try {
+            Database database = DatabaseFactory.getInstance()
+                                               .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            liquibase = new Liquibase(CREATE_DATABASE_XML,
+                                      new ClassLoaderResourceAccessor(getClass().getClassLoader()),
+                                      database);
+            liquibase.rollback(String.format(INITIAL_DATABASE_CREATE_TEMPLATE,
+                                             configuration.coreDb),
+                               configuration.contexts);
 
-    private void execute(Connection connection,
-                         String sqlFile) throws Exception {
-        StringTokenizer tokes = new StringTokenizer(sqlFile, ";");
-        while (tokes.hasMoreTokens()) {
-            String line = tokes.nextToken();
-            PreparedStatement exec = connection.prepareStatement(line);
-            try {
-                exec.execute();
-            } catch (SQLException e) {
-            } finally {
-                exec.close();
+        } finally {
+            if (liquibase != null) {
+                liquibase.forceReleaseLocks();
             }
-        }
-    }
-
-    private void executeWithError(Connection connection,
-                                  String sqlFile) throws SQLException {
-        StringTokenizer tokes = new StringTokenizer(sqlFile, ";");
-        while (tokes.hasMoreTokens()) {
-            String line = tokes.nextToken();
-            PreparedStatement exec = connection.prepareStatement(line);
             try {
-                exec.execute();
-            } finally {
-                exec.close();
+                connection.rollback();
+                connection.close();
+            } catch (SQLException e) {
+                //nothing to do
             }
         }
     }
@@ -185,7 +162,7 @@ public class Loader {
     protected void loadModel() throws Exception, SQLException {
         log.info(String.format("loading model sql in core db %s",
                                configuration.coreDb));
-        load(MODEL_COM_CHIRALBEHAVIORS_CO_RE_SCHEMA_CORE_XML,
+        load(MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
              configuration.getCoreConnection());
     }
 }

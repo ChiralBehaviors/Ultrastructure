@@ -66,6 +66,10 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>browser</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

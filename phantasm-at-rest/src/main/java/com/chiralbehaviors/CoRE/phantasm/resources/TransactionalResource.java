@@ -116,6 +116,8 @@ public class TransactionalResource {
                     em.getTransaction()
                       .commit();
                     return value;
+                } catch (WebApplicationException e) {
+                    throw e;
                 } catch (Throwable e) {
                     log.error("error applying transaction", e);
                     throw new WebApplicationException(e, 500);
@@ -123,6 +125,8 @@ public class TransactionalResource {
                     em.close();
                 }
             });
+        } catch (WebApplicationException e) {
+            throw e;
         } catch (Exception e) {
             log.error("error applying transaction", e);
             throw new WebApplicationException(e, 500);
@@ -155,6 +159,8 @@ public class TransactionalResource {
                     em.close();
                 }
             });
+        } catch (WebApplicationException e) {
+            throw e;
         } catch (Exception e) {
             log.error("error applying transaction", e);
             throw new WebApplicationException(e, 500);

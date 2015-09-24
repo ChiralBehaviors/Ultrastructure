@@ -136,6 +136,32 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
 
     }
 
+    public static String toFieldName(String name) {
+        return Introspector.decapitalize(toValidName(name));
+    }
+
+    public static String toTypeName(String name) {
+        char chars[] = toValidName(name).toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    public static String toValidName(String name) {
+        name = name.replaceAll("\\s", "");
+        StringBuilder sb = new StringBuilder();
+        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
+            sb.append("_");
+        }
+        for (char c : name.toCharArray()) {
+            if (!Character.isJavaIdentifierPart(c)) {
+                sb.append("_");
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
     private static NetworkAuthorization<?> resolveFrom(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
                                                        Model model) {
         Aspect<?> aspect = new Aspect<>(auth.getFromRelationship(),
@@ -189,10 +215,6 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
                                                           aspect));
         }
         return facet;
-    }
-
-    private String toFieldName(String name) {
-        return Introspector.decapitalize(name.replaceAll("\\s", ""));
     }
 
     private void traverseAgencyAuths(NetworkAuthorization<RuleForm> facet,

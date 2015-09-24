@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.graphql;
 
+import static com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.toTypeName;
 import static graphql.Scalars.GraphQLBoolean;
 import static graphql.Scalars.GraphQLFloat;
 import static graphql.Scalars.GraphQLInt;
@@ -151,17 +152,18 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private Set<NetworkAuthorization<?>>                                                            references     = new HashSet<>();
     private Builder                                                                                 typeBuilder;
     private Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> updateTemplate = new HashMap<>();
-    private graphql.schema.GraphQLInputObjectType.Builder                                           updateTypeBuilder;
+
+    private graphql.schema.GraphQLInputObjectType.Builder updateTypeBuilder;
 
     public FacetType(NetworkAuthorization<RuleForm> facet) {
-        this.name = facet.getName();
-        typeBuilder = newObject().name(facet.getName())
+        this.name = toTypeName(facet.getName());
+        typeBuilder = newObject().name(getName())
                                  .description(facet.getNotes());
         updateTypeBuilder = newInputObject().name(String.format(UPDATE_TYPE,
-                                                                facet.getName()))
+                                                                getName()))
                                             .description(facet.getNotes());
         createTypeBuilder = newInputObject().name(String.format(CREATE_TYPE,
-                                                                facet.getName()))
+                                                                getName()))
                                             .description(facet.getNotes());
     }
 
@@ -497,9 +499,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition apply(NetworkAuthorization<RuleForm> facet) {
         List<BiFunction<DataFetchingEnvironment, RuleForm, Object>> detachedConstructors = constructors;
+        String typeName = toTypeName(facet.getName());
         return newFieldDefinition().name(String.format(APPLY_MUTATION,
-                                                       facet.getName()))
-                                   .type(new GraphQLTypeReference(facet.getName()))
+                                                       typeName))
+                                   .type(new GraphQLTypeReference(typeName))
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the instance")
                                                           .type(GraphQLString)
@@ -561,17 +564,17 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         updateTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
                                                      .name(ID)
                                                      .description(String.format("the id of the updated %s",
-                                                                                facet.getName()))
+                                                                                toTypeName(facet.getName())))
                                                      .build());
         updateTypeBuilder.field(newInputObjectField().type(GraphQLString)
                                                      .name(SET_NAME)
                                                      .description(String.format("the name to update on %s",
-                                                                                facet.getName()))
+                                                                                toTypeName(facet.getName())))
                                                      .build());
         createTypeBuilder.field(newInputObjectField().type(new GraphQLNonNull(GraphQLString))
                                                      .name(SET_NAME)
                                                      .description(String.format("the name to update on %s",
-                                                                                facet.getName()))
+                                                                                toTypeName(facet.getName())))
                                                      .build());
         updateTemplate.put(SET_NAME,
                            (crud,
@@ -580,7 +583,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
         GraphQLInputObjectField field = newInputObjectField().type(GraphQLString)
                                                              .name(SET_DESCRIPTION)
                                                              .description(String.format("the description to update on %s",
-                                                                                        facet.getName()))
+                                                                                        toTypeName(facet.getName())))
                                                              .build();
         updateTypeBuilder.field(field);
         createTypeBuilder.field(field);
@@ -675,9 +678,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private GraphQLFieldDefinition createInstance(NetworkAuthorization<RuleForm> facet) {
         Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdate = updateTemplate;
         List<BiFunction<DataFetchingEnvironment, RuleForm, Object>> detachedConstructors = constructors;
+        String typeName = toTypeName(facet.getName());
         return newFieldDefinition().name(String.format(CREATE_MUTATION,
-                                                       facet.getName()))
-                                   .type(new GraphQLTypeReference(facet.getName()))
+                                                       typeName))
+                                   .type(new GraphQLTypeReference(typeName))
                                    .argument(newArgument().name(STATE)
                                                           .description("the update state to apply to the new instance")
                                                           .type(new GraphQLNonNull(createTypeBuilder.build()))
@@ -781,7 +785,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     private GraphQLFieldDefinition instance(NetworkAuthorization<RuleForm> facet,
                                             GraphQLObjectType type) {
-        return newFieldDefinition().name(facet.getName())
+        return newFieldDefinition().name(toTypeName(facet.getName()))
                                    .type(type)
                                    .argument(newArgument().name(ID)
                                                           .description("id of the facet")
@@ -793,9 +797,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     private GraphQLFieldDefinition instances(NetworkAuthorization<RuleForm> facet) {
+        String typeName = toTypeName(facet.getName());
         return newFieldDefinition().name(String.format(INSTANCES_OF_QUERY,
-                                                       facet.getName()))
-                                   .type(new GraphQLList(new GraphQLTypeReference(facet.getName())))
+                                                       typeName))
+                                   .type(new GraphQLList(new GraphQLTypeReference(typeName)))
                                    .dataFetcher(context -> ctx(context).getInstances(facet))
                                    .build();
 
@@ -826,9 +831,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition remove(NetworkAuthorization<RuleForm> facet) {
+        String typeName = toTypeName(facet.getName());
         return newFieldDefinition().name(String.format(REMOVE_MUTATION,
-                                                       facet.getName()))
-                                   .type(new GraphQLTypeReference(facet.getName()))
+                                                       typeName))
+                                   .type(new GraphQLTypeReference(typeName))
                                    .argument(newArgument().name(ID)
                                                           .description("the id of the instance")
                                                           .type(GraphQLString)
@@ -990,9 +996,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     @SuppressWarnings("unchecked")
     private GraphQLFieldDefinition update(NetworkAuthorization<RuleForm> facet) {
         Map<String, BiFunction<PhantasmCRUD<RuleForm, Network>, Map<String, Object>, RuleForm>> detachedUpdateTemplate = updateTemplate;
-        return newFieldDefinition().name(String.format(UPDATE_QUERY,
-                                                       facet.getName()))
-                                   .type(new GraphQLTypeReference(facet.getName()))
+        String typeName = toTypeName(facet.getName());
+        return newFieldDefinition().name(String.format(UPDATE_QUERY, typeName))
+                                   .type(new GraphQLTypeReference(typeName))
                                    .argument(newArgument().name(STATE)
                                                           .description("the update state to apply")
                                                           .type(new GraphQLNonNull(updateTypeBuilder.build()))

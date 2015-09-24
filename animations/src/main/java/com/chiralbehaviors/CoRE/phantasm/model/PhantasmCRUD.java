@@ -57,6 +57,22 @@ import com.google.common.base.Function;
  *
  */
 public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> {
+
+    public static String toValidName(String name) {
+        StringBuilder sb = new StringBuilder();
+        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
+            sb.append("_");
+        }
+        for (char c : name.toCharArray()) {
+            if (!Character.isJavaIdentifierPart(c)) {
+                sb.append("_");
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
     private final Relationship apply;
     private final Relationship create;
     private final Relationship delete;

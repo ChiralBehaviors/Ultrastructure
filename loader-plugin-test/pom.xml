@@ -33,7 +33,7 @@
 
                                         <coreServer>${db.server}</coreServer>
                                         <corePort>${db.port}</corePort>
-                                        <coreUsername>testMe</coreUsername>
+                                        <coreUsername>testme</coreUsername>
                                         <corePassword>${db.password}</corePassword>
                                         <coreDb>test</coreDb>
 

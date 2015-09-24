@@ -52,8 +52,8 @@ import liquibase.resource.ClassLoaderResourceAccessor;
  */
 public class Loader {
 
-    private static final String INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
     private static final String CREATE_DATABASE_XML                            = "create-database.xml";
+    private static final String INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
     private static final Logger log                                            = LoggerFactory.getLogger(Loader.class);
     private static final String MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
 
@@ -87,10 +87,7 @@ public class Loader {
             liquibase = new Liquibase(CREATE_DATABASE_XML,
                                       new ClassLoaderResourceAccessor(getClass().getClassLoader()),
                                       database);
-            liquibase.setChangeLogParameter("create.db.database",
-                                            configuration.coreDb);
-            liquibase.setChangeLogParameter("create.db.password",
-                                            configuration.corePassword);
+            initializeParameters(liquibase);
             liquibase.rollback(String.format(INITIAL_DATABASE_CREATE_TEMPLATE,
                                              configuration.coreDb),
                                configuration.contexts);
@@ -115,6 +112,15 @@ public class Loader {
         }
     }
 
+    private void initializeParameters(Liquibase liquibase) {
+        liquibase.setChangeLogParameter("create.db.database",
+                                        configuration.coreDb);
+        liquibase.setChangeLogParameter("create.db.role",
+                                        configuration.coreUsername);
+        liquibase.setChangeLogParameter("create.db.password",
+                                        configuration.corePassword);
+    }
+
     private void load(String changeLog,
                       Connection connection) throws Exception {
         Liquibase liquibase = null;
@@ -124,10 +130,7 @@ public class Loader {
             liquibase = new Liquibase(changeLog,
                                       new ClassLoaderResourceAccessor(getClass().getClassLoader()),
                                       database);
-            liquibase.setChangeLogParameter("create.db.database",
-                                            configuration.coreDb);
-            liquibase.setChangeLogParameter("create.db.password",
-                                            configuration.corePassword);
+            initializeParameters(liquibase);
             liquibase.update(Integer.MAX_VALUE, configuration.contexts);
 
         } finally {

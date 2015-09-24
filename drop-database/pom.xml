@@ -53,6 +53,10 @@
                                             <value>${db.database}</value>
                                         </property>
                                         <property>
+                                            <name>create.db.role</name>
+                                            <value>${db.login}</value>
+                                        </property>
+                                        <property>
                                             <name>create.db.password</name>
                                             <value>${db.password}</value>
                                         </property>

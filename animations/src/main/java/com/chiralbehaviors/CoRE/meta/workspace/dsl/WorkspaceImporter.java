@@ -19,7 +19,6 @@
  */
 package com.chiralbehaviors.CoRE.meta.workspace.dsl;
 
-import java.beans.Introspector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -145,7 +144,7 @@ public class WorkspaceImporter {
         } else {
             name = constraint.authorizedParent.member.getText();
         }
-        return Introspector.decapitalize(name);
+        return name;
     }
 
     private final EntityManager em;

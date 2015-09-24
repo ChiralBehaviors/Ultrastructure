@@ -57,6 +57,7 @@ import com.google.common.base.Function;
  *
  */
 public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> {
+
     private final Relationship apply;
     private final Relationship create;
     private final Relationship delete;

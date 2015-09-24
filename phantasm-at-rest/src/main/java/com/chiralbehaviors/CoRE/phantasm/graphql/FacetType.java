@@ -281,7 +281,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                               String fieldName,
                               NetworkAuthorization<RuleForm> child,
                               String singularFieldName) {
-        GraphQLOutputType type = new GraphQLTypeReference(child.getName());
+        GraphQLOutputType type = new GraphQLTypeReference(toTypeName(child.getName()));
         type = new GraphQLList(type);
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
@@ -312,7 +312,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                               XDomainNetworkAuthorization<?, ?> auth,
                               String fieldName, NetworkAuthorization<?> child,
                               String singularFieldName) {
-        GraphQLList type = new GraphQLList(new GraphQLTypeReference(child.getName()));
+        GraphQLList type = new GraphQLList(new GraphQLTypeReference(toTypeName(child.getName())));
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .description(auth.getNotes())
@@ -334,7 +334,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                               NetworkAuthorization<RuleForm> auth,
                               String fieldName,
                               NetworkAuthorization<RuleForm> child) {
-        GraphQLOutputType type = new GraphQLTypeReference(child.getName());
+        GraphQLOutputType type = new GraphQLTypeReference(toTypeName(child.getName()));
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .dataFetcher(env -> ctx(env).getSingularChild(facet,
@@ -366,7 +366,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     public void visitSingular(NetworkAuthorization<RuleForm> facet,
                               XDomainNetworkAuthorization<?, ?> auth,
                               String fieldName, NetworkAuthorization<?> child) {
-        GraphQLTypeReference type = new GraphQLTypeReference(child.getName());
+        GraphQLTypeReference type = new GraphQLTypeReference(toTypeName(child.getName()));
         typeBuilder.field(newFieldDefinition().type(type)
                                               .name(fieldName)
                                               .description(auth.getNotes())

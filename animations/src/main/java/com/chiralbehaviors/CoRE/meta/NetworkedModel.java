@@ -146,7 +146,14 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * Check the capability of an agency on an attribute of a ruleform.
      */
     boolean checkCapability(Agency agency,
-                            AttributeAuthorization<RuleForm, ?> statAuth,
+                            AttributeAuthorization<RuleForm, ?> stateAuth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of the current principal on an attribute of a
+     * ruleform.
+     */
+    boolean checkCapability(AttributeAuthorization<RuleForm, ?> stateAuth,
                             Relationship capability);
 
     /**
@@ -156,10 +163,23 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
+     * Check the capability of the current principal on an instance.
+     */
+    boolean checkCapability(ExistentialRuleform<?, ?> instance,
+                            Relationship capability);
+
+    /**
      * Check the capability of an agency on the authorized relationship of the
      * facet child relationship.
      */
     boolean checkCapability(Agency agency, NetworkAuthorization<RuleForm> auth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of the current principal on the authorized
+     * relationship of the facet child relationship.
+     */
+    boolean checkCapability(NetworkAuthorization<RuleForm> auth,
                             Relationship capability);
 
     /**
@@ -171,11 +191,25 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
+     * Check the capability of the current principal on an attribute of the
+     * authorized cross domain relationship of the facet child relationship.
+     */
+    boolean checkCapability(XDomainAttrbuteAuthorization<?, ?> stateAuth,
+                            Relationship capability);
+
+    /**
      * Check the capability of an agency on the authorized relationship of the
      * facet child relationship.
      */
     boolean checkCapability(Agency agency,
                             XDomainNetworkAuthorization<?, ?> stateAuth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of the current principal on the authorized
+     * relationship of the facet child relationship.
+     */
+    boolean checkCapability(XDomainNetworkAuthorization<?, ?> stateAuth,
                             Relationship capability);
 
     /**
@@ -186,11 +220,24 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                                  Relationship capability);
 
     /**
+     * Check the capability of the current principal on the facet.
+     */
+    boolean checkFacetCapability(NetworkAuthorization<RuleForm> facet,
+                                 Relationship capability);
+
+    /**
      * Check the capability of an agency on an attribute of the authorized
      * relationship of the facet child relationship.
      */
     boolean checkNetworkCapability(Agency agency,
                                    AttributeAuthorization<RuleForm, ?> stateAuth,
+                                   Relationship capability);
+
+    /**
+     * Check the capability of the current principal on an attribute of the
+     * authorized relationship of the facet child relationship.
+     */
+    boolean checkNetworkCapability(AttributeAuthorization<RuleForm, ?> stateAuth,
                                    Relationship capability);
 
     /**
@@ -323,7 +370,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param aspect
      *            - the classifying aspect.
      * @param includeGrouping
-     *            TODO
      * @return
      */
     List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
@@ -336,7 +382,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * @param facet
      *            - the classifying aspect.
      * @param includeGrouping
-     *            TODO
      * @return
      */
     List<AttributeAuth> getAttributeAuthorizations(NetworkAuthorization<RuleForm> facet,
@@ -521,7 +566,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * 
      * @param aspect
      * @param includeGrouping
-     *            TODO
      * @return the list of network authorizations for this aspect
      */
     List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect,
@@ -593,7 +637,6 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
      * deletions and modifications
      * 
      * @param initial
-     *            TODO
      *
      * @throws SQLException
      */

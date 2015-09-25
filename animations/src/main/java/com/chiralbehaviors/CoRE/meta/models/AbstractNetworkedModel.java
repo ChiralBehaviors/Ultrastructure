@@ -81,6 +81,7 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.hellblazer.utils.Tuple;
@@ -377,6 +378,81 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                     .isEmpty();
     }
 
+    @Override
+    public boolean checkCapability(AttributeAuthorization<RuleForm, ?> stateAuth,
+                                   Relationship capability) {
+        AuthorizedPrincipal current = model.getCurrentPrincipal();
+        if (checkCapability(current.getPrincipal(), stateAuth, capability)) {
+            return true;
+        }
+        for (Aspect<Agency> r : current.getActiveRoles()) {
+            if (checkCapability(r.getClassification(), stateAuth, capability)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkCapability(ExistentialRuleform<?, ?> instance,
+                                   Relationship capability) {
+        AuthorizedPrincipal current = model.getCurrentPrincipal();
+        if (checkCapability(current.getPrincipal(), instance, capability)) {
+            return true;
+        }
+        for (Aspect<Agency> r : current.getActiveRoles()) {
+            if (checkCapability(r.getClassification(), instance, capability)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkCapability(NetworkAuthorization<RuleForm> auth,
+                                   Relationship capability) {
+        AuthorizedPrincipal current = model.getCurrentPrincipal();
+        if (checkCapability(current.getPrincipal(), auth, capability)) {
+            return true;
+        }
+        for (Aspect<Agency> r : current.getActiveRoles()) {
+            if (checkCapability(r.getClassification(), auth, capability)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkCapability(XDomainAttrbuteAuthorization<?, ?> stateAuth,
+                                   Relationship capability) {
+        AuthorizedPrincipal current = model.getCurrentPrincipal();
+        if (checkCapability(current.getPrincipal(), stateAuth, capability)) {
+            return true;
+        }
+        for (Aspect<Agency> r : current.getActiveRoles()) {
+            if (checkCapability(r.getClassification(), stateAuth, capability)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkCapability(XDomainNetworkAuthorization<?, ?> stateAuth,
+                                   Relationship capability) {
+        AuthorizedPrincipal current = model.getCurrentPrincipal();
+        if (checkCapability(current.getPrincipal(), stateAuth, capability)) {
+            return true;
+        }
+        for (Aspect<Agency> r : current.getActiveRoles()) {
+            if (checkCapability(r.getClassification(), stateAuth, capability)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Check the capability of an agency on the facet.
      */
@@ -408,6 +484,22 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                     .isEmpty();
     }
 
+    @Override
+    public boolean checkFacetCapability(NetworkAuthorization<RuleForm> facet,
+                                        Relationship capability) {
+        AuthorizedPrincipal current = model.getCurrentPrincipal();
+        if (checkFacetCapability(current.getPrincipal(), facet, capability)) {
+            return true;
+        }
+        for (Aspect<Agency> r : current.getActiveRoles()) {
+            if (checkFacetCapability(r.getClassification(), facet,
+                                     capability)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Check the capability of an agency on an attribute of the authorized
      * relationship of the facet child relationship.
@@ -436,6 +528,23 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.setParameter("capability", capability);
         return query.getResultList()
                     .isEmpty();
+    }
+
+    @Override
+    public boolean checkNetworkCapability(AttributeAuthorization<RuleForm, ?> stateAuth,
+                                          Relationship capability) {
+        AuthorizedPrincipal current = model.getCurrentPrincipal();
+        if (checkNetworkCapability(current.getPrincipal(), stateAuth,
+                                   capability)) {
+            return true;
+        }
+        for (Aspect<Agency> r : current.getActiveRoles()) {
+            if (checkNetworkCapability(r.getClassification(), stateAuth,
+                                       capability)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -1625,8 +1734,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     abstract protected Class<?> getAttributeAuthorizationClass();
 
-    abstract protected Class<?> getNetworkAuthClass();
-
     protected NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
                                                          Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -1644,4 +1751,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             return null;
         }
     }
+
+    abstract protected Class<?> getNetworkAuthClass();
 }

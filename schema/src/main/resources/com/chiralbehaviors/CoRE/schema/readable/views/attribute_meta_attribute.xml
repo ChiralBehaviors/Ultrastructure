@@ -17,9 +17,11 @@
 			     aa.numeric_value, 
 			     aa.boolean_value, 
 			     aa.text_value, 
+                 aa.json_value, 
 			     u.name AS unit, 
 			     aa.notes, 
-			     up.name AS updated_by, 
+			     up.name AS updated_by,  
+                 aa.updated,
 			     aa.version
 			   FROM attribute_meta_attribute aa
 			   JOIN attribute ba ON ba.id = aa.attribute

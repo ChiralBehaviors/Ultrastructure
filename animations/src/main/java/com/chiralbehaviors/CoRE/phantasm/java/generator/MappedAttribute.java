@@ -94,6 +94,8 @@ public class MappedAttribute {
             case "timestamp":
                 imports.add("java.sql.Timestamp");
                 return "Timestamp";
+            case "json":
+                return "Object";
             default:
                 throw new IllegalArgumentException();
         }

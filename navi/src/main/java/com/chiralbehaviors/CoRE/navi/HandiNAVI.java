@@ -102,6 +102,11 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
         environment.lifecycle()
                    .addServerLifecycleListener(server -> jettyServer = server);
         Map<String, String> properties = configuration.jpa.getProperties();
+
+        // configuration by convention
+        properties.put("hibernate.dialect",
+                       "com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect");
+
         if (emf == null) { // allow tests to set this if needed
             emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                          properties);

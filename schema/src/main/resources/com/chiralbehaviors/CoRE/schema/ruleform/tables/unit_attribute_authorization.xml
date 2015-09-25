@@ -35,6 +35,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
+            <column name="json_value" type="jsonb" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="unit_attribute_authorization" constraintName="unit_attribute_authorization_attribute_fkey"

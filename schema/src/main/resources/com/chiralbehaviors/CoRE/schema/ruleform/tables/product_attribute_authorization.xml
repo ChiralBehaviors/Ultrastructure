@@ -39,6 +39,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
+            <column name="json_value" type="jsonb" />
         </createTable>
         <rollback>
             <dropTable tableName="product_attribute_authorization" />

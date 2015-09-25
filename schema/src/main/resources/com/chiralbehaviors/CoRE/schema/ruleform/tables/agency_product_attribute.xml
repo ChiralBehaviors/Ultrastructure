@@ -34,6 +34,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="json_value" type="jsonb"/>
         </createTable>
         <rollback>
             <dropTable tableName="agency_product_attribute" />

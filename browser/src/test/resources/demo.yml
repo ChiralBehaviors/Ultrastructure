@@ -7,6 +7,7 @@ jpa:
         javax.persistence.jdbc.url: jdbc:postgresql://${db.server}:${db.port}/${db.database}
         javax.persistence.jdbc.driver: org.postgresql.Driver
         hibernate.cache.use_second_level_cache: true
+        hibernate.dialect: com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect
         
 logging:
     level: INFO

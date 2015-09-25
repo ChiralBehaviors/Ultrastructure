@@ -35,6 +35,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -88,11 +90,18 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     @Column(name = "timestamp_value")
     private Timestamp timestampValue;
 
+    @Column(name = "json_value")
+    @Type(type = "jsonbType")
+    private Object jsonValue;
+
     // bi-directional many-to-one association to Unit
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit")
     private Unit unit;
+
+    @Column(name = "updated")
+    private Timestamp updated = new Timestamp(System.currentTimeMillis());
 
     /**
      *
@@ -181,6 +190,10 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         return unit;
     }
 
+    public Timestamp getUpdated() {
+        return updated;
+    }
+
     @SuppressWarnings("unchecked")
     @JsonProperty
     public <T extends Object> T getValue() {
@@ -200,6 +213,8 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
                 return (T) getTextValue();
             case TIMESTAMP:
                 return (T) getTimestampValue();
+            case JSON:
+                return (T) getJsonValue();
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               attribute.getValueType()));
@@ -231,48 +246,57 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         this.unit = unit;
     }
 
+    public void setUpdated(Timestamp updated) {
+        this.updated = updated;
+    }
+
     public void setValue(Object value) {
         switch (getAttribute().getValueType()) {
             case BINARY:
                 setBinaryValue((byte[]) value);
-                return;
+                break;
             case BOOLEAN:
                 setBooleanValue((Boolean) value);
-                return;
+                break;
             case INTEGER:
                 setIntegerValue((Integer) value);
-                return;
+                break;
             case NUMERIC:
                 setNumericValue((BigDecimal) value);
-                return;
+                break;
             case TEXT:
                 setTextValue((String) value);
                 return;
             case TIMESTAMP:
                 setTimestampValue((Timestamp) value);
-                return;
+                break;
+            case JSON:
+                setJsonValue(value);
+                break;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               getAttribute().getValueType()));
         }
+        setUpdated(new Timestamp(System.currentTimeMillis()));
     }
 
     public void setValueFromString(String value) {
         switch (getAttribute().getValueType()) {
             case BINARY:
-                setBinaryValue(value.getBytes());
+                setValue(value.getBytes());
                 return;
             case BOOLEAN:
-                setBooleanValue(Boolean.valueOf(value));
+                setValue(Boolean.valueOf(value));
                 return;
             case INTEGER:
-                setIntegerValue(Integer.parseInt(value));
+                setValue(Integer.parseInt(value));
                 return;
             case NUMERIC:
-                setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                setValue(BigDecimal.valueOf(Long.parseLong(value)));
                 return;
             case TEXT:
-                setTextValue(value);
+            case JSON:
+                setValue(value);
                 return;
             case TIMESTAMP:
                 throw new UnsupportedOperationException("Timestamps are a PITA");
@@ -340,5 +364,13 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
 
     private void setTimestampValue(Timestamp timestampValue) {
         this.timestampValue = timestampValue;
+    }
+
+    private Object getJsonValue() {
+        return jsonValue;
+    }
+
+    private void setJsonValue(Object jsonValue) {
+        this.jsonValue = jsonValue;
     }
 }

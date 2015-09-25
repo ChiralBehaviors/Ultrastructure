@@ -34,6 +34,10 @@
             <column defaultValueComputed="1" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="json_value" type="jsonb" />
         </createTable>
         <rollback>
             <dropTable tableName="attribute_meta_attribute_kind" />
@@ -52,8 +56,7 @@
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="attribute_meta_attribute" constraintName="attribute_attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
-            referencedTableName="agency" />
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="attribute, meta_attribute, sequence_number"
             constraintName="attribute_attribute_base_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="attribute_meta_attribute" />

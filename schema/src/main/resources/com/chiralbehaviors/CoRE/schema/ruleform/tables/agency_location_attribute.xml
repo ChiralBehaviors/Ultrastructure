@@ -34,6 +34,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="json_value" type="jsonb"/>
         </createTable>
         <rollback>
             <dropTable tableName="agency_location_attribute" />
@@ -61,5 +65,5 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="agency_location_attribute" constraintName="agency_location_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-    </changeSet>
+    </changeSet> 
 </databaseChangeLog>

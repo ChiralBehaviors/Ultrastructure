@@ -33,6 +33,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="json_value" type="jsonb"/>
         </createTable>
         <rollback>
             <dropTable tableName="unit_attribute" />
@@ -48,7 +52,7 @@
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="unit_attribute" constraintName="unit_attribute_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="unit, attribute" constraintName="unit_attribute_unit_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="unit_attribute" />
         <createIndex schemaName="ruleform" indexName="unit_attribute_updated_by_fkey_idx" tableName="unit_attribute" unique="false">
@@ -70,7 +74,7 @@
             <column name="unit" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="unit_attribute" constraintName="unit_attribute_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            baseColumnNames="workspace" baseTableName="unit_attribute" constraintName="unit_attribute_workspace_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

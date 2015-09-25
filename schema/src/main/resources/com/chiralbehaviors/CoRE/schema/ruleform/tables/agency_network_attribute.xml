@@ -36,6 +36,10 @@
             <column defaultValueNumeric="1" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="json_value" type="jsonb"/>
         </createTable>
         <rollback>
             <dropTable tableName="agency_network_attribute" />
@@ -51,8 +55,7 @@
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="agency_network_attribute" constraintName="agency_network_attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
-            referencedTableName="agency" />
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="network_rule, attribute, sequence_number"
             constraintName="agency_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="agency_network_attribute" />
         <createIndex schemaName="ruleform" indexName="agency_network_attribute_attribute_fkey_idx" tableName="agency_network_attribute"

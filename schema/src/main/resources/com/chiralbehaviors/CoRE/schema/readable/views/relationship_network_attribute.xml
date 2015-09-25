@@ -17,9 +17,11 @@
                     ba.integer_value, 
                     ba.boolean_value, 
 			        ba.text_value, 
+                    ba.json_value, 
                     u.name AS unit,
-                     ba.notes, 
-			        up.name AS updated_by, 
+                    ba.notes, 
+			        up.name AS updated_by,  
+                    ba.updated,
 			        ba.version
 			   FROM relationship_network_attribute ba
 			   JOIN relationship_network b ON ba.network_rule = b.id

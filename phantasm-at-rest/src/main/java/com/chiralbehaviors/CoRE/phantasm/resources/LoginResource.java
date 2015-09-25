@@ -120,7 +120,8 @@ public class LoginResource {
                                                                .getAccessToken(),
                                                           model.getCurrentPrincipal()
                                                                .getPrincipal());
-        accessToken.setValue(new Timestamp(System.currentTimeMillis()));
+        accessToken.setValue("Dummy IP");
+        accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
         accessToken.setSequenceNumber(seqNum);
         model.getEntityManager()
              .persist(accessToken);

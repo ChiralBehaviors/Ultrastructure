@@ -15,7 +15,9 @@
                     la.key AS key, 
                     la.text_value, 
                     la.integer_value, 
-                    r.name AS updated_by, 
+                    la.json_value, 
+                    r.name AS updated_by,  
+                    la.updated,
                     la.version
 			   FROM location_attribute la
 			   JOIN location l ON la.location = l.id

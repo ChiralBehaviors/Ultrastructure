@@ -33,6 +33,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -76,6 +78,10 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
 
     @Column(name = "integer_value")
     private Integer integerValue;
+
+    @Column(name = "json_value")
+    @Type(type = "jsonbType")
+    private Object jsonValue;
 
     @Column(name = "numeric_value")
     private BigDecimal numericValue;
@@ -122,49 +128,13 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
         return authorizedAttribute;
     }
 
-    /**
-     * @return the binaryValue
-     */
-    @JsonIgnore
-    public byte[] getBinaryValue() {
-        return binaryValue;
-    }
-
-    /**
-     * @return the booleanValue
-     */
-    @JsonIgnore
-    public Boolean getBooleanValue() {
-        return booleanValue;
-    }
-
     @JsonGetter
     public Agency getGroupingAgency() {
         return groupingAgency;
     }
 
-    @JsonIgnore
-    public Integer getIntegerValue() {
-        return integerValue;
-    }
-
     @JsonGetter
     abstract public XDomainNetworkAuthorization<From, To> getNetworkAuthorization();
-
-    @JsonIgnore
-    public BigDecimal getNumericValue() {
-        return numericValue;
-    }
-
-    @JsonIgnore
-    public String getTextValue() {
-        return textValue;
-    }
-
-    @JsonIgnore
-    public Timestamp getTimestampValue() {
-        return timestampValue;
-    }
 
     @SuppressWarnings("unchecked")
     @JsonGetter
@@ -185,6 +155,8 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
                 return (T) getTextValue();
             case TIMESTAMP:
                 return (T) getTimestampValue();
+            case JSON:
+                return (T) getJsonValue();
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               authorizedAttribute.getValueType()));
@@ -195,47 +167,11 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
         authorizedAttribute = productAttributeType3;
     }
 
-    /**
-     * @param binaryValue
-     *            the binaryValue to set
-     */
-    public void setBinaryValue(byte[] binaryValue) {
-        this.binaryValue = binaryValue;
-    }
-
-    /**
-     * @param booleanValue
-     *            the booleanValue to set
-     */
-    public void setBooleanValue(Boolean booleanValue) {
-        this.booleanValue = booleanValue;
-    }
-
     public void setGroupingAgency(Agency agency) {
         groupingAgency = agency;
     }
 
-    public void setIntegerValue(Integer integerValue) {
-        this.integerValue = integerValue;
-    }
-
     abstract public <T extends XDomainNetworkAuthorization<From, To>> void setNetworkAuthorization(T auth);
-
-    public void setNumericValue(BigDecimal numericValue) {
-        this.numericValue = numericValue;
-    }
-
-    public void setTextValue(String textValue) {
-        this.textValue = textValue;
-    }
-
-    /**
-     * @param timestampValue
-     *            the timestampValue to set
-     */
-    public void setTimestampValue(Timestamp timestampValue) {
-        this.timestampValue = timestampValue;
-    }
 
     public void setValue(Object value) {
         switch (getAuthorizedAttribute().getValueType()) {
@@ -257,9 +193,93 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
             case TIMESTAMP:
                 setTimestampValue((Timestamp) value);
                 return;
+            case JSON:
+                setJsonValue(value);
+                return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               getAuthorizedAttribute().getValueType()));
         }
+    }
+
+    /**
+     * @return the binaryValue
+     */
+    @JsonIgnore
+    private byte[] getBinaryValue() {
+        return binaryValue;
+    }
+
+    /**
+     * @return the booleanValue
+     */
+    @JsonIgnore
+    private Boolean getBooleanValue() {
+        return booleanValue;
+    }
+
+    @JsonIgnore
+    private Integer getIntegerValue() {
+        return integerValue;
+    }
+
+    @JsonIgnore
+    private Object getJsonValue() {
+        return jsonValue;
+    }
+
+    @JsonIgnore
+    private BigDecimal getNumericValue() {
+        return numericValue;
+    }
+
+    @JsonIgnore
+    private String getTextValue() {
+        return textValue;
+    }
+
+    @JsonIgnore
+    private Timestamp getTimestampValue() {
+        return timestampValue;
+    }
+
+    /**
+     * @param binaryValue
+     *            the binaryValue to set
+     */
+    private void setBinaryValue(byte[] binaryValue) {
+        this.binaryValue = binaryValue;
+    }
+
+    /**
+     * @param booleanValue
+     *            the booleanValue to set
+     */
+    private void setBooleanValue(Boolean booleanValue) {
+        this.booleanValue = booleanValue;
+    }
+
+    private void setIntegerValue(Integer integerValue) {
+        this.integerValue = integerValue;
+    }
+
+    private void setJsonValue(Object jsonValue) {
+        this.jsonValue = jsonValue;
+    }
+
+    private void setNumericValue(BigDecimal numericValue) {
+        this.numericValue = numericValue;
+    }
+
+    private void setTextValue(String textValue) {
+        this.textValue = textValue;
+    }
+
+    /**
+     * @param timestampValue
+     *            the timestampValue to set
+     */
+    private void setTimestampValue(Timestamp timestampValue) {
+        this.timestampValue = timestampValue;
     }
 }

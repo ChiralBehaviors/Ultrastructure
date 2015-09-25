@@ -53,10 +53,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.proxy.HibernateProxy;
 import org.reflections.Reflections;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.attribute.json.JsonMapType;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -81,6 +84,7 @@ import com.fasterxml.uuid.NoArgGenerator;
  * @author hhildebrand
  *
  */
+@TypeDefs({ @TypeDef(name = "jsonbType", typeClass = JsonMapType.class) })
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @JsonIdentityInfo(generator = PropertyGenerator.class, property = "id")

@@ -36,6 +36,10 @@
             <column defaultValueNumeric="1" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="json_value" type="jsonb"/>
         </createTable>
         <rollback>
             <dropTable tableName="status_code_network_attribute" />

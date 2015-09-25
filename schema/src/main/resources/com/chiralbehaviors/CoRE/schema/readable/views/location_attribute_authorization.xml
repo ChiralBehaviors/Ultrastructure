@@ -18,6 +18,7 @@
                 base_table.text_value, 
                 base_table.integer_value, 
                 base_table.numeric_value, 
+                base_table.json_value, 
                 base_table.notes, 
                 up.name AS updated_by, 
                 base_table.version

@@ -11,6 +11,7 @@ jpa:
         hibernate.c3p0.timeout: 5000
         hibernate.c3p0.max_statements: 100
         hibernate.c3p0.acquire_increment: 2
+        hibernate.dialect: com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect
         
 logging:
     level: INFO

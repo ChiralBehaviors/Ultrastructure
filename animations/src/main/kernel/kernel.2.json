@@ -1,4 +1,5 @@
 {
+  "frontier" : [ ],
   "definingProduct" : {
     "@type" : "Product",
     "id" : "00000000-0000-0004-0000-000000000003",
@@ -10,7 +11,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50bb6390-597d-11e5-855a-8900782dac32",
+        "id" : "216edbb7-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -23,7 +24,7 @@
     },
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c10811-597d-11e5-855a-8900782dac32",
+      "id" : "2178c6f8-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -34,20 +35,19 @@
     "description" : "The defining product of the Kernel workspace",
     "name" : "kernelWorkspace"
   },
-  "frontier" : [ ],
   "ruleforms" : [ {
     "@type" : "AgencyNetworkAuthorization",
-    "id" : "50caa577-597d-11e5-855a-8900782dac32",
+    "id" : "2186f82f-63b2-11e5-92a7-a92ad60aaad8",
     "notes" : "The facet that represents any statusCode",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50cacc88-597d-11e5-855a-8900782dac32",
+      "id" : "2186f830-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "50caa577-597d-11e5-855a-8900782dac32",
+      "reference" : "2186f82f-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyNetworkAuthorization"
     },
     "cardinality" : "ZERO",
@@ -58,7 +58,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c12f23-597d-11e5-855a-8900782dac32",
+        "id" : "21793c2a-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -78,7 +78,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50b9dced-597d-11e5-855a-8900782dac32",
+        "id" : "216c6ab4-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -91,17 +91,17 @@
     }
   }, {
     "@type" : "AttributeNetworkAuthorization",
-    "id" : "50cacc89-597d-11e5-855a-8900782dac32",
+    "id" : "21871f41-63b2-11e5-92a7-a92ad60aaad8",
     "notes" : "The facet that represents any attribute",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50cacc8a-597d-11e5-855a-8900782dac32",
+      "id" : "21871f42-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "50cacc89-597d-11e5-855a-8900782dac32",
+      "reference" : "21871f41-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AttributeNetworkAuthorization"
     },
     "cardinality" : "ZERO",
@@ -114,7 +114,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50bd5f70-597d-11e5-855a-8900782dac32",
+        "id" : "2172ac57-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -130,17 +130,17 @@
     }
   }, {
     "@type" : "IntervalNetworkAuthorization",
-    "id" : "50caf39b-597d-11e5-855a-8900782dac32",
+    "id" : "21871f43-63b2-11e5-92a7-a92ad60aaad8",
     "notes" : "The facet that represents any interval",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50caf39c-597d-11e5-855a-8900782dac32",
+      "id" : "21871f44-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "50caf39b-597d-11e5-855a-8900782dac32",
+      "reference" : "21871f43-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "IntervalNetworkAuthorization"
     },
     "cardinality" : "ZERO",
@@ -153,7 +153,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50be49d8-597d-11e5-855a-8900782dac32",
+        "id" : "21745a0f-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -166,17 +166,17 @@
     }
   }, {
     "@type" : "LocationNetworkAuthorization",
-    "id" : "50caf39d-597d-11e5-855a-8900782dac32",
+    "id" : "21874655-63b2-11e5-92a7-a92ad60aaad8",
     "notes" : "The facet that represents any location",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50caf39e-597d-11e5-855a-8900782dac32",
+      "id" : "21874656-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "50caf39d-597d-11e5-855a-8900782dac32",
+      "reference" : "21874655-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "LocationNetworkAuthorization"
     },
     "cardinality" : "ZERO",
@@ -189,7 +189,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50bf3440-597d-11e5-855a-8900782dac32",
+        "id" : "2175e0b7-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -202,17 +202,17 @@
     }
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "50cb1aaf-597d-11e5-855a-8900782dac32",
+    "id" : "21876d67-63b2-11e5-92a7-a92ad60aaad8",
     "notes" : "The facet that represents any product",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50cb1ab0-597d-11e5-855a-8900782dac32",
+      "id" : "21876d68-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "50cb1aaf-597d-11e5-855a-8900782dac32",
+      "reference" : "21876d67-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "cardinality" : "ZERO",
@@ -225,7 +225,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c01da8-597d-11e5-855a-8900782dac32",
+        "id" : "2177404f-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -238,17 +238,17 @@
     }
   }, {
     "@type" : "RelationshipNetworkAuthorization",
-    "id" : "50cb1ab1-597d-11e5-855a-8900782dac32",
+    "id" : "21876d69-63b2-11e5-92a7-a92ad60aaad8",
     "notes" : "The facet that represents any relationship",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50cb1ab2-597d-11e5-855a-8900782dac32",
+      "id" : "21876d6a-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "50cb1ab1-597d-11e5-855a-8900782dac32",
+      "reference" : "21876d69-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetworkAuthorization"
     },
     "cardinality" : "ZERO",
@@ -257,16 +257,16 @@
     "classification" : "00000000-0000-0005-0000-000000000001"
   }, {
     "@type" : "StatusCodeNetworkAuthorization",
-    "id" : "50cb41c3-597d-11e5-855a-8900782dac32",
+    "id" : "2187947b-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50cb41c4-597d-11e5-855a-8900782dac32",
+      "id" : "2187947c-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "50cb41c3-597d-11e5-855a-8900782dac32",
+      "reference" : "2187947b-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "StatusCodeNetworkAuthorization"
     },
     "cardinality" : "ZERO",
@@ -279,7 +279,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c7bf2a-597d-11e5-855a-8900782dac32",
+        "id" : "21826432-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -294,17 +294,17 @@
     }
   }, {
     "@type" : "UnitNetworkAuthorization",
-    "id" : "50cb41c5-597d-11e5-855a-8900782dac32",
+    "id" : "2187bb8d-63b2-11e5-92a7-a92ad60aaad8",
     "notes" : "The facet that represents any unit",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50cb68d6-597d-11e5-855a-8900782dac32",
+      "id" : "2187bb8e-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "50cb41c5-597d-11e5-855a-8900782dac32",
+      "reference" : "2187bb8d-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "UnitNetworkAuthorization"
     },
     "cardinality" : "ZERO",
@@ -317,7 +317,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c8f7b4-597d-11e5-855a-8900782dac32",
+        "id" : "218438fc-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -336,7 +336,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bb3c7f-597d-11e5-855a-8900782dac32",
+      "id" : "216eb4a6-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -353,7 +353,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bb8aa2-597d-11e5-855a-8900782dac32",
+      "id" : "216f50e9-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -370,7 +370,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bbd8c4-597d-11e5-855a-8900782dac32",
+      "id" : "216fc61b-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -387,7 +387,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bbffd6-597d-11e5-855a-8900782dac32",
+      "id" : "2170625d-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -404,7 +404,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bc4df8-597d-11e5-855a-8900782dac32",
+      "id" : "2170d78f-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -421,7 +421,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bc750a-597d-11e5-855a-8900782dac32",
+      "id" : "21714cc1-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -438,7 +438,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bcc32c-597d-11e5-855a-8900782dac32",
+      "id" : "21719ae3-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -455,7 +455,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bcea3e-597d-11e5-855a-8900782dac32",
+      "id" : "21721015-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -472,7 +472,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bd8682-597d-11e5-855a-8900782dac32",
+      "id" : "2172fa79-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -492,7 +492,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bdd4a4-597d-11e5-855a-8900782dac32",
+      "id" : "21736fab-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -512,7 +512,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bdfbb6-597d-11e5-855a-8900782dac32",
+      "id" : "2173e4dd-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -532,7 +532,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50be97fa-597d-11e5-855a-8900782dac32",
+      "id" : "2174a831-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -549,7 +549,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bebf0c-597d-11e5-855a-8900782dac32",
+      "id" : "2174f653-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -566,7 +566,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bf0d2e-597d-11e5-855a-8900782dac32",
+      "id" : "21756b85-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -583,7 +583,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bf5a52-597d-11e5-855a-8900782dac32",
+      "id" : "21762ed9-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -600,7 +600,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bfa874-597d-11e5-855a-8900782dac32",
+      "id" : "21767cfb-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -617,7 +617,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50bfcf86-597d-11e5-855a-8900782dac32",
+      "id" : "2176f22d-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -634,7 +634,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c044ba-597d-11e5-855a-8900782dac32",
+      "id" : "2177b581-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -651,7 +651,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c092dc-597d-11e5-855a-8900782dac32",
+      "id" : "217803a3-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -668,7 +668,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c0b9ee-597d-11e5-855a-8900782dac32",
+      "id" : "217851c5-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -685,7 +685,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c10810-597d-11e5-855a-8900782dac32",
+      "id" : "21789fe7-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -702,7 +702,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c17d45-597d-11e5-855a-8900782dac32",
+      "id" : "2179b15c-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -720,7 +720,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c1a457-597d-11e5-855a-8900782dac32",
+      "id" : "217a268e-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -738,7 +738,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c267aa-597d-11e5-855a-8900782dac32",
+      "id" : "217a9bc1-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -755,7 +755,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c2b5cc-597d-11e5-855a-8900782dac32",
+        "id" : "217ac2d2-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -774,7 +774,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c2dcdf-597d-11e5-855a-8900782dac32",
+      "id" : "217b3805-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -791,7 +791,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c32b01-597d-11e5-855a-8900782dac32",
+        "id" : "217b5f16-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -810,7 +810,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c35214-597d-11e5-855a-8900782dac32",
+      "id" : "217bd449-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -827,7 +827,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c37926-597d-11e5-855a-8900782dac32",
+        "id" : "217bfb5a-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -846,7 +846,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c3a039-597d-11e5-855a-8900782dac32",
+      "id" : "217c708d-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -863,7 +863,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c3c74b-597d-11e5-855a-8900782dac32",
+        "id" : "217c708e-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -882,7 +882,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c3ee5e-597d-11e5-855a-8900782dac32",
+      "id" : "217ce5c1-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -899,7 +899,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c41570-597d-11e5-855a-8900782dac32",
+        "id" : "217ce5c2-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -918,7 +918,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c43c83-597d-11e5-855a-8900782dac32",
+      "id" : "217d5af5-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -935,7 +935,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c46395-597d-11e5-855a-8900782dac32",
+        "id" : "217d8206-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -954,7 +954,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c4b1b7-597d-11e5-855a-8900782dac32",
+      "id" : "217df738-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -972,7 +972,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c4b1ba-597d-11e5-855a-8900782dac32",
+      "id" : "217e455b-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -989,7 +989,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c4d8cc-597d-11e5-855a-8900782dac32",
+        "id" : "217e455c-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1008,7 +1008,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c4ffdf-597d-11e5-855a-8900782dac32",
+      "id" : "217e937f-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1025,7 +1025,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c526f1-597d-11e5-855a-8900782dac32",
+        "id" : "217eba90-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1044,7 +1044,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c54e04-597d-11e5-855a-8900782dac32",
+      "id" : "217f08b3-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1061,7 +1061,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c57516-597d-11e5-855a-8900782dac32",
+        "id" : "217f08b4-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1080,7 +1080,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c59c29-597d-11e5-855a-8900782dac32",
+      "id" : "217f7de7-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1097,7 +1097,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c5c33b-597d-11e5-855a-8900782dac32",
+        "id" : "217f7de8-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1116,7 +1116,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c5ea4e-597d-11e5-855a-8900782dac32",
+      "id" : "217fcc0b-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1133,7 +1133,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c61160-597d-11e5-855a-8900782dac32",
+        "id" : "217ff31c-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1152,7 +1152,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c63873-597d-11e5-855a-8900782dac32",
+      "id" : "2180413f-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1169,7 +1169,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c65f85-597d-11e5-855a-8900782dac32",
+        "id" : "21804140-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1188,7 +1188,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c65f87-597d-11e5-855a-8900782dac32",
+      "id" : "21808f62-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1206,7 +1206,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c6869a-597d-11e5-855a-8900782dac32",
+      "id" : "2180dd85-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1223,7 +1223,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c6adac-597d-11e5-855a-8900782dac32",
+        "id" : "21810496-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1242,7 +1242,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c6d4bf-597d-11e5-855a-8900782dac32",
+      "id" : "218152b9-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1259,7 +1259,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c6fbd1-597d-11e5-855a-8900782dac32",
+        "id" : "218152ba-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1278,7 +1278,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c722e4-597d-11e5-855a-8900782dac32",
+      "id" : "2181a0dd-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1295,7 +1295,7 @@
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "50c749f6-597d-11e5-855a-8900782dac32",
+        "id" : "2181c7ee-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 1,
         "updatedBy" : "00000000-0000-0000-0000-000000000003",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1314,7 +1314,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c79818-597d-11e5-855a-8900782dac32",
+      "id" : "21821610-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1333,7 +1333,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c7e63c-597d-11e5-855a-8900782dac32",
+      "id" : "2182b254-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1352,7 +1352,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c80d4e-597d-11e5-855a-8900782dac32",
+      "id" : "21830076-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1371,7 +1371,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c85b70-597d-11e5-855a-8900782dac32",
+      "id" : "21834e98-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1390,7 +1390,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c8a992-597d-11e5-855a-8900782dac32",
+      "id" : "2183eada-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1408,7 +1408,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c91ec6-597d-11e5-855a-8900782dac32",
+      "id" : "2184871e-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1426,7 +1426,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c945d8-597d-11e5-855a-8900782dac32",
+      "id" : "2184d540-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1444,7 +1444,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c96cea-597d-11e5-855a-8900782dac32",
+      "id" : "21852362-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1462,7 +1462,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c993fc-597d-11e5-855a-8900782dac32",
+      "id" : "21857184-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1480,7 +1480,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50c9e21e-597d-11e5-855a-8900782dac32",
+      "id" : "2185bfa6-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1498,7 +1498,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50ca0930-597d-11e5-855a-8900782dac32",
+      "id" : "21860dc8-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1516,7 +1516,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50ca5752-597d-11e5-855a-8900782dac32",
+      "id" : "21865bea-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1534,7 +1534,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50ca7e64-597d-11e5-855a-8900782dac32",
+      "id" : "2186aa0c-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1552,7 +1552,7 @@
     "updatedBy" : "00000000-0000-0000-0000-000000000003",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "50caa576-597d-11e5-855a-8900782dac32",
+      "id" : "2186d11e-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000003",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
@@ -1565,590 +1565,590 @@
     "enumerated" : false
   }, {
     "@type" : "Relationship",
-    "id" : "510a6dac-597d-11e5-855a-8900782dac32",
+    "id" : "21e12633-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510a94be-597d-11e5-855a-8900782dac32",
+      "id" : "21e14d45-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "IsPluginOf",
-      "reference" : "510a6dac-597d-11e5-855a-8900782dac32",
+      "reference" : "21e12633-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "A is a plugin of the workspace B",
     "name" : "Is Plugin Of",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510a6dad-597d-11e5-855a-8900782dac32",
+      "id" : "21e12634-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510a94bf-597d-11e5-855a-8900782dac32",
+        "id" : "21e14d46-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "HasPlugin",
-        "reference" : "510a6dad-597d-11e5-855a-8900782dac32",
+        "reference" : "21e12634-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "A has a plugin B",
       "name" : "Has Plugin",
-      "inverse" : "510a6dac-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e12633-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510a6dad-597d-11e5-855a-8900782dac32", {
+  }, "21e12634-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510a94c0-597d-11e5-855a-8900782dac32",
+    "id" : "21e17457-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510a94c2-597d-11e5-855a-8900782dac32",
+      "id" : "21e17459-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "IsArgumentOf",
-      "reference" : "510a94c0-597d-11e5-855a-8900782dac32",
+      "reference" : "21e17457-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "A is an argument for the method B",
     "name" : "Is Argument Of",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510a94c1-597d-11e5-855a-8900782dac32",
+      "id" : "21e17458-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510a94c3-597d-11e5-855a-8900782dac32",
+        "id" : "21e1745a-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "HasArgument",
-        "reference" : "510a94c1-597d-11e5-855a-8900782dac32",
+        "reference" : "21e17458-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "A has an argument B",
       "name" : "Has Argument",
-      "inverse" : "510a94c0-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e17457-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510a94c1-597d-11e5-855a-8900782dac32", {
+  }, "21e17458-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510a94c4-597d-11e5-855a-8900782dac32",
+    "id" : "21e1745b-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510a94c6-597d-11e5-855a-8900782dac32",
+      "id" : "21e19b6d-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "IsInstanceMethodOf",
-      "reference" : "510a94c4-597d-11e5-855a-8900782dac32",
+      "reference" : "21e1745b-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "A is an instance method of B",
     "name" : "Is Instance Method Of",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510a94c5-597d-11e5-855a-8900782dac32",
+      "id" : "21e1745c-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510a94c7-597d-11e5-855a-8900782dac32",
+        "id" : "21e19b6e-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "HasInstanceMethod",
-        "reference" : "510a94c5-597d-11e5-855a-8900782dac32",
+        "reference" : "21e1745c-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "A has an instance method B",
       "name" : "Has Instance Method",
-      "inverse" : "510a94c4-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e1745b-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510a94c5-597d-11e5-855a-8900782dac32", {
+  }, "21e1745c-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510abbd8-597d-11e5-855a-8900782dac32",
+    "id" : "21e19b6f-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510abbda-597d-11e5-855a-8900782dac32",
+      "id" : "21e19b71-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "IsStaticMethodOf",
-      "reference" : "510abbd8-597d-11e5-855a-8900782dac32",
+      "reference" : "21e19b6f-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "A is a static method of B",
     "name" : "Is Static Method Of",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510abbd9-597d-11e5-855a-8900782dac32",
+      "id" : "21e19b70-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510abbdb-597d-11e5-855a-8900782dac32",
+        "id" : "21e19b72-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "HasStaticMethod",
-        "reference" : "510abbd9-597d-11e5-855a-8900782dac32",
+        "reference" : "21e19b70-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "A has a static method B",
       "name" : "Has Static Method",
-      "inverse" : "510abbd8-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e19b6f-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510abbd9-597d-11e5-855a-8900782dac32", {
+  }, "21e19b70-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510abbdc-597d-11e5-855a-8900782dac32",
+    "id" : "21e1c283-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510abbde-597d-11e5-855a-8900782dac32",
+      "id" : "21e1c285-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "IsCodeSourceOf",
-      "reference" : "510abbdc-597d-11e5-855a-8900782dac32",
+      "reference" : "21e1c283-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "A is a JVM code source of B",
     "name" : "Is Code Source Of",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510abbdd-597d-11e5-855a-8900782dac32",
+      "id" : "21e1c284-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510abbdf-597d-11e5-855a-8900782dac32",
+        "id" : "21e1c286-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "HasCodeSource",
-        "reference" : "510abbdd-597d-11e5-855a-8900782dac32",
+        "reference" : "21e1c284-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "A has code source B",
       "name" : "Has Code Source",
-      "inverse" : "510abbdc-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e1c283-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510abbdd-597d-11e5-855a-8900782dac32", {
+  }, "21e1c284-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510abbe0-597d-11e5-855a-8900782dac32",
+    "id" : "21e1c287-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510ae2f2-597d-11e5-855a-8900782dac32",
+      "id" : "21e1c289-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "IsConstructorOf",
-      "reference" : "510abbe0-597d-11e5-855a-8900782dac32",
+      "reference" : "21e1c287-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "A is a constructor of B",
     "name" : "Is Constructor Of",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510abbe1-597d-11e5-855a-8900782dac32",
+      "id" : "21e1c288-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510ae2f3-597d-11e5-855a-8900782dac32",
+        "id" : "21e1e99a-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "HasConstructor",
-        "reference" : "510abbe1-597d-11e5-855a-8900782dac32",
+        "reference" : "21e1c288-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "A has constructor B",
       "name" : "HasConstructor",
-      "inverse" : "510abbe0-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e1c287-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510abbe1-597d-11e5-855a-8900782dac32", {
+  }, "21e1c288-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510ae2f4-597d-11e5-855a-8900782dac32",
+    "id" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510ae2f5-597d-11e5-855a-8900782dac32",
+      "id" : "21e1e99c-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "Capability",
-      "reference" : "510ae2f4-597d-11e5-855a-8900782dac32",
+      "reference" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "The defining capability classification",
     "name" : "Capability",
-    "inverse" : "510ae2f4-597d-11e5-855a-8900782dac32"
+    "inverse" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "Relationship",
-    "id" : "510ae2f6-597d-11e5-855a-8900782dac32",
+    "id" : "21e1e99d-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510ae2f8-597d-11e5-855a-8900782dac32",
+      "id" : "21e1e99f-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "CREATE",
-      "reference" : "510ae2f6-597d-11e5-855a-8900782dac32",
+      "reference" : "21e1e99d-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "The create capability",
     "name" : "Create",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510ae2f7-597d-11e5-855a-8900782dac32",
+      "id" : "21e1e99e-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510ae2f9-597d-11e5-855a-8900782dac32",
+        "id" : "21e210b0-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "MayBeCreatedBy",
-        "reference" : "510ae2f7-597d-11e5-855a-8900782dac32",
+        "reference" : "21e1e99e-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "May Be Created By",
       "name" : "May Be Created By",
-      "inverse" : "510ae2f6-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e1e99d-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510ae2f7-597d-11e5-855a-8900782dac32", {
+  }, "21e1e99e-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510ae2fa-597d-11e5-855a-8900782dac32",
+    "id" : "21e210b1-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b0a0c-597d-11e5-855a-8900782dac32",
+      "id" : "21e237c3-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "READ",
-      "reference" : "510ae2fa-597d-11e5-855a-8900782dac32",
+      "reference" : "21e210b1-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "The read capability",
     "name" : "Read",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510ae2fb-597d-11e5-855a-8900782dac32",
+      "id" : "21e210b2-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510b0a0d-597d-11e5-855a-8900782dac32",
+        "id" : "21e237c4-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "MayBeReadBy",
-        "reference" : "510ae2fb-597d-11e5-855a-8900782dac32",
+        "reference" : "21e210b2-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "The inverse read capability",
       "name" : "May Be Read By",
-      "inverse" : "510ae2fa-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e210b1-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510ae2fb-597d-11e5-855a-8900782dac32", {
+  }, "21e210b2-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510b0a0e-597d-11e5-855a-8900782dac32",
+    "id" : "21e237c5-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b0a10-597d-11e5-855a-8900782dac32",
+      "id" : "21e237c7-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "UPDATE",
-      "reference" : "510b0a0e-597d-11e5-855a-8900782dac32",
+      "reference" : "21e237c5-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "The update capability",
     "name" : "Update",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510b0a0f-597d-11e5-855a-8900782dac32",
+      "id" : "21e237c6-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510b0a11-597d-11e5-855a-8900782dac32",
+        "id" : "21e237c8-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "MayBeUpdatedBy",
-        "reference" : "510b0a0f-597d-11e5-855a-8900782dac32",
+        "reference" : "21e237c6-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "The inverse update capability",
       "name" : "May Be Updated By",
-      "inverse" : "510b0a0e-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e237c5-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510b0a0f-597d-11e5-855a-8900782dac32", {
+  }, "21e237c6-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510b0a12-597d-11e5-855a-8900782dac32",
+    "id" : "21e25ed9-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b0a14-597d-11e5-855a-8900782dac32",
+      "id" : "21e25edb-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "DELETE",
-      "reference" : "510b0a12-597d-11e5-855a-8900782dac32",
+      "reference" : "21e25ed9-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "The delete capability",
     "name" : "Delete",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510b0a13-597d-11e5-855a-8900782dac32",
+      "id" : "21e25eda-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510b0a15-597d-11e5-855a-8900782dac32",
+        "id" : "21e25edc-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "MayBeDeletedBy",
-        "reference" : "510b0a13-597d-11e5-855a-8900782dac32",
+        "reference" : "21e25eda-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "The inverse delete capability",
       "name" : "May Be Deleted By",
-      "inverse" : "510b0a12-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e25ed9-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510b0a13-597d-11e5-855a-8900782dac32", {
+  }, "21e25eda-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510b3126-597d-11e5-855a-8900782dac32",
+    "id" : "21e25edd-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b3128-597d-11e5-855a-8900782dac32",
+      "id" : "21e25edf-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "APPLY",
-      "reference" : "510b3126-597d-11e5-855a-8900782dac32",
+      "reference" : "21e25edd-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "The apply capability",
     "name" : "Apply",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510b3127-597d-11e5-855a-8900782dac32",
+      "id" : "21e25ede-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510b3129-597d-11e5-855a-8900782dac32",
+        "id" : "21e285f0-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "MayBeAppliedBy",
-        "reference" : "510b3127-597d-11e5-855a-8900782dac32",
+        "reference" : "21e25ede-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "The inverse apply capability",
       "name" : "May Be Applied By",
-      "inverse" : "510b3126-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e25edd-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510b3127-597d-11e5-855a-8900782dac32", {
+  }, "21e25ede-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510b312a-597d-11e5-855a-8900782dac32",
+    "id" : "21e285f1-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b312c-597d-11e5-855a-8900782dac32",
+      "id" : "21e285f3-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "REMOVE",
-      "reference" : "510b312a-597d-11e5-855a-8900782dac32",
+      "reference" : "21e285f1-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "The remove capability",
     "name" : "Remove",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510b312b-597d-11e5-855a-8900782dac32",
+      "id" : "21e285f2-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510b312d-597d-11e5-855a-8900782dac32",
+        "id" : "21e285f4-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "MayBeRemovedBy",
-        "reference" : "510b312b-597d-11e5-855a-8900782dac32",
+        "reference" : "21e285f2-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "The inverse remove capability",
       "name" : "May Be Removed By",
-      "inverse" : "510b312a-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e285f1-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510b312b-597d-11e5-855a-8900782dac32", {
+  }, "21e285f2-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510b312e-597d-11e5-855a-8900782dac32",
+    "id" : "21e285f5-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b3130-597d-11e5-855a-8900782dac32",
+      "id" : "21e285f7-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "INVOKE",
-      "reference" : "510b312e-597d-11e5-855a-8900782dac32",
+      "reference" : "21e285f5-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "The invoke capability",
     "name" : "Invoke",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510b312f-597d-11e5-855a-8900782dac32",
+      "id" : "21e285f6-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510b5841-597d-11e5-855a-8900782dac32",
+        "id" : "21e2ad08-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "MayBeInvokedBy",
-        "reference" : "510b312f-597d-11e5-855a-8900782dac32",
+        "reference" : "21e285f6-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "The inverse invoke capability",
       "name" : "May Be Invoked By",
-      "inverse" : "510b312e-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e285f5-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510b312f-597d-11e5-855a-8900782dac32", {
+  }, "21e285f6-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Relationship",
-    "id" : "510b5842-597d-11e5-855a-8900782dac32",
+    "id" : "21e2ad09-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b5844-597d-11e5-855a-8900782dac32",
+      "id" : "21e2ad0b-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "EXECUTE_QUERY",
-      "reference" : "510b5842-597d-11e5-855a-8900782dac32",
+      "reference" : "21e2ad09-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Relationship"
     },
     "description" : "The execute query capability",
     "name" : "Execute Query",
     "inverse" : {
       "@type" : "Relationship",
-      "id" : "510b5843-597d-11e5-855a-8900782dac32",
+      "id" : "21e2ad0a-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 1,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "workspace" : {
         "@type" : "WorkspaceAuthorization",
-        "id" : "510b5845-597d-11e5-855a-8900782dac32",
+        "id" : "21e2ad0c-63b2-11e5-92a7-a92ad60aaad8",
         "version" : 0,
         "updatedBy" : "00000000-0000-0000-0000-000000000004",
         "definingProduct" : "00000000-0000-0004-0000-000000000003",
         "key" : "QueryExecutedBy",
-        "reference" : "510b5843-597d-11e5-855a-8900782dac32",
+        "reference" : "21e2ad0a-63b2-11e5-92a7-a92ad60aaad8",
         "type" : "Relationship"
       },
       "description" : "The inverse execute query capability",
       "name" : "Query may be executed By",
-      "inverse" : "510b5842-597d-11e5-855a-8900782dac32"
+      "inverse" : "21e2ad09-63b2-11e5-92a7-a92ad60aaad8"
     }
-  }, "510b5843-597d-11e5-855a-8900782dac32", {
+  }, "21e2ad0a-63b2-11e5-92a7-a92ad60aaad8", {
     "@type" : "Agency",
-    "id" : "510b5846-597d-11e5-855a-8900782dac32",
+    "id" : "21e2ad0d-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b5847-597d-11e5-855a-8900782dac32",
+      "id" : "21e2ad0e-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "CoreUser",
-      "reference" : "510b5846-597d-11e5-855a-8900782dac32",
+      "reference" : "21e2ad0d-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Agency"
     },
     "description" : "Ultrastructure CoRE API user",
     "name" : "CoRE User"
   }, {
     "@type" : "Agency",
-    "id" : "510b5848-597d-11e5-855a-8900782dac32",
+    "id" : "21e2d41f-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b5849-597d-11e5-855a-8900782dac32",
+      "id" : "21e2d420-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "SuperUser",
-      "reference" : "510b5848-597d-11e5-855a-8900782dac32",
+      "reference" : "21e2d41f-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Agency"
     },
     "description" : "Ye Root",
     "name" : "Ultrastructure Super User"
   }, {
     "@type" : "Agency",
-    "id" : "510b584a-597d-11e5-855a-8900782dac32",
+    "id" : "21e2d421-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b584b-597d-11e5-855a-8900782dac32",
+      "id" : "21e2d422-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "UnauthenticatedAgency",
-      "reference" : "510b584a-597d-11e5-855a-8900782dac32",
+      "reference" : "21e2d421-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Agency"
     },
     "description" : "The unauthenticaed agency",
     "name" : "Unauthenticated"
   }, {
     "@type" : "Attribute",
-    "id" : "510b7f5c-597d-11e5-855a-8900782dac32",
+    "id" : "21e2d423-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b7f5d-597d-11e5-855a-8900782dac32",
+      "id" : "21e2d424-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "Namespace",
-      "reference" : "510b7f5c-597d-11e5-855a-8900782dac32",
+      "reference" : "21e2d423-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The namespace of an import",
@@ -2158,17 +2158,17 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510b7f5e-597d-11e5-855a-8900782dac32",
+    "id" : "21e2fb35-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b7f5f-597d-11e5-855a-8900782dac32",
+      "id" : "21e2fb36-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "LookupOrder",
-      "reference" : "510b7f5e-597d-11e5-855a-8900782dac32",
+      "reference" : "21e2fb35-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The lookup order for an import",
@@ -2178,17 +2178,17 @@
     "valueType" : "INTEGER"
   }, {
     "@type" : "Attribute",
-    "id" : "510b7f60-597d-11e5-855a-8900782dac32",
+    "id" : "21e2fb37-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b7f61-597d-11e5-855a-8900782dac32",
+      "id" : "21e2fb38-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "IRI",
-      "reference" : "510b7f60-597d-11e5-855a-8900782dac32",
+      "reference" : "21e2fb37-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The Attribute that contains an International Resource Indicator",
@@ -2198,17 +2198,17 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510b7f62-597d-11e5-855a-8900782dac32",
+    "id" : "21e2fb39-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510b7f63-597d-11e5-855a-8900782dac32",
+      "id" : "21e2fb3a-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "JsonldType",
-      "reference" : "510b7f62-597d-11e5-855a-8900782dac32",
+      "reference" : "21e2fb39-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The Attribute that contains the JSON-LD type",
@@ -2218,17 +2218,17 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510b7f64-597d-11e5-855a-8900782dac32",
+    "id" : "21e2fb3b-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510ba675-597d-11e5-855a-8900782dac32",
+      "id" : "21e3224c-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "Login",
-      "reference" : "510b7f64-597d-11e5-855a-8900782dac32",
+      "reference" : "21e2fb3b-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The Attribute that contains the login name of the agency",
@@ -2238,17 +2238,17 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510ba676-597d-11e5-855a-8900782dac32",
+    "id" : "21e3224d-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510ba677-597d-11e5-855a-8900782dac32",
+      "id" : "21e3224e-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "PasswordRounds",
-      "reference" : "510ba676-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3224d-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The number of rounds to hash the password",
@@ -2258,17 +2258,17 @@
     "valueType" : "INTEGER"
   }, {
     "@type" : "Attribute",
-    "id" : "510ba678-597d-11e5-855a-8900782dac32",
+    "id" : "21e3224f-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510ba679-597d-11e5-855a-8900782dac32",
+      "id" : "21e32250-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "PasswordHash",
-      "reference" : "510ba678-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3224f-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The hash the password",
@@ -2278,37 +2278,37 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510ba67a-597d-11e5-855a-8900782dac32",
+    "id" : "21e32251-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510ba67b-597d-11e5-855a-8900782dac32",
+      "id" : "21e32252-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "AccessToken",
-      "reference" : "510ba67a-597d-11e5-855a-8900782dac32",
+      "reference" : "21e32251-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
-    "description" : "The last access timestamp bearer token",
+    "description" : "The access bearer token",
     "name" : "Access Token",
     "indexed" : true,
     "keyed" : false,
-    "valueType" : "TIMESTAMP"
+    "valueType" : "JSON"
   }, {
     "@type" : "Attribute",
-    "id" : "510ba67c-597d-11e5-855a-8900782dac32",
+    "id" : "21e32253-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510ba67d-597d-11e5-855a-8900782dac32",
+      "id" : "21e34864-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "PackageName",
-      "reference" : "510ba67c-597d-11e5-855a-8900782dac32",
+      "reference" : "21e32253-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The base package name",
@@ -2318,17 +2318,17 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510ba67e-597d-11e5-855a-8900782dac32",
+    "id" : "21e34865-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bcd8f-597d-11e5-855a-8900782dac32",
+      "id" : "21e36f76-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "FacetName",
-      "reference" : "510ba67e-597d-11e5-855a-8900782dac32",
+      "reference" : "21e34865-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The name of a phantasm facet in a workspace",
@@ -2338,17 +2338,17 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510bcd90-597d-11e5-855a-8900782dac32",
+    "id" : "21e36f77-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bcd91-597d-11e5-855a-8900782dac32",
+      "id" : "21e36f78-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "JAR",
-      "reference" : "510bcd90-597d-11e5-855a-8900782dac32",
+      "reference" : "21e36f77-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "A compiled JVM class jar providing phantasm plugin implementation",
@@ -2358,17 +2358,17 @@
     "valueType" : "BINARY"
   }, {
     "@type" : "Attribute",
-    "id" : "510bcd92-597d-11e5-855a-8900782dac32",
+    "id" : "21e36f79-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bcd93-597d-11e5-855a-8900782dac32",
+      "id" : "21e3968a-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "InputType",
-      "reference" : "510bcd92-597d-11e5-855a-8900782dac32",
+      "reference" : "21e36f79-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The input type of an argument",
@@ -2378,17 +2378,17 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510bcd94-597d-11e5-855a-8900782dac32",
+    "id" : "21e3968b-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bcd95-597d-11e5-855a-8900782dac32",
+      "id" : "21e3968c-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "ReturnType",
-      "reference" : "510bcd94-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3968b-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The return type of an method",
@@ -2398,17 +2398,17 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510bcd96-597d-11e5-855a-8900782dac32",
+    "id" : "21e3968d-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bcd97-597d-11e5-855a-8900782dac32",
+      "id" : "21e3968e-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "ImplementationClass",
-      "reference" : "510bcd96-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3968d-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The implementing class",
@@ -2418,17 +2418,17 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Attribute",
-    "id" : "510bcd98-597d-11e5-855a-8900782dac32",
+    "id" : "21e3968f-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bcd99-597d-11e5-855a-8900782dac32",
+      "id" : "21e39690-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "ImplementationMethod",
-      "reference" : "510bcd98-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3968f-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Attribute"
     },
     "description" : "The name of the implementing method",
@@ -2438,200 +2438,200 @@
     "valueType" : "TEXT"
   }, {
     "@type" : "Product",
-    "id" : "510bf4aa-597d-11e5-855a-8900782dac32",
+    "id" : "21e3bda1-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bf4ab-597d-11e5-855a-8900782dac32",
+      "id" : "21e3bda2-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "Plugin",
-      "reference" : "510bf4aa-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3bda1-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Product"
     },
     "description" : "A plugin for the Ultrastructure Phantasm API",
     "name" : "Plugin"
   }, {
     "@type" : "Product",
-    "id" : "510bf4ac-597d-11e5-855a-8900782dac32",
+    "id" : "21e3bda3-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bf4ad-597d-11e5-855a-8900782dac32",
+      "id" : "21e3bda4-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "Argument",
-      "reference" : "510bf4ac-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3bda3-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Product"
     },
     "description" : "An input argument to a method",
     "name" : "Argument"
   }, {
     "@type" : "Product",
-    "id" : "510bf4ae-597d-11e5-855a-8900782dac32",
+    "id" : "21e3bda5-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bf4af-597d-11e5-855a-8900782dac32",
+      "id" : "21e3bda6-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "InstanceMethod",
-      "reference" : "510bf4ae-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3bda5-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Product"
     },
     "description" : "An exposed instance method on a phatasm facet",
     "name" : "Instance Method"
   }, {
     "@type" : "Product",
-    "id" : "510bf4b0-597d-11e5-855a-8900782dac32",
+    "id" : "21e3bda7-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510bf4b1-597d-11e5-855a-8900782dac32",
+      "id" : "21e3bda8-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "StaticMethod",
-      "reference" : "510bf4b0-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3bda7-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Product"
     },
     "description" : "A phantasm facet scoped static method in a workspace",
     "name" : "Static method"
   }, {
     "@type" : "Product",
-    "id" : "510c1ac2-597d-11e5-855a-8900782dac32",
+    "id" : "21e3e4b9-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510c1ac3-597d-11e5-855a-8900782dac32",
+      "id" : "21e3e4ba-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "Constructor",
-      "reference" : "510c1ac2-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3e4b9-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Product"
     },
     "description" : "A constructor that is called when the phantasm facet is applied",
     "name" : "Constructor"
   }, {
     "@type" : "Product",
-    "id" : "510c1ac4-597d-11e5-855a-8900782dac32",
+    "id" : "21e3e4bb-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "510c1ac5-597d-11e5-855a-8900782dac32",
+      "id" : "21e3e4bc-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
       "key" : "CodeSource",
-      "reference" : "510c1ac4-597d-11e5-855a-8900782dac32",
+      "reference" : "21e3e4bb-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "Product"
     },
     "description" : "A JVM code source that provides JVM executable implementation logic",
     "name" : "Code Source"
   }, {
     "@type" : "AgencyNetworkAuthorization",
-    "id" : "51435768-597d-11e5-855a-8900782dac32",
+    "id" : "21fceaff-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514727fd-597d-11e5-855a-8900782dac32",
+      "id" : "21ff34f5-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51435768-597d-11e5-855a-8900782dac32",
+      "reference" : "21fceaff-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyNetworkAuthorization"
     },
     "cardinality" : "ZERO",
     "classifier" : "00000000-0000-0005-0000-000000000013",
     "name" : "CoRE User",
-    "classification" : "510b5846-597d-11e5-855a-8900782dac32"
+    "classification" : "21e2ad0d-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "AgencyAttributeAuthorization",
-    "id" : "5147761e-597d-11e5-855a-8900782dac32",
+    "id" : "21ffaa26-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51479d2f-597d-11e5-855a-8900782dac32",
+      "id" : "21ffaa27-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5147761e-597d-11e5-855a-8900782dac32",
+      "reference" : "21ffaa26-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyAttributeAuthorization"
     },
-    "authorizedAttribute" : "510b7f64-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "51435768-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e2fb3b-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "21fceaff-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "AgencyAttributeAuthorization",
-    "id" : "51479d30-597d-11e5-855a-8900782dac32",
+    "id" : "21ffaa28-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51479d31-597d-11e5-855a-8900782dac32",
+      "id" : "21ffaa29-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51479d30-597d-11e5-855a-8900782dac32",
+      "reference" : "21ffaa28-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyAttributeAuthorization"
     },
-    "authorizedAttribute" : "510ba676-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "51435768-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3224d-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "21fceaff-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "AgencyAttributeAuthorization",
-    "id" : "51479d32-597d-11e5-855a-8900782dac32",
+    "id" : "21ffd13a-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51479d33-597d-11e5-855a-8900782dac32",
+      "id" : "21ffd13b-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51479d32-597d-11e5-855a-8900782dac32",
+      "reference" : "21ffd13a-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyAttributeAuthorization"
     },
-    "authorizedAttribute" : "510ba678-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "51435768-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3224f-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "21fceaff-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "AgencyAttributeAuthorization",
-    "id" : "51479d34-597d-11e5-855a-8900782dac32",
+    "id" : "21ffd13c-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51479d35-597d-11e5-855a-8900782dac32",
+      "id" : "21ffd13d-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51479d34-597d-11e5-855a-8900782dac32",
+      "reference" : "21ffd13c-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyAttributeAuthorization"
     },
-    "authorizedAttribute" : "510ba67a-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "51435768-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e32251-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "21fceaff-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "51479d36-597d-11e5-855a-8900782dac32",
+    "id" : "21ffd13e-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5147eb58-597d-11e5-855a-8900782dac32",
+      "id" : "22004670-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51479d36-597d-11e5-855a-8900782dac32",
+      "reference" : "21ffd13e-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "cardinality" : "ZERO",
@@ -2640,53 +2640,53 @@
     "classification" : "00000000-0000-0004-0000-000000000006"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "51481269-597d-11e5-855a-8900782dac32",
+    "id" : "22004671-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5148126a-597d-11e5-855a-8900782dac32",
+      "id" : "22006d82-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51481269-597d-11e5-855a-8900782dac32",
+      "reference" : "22004671-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510b7f60-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "51479d36-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e2fb37-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "21ffd13e-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "5148608b-597d-11e5-855a-8900782dac32",
+    "id" : "22009493-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5148608c-597d-11e5-855a-8900782dac32",
+      "id" : "2200bba4-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5148608b-597d-11e5-855a-8900782dac32",
+      "reference" : "22009493-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "authorizedRelationship" : "00000000-0000-0005-0000-000000000013",
     "cardinality" : "N",
-    "childRelationship" : "510a6dad-597d-11e5-855a-8900782dac32",
+    "childRelationship" : "21e12634-63b2-11e5-92a7-a92ad60aaad8",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "name" : "plugin",
-    "authorizedParent" : "510bf4aa-597d-11e5-855a-8900782dac32",
+    "name" : "Plugin",
+    "authorizedParent" : "21e3bda1-63b2-11e5-92a7-a92ad60aaad8",
     "classification" : "00000000-0000-0004-0000-000000000006"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "5148879d-597d-11e5-855a-8900782dac32",
+    "id" : "2200e2b5-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514d69a2-597d-11e5-855a-8900782dac32",
+      "id" : "22074b5b-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5148879d-597d-11e5-855a-8900782dac32",
+      "reference" : "2200e2b5-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "authorizedRelationship" : "00000000-0000-0005-0000-000000000013",
@@ -2698,559 +2698,562 @@
     "classification" : "00000000-0000-0004-0000-000000000006"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514db7c3-597d-11e5-855a-8900782dac32",
+    "id" : "2207c08c-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514db7c4-597d-11e5-855a-8900782dac32",
+      "id" : "2207c08d-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514db7c3-597d-11e5-855a-8900782dac32",
+      "reference" : "2207c08c-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedNetworkAttribute" : "510b7f5c-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "5148879d-597d-11e5-855a-8900782dac32"
+    "authorizedNetworkAttribute" : "21e2d423-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2200e2b5-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514db7c5-597d-11e5-855a-8900782dac32",
+    "id" : "2207c08e-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514dded6-597d-11e5-855a-8900782dac32",
+      "id" : "2207e79f-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514db7c5-597d-11e5-855a-8900782dac32",
+      "reference" : "2207c08e-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedNetworkAttribute" : "510b7f5e-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "5148879d-597d-11e5-855a-8900782dac32"
+    "authorizedNetworkAttribute" : "21e2fb35-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2200e2b5-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514dded7-597d-11e5-855a-8900782dac32",
+    "id" : "2207e7a0-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514dded8-597d-11e5-855a-8900782dac32",
+      "id" : "2207e7a1-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514dded7-597d-11e5-855a-8900782dac32",
+      "reference" : "2207e7a0-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "cardinality" : "ZERO",
     "classifier" : "00000000-0000-0005-0000-000000000013",
     "name" : "Plugin",
-    "classification" : "510bf4aa-597d-11e5-855a-8900782dac32"
+    "classification" : "21e3bda1-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514e05e9-597d-11e5-855a-8900782dac32",
+    "id" : "2207e7a2-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514e05ea-597d-11e5-855a-8900782dac32",
+      "id" : "2207e7a3-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514e05e9-597d-11e5-855a-8900782dac32",
+      "reference" : "2207e7a2-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510ba67e-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514dded7-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e34865-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2207e7a0-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514e05eb-597d-11e5-855a-8900782dac32",
+    "id" : "2207e7a4-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514e05ec-597d-11e5-855a-8900782dac32",
+      "id" : "22080eb5-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514e05eb-597d-11e5-855a-8900782dac32",
+      "reference" : "2207e7a4-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510ba67c-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514dded7-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e32253-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2207e7a0-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514e2cfd-597d-11e5-855a-8900782dac32",
+    "id" : "22080eb6-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514e2cfe-597d-11e5-855a-8900782dac32",
+      "id" : "22080eb7-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514e2cfd-597d-11e5-855a-8900782dac32",
+      "reference" : "22080eb6-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "authorizedRelationship" : "00000000-0000-0005-0000-000000000013",
     "cardinality" : "N",
-    "childRelationship" : "510abbdd-597d-11e5-855a-8900782dac32",
+    "childRelationship" : "21e1c284-63b2-11e5-92a7-a92ad60aaad8",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "name" : "codeSource",
-    "authorizedParent" : "510c1ac4-597d-11e5-855a-8900782dac32",
-    "classification" : "510bf4aa-597d-11e5-855a-8900782dac32"
+    "name" : "CodeSource",
+    "authorizedParent" : "21e3e4bb-63b2-11e5-92a7-a92ad60aaad8",
+    "classification" : "21e3bda1-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514e2cff-597d-11e5-855a-8900782dac32",
+    "id" : "22080eb8-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514e2d00-597d-11e5-855a-8900782dac32",
+      "id" : "22080eb9-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514e2cff-597d-11e5-855a-8900782dac32",
+      "reference" : "22080eb8-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "authorizedRelationship" : "00000000-0000-0005-0000-000000000013",
     "cardinality" : "N",
-    "childRelationship" : "510abbd9-597d-11e5-855a-8900782dac32",
+    "childRelationship" : "21e19b70-63b2-11e5-92a7-a92ad60aaad8",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "name" : "staticMethod",
-    "authorizedParent" : "510bf4b0-597d-11e5-855a-8900782dac32",
-    "classification" : "510bf4aa-597d-11e5-855a-8900782dac32"
+    "name" : "StaticMethod",
+    "authorizedParent" : "21e3bda7-63b2-11e5-92a7-a92ad60aaad8",
+    "classification" : "21e3bda1-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514e5411-597d-11e5-855a-8900782dac32",
+    "id" : "220835ca-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514e5412-597d-11e5-855a-8900782dac32",
+      "id" : "220835cb-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514e5411-597d-11e5-855a-8900782dac32",
+      "reference" : "220835ca-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "authorizedRelationship" : "00000000-0000-0005-0000-000000000013",
     "cardinality" : "ONE",
-    "childRelationship" : "510abbe1-597d-11e5-855a-8900782dac32",
+    "childRelationship" : "21e1c288-63b2-11e5-92a7-a92ad60aaad8",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "name" : "constructor",
-    "authorizedParent" : "510c1ac2-597d-11e5-855a-8900782dac32",
-    "classification" : "510bf4aa-597d-11e5-855a-8900782dac32"
+    "name" : "Constructor",
+    "authorizedParent" : "21e3e4b9-63b2-11e5-92a7-a92ad60aaad8",
+    "classification" : "21e3bda1-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514e5413-597d-11e5-855a-8900782dac32",
+    "id" : "220835cc-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514e7b24-597d-11e5-855a-8900782dac32",
+      "id" : "220835cd-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514e5413-597d-11e5-855a-8900782dac32",
+      "reference" : "220835cc-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "authorizedRelationship" : "00000000-0000-0005-0000-000000000013",
     "cardinality" : "N",
-    "childRelationship" : "510a94c5-597d-11e5-855a-8900782dac32",
+    "childRelationship" : "21e1745c-63b2-11e5-92a7-a92ad60aaad8",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "name" : "instanceMethod",
-    "authorizedParent" : "510bf4ae-597d-11e5-855a-8900782dac32",
-    "classification" : "510bf4aa-597d-11e5-855a-8900782dac32"
+    "name" : "InstanceMethod",
+    "authorizedParent" : "21e3bda5-63b2-11e5-92a7-a92ad60aaad8",
+    "classification" : "21e3bda1-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514e7b25-597d-11e5-855a-8900782dac32",
+    "id" : "22085cde-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514e7b26-597d-11e5-855a-8900782dac32",
+      "id" : "22085cdf-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514e7b25-597d-11e5-855a-8900782dac32",
+      "reference" : "22085cde-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "cardinality" : "ZERO",
     "classifier" : "00000000-0000-0005-0000-000000000013",
     "name" : "Argument",
-    "classification" : "510bf4ac-597d-11e5-855a-8900782dac32"
+    "classification" : "21e3bda3-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514e7b27-597d-11e5-855a-8900782dac32",
+    "id" : "22085ce0-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514ea238-597d-11e5-855a-8900782dac32",
+      "id" : "22085ce1-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514e7b27-597d-11e5-855a-8900782dac32",
+      "reference" : "22085ce0-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd92-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514e7b25-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e36f79-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "22085cde-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514ea239-597d-11e5-855a-8900782dac32",
+    "id" : "22085ce2-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514ea23a-597d-11e5-855a-8900782dac32",
+      "id" : "22085ce3-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514ea239-597d-11e5-855a-8900782dac32",
+      "reference" : "22085ce2-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "cardinality" : "ZERO",
     "classifier" : "00000000-0000-0005-0000-000000000013",
     "name" : "Instance Method",
-    "classification" : "510bf4ae-597d-11e5-855a-8900782dac32"
+    "classification" : "21e3bda5-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514ea23b-597d-11e5-855a-8900782dac32",
+    "id" : "22085ce4-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514ea23c-597d-11e5-855a-8900782dac32",
+      "id" : "220883f5-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514ea23b-597d-11e5-855a-8900782dac32",
+      "reference" : "22085ce4-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd94-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514ea239-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3968b-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "22085ce2-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514ea23d-597d-11e5-855a-8900782dac32",
+    "id" : "220883f6-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514ec94e-597d-11e5-855a-8900782dac32",
+      "id" : "220883f7-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514ea23d-597d-11e5-855a-8900782dac32",
+      "reference" : "220883f6-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd96-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514ea239-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3968d-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "22085ce2-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514ec94f-597d-11e5-855a-8900782dac32",
+    "id" : "220883f8-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514ec950-597d-11e5-855a-8900782dac32",
+      "id" : "220883f9-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514ec94f-597d-11e5-855a-8900782dac32",
+      "reference" : "220883f8-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd98-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514ea239-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3968f-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "22085ce2-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514ec951-597d-11e5-855a-8900782dac32",
+    "id" : "220883fa-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514ec952-597d-11e5-855a-8900782dac32",
+      "id" : "220883fb-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514ec951-597d-11e5-855a-8900782dac32",
+      "reference" : "220883fa-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "authorizedRelationship" : "00000000-0000-0005-0000-000000000013",
     "cardinality" : "N",
-    "childRelationship" : "510a94c1-597d-11e5-855a-8900782dac32",
+    "childRelationship" : "21e17458-63b2-11e5-92a7-a92ad60aaad8",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "name" : "argument",
-    "authorizedParent" : "510bf4ac-597d-11e5-855a-8900782dac32",
-    "classification" : "510bf4ae-597d-11e5-855a-8900782dac32"
+    "name" : "Argument",
+    "authorizedParent" : "21e3bda3-63b2-11e5-92a7-a92ad60aaad8",
+    "classification" : "21e3bda5-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514ef063-597d-11e5-855a-8900782dac32",
+    "id" : "2208ab0c-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514ef064-597d-11e5-855a-8900782dac32",
+      "id" : "2208ab0d-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514ef063-597d-11e5-855a-8900782dac32",
+      "reference" : "2208ab0c-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "cardinality" : "ZERO",
     "classifier" : "00000000-0000-0005-0000-000000000013",
     "name" : "Static method",
-    "classification" : "510bf4b0-597d-11e5-855a-8900782dac32"
+    "classification" : "21e3bda7-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514ef065-597d-11e5-855a-8900782dac32",
+    "id" : "2208ab0e-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514f1776-597d-11e5-855a-8900782dac32",
+      "id" : "2208ab0f-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514ef065-597d-11e5-855a-8900782dac32",
+      "reference" : "2208ab0e-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd94-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514ef063-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3968b-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2208ab0c-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514f1777-597d-11e5-855a-8900782dac32",
+    "id" : "2208ab10-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514f1778-597d-11e5-855a-8900782dac32",
+      "id" : "2208ab11-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514f1777-597d-11e5-855a-8900782dac32",
+      "reference" : "2208ab10-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd96-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514ef063-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3968d-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2208ab0c-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514f1779-597d-11e5-855a-8900782dac32",
+    "id" : "2208ab12-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514f177a-597d-11e5-855a-8900782dac32",
+      "id" : "2208d223-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514f1779-597d-11e5-855a-8900782dac32",
+      "reference" : "2208ab12-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd98-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514ef063-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3968f-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2208ab0c-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514f3e8b-597d-11e5-855a-8900782dac32",
+    "id" : "2208d224-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514f3e8c-597d-11e5-855a-8900782dac32",
+      "id" : "2208d225-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514f3e8b-597d-11e5-855a-8900782dac32",
+      "reference" : "2208d224-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "authorizedRelationship" : "00000000-0000-0005-0000-000000000013",
     "cardinality" : "N",
-    "childRelationship" : "510a94c1-597d-11e5-855a-8900782dac32",
+    "childRelationship" : "21e17458-63b2-11e5-92a7-a92ad60aaad8",
     "classifier" : "00000000-0000-0005-0000-000000000013",
-    "name" : "argument",
-    "authorizedParent" : "510bf4ac-597d-11e5-855a-8900782dac32",
-    "classification" : "510bf4b0-597d-11e5-855a-8900782dac32"
+    "name" : "Argument",
+    "authorizedParent" : "21e3bda3-63b2-11e5-92a7-a92ad60aaad8",
+    "classification" : "21e3bda7-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514f3e8d-597d-11e5-855a-8900782dac32",
+    "id" : "2208d226-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514f3e8e-597d-11e5-855a-8900782dac32",
+      "id" : "2208d227-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514f3e8d-597d-11e5-855a-8900782dac32",
+      "reference" : "2208d226-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "cardinality" : "ZERO",
     "classifier" : "00000000-0000-0005-0000-000000000013",
     "name" : "Constructor",
-    "classification" : "510c1ac2-597d-11e5-855a-8900782dac32"
+    "classification" : "21e3e4b9-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514f3e8f-597d-11e5-855a-8900782dac32",
+    "id" : "2208d228-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514f65a0-597d-11e5-855a-8900782dac32",
+      "id" : "2208f939-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514f3e8f-597d-11e5-855a-8900782dac32",
+      "reference" : "2208d228-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd96-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514f3e8d-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3968d-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2208d226-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514f65a1-597d-11e5-855a-8900782dac32",
+    "id" : "2208f93a-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514f65a2-597d-11e5-855a-8900782dac32",
+      "id" : "2208f93b-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514f65a1-597d-11e5-855a-8900782dac32",
+      "reference" : "2208f93a-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd98-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514f3e8d-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e3968f-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2208d226-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetworkAuthorization",
-    "id" : "514f65a3-597d-11e5-855a-8900782dac32",
+    "id" : "2208f93c-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514f65a4-597d-11e5-855a-8900782dac32",
+      "id" : "2208f93d-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514f65a3-597d-11e5-855a-8900782dac32",
+      "reference" : "2208f93c-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetworkAuthorization"
     },
     "cardinality" : "ZERO",
     "classifier" : "00000000-0000-0005-0000-000000000013",
     "name" : "Code Source",
-    "classification" : "510c1ac4-597d-11e5-855a-8900782dac32"
+    "classification" : "21e3e4bb-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductAttributeAuthorization",
-    "id" : "514f65a5-597d-11e5-855a-8900782dac32",
+    "id" : "2208f93e-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "514f8cb6-597d-11e5-855a-8900782dac32",
+      "id" : "2208f93f-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "514f65a5-597d-11e5-855a-8900782dac32",
+      "reference" : "2208f93e-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttributeAuthorization"
     },
-    "authorizedAttribute" : "510bcd90-597d-11e5-855a-8900782dac32",
-    "networkAuthorization" : "514f65a3-597d-11e5-855a-8900782dac32"
+    "authorizedAttribute" : "21e36f77-63b2-11e5-92a7-a92ad60aaad8",
+    "networkAuthorization" : "2208f93c-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "AgencyNetwork",
-    "id" : "51564377-597d-11e5-855a-8900782dac32",
+    "id" : "2210c170-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51566a89-597d-11e5-855a-8900782dac32",
+      "id" : "2210c172-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51564377-597d-11e5-855a-8900782dac32",
+      "reference" : "2210c170-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
-    "child" : "510b5846-597d-11e5-855a-8900782dac32",
-    "parent" : "510b5848-597d-11e5-855a-8900782dac32"
+    "child" : "21e2ad0d-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e2d41f-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "AgencyNetwork",
-    "id" : "51566a88-597d-11e5-855a-8900782dac32",
+    "id" : "2210c171-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51566a8a-597d-11e5-855a-8900782dac32",
+      "id" : "2210c173-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51566a88-597d-11e5-855a-8900782dac32",
+      "reference" : "2210c171-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
-    "child" : "510b5848-597d-11e5-855a-8900782dac32",
-    "parent" : "510b5846-597d-11e5-855a-8900782dac32"
+    "child" : "21e2d41f-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e2ad0d-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "AgencyAttribute",
-    "id" : "5159029b-597d-11e5-855a-8900782dac32",
+    "id" : "2213a7a4-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "515929ac-597d-11e5-855a-8900782dac32",
+      "id" : "2213ceb5-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5159029b-597d-11e5-855a-8900782dac32",
+      "reference" : "2213a7a4-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyAttribute"
     },
-    "attribute" : "510ba678-597d-11e5-855a-8900782dac32",
+    "attribute" : "21e3224f-63b2-11e5-92a7-a92ad60aaad8",
     "sequenceNumber" : 0,
-    "agency" : "510b5848-597d-11e5-855a-8900782dac32"
+    "updated" : "2015-09-25T18:20:43.171+0000",
+    "agency" : "21e2d41f-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "AgencyAttribute",
-    "id" : "5161b52d-597d-11e5-855a-8900782dac32",
+    "id" : "221f1956-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5161dc3e-597d-11e5-855a-8900782dac32",
+      "id" : "221f4067-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5161b52d-597d-11e5-855a-8900782dac32",
+      "reference" : "221f1956-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyAttribute"
     },
-    "attribute" : "510ba676-597d-11e5-855a-8900782dac32",
+    "attribute" : "21e3224d-63b2-11e5-92a7-a92ad60aaad8",
     "sequenceNumber" : 0,
-    "agency" : "510b5848-597d-11e5-855a-8900782dac32"
+    "updated" : "2015-09-25T18:20:43.246+0000",
+    "agency" : "21e2d41f-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "AgencyAttribute",
-    "id" : "51633bcf-597d-11e5-855a-8900782dac32",
+    "id" : "22209ff8-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51633bd0-597d-11e5-855a-8900782dac32",
+      "id" : "2220c709-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51633bcf-597d-11e5-855a-8900782dac32",
+      "reference" : "22209ff8-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "AgencyAttribute"
     },
-    "attribute" : "510b7f64-597d-11e5-855a-8900782dac32",
+    "attribute" : "21e2fb3b-63b2-11e5-92a7-a92ad60aaad8",
     "sequenceNumber" : 0,
-    "agency" : "510b5848-597d-11e5-855a-8900782dac32"
+    "updated" : "2015-09-25T18:20:43.256+0000",
+    "agency" : "21e2d41f-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "ProductNetwork",
-    "id" : "5165acd2-597d-11e5-855a-8900782dac32",
+    "id" : "2223d44b-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5165d3e4-597d-11e5-855a-8900782dac32",
+      "id" : "2223fb5d-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5165acd2-597d-11e5-855a-8900782dac32",
+      "reference" : "2223d44b-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
@@ -3258,16 +3261,16 @@
     "parent" : "00000000-0000-0004-0000-000000000003"
   }, {
     "@type" : "ProductNetwork",
-    "id" : "5165d3e3-597d-11e5-855a-8900782dac32",
+    "id" : "2223d44c-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5165d3e5-597d-11e5-855a-8900782dac32",
+      "id" : "2223fb5e-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5165d3e3-597d-11e5-855a-8900782dac32",
+      "reference" : "2223d44c-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
@@ -3275,293 +3278,294 @@
     "parent" : "00000000-0000-0004-0000-000000000006"
   }, {
     "@type" : "ProductAttribute",
-    "id" : "51689306-597d-11e5-855a-8900782dac32",
+    "id" : "2226454f-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 2,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51689307-597d-11e5-855a-8900782dac32",
+      "id" : "22264550-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51689306-597d-11e5-855a-8900782dac32",
+      "reference" : "2226454f-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "ProductAttribute"
     },
-    "attribute" : "510b7f60-597d-11e5-855a-8900782dac32",
+    "attribute" : "21e2fb37-63b2-11e5-92a7-a92ad60aaad8",
     "sequenceNumber" : 0,
+    "updated" : "2015-09-25T18:20:43.293+0000",
     "product" : "00000000-0000-0004-0000-000000000003",
     "value" : "urn:uuid:00000000-0000-0004-0000-000000000003"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "516a67c8-597d-11e5-855a-8900782dac32",
+    "id" : "2227cbf1-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "516a67ca-597d-11e5-855a-8900782dac32",
+      "id" : "2227cbf3-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "516a67c8-597d-11e5-855a-8900782dac32",
+      "reference" : "2227cbf1-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
-    "child" : "510ae2f4-597d-11e5-855a-8900782dac32",
-    "parent" : "510b3126-597d-11e5-855a-8900782dac32"
+    "child" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e25edd-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "516a67c9-597d-11e5-855a-8900782dac32",
+    "id" : "2227cbf2-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "516a67cb-597d-11e5-855a-8900782dac32",
+      "id" : "2227cbf4-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "516a67c9-597d-11e5-855a-8900782dac32",
+      "reference" : "2227cbf2-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
-    "child" : "510b3126-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2f4-597d-11e5-855a-8900782dac32"
+    "child" : "21e25edd-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "516e385c-597d-11e5-855a-8900782dac32",
+    "id" : "222c5fd5-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "516e385e-597d-11e5-855a-8900782dac32",
+      "id" : "222c5fd7-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "516e385c-597d-11e5-855a-8900782dac32",
+      "reference" : "222c5fd5-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
-    "child" : "510ae2f4-597d-11e5-855a-8900782dac32",
-    "parent" : "510b312a-597d-11e5-855a-8900782dac32"
+    "child" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e285f1-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "516e385d-597d-11e5-855a-8900782dac32",
+    "id" : "222c5fd6-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "516e385f-597d-11e5-855a-8900782dac32",
+      "id" : "222c5fd8-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "516e385d-597d-11e5-855a-8900782dac32",
+      "reference" : "222c5fd6-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
-    "child" : "510b312a-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2f4-597d-11e5-855a-8900782dac32"
+    "child" : "21e285f1-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "51705b40-597d-11e5-855a-8900782dac32",
+    "id" : "222f4609-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51705b42-597d-11e5-855a-8900782dac32",
+      "id" : "222f460b-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51705b40-597d-11e5-855a-8900782dac32",
+      "reference" : "222f4609-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
-    "child" : "510ae2f4-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2f6-597d-11e5-855a-8900782dac32"
+    "child" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e1e99d-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "51705b41-597d-11e5-855a-8900782dac32",
+    "id" : "222f460a-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51708253-597d-11e5-855a-8900782dac32",
+      "id" : "222f460c-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51705b41-597d-11e5-855a-8900782dac32",
+      "reference" : "222f460a-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
-    "child" : "510ae2f6-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2f4-597d-11e5-855a-8900782dac32"
+    "child" : "21e1e99d-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "5172a534-597d-11e5-855a-8900782dac32",
+    "id" : "2231b70d-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5172cc46-597d-11e5-855a-8900782dac32",
+      "id" : "2231de1f-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5172a534-597d-11e5-855a-8900782dac32",
+      "reference" : "2231b70d-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
-    "child" : "510ae2f4-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2fa-597d-11e5-855a-8900782dac32"
+    "child" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e210b1-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "5172a535-597d-11e5-855a-8900782dac32",
+    "id" : "2231de1e-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5172cc47-597d-11e5-855a-8900782dac32",
+      "id" : "22320530-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5172a535-597d-11e5-855a-8900782dac32",
+      "reference" : "2231de1e-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
-    "child" : "510ae2fa-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2f4-597d-11e5-855a-8900782dac32"
+    "child" : "21e210b1-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "5174c818-597d-11e5-855a-8900782dac32",
+    "id" : "22347631-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5174c81a-597d-11e5-855a-8900782dac32",
+      "id" : "22349d43-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5174c818-597d-11e5-855a-8900782dac32",
+      "reference" : "22347631-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
-    "child" : "510ae2f4-597d-11e5-855a-8900782dac32",
-    "parent" : "510b0a0e-597d-11e5-855a-8900782dac32"
+    "child" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e237c5-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "5174c819-597d-11e5-855a-8900782dac32",
+    "id" : "22349d42-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5174c81b-597d-11e5-855a-8900782dac32",
+      "id" : "22349d44-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5174c819-597d-11e5-855a-8900782dac32",
+      "reference" : "22349d42-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
-    "child" : "510b0a0e-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2f4-597d-11e5-855a-8900782dac32"
+    "child" : "21e237c5-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "5177120c-597d-11e5-855a-8900782dac32",
+    "id" : "2236e735-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5177391e-597d-11e5-855a-8900782dac32",
+      "id" : "22370e47-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5177120c-597d-11e5-855a-8900782dac32",
+      "reference" : "2236e735-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
-    "child" : "510ae2f4-597d-11e5-855a-8900782dac32",
-    "parent" : "510b0a12-597d-11e5-855a-8900782dac32"
+    "child" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e25ed9-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "5177391d-597d-11e5-855a-8900782dac32",
+    "id" : "22370e46-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "5177391f-597d-11e5-855a-8900782dac32",
+      "id" : "22370e48-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "5177391d-597d-11e5-855a-8900782dac32",
+      "reference" : "22370e46-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
-    "child" : "510b0a12-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2f4-597d-11e5-855a-8900782dac32"
+    "child" : "21e25ed9-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "51795c00-597d-11e5-855a-8900782dac32",
+    "id" : "22395839-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51795c02-597d-11e5-855a-8900782dac32",
+      "id" : "2239583b-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51795c00-597d-11e5-855a-8900782dac32",
+      "reference" : "22395839-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
-    "child" : "510ae2f4-597d-11e5-855a-8900782dac32",
-    "parent" : "510b312e-597d-11e5-855a-8900782dac32"
+    "child" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e285f5-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "51795c01-597d-11e5-855a-8900782dac32",
+    "id" : "2239583a-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "51795c03-597d-11e5-855a-8900782dac32",
+      "id" : "22397f4c-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "51795c01-597d-11e5-855a-8900782dac32",
+      "reference" : "2239583a-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
-    "child" : "510b312e-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2f4-597d-11e5-855a-8900782dac32"
+    "child" : "21e285f5-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "517ba5f4-597d-11e5-855a-8900782dac32",
+    "id" : "223b7b1d-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "517bcd06-597d-11e5-855a-8900782dac32",
+      "id" : "223ba22f-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "517ba5f4-597d-11e5-855a-8900782dac32",
+      "reference" : "223b7b1d-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000013",
-    "child" : "510ae2f4-597d-11e5-855a-8900782dac32",
-    "parent" : "510b5842-597d-11e5-855a-8900782dac32"
+    "child" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e2ad09-63b2-11e5-92a7-a92ad60aaad8"
   }, {
     "@type" : "RelationshipNetwork",
-    "id" : "517bcd05-597d-11e5-855a-8900782dac32",
+    "id" : "223ba22e-63b2-11e5-92a7-a92ad60aaad8",
     "version" : 1,
     "updatedBy" : "00000000-0000-0000-0000-000000000004",
     "workspace" : {
       "@type" : "WorkspaceAuthorization",
-      "id" : "517bcd07-597d-11e5-855a-8900782dac32",
+      "id" : "223ba230-63b2-11e5-92a7-a92ad60aaad8",
       "version" : 0,
       "updatedBy" : "00000000-0000-0000-0000-000000000004",
       "definingProduct" : "00000000-0000-0004-0000-000000000003",
-      "reference" : "517bcd05-597d-11e5-855a-8900782dac32",
+      "reference" : "223ba22e-63b2-11e5-92a7-a92ad60aaad8",
       "type" : "RelationshipNetwork"
     },
     "relationship" : "00000000-0000-0005-0000-000000000012",
-    "child" : "510b5842-597d-11e5-855a-8900782dac32",
-    "parent" : "510ae2f4-597d-11e5-855a-8900782dac32"
+    "child" : "21e2ad09-63b2-11e5-92a7-a92ad60aaad8",
+    "parent" : "21e1e99b-63b2-11e5-92a7-a92ad60aaad8"
   } ]
 }

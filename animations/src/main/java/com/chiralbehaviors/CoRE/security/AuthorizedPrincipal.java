@@ -23,10 +23,8 @@ package com.chiralbehaviors.CoRE.security;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 
 /**
  * Represents the Agency and the authorized active aspects the principal has
@@ -36,14 +34,14 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
  *
  */
 public class AuthorizedPrincipal implements Cloneable {
-    private final List<Aspect<Agency>> activeRoles;
-    private final Agency               principal;
+    private final List<AgencyNetworkAuthorization> activeRoles;
+    private final Agency                           principal;
 
     /**
      * @param principal
      */
     public AuthorizedPrincipal(Agency principal) {
-        this(principal, Collections.<Aspect<Agency>> emptyList());
+        this(principal, Collections.<AgencyNetworkAuthorization> emptyList());
     }
 
     /**
@@ -51,21 +49,16 @@ public class AuthorizedPrincipal implements Cloneable {
      * @param activeRoles
      */
     public AuthorizedPrincipal(Agency principal,
-                               List<Aspect<Agency>> activeRoles) {
+                               List<AgencyNetworkAuthorization> activeRoles) {
         this.principal = principal;
         this.activeRoles = Collections.unmodifiableList(activeRoles);
     }
 
-    public List<Aspect<Agency>> getActiveRoles() {
+    public List<AgencyNetworkAuthorization> getActiveRoles() {
         return activeRoles;
     }
 
     public Agency getPrincipal() {
         return principal;
-    }
-
-    public AuthorizedPrincipal merge(EntityManager em) {
-        return new AuthorizedPrincipal(em.getReference(Agency.class,
-                                                       principal.getId()));
     }
 }

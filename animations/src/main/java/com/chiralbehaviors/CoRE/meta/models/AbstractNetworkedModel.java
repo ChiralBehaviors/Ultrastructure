@@ -63,6 +63,7 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Ruleform_;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization_;
@@ -385,7 +386,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         if (checkCapability(current.getPrincipal(), stateAuth, capability)) {
             return true;
         }
-        for (Aspect<Agency> r : current.getActiveRoles()) {
+        for (AgencyNetworkAuthorization r : current.getActiveRoles()) {
             if (checkCapability(r.getClassification(), stateAuth, capability)) {
                 return true;
             }
@@ -400,7 +401,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         if (checkCapability(current.getPrincipal(), instance, capability)) {
             return true;
         }
-        for (Aspect<Agency> r : current.getActiveRoles()) {
+        for (AgencyNetworkAuthorization r : current.getActiveRoles()) {
             if (checkCapability(r.getClassification(), instance, capability)) {
                 return true;
             }
@@ -415,7 +416,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         if (checkCapability(current.getPrincipal(), auth, capability)) {
             return true;
         }
-        for (Aspect<Agency> r : current.getActiveRoles()) {
+        for (AgencyNetworkAuthorization r : current.getActiveRoles()) {
             if (checkCapability(r.getClassification(), auth, capability)) {
                 return true;
             }
@@ -430,7 +431,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         if (checkCapability(current.getPrincipal(), stateAuth, capability)) {
             return true;
         }
-        for (Aspect<Agency> r : current.getActiveRoles()) {
+        for (AgencyNetworkAuthorization r : current.getActiveRoles()) {
             if (checkCapability(r.getClassification(), stateAuth, capability)) {
                 return true;
             }
@@ -445,7 +446,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         if (checkCapability(current.getPrincipal(), stateAuth, capability)) {
             return true;
         }
-        for (Aspect<Agency> r : current.getActiveRoles()) {
+        for (AgencyNetworkAuthorization r : current.getActiveRoles()) {
             if (checkCapability(r.getClassification(), stateAuth, capability)) {
                 return true;
             }
@@ -491,7 +492,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         if (checkFacetCapability(current.getPrincipal(), facet, capability)) {
             return true;
         }
-        for (Aspect<Agency> r : current.getActiveRoles()) {
+        for (AgencyNetworkAuthorization r : current.getActiveRoles()) {
             if (checkFacetCapability(r.getClassification(), facet,
                                      capability)) {
                 return true;
@@ -538,7 +539,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                    capability)) {
             return true;
         }
-        for (Aspect<Agency> r : current.getActiveRoles()) {
+        for (AgencyNetworkAuthorization r : current.getActiveRoles()) {
             if (checkNetworkCapability(r.getClassification(), stateAuth,
                                        capability)) {
                 return true;

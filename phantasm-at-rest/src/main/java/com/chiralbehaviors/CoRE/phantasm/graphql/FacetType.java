@@ -50,7 +50,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.kernel.product.Constructor;
@@ -645,10 +644,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                 PhantasmCRUD<RuleForm, Network> crud) {
         return crud.getModel()
                    .getProductModel()
-                   .checkCapability(crud.getModel()
-                                        .getCurrentPrincipal()
-                                        .getPrincipal(),
-                                    constructor.getRuleform(),
+                   .checkCapability(constructor.getRuleform(),
                                     crud.getINVOKE());
     }
 
@@ -656,12 +652,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                 InstanceMethod method, RuleForm instance,
                                 PhantasmCRUD<RuleForm, Network> crud) {
         Model model = crud.getModel();
-        Agency principal = model.getCurrentPrincipal()
-                                .getPrincipal();
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
         Relationship invoke = crud.getINVOKE();
-        return networkedModel.checkCapability(principal, method.getRuleform(),
-                                              invoke)
+        return networkedModel.checkCapability(method.getRuleform(), invoke)
                && crud.checkInvoke(facet, instance);
     }
 

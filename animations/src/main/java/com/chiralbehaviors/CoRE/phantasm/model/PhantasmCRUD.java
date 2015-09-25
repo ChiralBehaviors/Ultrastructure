@@ -275,9 +275,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             return null;
         }
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
-        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
-                                                      .getPrincipal(),
-                                                 facet, getAPPLY())) {
+        if (!networkedModel.checkFacetCapability(facet, getAPPLY())) {
             return instance;
         }
         networkedModel.initialize(instance, model.getEntityManager()
@@ -339,12 +337,10 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
 
     public boolean checkInvoke(NetworkAuthorization<RuleForm> facet,
                                RuleForm instance) {
-        Agency principal = model.getCurrentPrincipal()
-                                .getPrincipal();
         NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
         Relationship invoke = getINVOKE();
-        return networkedModel.checkCapability(principal, instance, invoke)
-               && networkedModel.checkFacetCapability(principal, facet, invoke);
+        return networkedModel.checkCapability(instance, invoke)
+               && networkedModel.checkFacetCapability(facet, invoke);
     }
 
     /**
@@ -363,9 +359,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                    String name, String description,
                                    Function<RuleForm, RuleForm> constructor) {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
-        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
-                                                      .getPrincipal(),
-                                                 facet, getCREATE())) {
+        if (!networkedModel.checkFacetCapability(facet, getCREATE())) {
             return null;
         }
         RuleForm instance;
@@ -458,9 +452,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
         return networkedModel.getChildren(instance, auth.getChildRelationship())
                              .stream()
-                             .filter(child -> networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                                                  .getPrincipal(),
-                                                                             child,
+                             .filter(child -> networkedModel.checkCapability(child,
                                                                              getREAD()))
                              .collect(Collectors.toList());
 
@@ -511,9 +503,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         }
         NetworkedModel<?, ?, ?, ?> childNetworkModel = model.getUnknownNetworkedModel(childAuthClassification);
         return result.stream()
-                     .filter(child -> childNetworkModel.checkCapability(model.getCurrentPrincipal()
-                                                                             .getPrincipal(),
-                                                                        child,
+                     .filter(child -> childNetworkModel.checkCapability(child,
                                                                         getREAD()))
                      .collect(Collectors.toList());
     }
@@ -549,9 +539,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         return networkedModel.getImmediateChildren(instance,
                                                    auth.getChildRelationship())
                              .stream()
-                             .filter(child -> networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                                                  .getPrincipal(),
-                                                                             child,
+                             .filter(child -> networkedModel.checkCapability(child,
                                                                              getREAD()))
                              .collect(Collectors.toList());
     }
@@ -564,9 +552,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      */
     public List<RuleForm> getInstances(NetworkAuthorization<RuleForm> facet) {
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
-        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
-                                                      .getPrincipal(),
-                                                 facet, getREAD())) {
+        if (!networkedModel.checkFacetCapability(facet, getREAD())) {
             return Collections.emptyList();
         }
         return networkedModel.getChildren(facet.getClassification(),
@@ -678,9 +664,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         return ids.stream()
                   .map(id -> networkedModel.find(UUID.fromString(id)))
                   .filter(rf -> rf != null)
-                  .filter(child -> networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                                       .getPrincipal(),
-                                                                  child,
+                  .filter(child -> networkedModel.checkCapability(child,
                                                                   getREAD()))
                   .collect(Collectors.toList());
     }
@@ -690,9 +674,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         NetworkedModel<?, ?, ?, ?> networkedModel = model.getUnknownNetworkedModel(auth.getClassification());
         return Optional.of(networkedModel.find(UUID.fromString(id)))
                        .filter(rf -> rf != null)
-                       .filter(child -> networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                                            .getPrincipal(),
-                                                                       child,
+                       .filter(child -> networkedModel.checkCapability(child,
                                                                        getREAD()))
                        .get();
     }
@@ -703,9 +685,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         return ids.stream()
                   .map(id -> networkedModel.find(UUID.fromString(id)))
                   .filter(rf -> rf != null)
-                  .filter(child -> networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                                       .getPrincipal(),
-                                                                  child,
+                  .filter(child -> networkedModel.checkCapability(child,
                                                                   getREAD()))
                   .collect(Collectors.toList());
     }
@@ -725,9 +705,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
             return null;
         }
         NetworkedModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
-        if (!networkedModel.checkFacetCapability(model.getCurrentPrincipal()
-                                                      .getPrincipal(),
-                                                 facet, getREMOVE())) {
+        if (!networkedModel.checkFacetCapability(facet, getREMOVE())) {
             return instance;
         }
         networkedModel.initialize(instance, facet, model.getCurrentPrincipal()
@@ -1147,65 +1125,47 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
 
     private boolean checkREAD(AttributeAuthorization<RuleForm, Network> stateAuth,
                               NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                   .getPrincipal(),
-                                              stateAuth, getREAD());
+        return networkedModel.checkCapability(stateAuth, getREAD());
     }
 
     private boolean checkREAD(@SuppressWarnings("rawtypes") ExistentialRuleform child,
                               NetworkedModel<?, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                   .getPrincipal(),
-                                              child, getREAD());
+        return networkedModel.checkCapability(child, getREAD());
     }
 
     private boolean checkREAD(NetworkAuthorization<RuleForm> auth,
                               NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        return networkedModel.checkFacetCapability(model.getCurrentPrincipal()
-                                                        .getPrincipal(),
-                                                   auth, getREAD());
+        return networkedModel.checkFacetCapability(auth, getREAD());
     }
 
     private boolean checkREAD(NetworkedModel<RuleForm, ?, ?, ?> networkedModel,
                               RuleForm instance) {
-        return networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                   .getPrincipal(),
-                                              instance, getREAD());
+        return networkedModel.checkCapability(instance, getREAD());
     }
 
     private boolean checkREAD(XDomainNetworkAuthorization<?, ?> auth,
                               NetworkedModel<?, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                   .getPrincipal(),
-                                              auth, getREAD());
+        return networkedModel.checkCapability(auth, getREAD());
     }
 
     private boolean checkUPDATE(AttributeAuthorization<RuleForm, Network> stateAuth,
                                 NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                   .getPrincipal(),
-                                              stateAuth, getUPDATE());
+        return networkedModel.checkCapability(stateAuth, getUPDATE());
     }
 
     private boolean checkUPDATE(@SuppressWarnings("rawtypes") ExistentialRuleform child,
                                 NetworkedModel<?, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                   .getPrincipal(),
-                                              child, getUPDATE());
+        return networkedModel.checkCapability(child, getUPDATE());
     }
 
     private boolean checkUPDATE(NetworkAuthorization<RuleForm> auth,
                                 NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                   .getPrincipal(),
-                                              auth, getUPDATE());
+        return networkedModel.checkCapability(auth, getUPDATE());
     }
 
     private boolean checkUPDATE(XDomainNetworkAuthorization<?, ?> auth,
                                 NetworkedModel<?, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(model.getCurrentPrincipal()
-                                                   .getPrincipal(),
-                                              auth, getUPDATE());
+        return networkedModel.checkCapability(auth, getUPDATE());
     }
 
     private Object[] getIndexedAttributeValue(RuleForm instance,

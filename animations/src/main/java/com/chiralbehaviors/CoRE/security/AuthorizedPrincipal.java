@@ -20,13 +20,13 @@
 
 package com.chiralbehaviors.CoRE.security;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.persistence.EntityManager;
+import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 
 /**
  * Represents the Agency and the authorized active aspects the principal has
@@ -36,14 +36,15 @@ import com.chiralbehaviors.CoRE.meta.Aspect;
  *
  */
 public class AuthorizedPrincipal implements Cloneable {
-    private final List<Aspect<Agency>> activeRoles;
-    private final Agency               principal;
+    private final List<AgencyNetworkAuthorization> activeRoles;
+    private final List<Agency>                     capabilities;
+    private final Agency                           principal;
 
     /**
      * @param principal
      */
     public AuthorizedPrincipal(Agency principal) {
-        this(principal, Collections.<Aspect<Agency>> emptyList());
+        this(principal, Collections.<AgencyNetworkAuthorization> emptyList());
     }
 
     /**
@@ -51,12 +52,16 @@ public class AuthorizedPrincipal implements Cloneable {
      * @param activeRoles
      */
     public AuthorizedPrincipal(Agency principal,
-                               List<Aspect<Agency>> activeRoles) {
+                               List<AgencyNetworkAuthorization> activeRoles) {
         this.principal = principal;
-        this.activeRoles = Collections.unmodifiableList(activeRoles);
+        this.activeRoles = new ArrayList<>(activeRoles);
+        capabilities = this.activeRoles.stream()
+                                       .map(auth -> auth.getClassification())
+                                       .collect(Collectors.toList());
+        capabilities.add(0, this.principal);
     }
 
-    public List<Aspect<Agency>> getActiveRoles() {
+    public List<AgencyNetworkAuthorization> getActiveRoles() {
         return activeRoles;
     }
 
@@ -64,8 +69,7 @@ public class AuthorizedPrincipal implements Cloneable {
         return principal;
     }
 
-    public AuthorizedPrincipal merge(EntityManager em) {
-        return new AuthorizedPrincipal(em.getReference(Agency.class,
-                                                       principal.getId()));
+    public List<Agency> getCapabilities() {
+        return capabilities;
     }
 }

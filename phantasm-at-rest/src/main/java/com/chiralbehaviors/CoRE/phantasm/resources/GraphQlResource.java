@@ -195,13 +195,13 @@ public class GraphQlResource extends TransactionalResource {
             PhantasmCRUD crud = new PhantasmCRUD(model);
             Product definingProduct = model.getEntityManager()
                                            .find(Product.class, uuid);
-            Agency p = model.getCurrentPrincipal()
-                            .getPrincipal();
             if (!model.getNetworkedModel(definingProduct)
-                      .checkCapability(p, definingProduct, crud.getREAD())
+                      .checkCapability(definingProduct, crud.getREAD())
                 || !model.getNetworkedModel(definingProduct)
-                         .checkCapability(p, definingProduct, model.getKernel()
-                                                                   .getEXECUTE_QUERY())) {
+                         .checkCapability(definingProduct, model.getKernel()
+                                                                .getEXECUTE_QUERY())) {
+                Agency p = model.getCurrentPrincipal()
+                                .getPrincipal();
                 log.info(String.format("Failed executing query on workspace [%s:%s] by: %s:%s",
                                        definingProduct.getName(), uuid,
                                        p.getName(), p.getId()));

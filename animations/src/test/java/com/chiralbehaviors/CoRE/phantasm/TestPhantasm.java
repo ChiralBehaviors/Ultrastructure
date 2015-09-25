@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -103,7 +104,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         ProductAttributeAuthorization accessAuth = new ProductAttributeAuthorization(kernel.getCore());
@@ -113,7 +114,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), stateAuth,
+                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -121,7 +122,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getAnyAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         accessAuth = new ProductAttributeAuthorization(kernel.getCore());
@@ -131,7 +132,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), stateAuth,
+                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -139,7 +140,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getSameAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
     }
 
@@ -169,7 +170,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         ProductNetworkAuthorization accessAuth = new ProductNetworkAuthorization(kernel.getCore());
@@ -182,7 +183,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), stateAuth,
+                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -190,7 +191,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getAnyAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         accessAuth = new ProductNetworkAuthorization(kernel.getCore());
@@ -203,7 +204,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), stateAuth,
+                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -211,7 +212,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getSameAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
     }
 
@@ -340,7 +341,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(facet);
 
         assertTrue(model.getProductModel()
-                        .checkFacetCapability(kernel.getCore(), facet,
+                        .checkFacetCapability(asList(kernel.getCore()), facet,
                                               kernel.getHadMember()));
 
         ProductNetworkAuthorization accessAuth = new ProductNetworkAuthorization(kernel.getCore());
@@ -350,7 +351,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkFacetCapability(kernel.getCore(), facet,
+                         .checkFacetCapability(asList(kernel.getCore()), facet,
                                                kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -358,7 +359,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getAnyAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkFacetCapability(kernel.getCore(), facet,
+                        .checkFacetCapability(asList(kernel.getCore()), facet,
                                               kernel.getHadMember()));
 
         accessAuth = new ProductNetworkAuthorization(kernel.getCore());
@@ -368,7 +369,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkFacetCapability(kernel.getCore(), facet,
+                         .checkFacetCapability(asList(kernel.getCore()), facet,
                                                kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -376,7 +377,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getSameAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkFacetCapability(kernel.getCore(), facet,
+                        .checkFacetCapability(asList(kernel.getCore()), facet,
                                               kernel.getHadMember()));
     }
 
@@ -386,7 +387,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         Product instance = thing1.getRuleform();
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), instance,
+                        .checkCapability(asList(kernel.getCore()), instance,
                                          kernel.getHadMember()));
 
         AgencyProductGrouping accessAuth = new AgencyProductGrouping();
@@ -396,7 +397,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), instance,
+                         .checkCapability(asList(kernel.getCore()), instance,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -404,7 +405,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getAnyAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), instance,
+                        .checkCapability(asList(kernel.getCore()), instance,
                                          kernel.getHadMember()));
 
         accessAuth = new AgencyProductGrouping();
@@ -414,7 +415,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), instance,
+                         .checkCapability(asList(kernel.getCore()), instance,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -422,7 +423,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getSameAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), instance,
+                        .checkCapability(asList(kernel.getCore()), instance,
                                          kernel.getHadMember()));
     }
 
@@ -461,7 +462,8 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getProductModel()
-                        .checkNetworkCapability(kernel.getCore(), stateAuth,
+                        .checkNetworkCapability(asList(kernel.getCore()),
+                                                stateAuth,
                                                 kernel.getHadMember()));
 
         ProductAttributeAuthorization accessAuth = new ProductAttributeAuthorization(kernel.getCore());
@@ -471,7 +473,8 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkNetworkCapability(kernel.getCore(), stateAuth,
+                         .checkNetworkCapability(asList(kernel.getCore()),
+                                                 stateAuth,
                                                  kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -479,7 +482,8 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getAnyAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkNetworkCapability(kernel.getCore(), stateAuth,
+                        .checkNetworkCapability(asList(kernel.getCore()),
+                                                stateAuth,
                                                 kernel.getHadMember()));
 
         accessAuth = new ProductAttributeAuthorization(kernel.getCore());
@@ -489,7 +493,8 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkNetworkCapability(kernel.getCore(), stateAuth,
+                         .checkNetworkCapability(asList(kernel.getCore()),
+                                                 stateAuth,
                                                  kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -497,7 +502,8 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getSameAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkNetworkCapability(kernel.getCore(), stateAuth,
+                        .checkNetworkCapability(asList(kernel.getCore()),
+                                                stateAuth,
                                                 kernel.getHadMember()));
     }
 
@@ -540,7 +546,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         ProductLocationAuthorization accessAuth = new ProductLocationAuthorization(kernel.getCore());
@@ -555,7 +561,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), stateAuth,
+                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -563,7 +569,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getAnyAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         accessAuth = new ProductLocationAuthorization(kernel.getCore());
@@ -578,7 +584,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), stateAuth,
+                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -586,7 +592,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getSameAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
     }
 
@@ -606,7 +612,7 @@ public class TestPhantasm extends AbstractModelTest {
         assertNotNull(stateAuth);
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         ProductLocationAttributeAuthorization accessAuth = new ProductLocationAttributeAuthorization(kernel.getCore());
@@ -616,7 +622,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), stateAuth,
+                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -624,7 +630,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getAnyAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         accessAuth = new ProductLocationAttributeAuthorization(kernel.getCore());
@@ -634,7 +640,7 @@ public class TestPhantasm extends AbstractModelTest {
         em.persist(accessAuth);
 
         assertFalse(model.getProductModel()
-                         .checkCapability(kernel.getCore(), stateAuth,
+                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                           kernel.getHadMember()));
 
         model.getAgencyModel()
@@ -642,7 +648,7 @@ public class TestPhantasm extends AbstractModelTest {
                    kernel.getSameAgency(), kernel.getCore());
 
         assertTrue(model.getProductModel()
-                        .checkCapability(kernel.getCore(), stateAuth,
+                        .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
     }
 

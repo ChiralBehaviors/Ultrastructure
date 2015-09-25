@@ -211,7 +211,7 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
                 setTimestampValue((Timestamp) value);
                 return;
             case JSON:
-                setJsonValue((Timestamp) value);
+                setJsonValue(value);
                 return;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",

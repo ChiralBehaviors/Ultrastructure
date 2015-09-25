@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -112,10 +111,10 @@ public class ProductTest extends DatabaseTest {
                                          core);
         em.persist(peptideBar);
 
-        Attribute length = new Attribute("Length",
-                                         "Denotes the linear length of a thing",
-                                         ValueType.NUMERIC, core);
-        em.persist(length);
+        Attribute diagram = new Attribute("Diagram",
+                                          "The D3 Net of the molecule",
+                                          ValueType.JSON, core);
+        em.persist(diagram);
 
         Unit aminoAcids = new Unit("Amino Acids",
                                    "A unit of length for protein primary sequences",
@@ -123,10 +122,10 @@ public class ProductTest extends DatabaseTest {
         aminoAcids.setAbbreviation("aa");
         em.persist(aminoAcids);
 
-        ProductAttribute attribute = new ProductAttribute(peptideFoo, length,
+        ProductAttribute attribute = new ProductAttribute(peptideFoo, diagram,
                                                           core);
         attribute.setUnit(aminoAcids);
-        attribute.setValue(BigDecimal.valueOf(123));
+        attribute.setValue("Fooled ya");
         em.persist(attribute);
         em.flush();
     }
@@ -145,11 +144,12 @@ public class ProductTest extends DatabaseTest {
 
         TypedQuery<Attribute> findAttribute = em.createNamedQuery("attribute.findByName",
                                                                   Attribute.class)
-                                                .setParameter("name", "Length");
+                                                .setParameter("name",
+                                                              "Diagram");
 
         Attribute a = findAttribute.getSingleResult();
         assertNotNull(a);
-        assertEquals(a.getName(), "Length");
+        assertEquals(a.getName(), "Diagram");
         LOG.debug(String.format("Attribute is: %s", a));
         em.refresh(b);
         Set<ProductAttribute> productAttributes = b.getAttributes();
@@ -162,6 +162,6 @@ public class ProductTest extends DatabaseTest {
         assertEquals(b, bea.getProduct());
         assertEquals(a, bea.getAttribute());
 
-        assertEquals(new BigDecimal("123"), bea.getValue());
+        assertEquals("Fooled ya", bea.getValue());
     }
 }

@@ -89,4 +89,11 @@
             baseColumnNames="workspace" baseTableName="product_relationship_attribute" constraintName="product_relationship_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
+    <changeSet author="hhildebrand" id="add updated">
+        <addColumn schemaName="ruleform" tableName="product_relationship_attribute">
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

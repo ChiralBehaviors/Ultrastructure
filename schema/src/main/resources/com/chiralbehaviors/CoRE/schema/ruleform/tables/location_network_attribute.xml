@@ -13,7 +13,7 @@
             <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="location_network_attribute_pkey" />
-            </column> 
+            </column>
             <column name="network_rule" remarks="The agency Network rule whose attribute is being defined" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -51,8 +51,7 @@
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="location_network_attribute" constraintName="location_network_attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
-            referencedTableName="agency" />
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="network_rule, attribute, sequence_number"
             constraintName="location_network_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="location_network_attribute" />
@@ -94,5 +93,12 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="location_network_attribute" constraintName="location_network_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="add updated">
+        <addColumn schemaName="ruleform" tableName="location_network_attribute">
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

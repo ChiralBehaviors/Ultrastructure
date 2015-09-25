@@ -52,8 +52,7 @@
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="attribute_meta_attribute" constraintName="attribute_attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
-            referencedTableName="agency" />
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="attribute, meta_attribute, sequence_number"
             constraintName="attribute_attribute_base_attribute_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="attribute_meta_attribute" />
@@ -90,5 +89,12 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="attribute_meta_attribute" constraintName="attribute_meta_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="add updated">
+        <addColumn schemaName="ruleform" tableName="attribute_meta_attribute">
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

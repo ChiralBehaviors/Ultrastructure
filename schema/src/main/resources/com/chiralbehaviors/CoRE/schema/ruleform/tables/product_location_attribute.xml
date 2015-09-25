@@ -10,7 +10,7 @@
             <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_location_attribute_pkey" />
-            </column> 
+            </column>
             <column name="product_location" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -45,8 +45,7 @@
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product_location" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="product_location_attribute" constraintName="product_location_attribute_updated_by_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
-            referencedTableName="agency" />
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="product_location, attribute, sequence_number"
             constraintName="product_location_attribute_agency_key" deferrable="false" disabled="false" initiallyDeferred="true"
             tableName="product_location_attribute" />
@@ -69,18 +68,31 @@
             unique="false"
         >
             <column name="timestamp_value" />
-        </createIndex> 
-        <createIndex schemaName="ruleform" indexName="product_location_attribute_product_location_idx" tableName="product_location_attribute" unique="false">
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_product_location_idx" tableName="product_location_attribute"
+            unique="false"
+        >
             <column name="product_location" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="product_location_attribute_attribute_idx" tableName="product_location_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_attribute_idx" tableName="product_location_attribute"
+            unique="false"
+        >
             <column name="attribute" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="product_location_attribute_unit_idx" tableName="product_location_attribute" unique="false">
+        <createIndex schemaName="ruleform" indexName="product_location_attribute_unit_idx" tableName="product_location_attribute"
+            unique="false"
+        >
             <column name="unit" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="product_location_attribute" constraintName="product_location_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="add updated">
+        <addColumn schemaName="ruleform" tableName="product_location_attribute">
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

@@ -45,7 +45,7 @@
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="product_attribute" constraintName="product_attribute_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform" columnNames="product, attribute, sequence_number" constraintName="product_attribute_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="product_attribute" />
         <createIndex schemaName="ruleform" indexName="product_attribute_attribute_fkey_idx" tableName="product_attribute"
@@ -74,7 +74,14 @@
             <column name="timestamp_value" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="product_attribute" constraintName="product_attribute_workspace_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+            baseColumnNames="workspace" baseTableName="product_attribute" constraintName="product_attribute_workspace_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+    </changeSet>
+    <changeSet author="hhildebrand" id="add updated">
+        <addColumn schemaName="ruleform" tableName="product_attribute">
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

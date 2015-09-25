@@ -94,6 +94,9 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     @JoinColumn(name = "unit")
     private Unit unit;
 
+    @Column(name = "updated")
+    private Timestamp updated = new Timestamp(System.currentTimeMillis());
+
     /**
      *
      */
@@ -181,6 +184,10 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         return unit;
     }
 
+    public Timestamp getUpdated() {
+        return updated;
+    }
+
     @SuppressWarnings("unchecked")
     @JsonProperty
     public <T extends Object> T getValue() {
@@ -231,48 +238,53 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         this.unit = unit;
     }
 
+    public void setUpdated(Timestamp updated) {
+        this.updated = updated;
+    }
+
     public void setValue(Object value) {
         switch (getAttribute().getValueType()) {
             case BINARY:
                 setBinaryValue((byte[]) value);
-                return;
+                break;
             case BOOLEAN:
                 setBooleanValue((Boolean) value);
-                return;
+                break;
             case INTEGER:
                 setIntegerValue((Integer) value);
-                return;
+                break;
             case NUMERIC:
                 setNumericValue((BigDecimal) value);
-                return;
+                break;
             case TEXT:
                 setTextValue((String) value);
                 return;
             case TIMESTAMP:
                 setTimestampValue((Timestamp) value);
-                return;
+                break;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               getAttribute().getValueType()));
         }
+        setUpdated(new Timestamp(System.currentTimeMillis()));
     }
 
     public void setValueFromString(String value) {
         switch (getAttribute().getValueType()) {
             case BINARY:
-                setBinaryValue(value.getBytes());
+                setValue(value.getBytes());
                 return;
             case BOOLEAN:
-                setBooleanValue(Boolean.valueOf(value));
+                setValue(Boolean.valueOf(value));
                 return;
             case INTEGER:
-                setIntegerValue(Integer.parseInt(value));
+                setValue(Integer.parseInt(value));
                 return;
             case NUMERIC:
-                setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                setValue(BigDecimal.valueOf(Long.parseLong(value)));
                 return;
             case TEXT:
-                setTextValue(value);
+                setValue(value);
                 return;
             case TIMESTAMP:
                 throw new UnsupportedOperationException("Timestamps are a PITA");

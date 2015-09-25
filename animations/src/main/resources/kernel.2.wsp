@@ -24,7 +24,7 @@ attributes {
     Login = "Login" "The Attribute that contains the login name of the agency" text;
     PasswordRounds = "Password Rounds" "The number of rounds to hash the password" int;
     PasswordHash = "Password Hash" "The hash the password" text;
-    AccessToken = "Access Token" "The last access timestamp bearer token" indexed: true timestamp;
+    AccessToken = "Access Token" "The access bearer token" indexed: true text;
     
     PackageName = "Package Name" "The base package name" text;
     FacetName = "Facet Name" "The name of a phantasm facet in a workspace" text;

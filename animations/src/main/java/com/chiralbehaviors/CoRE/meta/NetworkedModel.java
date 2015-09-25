@@ -143,9 +143,9 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                            Relationship authorized);
 
     /**
-     * Check the capability of an agency on an attribute of a ruleform.
+     * Check the capability of the agencies on an attribute of a ruleform.
      */
-    boolean checkCapability(Agency agency,
+    boolean checkCapability(List<Agency> agencies,
                             AttributeAuthorization<RuleForm, ?> stateAuth,
                             Relationship capability);
 
@@ -157,10 +157,11 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
-     * Check the capability of an agency on an instance.
+     * Check the capability of the agencies on an instance.
      */
-    boolean checkCapability(Agency agency, ExistentialRuleform<?, ?> instance,
-                            Relationship capability);
+    boolean checkCapability(List<Agency> agencies,
+                                    ExistentialRuleform<?, ?> instance,
+                                    Relationship capability);
 
     /**
      * Check the capability of the current principal on an instance.
@@ -169,10 +170,11 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
-     * Check the capability of an agency on the authorized relationship of the
-     * facet child relationship.
+     * Check the capability of the agencies on the authorized relationship of
+     * the facet child relationship.
      */
-    boolean checkCapability(Agency agency, NetworkAuthorization<RuleForm> auth,
+    boolean checkCapability(List<Agency> agencies,
+                            NetworkAuthorization<RuleForm> auth,
                             Relationship capability);
 
     /**
@@ -183,10 +185,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
-     * Check the capability of an agency on an attribute of the authorized cross
-     * domain relationship of the facet child relationship.
+     * Check the capability of the agencies on an attribute of the authorized
+     * cross domain relationship of the facet child relationship.
      */
-    boolean checkCapability(Agency agency,
+    boolean checkCapability(List<Agency> agencies,
                             XDomainAttrbuteAuthorization<?, ?> stateAuth,
                             Relationship capability);
 
@@ -198,10 +200,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
-     * Check the capability of an agency on the authorized relationship of the
-     * facet child relationship.
+     * Check the capability of the agencies on the authorized relationship of
+     * the facet child relationship.
      */
-    boolean checkCapability(Agency agency,
+    boolean checkCapability(List<Agency> agencies,
                             XDomainNetworkAuthorization<?, ?> stateAuth,
                             Relationship capability);
 
@@ -213,9 +215,9 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                             Relationship capability);
 
     /**
-     * Check the capability of an agency on the facet.
+     * Check the capability of the agencies on the facet.
      */
-    boolean checkFacetCapability(Agency agency,
+    boolean checkFacetCapability(List<Agency> agencies,
                                  NetworkAuthorization<RuleForm> facet,
                                  Relationship capability);
 
@@ -226,10 +228,10 @@ public interface NetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, N
                                  Relationship capability);
 
     /**
-     * Check the capability of an agency on an attribute of the authorized
+     * Check the capability of the agencies on an attribute of the authorized
      * relationship of the facet child relationship.
      */
-    boolean checkNetworkCapability(Agency agency,
+    boolean checkNetworkCapability(List<Agency> agencies,
                                    AttributeAuthorization<RuleForm, ?> stateAuth,
                                    Relationship capability);
 

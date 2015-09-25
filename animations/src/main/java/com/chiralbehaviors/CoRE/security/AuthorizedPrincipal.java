@@ -20,8 +20,10 @@
 
 package com.chiralbehaviors.CoRE.security;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
@@ -35,6 +37,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
  */
 public class AuthorizedPrincipal implements Cloneable {
     private final List<AgencyNetworkAuthorization> activeRoles;
+    private final List<Agency>                     capabilities;
     private final Agency                           principal;
 
     /**
@@ -51,7 +54,11 @@ public class AuthorizedPrincipal implements Cloneable {
     public AuthorizedPrincipal(Agency principal,
                                List<AgencyNetworkAuthorization> activeRoles) {
         this.principal = principal;
-        this.activeRoles = Collections.unmodifiableList(activeRoles);
+        this.activeRoles = new ArrayList<>(activeRoles);
+        capabilities = this.activeRoles.stream()
+                                       .map(auth -> auth.getClassification())
+                                       .collect(Collectors.toList());
+        capabilities.add(0, this.principal);
     }
 
     public List<AgencyNetworkAuthorization> getActiveRoles() {
@@ -60,5 +67,9 @@ public class AuthorizedPrincipal implements Cloneable {
 
     public Agency getPrincipal() {
         return principal;
+    }
+
+    public List<Agency> getCapabilities() {
+        return capabilities;
     }
 }

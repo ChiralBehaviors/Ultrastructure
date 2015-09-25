@@ -1329,6 +1329,9 @@ public class WorkspaceImporter {
             case "timestamp":
                 attr.setValueType(ValueType.TIMESTAMP);
                 return;
+            case "json":
+                attr.setValueType(ValueType.JSON);
+                return;
             default:
                 throw new IllegalArgumentException(String.format("Invalid attribute value type: %s for %s",
                                                                  valueType.getText(),

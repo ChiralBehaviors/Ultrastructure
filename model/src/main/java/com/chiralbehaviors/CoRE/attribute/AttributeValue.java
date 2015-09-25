@@ -36,13 +36,10 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.Triggers;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.json.JsonMapType;
 import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -54,7 +51,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author hhildebrand
  *
  */
-@TypeDefs({ @TypeDef(name = "jsonbType", typeClass = JsonMapType.class) })
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Cacheable(false)
@@ -299,6 +295,7 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
                 setValue(BigDecimal.valueOf(Long.parseLong(value)));
                 return;
             case TEXT:
+            case JSON:
                 setValue(value);
                 return;
             case TIMESTAMP:

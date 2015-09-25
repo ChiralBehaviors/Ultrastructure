@@ -1649,32 +1649,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
         List<ValueType> allowedValues = new ArrayList<ValueType>();
         for (AttributeAuth authorization : authorizations) {
-            switch (attribute.getValueType()) {
-                case BOOLEAN: {
-                    allowedValues.add((ValueType) authorization.getBooleanValue());
-                    break;
-                }
-                case INTEGER: {
-                    allowedValues.add((ValueType) authorization.getIntegerValue());
-                    break;
-                }
-                case NUMERIC: {
-                    allowedValues.add((ValueType) authorization.getNumericValue());
-                    break;
-                }
-                case TEXT: {
-                    allowedValues.add((ValueType) authorization.getTextValue());
-                    break;
-                }
-                case TIMESTAMP: {
-                    allowedValues.add((ValueType) authorization.getTimestampValue());
-                    break;
-                }
-                case BINARY: {
-                    allowedValues.add((ValueType) authorization.getBinaryValue());
-                    break;
-                }
-            }
+            allowedValues.add((ValueType) authorization.getValue());
         }
         return allowedValues;
     }

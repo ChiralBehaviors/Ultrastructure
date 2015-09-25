@@ -99,7 +99,7 @@ attributeRuleform:
     ('type:' type = QuotedText)?
     ('indexed:' indexed = ('true' | 'false'))?
     ('keyed:' keyed = ('true' | 'false'))?
-    valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp')
+    valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp' | 'json')
     ('attribute values' LB (attributeValue)+ RB)?; 
 
 unit: 

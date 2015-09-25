@@ -33,6 +33,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="json_value" type="jsonb" />
         </createTable>
         <rollback>
             <dropTable tableName="interval_attribute" />
@@ -77,12 +81,5 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="interval_attribute" constraintName="interval_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="add updated">
-        <addColumn schemaName="ruleform" tableName="interval_attribute">
-            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
     </changeSet>
 </databaseChangeLog>

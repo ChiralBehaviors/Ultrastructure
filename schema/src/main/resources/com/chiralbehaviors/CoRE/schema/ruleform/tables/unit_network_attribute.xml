@@ -36,6 +36,10 @@
             <column defaultValueNumeric="1" name="sequence_number" type="INT4">
                 <constraints nullable="false" />
             </column>
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="json_value" type="jsonb"/>
         </createTable>
         <rollback>
             <dropTable tableName="unit_network_attribute" />
@@ -90,12 +94,5 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="unit_network_attribute" constraintName="unit_network_attribute_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-    </changeSet>
-    <changeSet author="hhildebrand" id="add updated">
-        <addColumn schemaName="ruleform" tableName="unit_network_attribute">
-            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
     </changeSet>
 </databaseChangeLog>

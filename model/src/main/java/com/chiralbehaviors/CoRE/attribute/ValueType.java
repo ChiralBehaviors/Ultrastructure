@@ -67,6 +67,12 @@ public enum ValueType {
         public Class<?> valueClass() {
             return Timestamp.class;
         }
+    },
+    @JsonProperty JSON {
+        @Override
+        public Class<?> valueClass() {
+            return Object.class;
+        }
     };
 
     abstract public Class<?> valueClass();

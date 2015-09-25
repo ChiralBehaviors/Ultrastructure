@@ -124,6 +124,11 @@ public class AbstractModelTest {
             assertNotNull("jpa properties missing", is);
             Properties properties = new Properties();
             properties.load(is);
+
+            // configuration by convention
+            properties.put("hibernate.dialect",
+                           "com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect");
+
             System.out.println(String.format("Database URL: %s",
                                              properties.getProperty("javax.persistence.jdbc.url")));
             emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,

@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -47,6 +48,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue_;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -138,6 +140,11 @@ public class ModelImpl implements Model {
                                                                                               this);
         return (R) definition.construct(source.getRuleform(), this,
                                         getCurrentPrincipal().getPrincipal());
+    }
+
+    @Override
+    public PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm) {
+        return cached(phantasm, this);
     }
 
     /* (non-Javadoc)
@@ -523,6 +530,22 @@ public class ModelImpl implements Model {
         return (Phantasm<? super T>) definition.wrap(ruleform, this);
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#principalFrom(com.chiralbehaviors.CoRE.agency.Agency, java.util.List)
+     */
+    @Override
+    public AuthorizedPrincipal principalFrom(Agency principal,
+                                             List<UUID> capabilities) {
+        return new AuthorizedPrincipal(principal, capabilities.stream()
+                                                              .map(uuid -> em.find(AgencyNetworkAuthorization.class,
+                                                                                   uuid))
+                                                              .filter(auth -> auth != null)
+                                                              .filter(auth -> agencyModel.isAccessible(principal,
+                                                                                                       auth.getClassifier(),
+                                                                                                       auth.getClassification()))
+                                                              .collect(Collectors.toList()));
+    }
+
     @Override
     @SuppressWarnings({ "unchecked" })
     public <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
@@ -533,11 +556,6 @@ public class ModelImpl implements Model {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
                                                                                               this);
         return (R) definition.wrap(ruleform, this);
-    }
-
-    @Override
-    public PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm) {
-        return cached(phantasm, this);
     }
 
     private void initializeCurrentPrincipal() {

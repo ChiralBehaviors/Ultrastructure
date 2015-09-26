@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.kernel.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
+import com.chiralbehaviors.CoRE.security.Credential;
 
 /**
  * @author hhildebrand
@@ -56,15 +57,11 @@ import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator
 @Path("/oauth2/token")
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthxResource extends TransactionalResource {
-    public static class Capability {
-        public UUID classification;
-        public UUID classifier;
-    }
 
     public static class Request {
-        public List<Capability> capabilities = Collections.emptyList();
-        public String           password;
-        public String           username;
+        public List<UUID> capabilities = Collections.emptyList();
+        public String     password;
+        public String     username;
     }
 
     private static final Logger log = LoggerFactory.getLogger(AuthxResource.class);
@@ -89,7 +86,9 @@ public class AuthxResource extends TransactionalResource {
                                 @FormParam("password") String password,
                                 @Context HttpServletRequest httpRequest) {
         return perform(null, model -> {
-            return generateToken(null, authenticate(username, password, model),
+            Credential cred = new Credential();
+            cred.ip = httpRequest.getRemoteAddr();
+            return generateToken(cred, authenticate(username, password, model),
                                  model).getId()
                                        .toString();
         });
@@ -102,7 +101,10 @@ public class AuthxResource extends TransactionalResource {
     public String requestCapability(Request request,
                                     @Context HttpServletRequest httpRequest) {
         return perform(null, model -> {
-            return generateToken(null,
+            Credential cred = new Credential();
+            cred.capabilities = request.capabilities;
+            cred.ip = httpRequest.getRemoteAddr();
+            return generateToken(cred,
                                  authenticate(request.username,
                                               request.password, model),
                                  model).getId()
@@ -135,7 +137,7 @@ public class AuthxResource extends TransactionalResource {
         return user;
     }
 
-    private AgencyAttribute generateToken(Object tokenValue, CoreUser user,
+    private AgencyAttribute generateToken(Credential cred, CoreUser user,
                                           Model model) {
         EntityManager em = model.getEntityManager();
         em.getTransaction()
@@ -152,7 +154,7 @@ public class AuthxResource extends TransactionalResource {
                                                                .getAccessToken(),
                                                           model.getCurrentPrincipal()
                                                                .getPrincipal());
-        accessToken.setValue(tokenValue);
+        accessToken.setValue(cred);
         accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
         accessToken.setSequenceNumber(seqNum);
         model.getEntityManager()

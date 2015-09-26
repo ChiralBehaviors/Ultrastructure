@@ -21,7 +21,10 @@
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -44,8 +47,12 @@ import io.dropwizard.auth.Authenticator;
  *
  */
 public class AgencyBearerTokenAuthenticator
-        implements Authenticator<String, AuthorizedPrincipal> {
+        implements Authenticator<RequestCredentials, AuthorizedPrincipal> {
     public static final int ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
+
+    private static final String CAPABILITIES = "capabilities";
+
+    private static final String IP = "ip";
 
     private final static Logger log = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
@@ -59,12 +66,12 @@ public class AgencyBearerTokenAuthenticator
     }
 
     @Override
-    public Optional<AuthorizedPrincipal> authenticate(String id) throws AuthenticationException {
+    public Optional<AuthorizedPrincipal> authenticate(RequestCredentials credentials) throws AuthenticationException {
         UUID uuid;
         try {
-            uuid = UUID.fromString(id);
+            uuid = UUID.fromString(credentials.bearerToken);
         } catch (IllegalArgumentException e) {
-            log.info("requested access token {} not found", id);
+            log.info("requested access token {} not found", credentials);
             // Must be a valid UUID
             return Optional.absent();
         }
@@ -73,25 +80,80 @@ public class AgencyBearerTokenAuthenticator
         try {
             AgencyAttribute accessToken = em.find(AgencyAttribute.class, uuid);
             if (accessToken == null) {
+                log.info("requested access token {} not found", credentials);
                 return Optional.absent();
             }
             em.getTransaction()
               .begin();
-            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            if (((Timestamp) accessToken.getUpdated()).compareTo(currentTime) < 0) {
-                log.info("requested access token {} timed out", id);
-                em.remove(accessToken);
-                return Optional.absent();
-            }
-            accessToken.setUpdated(currentTime);
-            Agency agency = accessToken.getAgency();
-            log.info("requested access token {} refreshed for {}", id, agency);
+            Optional<AuthorizedPrincipal> returned;
+            returned = validate(accessToken, credentials, em, model);
             em.getTransaction()
               .commit();
-            return Optional.of(new AuthorizedPrincipal(agency));
+            return returned;
         } finally {
+            if (em.getTransaction()
+                  .isActive()) {
+                em.getTransaction()
+                  .rollback();
+            }
             em.close();
         }
+    }
+
+    public AuthorizedPrincipal principalFrom(Agency agency,
+                                             AgencyAttribute accessToken,
+                                             Model model) {
+        Map<String, Object> token = accessToken.getValue();
+        @SuppressWarnings("unchecked")
+        List<String> capabilities = (List<String>) token.get(CAPABILITIES);
+        return capabilities == null ? new AuthorizedPrincipal(agency)
+                                    : model.principalFrom(agency,
+                                                          capabilities.stream()
+                                                                      .map(uuid -> UUID.fromString(uuid))
+                                                                      .collect(Collectors.toList()));
+    }
+
+    private boolean validate(AgencyAttribute accessToken,
+                             RequestCredentials credentials) {
+        Map<String, Object> token = accessToken.getValue();
+        if (token == null) {
+            log.info("Invalid access token {}", credentials);
+            return false;
+        }
+        String ip = (String) token.get(IP);
+        if (ip == null) {
+            log.info("Invalid access token {}", credentials);
+            return false;
+        }
+        return credentials.remoteIp.equals(ip);
+    }
+
+    private Optional<AuthorizedPrincipal> validate(AgencyAttribute accessToken,
+                                                   RequestCredentials credentials,
+                                                   EntityManager em,
+                                                   Model model) {
+        Optional<AuthorizedPrincipal> returned;
+        if (!validate(accessToken, credentials)) {
+            em.remove(accessToken);
+            log.info("Invalid access token {}", credentials);
+            returned = Optional.absent();
+        } else {
+            Agency agency = accessToken.getAgency();
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            if (((Timestamp) accessToken.getUpdated()).compareTo(currentTime) > 0) {
+                log.info("requested access token {} for {}:{} has timed out",
+                         credentials, agency.getId(), agency);
+                em.remove(accessToken);
+                returned = Optional.absent();
+            } else {
+                accessToken.setUpdated(currentTime);
+                log.info("requested access token {} refreshed for {}:{}",
+                         credentials, agency.getId(), agency);
+                returned = Optional.of(principalFrom(agency, accessToken,
+                                                     model));
+            }
+        }
+        return returned;
     }
 
 }

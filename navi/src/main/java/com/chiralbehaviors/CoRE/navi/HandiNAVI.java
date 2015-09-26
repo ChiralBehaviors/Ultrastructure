@@ -35,9 +35,10 @@ import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration.Asset;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
+import com.chiralbehaviors.CoRE.phantasm.authentication.UsOAuthFactory;
+import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
@@ -50,7 +51,6 @@ import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.CachingAuthenticator;
 import io.dropwizard.auth.basic.BasicAuthFactory;
-import io.dropwizard.auth.oauth.OAuthFactory;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
@@ -131,11 +131,11 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                 break;
             case BEARER_TOKEN:
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
-                authBinder = AuthFactory.binder(new OAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(metricRegistry,
-                                                                                                                 new AgencyBearerTokenAuthenticator(emf),
-                                                                                                                 configuration.authenticationCachePolicy),
-                                                                                      configuration.realm,
-                                                                                      AuthorizedPrincipal.class));
+                authBinder = AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(metricRegistry,
+                                                                                                                   new AgencyBearerTokenAuthenticator(emf),
+                                                                                                                   configuration.authenticationCachePolicy),
+                                                                                        configuration.realm,
+                                                                                        AuthorizedPrincipal.class));
                 break;
         }
         if (authBinder == null) {

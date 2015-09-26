@@ -13,9 +13,10 @@ are running on a Mac, try the [Postgres.app](http://postgresapp.com/) as it's bu
 
 Note that the build assumes that the database is available on localhost:5432.  The build also assumes that the super 
 user and database _postgres_ is set up with the default password (_postgres_).  If you have changed 
-any of these values, please override the "testing.db.*" properties in the top level pom.  *If you have installed Postgres using
-the Heroku [Postgres.app](http://postgresapp.com/)* please note that the default port is _5433_, so you'll have to be sure to set the *dba.db.port*
- value in your ~/.m2/settings.xml or edit the top level pom.xml (as it defines this value to be 5432).
+any of these values, please override the _"dba.db.*"_ properties in the top level pom.  _If you have installed Postgres using
+the Heroku [Postgres.app](http://postgresapp.com/)_ please note that the default port is _5433_, so you'll have to be sure to set the _dba.db.port_
+ value in your ~/.m2/settings.xml or edit the top level pom.xml (as it defines this value to be 5432).  You'll be wondering
+ why you cannot connect if you don't.
 
 The project requires [Java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).  The build system 
 is [Maven](http://maven.apache.org/).  In order to build, you will need both Maven and Java 1.8 installed.  Beyond Java, 

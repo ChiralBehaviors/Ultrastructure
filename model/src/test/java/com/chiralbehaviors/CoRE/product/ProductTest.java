@@ -142,10 +142,11 @@ public class ProductTest extends DatabaseTest {
         assertEquals(b.getName(), "Peptide Foo");
         LOG.debug(String.format("Product is: %s", b));
 
-        TypedQuery<Attribute> findAttribute = em.createNamedQuery("attribute.findByName",
-                                                                  Attribute.class)
-                                                .setParameter("name",
-                                                              "Diagram");
+        TypedQuery<Attribute> findAttributeValue = em.createNamedQuery("attribute.findByName",
+                                                                       Attribute.class)
+                                                     .setParameter("name",
+                                                                   "Diagram");
+        TypedQuery<Attribute> findAttribute = findAttributeValue;
 
         Attribute a = findAttribute.getSingleResult();
         assertNotNull(a);
@@ -161,7 +162,16 @@ public class ProductTest extends DatabaseTest {
         assertNotNull(bea);
         assertEquals(b, bea.getProduct());
         assertEquals(a, bea.getAttribute());
+        em.flush();
+        em.clear();
+        b = em.merge(b);
+        a = em.merge(a);
+        ProductAttribute value = em.createNamedQuery("productAttribute.getAttribute",
+                                                     ProductAttribute.class)
+                                   .setParameter("ruleform", b)
+                                   .setParameter("attribute", a)
+                                   .getSingleResult();
 
-        assertEquals("Fooled ya", bea.getValue());
+        assertEquals("Fooled ya", value.getValue());
     }
 }

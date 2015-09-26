@@ -21,6 +21,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.cache.CacheBuilderSpec;
 
 import io.dropwizard.Configuration;
 
@@ -50,8 +51,8 @@ public class HandiNAVIConfiguration extends Configuration {
     @NotNull
     public AuthType    auth   = AuthType.BEARER_TOKEN;
 
-    public boolean           useCORS;
-    public CORSConfiguration CORS = new CORSConfiguration();
+    public boolean           useCORS = false;
+    public CORSConfiguration CORS    = new CORSConfiguration();
 
     @NotNull
     public JpaConfiguration jpa = new JpaConfiguration();
@@ -61,5 +62,8 @@ public class HandiNAVIConfiguration extends Configuration {
     public boolean randomPort = false;
 
     public String realm;
+
+    @NotNull
+    public CacheBuilderSpec authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
 
 }

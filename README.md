@@ -42,3 +42,6 @@ To drop the database and start from scratch, simply add "-Ddrop=true" to the ful
     $ mvn install -Ddrop=true
 
 
+
+![CoRE](https://github.com/ChiralBehaviors/Ultrastructure/master/site/media/core.png)
+

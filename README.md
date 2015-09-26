@@ -1,4 +1,6 @@
 Ultrastructure
+
+![CoRE](https://github.com/ChiralBehaviors/Ultrastructure/master/site/media/core.png)
 ==============
 
 An implementation of Ultrastructure using PostgreSQL.
@@ -50,8 +52,4 @@ To drop the database and start from scratch, simply add "-Ddrop" to the full bui
 
     $ cd drop-database
     $ mvn install -Ddrop
-
-
-
-![CoRE](https://github.com/ChiralBehaviors/Ultrastructure/master/site/media/core.png)
 

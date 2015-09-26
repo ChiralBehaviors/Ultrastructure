@@ -21,16 +21,20 @@
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
@@ -51,13 +55,23 @@ import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator
  */
 @Path("/oauth2/token")
 @Produces(MediaType.APPLICATION_JSON)
-public class LoginResource {
-    private static final Logger        log = LoggerFactory.getLogger(LoginResource.class);
-    private final EntityManagerFactory emf;
-    private final Attribute            login;
+public class AuthxResource extends TransactionalResource {
+    public static class Capability {
+        public UUID classification;
+        public UUID classifier;
+    }
 
-    public LoginResource(EntityManagerFactory emf) {
-        this.emf = emf;
+    public static class Request {
+        public List<Capability> capabilities = Collections.emptyList();
+        public String           password;
+        public String           username;
+    }
+
+    private static final Logger log = LoggerFactory.getLogger(AuthxResource.class);
+    private final Attribute     login;
+
+    public AuthxResource(EntityManagerFactory emf) {
+        super(emf);
         Model model = new ModelImpl(emf);
         try {
             login = model.getKernel()
@@ -69,42 +83,60 @@ public class LoginResource {
     }
 
     @POST
+    @Path("basic")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String postForToken(@FormParam("username") String username,
-                               @FormParam("password") String password,
-                               @FormParam("client_id") String clientId) {
-        Model model = new ModelImpl(emf);
-        try {
-            AgencyAttribute attributeValue = new AgencyAttribute(login);
-            attributeValue.setValue(username);
-            List<Agency> agencies = model.find(attributeValue);
-            if (agencies.size() > 1) {
-                log.error(String.format("Multiple agencies with username %s",
-                                        username));
-                throw new WebApplicationException(Status.UNAUTHORIZED);
-            }
-            if (agencies.size() == 0) {
-                log.warn(String.format("Attempt to login from non existent username %s",
-                                       username));
-                throw new WebApplicationException(Status.UNAUTHORIZED);
-            }
-            CoreUser user = (CoreUser) model.wrap(CoreUser.class,
-                                                  agencies.get(0));
+    public String loginForToken(@FormParam("username") String username,
+                                @FormParam("password") String password,
+                                @Context HttpServletRequest httpRequest) {
+        return perform(null, model -> {
+            return generateToken(null, authenticate(username, password, model),
+                                 model).getId()
+                                       .toString();
+        });
 
-            if (!AgencyBasicAuthenticator.authenticate(user, password)) {
-                log.warn(String.format("Invalid attempt to login from username %s",
-                                       username));
-                throw new WebApplicationException(Status.UNAUTHORIZED);
-            }
-            return generateToken(user, model).getId()
-                                             .toString();
-        } finally {
-            model.getEntityManager()
-                 .close();
-        }
     }
 
-    private AgencyAttribute generateToken(CoreUser user, Model model) {
+    @POST
+    @Path("capability")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String requestCapability(Request request,
+                                    @Context HttpServletRequest httpRequest) {
+        return perform(null, model -> {
+            return generateToken(null,
+                                 authenticate(request.username,
+                                              request.password, model),
+                                 model).getId()
+                                       .toString();
+        });
+    }
+
+    private CoreUser authenticate(String username, String password,
+                                  Model model) {
+        AgencyAttribute attributeValue = new AgencyAttribute(login);
+        attributeValue.setValue(username);
+        List<Agency> agencies = model.find(attributeValue);
+        if (agencies.size() > 1) {
+            log.error(String.format("Multiple agencies with login name %s",
+                                    username));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        if (agencies.size() == 0) {
+            log.warn(String.format("Attempt to login from non existent username %s",
+                                   username));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        CoreUser user = (CoreUser) model.wrap(CoreUser.class, agencies.get(0));
+
+        if (!AgencyBasicAuthenticator.authenticate(user, password)) {
+            log.warn(String.format("Invalid attempt to login from username %s",
+                                   username));
+            throw new WebApplicationException(Status.UNAUTHORIZED);
+        }
+        return user;
+    }
+
+    private AgencyAttribute generateToken(Object tokenValue, CoreUser user,
+                                          Model model) {
         EntityManager em = model.getEntityManager();
         em.getTransaction()
           .begin();
@@ -120,7 +152,7 @@ public class LoginResource {
                                                                .getAccessToken(),
                                                           model.getCurrentPrincipal()
                                                                .getPrincipal());
-        accessToken.setValue("Dummy IP");
+        accessToken.setValue(tokenValue);
         accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
         accessToken.setSequenceNumber(seqNum);
         model.getEntityManager()

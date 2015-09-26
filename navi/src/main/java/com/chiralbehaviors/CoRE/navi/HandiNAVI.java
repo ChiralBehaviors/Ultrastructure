@@ -37,7 +37,7 @@ import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthent
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.LoginResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
@@ -159,7 +159,7 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
         environment.jersey()
                    .register(new GraphQlResource(emf));
         environment.jersey()
-                   .register(new LoginResource(emf));
+                   .register(new AuthxResource(emf));
         environment.healthChecks()
                    .register("EMF Health", new EmfHealthCheck(emf));
 

@@ -1,6 +1,6 @@
 Ultrastructure
 
-![CoRE](https://github.com/ChiralBehaviors/Ultrastructure/capaility-stuff/site/media/core.png)
+![CoRE](https://github.com/ChiralBehaviors/Ultrastructure/blob/capaility-stuff/site/media/core.png)
 ==============
 
 An implementation of Ultrastructure using PostgreSQL.

@@ -77,10 +77,10 @@ public class ModelImpl implements Model {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm,
-                                            Model model) {
+                                               Model model) {
         return cache.computeIfAbsent(phantasm,
                                      (Class<?> p) -> new PhantasmDefinition(p,
-                                                                         model));
+                                                                            model));
     }
 
     public static String prefixFor(Class<?> ruleform) {
@@ -135,7 +135,7 @@ public class ModelImpl implements Model {
     public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Phantasm<? extends T> source,
                                                                                 Class<R> phantasm) {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                        this);
+                                                                                              this);
         return (R) definition.construct(source.getRuleform(), this,
                                         getCurrentPrincipal().getPrincipal());
     }
@@ -158,7 +158,7 @@ public class ModelImpl implements Model {
                                                                                     String name,
                                                                                     String description) throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm,
-                                                                           this);
+                                                                                 this);
         ExistentialRuleform<? extends T, ?> ruleform;
         try {
             ruleform = (T) Model.getExistentialRuleformConstructor(phantasm)
@@ -258,6 +258,11 @@ public class ModelImpl implements Model {
             case TIMESTAMP: {
                 whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.timestampValue),
                                                             (Timestamp) attributeValue.getValue());
+                break;
+            }
+            case JSON: {
+                whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.jsonValue),
+                                                            attributeValue.getValue());
                 break;
             }
         }
@@ -514,7 +519,7 @@ public class ModelImpl implements Model {
             return null;
         }
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                        this);
+                                                                                              this);
         return (Phantasm<? super T>) definition.wrap(ruleform, this);
     }
 
@@ -526,7 +531,7 @@ public class ModelImpl implements Model {
             return null;
         }
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                        this);
+                                                                                              this);
         return (R) definition.wrap(ruleform, this);
     }
 

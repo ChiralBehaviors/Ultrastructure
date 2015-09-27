@@ -46,6 +46,11 @@
         >
             <column name="grouping_agency" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_interval_grouping_entity_fkey_idx" tableName="agency_interval_grouping"
+            unique="false"
+        >
+            <column name="entity" />
+        </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="agency_interval_grouping" constraintName="agency_interval_grouping_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />

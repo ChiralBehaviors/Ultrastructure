@@ -58,6 +58,12 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="product_self_sequencing_authorization_service_status_idx" tableName="product_self_sequencing_authorization"
+            unique="false"
+        >
+            <column name="service" />
+            <column name="status_code" />
+        </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="product_self_sequencing_authorization" constraintName="product_self_sequencing_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />

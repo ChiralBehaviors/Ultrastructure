@@ -71,6 +71,17 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="attribute_network_authorization_classifier_fkey_idx" tableName="attribute_network_authorization"
+            unique="false"
+        >
+            <column name="classifier" />
+            <column name="classification" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="attribute_network_authorization_grouping_agency_fkey_idx" tableName="attribute_network_authorization"
+            unique="false"
+        >
+            <column name="grouping_agency" />
+        </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="attribute_network_authorization" constraintName="attribute_network_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />

@@ -69,6 +69,12 @@
             unique="false"
         >
             <column name="classifier" />
+            <column name="classifier" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="status_code_network_authorization_grouping_agency_fkey_idx" tableName="status_code_network_authorization"
+            unique="false"
+        >
+            <column name="grouping_agency" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="status_code_network_authorization" constraintName="status_code_network_authorization_workspace_fkey"

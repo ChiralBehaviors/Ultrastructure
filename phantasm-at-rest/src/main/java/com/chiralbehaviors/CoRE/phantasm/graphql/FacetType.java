@@ -64,6 +64,7 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.Scalars;
 import graphql.schema.DataFetchingEnvironment;
@@ -229,10 +230,21 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                   Object value = ctx(env).getAttributeValue(facet,
                                                                                             (RuleForm) env.getSource(),
                                                                                             auth);
-                                                  if (value instanceof BigDecimal) {
-                                                      return ((BigDecimal) value).floatValue(); // TODO until we get this solved.
+                                                  switch (attribute.getValueType()) {
+                                                      case NUMERIC:
+                                                          // GraphQL does not have a NUMERIC return type, so convert to float - ugly
+                                                          return ((BigDecimal) value).floatValue();
+                                                      case JSON:
+                                                          // GraphQL does not have a generic JSON return type, so stringify it.
+                                                          try {
+                                                              return new ObjectMapper().writeValueAsString(value);
+                                                          } catch (Exception e) {
+                                                              throw new IllegalStateException("Unable to write json value",
+                                                                                              e);
+                                                          }
+                                                      default:
+                                                          return value;
                                                   }
-                                                  return value;
                                               })
                                               .build());
 

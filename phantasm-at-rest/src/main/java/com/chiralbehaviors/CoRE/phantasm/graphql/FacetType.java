@@ -233,6 +233,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                   Object value = ctx(env).getAttributeValue(facet,
                                                                                             (RuleForm) env.getSource(),
                                                                                             auth);
+                                                  if (value == null) {
+                                                      return null;
+                                                  }
                                                   switch (attribute.getValueType()) {
                                                       case NUMERIC:
                                                           // GraphQL does not have a NUMERIC return type, so convert to float - ugly

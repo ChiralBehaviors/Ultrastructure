@@ -64,8 +64,7 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
 
     private static final ConcurrentMap<Aspect<?>, FacetContext<?, ?>> cachedContexts = new ConcurrentHashMap<>();
 
-    @SuppressWarnings("rawtypes")
-    public static URI getAllInstancesIri(NetworkAuthorization facet,
+    public static URI getAllInstancesIri(NetworkAuthorization<?> facet,
                                          UriInfo uriInfo) {
         UriBuilder ub = uriInfo.getBaseUriBuilder();
         ub.path(FacetResource.class);
@@ -267,8 +266,7 @@ public class FacetContext<RuleForm extends ExistentialRuleform<RuleForm, Network
         return String.format("%s:term/%s", Constants.FACET, term);
     }
 
-    @SuppressWarnings("rawtypes")
-    public static String getTypeName(Aspect aspect) {
+    public static String getTypeName(Aspect<?> aspect) {
         return String.format("%s:%s", aspect.getClassifier()
                                             .getName(),
                              aspect.getClassification()

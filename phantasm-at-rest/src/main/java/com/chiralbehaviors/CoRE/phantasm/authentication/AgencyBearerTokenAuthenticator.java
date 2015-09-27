@@ -46,10 +46,8 @@ import io.dropwizard.auth.Authenticator;
  */
 public class AgencyBearerTokenAuthenticator
         implements Authenticator<RequestCredentials, AuthorizedPrincipal> {
-    public static final int ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
-
-    private final static String CAPABILITIES = "capabilities";
-    private final static Logger log          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
+    public static final int     ACCESS_TOKEN_EXPIRE_TIME_MIN = 30;
+    private final static Logger log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
     private final EntityManagerFactory emf;
 

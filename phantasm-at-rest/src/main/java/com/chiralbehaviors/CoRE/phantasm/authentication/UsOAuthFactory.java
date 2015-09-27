@@ -55,14 +55,28 @@ public final class UsOAuthFactory<T>
     private final boolean       required;
     private final Class<T>      generatedClass;
     private final String        realm;
-    private String              prefix              = "Bearer";
+    private final static String PREFIX              = "Bearer";
     private UnauthorizedHandler unauthorizedHandler = new DefaultUnauthorizedHandler();
+
+    public static String parse(String header) {
+        if (header == null) {
+            return null;
+        }
+        final int space = header.indexOf(' ');
+        if (space > 0) {
+            final String method = header.substring(0, space);
+            if (PREFIX.equalsIgnoreCase(method)) {
+                return header.substring(space + 1);
+            }
+        }
+        return null;
+    }
 
     @Context
     private HttpServletRequest request;
 
     public UsOAuthFactory(final Authenticator<RequestCredentials, T> authenticator,
-                           final String realm, final Class<T> generatedClass) {
+                          final String realm, final Class<T> generatedClass) {
         super(authenticator);
         this.required = false;
         this.realm = realm;
@@ -70,17 +84,12 @@ public final class UsOAuthFactory<T>
     }
 
     private UsOAuthFactory(final boolean required,
-                            final Authenticator<RequestCredentials, T> authenticator,
-                            final String realm, final Class<T> generatedClass) {
+                           final Authenticator<RequestCredentials, T> authenticator,
+                           final String realm, final Class<T> generatedClass) {
         super(authenticator);
         this.required = required;
         this.realm = realm;
         this.generatedClass = generatedClass;
-    }
-
-    public UsOAuthFactory<T> prefix(String prefix) {
-        this.prefix = prefix;
-        return this;
     }
 
     public UsOAuthFactory<T> responseBuilder(UnauthorizedHandler unauthorizedHandler) {
@@ -96,27 +105,19 @@ public final class UsOAuthFactory<T>
     @Override
     public AuthFactory<RequestCredentials, T> clone(boolean required) {
         return new UsOAuthFactory<>(required, authenticator(), this.realm,
-                                     this.generatedClass).prefix(prefix)
-                                                         .responseBuilder(unauthorizedHandler);
+                                    this.generatedClass).responseBuilder(unauthorizedHandler);
     }
 
     @Override
     public T provide() {
         try {
-            final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-            if (header != null) {
-                final int space = header.indexOf(' ');
-                if (space > 0) {
-                    final String method = header.substring(0, space);
-                    if (prefix.equalsIgnoreCase(method)) {
-                        final RequestCredentials credentials = new RequestCredentials(request.getRemoteAddr(),
-                                                                                      header.substring(space
-                                                                                                       + 1));
-                        final Optional<T> result = authenticator().authenticate(credentials);
-                        if (result.isPresent()) {
-                            return result.get();
-                        }
-                    }
+            final String token = parse(request.getHeader(HttpHeaders.AUTHORIZATION));
+            if (token != null) {
+                final RequestCredentials credentials = new RequestCredentials(request.getRemoteAddr(),
+                                                                              token);
+                final Optional<T> result = authenticator().authenticate(credentials);
+                if (result.isPresent()) {
+                    return result.get();
                 }
             }
         } catch (AuthenticationException e) {
@@ -125,7 +126,7 @@ public final class UsOAuthFactory<T>
         }
 
         if (required) {
-            throw new WebApplicationException(unauthorizedHandler.buildResponse(prefix,
+            throw new WebApplicationException(unauthorizedHandler.buildResponse(PREFIX,
                                                                                 realm));
         }
 

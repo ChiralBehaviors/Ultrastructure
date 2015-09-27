@@ -30,11 +30,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
@@ -48,7 +50,11 @@ import com.chiralbehaviors.CoRE.kernel.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
+import com.chiralbehaviors.CoRE.phantasm.authentication.UsOAuthFactory;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
+
+import io.dropwizard.auth.Auth;
 
 /**
  * @author hhildebrand
@@ -80,7 +86,7 @@ public class AuthxResource extends TransactionalResource {
     }
 
     @POST
-    @Path("basic")
+    @Path("login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public UUID loginForToken(@FormParam("username") String username,
                               @FormParam("password") String password,
@@ -90,6 +96,22 @@ public class AuthxResource extends TransactionalResource {
             cred.ip = httpRequest.getRemoteAddr();
             return generateToken(cred, authenticate(username, password, model),
                                  model).getId();
+        });
+    }
+
+    @POST
+    @Path("deauthorize")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deauthorize(@Auth AuthorizedPrincipal principal,
+                            @HeaderParam(HttpHeaders.AUTHORIZATION) String bearerToken) {
+        perform(principal, model -> {
+            UUID uuid = UUID.fromString(UsOAuthFactory.parse(bearerToken));
+            EntityManager em = model.getEntityManager();
+            em.remove(em.find(AgencyAttribute.class, uuid));
+            Agency user = principal.getPrincipal();
+            log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
+                     user.getName());
+            return null;
         });
     }
 

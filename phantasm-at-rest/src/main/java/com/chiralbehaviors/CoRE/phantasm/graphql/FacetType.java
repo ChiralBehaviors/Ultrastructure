@@ -31,6 +31,7 @@ import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -44,6 +45,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -52,6 +54,7 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.kernel.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.product.Plugin;
@@ -250,6 +253,16 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
         GraphQLInputType inputType;
+
+        Function<Object, Object> converter = attribute.getValueType() == ValueType.JSON ? object -> {
+            try {
+                return new ObjectMapper().readValue((String) object, Map.class);
+            } catch (IOException e) {
+                throw new IllegalStateException(String.format("Cannot deserialize %s",
+                                                              object),
+                                                e);
+            }
+        } : object -> object;
         if (auth.getAuthorizedAttribute()
                 .getIndexed()) {
             updateTemplate.put(setter,
@@ -274,7 +287,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                 update) -> crud.setAttributeValue(facet,
                                                                   (RuleForm) update.get(AT_RULEFORM),
                                                                   auth,
-                                                                  (Object) update.get(setter)));
+                                                                  (Object) converter.apply(update.get(setter))));
             inputType = GraphQLString;
         }
         GraphQLInputObjectField field = newInputObjectField().type(inputType)

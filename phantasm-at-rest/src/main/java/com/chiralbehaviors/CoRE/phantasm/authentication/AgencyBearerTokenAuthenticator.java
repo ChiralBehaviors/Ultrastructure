@@ -65,7 +65,8 @@ public class AgencyBearerTokenAuthenticator
             uuid = UUID.fromString(credentials.bearerToken);
         } catch (IllegalArgumentException e) {
             // Must be a valid UUID
-            log.info("requested access token {} not found", credentials);
+            log.warn("requested access token {} invalid bearer token",
+                     credentials);
             return Optional.absent();
         }
         Model model = new ModelImpl(emf);
@@ -76,7 +77,7 @@ public class AgencyBearerTokenAuthenticator
 
             AgencyAttribute accessToken = em.find(AgencyAttribute.class, uuid);
             if (accessToken == null) {
-                log.info("requested access token {} not found", credentials);
+                log.warn("requested access token {} not found", credentials);
                 return Optional.absent();
             }
             Optional<AuthorizedPrincipal> returned = validate(accessToken,
@@ -107,11 +108,11 @@ public class AgencyBearerTokenAuthenticator
     private boolean validate(Credential credential,
                              RequestCredentials onRequest) {
         if (credential == null) {
-            log.info("Invalid access token {}", onRequest);
+            log.warn("Invalid access token {}", onRequest);
             return false;
         }
         if (credential.ip == null) {
-            log.info("Invalid access token {}", onRequest);
+            log.warn("Invalid access token {}", onRequest);
             return false;
         }
         return credential.ip.equals(onRequest.remoteIp);
@@ -124,13 +125,13 @@ public class AgencyBearerTokenAuthenticator
         Credential credential = (accessToken.getJsonValue(Credential.class));
         if (!validate(credential, requestCredentials)) {
             em.remove(accessToken);
-            log.info("Invalid access token {}", requestCredentials);
+            log.warn("Invalid access token {}", requestCredentials);
             return Optional.absent();
         } else {
             Agency agency = accessToken.getAgency();
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
             if (credential.isValid(accessToken.getUpdated(), currentTime)) {
-                log.info("requested access token {} for {}:{} has timed out",
+                log.warn("requested access token {} for {}:{} has timed out",
                          requestCredentials, agency.getId(), agency);
                 em.remove(accessToken);
                 return Optional.absent();

@@ -33,11 +33,19 @@ public class TestServiceConfiguration extends Configuration {
     @JsonProperty
     private Boolean randomPort = false;
 
+    @JsonProperty
+    private Boolean useOauth = false;
+
     public JpaConfiguration getCrudServiceConfiguration() {
         return jpa;
+    }
+
+    public Boolean useOauth() {
+        return useOauth;
     }
 
     public Boolean isRandomPort() {
         return randomPort;
     }
+
 }

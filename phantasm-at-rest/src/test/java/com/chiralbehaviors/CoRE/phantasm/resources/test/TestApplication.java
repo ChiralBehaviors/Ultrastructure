@@ -21,13 +21,17 @@ import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
+import com.chiralbehaviors.CoRE.phantasm.authentication.UsOAuthFactory;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.health.EmfHealthCheck;
+import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.Application;
@@ -81,8 +85,17 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         this.environment = environment;
         environment.lifecycle()
                    .addServerLifecycleListener(server -> jettyServer = server);
+        if (configuration.useOauth()) {
+            environment.jersey()
+                       .register(AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new AgencyBearerTokenAuthenticator(emf),
+                                                                                            "ultrastructure",
+                                                                                            AuthorizedPrincipal.class)));
+        } else {
+            environment.jersey()
+                       .register(AuthFactory.binder(new NullAuthenticationFactory()));
+        }
         environment.jersey()
-                   .register(AuthFactory.binder(new NullAuthenticationFactory()));
+                   .register(new AuthxResource(emf));
         environment.jersey()
                    .register(new FacetResource(emf));
         environment.jersey()

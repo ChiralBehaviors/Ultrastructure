@@ -1,5 +1,4 @@
 jpa:
-    debug: true
     persistenceUnit: CoRE
     properties: 
         javax.persistence.jdbc.user: ${db.login}

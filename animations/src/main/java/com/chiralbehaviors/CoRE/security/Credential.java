@@ -31,10 +31,27 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class Credential {
+    /**
+     * Pointers to agency network auths that represent the asserted roles of the
+     * principal
+     */
     public List<UUID> capabilities = Collections.emptyList();
-    public String     ip;
-    public long       ttl          = TimeUnit.MINUTES.toMillis(30);
 
+    /**
+     * The remote ip address that is authorized for this credential
+     */
+    public String ip;
+
+    /**
+     * The time to live for this credential, in milliseconds
+     */
+    public long ttl = TimeUnit.MINUTES.toMillis(30);
+
+    /**
+     * 
+     * @return true if the credential is valid at the current time, given the
+     *         last updated timestamp of the credential
+     */
     public boolean isValid(Timestamp lastUpdated, Timestamp currentTime) {
         return lastUpdated.toInstant()
                           .plusMillis(ttl)

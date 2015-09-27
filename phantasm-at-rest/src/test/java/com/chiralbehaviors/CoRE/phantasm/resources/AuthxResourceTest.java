@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,10 +45,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.agency.CoreUser;
+import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
+import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.test.TestApplication;
 
@@ -84,7 +89,7 @@ public class AuthxResourceTest extends AbstractModelTest {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(String.format("http://localhost:%s/oauth2/token/login",
                                                           application.getPort()));
-        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         Form creds = new Form();
         creds.param("username", username);
         creds.param("password", password);
@@ -111,14 +116,12 @@ public class AuthxResourceTest extends AbstractModelTest {
         }
         invocationBuilder.header(HttpHeaders.AUTHORIZATION,
                                  String.format("Bearer %s", token));
-        response = invocationBuilder.post(Entity.entity(request,
-                                                        MediaType.APPLICATION_JSON_TYPE),
-                                          Map.class);
+        response = invocationBuilder.post(Entity.json(request), Map.class);
         assertNotNull(response);
 
         webTarget = client.target(String.format("http://localhost:%s/oauth2/token/deauthorize",
                                                 application.getPort()));
-        invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
+        invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         Response resp = invocationBuilder.post(null);
         assertEquals(401, resp.getStatus());
 
@@ -129,5 +132,27 @@ public class AuthxResourceTest extends AbstractModelTest {
 
         resp = invocationBuilder.post(null);
         assertEquals(401, resp.getStatus());
+
+        NetworkAuthorization<Agency> asserted = model.getAgencyModel()
+                                                     .getFacetDeclaration(new Aspect<>(kernel.getIsA(),
+                                                                                       kernel.getCoreUser()));
+
+        CapabilityRequest capReq = new CapabilityRequest();
+        capReq.username = username;
+        capReq.password = password;
+        capReq.capabilities = Arrays.asList(asserted.getId());
+
+        webTarget = client.target(String.format("http://localhost:%s/oauth2/token/capability",
+                                                application.getPort()));
+        invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
+        token = invocationBuilder.post(Entity.json(capReq), UUID.class);
+
+        webTarget = client.target(String.format("http://localhost:%s/oauth2/token/deauthorize",
+                                                application.getPort()));
+        invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
+        invocationBuilder.header(HttpHeaders.AUTHORIZATION,
+                                 String.format("Bearer %s", token));
+        resp = invocationBuilder.post(null);
+        assertEquals(204, resp.getStatus());
     }
 }

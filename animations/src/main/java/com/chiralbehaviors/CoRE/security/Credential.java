@@ -20,15 +20,24 @@
 
 package com.chiralbehaviors.CoRE.security;
 
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author hhildebrand
  *
  */
 public class Credential {
-    public String     ip;
     public List<UUID> capabilities = Collections.emptyList();
+    public String     ip;
+    public long       ttl          = TimeUnit.MINUTES.toMillis(30);
+
+    public boolean isValid(Timestamp lastUpdated, Timestamp currentTime) {
+        return lastUpdated.toInstant()
+                          .plusMillis(ttl)
+                          .isBefore(currentTime.toInstant());
+    }
 }

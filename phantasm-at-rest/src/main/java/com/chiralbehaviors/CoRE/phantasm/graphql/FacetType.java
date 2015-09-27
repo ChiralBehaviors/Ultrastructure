@@ -958,7 +958,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {
-        GraphQLOutputType type;
+        GraphQLOutputType type = null;
         switch (attribute.getValueType()) {
             case BINARY:
                 type = GraphQLString; // encoded binary
@@ -978,10 +978,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             case TIMESTAMP:
                 type = GraphQLString;
                 break;
-            default:
-                throw new IllegalStateException(String.format("Cannot resolved the value type: %s for %s",
-                                                              attribute.getValueType(),
-                                                              attribute));
+            case JSON:
+                type = GraphQLString;
         }
         return attribute.getIndexed() ? new GraphQLList(type) : type;
     }

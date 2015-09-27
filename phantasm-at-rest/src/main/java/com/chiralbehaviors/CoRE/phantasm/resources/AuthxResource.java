@@ -58,7 +58,7 @@ import com.chiralbehaviors.CoRE.security.Credential;
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthxResource extends TransactionalResource {
 
-    public static class Request {
+    public static class CapabilityRequest {
         public List<UUID> capabilities = Collections.emptyList();
         public String     password;
         public String     username;
@@ -82,24 +82,22 @@ public class AuthxResource extends TransactionalResource {
     @POST
     @Path("basic")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String loginForToken(@FormParam("username") String username,
-                                @FormParam("password") String password,
-                                @Context HttpServletRequest httpRequest) {
+    public UUID loginForToken(@FormParam("username") String username,
+                              @FormParam("password") String password,
+                              @Context HttpServletRequest httpRequest) {
         return perform(null, model -> {
             Credential cred = new Credential();
             cred.ip = httpRequest.getRemoteAddr();
             return generateToken(cred, authenticate(username, password, model),
-                                 model).getId()
-                                       .toString();
+                                 model).getId();
         });
-
     }
 
     @POST
     @Path("capability")
     @Consumes(MediaType.APPLICATION_JSON)
-    public String requestCapability(Request request,
-                                    @Context HttpServletRequest httpRequest) {
+    public UUID requestCapability(CapabilityRequest request,
+                                  @Context HttpServletRequest httpRequest) {
         return perform(null, model -> {
             Credential cred = new Credential();
             cred.capabilities = request.capabilities;
@@ -107,8 +105,7 @@ public class AuthxResource extends TransactionalResource {
             return generateToken(cred,
                                  authenticate(request.username,
                                               request.password, model),
-                                 model).getId()
-                                       .toString();
+                                 model).getId();
         });
     }
 

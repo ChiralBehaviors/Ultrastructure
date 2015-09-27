@@ -201,11 +201,11 @@ public class ResourcesTest extends ThingWorkspaceTest {
         assertEquals(artifact2, thing1.getDerivedFrom());
         assertArrayEquals(newAliases, thing1.getAliases());
         assertEquals(newUri, thing1.getURI());
-        
+
         variables = new HashMap<>();
         variables.put("thing1", thing1.getRuleform()
-                                  .getId()
-                                  .toString());
+                                      .getId()
+                                      .toString());
         variables.put("artifact", artifact2.getRuleform()
                                            .getId()
                                            .toString());

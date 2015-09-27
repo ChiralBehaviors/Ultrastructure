@@ -44,6 +44,7 @@ import com.chiralbehaviors.CoRE.attribute.unit.Unit;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The abstract attribute value.
@@ -57,6 +58,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public abstract class AttributeValue<RuleForm extends Ruleform>
         extends Ruleform {
     public static final String GET_ATTRIBUTE_SUFFIX = ".getAttribute";
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final long serialVersionUID = 1L;
 
@@ -75,6 +78,10 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     @Column(name = "integer_value")
     private Integer integerValue;
 
+    @Column(name = "json_value")
+    @Type(type = "jsonbType")
+    private Object jsonValue;
+
     @Column(name = "key")
     private String key;
 
@@ -89,10 +96,6 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
 
     @Column(name = "timestamp_value")
     private Timestamp timestampValue;
-
-    @Column(name = "json_value")
-    @Type(type = "jsonbType")
-    private Object jsonValue;
 
     // bi-directional many-to-one association to Unit
     @ManyToOne(cascade = { CascadeType.PERSIST,
@@ -162,6 +165,16 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
     @JsonGetter
     public final Attribute getAttribute() {
         return attribute;
+    }
+
+    @JsonIgnore
+    public <T extends Object> T getJsonValue(Class<T> clazz) {
+        if (attribute.getValueType() != ValueType.JSON) {
+            throw new UnsupportedOperationException(String.format("Value is of type %s, not %s",
+                                                                  attribute.getValueType(),
+                                                                  ValueType.JSON));
+        }
+        return objectMapper.convertValue(getValue(), clazz);
     }
 
     /**
@@ -327,6 +340,10 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         return integerValue;
     }
 
+    private Object getJsonValue() {
+        return jsonValue;
+    }
+
     @JsonIgnore
     private BigDecimal getNumericValue() {
         return numericValue;
@@ -354,6 +371,10 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         this.integerValue = integerValue;
     }
 
+    private void setJsonValue(Object jsonValue) {
+        this.jsonValue = jsonValue;
+    }
+
     private void setNumericValue(BigDecimal numericValue) {
         this.numericValue = numericValue;
     }
@@ -364,13 +385,5 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
 
     private void setTimestampValue(Timestamp timestampValue) {
         this.timestampValue = timestampValue;
-    }
-
-    private Object getJsonValue() {
-        return jsonValue;
-    }
-
-    private void setJsonValue(Object jsonValue) {
-        this.jsonValue = jsonValue;
     }
 }

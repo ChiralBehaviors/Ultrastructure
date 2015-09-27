@@ -61,7 +61,7 @@ public class AuthorizedPrincipal implements Cloneable {
         capabilities.add(0, this.principal);
     }
 
-    public List<AgencyNetworkAuthorization> getActiveRoles() {
+    public List<AgencyNetworkAuthorization> getAsserted() {
         return asserted;
     }
 

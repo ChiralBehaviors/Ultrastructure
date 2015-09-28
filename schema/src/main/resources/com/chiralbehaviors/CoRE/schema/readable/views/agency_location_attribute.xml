@@ -18,7 +18,7 @@
 			        ba.text_value, 
                     ba.json_value, 
                     u.name AS unit,
-                     ba.notes, 
+                    ba.notes, 
 			        up.name AS updated_by,  
                     ba.updated,
 			        ba.version

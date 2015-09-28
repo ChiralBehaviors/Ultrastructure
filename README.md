@@ -3,17 +3,28 @@ Ultrastructure
 
 An implementation of Ultrastructure using PostgreSQL.
 
-See the [Ultrastructure Northwind Demo](http://chiralbehaviors.github.io/Northwind/) for an example of a non trivial Ultrastructure application.
+![CoRE](https://github.com/ChiralBehaviors/Ultrastructure/blob/master/site/media/core.png)
+==============
 
-Build Status: [![Build Status](https://chiralbehaviors.ci.cloudbees.com/buildStatus/job/Ultrastructure/badge/icon)](https://chiralbehaviors.ci.cloudbees.com/job/Ultrastructure/)
+See the [Ultrastructure Northwind Demo](http://chiralbehaviors.github.io/Northwind/) for an example of a non trivial Ultrastructure application.
 
 The license for this project is the [GNU Affero General Public License](http://www.gnu.org/licenses/agpl-3.0.en.html)
 
-To run this software you will need a working PostgreSQL database version 9.3+.  You can either install from [prebuilt PostgreSQL installations](http://www.enterprisedb.com/products-services-training/pgdownload) or your own prefered method.
+The project requires [Java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).  The build system 
+is [Maven](http://maven.apache.org/).  In order to build, you will need both Maven and Java 1.8 installed.  Beyond Java, 
+Maven and Postgres, nothing else should be required.
 
-Note that the build assumes that the database is available on localhost:5432.  The build also assumes that the super user and database _postgres_ is set up with the default password (_postgres_).  If you have changed any of these values, please override the "testing.db.*" properties in the top level pom.
+To run this software you will need a working, accessable, PostgreSQL database version 9.3+.  You can either install 
+from [prebuilt PostgreSQL installations](http://www.enterprisedb.com/products-services-training/pgdownload) or your own prefered method.  If you 
+are running on a Mac, try the [Postgres.app](http://postgresapp.com/) as it's butt simple to setup and use.  You'll love it.
 
-The project requires [Java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).  The build system is [Maven](http://maven.apache.org/).  In order to build, you will need both Maven and Java 1.8 installed.  Beyond Java, Maven and Postgres, nothing else should be required.
+Note that the build assumes that the postgres database is available on localhost:5432.  The build also assumes that the super 
+user and database _postgres_ is set up with the default password (_postgres_).  If you have changed 
+any of these values, please override the _"dba.db.*"_ properties in the top level pom.xml (see (~/.m2/settings.xml](https://maven.apache.org/settings.html)).
+  _If you have installed Postgres using the Heroku [Postgres.app](http://postgresapp.com/)_ please note 
+that the default port is _5433_, so you'll have to be sure to set the _dba.db.port_
+ value in your ~/.m2/settings.xml or edit the top level pom.xml (as it defines this value to be 5432).  You'll be wondering
+ why you cannot connect if you don't.
 
 You can build the project:
 
@@ -32,13 +43,15 @@ You can use pgadmin3 to view "readable" schema views to browse the data.
 
 Note that the build will create the CoRE database.  The schemas are maintained via liquibase (www.liquibase.org)
 and will directly manipulate the database, upgrading and downgrading as necessary.  All tests
-which load and manipulate data in the database are required to clean up after themselves.
+which load and manipulate data in the database are required to ensure their database state is
+set up correctly.  See [AbstractModelTest](https://github.com/ChiralBehaviors/Ultrastructure/blob/master/animations/src/test/java/com/chiralbehaviors/CoRE/meta/models/AbstractModelTest.java)
+for how to subclass this test to ensure that the database state is sweet and clean for your testing (i.e. you merely
+subclass it and write your tests using the inherited model/em state)
 
 So, word.
 
-To drop the database and start from scratch, simply add "-Ddrop=true" to the full build, or:
+To drop the database and start from scratch, simply add "-Ddrop" to the full build, or to just drop:
 
     $ cd drop-database
-    $ mvn install -Ddrop=true
-
+    $ mvn install -Ddrop
 

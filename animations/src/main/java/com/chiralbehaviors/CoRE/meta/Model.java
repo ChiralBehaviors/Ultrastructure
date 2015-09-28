@@ -93,6 +93,14 @@ public interface Model {
                                                                          Class<R> phantasm);
 
     /**
+     * Answer the cached facet definition for a phantasm class
+     * 
+     * @param phantasm
+     * @return
+     */
+    PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm);
+
+    /**
      * Cast the phantasm to another facet
      * 
      * @param targetPhantasm
@@ -285,6 +293,9 @@ public interface Model {
     <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
                                                                                          UUID uuid);
 
+    AuthorizedPrincipal principalFrom(Agency principal,
+                                      List<UUID> capabilities);
+
     /**
      * Wrap the ruleform with an instance of a phantasm using the model
      * 
@@ -294,13 +305,5 @@ public interface Model {
      */
     <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
                                                                         ExistentialRuleform<?, ?> ruleform);
-
-    /**
-     * Answer the cached facet definition for a phantasm class
-     * 
-     * @param phantasm
-     * @return
-     */
-    PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm);
 
 }

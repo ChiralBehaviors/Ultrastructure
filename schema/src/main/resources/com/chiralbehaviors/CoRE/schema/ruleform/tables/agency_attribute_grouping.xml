@@ -40,6 +40,11 @@
         >
             <column name="updated_by" />
         </createIndex>
+        <createIndex schemaName="ruleform" indexName="agency_attribute_grouping_entity_fkey_idx" tableName="agency_attribute_grouping"
+            unique="false"
+        >
+            <column name="entity" />
+        </createIndex>
         <createIndex schemaName="ruleform" indexName="agency_attribute_grouping_grouping_agency_fkey_idx" tableName="agency_attribute_grouping"
             unique="false"
         >

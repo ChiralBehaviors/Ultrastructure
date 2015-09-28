@@ -1,0 +1,13 @@
+randomPort: true 
+
+useOauth: true
+
+logging:
+    level: ERROR
+    loggers:
+        "org.hibernate": ERROR
+        "org.glassfish": ERROR
+
+server: 
+  requestLog:
+    appenders: [] #turns off request logging

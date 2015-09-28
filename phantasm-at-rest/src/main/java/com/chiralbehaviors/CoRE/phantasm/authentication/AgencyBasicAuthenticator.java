@@ -92,9 +92,21 @@ public class AgencyBasicAuthenticator
             CoreUser user = (CoreUser) model.wrap(CoreUser.class,
                                                   agencies.get(0));
 
-            return authenticate(user,
-                                credentials.getPassword()) ? Optional.of(new AuthorizedPrincipal(user.getRuleform()))
-                                                           : Optional.absent();
+            boolean authenticated = authenticate(user,
+                                                 credentials.getPassword());
+            if (authenticated) {
+                log.info(String.format("Authentication success for %s:%s",
+                                       user.getRuleform()
+                                           .getId(),
+                                       username));
+                return Optional.of(new AuthorizedPrincipal(user.getRuleform()));
+            } else {
+                log.warn(String.format("Authentication failure for %s:%s",
+                                       user.getRuleform()
+                                           .getId(),
+                                       username));
+                return Optional.absent();
+            }
         } finally {
             model.getEntityManager()
                  .close();

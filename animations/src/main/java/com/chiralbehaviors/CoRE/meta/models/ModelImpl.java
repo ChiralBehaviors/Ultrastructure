@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -47,6 +48,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue_;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -77,10 +79,10 @@ public class ModelImpl implements Model {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm,
-                                            Model model) {
+                                               Model model) {
         return cache.computeIfAbsent(phantasm,
                                      (Class<?> p) -> new PhantasmDefinition(p,
-                                                                         model));
+                                                                            model));
     }
 
     public static String prefixFor(Class<?> ruleform) {
@@ -135,9 +137,14 @@ public class ModelImpl implements Model {
     public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Phantasm<? extends T> source,
                                                                                 Class<R> phantasm) {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                        this);
+                                                                                              this);
         return (R) definition.construct(source.getRuleform(), this,
                                         getCurrentPrincipal().getPrincipal());
+    }
+
+    @Override
+    public PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm) {
+        return cached(phantasm, this);
     }
 
     /* (non-Javadoc)
@@ -158,7 +165,7 @@ public class ModelImpl implements Model {
                                                                                     String name,
                                                                                     String description) throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm,
-                                                                           this);
+                                                                                 this);
         ExistentialRuleform<? extends T, ?> ruleform;
         try {
             ruleform = (T) Model.getExistentialRuleformConstructor(phantasm)
@@ -258,6 +265,11 @@ public class ModelImpl implements Model {
             case TIMESTAMP: {
                 whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.timestampValue),
                                                             (Timestamp) attributeValue.getValue());
+                break;
+            }
+            case JSON: {
+                whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.jsonValue),
+                                                            attributeValue.getValue());
                 break;
             }
         }
@@ -514,8 +526,24 @@ public class ModelImpl implements Model {
             return null;
         }
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                        this);
+                                                                                              this);
         return (Phantasm<? super T>) definition.wrap(ruleform, this);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#principalFrom(com.chiralbehaviors.CoRE.agency.Agency, java.util.List)
+     */
+    @Override
+    public AuthorizedPrincipal principalFrom(Agency principal,
+                                             List<UUID> capabilities) {
+        return new AuthorizedPrincipal(principal, capabilities.stream()
+                                                              .map(uuid -> em.find(AgencyNetworkAuthorization.class,
+                                                                                   uuid))
+                                                              .filter(auth -> auth != null)
+                                                              .filter(auth -> agencyModel.isAccessible(principal,
+                                                                                                       auth.getClassifier(),
+                                                                                                       auth.getClassification()))
+                                                              .collect(Collectors.toList()));
     }
 
     @Override
@@ -526,13 +554,8 @@ public class ModelImpl implements Model {
             return null;
         }
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                        this);
+                                                                                              this);
         return (R) definition.wrap(ruleform, this);
-    }
-
-    @Override
-    public PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm) {
-        return cached(phantasm, this);
     }
 
     private void initializeCurrentPrincipal() {

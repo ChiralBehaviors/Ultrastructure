@@ -36,7 +36,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
  *
  */
 public class AuthorizedPrincipal implements Cloneable {
-    private final List<AgencyNetworkAuthorization> activeRoles;
+    private final List<AgencyNetworkAuthorization> asserted;
     private final List<Agency>                     capabilities;
     private final Agency                           principal;
 
@@ -49,20 +49,20 @@ public class AuthorizedPrincipal implements Cloneable {
 
     /**
      * @param principal
-     * @param activeRoles
+     * @param asserted
      */
     public AuthorizedPrincipal(Agency principal,
-                               List<AgencyNetworkAuthorization> activeRoles) {
+                               List<AgencyNetworkAuthorization> asserted) {
         this.principal = principal;
-        this.activeRoles = new ArrayList<>(activeRoles);
-        capabilities = this.activeRoles.stream()
+        this.asserted = new ArrayList<>(asserted);
+        capabilities = this.asserted.stream()
                                        .map(auth -> auth.getClassification())
                                        .collect(Collectors.toList());
         capabilities.add(0, this.principal);
     }
 
-    public List<AgencyNetworkAuthorization> getActiveRoles() {
-        return activeRoles;
+    public List<AgencyNetworkAuthorization> getAsserted() {
+        return asserted;
     }
 
     public Agency getPrincipal() {

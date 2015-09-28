@@ -90,6 +90,10 @@ public class GraphQlResource extends TransactionalResource {
         public QueryRequest() {
         }
 
+        public QueryRequest(String query) {
+            this(query, Collections.emptyMap());
+        }
+
         public QueryRequest(String query, Map<String, Object> variables) {
             this.query = query;
             this.variables = variables;

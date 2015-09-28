@@ -26,6 +26,7 @@ import javax.servlet.FilterRegistration;
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.hk2.utilities.Binder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,9 +35,10 @@ import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration.Asset;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
+import com.chiralbehaviors.CoRE.phantasm.authentication.UsOAuthFactory;
+import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
-import com.chiralbehaviors.CoRE.phantasm.resources.LoginResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
@@ -46,8 +48,8 @@ import com.google.common.base.Joiner;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.CachingAuthenticator;
 import io.dropwizard.auth.basic.BasicAuthFactory;
-import io.dropwizard.auth.oauth.OAuthFactory;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
 import io.dropwizard.setup.Bootstrap;
@@ -111,27 +113,35 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
             emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                          properties);
         }
+        Binder authBinder = null;
         switch (configuration.auth) {
             case NULL:
                 log.warn("Setting authentication to NULL");
-                environment.jersey()
-                           .register(AuthFactory.binder(new NullAuthenticationFactory()));
+                authBinder = AuthFactory.binder(new NullAuthenticationFactory());
                 break;
             case BASIC_DIGEST:
-                log.warn("Setting authentication to Agency basic authentication");
-                environment.jersey()
-                           .register(AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new AgencyBasicAuthenticator(emf),
-                                                                                                  configuration.realm,
-                                                                                                  AuthorizedPrincipal.class)));
+                log.warn("Setting authentication to US basic authentication");
+                authBinder = AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
+                                                                                                                     new AgencyBasicAuthenticator(emf),
+                                                                                                                     configuration.authenticationCachePolicy),
+                                                                                          configuration.realm,
+                                                                                          AuthorizedPrincipal.class));
                 break;
             case BEARER_TOKEN:
-                log.warn("Setting authentication to Agency OAuth2 bearer token");
-                environment.jersey()
-                           .register(AuthFactory.binder(new OAuthFactory<AuthorizedPrincipal>(new AgencyBearerTokenAuthenticator(emf),
-                                                                                              configuration.realm,
-                                                                                              AuthorizedPrincipal.class)));
+                log.warn("Setting authentication to US capability OAuth2 bearer token");
+                authBinder = AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
+                                                                                                                   new AgencyBearerTokenAuthenticator(emf),
+                                                                                                                   configuration.authenticationCachePolicy),
+                                                                                        configuration.realm,
+                                                                                        AuthorizedPrincipal.class));
                 break;
         }
+        if (authBinder == null) {
+            throw new IllegalStateException("No configuration specified for authentication.  Authentication configuration is required.");
+        }
+
+        environment.jersey()
+                   .register(authBinder);
         for (Asset asset : configuration.assets) {
             new AssetsBundle(asset.path, asset.uri, asset.index,
                              asset.name).run(environment);
@@ -147,7 +157,7 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
         environment.jersey()
                    .register(new GraphQlResource(emf));
         environment.jersey()
-                   .register(new LoginResource(emf));
+                   .register(new AuthxResource(emf));
         environment.healthChecks()
                    .register("EMF Health", new EmfHealthCheck(emf));
 

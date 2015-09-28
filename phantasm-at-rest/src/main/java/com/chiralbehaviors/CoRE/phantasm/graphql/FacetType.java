@@ -31,6 +31,7 @@ import static graphql.schema.GraphQLInputObjectField.newInputObjectField;
 import static graphql.schema.GraphQLInputObjectType.newInputObject;
 import static graphql.schema.GraphQLObjectType.newObject;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -44,6 +45,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -52,6 +54,7 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.kernel.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.product.Plugin;
@@ -64,6 +67,7 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import graphql.Scalars;
 import graphql.schema.DataFetchingEnvironment;
@@ -229,15 +233,39 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                   Object value = ctx(env).getAttributeValue(facet,
                                                                                             (RuleForm) env.getSource(),
                                                                                             auth);
-                                                  if (value instanceof BigDecimal) {
-                                                      return ((BigDecimal) value).floatValue(); // TODO until we get this solved.
+                                                  if (value == null) {
+                                                      return null;
                                                   }
-                                                  return value;
+                                                  switch (attribute.getValueType()) {
+                                                      case NUMERIC:
+                                                          // GraphQL does not have a NUMERIC return type, so convert to float - ugly
+                                                          return ((BigDecimal) value).floatValue();
+                                                      case JSON:
+                                                          // GraphQL does not have a generic JSON return type, so stringify it.
+                                                          try {
+                                                              return new ObjectMapper().writeValueAsString(value);
+                                                          } catch (Exception e) {
+                                                              throw new IllegalStateException("Unable to write json value",
+                                                                                              e);
+                                                          }
+                                                      default:
+                                                          return value;
+                                                  }
                                               })
                                               .build());
 
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
         GraphQLInputType inputType;
+
+        Function<Object, Object> converter = attribute.getValueType() == ValueType.JSON ? object -> {
+            try {
+                return new ObjectMapper().readValue((String) object, Map.class);
+            } catch (IOException e) {
+                throw new IllegalStateException(String.format("Cannot deserialize %s",
+                                                              object),
+                                                e);
+            }
+        } : object -> object;
         if (auth.getAuthorizedAttribute()
                 .getIndexed()) {
             updateTemplate.put(setter,
@@ -262,7 +290,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                 update) -> crud.setAttributeValue(facet,
                                                                   (RuleForm) update.get(AT_RULEFORM),
                                                                   auth,
-                                                                  (Object) update.get(setter)));
+                                                                  (Object) converter.apply(update.get(setter))));
             inputType = GraphQLString;
         }
         GraphQLInputObjectField field = newInputObjectField().type(inputType)
@@ -958,7 +986,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {
-        GraphQLOutputType type;
+        GraphQLOutputType type = null;
         switch (attribute.getValueType()) {
             case BINARY:
                 type = GraphQLString; // encoded binary
@@ -978,10 +1006,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
             case TIMESTAMP:
                 type = GraphQLString;
                 break;
-            default:
-                throw new IllegalStateException(String.format("Cannot resolved the value type: %s for %s",
-                                                              attribute.getValueType(),
-                                                              attribute));
+            case JSON:
+                type = GraphQLString;
         }
         return attribute.getIndexed() ? new GraphQLList(type) : type;
     }

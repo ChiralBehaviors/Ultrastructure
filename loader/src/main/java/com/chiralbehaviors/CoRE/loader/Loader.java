@@ -99,6 +99,7 @@ public class Loader {
                                        configuration.coreDb));
                 return;
             }
+            throw e;
         } finally {
             if (liquibase != null) {
                 liquibase.forceReleaseLocks();

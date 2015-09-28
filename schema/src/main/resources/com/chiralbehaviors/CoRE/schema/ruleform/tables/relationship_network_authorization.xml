@@ -51,8 +51,7 @@
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="relationship_network_authorization" constraintName="relationship_network_authorization_updated_by_fkey"
-            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
-            referencedTableName="agency" />
+            deferrable="false" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="agency" />
         <addUniqueConstraint schemaName="ruleform"
             columnNames="classifier, classification, authorized_parent, authorized_relationship, child_relationship, grouping_agency"
             constraintName="relationship_relationship_authorizatio_relationship_classification_attri_key" deferrable="false" disabled="false"
@@ -69,11 +68,12 @@
             unique="false"
         >
             <column name="classifier" />
+            <column name="classification" />
         </createIndex>
-        <createIndex schemaName="ruleform" indexName="relationship_network_authorization_classification_fkey_idx" tableName="relationship_network_authorization"
+        <createIndex schemaName="ruleform" indexName="relationship_network_authorization_grouping_agency_fkey_idx" tableName="relationship_network_authorization"
             unique="false"
         >
-            <column name="classification" />
+            <column name="grouping_agency" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="relationship_network_authorization" constraintName="relationship_network_authorization_workspace_fkey"

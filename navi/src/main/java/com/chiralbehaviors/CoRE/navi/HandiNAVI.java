@@ -43,7 +43,6 @@ import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.codahale.metrics.MetricRegistry;
 import com.google.common.base.Joiner;
 
 import io.dropwizard.Application;
@@ -114,7 +113,6 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
             emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                          properties);
         }
-        MetricRegistry metricRegistry = null;
         Binder authBinder = null;
         switch (configuration.auth) {
             case NULL:
@@ -123,7 +121,7 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                 break;
             case BASIC_DIGEST:
                 log.warn("Setting authentication to US basic authentication");
-                authBinder = AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(metricRegistry,
+                authBinder = AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
                                                                                                                      new AgencyBasicAuthenticator(emf),
                                                                                                                      configuration.authenticationCachePolicy),
                                                                                           configuration.realm,
@@ -131,7 +129,7 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                 break;
             case BEARER_TOKEN:
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
-                authBinder = AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(metricRegistry,
+                authBinder = AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
                                                                                                                    new AgencyBearerTokenAuthenticator(emf),
                                                                                                                    configuration.authenticationCachePolicy),
                                                                                         configuration.realm,

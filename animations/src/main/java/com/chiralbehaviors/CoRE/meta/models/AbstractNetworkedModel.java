@@ -20,6 +20,10 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.CHECK_ATTRIBUTE_CAP_SUFFIX;
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.CHECK_CHILD_CAP_SUFFIX;
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.CHECK_FACET_CAP_SUFFIX;
+import static com.chiralbehaviors.CoRE.ExistentialRuleform.CHECK_INSTANCE_CAP_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
 import static com.chiralbehaviors.CoRE.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
@@ -92,6 +96,8 @@ import com.hellblazer.utils.Tuple;
 abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>>
         implements
         NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> {
+
+    private static final Long ZERO = Long.valueOf(0);
 
     private static Logger log = LoggerFactory.getLogger(AbstractNetworkedModel.class);
 
@@ -242,25 +248,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public boolean checkCapability(List<Agency> agencies,
                                    AttributeAuthorization<RuleForm, ?> stateAuth,
                                    Relationship capability) {
-        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
-        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
-                                                                + "  WHERE required.groupingAgency IS NOT NULL "
-                                                                + "  AND required.networkAuthorization = :facet "
-                                                                + "  AND required.authorizedAttribute = :attribute "
-                                                                + "  AND NOT EXISTS( "
-                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
-                                                                + "         WHERE authorized.parent IN :agencies "
-                                                                + "         AND authorized.relationship = :capability "
-                                                                + "         AND authorized.child = required.groupingAgency "
-                                                                + "  )",
-                                                                getAttributeAuthorizationClass().getSimpleName()),
-                                                  Agency.class);
+        TypedQuery<Long> query = em.createNamedQuery(prefix
+                                                     + CHECK_ATTRIBUTE_CAP_SUFFIX,
+                                                     Long.class);
         query.setParameter("facet", stateAuth.getNetworkAuthorization());
         query.setParameter("attribute", stateAuth.getAuthorizedAttribute());
         query.setParameter("agencies", agencies);
         query.setParameter("capability", capability);
-        return query.getResultList()
-                    .isEmpty();
+        return query.getSingleResult()
+                    .equals(ZERO);
     }
 
     /**
@@ -270,22 +266,14 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public boolean checkCapability(List<Agency> agencies,
                                    ExistentialRuleform<?, ?> instance,
                                    Relationship capability) {
-        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
-        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
-                                                                + "  WHERE required.entity = :instance "
-                                                                + "    AND NOT EXISTS( "
-                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
-                                                                + "         WHERE authorized.parent IN :agencies "
-                                                                + "         AND authorized.relationship = :capability "
-                                                                + "         AND authorized.child = required.groupingAgency "
-                                                                + "  )",
-                                                                getAgencyGroupingClass().getSimpleName()),
-                                                  Agency.class);
+        TypedQuery<Long> query = em.createNamedQuery(prefix
+                                                     + CHECK_INSTANCE_CAP_SUFFIX,
+                                                     Long.class);
         query.setParameter("instance", instance);
         query.setParameter("agencies", agencies);
         query.setParameter("capability", capability);
-        return query.getResultList()
-                    .isEmpty();
+        return query.getSingleResult()
+                    .equals(ZERO);
     }
 
     /**
@@ -296,22 +284,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public boolean checkCapability(List<Agency> agencies,
                                    NetworkAuthorization<RuleForm> stateAuth,
                                    Relationship capability) {
-        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
-        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
-                                                                + "  WHERE required.groupingAgency IS NOT NULL "
-                                                                + "  AND required.classifier = :classifier "
-                                                                + "  AND required.classification = :classification "
-                                                                + "  AND required.childRelationship = :childRelationship "
-                                                                + "  AND required.authorizedRelationship = :authorizedRelationship "
-                                                                + "  AND required.authorizedParent = :authorizedParent "
-                                                                + "  AND NOT EXISTS( "
-                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
-                                                                + "         WHERE authorized.parent IN :agencies "
-                                                                + "         AND authorized.relationship = :capability "
-                                                                + "         AND authorized.child = required.groupingAgency "
-                                                                + "  ) ",
-                                                                getNetworkAuthClass().getSimpleName()),
-                                                  Agency.class);
+        TypedQuery<Long> query = em.createNamedQuery(prefix
+                                                     + CHECK_CHILD_CAP_SUFFIX,
+                                                     Long.class);
         query.setParameter("classifier", stateAuth.getClassifier());
         query.setParameter("classification", stateAuth.getClassification());
         query.setParameter("childRelationship",
@@ -321,8 +296,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.setParameter("authorizedParent", stateAuth.getAuthorizedParent());
         query.setParameter("agencies", agencies);
         query.setParameter("capability", capability);
-        return query.getResultList()
-                    .isEmpty();
+        return query.getSingleResult()
+                    .equals(ZERO);
     }
 
     /**
@@ -424,28 +399,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public boolean checkFacetCapability(List<Agency> agencies,
                                         NetworkAuthorization<RuleForm> facet,
                                         Relationship capability) {
-        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
-        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
-                                                                + "  WHERE required.groupingAgency IS NOT NULL "
-                                                                + "  AND required.classifier = :classifier "
-                                                                + "  AND required.classification = :classification "
-                                                                + "  AND required.childRelationship IS NULL "
-                                                                + "  AND required.authorizedRelationship IS NULL "
-                                                                + "  AND required.authorizedParent IS NULL "
-                                                                + "  AND NOT EXISTS( "
-                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
-                                                                + "         WHERE authorized.parent IN :agencies "
-                                                                + "         AND authorized.relationship = :capability "
-                                                                + "         AND authorized.child = required.groupingAgency "
-                                                                + "  ) ",
-                                                                getNetworkAuthClass().getSimpleName()),
-                                                  Agency.class);
+        TypedQuery<Long> query = em.createNamedQuery(prefix
+                                                     + CHECK_FACET_CAP_SUFFIX,
+                                                     Long.class);
         query.setParameter("classifier", facet.getClassifier());
         query.setParameter("classification", facet.getClassification());
         query.setParameter("agencies", agencies);
         query.setParameter("capability", capability);
-        return query.getResultList()
-                    .isEmpty();
+        return query.getSingleResult()
+                    .equals(ZERO);
     }
 
     @Override

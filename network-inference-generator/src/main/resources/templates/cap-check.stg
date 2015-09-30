@@ -13,7 +13,7 @@ capabilityCheck(entityName, entityPackage, attributeAuth, queryPrefix) ::= <<
     <entity name="%entityName%" class="%entityPackage%.%entityName%">
         <named-query name="%queryPrefix%.checkAttributeCap">
             <query><![CDATA[
-                SELECT required.groupingAgency FROM %attributeAuth% required
+                SELECT COUNT(required.groupingAgency) FROM %attributeAuth% required
                     WHERE required.groupingAgency IS NOT NULL
                         AND required.networkAuthorization = :facet
                         AND required.authorizedAttribute = :attribute
@@ -28,7 +28,7 @@ capabilityCheck(entityName, entityPackage, attributeAuth, queryPrefix) ::= <<
         
         <named-query name="%queryPrefix%.checkInstanceCap">
             <query><![CDATA[
-                SELECT required.groupingAgency FROM Agency%entityName%Grouping required
+                SELECT COUNT(required.groupingAgency) FROM Agency%entityName%Grouping required
                     WHERE required.entity = :instance
                         AND NOT EXISTS(
                             SELECT required.groupingAgency from AgencyNetwork authorized
@@ -41,7 +41,7 @@ capabilityCheck(entityName, entityPackage, attributeAuth, queryPrefix) ::= <<
         
         <named-query name="%queryPrefix%.checkChildCap">
             <query><![CDATA[
-                SELECT required.groupingAgency FROM %entityName%NetworkAuthorization required
+                SELECT COUNT(required.groupingAgency) FROM %entityName%NetworkAuthorization required
                     WHERE required.groupingAgency IS NOT NULL
                         AND required.classifier = :classifier
                         AND required.classification = :classification
@@ -59,7 +59,7 @@ capabilityCheck(entityName, entityPackage, attributeAuth, queryPrefix) ::= <<
         
         <named-query name="%queryPrefix%.checkFacetCap">
             <query><![CDATA[
-                SELECT required.groupingAgency FROM %entityName%NetworkAuthorization required
+                SELECT COUNT(required.groupingAgency) FROM %entityName%NetworkAuthorization required
                     WHERE required.groupingAgency IS NOT NULL
                         AND required.classifier = :classifier
                         AND required.classification = :classification

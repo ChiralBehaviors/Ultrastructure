@@ -4,6 +4,14 @@
     http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd" version="2.1"
 >
     <persistence-unit name="CoRE" transaction-type="RESOURCE_LOCAL">
+        <mapping-file>com/chiralbehaviors/CoRE/agency/agency.xml</mapping-file>
+        <mapping-file>com/chiralbehaviors/CoRE/attribute/attribute.xml</mapping-file>
+        <mapping-file>com/chiralbehaviors/CoRE/attribute/unit/unit.xml</mapping-file>
+        <mapping-file>com/chiralbehaviors/CoRE/job/status/statusCode.xml</mapping-file>
+        <mapping-file>com/chiralbehaviors/CoRE/location/location.xml</mapping-file>
+        <mapping-file>com/chiralbehaviors/CoRE/relationship/relationship.xml</mapping-file>
+        <mapping-file>com/chiralbehaviors/CoRE/product/product.xml</mapping-file>
+        <mapping-file>com/chiralbehaviors/CoRE/time/interval.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/agency/agencyNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/attribute/attributeNetwork.xml</mapping-file>
         <mapping-file>com/chiralbehaviors/CoRE/attribute/unit/unitNetwork.xml</mapping-file>

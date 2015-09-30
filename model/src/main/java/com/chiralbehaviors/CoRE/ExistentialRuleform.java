@@ -52,6 +52,10 @@ import com.hellblazer.utils.Tuple;
 abstract public class ExistentialRuleform<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>>
         extends Ruleform
         implements Attributable<AttributeValue<RuleForm>>, Phantasm<RuleForm> {
+    public static final String CHECK_ATTRIBUTE_CAP_SUFFIX                                    = ".checkAttributeCap";
+    public static final String CHECK_CHILD_CAP_SUFFIX                                        = ".checkChildCap";
+    public static final String CHECK_FACET_CAP_SUFFIX                                        = ".checkFacetCap";
+    public static final String CHECK_INSTANCE_CAP_SUFFIX                                     = ".checkInstanceCap";
     public static final String DEDUCE_NEW_NETWORK_RULES_SUFFIX                               = ".deduceNewNetworkRules";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX = ".findClassifiedAttributeAuthorizationsForAttribute";
     public static final String FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX               = ".findClassifiedAttributeAuthorizations";

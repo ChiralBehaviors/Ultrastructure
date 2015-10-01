@@ -31,6 +31,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
@@ -51,6 +53,47 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author hhildebrand
  *
  */
+
+@NamedQueries({ @NamedQuery(name = "AgencyLocationAttributeAuthorization.checkCap", query = "SELECT COUNT(required.groupingAgency) FROM AgencyLocationAttributeAuthorization required "
+                                                                                            + "  WHERE required.groupingAgency IS NOT NULL "
+                                                                                            + "  AND required.networkAuthorization = :facet "
+                                                                                            + "  AND required.authorizedAttribute = :attribute "
+                                                                                            + "  AND NOT EXISTS( "
+                                                                                            + "      SELECT required.groupingAgency from AgencyNetwork authorized "
+                                                                                            + "         WHERE authorized.parent IN :agencies "
+                                                                                            + "         AND authorized.relationship = :capability "
+                                                                                            + "         AND authorized.child = required.groupingAgency "
+                                                                                            + "  )"),
+                @NamedQuery(name = "AgencyProductAttributeAuthorization.checkCap", query = "SELECT COUNT(required.groupingAgency) FROM AgencyProductAttributeAuthorization required "
+                                                                                           + "  WHERE required.groupingAgency IS NOT NULL "
+                                                                                           + "  AND required.networkAuthorization = :facet "
+                                                                                           + "  AND required.authorizedAttribute = :attribute "
+                                                                                           + "  AND NOT EXISTS( "
+                                                                                           + "      SELECT required.groupingAgency from AgencyNetwork authorized "
+                                                                                           + "         WHERE authorized.parent IN :agencies "
+                                                                                           + "         AND authorized.relationship = :capability "
+                                                                                           + "         AND authorized.child = required.groupingAgency "
+                                                                                           + "  )"),
+                @NamedQuery(name = "ProductLocationAttributeAuthorization.checkCap", query = "SELECT COUNT(required.groupingAgency) FROM ProductLocationAttributeAuthorization required "
+                                                                                             + "  WHERE required.groupingAgency IS NOT NULL "
+                                                                                             + "  AND required.networkAuthorization = :facet "
+                                                                                             + "  AND required.authorizedAttribute = :attribute "
+                                                                                             + "  AND NOT EXISTS( "
+                                                                                             + "      SELECT required.groupingAgency from AgencyNetwork authorized "
+                                                                                             + "         WHERE authorized.parent IN :agencies "
+                                                                                             + "         AND authorized.relationship = :capability "
+                                                                                             + "         AND authorized.child = required.groupingAgency "
+                                                                                             + "  )"),
+                @NamedQuery(name = "ProductRelationshipAttributeAuthorization.checkCap", query = "SELECT COUNT(required.groupingAgency) FROM ProductRelationshipAttributeAuthorization required "
+                                                                                                 + "  WHERE required.groupingAgency IS NOT NULL "
+                                                                                                 + "  AND required.networkAuthorization = :facet "
+                                                                                                 + "  AND required.authorizedAttribute = :attribute "
+                                                                                                 + "  AND NOT EXISTS( "
+                                                                                                 + "      SELECT required.groupingAgency from AgencyNetwork authorized "
+                                                                                                 + "         WHERE authorized.parent IN :agencies "
+                                                                                                 + "         AND authorized.relationship = :capability "
+                                                                                                 + "         AND authorized.child = required.groupingAgency "
+                                                                                                 + "  )") })
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRuleform<From, ? extends NetworkRuleform<From>>, To extends ExistentialRuleform<To, ? extends NetworkRuleform<To>>>

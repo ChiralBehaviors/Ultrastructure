@@ -97,11 +97,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         implements
         NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> {
 
-    private static final Long ZERO = Long.valueOf(0);
-
-    private static Logger log = LoggerFactory.getLogger(AbstractNetworkedModel.class);
-
-    private static int MAX_DEDUCTIONS = 1000;
+    private static final String CHECK_CAP      = ".checkCap";
+    private static Logger       log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
+    private static int          MAX_DEDUCTIONS = 1000;
+    private static final Long   ZERO           = Long.valueOf(0);
 
     protected final Class<AttributeType>             attribute;
     protected final String                           attributePrefix;
@@ -308,27 +307,15 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public boolean checkCapability(List<Agency> agencies,
                                    XDomainAttrbuteAuthorization<?, ?> stateAuth,
                                    Relationship capability) {
-        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
-        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
-                                                                + "  WHERE required.groupingAgency IS NOT NULL "
-                                                                + "  AND required.networkAuthorization = :facet "
-                                                                + "  AND required.authorizedAttribute = :attribute "
-                                                                + "  AND NOT EXISTS( "
-                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
-                                                                + "         WHERE authorized.parent IN :agencies "
-                                                                + "         AND authorized.relationship = :capability "
-                                                                + "         AND authorized.child = required.groupingAgency "
-                                                                + "  )",
-                                                                Ruleform.initializeAndUnproxy(stateAuth)
-                                                                        .getClass()
-                                                                        .getSimpleName()),
-                                                  Agency.class);
+        TypedQuery<Long> query = em.createNamedQuery(stateAuth.getClass()
+                                                              .getSimpleName()
+                                                     + CHECK_CAP, Long.class);
         query.setParameter("facet", stateAuth.getNetworkAuthorization());
         query.setParameter("attribute", stateAuth.getAuthorizedAttribute());
         query.setParameter("agencies", agencies);
         query.setParameter("capability", capability);
-        return query.getResultList()
-                    .isEmpty();
+        return query.getSingleResult()
+                    .equals(ZERO);
     }
 
     /**
@@ -339,24 +326,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public boolean checkCapability(List<Agency> agencies,
                                    XDomainNetworkAuthorization<?, ?> stateAuth,
                                    Relationship capability) {
-        // Yes, this is cheesy and way inefficient.  But I couldn't for the life of me figure out how to do this in criteria query
-        TypedQuery<Agency> query = em.createQuery(String.format("SELECT required.groupingAgency FROM %s required "
-                                                                + "  WHERE required.groupingAgency IS NOT NULL "
-                                                                + "  AND required.fromRelationship = :fromRelationship "
-                                                                + "  AND required.fromParent = :fromParent "
-                                                                + "  AND required.connection = :connection "
-                                                                + "  AND required.toRelationship = :toRelationship "
-                                                                + "  AND required.toParent = :toParent "
-                                                                + "  AND NOT EXISTS( "
-                                                                + "      SELECT required.groupingAgency from AgencyNetwork authorized "
-                                                                + "         WHERE authorized.parent IN :agencies "
-                                                                + "         AND authorized.relationship = :capability "
-                                                                + "         AND authorized.child = required.groupingAgency "
-                                                                + "  ) ",
-                                                                Ruleform.initializeAndUnproxy(stateAuth)
-                                                                        .getClass()
-                                                                        .getSimpleName()),
-                                                  Agency.class);
+        TypedQuery<Long> query = em.createNamedQuery(stateAuth.getClass()
+                                                              .getSimpleName()
+                                                     + CHECK_CAP, Long.class);
         query.setParameter("fromRelationship", stateAuth.getFromRelationship());
         query.setParameter("fromParent", stateAuth.getFromParent());
         query.setParameter("connection", stateAuth.getConnection());
@@ -364,8 +336,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         query.setParameter("toParent", stateAuth.getToParent());
         query.setParameter("agencies", agencies);
         query.setParameter("capability", capability);
-        return query.getResultList()
-                    .isEmpty();
+        return query.getSingleResult()
+                    .equals(ZERO);
     }
 
     @Override

@@ -46,44 +46,87 @@ import org.stringtemplate.v4.STGroupFile;
  */
 public class NetworkInferenceQueryGenerator extends AbstractMojo {
 
+    private static final String     ATTRIBUTE_AUTH                  = "attributeAuth";
     private static final String     ENTITY_NAME                     = "entityName";
     private static final String     ENTITY_PACKAGE                  = "entityPackage";
-    private static final String[][] GENERATED                       = { { "AgencyNetwork",
+    private static final String[][] GENERATED_INFERENCE             = { { "AgencyNetwork",
                                                                           "com.chiralbehaviors.CoRE.agency",
                                                                           "agency_network",
-                                                                          "agencyNetwork" },
+                                                                          "agencyNetwork",
+                                                                          "AgencyAttributeAuthorization" },
                                                                         { "AttributeNetwork",
                                                                           "com.chiralbehaviors.CoRE.attribute",
                                                                           "attribute_network",
-                                                                          "attributeNetwork" },
+                                                                          "attributeNetwork",
+                                                                          "AttributeMetaAttributeAuthorization" },
                                                                         { "UnitNetwork",
                                                                           "com.chiralbehaviors.CoRE.attribute.unit",
                                                                           "unit_network",
-                                                                          "unitNetwork" },
+                                                                          "unitNetwork",
+                                                                          "UnitAttributeAuthorization" },
                                                                         { "StatusCodeNetwork",
                                                                           "com.chiralbehaviors.CoRE.job.status",
                                                                           "status_code_network",
-                                                                          "statusCodeNetwork" },
+                                                                          "statusCodeNetwork",
+                                                                          "StatusCodeAttributeAuthorization" },
                                                                         { "LocationNetwork",
                                                                           "com.chiralbehaviors.CoRE.location",
                                                                           "location_network",
-                                                                          "locationNetwork" },
+                                                                          "locationNetwork",
+                                                                          "LocationAttributeAuthorization" },
                                                                         { "RelationshipNetwork",
                                                                           "com.chiralbehaviors.CoRE.relationship",
                                                                           "relationship_network",
-                                                                          "relationshipNetwork" },
+                                                                          "relationshipNetwork",
+                                                                          "RelationshipAttributeAuthorization" },
                                                                         { "ProductNetwork",
                                                                           "com.chiralbehaviors.CoRE.product",
                                                                           "product_network",
-                                                                          "productNetwork" },
+                                                                          "productNetwork",
+                                                                          "ProductAttributeAuthorization" },
                                                                         { "IntervalNetwork",
                                                                           "com.chiralbehaviors.CoRE.time",
                                                                           "interval_network",
-                                                                          "intervalNetwork" } };
+                                                                          "intervalNetwork",
+                                                                          "IntervalAttributeAuthorization" } };
+    private static final String[][] GENERATED_CAP_CHECK             = { { "Agency",
+                                                                          "com.chiralbehaviors.CoRE.agency",
+                                                                          "agency",
+                                                                          "AgencyAttributeAuthorization" },
+                                                                        { "Attribute",
+                                                                          "com.chiralbehaviors.CoRE.attribute",
+                                                                          "attribute",
+                                                                          "AttributeMetaAttributeAuthorization" },
+                                                                        { "Unit",
+                                                                          "com.chiralbehaviors.CoRE.attribute.unit",
+                                                                          "unit",
+                                                                          "UnitAttributeAuthorization" },
+                                                                        { "StatusCode",
+                                                                          "com.chiralbehaviors.CoRE.job.status",
+                                                                          "statusCode",
+                                                                          "StatusCodeAttributeAuthorization" },
+                                                                        { "Location",
+                                                                          "com.chiralbehaviors.CoRE.location",
+                                                                          "location",
+                                                                          "LocationAttributeAuthorization" },
+                                                                        { "Relationship",
+                                                                          "com.chiralbehaviors.CoRE.relationship",
+                                                                          "relationship",
+                                                                          "RelationshipAttributeAuthorization" },
+                                                                        { "Product",
+                                                                          "com.chiralbehaviors.CoRE.product",
+                                                                          "product",
+                                                                          "ProductAttributeAuthorization" },
+                                                                        { "Interval",
+                                                                          "com.chiralbehaviors.CoRE.time",
+                                                                          "interval",
+                                                                          "IntervalAttributeAuthorization" } };
     private static final String     NETWORK_INFERENCE               = "networkInference";
+    private static final String     CAP_CHECK                       = "capabilityCheck";
     private static final String     QUERY_PREFIX                    = "queryPrefix";
     private static final String     TABLE_NAME                      = "tableName";
     private static final String     TEMPLATES_NETWORK_INFERENCE_STG = "templates/network-inference.stg";
+    private static final String     TEMPLATES_CAP_CHECK_STG         = "templates/cap-check.stg";
 
     /**
      * @parameter
@@ -107,18 +150,25 @@ public class NetworkInferenceQueryGenerator extends AbstractMojo {
                                                            outputDirectory.getAbsoluteFile()),
                                              e);
         }
-        for (String[] info : GENERATED) {
+        for (String[] info : GENERATED_INFERENCE) {
             File output = new File(outputDirectory,
                                    String.format("%s/%s.xml",
                                                  info[1].replace('.', '/'),
                                                  info[3]));
-            generate(info[0], info[1], info[2], info[3], output);
+            generateInference(info[0], info[1], info[2], info[3], output);
+        }
+        for (String[] info : GENERATED_CAP_CHECK) {
+            File output = new File(outputDirectory,
+                                   String.format("%s/%s.xml",
+                                                 info[1].replace('.', '/'),
+                                                 info[2]));
+            generateCapCheck(info[0], info[1], info[2], info[3], output);
         }
     }
 
-    private void generate(String entityName, String entityPackage,
-                          String tableName, String queryPrefix,
-                          File output) throws MojoExecutionException {
+    private void generateInference(String entityName, String entityPackage,
+                                   String tableName, String queryPrefix,
+                                   File output) throws MojoExecutionException {
         getLog().info(String.format("Generating %s to %s", entityName, output));
         try {
             Files.createDirectories(output.getParentFile()
@@ -147,6 +197,47 @@ public class NetworkInferenceQueryGenerator extends AbstractMojo {
         try (OutputStream os = new FileOutputStream(output)) {
             os.write(inference.render()
                               .getBytes());
+        } catch (FileNotFoundException e) {
+            throw new MojoExecutionException(String.format("Cannot find generated file for write %s",
+                                                           output.getAbsoluteFile()),
+                                             e);
+        } catch (IOException e) {
+            throw new MojoExecutionException(String.format("Error generating file %s",
+                                                           output.getAbsoluteFile()),
+                                             e);
+        }
+    }
+
+    private void generateCapCheck(String entityName, String entityPackage,
+                                  String queryPrefix, String attributeAuth,
+                                  File output) throws MojoExecutionException {
+        getLog().info(String.format("Generating %s to %s", entityName, output));
+        try {
+            Files.createDirectories(output.getParentFile()
+                                          .toPath());
+        } catch (IOException e) {
+            throw new MojoExecutionException(String.format("Cannot create generated file parent directories %s",
+                                                           output.getParentFile()
+                                                                 .getAbsoluteFile()),
+                                             e);
+        }
+
+        try {
+            Files.deleteIfExists(output.toPath());
+        } catch (IOException e) {
+            throw new MojoExecutionException(String.format("Cannot delete generated file %s",
+                                                           output.getAbsoluteFile()),
+                                             e);
+        }
+        STGroup group = new STGroupFile(TEMPLATES_CAP_CHECK_STG, '%', '%');
+        ST capCheck = group.getInstanceOf(CAP_CHECK);
+        capCheck.add(ENTITY_NAME, entityName);
+        capCheck.add(ENTITY_PACKAGE, entityPackage);
+        capCheck.add(ATTRIBUTE_AUTH, attributeAuth);
+        capCheck.add(QUERY_PREFIX, queryPrefix);
+        try (OutputStream os = new FileOutputStream(output)) {
+            os.write(capCheck.render()
+                             .getBytes());
         } catch (FileNotFoundException e) {
             throw new MojoExecutionException(String.format("Cannot find generated file for write %s",
                                                            output.getAbsoluteFile()),

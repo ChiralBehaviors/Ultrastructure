@@ -231,7 +231,21 @@
                             <username>${db.login}</username>
                             <password>${db.password}</password>
                             <changeLogFile>com/chiralbehaviors/CoRE/schema/core.xml</changeLogFile>
-                            <verbose>false</verbose>
+                            <verbose>true</verbose>
+                            <expressionVars>
+                                <property>
+                                    <name>create.db.database</name>
+                                    <value>${db.database}</value>
+                                </property>
+                                <property>
+                                    <name>create.db.role</name>
+                                    <value>${db.login}</value>
+                                </property>
+                                <property>
+                                    <name>create.db.password</name>
+                                    <value>${db.password}</value>
+                                </property>
+                            </expressionVars>
                         </configuration>
                         <executions>
                             <execution>

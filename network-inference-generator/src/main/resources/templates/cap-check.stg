@@ -74,6 +74,21 @@ capabilityCheck(entityName, entityPackage, attributeAuth, queryPrefix) ::= <<
                         )
             ]]></query>
         </named-query>
+        
+        <named-query name="%queryPrefix%.checkNetworkAttributeCap">
+            <query><![CDATA[
+                SELECT COUNT(required.groupingAgency) FROM %attributeAuth% required
+                    WHERE required.groupingAgency IS NOT NULL
+                        AND required.networkAuthorization = :auth
+                        AND required.authorizedNetworkAttribute = :attribute
+                        AND NOT EXISTS(
+                            SELECT required.groupingAgency from AgencyNetwork authorized
+                                WHERE authorized.parent IN :agencies
+                                    AND authorized.relationship = :capability
+                                    AND authorized.child = required.groupingAgency
+                        )
+            ]]></query>
+        </named-query>
     </entity>
 </entity-mappings>
 >>

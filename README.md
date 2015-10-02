@@ -3,10 +3,11 @@ Ultrastructure
 
 An implementation of Ultrastructure using PostgreSQL.
 
-![CoRE](https://github.com/ChiralBehaviors/Ultrastructure/blob/master/site/media/core.png)
 ==============
 
-See the [Ultrastructure Northwind Demo](http://chiralbehaviors.github.io/Northwind/) for an example of a non trivial Ultrastructure application.
+- [Ultrastrsucture Wiki](https://github.com/ChiralBehaviors/Ultrastructure/wiki) - for moar information
+
+- [Ultrastructure Northwind Demo](http://chiralbehaviors.github.io/Northwind/) - an example of a non trivial Ultrastructure application.
 
 The license for this project is the [GNU Affero General Public License](http://www.gnu.org/licenses/agpl-3.0.en.html)
 
@@ -20,7 +21,7 @@ are running on a Mac, try the [Postgres.app](http://postgresapp.com/) as it's bu
 
 Note that the build assumes that the postgres database is available on localhost:5432.  The build also assumes that the super 
 user and database _postgres_ is set up with the default password (_postgres_).  If you have changed 
-any of these values, please override the _"dba.db.*"_ properties in the top level pom.xml (see (~/.m2/settings.xml](https://maven.apache.org/settings.html)).
+any of these values, please override the _"dba.db.*"_ properties in the top level pom.xml (see [~/.m2/settings.xml](https://maven.apache.org/settings.html)).
   _If you have installed Postgres using the Heroku [Postgres.app](http://postgresapp.com/)_ please note 
 that the default port is _5433_, so you'll have to be sure to set the _dba.db.port_
  value in your ~/.m2/settings.xml or edit the top level pom.xml (as it defines this value to be 5432).  You'll be wondering

@@ -33,7 +33,7 @@ public class JpaConfiguration extends Configuration {
 
     @NotEmpty
     @JsonProperty
-    private String persistenceUnit;
+    private String persistenceUnit = "CoRE";
 
     @NotEmpty
     @JsonProperty

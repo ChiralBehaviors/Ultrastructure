@@ -43,13 +43,21 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         extends PhantasmCRUD<RuleForm, NetworkRuleform<RuleForm>>
         implements InvocationHandler, ScopedPhantasm<RuleForm> {
     private final PhantasmDefinition<RuleForm> definition;
-    private final RuleForm                  ruleform;
+    private final RuleForm                     ruleform;
 
-    public PhantasmTwo(RuleForm ruleform, PhantasmDefinition<RuleForm> definition,
-                       Model model) {
+    public PhantasmTwo(RuleForm ruleform,
+                       PhantasmDefinition<RuleForm> definition, Model model) {
         super(model);
         this.ruleform = ruleform;
         this.definition = definition;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm#cast(java.lang.Class)
+     */
+    @Override
+    public <T extends Phantasm<RuleForm>> T cast(Class<T> toPhantasm) {
+        return model.cast(ruleform, toPhantasm);
     }
 
     @Override
@@ -140,6 +148,16 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
         }
     }
 
+    /**
+     * @param returnPhantasm
+     * @param ruleform2
+     * @return
+     */
+    public <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
+                                                                               ExistentialRuleform<?, ?> ruleform) {
+        return model.wrap(phantasm, ruleform);
+    }
+
     private Object invokeDefault(Object proxy, Method method, Object[] args,
                                  final Class<?> declaringClass) throws NoSuchMethodException,
                                                                 Throwable,
@@ -154,15 +172,5 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                           .unreflectSpecial(method, declaringClass)
                           .bindTo(proxy)
                           .invokeWithArguments(args);
-    }
-
-    /**
-     * @param returnPhantasm
-     * @param ruleform2
-     * @return
-     */
-    public <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
-                                                                               ExistentialRuleform<?, ?> ruleform) {
-        return model.wrap(phantasm, ruleform);
     }
 }

@@ -672,11 +672,11 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
     public ExistentialRuleform<?, ?> lookup(NetworkAuthorization<?> auth,
                                             String id) {
         NetworkedModel<?, ?, ?, ?> networkedModel = model.getUnknownNetworkedModel(auth.getClassification());
-        return Optional.of(networkedModel.find(UUID.fromString(id)))
+        return Optional.ofNullable(networkedModel.find(UUID.fromString(id)))
                        .filter(rf -> rf != null)
                        .filter(child -> networkedModel.checkCapability(child,
                                                                        getREAD()))
-                       .get();
+                       .orElse(null);
     }
 
     public List<RuleForm> lookupRuleForm(NetworkAuthorization<RuleForm> auth,

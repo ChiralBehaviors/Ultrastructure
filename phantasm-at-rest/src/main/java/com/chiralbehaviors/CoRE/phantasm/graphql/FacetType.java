@@ -515,6 +515,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                              pkg,
                                                                              plugin.getFacetName()))
                                                    .orElse(null);
+            if (defaultImplementation == null) {
+                return;
+            }
             build(plugin.getConstructor(), defaultImplementation,
                   executionScope);
             plugin.getInstanceMethods()

@@ -18,12 +18,13 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.resources.plugin;
+package com.chiralbehaviors.CoRE.phantasm.workspace;
 
-import java.util.concurrent.atomic.AtomicReference;
-
+import com.chiralbehaviors.CoRE.kernel.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
+import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.product.ProductNetwork;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -31,26 +32,12 @@ import graphql.schema.DataFetchingEnvironment;
  * @author hhildebrand
  *
  */
-public class Thing1_Plugin {
-    public static final AtomicReference<String> passThrough = new AtomicReference<>();
-
+public class WorkspacePlugin {
     public static void constructor(DataFetchingEnvironment env, Model model,
-                                   Thing1 instance) {
-        instance.getRuleform()
-                .setDescription(passThrough.get());
+                                   Workspace instance) {
+        @SuppressWarnings("unchecked")
+        PhantasmCRUD<Product, ProductNetwork> crud = (PhantasmCRUD<Product, ProductNetwork>) env.getContext();
+
     }
 
-    public static String instanceMethod(DataFetchingEnvironment env,
-                                        Model model, Thing1 instance) {
-        return instance.getThing2()
-                       .getName();
-    }
-
-    public static String instanceMethodWithArgument(DataFetchingEnvironment env,
-                                                    Model model,
-                                                    Thing1 instance) {
-        passThrough.set(env.getArgument("arg1"));
-        return instance.getThing2()
-                       .getName();
-    }
 }

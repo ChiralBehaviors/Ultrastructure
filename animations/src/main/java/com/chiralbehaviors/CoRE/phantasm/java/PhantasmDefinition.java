@@ -61,10 +61,12 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
     private static final String SET = "set";
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static NetworkAuthorization<? extends ExistentialRuleform<?, ?>> facetFrom(Facet facet,
+    public static NetworkAuthorization<? extends ExistentialRuleform<?, ?>> facetFrom(Class<? extends Phantasm> phantasm,
                                                                                       Model model) {
+        Facet facet = phantasm.getAnnotation(Facet.class);
         if (facet == null) {
-            throw new IllegalStateException("Not a facet");
+            throw new IllegalStateException(String.format("Not a facet: %s",
+                                                          phantasm));
         }
         UUID uuid = WorkspaceAccessor.uuidOf(facet.workspace());
         WorkspaceScope scope = model.getWorkspaceModel()
@@ -97,8 +99,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform<RuleForm, N
 
     @SuppressWarnings("unchecked")
     public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm, Model model) {
-        super((NetworkAuthorization<RuleForm>) facetFrom(phantasm.getAnnotation(Facet.class),
-                                                         model));
+        super((NetworkAuthorization<RuleForm>) facetFrom(phantasm, model));
 
         traverse(facet, new PhantasmTraversal<>(model));
         this.phantasm = phantasm;

@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import static com.chiralbehaviors.CoRE.kernel.product.WorkspaceOf.workspaceOf;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -38,11 +37,11 @@ import javax.ws.rs.WebApplicationException;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.kernel.product.Argument;
-import com.chiralbehaviors.CoRE.kernel.product.Constructor;
-import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
-import com.chiralbehaviors.CoRE.kernel.product.Plugin;
-import com.chiralbehaviors.CoRE.kernel.product.Workspace;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Argument;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
@@ -356,8 +355,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
-        Workspace workspace = workspaceOf(model, scope.getWorkspace()
-                                                      .getDefiningProduct());
+        Workspace workspace = model.wrap(Workspace.class, scope.getWorkspace()
+                                                               .getDefiningProduct());
         workspace.addPlugin(constructPlugin());
 
         GraphQlResource resource = new GraphQlResource(mockedEmf);

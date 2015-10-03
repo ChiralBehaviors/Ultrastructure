@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.kernel.product;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 
 /**

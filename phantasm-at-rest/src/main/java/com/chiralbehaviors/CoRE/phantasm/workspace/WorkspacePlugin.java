@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.workspace;
 
-import com.chiralbehaviors.CoRE.kernel.product.Workspace;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
 import com.chiralbehaviors.CoRE.product.Product;

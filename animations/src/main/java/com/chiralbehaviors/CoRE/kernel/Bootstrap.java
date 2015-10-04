@@ -168,8 +168,9 @@ public class Bootstrap {
              .getTransaction()
              .begin();
 
-        new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
-                              model).manifest();
+        new WorkspaceImporter(getClass().getResourceAsStream("/kernel.1.wsp"),
+                              model).initialize()
+                                    .load(kernelWorkspace);
         ProductAttribute attributeValue = (ProductAttribute) model.getProductModel()
                                                                   .getAttributeValue(kernelWorkspace,
                                                                                      model.getKernel()

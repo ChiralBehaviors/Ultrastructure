@@ -91,7 +91,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformC
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeValueContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributesContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ConstraintContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
@@ -147,13 +147,18 @@ public class WorkspaceImporter {
         return name;
     }
 
+    public static String stripQuotes(String original) {
+        return original.substring(1, original.length() - 1);
+    }
+
     private final EntityManager em;
     private final Model         model;
     private WorkspaceScope      scope;
-    private UUID                uuid;
 
-    private EditableWorkspace           workspace;
-    private String                      workspaceUri;
+    private UUID              uuid;
+    private EditableWorkspace workspace;
+    private String            workspaceUri;
+
     private final WorkspacePresentation wsp;
 
     public WorkspaceImporter(InputStream source,
@@ -171,9 +176,28 @@ public class WorkspaceImporter {
         return workspace;
     }
 
-    public void initialize() {
+    public WorkspaceImporter initialize() {
         workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
         uuid = WorkspaceAccessor.uuidOf(workspaceUri);
+        return this;
+    }
+
+    /**
+     * Used only to bootstrap the kernel. Public because of packaging, not API.
+     * 
+     * @param definingProduct
+     * @return
+     */
+    public WorkspaceAccessor load(Product definingProduct) {
+        definingProduct.setName(stripQuotes(wsp.getWorkspaceDefinition().name.getText()));
+        Token description = wsp.getWorkspaceDefinition().description;
+        definingProduct.setDescription(description == null ? null
+                                                           : stripQuotes(description.getText()));
+        scope = model.getWorkspaceModel()
+                     .getScoped(definingProduct);
+        workspace = (EditableWorkspace) scope.getWorkspace();
+        loadWorkspace();
+        return workspace;
     }
 
     public WorkspaceAccessor manifest() {
@@ -193,22 +217,14 @@ public class WorkspaceImporter {
                                                           wsp.getWorkspaceDefinition().name.getText(),
                                                           version));
         }
-        if (definingProduct.getVersion() != version - 1) {
+        if (definingProduct.getVersion() >= version) {
             throw new IllegalStateException(String.format("Workspace %s is at version %s, unable to update to %s",
                                                           wsp.getWorkspaceDefinition().name.getText(),
                                                           definingProduct.getVersion(),
                                                           version));
         }
         definingProduct.setVersion(version);
-        definingProduct.setName(stripQuotes(wsp.getWorkspaceDefinition().name.getText()));
-        Token description = wsp.getWorkspaceDefinition().description;
-        definingProduct.setDescription(description == null ? null
-                                                           : stripQuotes(description.getText()));
-        scope = model.getWorkspaceModel()
-                     .getScoped(definingProduct);
-        workspace = (EditableWorkspace) scope.getWorkspace();
-        loadWorkspace();
-        return workspace;
+        return load(definingProduct);
     }
 
     private void agencyFacets() {
@@ -291,21 +307,23 @@ public class WorkspaceImporter {
         model.getEntityManager()
              .persist(authorization);
         workspace.add(authorization);
-        ClassifiedAttributesContext classifiedAttributes = facet.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = facet.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                AttributeAuthorization<T, Network> auth = attrAuth.apply(model.getCurrentPrincipal()
-                                                                                              .getPrincipal());
-                                auth.setNetworkAuthorization(authorization);
-                                auth.setAuthorizedAttribute(resolve(attribute));
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
+        classifiedAttributes.forEach(attribute -> {
+            AttributeAuthorization<T, Network> auth = attrAuth.apply(model.getCurrentPrincipal()
+                                                                          .getPrincipal());
+            auth.setNetworkAuthorization(authorization);
+            auth.setAuthorizedAttribute(resolve(attribute.key));
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
 
-                            });
+        });
     }
 
     /**
@@ -325,20 +343,22 @@ public class WorkspaceImporter {
                                                                                .toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
-        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                AgencyLocationAttributeAuthorization auth = new AgencyLocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                          .getPrincipal());
-                                auth.setAuthorizedAttribute(resolve(attribute));
-                                auth.setNetworkAuthorization(authorization);
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
-                            });
+        classifiedAttributes.forEach(attribute -> {
+            AgencyLocationAttributeAuthorization auth = new AgencyLocationAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                      .getPrincipal());
+            auth.setAuthorizedAttribute(resolve(attribute.key));
+            auth.setNetworkAuthorization(authorization);
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
+        });
     }
 
     /**
@@ -358,20 +378,22 @@ public class WorkspaceImporter {
                                                                                .toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
-        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                AgencyProductAttributeAuthorization auth = new AgencyProductAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                        .getPrincipal());
-                                auth.setAuthorizedAttribute(resolve(attribute));
-                                auth.setNetworkAuthorization(authorization);
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
-                            });
+        classifiedAttributes.forEach(attribute -> {
+            AgencyProductAttributeAuthorization auth = new AgencyProductAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                    .getPrincipal());
+            auth.setAuthorizedAttribute(resolve(attribute.key));
+            auth.setNetworkAuthorization(authorization);
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
+        });
     }
 
     /**
@@ -392,20 +414,22 @@ public class WorkspaceImporter {
         authorization.setForward(false);
         em.persist(authorization);
         workspace.add(authorization);
-        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                AgencyLocationAttributeAuthorization auth = new AgencyLocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                          .getPrincipal());
-                                auth.setAuthorizedAttribute(resolve(attribute));
-                                auth.setNetworkAuthorization(authorization);
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
-                            });
+        classifiedAttributes.forEach(attribute -> {
+            AgencyLocationAttributeAuthorization auth = new AgencyLocationAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                      .getPrincipal());
+            auth.setAuthorizedAttribute(resolve(attribute.key));
+            auth.setNetworkAuthorization(authorization);
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
+        });
     }
 
     /**
@@ -426,20 +450,22 @@ public class WorkspaceImporter {
         authorization.setForward(false);
         workspace.add(authorization);
         em.persist(authorization);
-        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                ProductLocationAttributeAuthorization auth = new ProductLocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                            .getPrincipal());
-                                auth.setAuthorizedAttribute(resolve(attribute));
-                                auth.setNetworkAuthorization(authorization);
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
-                            });
+        classifiedAttributes.forEach(attribute -> {
+            ProductLocationAttributeAuthorization auth = new ProductLocationAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                        .getPrincipal());
+            auth.setAuthorizedAttribute(resolve(attribute.key));
+            auth.setNetworkAuthorization(authorization);
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
+        });
     }
 
     private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void createNetworkAuth(FacetContext facet,
@@ -455,20 +481,22 @@ public class WorkspaceImporter {
                                                                                .toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
-        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                AttributeAuthorization<T, Network> auth = attrAuth.apply(model.getCurrentPrincipal()
-                                                                                              .getPrincipal());
-                                auth.setAuthorizedNetworkAttribute(resolve(attribute));
-                                auth.setNetworkAuthorization(authorization);
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
-                            });
+        classifiedAttributes.forEach(attribute -> {
+            AttributeAuthorization<T, Network> auth = attrAuth.apply(model.getCurrentPrincipal()
+                                                                          .getPrincipal());
+            auth.setAuthorizedNetworkAttribute(resolve(attribute.key));
+            auth.setNetworkAuthorization(authorization);
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
+        });
     }
 
     /**
@@ -489,20 +517,22 @@ public class WorkspaceImporter {
         authorization.setForward(false);
         workspace.add(authorization);
         em.persist(authorization);
-        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                AgencyProductAttributeAuthorization auth = new AgencyProductAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                        .getPrincipal());
-                                auth.setAuthorizedAttribute(resolve(attribute));
-                                auth.setNetworkAuthorization(authorization);
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
-                            });
+        classifiedAttributes.forEach(attribute -> {
+            AgencyProductAttributeAuthorization auth = new AgencyProductAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                    .getPrincipal());
+            auth.setAuthorizedAttribute(resolve(attribute.key));
+            auth.setNetworkAuthorization(authorization);
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
+        });
     }
 
     /**
@@ -522,20 +552,22 @@ public class WorkspaceImporter {
                                                                                .toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
-        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                ProductLocationAttributeAuthorization auth = new ProductLocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                            .getPrincipal());
-                                auth.setAuthorizedAttribute(resolve(attribute));
-                                auth.setNetworkAuthorization(authorization);
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
-                            });
+        classifiedAttributes.forEach(attribute -> {
+            ProductLocationAttributeAuthorization auth = new ProductLocationAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                        .getPrincipal());
+            auth.setAuthorizedAttribute(resolve(attribute.key));
+            auth.setNetworkAuthorization(authorization);
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
+        });
     }
 
     private void createProductRelationshipAuth(FacetContext facet,
@@ -551,20 +583,22 @@ public class WorkspaceImporter {
                                                                                .toUpperCase()));
         workspace.add(authorization);
         em.persist(authorization);
-        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                ProductRelationshipAttributeAuthorization auth = new ProductRelationshipAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                                    .getPrincipal());
-                                auth.setAuthorizedAttribute(resolve(attribute));
-                                auth.setNetworkAuthorization(authorization);
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
-                            });
+        classifiedAttributes.forEach(attribute -> {
+            ProductRelationshipAttributeAuthorization auth = new ProductRelationshipAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                                .getPrincipal());
+            auth.setAuthorizedAttribute(resolve(attribute.key));
+            auth.setNetworkAuthorization(authorization);
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
+        });
     }
 
     private void createRelationshipProductAuth(FacetContext facet,
@@ -581,20 +615,22 @@ public class WorkspaceImporter {
         authorization.setForward(false);
         workspace.add(authorization);
         em.persist(authorization);
-        ClassifiedAttributesContext classifiedAttributes = constraint.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(attribute -> {
-                                ProductRelationshipAttributeAuthorization auth = new ProductRelationshipAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                                    .getPrincipal());
-                                auth.setAuthorizedAttribute(resolve(attribute));
-                                auth.setNetworkAuthorization(authorization);
-                                model.getEntityManager()
-                                     .persist(auth);
-                                workspace.add(auth);
-                            });
+        classifiedAttributes.forEach(attribute -> {
+            ProductRelationshipAttributeAuthorization auth = new ProductRelationshipAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                                .getPrincipal());
+            auth.setAuthorizedAttribute(resolve(attribute.key));
+            auth.setNetworkAuthorization(authorization);
+            if (attribute.defaultValue != null) {
+                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+            }
+            model.getEntityManager()
+                 .persist(auth);
+            workspace.add(auth);
+        });
     }
 
     private WorkspaceAccessor createWorkspace() {
@@ -1363,10 +1399,6 @@ public class WorkspaceImporter {
                                                 agency -> new StatusCodeAttributeAuthorization(model.getCurrentPrincipal()
                                                                                                     .getPrincipal()));
                           });
-    }
-
-    private String stripQuotes(String original) {
-        return original.substring(1, original.length() - 1);
     }
 
     private void unitFacets() {

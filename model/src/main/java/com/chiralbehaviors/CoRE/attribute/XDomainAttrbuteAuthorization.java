@@ -245,6 +245,32 @@ abstract public class XDomainAttrbuteAuthorization<From extends ExistentialRulef
         }
     }
 
+    public void setValueFromString(String value) {
+        switch (getAuthorizedAttribute().getValueType()) {
+            case BINARY:
+                setValue(value.getBytes());
+                return;
+            case BOOLEAN:
+                setValue(Boolean.valueOf(value));
+                return;
+            case INTEGER:
+                setValue(Integer.parseInt(value));
+                return;
+            case NUMERIC:
+                setValue(BigDecimal.valueOf(Long.parseLong(value)));
+                return;
+            case TEXT:
+            case JSON:
+                setValue(value);
+                return;
+            case TIMESTAMP:
+                throw new UnsupportedOperationException("Timestamps are a PITA");
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              getAuthorizedAttribute().getValueType()));
+        }
+    }
+
     /**
      * @return the binaryValue
      */

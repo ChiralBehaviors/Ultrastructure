@@ -1,5 +1,5 @@
 workspace: "urn:uuid:00000000-0000-0004-0000-000000000003"  
-           version: 1
+           version: 2
            "Ultrastructure Kernel Workspace" 
            "The Kernel Ontology for Ultrastructure [Ain Soph Ur]"
 
@@ -13,7 +13,13 @@ agencies {
     }
     facets {
         IsA.CoreUser { Login PasswordRounds PasswordHash AccessToken }
+            constraints {
+                n LOGIN_TO: InstanceOf.Core named loginCapaility
+            }
         InstanceOf.Core named: "Core Instance"
+            constraints {
+                n MayLoginBy: InstanceOf.Core named login
+            }
         SingletonOf.Core named: "This Core Instance"
     }
 }      

@@ -65,7 +65,7 @@ public class TestGenerator {
     @Test
     public void testKerenelGen() throws IOException {
         Configuration configuration = new Configuration();
-        configuration.resource = "/kernel.1.wsp";
+        configuration.resource = "/kernel.2.wsp";
         configuration.appendTypeToPackage = true;
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;

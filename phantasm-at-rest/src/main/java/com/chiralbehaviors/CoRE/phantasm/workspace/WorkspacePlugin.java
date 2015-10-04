@@ -22,9 +22,6 @@ package com.chiralbehaviors.CoRE.phantasm.workspace;
 
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -35,8 +32,6 @@ import graphql.schema.DataFetchingEnvironment;
 public class WorkspacePlugin {
     public static void constructor(DataFetchingEnvironment env, Model model,
                                    Workspace instance) {
-        @SuppressWarnings("unchecked")
-        PhantasmCRUD<Product, ProductNetwork> crud = (PhantasmCRUD<Product, ProductNetwork>) env.getContext();
 
     }
 

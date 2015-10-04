@@ -110,6 +110,11 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
     @Override
     public Object invoke(Object proxy, Method method,
                          Object[] args) throws Throwable {
+        if (method.getName()
+                  .equals("getClass")
+            && method.getParameterCount() == 0) {
+            return definition.getPhantasm();
+        }
         StateFunction<RuleForm> function = definition.methods.get(method);
         if (function != null) {
             WorkspaceScope scope = model.getWorkspaceModel()
@@ -146,6 +151,13 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                                                           method.toGenericString()),
                                             e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s]", definition.getPhantasm()
+                                                 .getSimpleName(),
+                             ruleform.toString());
     }
 
     /**

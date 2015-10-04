@@ -87,7 +87,8 @@ public class AbstractModelTest {
     }
 
     @BeforeClass
-    public static void initializeDatabase() throws IOException, SQLException {
+    public static void initializeDatabase() throws IOException, SQLException,
+                                            InstantiationException {
         if (em != null) {
             if (em.isOpen()) {
                 em.close();
@@ -98,6 +99,17 @@ public class AbstractModelTest {
             em = getEntityManager();
             KernelUtil.clearAndLoadKernel(em);
             em.close();
+            try (Model myModel = new ModelImpl(emf)) {
+                myModel.getEntityManager()
+                       .getTransaction()
+                       .begin();
+                KernelUtil.initializeInstance(myModel,
+                                              "Abstract Model Test CoRE Instance",
+                                              "CoRE instance for an Abstract Model Test");
+                myModel.getEntityManager()
+                       .getTransaction()
+                       .commit();
+            }
         }
         model = new ModelImpl(emf);
         kernel = model.getKernel();

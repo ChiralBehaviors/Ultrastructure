@@ -31,6 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration.Asset;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
@@ -113,6 +116,10 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
             emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                          properties);
         }
+        CoreInstance coreInstance;
+        try (Model model = new ModelImpl(emf);) {
+            coreInstance = model.getCoreInstance();
+        }
         Binder authBinder = null;
         switch (configuration.auth) {
             case NULL:
@@ -122,7 +129,8 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
             case BASIC_DIGEST:
                 log.warn("Setting authentication to US basic authentication");
                 authBinder = AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
-                                                                                                                     new AgencyBasicAuthenticator(emf),
+                                                                                                                     new AgencyBasicAuthenticator(emf,
+                                                                                                                                                  coreInstance),
                                                                                                                      configuration.authenticationCachePolicy),
                                                                                           configuration.realm,
                                                                                           AuthorizedPrincipal.class));
@@ -130,7 +138,8 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
             case BEARER_TOKEN:
                 log.warn("Setting authentication to US capability OAuth2 bearer token");
                 authBinder = AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
-                                                                                                                   new AgencyBearerTokenAuthenticator(emf),
+                                                                                                                   new AgencyBearerTokenAuthenticator(emf,
+                                                                                                                                                      coreInstance),
                                                                                                                    configuration.authenticationCachePolicy),
                                                                                         configuration.realm,
                                                                                         AuthorizedPrincipal.class));

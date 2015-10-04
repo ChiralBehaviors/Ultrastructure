@@ -21,6 +21,9 @@ import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Server;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
 import com.chiralbehaviors.CoRE.phantasm.authentication.UsOAuthFactory;
@@ -86,10 +89,20 @@ public class TestApplication extends Application<TestServiceConfiguration> {
         environment.lifecycle()
                    .addServerLifecycleListener(server -> jettyServer = server);
         if (configuration.useOauth()) {
-            environment.jersey()
-                       .register(AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new AgencyBearerTokenAuthenticator(emf),
-                                                                                            "ultrastructure",
-                                                                                            AuthorizedPrincipal.class)));
+            try (Model model = new ModelImpl(emf)) {
+                CoreInstance coreInstance = model.wrap(CoreInstance.class,
+                                                       model.getAgencyModel()
+                                                            .getChild(model.getKernel()
+                                                                           .getCore(),
+                                                                      model.getKernel()
+                                                                           .getSingletonOf()
+                                                                           .getInverse()));
+                environment.jersey()
+                           .register(AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new AgencyBearerTokenAuthenticator(emf,
+                                                                                                                                   coreInstance),
+                                                                                                "ultrastructure",
+                                                                                                AuthorizedPrincipal.class)));
+            }
         } else {
             environment.jersey()
                        .register(AuthFactory.binder(new NullAuthenticationFactory()));

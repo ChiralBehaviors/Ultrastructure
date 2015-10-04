@@ -52,6 +52,7 @@ import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue_;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.AttributeModel;
 import com.chiralbehaviors.CoRE.meta.IntervalModel;
@@ -134,11 +135,11 @@ public class ModelImpl implements Model {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Phantasm<? extends T> source,
-                                                                                Class<R> phantasm) {
+    public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Class<R> phantasm,
+                                                                                Phantasm<? extends T> target) {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
                                                                                               this);
-        return (R) definition.construct(source.getRuleform(), this,
+        return (R) definition.construct(target.getRuleform(), this,
                                         getCurrentPrincipal().getPrincipal());
     }
 
@@ -365,6 +366,22 @@ public class ModelImpl implements Model {
         return attributeModel;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#getCoreInstance()
+     */
+    @Override
+    public CoreInstance getCoreInstance() {
+        try {
+            return wrap(CoreInstance.class,
+                        getAgencyModel().getChild(getKernel().getCore(),
+                                                  getKernel().getSingletonOf()
+                                                             .getInverse()));
+        } catch (NoResultException e) {
+            throw new IllegalStateException("The CoRE system has not been initialized properly",
+                                            e);
+        }
+    }
+
     @Override
     public AuthorizedPrincipal getCurrentPrincipal() {
         AuthorizedPrincipal authorizedPrincipal = currentPrincipal;
@@ -549,13 +566,13 @@ public class ModelImpl implements Model {
     @Override
     @SuppressWarnings({ "unchecked" })
     public <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
-                                                                               ExistentialRuleform<?, ?> ruleform) {
+                                                                               Phantasm<?> ruleform) {
         if (ruleform == null) {
             return null;
         }
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
                                                                                               this);
-        return (R) definition.wrap(ruleform, this);
+        return (R) definition.wrap(ruleform.getRuleform(), this);
     }
 
     private void initializeCurrentPrincipal() {
@@ -568,5 +585,16 @@ public class ModelImpl implements Model {
             currentPrincipal = new AuthorizedPrincipal(em.getReference(Agency.class,
                                                                        WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()));
         }
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.AutoCloseable#close()
+     */
+    @Override
+    public void close() {
+        if (!em.isOpen()) {
+            return;
+        }
+        getEntityManager().close();
     }
 }

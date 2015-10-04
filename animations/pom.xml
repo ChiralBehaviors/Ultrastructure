@@ -136,7 +136,7 @@
                             <mainClass>com.chiralbehaviors.CoRE.kernel.Bootstrap</mainClass>
                             <arguments>
                                 <argument>${project.build.directory}/test-classes/jpa.properties</argument>
-                                <argument>src/main/kernel/kernel.1.json</argument>
+                                <argument>src/main/kernel/kernel.2.json</argument>
                             </arguments>
                         </configuration>
                     </plugin>

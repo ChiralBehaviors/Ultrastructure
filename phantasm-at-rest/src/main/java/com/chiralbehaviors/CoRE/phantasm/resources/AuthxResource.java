@@ -75,13 +75,9 @@ public class AuthxResource extends TransactionalResource {
 
     public AuthxResource(EntityManagerFactory emf) {
         super(emf);
-        Model model = new ModelImpl(emf);
-        try {
+        try (Model model = new ModelImpl(emf)) {
             login = model.getKernel()
                          .getLogin();
-        } finally {
-            model.getEntityManager()
-                 .close();
         }
     }
 

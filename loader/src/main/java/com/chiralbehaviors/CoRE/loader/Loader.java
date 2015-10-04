@@ -37,6 +37,8 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.hellblazer.utils.Utils;
 
 import liquibase.Liquibase;
@@ -167,10 +169,21 @@ public class Loader {
         properties.load(new ByteArrayInputStream(txfmd.getBytes()));
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
-        EntityManager em = emf.createEntityManager();
-        KernelUtil.loadKernel(em);
-        em.close();
-        emf.close();
+        try (Model model = new ModelImpl(emf)) {
+            EntityManager em = model.getEntityManager();
+            KernelUtil.loadKernel(em);
+            em.getTransaction()
+              .begin();
+            KernelUtil.initializeInstance(model, configuration.coreDb,
+                                          "CoRE instance");
+            em.getTransaction()
+              .commit();
+        } catch (InstantiationException e) {
+            throw new IllegalStateException("Unable to create CoRE instance",
+                                            e);
+        } finally {
+            emf.close();
+        }
         log.info("Bootstrapping complete");
     }
 

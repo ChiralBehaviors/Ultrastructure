@@ -55,6 +55,6 @@ public class Credential {
     public boolean isValid(Timestamp lastUpdated, Timestamp currentTime) {
         return lastUpdated.toInstant()
                           .plusMillis(ttl)
-                          .isBefore(currentTime.toInstant());
+                          .isAfter(currentTime.toInstant());
     }
 }

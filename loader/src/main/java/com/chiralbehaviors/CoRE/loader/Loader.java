@@ -30,6 +30,7 @@ import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 import org.slf4j.Logger;
@@ -169,15 +170,25 @@ public class Loader {
         properties.load(new ByteArrayInputStream(txfmd.getBytes()));
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
+
+        EntityManager loadingEm = emf.createEntityManager();
+        try {
+            KernelUtil.loadKernel(loadingEm);
+        } finally {
+            if (loadingEm.getTransaction()
+                         .isActive()) {
+                loadingEm.getTransaction()
+                         .rollback();
+            }
+            loadingEm.close();
+        }
         try (Model model = new ModelImpl(emf)) {
-            EntityManager em = model.getEntityManager();
-            KernelUtil.loadKernel(em);
-            em.getTransaction()
-              .begin();
+            EntityTransaction transaction = model.getEntityManager()
+                                                 .getTransaction();
+            transaction.begin();
             KernelUtil.initializeInstance(model, configuration.coreDb,
                                           "CoRE instance");
-            em.getTransaction()
-              .commit();
+            transaction.commit();
         } catch (InstantiationException e) {
             throw new IllegalStateException("Unable to create CoRE instance",
                                             e);

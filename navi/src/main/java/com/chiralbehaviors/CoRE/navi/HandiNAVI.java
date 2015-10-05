@@ -15,6 +15,8 @@
  */
 package com.chiralbehaviors.CoRE.navi;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.Map;
 
@@ -97,24 +99,13 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
     @Override
     public void run(HandiNAVIConfiguration configuration,
                     Environment environment) throws Exception {
-        if (configuration.randomPort) {
-            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
-                                                                                             .get(0)).setPort(0);
-            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors()
-                                                                                             .get(0)).setPort(0);
-        }
         this.environment = environment;
         environment.lifecycle()
                    .addServerLifecycleListener(server -> jettyServer = server);
-        Map<String, String> properties = configuration.jpa.getProperties();
-
-        // configuration by convention
-        properties.put("hibernate.dialect",
-                       "com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect");
-
-        if (emf == null) { // allow tests to set this if needed
-            emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
-                                                         properties);
+        if (configuration.configureFromEnvironment) {
+            configureFromEnvironment(configuration);
+        } else {
+            configure(configuration);
         }
         CoreInstance coreInstance;
         try (Model model = new ModelImpl(emf);) {
@@ -198,6 +189,53 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
             filter.setInitParameter(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM,
                                     Boolean.toString(cors.chainPreflight));
 
+        }
+    }
+
+    private void configureFromEnvironment(HandiNAVIConfiguration configuration) {
+        HttpConnectorFactory httpConnectorFactory = (HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
+                                                                                                                                    .get(0);
+        httpConnectorFactory.setPort(Integer.parseInt(System.getenv("PORT")));
+
+        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
+        properties.putAll(configuration.jpa.getProperties());
+
+        URI dbUri;
+        try {
+            dbUri = new URI(System.getenv("DATABASE_URL"));
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(String.format("%s is not a valid URI",
+                                                          System.getenv("DATABASE_URL")),
+                                            e);
+        }
+
+        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':'
+                       + dbUri.getPort() + dbUri.getPath();
+
+        properties.put("javax.persistence.jdbc.user", dbUri.getUserInfo()
+                                                           .split(":")[0]);
+        properties.put("javax.persistence.jdbc.password", dbUri.getUserInfo()
+                                                               .split(":")[1]);
+        properties.put("javax.persistence.jdbc.url", dbUrl);
+        properties.put("javax.persistence.jdbc.driver",
+                       "org.postgresql.Driver");
+        emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
+                                                     properties);
+    }
+
+    private void configure(HandiNAVIConfiguration configuration) {
+        if (configuration.randomPort) {
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
+                                                                                             .get(0)).setPort(0);
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors()
+                                                                                             .get(0)).setPort(0);
+        }
+        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
+        properties.putAll(configuration.jpa.getProperties());
+
+        if (emf == null) { // allow tests to set this if needed
+            emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
+                                                         properties);
         }
     }
 

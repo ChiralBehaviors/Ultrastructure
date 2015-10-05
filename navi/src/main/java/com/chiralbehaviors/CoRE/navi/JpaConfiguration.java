@@ -15,6 +15,7 @@
  */
 package com.chiralbehaviors.CoRE.navi;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -28,6 +29,20 @@ import io.dropwizard.Configuration;
  * 
  */
 public class JpaConfiguration extends Configuration {
+    public static Map<String, String> getDefaultProperties() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put("hibernate.dialect",
+                       "com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect");
+        properties.put("hibernate.cache.use_second_level_cache", "true");
+        properties.put("hibernate.c3p0.max_size", "20");
+        properties.put("hibernate.c3p0.min_size", "5");
+        properties.put(" hibernate.c3p0.timeout", "5000");
+        properties.put("hibernate.c3p0.max_statements", "100");
+        properties.put("hibernate.c3p0.idle_test_period", "300");
+        properties.put("hibernate.c3p0.acquire_increment", "2");
+        return properties;
+    }
+
     @JsonProperty
     private boolean debug = false;
 
@@ -37,7 +52,7 @@ public class JpaConfiguration extends Configuration {
 
     @NotEmpty
     @JsonProperty
-    private Map<String, String> properties;
+    private Map<String, String> properties = new HashMap<>();
 
     public String getPersistenceUnit() {
         return persistenceUnit;

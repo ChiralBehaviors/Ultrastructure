@@ -29,7 +29,7 @@
                 remarks="Determines if we set this job to the status denoted by &quot;status_to_set&quot; if the current job has active sibling jobs.  Setting it to TRUE essentially overrides any say those sibling jobs might have."
                 type="boolean" />
             <column name="notes" remarks="Additional notes regarding usage of this particular rule" type="TEXT" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
+            <column name="updated_by"  defaultValue= "'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

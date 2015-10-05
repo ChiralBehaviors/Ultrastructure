@@ -11,7 +11,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="product_location_pkey" />
             </column>
-            <column name="agency" type="uuid" defaultValue="'00000000-0000-0000-0000-000000000001'"/>
+            <column name="agency" type="uuid"/>
             <column name="product" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -21,7 +21,7 @@
             <column name="location" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="updated_by" type="uuid">
+            <column name="updated_by" defaultValue= "'00000000-0000-0000-0000-000000000003'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

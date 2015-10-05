@@ -35,7 +35,7 @@
                 type="numeric" />
             <column name="timestamp_value" type="TIMESTAMPTZ" />
             <column name="notes" remarks="Additional notes regarding this rule" type="TEXT" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
+            <column name="updated_by"  defaultValue= "'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

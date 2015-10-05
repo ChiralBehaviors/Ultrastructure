@@ -167,6 +167,7 @@ public class AbstractModelTest {
                                    e);
             }
         }
+        ModelImpl.clearPhantasmCache();
     }
 
     @Before

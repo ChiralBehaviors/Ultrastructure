@@ -86,6 +86,10 @@ public class ModelImpl implements Model {
                                                                             model));
     }
 
+    public static void clearPhantasmCache() {
+        cache.clear();
+    }
+
     public static String prefixFor(Class<?> ruleform) {
         String simpleName = ruleform.getSimpleName();
         StringBuilder builder = new StringBuilder(simpleName.length());
@@ -155,6 +159,17 @@ public class ModelImpl implements Model {
     public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
                                                                                Class<R> phantasm) {
         return (R) wrap(phantasm, source.getRuleform());
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.AutoCloseable#close()
+     */
+    @Override
+    public void close() {
+        if (!em.isOpen()) {
+            return;
+        }
+        getEntityManager().close();
     }
 
     /* (non-Javadoc)
@@ -585,16 +600,5 @@ public class ModelImpl implements Model {
             currentPrincipal = new AuthorizedPrincipal(em.getReference(Agency.class,
                                                                        WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()));
         }
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.AutoCloseable#close()
-     */
-    @Override
-    public void close() {
-        if (!em.isOpen()) {
-            return;
-        }
-        getEntityManager().close();
     }
 }

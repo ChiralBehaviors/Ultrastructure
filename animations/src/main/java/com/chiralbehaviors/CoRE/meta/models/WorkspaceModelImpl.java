@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hhildebrand
@@ -130,5 +131,13 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                                                                        WorkspaceAuthorization.class);
         query.setParameter("product", definingProduct);
         return query.getResultList();
+    }
+
+    @Override
+    public void unload(Product definingProduct) {
+        for (WorkspaceAuthorization auth : WorkspaceSnapshot.getAuthorizations(definingProduct,
+                                                                               em)) {
+            em.remove(auth.getEntity(em));
+        }
     }
 }

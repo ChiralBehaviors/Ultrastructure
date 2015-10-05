@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -34,11 +35,13 @@ import javax.persistence.EntityManager;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -134,8 +137,36 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                                                                      .toURL()));
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-            assertNotNull(scope.lookup("TheDude"));
+            Agency theDude = (Agency) scope.lookup("TheDude");
+            assertNotNull(theDude);
         }
+    }
 
+    // @Test
+    public void testUnload() throws Exception {
+        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+                                                                model);
+        em.flush();
+        Product definingProduct = importer.getWorkspace()
+                                          .getDefiningProduct();
+
+        Thing1 thing1 = model.construct(Thing1.class, "Freddy",
+                                        "He always comes back");
+        model.getEntityManager()
+             .flush();
+        model.getEntityManager()
+             .clear();
+        model.getWorkspaceModel()
+             .unload(definingProduct);
+        model.getEntityManager()
+             .flush();
+        model.getEntityManager()
+             .clear();
+        try {
+            assertNull(model.wrap(Thing1.class, thing1.getRuleform()));
+            fail("Thing ontology not unloaded");
+        } catch (ClassCastException e) {
+            // expected
+        }
     }
 }

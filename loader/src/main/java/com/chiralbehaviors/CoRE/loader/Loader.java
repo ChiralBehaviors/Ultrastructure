@@ -1,7 +1,7 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class Loader {
 
@@ -73,12 +73,17 @@ public class Loader {
     }
 
     public void bootstrap() throws Exception {
+        loadModel();
+        bootstrapCoRE();
+    }
+
+    public Loader createDatabase() throws Exception, SQLException {
         if (configuration.dropDatabase) {
             dropDatabase();
         }
-        createDatabase();
-        loadModel();
-        bootstrapCoRE();
+        log.info(String.format("Creating core db %s", configuration.coreDb));
+        load(CREATE_DATABASE_XML, configuration.getDbaConnection());
+        return this;
     }
 
     private void dropDatabase() throws Exception {
@@ -150,6 +155,13 @@ public class Loader {
         }
     }
 
+    private void loadModel() throws Exception, SQLException {
+        log.info(String.format("loading model sql in core db %s",
+                               configuration.coreDb));
+        load(MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
+             configuration.getCoreConnection());
+    }
+
     protected void bootstrapCoRE() throws SQLException, IOException {
         log.info(String.format("Bootstrapping core in db %s",
                                configuration.coreDb));
@@ -196,17 +208,5 @@ public class Loader {
             emf.close();
         }
         log.info("Bootstrapping complete");
-    }
-
-    protected void createDatabase() throws Exception, SQLException {
-        log.info(String.format("Creating core db %s", configuration.coreDb));
-        load(CREATE_DATABASE_XML, configuration.getDbaConnection());
-    }
-
-    protected void loadModel() throws Exception, SQLException {
-        log.info(String.format("loading model sql in core db %s",
-                               configuration.coreDb));
-        load(MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
-             configuration.getCoreConnection());
     }
 }

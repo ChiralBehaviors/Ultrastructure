@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.loader.Configuration;
+import com.chiralbehaviors.CoRE.loader.Loader;
 import com.chiralbehaviors.CoRE.navi.CORSConfiguration;
 import com.chiralbehaviors.CoRE.navi.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration;
@@ -150,7 +152,18 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
         }
     }
 
-    private void configure(HandiNAVIConfiguration configuration) {
+    private void bootstrap(String server, int port, String database,
+                           String username, String password) throws Exception {
+        Configuration loaderConfig = new Configuration();
+        loaderConfig.coreDb = database.substring(1);
+        loaderConfig.corePassword = password;
+        loaderConfig.corePort = port;
+        loaderConfig.coreServer = server;
+        loaderConfig.coreUsername = username;
+        new Loader(loaderConfig).bootstrap();
+    }
+
+    private void configure(HandiNAVIConfiguration configuration) throws Exception {
         if (configuration.randomPort) {
             ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
                                                                                              .get(0)).setPort(0);
@@ -164,6 +177,21 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
             emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                          properties);
         }
+        URI dbUri;
+        try {
+            dbUri = new URI(properties.get("javax.persistence.jdbc.url"));
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(String.format("%s is not a valid URI",
+                                                          System.getenv("DATABASE_URL")),
+                                            e);
+        }
+
+        String server = dbUri.getHost();
+        int port = dbUri.getPort();
+        String database = dbUri.getPath();
+        bootstrap(server, port, database,
+                  properties.get("javax.persistence.jdbc.user"),
+                  properties.get("javax.persistence.jdbc.password"));
     }
 
     private Binder configureAuth(HandiNAVIConfiguration configuration,
@@ -230,7 +258,7 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
         }
     }
 
-    private void configureFromEnvironment(HandiNAVIConfiguration configuration) {
+    private void configureFromEnvironment(HandiNAVIConfiguration configuration) throws Exception {
         HttpConnectorFactory httpConnectorFactory = (HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
                                                                                                                                     .get(0);
         httpConnectorFactory.setPort(Integer.parseInt(System.getenv("PORT")));
@@ -247,24 +275,28 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                                             e);
         }
 
-        String dbUrl = String.format("jdbc:postgresql://%s:%s%s",
-                                     dbUri.getHost(), dbUri.getPort(),
-                                     dbUri.getPath());
-
         String[] up = dbUri.getUserInfo()
                            .split(":");
         if (up.length == 0) {
             log.error("Invalid u/p in DATABASE_URL");
             throw new IllegalStateException();
         }
-        log.info("jdbc url: {} user: {}", dbUrl, up[0]);
-        properties.put("javax.persistence.jdbc.user", up[0]);
-        properties.put("javax.persistence.jdbc.password",
-                       up.length == 2 ? up[1] : "");
+
+        String server = dbUri.getHost();
+        int port = dbUri.getPort();
+        String database = dbUri.getPath();
+        String dbUrl = String.format("jdbc:postgresql://%s:%s%s", server, port,
+                                     database);
+        String username = up[0];
+        String password = up.length == 2 ? up[1] : "";
+        log.info("jdbc url: {} user: {}", dbUrl, username);
+        properties.put("javax.persistence.jdbc.user", username);
+        properties.put("javax.persistence.jdbc.password", password);
         properties.put("javax.persistence.jdbc.url", dbUrl);
         properties.put("javax.persistence.jdbc.driver",
                        "org.postgresql.Driver");
         emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                      properties);
+        bootstrap(server, port, database, username, password);
     }
 }

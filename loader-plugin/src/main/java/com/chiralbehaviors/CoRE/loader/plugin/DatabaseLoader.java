@@ -76,7 +76,8 @@ public class DatabaseLoader extends AbstractMojo {
             throw new MojoFailureException("No loader configuration supplied");
         }
         try {
-            new Loader(loader).bootstrap();
+            new Loader(loader).createDatabase()
+                              .bootstrap();
         } catch (Exception e) {
             MojoFailureException ex = new MojoFailureException("Unable to load database");
             ex.initCause(e);

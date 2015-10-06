@@ -70,6 +70,10 @@
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>browser</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.chiralbehaviors.CoRE</groupId>
+            <artifactId>loader</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

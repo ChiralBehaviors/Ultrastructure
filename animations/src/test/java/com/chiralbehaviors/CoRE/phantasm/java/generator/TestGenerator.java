@@ -63,7 +63,7 @@ public class TestGenerator {
     }
 
     @Test
-    public void testKerenelGen() throws IOException {
+    public void testKernelGen() throws IOException {
         Configuration configuration = new Configuration();
         configuration.resource = "/kernel.2.wsp";
         configuration.appendTypeToPackage = true;

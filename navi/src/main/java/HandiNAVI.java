@@ -247,13 +247,20 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                                             e);
         }
 
-        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':'
-                       + dbUri.getPort() + dbUri.getPath();
+        String dbUrl = String.format("jdbc:postgresql://%s:%s%s",
+                                     dbUri.getHost(), dbUri.getPort(),
+                                     dbUri.getPath());
 
-        properties.put("javax.persistence.jdbc.user", dbUri.getUserInfo()
-                                                           .split(":")[0]);
-        properties.put("javax.persistence.jdbc.password", dbUri.getUserInfo()
-                                                               .split(":")[1]);
+        String[] up = dbUri.getUserInfo()
+                           .split(":");
+        if (up.length == 0) {
+            log.error("Invalid u/p in DATABASE_URL");
+            throw new IllegalStateException();
+        }
+        log.info("jdbc url: {} user: {}", dbUrl, up[0]);
+        properties.put("javax.persistence.jdbc.user", up[0]);
+        properties.put("javax.persistence.jdbc.password",
+                       up.length == 2 ? up[1] : "");
         properties.put("javax.persistence.jdbc.url", dbUrl);
         properties.put("javax.persistence.jdbc.driver",
                        "org.postgresql.Driver");

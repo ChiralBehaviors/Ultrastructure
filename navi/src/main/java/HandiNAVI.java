@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.navi;
+
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,6 +36,10 @@ import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.navi.CORSConfiguration;
+import com.chiralbehaviors.CoRE.navi.EmfHealthCheck;
+import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration;
+import com.chiralbehaviors.CoRE.navi.JpaConfiguration;
 import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration.Asset;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;

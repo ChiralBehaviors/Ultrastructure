@@ -56,3 +56,11 @@ To drop the database and start from scratch, simply add "-Ddrop" to the full bui
     $ cd drop-database
     $ mvn install -Ddrop
 
+To create the database from scratch:
+
+  $ cd drop-database  
+  $ mvn install -P sudo-drop-me  
+  
+Then open PGAdmin and make sure that all your databases are belong to us.  I mean, dropped.  Don't drop postgres, or you'll be very sorry and have to return to go, and not collect 200 dollars.
+Also, too, drop your login role other than your postgres or whatever you're using as your master superuser role
+

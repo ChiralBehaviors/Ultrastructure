@@ -1,3 +1,4 @@
+
 /** 
  * (C) Copyright 2015 Chiral Behaviors, LLC. All Rights Reserved
  * 
@@ -13,8 +14,9 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.navi;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.Map;
 
@@ -31,7 +33,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.loader.Configuration;
+import com.chiralbehaviors.CoRE.loader.Loader;
+import com.chiralbehaviors.CoRE.navi.CORSConfiguration;
+import com.chiralbehaviors.CoRE.navi.EmfHealthCheck;
+import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration;
 import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration.Asset;
+import com.chiralbehaviors.CoRE.navi.JpaConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
@@ -94,25 +102,100 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
     @Override
     public void run(HandiNAVIConfiguration configuration,
                     Environment environment) throws Exception {
+        this.environment = environment;
+        environment.lifecycle()
+                   .addServerLifecycleListener(server -> jettyServer = server);
+        if (configuration.configureFromEnvironment) {
+            configureFromEnvironment(configuration);
+        } else {
+            configure(configuration);
+        }
+        Binder authBinder = configureAuth(configuration, environment);
+
+        environment.jersey()
+                   .register(authBinder);
+        for (Asset asset : configuration.assets) {
+            new AssetsBundle(asset.path, asset.uri, asset.index,
+                             asset.name).run(environment);
+        }
+        environment.jersey()
+                   .register(new FacetResource(emf));
+        environment.jersey()
+                   .register(new WorkspaceResource(emf));
+        environment.jersey()
+                   .register(new RuleformResource(emf));
+        environment.jersey()
+                   .register(new WorkspaceMediatedResource(emf));
+        environment.jersey()
+                   .register(new GraphQlResource(emf));
+        environment.jersey()
+                   .register(new AuthxResource(emf));
+        environment.healthChecks()
+                   .register("EMF Health", new EmfHealthCheck(emf));
+
+        configureCORS(configuration, environment);
+    }
+
+    public void setEmf(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
+    public void stop() {
+        emf.close();
+        if (jettyServer != null) {
+            try {
+                jettyServer.setStopTimeout(100);
+                jettyServer.stop();
+            } catch (Throwable e) {
+                // ignore
+            }
+        }
+    }
+
+    private void bootstrap(String server, int port, String database,
+                           String username, String password) throws Exception {
+        Configuration loaderConfig = new Configuration();
+        loaderConfig.coreDb = database.substring(1);
+        loaderConfig.corePassword = password;
+        loaderConfig.corePort = port;
+        loaderConfig.coreServer = server;
+        loaderConfig.coreUsername = username;
+        new Loader(loaderConfig).bootstrap();
+    }
+
+    private void configure(HandiNAVIConfiguration configuration) throws Exception {
         if (configuration.randomPort) {
             ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
                                                                                              .get(0)).setPort(0);
             ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors()
                                                                                              .get(0)).setPort(0);
         }
-        this.environment = environment;
-        environment.lifecycle()
-                   .addServerLifecycleListener(server -> jettyServer = server);
-        Map<String, String> properties = configuration.jpa.getProperties();
-
-        // configuration by convention
-        properties.put("hibernate.dialect",
-                       "com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect");
+        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
+        properties.putAll(configuration.jpa.getProperties());
 
         if (emf == null) { // allow tests to set this if needed
             emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                          properties);
         }
+        URI dbUri;
+        try {
+            dbUri = new URI(properties.get("javax.persistence.jdbc.url"));
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(String.format("%s is not a valid URI",
+                                                          System.getenv("DATABASE_URL")),
+                                            e);
+        }
+
+        String server = dbUri.getHost();
+        int port = dbUri.getPort();
+        String database = dbUri.getPath();
+        bootstrap(server, port, database,
+                  properties.get("javax.persistence.jdbc.user"),
+                  properties.get("javax.persistence.jdbc.password"));
+    }
+
+    private Binder configureAuth(HandiNAVIConfiguration configuration,
+                                 Environment environment) {
         Binder authBinder = null;
         switch (configuration.auth) {
             case NULL:
@@ -139,28 +222,11 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
         if (authBinder == null) {
             throw new IllegalStateException("No configuration specified for authentication.  Authentication configuration is required.");
         }
+        return authBinder;
+    }
 
-        environment.jersey()
-                   .register(authBinder);
-        for (Asset asset : configuration.assets) {
-            new AssetsBundle(asset.path, asset.uri, asset.index,
-                             asset.name).run(environment);
-        }
-        environment.jersey()
-                   .register(new FacetResource(emf));
-        environment.jersey()
-                   .register(new WorkspaceResource(emf));
-        environment.jersey()
-                   .register(new RuleformResource(emf));
-        environment.jersey()
-                   .register(new WorkspaceMediatedResource(emf));
-        environment.jersey()
-                   .register(new GraphQlResource(emf));
-        environment.jersey()
-                   .register(new AuthxResource(emf));
-        environment.healthChecks()
-                   .register("EMF Health", new EmfHealthCheck(emf));
-
+    private void configureCORS(HandiNAVIConfiguration configuration,
+                               Environment environment) {
         if (configuration.useCORS) {
             CORSConfiguration cors = configuration.CORS;
             FilterRegistration.Dynamic filter = environment.servlets()
@@ -192,19 +258,45 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
         }
     }
 
-    public void setEmf(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
+    private void configureFromEnvironment(HandiNAVIConfiguration configuration) throws Exception {
+        HttpConnectorFactory httpConnectorFactory = (HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
+                                                                                                                                    .get(0);
+        httpConnectorFactory.setPort(Integer.parseInt(System.getenv("PORT")));
 
-    public void stop() {
-        emf.close();
-        if (jettyServer != null) {
-            try {
-                jettyServer.setStopTimeout(100);
-                jettyServer.stop();
-            } catch (Throwable e) {
-                // ignore
-            }
+        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
+        properties.putAll(configuration.jpa.getProperties());
+
+        URI dbUri;
+        try {
+            dbUri = new URI(System.getenv("DATABASE_URL"));
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(String.format("%s is not a valid URI",
+                                                          System.getenv("DATABASE_URL")),
+                                            e);
         }
+
+        String[] up = dbUri.getUserInfo()
+                           .split(":");
+        if (up.length == 0) {
+            log.error("Invalid u/p in DATABASE_URL");
+            throw new IllegalStateException();
+        }
+
+        String server = dbUri.getHost();
+        int port = dbUri.getPort();
+        String database = dbUri.getPath();
+        String dbUrl = String.format("jdbc:postgresql://%s:%s%s", server, port,
+                                     database);
+        String username = up[0];
+        String password = up.length == 2 ? up[1] : "";
+        log.info("jdbc url: {} user: {}", dbUrl, username);
+        properties.put("javax.persistence.jdbc.user", username);
+        properties.put("javax.persistence.jdbc.password", password);
+        properties.put("javax.persistence.jdbc.url", dbUrl);
+        properties.put("javax.persistence.jdbc.driver",
+                       "org.postgresql.Driver");
+        emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
+                                                     properties);
+        bootstrap(server, port, database, username, password);
     }
 }

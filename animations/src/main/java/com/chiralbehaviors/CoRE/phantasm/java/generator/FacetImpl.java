@@ -20,6 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.generator;
 
+import static com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter.stripQuotes;
+import static com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.toTypeName;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +35,7 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.utils.English;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributesContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ConstraintContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.NetworkConstraintsContext;
@@ -43,6 +46,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.NetworkConstraints
  */
 public class FacetImpl implements Facet {
 
+    private final String       className;
     private final FacetContext context;
     private final Set<String>  imports                     = new HashSet<>();
     private final List<Getter> inferredRelationshipGetters = new ArrayList<>();
@@ -60,6 +64,8 @@ public class FacetImpl implements Facet {
         this.context = context;
         this.ruleformType = ruleformType;
         this.uri = uri;
+        className = context.name != null ? toTypeName(stripQuotes(context.name.getText()))
+                                         : context.classification.member.getText();
     }
 
     @Override
@@ -77,7 +83,7 @@ public class FacetImpl implements Facet {
      */
     @Override
     public String getClassName() {
-        return context.classification.member.getText();
+        return className;
     }
 
     @Override
@@ -235,24 +241,21 @@ public class FacetImpl implements Facet {
 
     private void resolveAttributes(WorkspacePresentation presentation,
                                    Map<ScopedName, MappedAttribute> mapped) {
-        ClassifiedAttributesContext classifiedAttributes = context.classifiedAttributes();
+        List<ClassifiedAttributeContext> classifiedAttributes = context.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
-        classifiedAttributes.qualifiedName()
-                            .forEach(name -> {
-                                ScopedName key = new ScopedName(name);
-                                MappedAttribute attribute = mapped.get(key);
-                                if (attribute == null) {
-                                    throw new IllegalStateException(String.format("attribute not found: %s",
-                                                                                  key));
-                                }
-                                primitiveGetters.add(new Getter(key,
-                                                                attribute));
-                                primitiveSetters.add(new Setter(key,
-                                                                attribute));
-                                imports.addAll(attribute.getImports());
-                            });
+        classifiedAttributes.forEach(attr -> {
+            ScopedName key = new ScopedName(attr.key);
+            MappedAttribute attribute = mapped.get(key);
+            if (attribute == null) {
+                throw new IllegalStateException(String.format("attribute not found: %s",
+                                                              key));
+            }
+            primitiveGetters.add(new Getter(key, attribute));
+            primitiveSetters.add(new Setter(key, attribute));
+            imports.addAll(attribute.getImports());
+        });
     }
 
     private void resolveList(ScopedName key, String baseName,

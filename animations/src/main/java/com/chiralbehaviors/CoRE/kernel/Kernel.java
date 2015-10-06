@@ -146,6 +146,8 @@ public interface Kernel {
 
     Product getInstanceMethod();
 
+    Relationship getInstanceOf();
+
     Agency getInverseSoftware();
 
     Relationship getINVOKE();
@@ -175,6 +177,8 @@ public interface Kernel {
     Relationship getLessThanOrEqual();
 
     Attribute getLogin();
+
+    Relationship getLOGIN_TO();
 
     Attribute getLookupOrder();
 
@@ -247,6 +251,8 @@ public interface Kernel {
     Unit getSameUnit();
 
     Unit getSeconds();
+
+    Relationship getSingletonOf();
 
     Agency getSpecialSystemAgency();
 

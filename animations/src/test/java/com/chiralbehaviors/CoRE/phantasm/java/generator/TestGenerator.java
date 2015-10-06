@@ -26,8 +26,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.phantasm.java.generator.Configuration;
-import com.chiralbehaviors.CoRE.phantasm.java.generator.PhantasmGenerator;
 import com.hellblazer.utils.Utils;
 
 /**
@@ -57,6 +55,17 @@ public class TestGenerator {
     public void testResource() throws IOException {
         Configuration configuration = new Configuration();
         configuration.resource = THING_WSP;
+        configuration.appendTypeToPackage = true;
+        configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
+        configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;
+        PhantasmGenerator generator = new PhantasmGenerator(configuration);
+        generator.generate();
+    }
+
+    @Test
+    public void testKernelGen() throws IOException {
+        Configuration configuration = new Configuration();
+        configuration.resource = "/kernel.2.wsp";
         configuration.appendTypeToPackage = true;
         configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
         configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;

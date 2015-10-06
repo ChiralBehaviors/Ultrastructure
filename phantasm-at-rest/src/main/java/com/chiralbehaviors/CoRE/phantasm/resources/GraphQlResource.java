@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.resources;
 
-import static com.chiralbehaviors.CoRE.kernel.product.WorkspaceOf.workspaceOf;
 import static graphql.schema.GraphQLObjectType.newObject;
 
 import java.util.ArrayDeque;
@@ -52,8 +51,8 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.kernel.product.Plugin;
-import com.chiralbehaviors.CoRE.kernel.product.Workspace;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -283,7 +282,7 @@ public class GraphQlResource extends TransactionalResource {
                                                                  model);
         Map<NetworkAuthorization<?>, FacetType<?, ?>> resolved = new HashMap<>();
         Product definingProduct = accessor.getDefiningProduct();
-        Workspace workspace = workspaceOf(model, definingProduct);
+        Workspace workspace = model.wrap(Workspace.class, definingProduct);
         Builder topLevelQuery = newObject().name("Query")
                                            .description(String.format("Top level query for %s",
                                                                       definingProduct.getName()));

@@ -4,6 +4,12 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
+
+    <!-- Tag so we can roll back the change of the db creation -->
+    <changeSet author="hhildebrand" id="tag_create-2.0.0">
+        <tagDatabase tag="initial-schema-create" />
+    </changeSet>
+    
     <changeSet id="install uuid-ossp" author="hhildebrand">
         <sql>
             CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
@@ -12,6 +18,7 @@
     <include relativeToChangelogFile="true" file="schemas.xml" />
     <include relativeToChangelogFile="true" file="ruleform/ruleform.xml" />
     <include relativeToChangelogFile="true" file="readable/readable.xml" />
+    <include relativeToChangelogFile="true" file="revoke-super.xml" />
  
     <changeSet author="hhildebrand" id="tag-version-2.0.0">
         <tagDatabase tag="2.0.0" />

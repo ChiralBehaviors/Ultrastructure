@@ -55,9 +55,9 @@ import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.attribute.ValueType;
-import com.chiralbehaviors.CoRE.kernel.product.Constructor;
-import com.chiralbehaviors.CoRE.kernel.product.InstanceMethod;
-import com.chiralbehaviors.CoRE.kernel.product.Plugin;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
+import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
@@ -129,9 +129,10 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     public static Object invoke(Method method, DataFetchingEnvironment env,
+                                Model model,
                                 @SuppressWarnings("rawtypes") Phantasm instance) {
         try {
-            return method.invoke(null, env, instance);
+            return method.invoke(null, env, model, instance);
         } catch (InvocationTargetException e) {
             log.error("error invoking {} plugin {}", instance.toString(),
                       method.toGenericString(), e.getTargetException());
@@ -570,9 +571,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
             }
             @SuppressWarnings("unchecked")
-            Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[1];
-            return invoke(method, env, ctx(env).getModel()
-                                               .wrap(phantasm, instance));
+            Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
+            Model model = ctx(env).getModel();
+            return invoke(method, env, model, model.wrap(phantasm, instance));
         });
     }
 
@@ -641,7 +642,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                                  .build())
                                                         .collect(Collectors.toList());
         @SuppressWarnings("unchecked")
-        Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[1];
+        Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
         typeBuilder.field(newFieldDefinition().type(outputTypeOf(instanceMethod.getReturnType()))
                                               .argument(arguments)
                                               .name(instanceMethod.getName())
@@ -660,12 +661,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                       return null;
 
                                                   }
+                                                  Model model = ctx(env).getModel();
                                                   return instance == null ? null
                                                                           : invoke(method,
                                                                                    env,
-                                                                                   ctx(env).getModel()
-                                                                                           .wrap(phantasm,
-                                                                                                 instance));
+                                                                                   model,
+                                                                                   model.wrap(phantasm,
+                                                                                              instance));
                                               })
                                               .description(instanceMethod.getDescription())
                                               .build());
@@ -762,8 +764,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                         .filter(method -> Modifier.isStatic(method.getModifiers()))
                                         .filter(method -> method.getName()
                                                                 .equals(implementationMethod))
-                                        .filter(method -> method.getParameterTypes().length == 2)
+                                        .filter(method -> method.getParameterTypes().length == 3)
                                         .filter(method -> method.getParameterTypes()[0].equals(DataFetchingEnvironment.class))
+                                        .filter(method -> method.getParameterTypes()[1].equals(Model.class))
                                         .collect(Collectors.toList());
         if (candidates.isEmpty()) {
             log.warn("Error plugging in {} into {}, no static method matches for {} in {}",

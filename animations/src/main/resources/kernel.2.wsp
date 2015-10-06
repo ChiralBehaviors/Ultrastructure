@@ -13,6 +13,14 @@ agencies {
     }
     facets {
         IsA.CoreUser { Login PasswordRounds PasswordHash AccessToken }
+            constraints {
+                n LOGIN_TO: InstanceOf.Core named loginCapaility
+            }
+        InstanceOf.Core named: "Core Instance"
+            constraints {
+                n MayLoginBy: InstanceOf.Core named login
+            }
+        SingletonOf.Core named: "This Core Instance"
     }
 }      
 
@@ -81,6 +89,9 @@ products {
 }
 
 relationships {
+    InstanceOf = "Instance Of" "A is an instance of B" | HasInstance = "Has Instance" "A has instance B";
+    SingletonOf = "Singleton Of" "A is the singleton instance of B" | HasSingleton = "Has Singleton" "A has singleton instance B";
+    
     IsPluginOf = "Is Plugin Of" "A is a plugin of the workspace B" | HasPlugin = "Has Plugin" "A has a plugin B";
     IsArgumentOf = "Is Argument Of" "A is an argument for the method B" | HasArgument = "Has Argument" "A has an argument B";
     IsInstanceMethodOf = "Is Instance Method Of" "A is an instance method of B" | HasInstanceMethod = "Has Instance Method" "A has an instance method B";
@@ -96,7 +107,8 @@ relationships {
     APPLY = "Apply" "The apply capability" | MayBeAppliedBy = "May Be Applied By" "The inverse apply capability";
     REMOVE = "Remove" "The remove capability" | MayBeRemovedBy = "May Be Removed By" "The inverse remove capability";
     INVOKE = "Invoke" "The invoke capability" | MayBeInvokedBy = "May Be Invoked By" "The inverse invoke capability";
-    EXECUTE_QUERY = "Execute Query" "The execute query capability" | QueryExecutedBy = "Query may be executed By" "The inverse execute query capability";  
+    EXECUTE_QUERY = "Execute Query" "The execute query capability" | QueryExecutedBy = "Query may be executed By" "The inverse execute query capability"; 
+    LOGIN_TO = "Login" "The login capability" | MayLoginBy = "Login may be done By" "The inverse login capability";  
     
     edges {
         APPLY.IsA.Capability
@@ -107,5 +119,6 @@ relationships {
         DELETE.IsA.Capability
         INVOKE.IsA.Capability
         EXECUTE_QUERY.IsA.Capability
+        LOGIN_TO.IsA.Capability
     }
 } 

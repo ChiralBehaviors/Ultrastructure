@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -31,8 +32,10 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.security.Credential;
 import com.google.common.base.Optional;
@@ -50,12 +53,19 @@ public class AgencyBearerTokenAuthenticator
     private final static Logger log                          = LoggerFactory.getLogger(AgencyBasicAuthenticator.class);
 
     private final EntityManagerFactory emf;
+    private final CoreInstance         coreInstance;
+    private final Relationship         loginTo;
 
     /**
      * @param emf
      */
     public AgencyBearerTokenAuthenticator(EntityManagerFactory emf) {
         this.emf = emf;
+        try (Model model = new ModelImpl(emf)) {
+            coreInstance = model.getCoreInstance();
+            loginTo = model.getKernel()
+                           .getLOGIN_TO();
+        }
     }
 
     @Override
@@ -69,9 +79,8 @@ public class AgencyBearerTokenAuthenticator
                      credentials);
             return Optional.absent();
         }
-        Model model = new ModelImpl(emf);
-        EntityManager em = model.getEntityManager();
-        try {
+        try (Model model = new ModelImpl(emf);) {
+            EntityManager em = model.getEntityManager();
             em.getTransaction()
               .begin();
 
@@ -86,13 +95,6 @@ public class AgencyBearerTokenAuthenticator
             em.getTransaction()
               .commit();
             return returned;
-        } finally {
-            if (em.getTransaction()
-                  .isActive()) {
-                em.getTransaction()
-                  .rollback();
-            }
-            em.close();
         }
     }
 
@@ -122,26 +124,39 @@ public class AgencyBearerTokenAuthenticator
                                                    RequestCredentials requestCredentials,
                                                    EntityManager em,
                                                    Model model) {
+        // Validate the credential
         Credential credential = (accessToken.getJsonValue(Credential.class));
         if (!validate(credential, requestCredentials)) {
             em.remove(accessToken);
             log.warn("Invalid access token {}", requestCredentials);
             return Optional.absent();
-        } else {
-            Agency agency = accessToken.getAgency();
-            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            if (credential.isValid(accessToken.getUpdated(), currentTime)) {
-                log.warn("requested access token {} for {}:{} has timed out",
-                         requestCredentials, agency.getId(), agency);
-                em.remove(accessToken);
-                return Optional.absent();
-            } else {
-                accessToken.setUpdated(currentTime);
-                log.info("requested access token {} refreshed for {}:{}",
-                         requestCredentials, agency.getId(), agency);
-                return Optional.of(principalFrom(agency, accessToken, model));
-            }
         }
+
+        // Validate time to live
+        Agency agency = accessToken.getAgency();
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        if (!credential.isValid(accessToken.getUpdated(), currentTime)) {
+            log.warn("requested access token {} for {}:{} has timed out",
+                     requestCredentials, agency.getId(), agency);
+            em.remove(accessToken);
+            return Optional.absent();
+        }
+
+        // Validate agency has login cap to this core instance
+        if (!model.getAgencyModel()
+                  .checkCapability(Arrays.asList(agency),
+                                   coreInstance.getRuleform(), loginTo)) {
+            log.warn("requested access token {} for {}:{} has no login capability",
+                     requestCredentials, agency.getId(), agency);
+            em.remove(accessToken);
+            return Optional.absent();
+        }
+
+        // Update and auth
+        accessToken.setUpdated(currentTime);
+        log.info("requested access token {} refreshed for {}:{}",
+                 requestCredentials, agency.getId(), agency);
+        return Optional.of(principalFrom(agency, accessToken, model));
     }
 
 }

@@ -94,10 +94,6 @@
             <artifactId>dropwizard-client</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.chiralbehaviors.CoRE</groupId>
-            <artifactId>kernel-phantasms</artifactId>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

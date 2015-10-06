@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
 import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.kernel.agency.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
@@ -75,13 +75,9 @@ public class AuthxResource extends TransactionalResource {
 
     public AuthxResource(EntityManagerFactory emf) {
         super(emf);
-        Model model = new ModelImpl(emf);
-        try {
+        try (Model model = new ModelImpl(emf)) {
             login = model.getKernel()
                          .getLogin();
-        } finally {
-            model.getEntityManager()
-                 .close();
         }
     }
 

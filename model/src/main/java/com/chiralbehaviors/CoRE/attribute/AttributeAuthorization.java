@@ -172,6 +172,12 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
         }
     }
 
+    @JsonIgnore
+    public ValueType getValueType() {
+        return authorizedAttribute != null ? authorizedAttribute.getValueType()
+                                           : authorizedNetworkAttribute.getValueType();
+    }
+
     public void setAuthorizedAttribute(Attribute productAttributeType3) {
         authorizedAttribute = productAttributeType3;
     }
@@ -187,10 +193,8 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
     abstract public void setNetworkAuthorization(NetworkAuthorization<RuleForm> auth);
 
     public void setValue(Object value) {
-        Attribute attribute = getAuthorizedAttribute();
-        if (attribute == null) {
-            attribute = getAuthorizedNetworkAttribute();
-        }
+        Attribute attribute = (authorizedAttribute != null) ? authorizedAttribute
+                                                            : authorizedNetworkAttribute;
         switch (attribute.getValueType()) {
             case BINARY:
                 setBinaryValue((byte[]) value);
@@ -216,6 +220,32 @@ abstract public class AttributeAuthorization<RuleForm extends ExistentialRulefor
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               attribute.getValueType()));
+        }
+    }
+
+    public void setValueFromString(String value) {
+        switch (getValueType()) {
+            case BINARY:
+                setValue(value.getBytes());
+                return;
+            case BOOLEAN:
+                setValue(Boolean.valueOf(value));
+                return;
+            case INTEGER:
+                setValue(Integer.parseInt(value));
+                return;
+            case NUMERIC:
+                setValue(BigDecimal.valueOf(Long.parseLong(value)));
+                return;
+            case TEXT:
+            case JSON:
+                setValue(value);
+                return;
+            case TIMESTAMP:
+                throw new UnsupportedOperationException("Timestamps are a PITA");
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              getValueType()));
         }
     }
 

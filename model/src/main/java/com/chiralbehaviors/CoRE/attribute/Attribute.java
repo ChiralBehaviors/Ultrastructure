@@ -29,6 +29,7 @@ import static com.chiralbehaviors.CoRE.attribute.Attribute.GET_CHILD_RULES_BY_RE
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -466,6 +467,8 @@ public class Attribute
                 return String.class;
             case TIMESTAMP:
                 return Timestamp.class;
+            case JSON:
+                return Map.class;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               valueType));

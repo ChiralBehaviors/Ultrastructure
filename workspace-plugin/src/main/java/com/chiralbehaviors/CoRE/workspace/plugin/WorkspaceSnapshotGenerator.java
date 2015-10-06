@@ -109,9 +109,9 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
                 UUID uuid = WorkspaceAccessor.uuidOf(export.iri);
                 getLog().warn(String.format("Processing workspace: %s:%s", uuid,
                                             export.iri));
-                Model model = new ModelImpl(emf);
-                EntityManager em = model.getEntityManager();
-                try {
+
+                try (Model model = new ModelImpl(emf)) {
+                    EntityManager em = model.getEntityManager();
                     em.getTransaction()
                       .begin();
                     WorkspaceScope scope = model.getWorkspaceModel()
@@ -130,9 +130,6 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
                         throw new MojoFailureException("An error occurred while serializing the workspace",
                                                        e);
                     }
-                } finally {
-                    em.getTransaction()
-                      .rollback();
                 }
             }
         } finally {

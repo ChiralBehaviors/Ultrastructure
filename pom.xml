@@ -79,7 +79,6 @@
         <module>phantasm-at-rest</module>
         <module>thing-ontology</module>
         <module>browser</module>
-        <module>kernel-phantasms</module>
         <module>workspace-plugin</module>
         <module>schema</module>
         <module>navi</module>
@@ -217,11 +216,6 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>phantasm-at-rest</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>kernel-phantasms</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

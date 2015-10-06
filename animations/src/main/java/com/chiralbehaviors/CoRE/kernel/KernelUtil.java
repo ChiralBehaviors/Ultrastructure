@@ -34,6 +34,9 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.internal.SessionImpl;
 
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.ThisCoreInstance;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -51,10 +54,10 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public class KernelUtil {
 
-    private static final String[] KERNEL_VERSIONS = { "/kernel.2.json" };
     public static final List<URL> KERNEL_LOADS;
+    public static final String    SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    public static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    private static final String[] KERNEL_VERSIONS = { "/kernel.2.json" };
 
     static {
         KERNEL_LOADS = Collections.unmodifiableList(Arrays.asList(KERNEL_VERSIONS)
@@ -102,6 +105,13 @@ public class KernelUtil {
                                                             IOException {
         clear(em);
         loadKernel(em);
+    }
+
+    public static void initializeInstance(Model model, String name,
+                                          String description) throws InstantiationException {
+        ThisCoreInstance core = model.construct(ThisCoreInstance.class, name,
+                                                description);
+        model.apply(CoreInstance.class, core);
     }
 
     public static void loadKernel(EntityManager em) throws IOException {

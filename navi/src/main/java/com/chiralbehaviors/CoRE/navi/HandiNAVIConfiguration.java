@@ -47,6 +47,8 @@ public class HandiNAVIConfiguration extends Configuration {
     private static final String DEFAULT_INDEX_FILE  = "index.htm";
     private static final String DEFAULT_PATH        = "/assets";
 
+    public boolean configureFromEnvironment = false;
+
     public List<Asset> assets = new ArrayList<>();
     @NotNull
     public AuthType    auth   = AuthType.BEARER_TOKEN;

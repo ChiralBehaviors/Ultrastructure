@@ -31,6 +31,8 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
  */
 public interface ScopedPhantasm<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>>
         extends Phantasm<RuleForm> {
+    <T extends Phantasm<RuleForm>> T cast(Class<T> toPhantasm);
+
     Model getModel();
 
     WorkspaceScope getScope();

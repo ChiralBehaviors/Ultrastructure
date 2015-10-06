@@ -217,12 +217,14 @@ facet:
     classifier = qualifiedName
     '.'
     classification = qualifiedName
-    (LB classifiedAttributes RB)?
-    (name = QuotedText)?
+    (LB (classifiedAttribute)+ RB)?
+    ('named:' name = QuotedText)?
     (description = QuotedText)?
     ('constraints' LB networkConstraints RB)?
     ;
-classifiedAttributes: (qualifiedName)+;
+classifiedAttribute: 
+    key = qualifiedName 
+    ('default:' defaultValue= QuotedText)?;
 networkConstraints: (constraint)+;
 constraint: 
     cardinality = ('zero' | 'one' | 'n')
@@ -234,7 +236,7 @@ constraint:
     (authorizedRelationship = qualifiedName '.' authorizedParent = qualifiedName))
     (('named' name = ObjectName) | (methodType = ( 'named by relationship' | 'named by entity')))?
     ('sequence:' sequenceNumber = Number)?
-    (LB classifiedAttributes RB)?
+    (LB (classifiedAttribute)+ RB)?
     ;
 
 ObjectName: ('A'..'Z' | 'a'..'z')('A'..'Z' | 'a'..'z' | '0'..'9' | '_')+ ;

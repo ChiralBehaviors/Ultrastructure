@@ -25,7 +25,7 @@
             <column name="timestamp_value" type="TIMESTAMPTZ" />
             <column name="grouping_agency" type="uuid" />
             <column name="notes" type="TEXT" />
-            <column name="updated_by" type="uuid">
+            <column name="updated_by" defaultValue= "'00000000-0000-0000-0000-000000000003'" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

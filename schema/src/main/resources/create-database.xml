@@ -16,7 +16,7 @@
 
     <changeSet id="create-${create.db.role}-role-2.0.0" author="hhildebrand" runInTransaction="false" context="local">
         <sql><![CDATA[
-            CREATE ROLE ${create.db.role} WITH SUPERUSER NOINHERIT CREATEROLE LOGIN PASSWORD '${create.db.password}';
+            CREATE ROLE ${create.db.role} WITH SUPERUSER NOINHERIT LOGIN PASSWORD '${create.db.password}';
             ]]>
         </sql>
         <rollback>
@@ -26,7 +26,7 @@
 
     <changeSet id="create-${create.db.role}-role-aws-2.0.0" author="hhildebrand" runInTransaction="false" context="aws">
         <sql><![CDATA[
-			CREATE ROLE ${create.db.role} WITH NOINHERIT CREATEROLE LOGIN PASSWORD '${create.db.password}';
+			CREATE ROLE ${create.db.role} WITH NOINHERIT LOGIN PASSWORD '${create.db.password}';
             GRANT rds_superuser TO ${create.db.role} GRANTED BY ${create.db.role};
             ]]>
         </sql>

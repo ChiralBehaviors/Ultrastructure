@@ -1,7 +1,7 @@
-/** 
+/**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 import org.slf4j.Logger;
@@ -37,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.hellblazer.utils.Utils;
 
 import liquibase.Liquibase;
@@ -48,7 +51,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 
 /**
  * @author hhildebrand
- * 
+ *
  */
 public class Loader {
 
@@ -70,12 +73,17 @@ public class Loader {
     }
 
     public void bootstrap() throws Exception {
+        loadModel();
+        bootstrapCoRE();
+    }
+
+    public Loader createDatabase() throws Exception, SQLException {
         if (configuration.dropDatabase) {
             dropDatabase();
         }
-        createDatabase();
-        loadModel();
-        bootstrapCoRE();
+        log.info(String.format("Creating core db %s", configuration.coreDb));
+        load(CREATE_DATABASE_XML, configuration.getDbaConnection());
+        return this;
     }
 
     private void dropDatabase() throws Exception {
@@ -147,6 +155,13 @@ public class Loader {
         }
     }
 
+    private void loadModel() throws Exception, SQLException {
+        log.info(String.format("loading model sql in core db %s",
+                               configuration.coreDb));
+        load(MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
+             configuration.getCoreConnection());
+    }
+
     protected void bootstrapCoRE() throws SQLException, IOException {
         log.info(String.format("Bootstrapping core in db %s",
                                configuration.coreDb));
@@ -167,22 +182,31 @@ public class Loader {
         properties.load(new ByteArrayInputStream(txfmd.getBytes()));
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
                                                                           properties);
-        EntityManager em = emf.createEntityManager();
-        KernelUtil.loadKernel(em);
-        em.close();
-        emf.close();
+
+        EntityManager loadingEm = emf.createEntityManager();
+        try {
+            KernelUtil.loadKernel(loadingEm);
+        } finally {
+            if (loadingEm.getTransaction()
+                         .isActive()) {
+                loadingEm.getTransaction()
+                         .rollback();
+            }
+            loadingEm.close();
+        }
+        try (Model model = new ModelImpl(emf)) {
+            EntityTransaction transaction = model.getEntityManager()
+                                                 .getTransaction();
+            transaction.begin();
+            KernelUtil.initializeInstance(model, configuration.coreDb,
+                                          "CoRE instance");
+            transaction.commit();
+        } catch (InstantiationException e) {
+            throw new IllegalStateException("Unable to create CoRE instance",
+                                            e);
+        } finally {
+            emf.close();
+        }
         log.info("Bootstrapping complete");
-    }
-
-    protected void createDatabase() throws Exception, SQLException {
-        log.info(String.format("Creating core db %s", configuration.coreDb));
-        load(CREATE_DATABASE_XML, configuration.getDbaConnection());
-    }
-
-    protected void loadModel() throws Exception, SQLException {
-        log.info(String.format("loading model sql in core db %s",
-                               configuration.coreDb));
-        load(MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
-             configuration.getCoreConnection());
     }
 }

@@ -34,6 +34,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeValue;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
@@ -45,7 +46,7 @@ import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
  * @author hhildebrand
  *
  */
-public interface Model {
+public interface Model extends AutoCloseable {
 
     /**
      * @param phantasm
@@ -82,15 +83,14 @@ public interface Model {
     }
 
     /**
-     * Apply the facet to the phantasm, classifying the underlying ruleform
-     * according to the
+     * Apply the phantasm to the target.
      * 
-     * @param targetPhantasm
-     * @param ruleform
+     * @param phantasm
+     * @param target
      * @return
      */
-    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Phantasm<? extends T> source,
-                                                                         Class<R> phantasm);
+    <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Class<R> phantasm,
+                                                                         Phantasm<? extends T> target);
 
     /**
      * Answer the cached facet definition for a phantasm class
@@ -200,6 +200,11 @@ public interface Model {
     AttributeModel getAttributeModel();
 
     /**
+     * @return the agency that represents this instance of the CoRE
+     */
+    CoreInstance getCoreInstance();
+
+    /**
      * 
      * @return the current thread's authorized principal
      */
@@ -304,6 +309,9 @@ public interface Model {
      * @return
      */
     <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
-                                                                        ExistentialRuleform<?, ?> ruleform);
+                                                                        Phantasm<?> ruleform);
+
+    @Override
+    void close();
 
 }

@@ -57,7 +57,7 @@
             <column name="child_quantity_unit" type="uuid" />
             <column name="name" remarks="A text name for the protocol" type="TEXT" />
             <column name="notes" remarks="Additional notes regarding usage of the attribute" type="TEXT" />
-            <column name="updated_by" remarks="The agency that last updated this rule" type="uuid">
+            <column name="updated_by"  defaultValue= "'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />

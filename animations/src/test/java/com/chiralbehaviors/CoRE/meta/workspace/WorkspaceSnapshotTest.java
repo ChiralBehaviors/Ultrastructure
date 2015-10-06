@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -34,11 +35,13 @@ import javax.persistence.EntityManager;
 
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,14 +57,13 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         File version1File = new File(TARGET_CLASSES_THING_1_JSON);
         File version2File = new File(TARGET_CLASSES_THING_2_JSON);
         File version2_1File = new File(TARGET_CLASSES_THING_1_2_JSON);
-        Model myModel = new ModelImpl(emf);
-        EntityManager myEm = myModel.getEntityManager();
-        myEm.getTransaction()
-            .begin();
-        WorkspaceImporter importer;
-        Product definingProduct;
-        WorkspaceSnapshot snapshot;
-        try {
+        try (Model myModel = new ModelImpl(emf)) {
+            EntityManager myEm = myModel.getEntityManager();
+            myEm.getTransaction()
+                .begin();
+            WorkspaceImporter importer;
+            Product definingProduct;
+            WorkspaceSnapshot snapshot;
 
             // load version 1
             importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
@@ -73,17 +75,12 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (FileOutputStream os = new FileOutputStream(version1File)) {
                 snapshot.serializeTo(os);
             }
-        } finally {
-            myEm.getTransaction()
-                .rollback();
-            myEm.close();
         }
 
-        myModel = new ModelImpl(emf);
-        myEm = myModel.getEntityManager();
-        myEm.getTransaction()
-            .begin();
-        try {
+        try (Model myModel = new ModelImpl(emf)) {
+            EntityManager myEm = myModel.getEntityManager();
+            myEm.getTransaction()
+                .begin();
             WorkspaceSnapshot.load(myEm, Arrays.asList(version1File.toURI()
                                                                    .toURL()));
 
@@ -91,27 +88,23 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
             // load version 2
 
-            importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
-                                                  myModel);
+            WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
+                                                                    myModel);
             myEm.flush();
-            definingProduct = importer.getWorkspace()
-                                      .getDefiningProduct();
-            snapshot = new WorkspaceSnapshot(definingProduct, myEm);
+            Product definingProduct = importer.getWorkspace()
+                                              .getDefiningProduct();
+            WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
+                                                               myEm);
             try (FileOutputStream os = new FileOutputStream(version2File)) {
                 snapshot.serializeTo(os);
             }
-        } finally {
-            myEm.getTransaction()
-                .rollback();
-            myEm.close();
         }
 
-        myModel = new ModelImpl(emf);
-        myEm = myModel.getEntityManager();
-        myEm.getTransaction()
-            .begin();
+        try (Model myModel = new ModelImpl(emf)) {
+            EntityManager myEm = myModel.getEntityManager();
+            myEm.getTransaction()
+                .begin();
 
-        try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new CoREModule());
             WorkspaceSnapshot version1;
@@ -144,12 +137,36 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                                                                      .toURL()));
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-            assertNotNull(scope.lookup("TheDude"));
-        } finally {
-            myEm.getTransaction()
-                .rollback();
-            myEm.close();
+            Agency theDude = (Agency) scope.lookup("TheDude");
+            assertNotNull(theDude);
         }
+    }
 
+    // @Test
+    public void testUnload() throws Exception {
+        WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
+                                                                model);
+        em.flush();
+        Product definingProduct = importer.getWorkspace()
+                                          .getDefiningProduct();
+
+        Thing1 thing1 = model.construct(Thing1.class, "Freddy",
+                                        "He always comes back");
+        model.getEntityManager()
+             .flush();
+        model.getEntityManager()
+             .clear();
+        model.getWorkspaceModel()
+             .unload(definingProduct);
+        model.getEntityManager()
+             .flush();
+        model.getEntityManager()
+             .clear();
+        try {
+            assertNull(model.wrap(Thing1.class, thing1.getRuleform()));
+            fail("Thing ontology not unloaded");
+        } catch (ClassCastException e) {
+            // expected
+        }
     }
 }

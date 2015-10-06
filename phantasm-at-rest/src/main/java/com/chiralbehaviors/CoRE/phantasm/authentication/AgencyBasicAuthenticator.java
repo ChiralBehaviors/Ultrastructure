@@ -16,6 +16,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.authentication;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -25,9 +26,11 @@ import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
-import com.chiralbehaviors.CoRE.kernel.agency.CoreUser;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
+import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.bcrypt.BCrypt;
 import com.google.common.base.Optional;
@@ -62,19 +65,25 @@ public class AgencyBasicAuthenticator
     }
 
     private final EntityManagerFactory emf;
+    private final CoreInstance         coreInstance;
+    private final Relationship         loginTo;
 
     /**
      * @param emf
      */
     public AgencyBasicAuthenticator(EntityManagerFactory emf) {
         this.emf = emf;
+        try (Model model = new ModelImpl(emf)) {
+            coreInstance = model.getCoreInstance();
+            loginTo = model.getKernel()
+                           .getLOGIN_TO();
+        }
     }
 
     @Override
     public Optional<AuthorizedPrincipal> authenticate(BasicCredentials credentials) throws AuthenticationException {
         String username = credentials.getUsername();
-        Model model = new ModelImpl(emf);
-        try {
+        try (Model model = new ModelImpl(emf)) {
             AgencyAttribute attributeValue = new AgencyAttribute(model.getKernel()
                                                                       .getLogin());
             attributeValue.setValue(username);
@@ -92,6 +101,16 @@ public class AgencyBasicAuthenticator
             CoreUser user = (CoreUser) model.wrap(CoreUser.class,
                                                   agencies.get(0));
 
+            if (!model.getAgencyModel()
+                      .checkCapability(Arrays.asList(user.getRuleform()),
+                                       coreInstance.getRuleform(), loginTo)) {
+                log.warn(String.format("Authentication failure for %s:%s - no login capability",
+                                       user.getRuleform()
+                                           .getId(),
+                                       username));
+                return Optional.absent();
+            }
+
             boolean authenticated = authenticate(user,
                                                  credentials.getPassword());
             if (authenticated) {
@@ -107,9 +126,6 @@ public class AgencyBasicAuthenticator
                                        username));
                 return Optional.absent();
             }
-        } finally {
-            model.getEntityManager()
-                 .close();
         }
     }
 }

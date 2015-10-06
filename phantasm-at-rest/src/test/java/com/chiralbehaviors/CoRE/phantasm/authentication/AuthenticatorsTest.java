@@ -63,8 +63,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
 
         em.flush();
         em.clear();
-        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator(mockedEmf(),
-                                                                              model.getCoreInstance());
+        AgencyBasicAuthenticator authenticator = new AgencyBasicAuthenticator(mockedEmf());
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(new BasicCredentials(username,
                                                                                                       password));
         assertTrue(authenticated.isPresent());
@@ -93,8 +92,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         em.flush();
         em.clear();
 
-        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(mockedEmf(),
-                                                                                          model.getCoreInstance());
+        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(mockedEmf());
         RequestCredentials requestCredentials = new RequestCredentials(credential.ip,
                                                                        accessToken.getId()
                                                                                   .toString());
@@ -145,8 +143,7 @@ public class AuthenticatorsTest extends AbstractModelTest {
         UUID authToken = authx.loginForToken(username, password, request);
         assertNotNull(authToken);
 
-        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(mockedEmf(),
-                                                                                          model.getCoreInstance());
+        AgencyBearerTokenAuthenticator authenticator = new AgencyBearerTokenAuthenticator(mockedEmf());
         RequestCredentials credential = new RequestCredentials(ip,
                                                                authToken.toString());
         Optional<AuthorizedPrincipal> authenticated = authenticator.authenticate(credential);

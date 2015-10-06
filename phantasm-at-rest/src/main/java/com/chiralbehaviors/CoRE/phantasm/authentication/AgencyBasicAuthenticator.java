@@ -71,11 +71,10 @@ public class AgencyBasicAuthenticator
     /**
      * @param emf
      */
-    public AgencyBasicAuthenticator(EntityManagerFactory emf,
-                                    CoreInstance coreInstance) {
+    public AgencyBasicAuthenticator(EntityManagerFactory emf) {
         this.emf = emf;
-        this.coreInstance = coreInstance;
         try (Model model = new ModelImpl(emf)) {
+            coreInstance = model.getCoreInstance();
             loginTo = model.getKernel()
                            .getLOGIN_TO();
         }

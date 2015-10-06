@@ -98,8 +98,7 @@ public class TestApplication extends Application<TestServiceConfiguration> {
                                                                            .getSingletonOf()
                                                                            .getInverse()));
                 environment.jersey()
-                           .register(AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new AgencyBearerTokenAuthenticator(emf,
-                                                                                                                                   coreInstance),
+                           .register(AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new AgencyBearerTokenAuthenticator(emf),
                                                                                                 "ultrastructure",
                                                                                                 AuthorizedPrincipal.class)));
             }

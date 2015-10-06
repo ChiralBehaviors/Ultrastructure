@@ -59,11 +59,10 @@ public class AgencyBearerTokenAuthenticator
     /**
      * @param emf
      */
-    public AgencyBearerTokenAuthenticator(EntityManagerFactory emf,
-                                          CoreInstance coreInstance) {
+    public AgencyBearerTokenAuthenticator(EntityManagerFactory emf) {
         this.emf = emf;
-        this.coreInstance = coreInstance;
         try (Model model = new ModelImpl(emf)) {
+            coreInstance = model.getCoreInstance();
             loginTo = model.getKernel()
                            .getLOGIN_TO();
         }

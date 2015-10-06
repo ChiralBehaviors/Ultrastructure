@@ -1,3 +1,4 @@
+
 /** 
  * (C) Copyright 2015 Chiral Behaviors, LLC. All Rights Reserved
  * 
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,14 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
-import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.navi.CORSConfiguration;
 import com.chiralbehaviors.CoRE.navi.EmfHealthCheck;
 import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration;
-import com.chiralbehaviors.CoRE.navi.JpaConfiguration;
 import com.chiralbehaviors.CoRE.navi.HandiNAVIConfiguration.Asset;
+import com.chiralbehaviors.CoRE.navi.JpaConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
@@ -111,38 +108,7 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
         } else {
             configure(configuration);
         }
-        CoreInstance coreInstance;
-        try (Model model = new ModelImpl(emf);) {
-            coreInstance = model.getCoreInstance();
-        }
-        Binder authBinder = null;
-        switch (configuration.auth) {
-            case NULL:
-                log.warn("Setting authentication to NULL");
-                authBinder = AuthFactory.binder(new NullAuthenticationFactory());
-                break;
-            case BASIC_DIGEST:
-                log.warn("Setting authentication to US basic authentication");
-                authBinder = AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
-                                                                                                                     new AgencyBasicAuthenticator(emf,
-                                                                                                                                                  coreInstance),
-                                                                                                                     configuration.authenticationCachePolicy),
-                                                                                          configuration.realm,
-                                                                                          AuthorizedPrincipal.class));
-                break;
-            case BEARER_TOKEN:
-                log.warn("Setting authentication to US capability OAuth2 bearer token");
-                authBinder = AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
-                                                                                                                   new AgencyBearerTokenAuthenticator(emf,
-                                                                                                                                                      coreInstance),
-                                                                                                                   configuration.authenticationCachePolicy),
-                                                                                        configuration.realm,
-                                                                                        AuthorizedPrincipal.class));
-                break;
-        }
-        if (authBinder == null) {
-            throw new IllegalStateException("No configuration specified for authentication.  Authentication configuration is required.");
-        }
+        Binder authBinder = configureAuth(configuration, environment);
 
         environment.jersey()
                    .register(authBinder);
@@ -165,6 +131,74 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
         environment.healthChecks()
                    .register("EMF Health", new EmfHealthCheck(emf));
 
+        configureCORS(configuration, environment);
+    }
+
+    public void setEmf(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
+    public void stop() {
+        emf.close();
+        if (jettyServer != null) {
+            try {
+                jettyServer.setStopTimeout(100);
+                jettyServer.stop();
+            } catch (Throwable e) {
+                // ignore
+            }
+        }
+    }
+
+    private void configure(HandiNAVIConfiguration configuration) {
+        if (configuration.randomPort) {
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
+                                                                                             .get(0)).setPort(0);
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors()
+                                                                                             .get(0)).setPort(0);
+        }
+        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
+        properties.putAll(configuration.jpa.getProperties());
+
+        if (emf == null) { // allow tests to set this if needed
+            emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
+                                                         properties);
+        }
+    }
+
+    private Binder configureAuth(HandiNAVIConfiguration configuration,
+                                 Environment environment) {
+        Binder authBinder = null;
+        switch (configuration.auth) {
+            case NULL:
+                log.warn("Setting authentication to NULL");
+                authBinder = AuthFactory.binder(new NullAuthenticationFactory());
+                break;
+            case BASIC_DIGEST:
+                log.warn("Setting authentication to US basic authentication");
+                authBinder = AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
+                                                                                                                     new AgencyBasicAuthenticator(emf),
+                                                                                                                     configuration.authenticationCachePolicy),
+                                                                                          configuration.realm,
+                                                                                          AuthorizedPrincipal.class));
+                break;
+            case BEARER_TOKEN:
+                log.warn("Setting authentication to US capability OAuth2 bearer token");
+                authBinder = AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
+                                                                                                                   new AgencyBearerTokenAuthenticator(emf),
+                                                                                                                   configuration.authenticationCachePolicy),
+                                                                                        configuration.realm,
+                                                                                        AuthorizedPrincipal.class));
+                break;
+        }
+        if (authBinder == null) {
+            throw new IllegalStateException("No configuration specified for authentication.  Authentication configuration is required.");
+        }
+        return authBinder;
+    }
+
+    private void configureCORS(HandiNAVIConfiguration configuration,
+                               Environment environment) {
         if (configuration.useCORS) {
             CORSConfiguration cors = configuration.CORS;
             FilterRegistration.Dynamic filter = environment.servlets()
@@ -225,37 +259,5 @@ public class HandiNAVI extends Application<HandiNAVIConfiguration> {
                        "org.postgresql.Driver");
         emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                      properties);
-    }
-
-    private void configure(HandiNAVIConfiguration configuration) {
-        if (configuration.randomPort) {
-            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
-                                                                                             .get(0)).setPort(0);
-            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors()
-                                                                                             .get(0)).setPort(0);
-        }
-        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
-        properties.putAll(configuration.jpa.getProperties());
-
-        if (emf == null) { // allow tests to set this if needed
-            emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
-                                                         properties);
-        }
-    }
-
-    public void setEmf(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
-
-    public void stop() {
-        emf.close();
-        if (jettyServer != null) {
-            try {
-                jettyServer.setStopTimeout(100);
-                jettyServer.stop();
-            } catch (Throwable e) {
-                // ignore
-            }
-        }
     }
 }

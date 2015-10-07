@@ -36,9 +36,6 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <rollback>
-            <dropTable tableName="attribute" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="attribute" constraintName="attribute_updated_by_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />

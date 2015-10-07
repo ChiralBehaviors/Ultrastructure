@@ -31,9 +31,6 @@
             </column>
             <column name="version" type="INT4" />
         </createTable>
-        <rollback>
-            <dropTable tableName="product_network_authorization" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_relationship" baseTableName="product_network_authorization" constraintName="product_network_authorization_child_relationship_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />

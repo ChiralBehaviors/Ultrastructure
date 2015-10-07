@@ -41,9 +41,6 @@
             </column>
             <column name="json_value" type="jsonb"/>
         </createTable>
-        <rollback>
-            <dropTable tableName="agency_network_attribute" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="attribute" baseTableName="agency_network_attribute" constraintName="agency_network_attribute_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />

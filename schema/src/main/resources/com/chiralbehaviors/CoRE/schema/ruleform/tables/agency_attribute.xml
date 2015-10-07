@@ -36,9 +36,6 @@
             </column>
             <column name="json_value" type="jsonb" />
         </createTable>
-        <rollback>
-            <dropTable tableName="agency_attribute" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="agency" baseTableName="agency_attribute" constraintName="agency_attribute_agency_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />

@@ -31,9 +31,6 @@
             </column>
             <column name="version" type="INT4" />
         </createTable>
-        <rollback>
-            <dropTable tableName="status_code" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="status_code" constraintName="status_code_updated_by_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />

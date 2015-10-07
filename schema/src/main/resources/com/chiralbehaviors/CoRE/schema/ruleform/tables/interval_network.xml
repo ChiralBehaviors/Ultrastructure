@@ -29,9 +29,6 @@
             </column>
             <column name="version" type="INT4" />
         </createTable>
-        <rollback>
-            <dropTable tableName="interval_network" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child" baseTableName="interval_network" constraintName="interval_network_child_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="interval" />

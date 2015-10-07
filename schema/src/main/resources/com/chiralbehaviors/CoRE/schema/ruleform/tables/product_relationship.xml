@@ -27,9 +27,6 @@
             <column name="version" type="INT4" />
             <column name="notes" type="TEXT" />
         </createTable>
-        <rollback>
-            <dropTable tableName="product_relationship" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="relationship" baseTableName="product_relationship" constraintName="product_relationship_relationship_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />

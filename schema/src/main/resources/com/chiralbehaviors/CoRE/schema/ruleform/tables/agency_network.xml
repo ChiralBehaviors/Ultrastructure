@@ -29,9 +29,6 @@
             </column>
             <column name="version" type="INT4" />
         </createTable>
-        <rollback>
-            <dropTable tableName="agency_network" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child" baseTableName="agency_network" constraintName="agency_network_child_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />

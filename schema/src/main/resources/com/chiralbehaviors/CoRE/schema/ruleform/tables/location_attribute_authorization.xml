@@ -41,9 +41,6 @@
             <column name="version" type="INT4" />
             <column name="json_value" type="jsonb" />
         </createTable>
-        <rollback>
-            <dropTable tableName="location_attribute_authorization" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="location_attribute_authorization" constraintName="location_attribute_authorization_authorized_attribute_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />

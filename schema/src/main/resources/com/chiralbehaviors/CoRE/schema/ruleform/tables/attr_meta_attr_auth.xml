@@ -40,9 +40,6 @@
             <column name="version" type="INT4" />
             <column name="json_value" type="jsonb" />
         </createTable>
-        <rollback>
-            <dropTable tableName="attr_meta_attr_auth" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="attr_meta_attr_auth" constraintName="attr_meta_attr_auth_authorized_attribute_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id"

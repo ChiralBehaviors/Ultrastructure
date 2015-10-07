@@ -22,9 +22,6 @@
             <column name="version" type="INT4" />
             <column name="notes" type="TEXT" />
         </createTable>
-        <rollback>
-            <dropTable tableName="agency_relationship_grouping" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="grouping_agency" baseTableName="agency_relationship_grouping" constraintName="agency_relationship_grouping_grouping_agency_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />

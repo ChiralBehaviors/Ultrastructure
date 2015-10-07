@@ -78,8 +78,6 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="relationship_network_authorization" constraintName="relationship_network_authorization_workspace_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-        <rollback>
-            <dropTable tableName="relationship_network_authorization" />
-        </rollback>
+        
     </changeSet>
 </databaseChangeLog>

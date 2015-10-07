@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="install uuid-ossp" author="hhildebrand">
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+        </sql>
+    </changeSet>
+
+    <changeSet id="alter-search_path-${create.db.role}-2.0.0" author="hhildebrand" runInTransaction="true">
+        <sql><![CDATA[ 
+            ALTER ROLE ${create.db.role} NOSUPERUSER NOCREATEROLE;
+            ALTER ROLE ${create.db.role} SET search_path TO ruleform, public, readable;
+            ]]>
+        </sql>
+    </changeSet>
+    
+</databaseChangeLog>

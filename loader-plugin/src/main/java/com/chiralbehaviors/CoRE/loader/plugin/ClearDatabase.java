@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.loader.plugin;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -97,6 +99,9 @@ public class ClearDatabase extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (corePassword == null) {
+            initializeFromEnvironment();
+        }
         String url = String.format(Configuration.JDBC_URL, coreServer, corePort,
                                    coreDb);
         getLog().info(String.format("core connection: %s", url));
@@ -153,6 +158,30 @@ public class ClearDatabase extends AbstractMojo {
         liquibase.setChangeLogParameter("create.db.database", coreDb);
         liquibase.setChangeLogParameter("create.db.role", coreUsername);
         liquibase.setChangeLogParameter("create.db.password", corePassword);
+    }
+
+    private void initializeFromEnvironment() {
+        URI dbUri;
+        try {
+            dbUri = new URI(System.getenv("DATABASE_URL"));
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(String.format("%s is not a valid URI",
+                                                          System.getenv("DATABASE_URL")),
+                                            e);
+        }
+
+        String[] up = dbUri.getUserInfo()
+                           .split(":");
+        if (up.length != 2) {
+            System.err.println("Invalid username:password in DATABASE_URL");
+            throw new IllegalStateException();
+        }
+        coreDb = dbUri.getPath()
+                      .substring(1);
+        corePassword = up[1];
+        coreUsername = up[0];
+        corePort = dbUri.getPort();
+        coreServer = dbUri.getHost();
     }
 
 }

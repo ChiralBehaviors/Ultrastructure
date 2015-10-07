@@ -5,7 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <!-- Tag fo roll back of the schema creation -->
+    <!-- Tag for roll back of the schema creation -->
     <changeSet author="hhildebrand" id="tag_create-2.0.0">
         <tagDatabase tag="initial-schema-create" />
     </changeSet>

@@ -27,9 +27,6 @@
             <column defaultValueBoolean="false" name="enumerated"
                 remarks="If the allowable values of the unit constitute an enumerated set, then this should be TRUE." type="boolean" />
         </createTable>
-        <rollback>
-            <dropTable tableName="unit" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="unit" constraintName="unit_updated_by_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />

@@ -28,8 +28,5 @@
              LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
-        <rollback>
-            <dropView viewName="readable.attribute_network" />
-        </rollback>
     </changeSet>
 </databaseChangeLog>

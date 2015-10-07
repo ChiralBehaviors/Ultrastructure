@@ -50,7 +50,7 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.location.MavenArtifact;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
-import com.chiralbehaviors.CoRE.phantasm.resources.test.TestApplication;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 import com.chiralbehaviors.CoRE.product.Product;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -61,7 +61,7 @@ import com.github.jsonldjava.utils.JsonUtils;
  *
  */
 public class ResourcesTest extends ThingWorkspaceTest {
-    protected final static TestApplication application = new TestApplication();
+    protected final static PhantasmApplication application = new PhantasmApplication();
 
     @BeforeClass
     public static void initialize() throws Exception {

@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE.loader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -51,42 +53,42 @@ public class Configuration {
      * 
      * @parameter
      */
-    public String contexts = "local";
+    public String  contexts     = "local";
 
     /**
      * the name the core database
      * 
      * @parameter
      */
-    public String coreDb = "core";
+    public String  coreDb       = "core";
 
     /**
      * the password of the core user
      * 
      * @parameter
      */
-    public String corePassword;
+    public String  corePassword;
 
     /**
      * the port of the core database
      * 
      * @parameter
      */
-    public int corePort;
+    public int     corePort;
 
     /**
      * the server host of the core database
      * 
      * @parameter
      */
-    public String coreServer;
+    public String  coreServer;
 
     /**
      * the core user name
      * 
      * @parameter
      */
-    public String coreUsername;
+    public String  coreUsername;
 
     /**
      * the dba database
@@ -94,30 +96,35 @@ public class Configuration {
      * @parameter
      */
     public String  dbaDb        = "postgres";
+
     /**
      * the dba password
      * 
      * @parameter
      */
     public String  dbaPassword;
+
     /**
      * the port of the dba database
      * 
      * @parameter
      */
     public int     dbaPort;
+
     /**
      * the host name of the dba database
      * 
      * @parameter
      */
     public String  dbaServer;
+
     /**
      * the dba username
      * 
      * @parameter
      */
     public String  dbaUsername;
+
     /**
      * drop the database
      * 
@@ -126,6 +133,9 @@ public class Configuration {
     public boolean dropDatabase = false;
 
     public Connection getCoreConnection() throws SQLException {
+        if (corePassword == null) {
+            initializeFromEnvironment();
+        }
         String url = String.format(JDBC_URL, coreServer, corePort, coreDb);
         System.out.println(String.format("core connection: %s", url));
         return DriverManager.getConnection(url, coreUsername, corePassword);
@@ -135,5 +145,29 @@ public class Configuration {
         String url = String.format(JDBC_URL, dbaServer, dbaPort, dbaDb);
         System.out.println(String.format("DBA connection: %s", url));
         return DriverManager.getConnection(url, dbaUsername, dbaPassword);
+    }
+
+    private void initializeFromEnvironment() {
+        URI dbUri;
+        try {
+            dbUri = new URI(System.getenv("DATABASE_URL"));
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(String.format("%s is not a valid URI",
+                                                          System.getenv("DATABASE_URL")),
+                                            e);
+        }
+
+        String[] up = dbUri.getUserInfo()
+                           .split(":");
+        if (up.length != 2) {
+            System.err.println("Invalid username:password in DATABASE_URL");
+            throw new IllegalStateException();
+        }
+        coreDb = dbUri.getPath()
+                      .substring(1);
+        corePassword = up[1];
+        coreUsername = up[0];
+        corePort = dbUri.getPort();
+        coreServer = dbUri.getHost();
     }
 }

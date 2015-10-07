@@ -38,7 +38,6 @@
     <changeSet id="create-database-${create.db.database}-2.0.0" author="hhildebrand" runInTransaction="false">
         <sql><![CDATA[
             COMMENT ON ROLE ${create.db.role} IS 'Owning role of the ${create.db.database} Ultra-Structure database';
-            ALTER ROLE ${create.db.role} SET search_path TO ruleform, public, readable;
             CREATE DATABASE ${create.db.database} ENCODING 'UTF8';
             GRANT CREATE ON DATABASE ${create.db.database} TO ${create.db.role};
             ]]>

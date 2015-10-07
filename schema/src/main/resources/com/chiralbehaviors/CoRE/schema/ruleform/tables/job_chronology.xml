@@ -53,9 +53,6 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <rollback>
-            <dropTable tableName="job_chronology" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="job" baseTableName="job_chronology" constraintName="job_chronology_job_fkey" deferrable="true"
             initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="job" />

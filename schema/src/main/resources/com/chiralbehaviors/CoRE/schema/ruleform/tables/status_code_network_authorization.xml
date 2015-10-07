@@ -84,8 +84,5 @@
         >
             <column name="classification" />
         </createIndex>
-        <rollback>
-            <dropTable tableName="status_code_network_authorization" />
-        </rollback>
     </changeSet>
 </databaseChangeLog>

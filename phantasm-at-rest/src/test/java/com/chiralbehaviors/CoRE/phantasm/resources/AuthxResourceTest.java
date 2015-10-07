@@ -54,14 +54,14 @@ import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
-import com.chiralbehaviors.CoRE.phantasm.resources.test.TestApplication;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmApplication;
 
 /**
  * @author hhildebrand
  *
  */
 public class AuthxResourceTest extends AbstractModelTest {
-    protected final static TestApplication application = new TestApplication();
+    protected final static PhantasmApplication application = new PhantasmApplication();
 
     @BeforeClass
     public static void initialize() throws Exception {

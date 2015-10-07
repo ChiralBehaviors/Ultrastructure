@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.chiralbehaviors.CoRE.navi;
+package com.chiralbehaviors.CoRE.phantasm.service;
 
 import javax.persistence.EntityManagerFactory;
 

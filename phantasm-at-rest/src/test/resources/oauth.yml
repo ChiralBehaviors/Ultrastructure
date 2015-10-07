@@ -1,6 +1,6 @@
 randomPort: true 
 
-useOauth: true
+auth: BEARER_TOKEN
 
 logging:
     level: ERROR

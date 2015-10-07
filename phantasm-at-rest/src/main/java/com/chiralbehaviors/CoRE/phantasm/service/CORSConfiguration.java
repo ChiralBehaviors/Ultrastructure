@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.navi;
+package com.chiralbehaviors.CoRE.phantasm.service;
 
 import java.util.Arrays;
 import java.util.Collections;

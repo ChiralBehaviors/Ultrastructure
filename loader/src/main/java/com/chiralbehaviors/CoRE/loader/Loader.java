@@ -56,9 +56,10 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 public class Loader {
 
     private static final String CREATE_DATABASE_XML                            = "create-database.xml";
-    private static final String INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
+    public static final String  INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
+    private static final String INITIALIZE_XML                                 = "initialize.xml";
     private static final Logger log                                            = LoggerFactory.getLogger(Loader.class);
-    private static final String MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
+    public static final String  MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
 
     public static void main(String[] argv) throws Exception {
         Loader loader = new Loader(Configuration.fromYaml(Utils.resolveResource(Loader.class,
@@ -73,6 +74,7 @@ public class Loader {
     }
 
     public void bootstrap() throws Exception {
+        initialize();
         loadModel();
         bootstrapCoRE();
     }
@@ -86,7 +88,7 @@ public class Loader {
         return this;
     }
 
-    private void dropDatabase() throws Exception {
+    public void dropDatabase() throws Exception {
         Connection connection = configuration.getDbaConnection();
         Liquibase liquibase = null;
         try {
@@ -121,48 +123,7 @@ public class Loader {
         }
     }
 
-    private void initializeParameters(Liquibase liquibase) {
-        liquibase.setChangeLogParameter("create.db.database",
-                                        configuration.coreDb);
-        liquibase.setChangeLogParameter("create.db.role",
-                                        configuration.coreUsername);
-        liquibase.setChangeLogParameter("create.db.password",
-                                        configuration.corePassword);
-    }
-
-    private void load(String changeLog,
-                      Connection connection) throws Exception {
-        Liquibase liquibase = null;
-        try {
-            Database database = DatabaseFactory.getInstance()
-                                               .findCorrectDatabaseImplementation(new JdbcConnection(connection));
-            liquibase = new Liquibase(changeLog,
-                                      new ClassLoaderResourceAccessor(getClass().getClassLoader()),
-                                      database);
-            initializeParameters(liquibase);
-            liquibase.update(Integer.MAX_VALUE, configuration.contexts);
-
-        } finally {
-            if (liquibase != null) {
-                liquibase.forceReleaseLocks();
-            }
-            try {
-                connection.rollback();
-                connection.close();
-            } catch (SQLException e) {
-                //nothing to do
-            }
-        }
-    }
-
-    private void loadModel() throws Exception, SQLException {
-        log.info(String.format("loading model sql in core db %s",
-                               configuration.coreDb));
-        load(MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
-             configuration.getCoreConnection());
-    }
-
-    protected void bootstrapCoRE() throws SQLException, IOException {
+    private void bootstrapCoRE() throws SQLException, IOException {
         log.info(String.format("Bootstrapping core in db %s",
                                configuration.coreDb));
         String txfmd;
@@ -208,5 +169,52 @@ public class Loader {
             emf.close();
         }
         log.info("Bootstrapping complete");
+    }
+
+    private void initialize() throws Exception, SQLException {
+        log.info(String.format("initializing core db %s",
+                               configuration.coreDb));
+        load(INITIALIZE_XML, configuration.getCoreConnection());
+    }
+
+    private void initializeParameters(Liquibase liquibase) {
+        liquibase.setChangeLogParameter("create.db.database",
+                                        configuration.coreDb);
+        liquibase.setChangeLogParameter("create.db.role",
+                                        configuration.coreUsername);
+        liquibase.setChangeLogParameter("create.db.password",
+                                        configuration.corePassword);
+    }
+
+    private void load(String changeLog,
+                      Connection connection) throws Exception {
+        Liquibase liquibase = null;
+        try {
+            Database database = DatabaseFactory.getInstance()
+                                               .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            liquibase = new Liquibase(changeLog,
+                                      new ClassLoaderResourceAccessor(getClass().getClassLoader()),
+                                      database);
+            initializeParameters(liquibase);
+            liquibase.update(Integer.MAX_VALUE, configuration.contexts);
+
+        } finally {
+            if (liquibase != null) {
+                liquibase.forceReleaseLocks();
+            }
+            try {
+                connection.rollback();
+                connection.close();
+            } catch (SQLException e) {
+                //nothing to do
+            }
+        }
+    }
+
+    private void loadModel() throws Exception, SQLException {
+        log.info(String.format("loading model sql in core db %s",
+                               configuration.coreDb));
+        load(MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
+             configuration.getCoreConnection());
     }
 }

@@ -21,8 +21,5 @@
                JOIN ruleform.product dp ON b.defining_product = dp.id 
             ]]>
         </createView>
-        <rollback>
-            <dropView viewName="readable.workspace_authorization" />
-        </rollback>
     </changeSet>
 </databaseChangeLog>

@@ -37,9 +37,6 @@
             <column name="version" type="INT4" />
             <column name="json_value" type="jsonb" />
         </createTable>
-        <rollback>
-            <dropTable tableName="relationship_attribute_authorization" />
-        </rollback>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authorized_attribute" baseTableName="relationship_attribute_authorization" constraintName="relationship_attribute_authorization_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="attribute" />

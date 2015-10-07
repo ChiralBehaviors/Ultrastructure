@@ -2,28 +2,33 @@
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
->
-
-    <changeSet id="readable schema" author="hhildebrand">
-        <sql><![CDATA[
-            CREATE SCHEMA readable; 
-            COMMENT ON SCHEMA readable IS 'Readable views of ruleforms';
-            ]]>
-        </sql>
-        <rollback>
-            DROP SCHEMA readable;
-        </rollback>
-    </changeSet> 
-
-    <changeSet id="ruleform schema" author="hhildebrand">
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="ruleform-schema-2.0.0" author="hhildebrand">
         <sql><![CDATA[
             CREATE SCHEMA ruleform; 
             COMMENT ON SCHEMA ruleform IS 'CoRE Ultra-Structure ruleform tables';
             ]]>
         </sql>
         <rollback>
-            DROP SCHEMA ruleform;
+            <sql><![CDATA[
+                DROP SCHEMA ruleform; 
+            ]]>
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="readable-schema-2.0.0" author="hhildebrand">
+        <sql><![CDATA[
+            CREATE SCHEMA readable; 
+            COMMENT ON SCHEMA readable IS 'Readable views of ruleforms';
+            ]]>
+        </sql>
+        <rollback>
+            <sql><![CDATA[
+                DROP SCHEMA readable; 
+            ]]>
+            </sql>
         </rollback>
     </changeSet>
 </databaseChangeLog>

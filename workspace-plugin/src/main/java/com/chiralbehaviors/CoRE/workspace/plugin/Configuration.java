@@ -23,6 +23,8 @@ package com.chiralbehaviors.CoRE.workspace.plugin;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -56,35 +58,35 @@ public class Configuration {
      * 
      * @parameter
      */
-    public String coreDb = "core";
+    public String                          coreDb = "core";
 
     /**
      * the password of the core user
      * 
      * @parameter
      */
-    public String corePassword;
+    public String                          corePassword;
 
     /**
      * the port of the core database
      * 
      * @parameter
      */
-    public int corePort;
+    public int                             corePort;
 
     /**
      * the server host of the core database
      * 
      * @parameter
      */
-    public String coreServer;
+    public String                          coreServer;
 
     /**
      * the core user name
      * 
      * @parameter
      */
-    public String coreUsername;
+    public String                          coreUsername;
 
     // Used in testing to avoid creating emf and out of band txns
     private transient EntityManagerFactory emf;
@@ -100,6 +102,9 @@ public class Configuration {
     public EntityManagerFactory getEmf() throws IOException {
         if (emf != null) {
             return emf;
+        }
+        if (corePassword == null) {
+            initializeFromEnvironment();
         }
         String txfmd;
         try (InputStream is = getClass().getResourceAsStream(JPA_TEMPLATE_PROPERTIES)) {
@@ -123,6 +128,30 @@ public class Configuration {
 
     public void setEmf(EntityManagerFactory emf) {
         this.emf = emf;
+    }
+
+    private void initializeFromEnvironment() {
+        URI dbUri;
+        try {
+            dbUri = new URI(System.getenv("DATABASE_URL"));
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(String.format("%s is not a valid URI",
+                                                          System.getenv("DATABASE_URL")),
+                                            e);
+        }
+
+        String[] up = dbUri.getUserInfo()
+                           .split(":");
+        if (up.length != 2) {
+            System.err.println("Invalid username:password in DATABASE_URL");
+            throw new IllegalStateException();
+        }
+        coreDb = dbUri.getPath()
+                      .substring(1);
+        corePassword = up[1];
+        coreUsername = up[0];
+        corePort = dbUri.getPort();
+        coreServer = dbUri.getHost();
     }
 
 }

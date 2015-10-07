@@ -230,7 +230,6 @@
                             <url>${jdbc.url}</url>
                             <username>${db.login}</username>
                             <password>${db.password}</password>
-                            <changeLogFile>com/chiralbehaviors/CoRE/schema/core.xml</changeLogFile>
                             <verbose>true</verbose>
                             <expressionVars>
                                 <property>
@@ -249,11 +248,24 @@
                         </configuration>
                         <executions>
                             <execution>
+                                <id>initialize database</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>update</goal>
+                                </goals>
+                                <configuration>
+                                    <changeLogFile>initialize.xml</changeLogFile>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>update database</id>
                                 <phase>compile</phase>
                                 <goals>
                                     <goal>update</goal>
                                 </goals>
+                                <configuration>
+                                    <changeLogFile>com/chiralbehaviors/CoRE/schema/core.xml</changeLogFile>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>

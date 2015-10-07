@@ -52,14 +52,14 @@ public class WorkspaceDslLoader extends AbstractMojo {
      * 
      * @parameter
      */
-    private Configuration database;
+    private Configuration database  = new Configuration();
 
     /**
      * the workspace dsl resources
      * 
      * @parameter
      */
-    private List<String> resources = new ArrayList<>();
+    private List<String>  resources = new ArrayList<>();
 
     public WorkspaceDslLoader() {
     }

@@ -1,3 +1,5 @@
+auth: NULL
+
 randomPort: true 
         
 logging:

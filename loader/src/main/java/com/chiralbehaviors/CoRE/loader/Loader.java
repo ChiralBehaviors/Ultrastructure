@@ -57,6 +57,7 @@ public class Loader {
 
     private static final String CREATE_DATABASE_XML                            = "create-database.xml";
     private static final String INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
+    private static final String INITIALIZE_XML                                 = "initialize.xml";
     private static final Logger log                                            = LoggerFactory.getLogger(Loader.class);
     private static final String MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
 
@@ -73,6 +74,7 @@ public class Loader {
     }
 
     public void bootstrap() throws Exception {
+        initialize();
         loadModel();
         bootstrapCoRE();
     }
@@ -167,6 +169,12 @@ public class Loader {
             emf.close();
         }
         log.info("Bootstrapping complete");
+    }
+
+    private void initialize() throws Exception, SQLException {
+        log.info(String.format("initializing core db %s",
+                               configuration.coreDb));
+        load(INITIALIZE_XML, configuration.getCoreConnection());
     }
 
     private void initializeParameters(Liquibase liquibase) {

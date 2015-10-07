@@ -32,8 +32,5 @@
              LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
-        <rollback>
-            <dropView viewName="readable.interval_network_attribute" />
-        </rollback>
     </changeSet>
 </databaseChangeLog>

@@ -23,8 +23,5 @@
                LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
         </createView>
-        <rollback>
-            <dropView schemaName="readable" viewName="agency_status_code_grouping" />
-        </rollback>
     </changeSet>
 </databaseChangeLog>

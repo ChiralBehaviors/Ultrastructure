@@ -39,8 +39,5 @@
              WHERE base_table.authorized_network_attribute IS NOT NULL;
             ]]>
         </createView>
-        <rollback>
-            <dropView schemaName="readable" viewName="unit_network_attribute_authorization" />
-        </rollback>
     </changeSet>
 </databaseChangeLog>

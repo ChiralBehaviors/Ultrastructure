@@ -37,9 +37,6 @@
              LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
              LEFT JOIN ruleform.product w ON wa.defining_product = w.id
             ]]>
-        </createView>
-        <rollback>
-            <dropView schemaName="readable" viewName="agency_product_attribute_authorization" />
-        </rollback>
+        </createView> 
     </changeSet>
 </databaseChangeLog>

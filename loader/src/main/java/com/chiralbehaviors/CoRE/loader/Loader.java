@@ -56,10 +56,10 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 public class Loader {
 
     private static final String CREATE_DATABASE_XML                            = "create-database.xml";
-    private static final String INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
+    public static final String  INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
     private static final String INITIALIZE_XML                                 = "initialize.xml";
     private static final Logger log                                            = LoggerFactory.getLogger(Loader.class);
-    private static final String MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
+    public static final String  MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
 
     public static void main(String[] argv) throws Exception {
         Loader loader = new Loader(Configuration.fromYaml(Utils.resolveResource(Loader.class,

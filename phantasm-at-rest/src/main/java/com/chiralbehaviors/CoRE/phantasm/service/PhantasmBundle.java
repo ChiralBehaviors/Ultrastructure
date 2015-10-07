@@ -1,0 +1,248 @@
+/**
+ * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+ * 
+ 
+ * This file is part of Ultrastructure.
+ *
+ *  Ultrastructure is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  ULtrastructure is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.chiralbehaviors.CoRE.phantasm.service;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.EnumSet;
+import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+
+import org.eclipse.jetty.server.AbstractNetworkConnector;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.glassfish.hk2.utilities.Binder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
+import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
+import com.chiralbehaviors.CoRE.phantasm.authentication.NullAuthenticationFactory;
+import com.chiralbehaviors.CoRE.phantasm.authentication.UsOAuthFactory;
+import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.FacetResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
+import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmConfiguration.Asset;
+import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.google.common.base.Joiner;
+
+import io.dropwizard.ConfiguredBundle;
+import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.CachingAuthenticator;
+import io.dropwizard.auth.basic.BasicAuthFactory;
+import io.dropwizard.jetty.HttpConnectorFactory;
+import io.dropwizard.server.DefaultServerFactory;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+
+/**
+ * @author hhildebrand
+ *
+ */
+public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
+    private final static Logger  log = LoggerFactory.getLogger(PhantasmBundle.class);
+
+    private EntityManagerFactory emf;
+    private Environment          environment;
+
+    public int getPort() {
+        return ((AbstractNetworkConnector) environment.getApplicationContext()
+                                                      .getServer()
+                                                      .getConnectors()[0]).getLocalPort();
+    }
+
+    public PhantasmBundle(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
+    /* (non-Javadoc)
+     * @see io.dropwizard.ConfiguredBundle#initialize(io.dropwizard.setup.Bootstrap)
+     */
+    @Override
+    public void initialize(Bootstrap<?> bootstrap) {
+        bootstrap.getObjectMapper()
+                 .registerModule(new CoREModule());
+    }
+
+    /* (non-Javadoc)
+     * @see io.dropwizard.AbstractService#initialize(io.dropwizard.config.Configuration, io.dropwizard.config.Environment)
+     */
+    @Override
+    public void run(PhantasmConfiguration configuration,
+                    Environment environment) throws Exception {
+        this.environment = environment;
+        if (configuration.configureFromEnvironment) {
+            configureFromEnvironment(configuration);
+        } else {
+            configure(configuration);
+        }
+        Binder authBinder = configureAuth(configuration, environment);
+
+        environment.jersey()
+                   .register(authBinder);
+        for (Asset asset : configuration.assets) {
+            new AssetsBundle(asset.path, asset.uri, asset.index,
+                             asset.name).run(environment);
+        }
+        environment.jersey()
+                   .register(new FacetResource(emf));
+        environment.jersey()
+                   .register(new WorkspaceResource(emf));
+        environment.jersey()
+                   .register(new RuleformResource(emf));
+        environment.jersey()
+                   .register(new WorkspaceMediatedResource(emf));
+        environment.jersey()
+                   .register(new GraphQlResource(emf));
+        environment.jersey()
+                   .register(new AuthxResource(emf));
+        environment.healthChecks()
+                   .register("EMF Health", new EmfHealthCheck(emf));
+
+        configureCORS(configuration, environment);
+    }
+
+    private void configure(PhantasmConfiguration configuration) throws Exception {
+        if (configuration.randomPort) {
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
+                                                                                             .get(0)).setPort(0);
+            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors()
+                                                                                             .get(0)).setPort(0);
+        }
+        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
+        properties.putAll(configuration.jpa.getProperties());
+
+        if (emf == null) { // allow tests to set this if needed
+            emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
+                                                         properties);
+        }
+    }
+
+    private Binder configureAuth(PhantasmConfiguration configuration,
+                                 Environment environment) {
+        Binder authBinder = null;
+        switch (configuration.auth) {
+            case NULL:
+                log.warn("Setting authentication to NULL");
+                authBinder = AuthFactory.binder(new NullAuthenticationFactory());
+                break;
+            case BASIC_DIGEST:
+                log.warn("Setting authentication to US basic authentication");
+                authBinder = AuthFactory.binder(new BasicAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
+                                                                                                                     new AgencyBasicAuthenticator(emf),
+                                                                                                                     configuration.authenticationCachePolicy),
+                                                                                          configuration.realm,
+                                                                                          AuthorizedPrincipal.class));
+                break;
+            case BEARER_TOKEN:
+                log.warn("Setting authentication to US capability OAuth2 bearer token");
+                authBinder = AuthFactory.binder(new UsOAuthFactory<AuthorizedPrincipal>(new CachingAuthenticator<>(environment.metrics(),
+                                                                                                                   new AgencyBearerTokenAuthenticator(emf),
+                                                                                                                   configuration.authenticationCachePolicy),
+                                                                                        configuration.realm,
+                                                                                        AuthorizedPrincipal.class));
+                break;
+        }
+        if (authBinder == null) {
+            throw new IllegalStateException("No configuration specified for authentication.  Authentication configuration is required.");
+        }
+        return authBinder;
+    }
+
+    private void configureCORS(PhantasmConfiguration configuration,
+                               Environment environment) {
+        if (configuration.useCORS) {
+            CORSConfiguration cors = configuration.CORS;
+            FilterRegistration.Dynamic filter = environment.servlets()
+                                                           .addFilter("CORS",
+                                                                      CrossOriginFilter.class);
+            log.warn("Using CORS configuration: %s", cors);
+            // Add URL mapping
+            filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class),
+                                            true, "/*");
+            filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM,
+                                    Joiner.on(",")
+                                          .join(cors.allowedOrigins));
+            filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM,
+                                    Joiner.on(",")
+                                          .join(cors.allowedMethods));
+            filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM,
+                                    Joiner.on(",")
+                                          .join(cors.allowedHeaders));
+            filter.setInitParameter(CrossOriginFilter.PREFLIGHT_MAX_AGE_PARAM,
+                                    Integer.toString(cors.preflightMaxAge));
+            filter.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM,
+                                    Boolean.toString(cors.allowCredentials));
+            filter.setInitParameter(CrossOriginFilter.EXPOSED_HEADERS_PARAM,
+                                    Joiner.on(",")
+                                          .join(cors.exposedHeaders));
+            filter.setInitParameter(CrossOriginFilter.CHAIN_PREFLIGHT_PARAM,
+                                    Boolean.toString(cors.chainPreflight));
+
+        }
+    }
+
+    private void configureFromEnvironment(PhantasmConfiguration configuration) throws Exception {
+        HttpConnectorFactory httpConnectorFactory = (HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
+                                                                                                                                    .get(0);
+        httpConnectorFactory.setPort(Integer.parseInt(System.getenv("PORT")));
+
+        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
+        properties.putAll(configuration.jpa.getProperties());
+
+        URI dbUri;
+        try {
+            dbUri = new URI(System.getenv("DATABASE_URL"));
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(String.format("%s is not a valid URI",
+                                                          System.getenv("DATABASE_URL")),
+                                            e);
+        }
+
+        String[] up = dbUri.getUserInfo()
+                           .split(":");
+        if (up.length != 2) {
+            log.error("Invalid username:password in DATABASE_URL");
+            throw new IllegalStateException();
+        }
+
+        String dbUrl = String.format("jdbc:postgresql://%s:%s%s",
+                                     dbUri.getHost(), dbUri.getPort(),
+                                     dbUri.getPath());
+        log.info("jdbc url: {} user: {}", dbUrl, up[0]);
+        properties.put("javax.persistence.jdbc.user", up[0]);
+        properties.put("javax.persistence.jdbc.password", up[1]);
+        properties.put("javax.persistence.jdbc.url", dbUrl);
+        properties.put("javax.persistence.jdbc.driver",
+                       "org.postgresql.Driver");
+        emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
+                                                     properties);
+    }
+
+}

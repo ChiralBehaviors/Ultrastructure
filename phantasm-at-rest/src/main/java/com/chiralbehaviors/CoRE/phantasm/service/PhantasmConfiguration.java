@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package com.chiralbehaviors.CoRE.navi;
+package com.chiralbehaviors.CoRE.phantasm.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ import io.dropwizard.Configuration;
  * @author hhildebrand
  * 
  */
-public class HandiNAVIConfiguration extends Configuration {
+public class PhantasmConfiguration extends Configuration {
     public static class Asset {
         public String index = DEFAULT_INDEX_FILE;
         public String name  = DEFAULT_ASSETS_NAME;

@@ -13,10 +13,16 @@
 
     <changeSet id="alter-search_path-${create.db.role}-2.0.0" author="hhildebrand" runInTransaction="true">
         <sql><![CDATA[ 
-            ALTER ROLE ${create.db.role} NOSUPERUSER NOCREATEROLE;
             ALTER ROLE ${create.db.role} SET search_path TO ruleform, public, readable;
             ]]>
         </sql>
     </changeSet>
-    
+
+    <changeSet failOnError="false" id="alter-nosuper-${create.db.role}-2.0.0" author="hhildebrand" runInTransaction="true">
+        <sql><![CDATA[ 
+            ALTER ROLE ${create.db.role} SET search_path TO ruleform, public, readable;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

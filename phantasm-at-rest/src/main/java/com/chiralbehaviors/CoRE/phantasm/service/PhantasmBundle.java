@@ -51,9 +51,9 @@ import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadWorkspaceCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.config.CORSConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
-import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration.Asset;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
+import com.github.dirkraft.dropwizard.fileassets.FileAssetsBundle;
 import com.google.common.base.Joiner;
 
 import io.dropwizard.ConfiguredBundle;
@@ -131,10 +131,14 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             configure(configuration);
         }
 
-        for (Asset asset : configuration.assets) {
-            new AssetsBundle(asset.path, asset.uri, asset.index,
-                             asset.name).run(environment);
-        }
+        configuration.assets.forEach(asset -> new AssetsBundle(asset.path,
+                                                               asset.uri,
+                                                               asset.index,
+                                                               asset.name).run(environment));
+        configuration.fileAssets.forEach(asset -> new FileAssetsBundle(asset.path,
+                                                                       asset.uri,
+                                                                       asset.index,
+                                                                       asset.name).run(environment));
 
         configureAuth(configuration, environment);
         configureCORS(configuration, environment);

@@ -43,29 +43,45 @@ public class PhantasmConfiguration extends Configuration {
         @JsonProperty NULL;
     }
 
-    private static final String DEFAULT_ASSETS_NAME = "assets";
-    private static final String DEFAULT_INDEX_FILE  = "index.htm";
-    private static final String DEFAULT_PATH        = "/assets";
+    public static class FileAsset {
+        public String index = DEFAULT_FILE_INDEX_FILE;
+        public String name  = DEFAULT_FILE_ASSETS_NAME;
+        public String path  = DEFAULT_FILE_PATH;
+        @NotNull
+        public String uri;
+    }
 
-    public boolean configureFromEnvironment = false;
+    private static final String DEFAULT_ASSETS_NAME       = "assets";
+    private static final String DEFAULT_INDEX_FILE        = "index.htm";
+    private static final String DEFAULT_PATH              = "/assets";
 
-    public List<Asset> assets = new ArrayList<>();
-    @NotNull
-    public AuthType    auth   = AuthType.BEARER_TOKEN;
+    private static final String DEFAULT_FILE_ASSETS_NAME  = "file-assets";
+    private static final String DEFAULT_FILE_INDEX_FILE   = "index.htm";
+    private static final String DEFAULT_FILE_PATH         = "target/classes/assets";
 
-    public boolean           useCORS = false;
-    public CORSConfiguration CORS    = new CORSConfiguration();
-
-    @NotNull
-    public JpaConfiguration jpa = new JpaConfiguration();
-
-    public String name;
-
-    public boolean randomPort = false;
-
-    public String realm;
+    public List<Asset>          assets                    = new ArrayList<>();
 
     @NotNull
-    public CacheBuilderSpec authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
+    public AuthType             auth                      = AuthType.BEARER_TOKEN;
+
+    @NotNull
+    public CacheBuilderSpec     authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
+
+    public boolean              configureFromEnvironment  = false;
+
+    public CORSConfiguration    CORS                      = new CORSConfiguration();
+
+    public List<FileAsset>      fileAssets                = new ArrayList<>();
+
+    @NotNull
+    public JpaConfiguration     jpa                       = new JpaConfiguration();
+
+    public String               name;
+
+    public boolean              randomPort                = false;
+
+    public String               realm;
+
+    public boolean              useCORS                   = false;
 
 }

@@ -100,6 +100,10 @@
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>loader</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.dirkraft.dropwizard</groupId>
+            <artifactId>dropwizard-file-assets</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

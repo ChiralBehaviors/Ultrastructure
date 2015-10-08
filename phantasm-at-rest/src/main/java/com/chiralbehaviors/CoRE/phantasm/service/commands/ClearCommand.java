@@ -36,7 +36,7 @@ public class ClearCommand extends Command {
 
     public ClearCommand() {
         super("clear",
-              "Reset and clear the database instance, rolling back Ultrastructure schema");
+              "Reset and clear the CoRE instance, rolling back Ultrastructure schema");
     }
 
     /* (non-Javadoc)

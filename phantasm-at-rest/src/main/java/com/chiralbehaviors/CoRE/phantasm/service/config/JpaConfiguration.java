@@ -29,6 +29,8 @@ import io.dropwizard.Configuration;
  * 
  */
 public class JpaConfiguration extends Configuration {
+    public static final String PERSISTENCE_UNIT = "CoRE";
+
     public static Map<String, String> getDefaultProperties() {
         Map<String, String> properties = new HashMap<>();
         properties.put("hibernate.dialect",
@@ -44,15 +46,15 @@ public class JpaConfiguration extends Configuration {
     }
 
     @JsonProperty
-    private boolean debug = false;
+    private boolean             debug           = false;
 
     @NotEmpty
     @JsonProperty
-    private String persistenceUnit = "CoRE";
+    private String              persistenceUnit = PERSISTENCE_UNIT;
 
     @NotEmpty
     @JsonProperty
-    private Map<String, String> properties = new HashMap<>();
+    private Map<String, String> properties      = new HashMap<>();
 
     public String getPersistenceUnit() {
         return persistenceUnit;

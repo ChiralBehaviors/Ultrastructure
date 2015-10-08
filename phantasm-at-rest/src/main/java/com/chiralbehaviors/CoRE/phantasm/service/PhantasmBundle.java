@@ -47,6 +47,7 @@ import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.ClearCommand;
+import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadWorkspaceCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.config.CORSConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
@@ -70,9 +71,29 @@ import io.dropwizard.setup.Environment;
  *
  */
 public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
-    private final static Logger  log = LoggerFactory.getLogger(PhantasmBundle.class);
+    private final static Logger log = LoggerFactory.getLogger(PhantasmBundle.class);
+
+    public static EntityManagerFactory getEmfFromEnvironment(Map<String, String> configuredProperties,
+                                                             String persistenceUnity) {
+
+        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
+        properties.putAll(configuredProperties);
+
+        CoreDbConfiguration coreConfig = new CoreDbConfiguration();
+        coreConfig.initializeFromEnvironment();
+        properties.put("javax.persistence.jdbc.user", coreConfig.coreUsername);
+        properties.put("javax.persistence.jdbc.password",
+                       coreConfig.corePassword);
+        properties.put("javax.persistence.jdbc.url",
+                       coreConfig.getCoreJdbcURL());
+        properties.put("javax.persistence.jdbc.driver",
+                       "org.postgresql.Driver");
+        return Persistence.createEntityManagerFactory(persistenceUnity,
+                                                      properties);
+    }
 
     private EntityManagerFactory emf;
+
     private Environment          environment;
 
     public PhantasmBundle(EntityManagerFactory emf) {
@@ -94,6 +115,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                  .registerModule(new CoREModule());
         bootstrap.addCommand(new BootstrapCommand());
         bootstrap.addCommand(new ClearCommand());
+        bootstrap.addCommand(new LoadWorkspaceCommand());
     }
 
     /* (non-Javadoc)
@@ -207,21 +229,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         HttpConnectorFactory httpConnectorFactory = (HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
                                                                                                                                     .get(0);
         httpConnectorFactory.setPort(Integer.parseInt(System.getenv("PORT")));
-
-        Map<String, String> properties = JpaConfiguration.getDefaultProperties();
-        properties.putAll(configuration.jpa.getProperties());
-
-        CoreDbConfiguration coreConfig = new CoreDbConfiguration();
-        coreConfig.initializeFromEnvironment();
-        properties.put("javax.persistence.jdbc.user", coreConfig.coreUsername);
-        properties.put("javax.persistence.jdbc.password",
-                       coreConfig.corePassword);
-        properties.put("javax.persistence.jdbc.url",
-                       coreConfig.getCoreJdbcURL());
-        properties.put("javax.persistence.jdbc.driver",
-                       "org.postgresql.Driver");
-        emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
-                                                     properties);
+        emf = getEmfFromEnvironment(configuration.jpa.getProperties(),
+                                    configuration.jpa.getPersistenceUnit());
     }
 
     private void configureServices(Environment environment) {

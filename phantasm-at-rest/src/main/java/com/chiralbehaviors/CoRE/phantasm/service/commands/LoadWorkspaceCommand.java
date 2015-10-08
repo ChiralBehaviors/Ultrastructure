@@ -20,8 +20,17 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
-import com.chiralbehaviors.CoRE.loader.Loader;
-import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
+import java.util.Collections;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
+import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
+import com.hellblazer.utils.Utils;
 
 import io.dropwizard.cli.Command;
 import io.dropwizard.setup.Bootstrap;
@@ -32,10 +41,10 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class BootstrapCommand extends Command {
+public class LoadWorkspaceCommand extends Command {
 
-    public BootstrapCommand() {
-        super("bootstrap", "Bootstraps the CoRE instance");
+    public LoadWorkspaceCommand() {
+        super("load", "load a workspace dls into the CoRE instance");
     }
 
     /* (non-Javadoc)
@@ -43,6 +52,9 @@ public class BootstrapCommand extends Command {
      */
     @Override
     public void configure(Subparser subparser) {
+        subparser.addArgument("file")
+                 .nargs("?")
+                 .help("Workspace dsl file");
     }
 
     /* (non-Javadoc)
@@ -51,9 +63,17 @@ public class BootstrapCommand extends Command {
     @Override
     public void run(Bootstrap<?> bootstrap,
                     Namespace namespace) throws Exception {
-        DbaConfiguration config = new DbaConfiguration();
-        config.initializeFromEnvironment();
-        new Loader(config).bootstrap();
+        EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
+                                                                        JpaConfiguration.PERSISTENCE_UNIT);
+        try (Model model = new ModelImpl(emf)) {
+            EntityTransaction t = model.getEntityManager()
+                                       .getTransaction();
+            t.begin();
+            WorkspaceImporter.manifest(Utils.resolveResource(getClass(),
+                                                             namespace.getString("file")),
+                                       model);
+            t.commit();
+        }
     }
 
 }

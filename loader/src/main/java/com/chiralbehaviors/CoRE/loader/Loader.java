@@ -40,12 +40,14 @@ import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 import com.hellblazer.utils.Utils;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
 import liquibase.exception.RollbackFailedException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
@@ -55,21 +57,15 @@ import liquibase.resource.ClassLoaderResourceAccessor;
  */
 public class Loader {
 
-    private static final String CREATE_DATABASE_XML                            = "create-database.xml";
-    public static final String  INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
-    private static final String INITIALIZE_XML                                 = "initialize.xml";
-    private static final Logger log                                            = LoggerFactory.getLogger(Loader.class);
-    public static final String  MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
+    public static final String     INITIAL_DATABASE_CREATE_TEMPLATE               = "initial-database-create-%s";
+    public static final String     MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML = "com/chiralbehaviors/CoRE/schema/core.xml";
+    private static final String    CREATE_DATABASE_XML                            = "create-database.xml";
+    private static final String    INITIALIZE_XML                                 = "initialize.xml";
+    private static final Logger    log                                            = LoggerFactory.getLogger(Loader.class);
 
-    public static void main(String[] argv) throws Exception {
-        Loader loader = new Loader(Configuration.fromYaml(Utils.resolveResource(Loader.class,
-                                                                                argv[0])));
-        loader.bootstrap();
-    }
+    private final DbaConfiguration configuration;
 
-    private final Configuration configuration;
-
-    public Loader(Configuration configuration) throws Exception {
+    public Loader(DbaConfiguration configuration) throws Exception {
         this.configuration = configuration;
     }
 
@@ -77,6 +73,44 @@ public class Loader {
         initialize();
         loadModel();
         bootstrapCoRE();
+    }
+
+    public void clear() throws SQLException, LiquibaseException {
+        Connection connection = configuration.getCoreConnection();
+        Liquibase liquibase = null;
+        try {
+            Database database = DatabaseFactory.getInstance()
+                                               .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            liquibase = new Liquibase(Loader.MODEL_COM_CHIRALBEHAVIORS_CORE_SCHEMA_CORE_XML,
+                                      new ClassLoaderResourceAccessor(getClass().getClassLoader()),
+                                      database);
+            initializeParameters(liquibase);
+            liquibase.rollback("initial-schema-create", configuration.contexts);
+
+        } catch (RollbackFailedException e) {
+            if (e.getMessage()
+                 .contains("Could not find tag 'initial-schema-create")) {
+                log.info(String.format("%s is new database, not dropping",
+                                       configuration.coreDb));
+                return;
+            }
+            throw e;
+        } finally {
+            if (liquibase != null) {
+                try {
+                    liquibase.forceReleaseLocks();
+                } catch (LiquibaseException e) {
+                    throw new IllegalStateException(String.format("Could not release liquibase lock on: %s",
+                                                                  configuration.coreDb));
+                }
+            }
+            try {
+                connection.rollback();
+                connection.close();
+            } catch (SQLException e) {
+                //nothing to do
+            }
+        }
     }
 
     public Loader createDatabase() throws Exception, SQLException {

@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.Map;
 
@@ -47,8 +45,14 @@ import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.RuleformResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
-import com.chiralbehaviors.CoRE.phantasm.service.PhantasmConfiguration.Asset;
+import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
+import com.chiralbehaviors.CoRE.phantasm.service.commands.ClearCommand;
+import com.chiralbehaviors.CoRE.phantasm.service.config.CORSConfiguration;
+import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration.Asset;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.google.common.base.Joiner;
 
 import io.dropwizard.ConfiguredBundle;
@@ -71,14 +75,14 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     private EntityManagerFactory emf;
     private Environment          environment;
 
+    public PhantasmBundle(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
     public int getPort() {
         return ((AbstractNetworkConnector) environment.getApplicationContext()
                                                       .getServer()
                                                       .getConnectors()[0]).getLocalPort();
-    }
-
-    public PhantasmBundle(EntityManagerFactory emf) {
-        this.emf = emf;
     }
 
     /* (non-Javadoc)
@@ -88,6 +92,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     public void initialize(Bootstrap<?> bootstrap) {
         bootstrap.getObjectMapper()
                  .registerModule(new CoREModule());
+        bootstrap.addCommand(new BootstrapCommand());
+        bootstrap.addCommand(new ClearCommand());
     }
 
     /* (non-Javadoc)
@@ -102,30 +108,15 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         } else {
             configure(configuration);
         }
-        Binder authBinder = configureAuth(configuration, environment);
 
-        environment.jersey()
-                   .register(authBinder);
         for (Asset asset : configuration.assets) {
             new AssetsBundle(asset.path, asset.uri, asset.index,
                              asset.name).run(environment);
         }
-        environment.jersey()
-                   .register(new FacetResource(emf));
-        environment.jersey()
-                   .register(new WorkspaceResource(emf));
-        environment.jersey()
-                   .register(new RuleformResource(emf));
-        environment.jersey()
-                   .register(new WorkspaceMediatedResource(emf));
-        environment.jersey()
-                   .register(new GraphQlResource(emf));
-        environment.jersey()
-                   .register(new AuthxResource(emf));
-        environment.healthChecks()
-                   .register("EMF Health", new EmfHealthCheck(emf));
 
+        configureAuth(configuration, environment);
         configureCORS(configuration, environment);
+        configureServices(environment);
     }
 
     private void configure(PhantasmConfiguration configuration) throws Exception {
@@ -144,8 +135,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         }
     }
 
-    private Binder configureAuth(PhantasmConfiguration configuration,
-                                 Environment environment) {
+    private void configureAuth(PhantasmConfiguration configuration,
+                               Environment environment) {
         Binder authBinder = null;
         switch (configuration.auth) {
             case NULL:
@@ -172,7 +163,11 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         if (authBinder == null) {
             throw new IllegalStateException("No configuration specified for authentication.  Authentication configuration is required.");
         }
-        return authBinder;
+
+        environment.jersey()
+                   .register(authBinder);
+        environment.jersey()
+                   .register(new AuthxResource(emf));
     }
 
     private void configureCORS(PhantasmConfiguration configuration,
@@ -216,33 +211,32 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         Map<String, String> properties = JpaConfiguration.getDefaultProperties();
         properties.putAll(configuration.jpa.getProperties());
 
-        URI dbUri;
-        try {
-            dbUri = new URI(System.getenv("DATABASE_URL"));
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException(String.format("%s is not a valid URI",
-                                                          System.getenv("DATABASE_URL")),
-                                            e);
-        }
-
-        String[] up = dbUri.getUserInfo()
-                           .split(":");
-        if (up.length != 2) {
-            log.error("Invalid username:password in DATABASE_URL");
-            throw new IllegalStateException();
-        }
-
-        String dbUrl = String.format("jdbc:postgresql://%s:%s%s",
-                                     dbUri.getHost(), dbUri.getPort(),
-                                     dbUri.getPath());
-        log.info("jdbc url: {} user: {}", dbUrl, up[0]);
-        properties.put("javax.persistence.jdbc.user", up[0]);
-        properties.put("javax.persistence.jdbc.password", up[1]);
-        properties.put("javax.persistence.jdbc.url", dbUrl);
+        CoreDbConfiguration coreConfig = new CoreDbConfiguration();
+        coreConfig.initializeFromEnvironment();
+        properties.put("javax.persistence.jdbc.user", coreConfig.coreUsername);
+        properties.put("javax.persistence.jdbc.password",
+                       coreConfig.corePassword);
+        properties.put("javax.persistence.jdbc.url",
+                       coreConfig.getCoreJdbcURL());
         properties.put("javax.persistence.jdbc.driver",
                        "org.postgresql.Driver");
         emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                      properties);
+    }
+
+    private void configureServices(Environment environment) {
+        environment.jersey()
+                   .register(new FacetResource(emf));
+        environment.jersey()
+                   .register(new WorkspaceResource(emf));
+        environment.jersey()
+                   .register(new RuleformResource(emf));
+        environment.jersey()
+                   .register(new WorkspaceMediatedResource(emf));
+        environment.jersey()
+                   .register(new GraphQlResource(emf));
+        environment.healthChecks()
+                   .register("EMF Health", new EmfHealthCheck(emf));
     }
 
 }

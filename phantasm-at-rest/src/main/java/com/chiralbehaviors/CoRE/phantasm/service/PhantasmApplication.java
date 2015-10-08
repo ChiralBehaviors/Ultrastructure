@@ -24,6 +24,8 @@ import javax.persistence.EntityManagerFactory;
 
 import org.eclipse.jetty.server.Server;
 
+import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
+
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;

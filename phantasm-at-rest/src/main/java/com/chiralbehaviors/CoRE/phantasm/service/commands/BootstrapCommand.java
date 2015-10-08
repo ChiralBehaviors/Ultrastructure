@@ -18,44 +18,42 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.loader.plugin;
-
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
 import com.chiralbehaviors.CoRE.loader.Loader;
 import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 
+import io.dropwizard.cli.Command;
+import io.dropwizard.setup.Bootstrap;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
+
 /**
  * @author hhildebrand
- * 
- * @goal clear
- * 
- * @phase compile
+ *
  */
-public class ClearDatabase extends AbstractMojo {
+public class BootstrapCommand extends Command {
 
-    /**
-     * the loading configuration
-     * 
-     * @parameter
-     */
-    private DbaConfiguration loader;
+    public BootstrapCommand() {
+        super("bootstrap", "Bootstraps the Ultrastructure PostgreSQL instance");
+    }
 
     /* (non-Javadoc)
-     * @see org.apache.maven.plugin.Mojo#execute()
+     * @see io.dropwizard.cli.Command#configure(net.sourceforge.argparse4j.inf.Subparser)
      */
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        if (loader.corePassword == null) {
-            loader.initializeFromEnvironment();
-        }
-        try {
-            new Loader(loader).clear();
-        } catch (Exception e) {
-            throw new MojoFailureException(String.format("Unable to clear %s",
-                                                         loader.getCoreJdbcURL()));
-        }
+    public void configure(Subparser subparser) {
     }
+
+    /* (non-Javadoc)
+     * @see io.dropwizard.cli.Command#run(io.dropwizard.setup.Bootstrap, net.sourceforge.argparse4j.inf.Namespace)
+     */
+    @Override
+    public void run(Bootstrap<?> bootstrap,
+                    Namespace namespace) throws Exception {
+        DbaConfiguration config = new DbaConfiguration();
+        config.initializeFromEnvironment();
+        new Loader(config).bootstrap();
+    }
+
 }

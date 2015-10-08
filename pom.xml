@@ -78,7 +78,6 @@
         <module>phantasm-plugin</module>
         <module>phantasm-at-rest</module>
         <module>thing-ontology</module>
-        <module>browser</module>
         <module>workspace-plugin</module>
         <module>schema</module>
         <module>navi</module>
@@ -100,6 +99,11 @@
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-annotation</artifactId>
                 <version>3.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-servlets</artifactId>
+                <version>${dropwizard.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.dropwizard</groupId>
@@ -197,11 +201,6 @@
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>
                 <version>0.9.10</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>browser</artifactId>
-                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>

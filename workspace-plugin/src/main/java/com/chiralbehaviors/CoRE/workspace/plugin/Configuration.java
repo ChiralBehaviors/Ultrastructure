@@ -23,8 +23,6 @@ package com.chiralbehaviors.CoRE.workspace.plugin;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -33,6 +31,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import com.chiralbehaviors.CoRE.WellKnownObject;
+import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +42,7 @@ import com.hellblazer.utils.Utils;
  * @author hhildebrand
  *
  */
-public class Configuration {
+public class Configuration extends CoreDbConfiguration {
     private static final String JPA_TEMPLATE_PROPERTIES = "/jpa-template.properties";
 
     public static Configuration fromYaml(InputStream yaml) throws JsonParseException,
@@ -52,41 +51,6 @@ public class Configuration {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         return mapper.readValue(yaml, Configuration.class);
     }
-
-    /**
-     * the name the core database
-     * 
-     * @parameter
-     */
-    public String                          coreDb = "core";
-
-    /**
-     * the password of the core user
-     * 
-     * @parameter
-     */
-    public String                          corePassword;
-
-    /**
-     * the port of the core database
-     * 
-     * @parameter
-     */
-    public int                             corePort;
-
-    /**
-     * the server host of the core database
-     * 
-     * @parameter
-     */
-    public String                          coreServer;
-
-    /**
-     * the core user name
-     * 
-     * @parameter
-     */
-    public String                          coreUsername;
 
     // Used in testing to avoid creating emf and out of band txns
     private transient EntityManagerFactory emf;
@@ -129,29 +93,4 @@ public class Configuration {
     public void setEmf(EntityManagerFactory emf) {
         this.emf = emf;
     }
-
-    private void initializeFromEnvironment() {
-        URI dbUri;
-        try {
-            dbUri = new URI(System.getenv("DATABASE_URL"));
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException(String.format("%s is not a valid URI",
-                                                          System.getenv("DATABASE_URL")),
-                                            e);
-        }
-
-        String[] up = dbUri.getUserInfo()
-                           .split(":");
-        if (up.length != 2) {
-            System.err.println("Invalid username:password in DATABASE_URL");
-            throw new IllegalStateException();
-        }
-        coreDb = dbUri.getPath()
-                      .substring(1);
-        corePassword = up[1];
-        coreUsername = up[0];
-        corePort = dbUri.getPort();
-        coreServer = dbUri.getHost();
-    }
-
 }

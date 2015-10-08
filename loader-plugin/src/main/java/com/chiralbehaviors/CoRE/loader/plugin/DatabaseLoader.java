@@ -24,8 +24,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import com.chiralbehaviors.CoRE.loader.Configuration;
 import com.chiralbehaviors.CoRE.loader.Loader;
+import com.chiralbehaviors.CoRE.utils.DbaConfiguration;
 
 /**
  * @author hhildebrand
@@ -40,7 +40,7 @@ public class DatabaseLoader extends AbstractMojo {
      * 
      * @parameter
      */
-    private Configuration loader;
+    private DbaConfiguration loader;
 
     /* (non-Javadoc)
      * @see org.apache.maven.plugin.Mojo#execute()

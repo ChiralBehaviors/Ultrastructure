@@ -18,6 +18,8 @@ package com.chiralbehaviors.CoRE.phantasm.service;
 
 import javax.persistence.EntityManagerFactory;
 
+import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.codahale.metrics.health.HealthCheck;
 
 /**
@@ -36,8 +38,11 @@ public class EmfHealthCheck extends HealthCheck {
      */
     @Override
     protected Result check() throws Exception {
-        return emf.isOpen() ? Result.healthy()
-                           : Result.unhealthy("Entity Manager Factory is closed");
+        try (Model model = new ModelImpl(emf)) {
+            model.getCoreInstance();
+            return Result.healthy();
+        } catch (Throwable e) {
+            return Result.unhealthy("Unable to connect to CoRE", e);
+        }
     }
-
 }

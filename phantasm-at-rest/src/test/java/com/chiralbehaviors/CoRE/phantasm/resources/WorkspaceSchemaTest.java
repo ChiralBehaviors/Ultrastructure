@@ -50,6 +50,9 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.resources.plugin.Thing1_Plugin;
 import com.chiralbehaviors.CoRE.product.Product;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;
@@ -510,6 +513,15 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                            .toString(),
                      instance.get("id"));
         assertEquals(uri, instance.get("URI"));
+    }
+    
+    @Test
+    public void testWorkspaceResource() throws Exception {
+        WorkspaceResource res = new WorkspaceResource(mockedEmf());
+        Map<String, Object> workspaces = res.getWorkspaces(null);
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(workspaces);
+        System.out.println(json);
     }
 
     private Plugin constructPlugin() throws InstantiationException {

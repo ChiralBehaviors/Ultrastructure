@@ -34,6 +34,7 @@ import org.glassfish.hk2.utilities.Binder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBasicAuthenticator;
 import com.chiralbehaviors.CoRE.phantasm.authentication.AgencyBearerTokenAuthenticator;
@@ -53,11 +54,9 @@ import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.chiralbehaviors.CoRE.utils.CoreDbConfiguration;
-import com.github.dirkraft.dropwizard.fileassets.FileAssetsBundle;
 import com.google.common.base.Joiner;
 
 import io.dropwizard.ConfiguredBundle;
-import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthFactory;
 import io.dropwizard.auth.CachingAuthenticator;
 import io.dropwizard.auth.basic.BasicAuthFactory;
@@ -124,6 +123,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     @Override
     public void run(PhantasmConfiguration configuration,
                     Environment environment) throws Exception {
+        environment.jersey().setUrlPattern(null);
         this.environment = environment;
         if (configuration.configureFromEnvironment) {
             configureFromEnvironment(configuration);
@@ -131,18 +131,20 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
             configure(configuration);
         }
 
-        configuration.assets.forEach(asset -> new AssetsBundle(asset.path,
-                                                               asset.uri,
-                                                               asset.index,
-                                                               asset.name).run(environment));
-        configuration.fileAssets.forEach(asset -> new FileAssetsBundle(asset.path,
-                                                                       asset.uri,
-                                                                       asset.index,
-                                                                       asset.name).run(environment));
-
         configureAuth(configuration, environment);
         configureCORS(configuration, environment);
         configureServices(environment);
+
+        configuration.assets.forEach(asset -> {
+            try {
+                new ConfiguredAssetsBundle(asset.path, asset.uri, asset.index,
+                                           asset.name).run(configuration,
+                                                           environment);
+            } catch (Exception e) {
+                log.error("Cannot configure asset: %s", asset);
+            }
+        });
+
     }
 
     private void configure(PhantasmConfiguration configuration) throws Exception {

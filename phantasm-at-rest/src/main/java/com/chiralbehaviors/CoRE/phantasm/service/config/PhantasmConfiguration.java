@@ -20,6 +20,8 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.bazaarvoice.dropwizard.assets.AssetsBundleConfiguration;
+import com.bazaarvoice.dropwizard.assets.AssetsConfiguration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.cache.CacheBuilderSpec;
 
@@ -29,13 +31,26 @@ import io.dropwizard.Configuration;
  * @author hhildebrand
  * 
  */
-public class PhantasmConfiguration extends Configuration {
+public class PhantasmConfiguration extends Configuration
+        implements AssetsBundleConfiguration {
     public static class Asset {
-        public String index = DEFAULT_INDEX_FILE;
-        public String name  = DEFAULT_ASSETS_NAME;
-        public String path  = DEFAULT_PATH;
+
         @NotNull
+        public String index = DEFAULT_INDEX_FILE;
+
+        @NotNull
+        public String name  = DEFAULT_ASSETS_NAME;
+
+        @NotNull
+        public String path  = DEFAULT_PATH;
+
         public String uri;
+
+        @Override
+        public String toString() {
+            return String.format("Asset [name=%s, uri=%s, path=%s, index=%s]",
+                                 name, uri, path, index);
+        }
     }
 
     public static enum AuthType {
@@ -43,23 +58,15 @@ public class PhantasmConfiguration extends Configuration {
         @JsonProperty NULL;
     }
 
-    public static class FileAsset {
-        public String index = DEFAULT_FILE_INDEX_FILE;
-        public String name  = DEFAULT_FILE_ASSETS_NAME;
-        public String path  = DEFAULT_FILE_PATH;
-        @NotNull
-        public String uri;
-    }
-
     private static final String DEFAULT_ASSETS_NAME       = "assets";
     private static final String DEFAULT_INDEX_FILE        = "index.htm";
     private static final String DEFAULT_PATH              = "/assets";
 
-    private static final String DEFAULT_FILE_ASSETS_NAME  = "file-assets";
-    private static final String DEFAULT_FILE_INDEX_FILE   = "index.htm";
-    private static final String DEFAULT_FILE_PATH         = "target/classes/assets";
-
+    @NotNull
     public List<Asset>          assets                    = new ArrayList<>();
+
+    @NotNull
+    public AssetsConfiguration  assetsConfiguration       = new AssetsConfiguration();
 
     @NotNull
     public AuthType             auth                      = AuthType.BEARER_TOKEN;
@@ -70,8 +77,6 @@ public class PhantasmConfiguration extends Configuration {
     public boolean              configureFromEnvironment  = false;
 
     public CORSConfiguration    CORS                      = new CORSConfiguration();
-
-    public List<FileAsset>      fileAssets                = new ArrayList<>();
 
     @NotNull
     public JpaConfiguration     jpa                       = new JpaConfiguration();
@@ -84,4 +89,11 @@ public class PhantasmConfiguration extends Configuration {
 
     public boolean              useCORS                   = false;
 
+    /* (non-Javadoc)
+     * @see com.bazaarvoice.dropwizard.assets.AssetsBundleConfiguration#getAssetsConfiguration()
+     */
+    @Override
+    public AssetsConfiguration getAssetsConfiguration() {
+        return assetsConfiguration;
+    }
 }

@@ -60,7 +60,7 @@ import io.dropwizard.auth.Auth;
  * @author hhildebrand
  *
  */
-@Path("/oauth2/token")
+@Path("oauth2/token")
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthxResource extends TransactionalResource {
 

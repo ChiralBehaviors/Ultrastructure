@@ -123,7 +123,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     @Override
     public void run(PhantasmConfiguration configuration,
                     Environment environment) throws Exception {
-        environment.jersey().setUrlPattern(null);
+        //        environment.jersey()
+        //                   .setUrlPattern(null);
         this.environment = environment;
         if (configuration.configureFromEnvironment) {
             configureFromEnvironment(configuration);
@@ -137,11 +138,13 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
 
         configuration.assets.forEach(asset -> {
             try {
+                log.info("Configuring {}", asset);
                 new ConfiguredAssetsBundle(asset.path, asset.uri, asset.index,
                                            asset.name).run(configuration,
                                                            environment);
             } catch (Exception e) {
-                log.error("Cannot configure asset: %s", asset);
+                log.error(String.format("Cannot configure asset: %s", asset),
+                          e);
             }
         });
 

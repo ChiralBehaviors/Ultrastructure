@@ -100,6 +100,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private static final String CREATE_TYPE               = "%sCreate";
     private static final String DESCRIPTION               = "description";
     private static final String ID                        = "id";
+    private static final String IDS                       = "ids";
     private static final String IMMEDIATE_TEMPLATE        = "immediate%s";
     private static final String INSTANCES_OF_QUERY        = "InstancesOf%s";
     private static final Logger log                       = LoggerFactory.getLogger(FacetType.class);
@@ -879,8 +880,18 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                        toTypeName(facet.getName())))
                                    .description(String.format("Return the instances of %s",
                                                               toTypeName(facet.getName())))
+                                   .argument(newArgument().name(IDS)
+                                                          .description("list of ids of the instances to query")
+                                                          .type(new GraphQLList(GraphQLString))
+                                                          .build())
                                    .type(new GraphQLList(referenceToType(facet.getName())))
-                                   .dataFetcher(context -> ctx(context).getInstances(facet))
+                                   .dataFetcher(context -> {
+                                       @SuppressWarnings("unchecked")
+                                       List<String> ids = ((List<String>) context.getArgument(ID));
+                                       return ids != null ? ctx(context).lookup(facet,
+                                                                                ids)
+                                                          : ctx(context).getInstances(facet);
+                                   })
                                    .build();
 
     }

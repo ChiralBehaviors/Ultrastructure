@@ -109,7 +109,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     private static final String REMOVE_TEMPLATE           = "remove%s";
     private static final String S_S_PLUGIN_CONVENTION     = "%s.%s_Plugin";
     private static final String SET_DESCRIPTION;
+    @SuppressWarnings("unused")
     private static final String SET_INDEX_TEMPLATE        = "set%sIndex";
+    @SuppressWarnings("unused")
     private static final String SET_KEY_TEMPLATE          = "set%sKey";
     private static final String SET_NAME;
     private static final String SET_TEMPLATE              = "set%s";
@@ -273,7 +275,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                               .build());
 
         String setter = String.format(SET_TEMPLATE, capitalized(fieldName));
-        GraphQLInputType inputType;
+        graphql.schema.GraphQLInputObjectField.Builder builder = newInputObjectField().name(setter)
+                                                                                      .description(auth.getNotes());
 
         Function<Object, Object> converter = attribute.getValueType() == ValueType.JSON ? object -> {
             try {
@@ -292,7 +295,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                   (RuleForm) update.get(AT_RULEFORM),
                                                                   auth,
                                                                   (List<Object>) update.get(setter)));
-            inputType = new GraphQLList(GraphQLString);
+            builder.type(new GraphQLList(GraphQLString));
         } else if (auth.getAuthorizedAttribute()
                        .getKeyed()) {
             updateTemplate.put(setter,
@@ -301,7 +304,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                   (RuleForm) update.get(AT_RULEFORM),
                                                                   auth,
                                                                   (Map<String, Object>) update.get(setter)));
-            inputType = GraphQLString;
+            builder.type(GraphQLString);
+
         } else {
             updateTemplate.put(setter,
                                (crud,
@@ -309,12 +313,9 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                                   (RuleForm) update.get(AT_RULEFORM),
                                                                   auth,
                                                                   (Object) converter.apply(update.get(setter))));
-            inputType = GraphQLString;
+            builder.type(GraphQLString);
         }
-        GraphQLInputObjectField field = newInputObjectField().type(inputType)
-                                                             .name(setter)
-                                                             .description(auth.getNotes())
-                                                             .build();
+        GraphQLInputObjectField field = builder.build();
         updateTypeBuilder.field(field);
         createTypeBuilder.field(field);
     }

@@ -9,6 +9,8 @@
         <createView schemaName="readable" viewName="job_chronology"><![CDATA[ 
              SELECT 
                 w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                  base.id, 
                     base.job,
                     base.sequence_number,

@@ -9,6 +9,8 @@
         <createView schemaName="readable" viewName="job"><![CDATA[
              SELECT 
                 w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                  base_table.id, 
                     s.name AS service, 
                     r.name AS requester, 

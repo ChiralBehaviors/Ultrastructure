@@ -7,7 +7,16 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="location" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT w.name AS workspace, l.id, l.name, l.description, l.notes, r.name AS updated_by, l.version
+			 SELECT 
+                w.name AS workspace, 
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
+                l.id, 
+                l.name, 
+                l.description, 
+                l.notes, 
+                r.name AS updated_by, 
+                l.version
 			   FROM location l
 			   JOIN agency r ON l.updated_by = r.id
              LEFT JOIN ruleform.workspace_authorization wa ON r.workspace = wa.id

@@ -9,7 +9,15 @@
         <createView schemaName="readable" viewName="status_code_sequencing" replaceIfExists="true"><![CDATA[ 
 			 SELECT 
                 w.name AS workspace,
-                 base_table.id, s.name AS service, pc.name AS parent_code, cc.name AS child_code, base_table.notes, up.name AS updated_by, base_table.version
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
+                base_table.id, 
+                s.name AS service, 
+                pc.name AS parent_code, 
+                cc.name AS child_code, 
+                base_table.notes, 
+                up.name AS updated_by, 
+                base_table.version
 			   FROM status_code_sequencing base_table
 			   JOIN product s ON base_table.service = s.id
 			   JOIN status_code pc ON base_table.parent_code = pc.id

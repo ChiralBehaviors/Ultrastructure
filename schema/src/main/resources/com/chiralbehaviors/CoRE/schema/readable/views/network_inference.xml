@@ -7,7 +7,17 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="network_inference" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT w.name AS workspace, c.id, r1.name AS premise1, r2.name AS premise2, r3.name AS inference, c.notes, up.name AS updated_by, c.version
+			 SELECT 
+                w.name AS workspace, 
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
+                c.id, 
+                r1.name AS premise1, 
+                r2.name AS premise2, 
+                r3.name AS inference, 
+                c.notes, 
+                up.name AS updated_by, 
+                c.version
 			   FROM network_inference c
 			   JOIN relationship r1 ON c.premise1 = r1.id
 			   JOIN relationship r2 ON c.premise2 = r2.id

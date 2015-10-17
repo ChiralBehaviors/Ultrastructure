@@ -9,6 +9,8 @@
         <createView viewName="meta_protocol" schemaName="readable" replaceIfExists="true"><![CDATA[
                  SELECT 
                 w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                  base_table.id, 
                         s.name AS service,  
                         st.name AS service_type, 

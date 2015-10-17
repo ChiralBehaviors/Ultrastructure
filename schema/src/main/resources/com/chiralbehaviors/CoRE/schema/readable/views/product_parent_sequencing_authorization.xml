@@ -7,11 +7,20 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="product_parent_sequencing_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT  w.name AS workspace, base_table.id, p.name AS service, sc.name AS status_code, 
-			        base_table.sequence_number, mp.name AS parent, 
-			        mps.name AS parent_status_to_set, base_table.set_if_active_siblings, 
-			        base_table.notes,
-			        up.name AS updated_by, base_table.version
+			 SELECT  
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc, 
+                base_table.id, 
+                p.name AS service, 
+                sc.name AS status_code, 
+			    base_table.sequence_number, 
+                mp.name AS parent, 
+			    mps.name AS parent_status_to_set, 
+                base_table.set_if_active_siblings, 
+			    base_table.notes,
+			    up.name AS updated_by, 
+                base_table.version
 			   FROM product_parent_sequencing_authorization base_table
 			   JOIN product p ON base_table.service = p.id
 			   JOIN status_code sc ON base_table.status_code = sc.id

@@ -7,9 +7,17 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView schemaName="readable" viewName="product_self_sequencing_authorization" replaceIfExists="true"><![CDATA[ 
-           SELECT w.name AS workspace, base_table.id, s.name AS service, sc.name AS status_code, 
-                    base_table.sequence_number, base_table.notes,
-                    up.name AS updated_by, base_table.version
+           SELECT 
+                w.name AS workspace, 
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
+                base_table.id, 
+                s.name AS service, 
+                sc.name AS status_code, 
+                base_table.sequence_number, 
+                base_table.notes,
+                up.name AS updated_by, 
+                base_table.version
                FROM product_self_sequencing_authorization base_table
                JOIN product s ON base_table.service = s.id
                JOIN status_code sc ON base_table.status_code = sc.id

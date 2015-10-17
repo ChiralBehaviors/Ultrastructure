@@ -9,6 +9,8 @@
         <createView schemaName="readable" viewName="unit_attribute" replaceIfExists="true"><![CDATA[ 
 			 SELECT 
                 w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                  ra.id, 
                     r.name AS unit_rf, 
                     a.name AS attribute,

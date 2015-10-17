@@ -65,16 +65,17 @@ public class WorkspaceAuthorization extends Ruleform {
     public static final String GET_AUTHORIZATIONS_BY_TYPE = "workspaceAuthorization.getAuthorizationByType";
     public static final String GET_WORKSPACE              = "workspaceAuthorization.getWorkspace";
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID           = 1L;
 
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "defining_product")
-    private Product definingProduct;
+    private Product            definingProduct;
 
-    private String key;
-    private UUID   reference; // teh pointer ;)
-    private String type;
+    private String             description;
+    private String             key;
+    private UUID               reference;                                                                   // teh pointer ;)
+    private String             type;
 
     public WorkspaceAuthorization() {
         super();
@@ -106,6 +107,10 @@ public class WorkspaceAuthorization extends Ruleform {
         return definingProduct;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends Ruleform> T getEntity(EntityManager em) {
         return (T) em.getReference(CONCRETE_SUBCLASSES.get(type), reference);
@@ -131,6 +136,10 @@ public class WorkspaceAuthorization extends Ruleform {
         this.definingProduct = definingProduct;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public void setKey(String key) {
         this.key = key;
     }
@@ -145,6 +154,10 @@ public class WorkspaceAuthorization extends Ruleform {
                        .getSimpleName();
         reference = ruleform.getId();
         em.persist(ruleform);
+        WorkspaceAuthorization prev = ruleform.getWorkspace();
+        if (prev != null) {
+            em.remove(prev);
+        }
         ruleform.setWorkspace(this);
     }
 

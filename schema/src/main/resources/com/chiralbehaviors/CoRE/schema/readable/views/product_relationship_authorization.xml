@@ -9,6 +9,8 @@
         <createView viewName="product_relationship_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
             SELECT  
                 w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                 auth.id,
                 f_r.name as from_relationship,
                 f_p.name as from_parent,

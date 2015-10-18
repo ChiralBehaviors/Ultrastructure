@@ -9,6 +9,8 @@
         <createView viewName="agency_product" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT  
                 w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                 bl.id, 
                     res.name AS agency, 
                     rel.name AS relationship, 

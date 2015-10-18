@@ -8,6 +8,8 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="agency_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT w.name AS workspace,
+                 wa.key AS wsp_key,
+                 wa.description AS wsp_desc,
                  ra.id, 
 			     r.name AS agency, 
 			     a.name AS attribute, 

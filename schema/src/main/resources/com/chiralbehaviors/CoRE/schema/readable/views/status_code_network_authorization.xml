@@ -8,7 +8,10 @@
     <changeSet id="2.0.0" author="hparry">
         <createView schemaName="readable" viewName="status_code_network_authorization" replaceIfExists="true"><![CDATA[ 
             SELECT 
-                w.name AS workspace,auth.id,
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
+                auth.id,
                 classifier.name as classifier,
                 classification.name as classification,
                 bridge.name as child_relationship,

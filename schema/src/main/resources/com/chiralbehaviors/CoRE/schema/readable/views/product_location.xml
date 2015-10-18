@@ -7,7 +7,18 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="product_location" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT w.name AS workspace, bl.id, res.name AS agency, b.name AS product, rel.name AS relationship, l.name AS location, bl.notes, up.name AS updated_by, bl.version
+			 SELECT 
+                w.name AS workspace, 
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
+                bl.id, 
+                res.name AS agency, 
+                b.name AS product, 
+                rel.name AS relationship, 
+                l.name AS location, 
+                bl.notes, 
+                up.name AS updated_by, 
+                bl.version
 			   FROM product_location bl
 			   JOIN agency res ON bl.agency = res.id
 			   JOIN product b ON bl.product = b.id

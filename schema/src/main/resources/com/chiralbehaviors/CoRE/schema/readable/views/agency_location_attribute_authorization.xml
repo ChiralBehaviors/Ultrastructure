@@ -8,6 +8,8 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="agency_location_attribute_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
              SELECT w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
                 base_table.id ,
                 res.name AS grouping_agency, 
                 from_r.name AS from_relationship, 

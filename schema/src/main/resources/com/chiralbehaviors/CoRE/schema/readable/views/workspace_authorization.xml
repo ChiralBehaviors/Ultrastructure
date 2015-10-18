@@ -11,6 +11,7 @@
                  b.id, 
 			     dp.name AS defining_product, 
                  b.key, 
+                 b.description, 
 			     b.reference,
                  b.type,
 			     b.notes, 

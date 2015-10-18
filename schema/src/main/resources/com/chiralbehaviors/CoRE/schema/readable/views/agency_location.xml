@@ -7,7 +7,9 @@
 
     <changeSet id="2.0.0" author="hhildebrand">
         <createView viewName="agency_location" schemaName="readable" replaceIfExists="true"><![CDATA[
-			 SELECT w.name AS workspace, 
+			 SELECT w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc, 
                bl.id, 
                res.name AS agency, 
                rel.name AS relationship, 

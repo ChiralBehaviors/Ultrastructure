@@ -5,20 +5,20 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
 
-    <changeSet id="install uuid-ossp" author="hhildebrand">
+    <changeSet id="install uuid-ossp-2.0.0" author="hhildebrand">
         <sql>
             CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
         </sql>
     </changeSet>
 
-    <changeSet id="alter-search_path-${create.db.role}-2.0.0" author="hhildebrand" runInTransaction="true">
+    <changeSet id="alter-search_path-2.0.0" author="hhildebrand">
         <sql><![CDATA[ 
             ALTER ROLE ${create.db.role} SET search_path TO ruleform, public, readable;
             ]]>
         </sql>
     </changeSet>
 
-    <changeSet failOnError="false" id="alter-nosuper-${create.db.role}-2.0.0" author="hhildebrand" runInTransaction="true">
+    <changeSet failOnError="false" id="alter-nosuper-2.0.0" author="hhildebrand">
         <sql><![CDATA[ 
             ALTER ROLE ${create.db.role} SET search_path TO ruleform, public, readable;
             ]]>

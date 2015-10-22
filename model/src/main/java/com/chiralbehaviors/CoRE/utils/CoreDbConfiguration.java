@@ -121,4 +121,13 @@ public class CoreDbConfiguration {
         coreServer = dbUri.getHost();
     }
 
+    @Override
+    public String toString() {
+        return String.format("CoreDbConfiguration [contexts=%s, coreDb=%s, corePassword=%s, corePort=%s, coreServer=%s, coreUsername=%s]",
+                             contexts, coreDb,
+                             corePassword == null ? ":: undefined :: "
+                                                  : "**********",
+                             corePort, coreServer, coreUsername);
+    }
+
 }

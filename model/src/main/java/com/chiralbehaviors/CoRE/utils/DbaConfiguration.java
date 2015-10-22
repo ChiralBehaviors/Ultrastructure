@@ -77,4 +77,16 @@ public class DbaConfiguration extends CoreDbConfiguration {
         System.out.println(String.format("DBA connection: %s", url));
         return DriverManager.getConnection(url, dbaUsername, dbaPassword);
     }
+
+    @Override
+    public String toString() {
+        return String.format("DbaConfiguration [contexts=%s, coreDb=%s, corePassword=%s, corePort=%s, coreServer=%s, coreUsername=%s, dbaDb=%s, dbaPassword=%s, dbaPort=%s, dbaServer=%s, dbaUsername=%s, dropDatabase=%s]",
+                             contexts, coreDb,
+                             corePassword == null ? ":: undefined :: "
+                                                  : "**********",
+                             corePort, coreServer, coreUsername, dbaDb,
+                             dbaPassword == null ? ":: undefined :: "
+                                                 : "**********",
+                             dbaPort, dbaServer, dbaPassword, dropDatabase);
+    }
 }

@@ -48,16 +48,19 @@ public class DatabaseLoader extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().info("Loading database");
+        getLog().info(String.format("Configuration: %s", loader));
         if (loader == null) {
             throw new MojoFailureException("No loader configuration supplied");
         }
         try {
             Loader dbLoader = new Loader(loader);
-            if (loader.dbaPassword != null) {
+            if (loader.dbaUsername != null) {
+                getLog().info("Creating multi tentant DB");
                 dbLoader.createDatabase();
             } else {
-                dbLoader.bootstrap();
+                getLog().info("Creating single tentant DB");
             }
+            dbLoader.bootstrap();
         } catch (Exception e) {
             MojoFailureException ex = new MojoFailureException("Unable to load database");
             ex.initCause(e);

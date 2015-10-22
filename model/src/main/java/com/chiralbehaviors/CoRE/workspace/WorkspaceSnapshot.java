@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -103,7 +104,11 @@ public class WorkspaceSnapshot {
         }
     }
 
-    protected Product definingProduct;
+    public static void load(EntityManager em, URL resource) throws IOException {
+        load(em, Collections.singletonList(resource));
+    }
+
+    protected Product        definingProduct;
 
     @JsonProperty
     protected List<Ruleform> frontier;
@@ -216,14 +221,6 @@ public class WorkspaceSnapshot {
         return ruleforms;
     }
 
-    public void serializeTo(OutputStream os) throws JsonGenerationException,
-                                             JsonMappingException, IOException {
-        ObjectMapper objMapper = new ObjectMapper();
-        objMapper.registerModule(new CoREModule());
-        objMapper.writerWithDefaultPrettyPrinter()
-                 .writeValue(os, this);
-    }
-
     /**
      * Merge the state of the workspace into the database
      * 
@@ -247,6 +244,14 @@ public class WorkspaceSnapshot {
             iterator.set(Ruleform.smartMerge(em, iterator.next(),
                                              theReplacements));
         }
+    }
+
+    public void serializeTo(OutputStream os) throws JsonGenerationException,
+                                             JsonMappingException, IOException {
+        ObjectMapper objMapper = new ObjectMapper();
+        objMapper.registerModule(new CoREModule());
+        objMapper.writerWithDefaultPrettyPrinter()
+                 .writeValue(os, this);
     }
 
     private boolean sameWorkspace(Ruleform traversing) {

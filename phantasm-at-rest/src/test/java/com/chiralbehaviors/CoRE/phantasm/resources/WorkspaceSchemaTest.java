@@ -168,8 +168,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                      0, result.getErrors()
                               .size());
         @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.getData()
-                                                                       .get("CreateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) result.getData()).get("CreateThing1");
         assertNotNull(thing1Result);
         assertEquals("hello", thing1Result.get("name"));
 
@@ -228,8 +227,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         assertNotNull(result);
 
         @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.getData()
-                                                                       .get("Thing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) result.getData()).get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
         assertEquals(thing1.getRuleform()
@@ -273,7 +271,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                           .toString(),
                    execute.getErrors()
                           .isEmpty());
-        Map<String, Object> result = execute.getData();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> result = (Map<String, Object>) execute.getData();
 
         assertNotNull(result);
     }
@@ -340,8 +339,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                               .size());
         assertEquals("hello", thing1.getName());
         @SuppressWarnings("unchecked")
-        Map<String, Object> thing1Result = (Map<String, Object>) result.getData()
-                                                                       .get("UpdateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) result.getData()).get("UpdateThing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
         assertEquals(artifact2, thing1.getDerivedFrom());
@@ -381,8 +379,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                      0, result.getErrors()
                               .size());
 
-        Map<String, Object> thing1Result = (Map<String, Object>) result.getData()
-                                                                       .get("CreateThing1");
+        Map<String, Object> thing1Result = (Map<String, Object>) ((Map<String, Object>) result.getData()).get("CreateThing1");
         assertNotNull(thing1Result);
         assertEquals(bob, thing1Result.get("description"));
         String thing1ID = (String) thing1Result.get("id");
@@ -407,15 +404,14 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                      0, result.getErrors()
                               .size());
 
-        thing1Result = (Map<String, Object>) result.getData()
-                                                   .get("Thing1");
+        thing1Result = (Map<String, Object>) ((Map<String, Object>) result.getData()).get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(apple, thing1Result.get("instanceMethod"));
         assertEquals("me", Thing1_Plugin.passThrough.get());
         assertEquals(apple, thing1Result.get("instanceMethodWithArgument"));
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void testWorkspaceSchema() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
@@ -454,16 +450,16 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                   .toString());
         ExecutionResult execute = new GraphQL(schema).execute("query it($id: String!) { Thing1(id: $id) {id name thing2 {id name thing3s {id name derivedFroms {id name}}} derivedFrom {id name}}}",
 
-        new PhantasmCRUD(model), variables);
+                                                              new PhantasmCRUD(model),
+                                                              variables);
         assertTrue(execute.getErrors()
                           .toString(),
                    execute.getErrors()
                           .isEmpty());
-        Map<String, Object> result = execute.getData();
+        Map<String, Object> result = (Map<String, Object>) execute.getData();
 
         assertNotNull(result);
 
-        @SuppressWarnings("unchecked")
         Map<String, Object> thing1Result = (Map<String, Object>) result.get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(thing1.getName(), thing1Result.get("name"));
@@ -472,7 +468,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                            .toString(),
                      thing1Result.get("id"));
 
-        @SuppressWarnings("unchecked")
         Map<String, Object> thing2Result = (Map<String, Object>) thing1Result.get("thing2");
         assertNotNull(thing2Result);
         assertEquals(thing2.getName(), thing2Result.get("name"));
@@ -480,7 +475,6 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                            .getId()
                            .toString(),
                      thing2Result.get("id"));
-        @SuppressWarnings("unchecked")
         List<Map<String, Object>> thing3s = (List<Map<String, Object>>) thing2Result.get("thing3s");
         assertNotNull(thing3s);
         assertEquals(1, thing3s.size());
@@ -490,17 +484,15 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                            .getId()
                            .toString(),
                      thing3Result.get("id"));
-        @SuppressWarnings("unchecked")
         List<Map<String, Object>> thing3DerivedFroms = (List<Map<String, Object>>) thing3Result.get("derivedFroms");
         assertNotNull(thing3DerivedFroms);
         assertEquals(2, thing3DerivedFroms.size());
 
-        result = new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
-                                                           thing1.getRuleform()
-                                                                 .getId()),
-                                             new PhantasmCRUD(model))
-                                    .getData();
-        @SuppressWarnings("unchecked")
+        result = (Map<String, Object>) new GraphQL(schema).execute(String.format("{ InstancesOfThing1 {id name URI}}",
+                                                                                 thing1.getRuleform()
+                                                                                       .getId()),
+                                                                   new PhantasmCRUD(model))
+                                                          .getData();
         List<Map<String, Object>> instances = (List<Map<String, Object>>) result.get("InstancesOfThing1");
         assertEquals(1, instances.size());
         Map<String, Object> instance = instances.get(0);

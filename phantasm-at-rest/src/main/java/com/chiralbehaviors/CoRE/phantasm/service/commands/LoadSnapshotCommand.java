@@ -47,7 +47,7 @@ import net.sourceforge.argparse4j.inf.Subparser;
 public class LoadSnapshotCommand extends Command {
 
     public LoadSnapshotCommand() {
-        super("load-state", "load a state snapsot into the CoRE instance");
+        super("load-snap", "load snapsot state into the CoRE instance");
     }
 
     /* (non-Javadoc)
@@ -57,7 +57,7 @@ public class LoadSnapshotCommand extends Command {
     public void configure(Subparser subparser) {
         subparser.addArgument("file")
                  .nargs("?")
-                 .help("State Snapshot file");
+                 .help("State snapshot file");
     }
 
     /* (non-Javadoc)

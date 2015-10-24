@@ -54,7 +54,7 @@ public class ManifestCommand extends Command {
      */
     @Override
     public void configure(Subparser subparser) {
-        subparser.addArgument("file")
+        subparser.addArgument("files")
                  .nargs("+")
                  .help("Workspace dsl files");
     }

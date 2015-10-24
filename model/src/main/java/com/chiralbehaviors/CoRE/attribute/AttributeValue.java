@@ -21,6 +21,9 @@ package com.chiralbehaviors.CoRE.attribute;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Cacheable;
@@ -57,54 +60,54 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Cacheable(false)
 public abstract class AttributeValue<RuleForm extends Ruleform>
         extends Ruleform {
-    public static final String GET_ATTRIBUTE_SUFFIX = ".getAttribute";
+    public static final String        GET_ATTRIBUTE_SUFFIX = ".getAttribute";
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper         = new ObjectMapper();
 
-    private static final long serialVersionUID = 1L;
+    private static final long         serialVersionUID     = 1L;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "attribute")
-    private Attribute attribute;
+    private Attribute                 attribute;
 
     @Column(name = "binary_value")
-    private byte[] binaryValue;
+    private byte[]                    binaryValue;
 
     @Column(name = "boolean_value")
-    private Boolean booleanValue;
+    private Boolean                   booleanValue;
 
     @Column(name = "integer_value")
-    private Integer integerValue;
+    private Integer                   integerValue;
 
     @Column(name = "json_value")
     @Type(type = "jsonbType")
-    private Object jsonValue;
+    private Object                    jsonValue;
 
     @Column(name = "key")
-    private String key;
+    private String                    key;
 
     @Column(name = "numeric_value")
-    private BigDecimal numericValue;
+    private BigDecimal                numericValue;
 
     @Column(name = "sequence_number")
-    private Integer sequenceNumber = 0;
+    private Integer                   sequenceNumber       = 0;
 
     @Column(name = "text_value")
-    private String textValue;
+    private String                    textValue;
 
     @Column(name = "timestamp_value")
-    private Timestamp timestampValue;
+    private Timestamp                 timestampValue;
 
     // bi-directional many-to-one association to Unit
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit")
-    private Unit unit;
+    private Unit                      unit;
 
     @Column(name = "updated")
-    private Timestamp updated = new Timestamp(System.currentTimeMillis());
+    private Timestamp                 updated              = new Timestamp(System.currentTimeMillis());
 
     /**
      *
@@ -272,16 +275,16 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
                 setBooleanValue((Boolean) value);
                 break;
             case INTEGER:
-                setIntegerValue((Integer) value);
+                setIntegerValue((Number) value);
                 break;
             case NUMERIC:
-                setNumericValue((BigDecimal) value);
+                setNumericValue((Number) value);
                 break;
             case TEXT:
                 setTextValue((String) value);
                 return;
             case TIMESTAMP:
-                setTimestampValue((Timestamp) value);
+                setTimestampValue(value);
                 break;
             case JSON:
                 setJsonValue(value);
@@ -305,14 +308,14 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
                 setValue(Integer.parseInt(value));
                 return;
             case NUMERIC:
-                setValue(BigDecimal.valueOf(Long.parseLong(value)));
+                setValue(new BigDecimal(value));
                 return;
             case TEXT:
             case JSON:
                 setValue(value);
                 return;
             case TIMESTAMP:
-                throw new UnsupportedOperationException("Timestamps are a PITA");
+                new UnsupportedOperationException("Timestamps are a PITA");
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               getAttribute().getValueType()));
@@ -367,23 +370,52 @@ public abstract class AttributeValue<RuleForm extends Ruleform>
         this.booleanValue = booleanValue;
     }
 
-    private void setIntegerValue(Integer integerValue) {
-        this.integerValue = integerValue;
+    private void setIntegerValue(Number value) {
+        if (value == null) {
+            integerValue = null;
+        } else {
+            this.integerValue = value.intValue();
+        }
     }
 
     private void setJsonValue(Object jsonValue) {
         this.jsonValue = jsonValue;
     }
 
-    private void setNumericValue(BigDecimal numericValue) {
-        this.numericValue = numericValue;
+    private void setNumericValue(Number value) {
+        if (value == null) {
+            this.numericValue = null;
+        } else if (value instanceof BigDecimal) {
+            this.numericValue = (BigDecimal) value;
+        } else {
+            this.numericValue = new BigDecimal(value.toString());
+        }
     }
 
     private void setTextValue(String textValue) {
         this.textValue = textValue;
     }
 
-    private void setTimestampValue(Timestamp timestampValue) {
-        this.timestampValue = timestampValue;
+    private void setTimestampValue(Object value) {
+        if (value == null) {
+            this.timestampValue = null;
+        } else if (value instanceof Timestamp) {
+            this.timestampValue = (Timestamp) value;
+        } else if (value instanceof String) {
+            SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            try {
+                this.timestampValue = new Timestamp(ISO8601DATEFORMAT.parse((String) value)
+                                                                     .getTime());
+            } catch (ParseException e) {
+                throw new IllegalArgumentException(String.format("Cannot convert %s to a Timestamp",
+                                                                 value),
+                                                   e);
+            }
+        } else if (value instanceof LocalDateTime) {
+            this.timestampValue = Timestamp.valueOf((LocalDateTime) value);
+        } else {
+            throw new IllegalArgumentException(String.format("Cannot convert %s to a Timestamp",
+                                                             value));
+        }
     }
 }

@@ -220,6 +220,13 @@ public class WorkspaceSnapshot {
         return ruleforms;
     }
 
+    public boolean validate() {
+        return ruleforms.stream()
+                        .map(ruleform -> ruleform.getWorkspace() != null)
+                        .reduce((prev, cur) -> prev && cur)
+                        .get();
+    }
+
     /**
      * Merge the state of the workspace into the database
      * 

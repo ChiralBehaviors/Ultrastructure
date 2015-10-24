@@ -78,7 +78,6 @@ public class SnapshotCommand extends Command {
                 StateSnapshot snapshot = new StateSnapshot(model.getEntityManager());
                 objectMapper.writeValue(os, snapshot);
             }
-            t.commit();
         }
     }
 

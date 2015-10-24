@@ -98,10 +98,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         implements
         NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> {
 
-    private static final String CHECK_CAP      = ".checkCap";
-    private static Logger       log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
-    private static int          MAX_DEDUCTIONS = 1000;
-    private static final Long   ZERO           = Long.valueOf(0);
+    private static final String                      CHECK_CAP      = ".checkCap";
+    private static Logger                            log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
+    private static int                               MAX_DEDUCTIONS = 1000;
+    private static final Long                        ZERO           = Long.valueOf(0);
 
     protected final Class<AttributeType>             attribute;
     protected final String                           attributePrefix;

@@ -20,7 +20,9 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,12 +31,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
+import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.TestPhantasm;
 import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
@@ -50,34 +53,55 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class StateSnapshotTest extends AbstractModelTest {
 
-    @Before
-    public void before() throws Exception {
-        try {
-            WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
-                                       model);
-        } catch (IllegalStateException e) {
-            LoggerFactory.getLogger(TestPhantasm.class)
-                         .warn(String.format("Not loading thing workspace: %s",
-                                             e.getMessage()));
+    @Test
+    public void testSnap() throws Exception {
+        try (Model myModel = new ModelImpl(emf)) {
+            myModel.getEntityManager()
+                   .getTransaction()
+                   .begin();
+            try {
+                WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
+                                           myModel);
+            } catch (IllegalStateException e) {
+                LoggerFactory.getLogger(TestPhantasm.class)
+                             .warn(String.format("Not loading thing workspace: %s",
+                                                 e.getMessage()));
+            }
+            loadState(myModel);
+            StateSnapshot snap = new StateSnapshot(em);
+            try (OutputStream os = new FileOutputStream(TARGET_CLASSES_THINGS_JSON)) {
+                new ObjectMapper().registerModule(new CoREModule())
+                                  .writeValue(os, snap);
+            }
+        }
+        try (Model myModel = new ModelImpl(emf)) {
+            myModel.getEntityManager()
+                   .getTransaction()
+                   .begin();
+            StateSnapshot snapshot;
+            try (InputStream os = new FileInputStream(TARGET_CLASSES_THINGS_JSON)) {
+                snapshot = new ObjectMapper().registerModule(new CoREModule())
+                                             .readValue(os,
+                                                        StateSnapshot.class);
+            }
+            snapshot.retarget(myModel.getEntityManager());
+            myModel.getEntityManager()
+                   .flush();
         }
     }
 
-    @Test
-    public void testSnap() throws Exception {
-
+    private void loadState(Model model) throws InstantiationException {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
         Thing2 thing2 = model.construct(Thing2.class, "tasty", "chips");
         thing1.setThing2(thing2);
         thing1.setPercentage(BigDecimal.ONE);
         String[] aliases = new String[] { "foo", "bar", "baz" };
         thing1.setAliases(aliases);
-        em.flush();
 
         Map<String, String> properties = new HashMap<>();
         properties.put("foo", "bar");
         properties.put("baz", "bozo");
         thing1.setProperties(properties);
-        em.flush();
 
         Thing3 thing3a = model.construct(Thing3.class, "uncle it",
                                          "one of my favorite things");
@@ -94,9 +118,7 @@ public class StateSnapshotTest extends AbstractModelTest {
         MavenArtifact artifact = model.construct(MavenArtifact.class,
                                                  "myartifact", "artifact");
         artifact.setType("jar");
-        em.flush();
         thing1.setDerivedFrom(artifact);
-        em.flush();
         thing2.addDerivedFroms(Arrays.asList(artifact));
 
         MavenArtifact artifact2 = model.construct(MavenArtifact.class,
@@ -105,10 +127,5 @@ public class StateSnapshotTest extends AbstractModelTest {
 
         thing2.setDerivedFroms(Arrays.asList(artifact2));
         thing2.addDerivedFrom(artifact);
-        StateSnapshot snap = new StateSnapshot(em);
-        try (OutputStream os = new FileOutputStream(TARGET_CLASSES_THINGS_JSON)) {
-            new ObjectMapper().registerModule(new CoREModule())
-                              .writeValue(os, snap);
-        }
     }
 }

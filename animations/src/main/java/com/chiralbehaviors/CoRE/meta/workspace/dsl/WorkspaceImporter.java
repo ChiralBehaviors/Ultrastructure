@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.workspace.dsl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -123,6 +124,24 @@ public class WorkspaceImporter {
         return importer;
     }
 
+    public static void manifest(List<URL> wsps, Model model) {
+        wsps.forEach(url -> {
+            try (InputStream is = url.openStream()) {
+                try {
+                    manifest(is, model);
+                } catch (Exception e) {
+                    throw new IllegalStateException(String.format("Cannot load %s",
+                                                                  url),
+                                                    e);
+                }
+            } catch (IOException e) {
+                throw new IllegalStateException(String.format("Cannot load %s",
+                                                              url),
+                                                e);
+            }
+        });
+    }
+
     public static String networkAuthNameOf(ConstraintContext constraint) {
         String name;
         if (constraint.name != null) {
@@ -151,13 +170,13 @@ public class WorkspaceImporter {
         return original.substring(1, original.length() - 1);
     }
 
-    private final EntityManager em;
-    private final Model         model;
-    private WorkspaceScope      scope;
+    private final EntityManager         em;
+    private final Model                 model;
+    private WorkspaceScope              scope;
 
-    private UUID              uuid;
-    private EditableWorkspace workspace;
-    private String            workspaceUri;
+    private UUID                        uuid;
+    private EditableWorkspace           workspace;
+    private String                      workspaceUri;
 
     private final WorkspacePresentation wsp;
 
@@ -255,8 +274,7 @@ public class WorkspaceImporter {
                                                                                         .getPrincipal()),
                                                     agency -> new AgencyAttributeAuthorization(model.getCurrentPrincipal()
                                                                                                     .getPrincipal()));
-                              } else
-                                  if (authParentClass.equals(Location.class)) {
+                              } else if (authParentClass.equals(Location.class)) {
                                   createAgencyLocationAuth(facet, constraint);
                               } else if (authParentClass.equals(Product.class)) {
                                   createAgencyProductAuth(facet, constraint);
@@ -976,7 +994,7 @@ public class WorkspaceImporter {
                                                  ctx.primary.existentialRuleform().description == null ? null
                                                                                                        : stripQuotes(ctx.primary.existentialRuleform().description.getText()),
 
-                stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
+                                                 stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
                                                  ctx.inverse.existentialRuleform().description == null ? null
                                                                                                        : stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
 
@@ -1122,8 +1140,7 @@ public class WorkspaceImporter {
                                                                                                       .getPrincipal()));
                               } else if (authParentClass.equals(Agency.class)) {
                                   createLocationAgencyAuth(facet, constraint);
-                              } else
-                                  if (authParentClass.equals(Product.class)) {
+                              } else if (authParentClass.equals(Product.class)) {
                                   createLocationProductAuth(facet, constraint);
                               } else if (authParentClass.equals(Relationship.class)) {
                                   createRelationshipProductAuth(facet,
@@ -1173,8 +1190,7 @@ public class WorkspaceImporter {
                                                                                                      .getPrincipal()));
                               } else if (authParentClass.equals(Agency.class)) {
                                   createProductAgencyAuth(facet, constraint);
-                              } else
-                                  if (authParentClass.equals(Location.class)) {
+                              } else if (authParentClass.equals(Location.class)) {
                                   createProductLocationAuth(facet, constraint);
                               } else if (authParentClass.equals(Relationship.class)) {
                                   createProductRelationshipAuth(facet,

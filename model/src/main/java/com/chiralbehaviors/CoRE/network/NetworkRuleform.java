@@ -54,12 +54,12 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "inference")
-    private NetworkInference inference;
+    private NetworkInference  inference;
 
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "relationship")
-    private Relationship relationship;
+    private Relationship      relationship;
 
     public NetworkRuleform() {
         super();
@@ -150,7 +150,7 @@ abstract public class NetworkRuleform<E extends ExistentialRuleform<?, ?>>
 
     @JsonIgnore
     public boolean isInferred() {
-        return getInference() == null;
+        return getInference() != null;
     }
 
     abstract public void setChild(E child);

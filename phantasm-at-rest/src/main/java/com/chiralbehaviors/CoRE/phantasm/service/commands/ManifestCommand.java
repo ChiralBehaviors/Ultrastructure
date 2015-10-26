@@ -28,9 +28,9 @@ import javax.persistence.EntityTransaction;
 
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Utils;
 
 import io.dropwizard.cli.Command;
@@ -42,10 +42,11 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class LoadWorkspaceCommand extends Command {
+public class ManifestCommand extends Command {
 
-    public LoadWorkspaceCommand() {
-        super("load", "load workspace snapshots into the CoRE instance");
+    public ManifestCommand() {
+        super("manifest",
+              "Manifest workspace dsl files into the CoRE instance");
     }
 
     /* (non-Javadoc)
@@ -55,7 +56,7 @@ public class LoadWorkspaceCommand extends Command {
     public void configure(Subparser subparser) {
         subparser.addArgument("files")
                  .nargs("+")
-                 .help("Workspace snapshot json files");
+                 .help("Workspace dsl files");
     }
 
     /* (non-Javadoc)
@@ -70,20 +71,20 @@ public class LoadWorkspaceCommand extends Command {
             EntityTransaction t = model.getEntityManager()
                                        .getTransaction();
             t.begin();
-            WorkspaceSnapshot.load(model.getEntityManager(),
-                                   namespace.getList("files")
-                                            .stream()
-                                            .map(file -> {
-                                                try {
-                                                    return Utils.resolveResourceURL(getClass(),
-                                                                                    (String) file);
-                                                } catch (Exception e) {
-                                                    throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
-                                                                                                     file),
-                                                                                       e);
-                                                }
-                                            })
-                                            .collect(Collectors.toList()));
+            WorkspaceImporter.manifest(namespace.getList("files")
+                                                .stream()
+                                                .map(file -> {
+                                                    try {
+                                                        return Utils.resolveResourceURL(getClass(),
+                                                                                        (String) file);
+                                                    } catch (Exception e) {
+                                                        throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
+                                                                                                         file),
+                                                                                           e);
+                                                    }
+                                                })
+                                                .collect(Collectors.toList()),
+                                       model);
             t.commit();
         }
     }

@@ -108,12 +108,12 @@ public class WorkspaceSnapshot {
         load(em, Collections.singletonList(resource));
     }
 
-    protected Product        definingProduct;
-
     @JsonProperty
-    protected List<Ruleform> frontier;
+    private Product        definingProduct;
     @JsonProperty
-    protected List<Ruleform> ruleforms;
+    private List<Ruleform> frontier;
+    @JsonProperty
+    private List<Ruleform> ruleforms;
 
     public WorkspaceSnapshot() {
         ruleforms = new ArrayList<>();
@@ -129,20 +129,19 @@ public class WorkspaceSnapshot {
                              List<WorkspaceAuthorization> auths,
                              EntityManager em) {
         this.definingProduct = definingProduct;
-        Predicate<Ruleform> systemDefinition = traversing -> sameWorkspace(traversing);
-
         this.ruleforms = new ArrayList<>(auths.size());
+        Predicate<Ruleform> systemDefinition = traversing -> sameWorkspace(traversing);
         Map<UUID, Ruleform> exits = new HashMap<>();
         Set<UUID> traversed = new OaHashSet<UUID>(1024);
 
         for (WorkspaceAuthorization auth : auths) {
             if (!auth.getDefiningProduct()
                      .getId()
-                     .equals(definingProduct.getId())) {
+                     .equals(this.definingProduct.getId())) {
                 throw new IllegalStateException(String.format("%s is not in the workspace %s",
                                                               auth.getDefiningProduct()
                                                                   .getName(),
-                                                              definingProduct.getName()));
+                                                              this.definingProduct.getName()));
             }
             Ruleform ruleform = Ruleform.initializeAndUnproxy(auth.getRuleform(em));
             ruleforms.add(ruleform);
@@ -219,6 +218,13 @@ public class WorkspaceSnapshot {
 
     public List<Ruleform> getRuleforms() {
         return ruleforms;
+    }
+
+    public boolean validate() {
+        return ruleforms.stream()
+                        .map(ruleform -> ruleform.getWorkspace() != null)
+                        .reduce((prev, cur) -> prev && cur)
+                        .get();
     }
 
     /**

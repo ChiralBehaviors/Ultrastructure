@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -75,6 +76,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (FileOutputStream os = new FileOutputStream(version1File)) {
                 snapshot.serializeTo(os);
             }
+            assertTrue(snapshot.validate());
         }
 
         try (Model myModel = new ModelImpl(emf)) {
@@ -98,6 +100,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (FileOutputStream os = new FileOutputStream(version2File)) {
                 snapshot.serializeTo(os);
             }
+            assertTrue(snapshot.validate());
         }
 
         try (Model myModel = new ModelImpl(emf)) {
@@ -112,9 +115,15 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             try (InputStream is = new FileInputStream(version1File);) {
                 version1 = mapper.readValue(is, WorkspaceSnapshot.class);
             }
+
+            assertTrue(version1.validate());
+
             try (InputStream is = new FileInputStream(version2File);) {
                 version2 = mapper.readValue(is, WorkspaceSnapshot.class);
             }
+
+            assertTrue(version2.validate());
+
             WorkspaceSnapshot delta = version2.deltaFrom(version1);
             try (FileOutputStream os = new FileOutputStream(version2_1File)) {
                 delta.serializeTo(os);
@@ -123,6 +132,27 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                                  .size());
             assertEquals(7, delta.getFrontier()
                                  .size());
+            assertTrue(delta.validate());
+
+            try {
+                myModel.getWorkspaceModel()
+                       .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+                fail("Should not exist");
+            } catch (IllegalArgumentException e) {
+                // expected
+            }
+            version1.retarget(myEm);
+            delta.retarget(myEm);
+            WorkspaceScope scope = myModel.getWorkspaceModel()
+                                          .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+            Agency theDude = (Agency) scope.lookup("TheDude");
+            assertNotNull(theDude);
+        }
+
+        try (Model myModel = new ModelImpl(emf)) {
+            EntityManager myEm = myModel.getEntityManager();
+            myEm.getTransaction()
+                .begin();
 
             try {
                 myModel.getWorkspaceModel()

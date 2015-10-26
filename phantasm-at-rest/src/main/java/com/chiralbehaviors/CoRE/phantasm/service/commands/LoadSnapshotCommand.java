@@ -20,17 +20,19 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service.commands;
 
+import java.io.InputStream;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
+import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
+import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.Utils;
 
 import io.dropwizard.cli.Command;
@@ -42,10 +44,10 @@ import net.sourceforge.argparse4j.inf.Subparser;
  * @author hhildebrand
  *
  */
-public class LoadWorkspaceCommand extends Command {
+public class LoadSnapshotCommand extends Command {
 
-    public LoadWorkspaceCommand() {
-        super("load", "load workspace snapshots into the CoRE instance");
+    public LoadSnapshotCommand() {
+        super("load-snap", "load snapsot state into the CoRE instance");
     }
 
     /* (non-Javadoc)
@@ -53,9 +55,9 @@ public class LoadWorkspaceCommand extends Command {
      */
     @Override
     public void configure(Subparser subparser) {
-        subparser.addArgument("files")
-                 .nargs("+")
-                 .help("Workspace snapshot json files");
+        subparser.addArgument("file")
+                 .nargs("?")
+                 .help("State snapshot file");
     }
 
     /* (non-Javadoc)
@@ -70,20 +72,14 @@ public class LoadWorkspaceCommand extends Command {
             EntityTransaction t = model.getEntityManager()
                                        .getTransaction();
             t.begin();
-            WorkspaceSnapshot.load(model.getEntityManager(),
-                                   namespace.getList("files")
-                                            .stream()
-                                            .map(file -> {
-                                                try {
-                                                    return Utils.resolveResourceURL(getClass(),
-                                                                                    (String) file);
-                                                } catch (Exception e) {
-                                                    throw new IllegalArgumentException(String.format("Cannot resolve URL for %s",
-                                                                                                     file),
-                                                                                       e);
-                                                }
-                                            })
-                                            .collect(Collectors.toList()));
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new CoREModule());
+            try (InputStream is = Utils.resolveResource(getClass(),
+                                                        namespace.getString("file"))) {
+                StateSnapshot snapshot = objectMapper.readValue(is,
+                                                                StateSnapshot.class);
+                snapshot.retarget(model.getEntityManager());
+            }
             t.commit();
         }
     }

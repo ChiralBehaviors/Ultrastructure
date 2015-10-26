@@ -41,7 +41,7 @@
         <dropwizard.version>0.8.4</dropwizard.version>
         <postgresql.driver.version>9.4-1202-jdbc42</postgresql.driver.version>
         <jackson.version>2.6.1 </jackson.version>
-        <hibernate.version>5.0.1.Final</hibernate.version>
+        <hibernate.version>5.0.2.Final</hibernate.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -129,7 +129,7 @@
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.18.1-GA</version>
+                <version>3.20.0-GA</version>
             </dependency>
             <dependency>
                 <groupId>com.github.jsonld-java</groupId>

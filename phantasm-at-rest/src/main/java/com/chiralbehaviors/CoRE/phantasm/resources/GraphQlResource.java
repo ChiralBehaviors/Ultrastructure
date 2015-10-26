@@ -117,11 +117,11 @@ public class GraphQlResource extends TransactionalResource {
         }
     }
 
-    private static final Logger log = LoggerFactory.getLogger(GraphQlResource.class);
+    private static final Logger                      log               = LoggerFactory.getLogger(GraphQlResource.class);
 
-    private static final String QUERY = "query";
+    private static final String                      QUERY             = "query";
 
-    private static final String VARIABLES = "variables";
+    private static final String                      VARIABLES         = "variables";
 
     private final ConcurrentMap<UUID, GraphQLSchema> cache             = new ConcurrentHashMap<>();
     private final ConcurrentMap<Plugin, ClassLoader> executionContexts = new ConcurrentHashMap<>();
@@ -211,13 +211,17 @@ public class GraphQlResource extends TransactionalResource {
                 return null;
             }
             Map<String, Object> variables = Collections.emptyMap();
-            if (request.get(VARIABLES) != null) {
-                if (request.get(VARIABLES) instanceof Map) {
-                    variables = (Map<String, Object>) request.get(VARIABLES);
-                } else if (request.get(VARIABLES) instanceof String) {
+            Object provided = request.get(VARIABLES);
+            if (provided != null) {
+                if (provided instanceof Map) {
+                    variables = (Map<String, Object>) provided;
+                } else if (provided instanceof String) {
                     try {
-                        variables = new ObjectMapper().readValue((String) request.get(VARIABLES),
-                                                                 Map.class);
+                        String variableString = ((String) provided).trim();
+                        if (!variableString.isEmpty()) {
+                            variables = new ObjectMapper().readValue(variableString,
+                                                                     Map.class);
+                        }
                     } catch (Exception e) {
                         throw new WebApplicationException(String.format("Cannot deserialize variables: %s",
                                                                         e.getMessage()),

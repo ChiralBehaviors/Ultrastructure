@@ -21,6 +21,9 @@
     <logger name="org.hibernate.cache">
         <level value="WARN" />
     </logger>
+    <logger name="graphql">
+        <level value="WARN" />
+    </logger>
     <root>
         <level value="WARN" />
         <appender-ref ref="C" />

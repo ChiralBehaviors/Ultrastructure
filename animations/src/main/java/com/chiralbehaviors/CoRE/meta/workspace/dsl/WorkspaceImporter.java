@@ -142,34 +142,6 @@ public class WorkspaceImporter {
         });
     }
 
-    public static String networkAuthNameOf(ConstraintContext constraint) {
-        String name;
-        if (constraint.name != null) {
-            name = constraint.name.getText();
-        } else if (constraint.anyType != null) {
-            name = constraint.childRelationship.member.getText();
-        } else if (constraint.methodType != null) {
-            switch (constraint.methodType.getText()) {
-                case "named by relationship":
-                    name = constraint.childRelationship.member.getText();
-                    break;
-                case "named by entity":
-                    name = constraint.authorizedParent.member.getText();
-                    break;
-                default:
-                    throw new IllegalStateException(String.format("Invalid syntax for network authorization name: %s",
-                                                                  constraint.methodType.getText()));
-            }
-        } else {
-            name = constraint.authorizedParent.member.getText();
-        }
-        return name;
-    }
-
-    public static String stripQuotes(String original) {
-        return original.substring(1, original.length() - 1);
-    }
-
     private final EntityManager         em;
     private final Model                 model;
     private WorkspaceScope              scope;
@@ -196,7 +168,7 @@ public class WorkspaceImporter {
     }
 
     public WorkspaceImporter initialize() {
-        workspaceUri = stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
+        workspaceUri = WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText());
         uuid = WorkspaceAccessor.uuidOf(workspaceUri);
         return this;
     }
@@ -208,10 +180,10 @@ public class WorkspaceImporter {
      * @return
      */
     public WorkspaceAccessor load(Product definingProduct) {
-        definingProduct.setName(stripQuotes(wsp.getWorkspaceDefinition().name.getText()));
+        definingProduct.setName(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()));
         Token description = wsp.getWorkspaceDefinition().description;
         definingProduct.setDescription(description == null ? null
-                                                           : stripQuotes(description.getText()));
+                                                           : WorkspacePresentation.stripQuotes(description.getText()));
         scope = model.getWorkspaceModel()
                      .getScoped(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();
@@ -314,13 +286,13 @@ public class WorkspaceImporter {
         authorization.setClassifier(resolve(facet.classifier));
         authorization.setClassification(resolve(facet.classification));
         if (facet.name != null) {
-            authorization.setName(stripQuotes(facet.name.getText()));
+            authorization.setName(WorkspacePresentation.stripQuotes(facet.name.getText()));
         } else {
             authorization.setName(authorization.getClassification()
                                                .getName());
         }
         if (facet.description != null) {
-            authorization.setNotes(stripQuotes(facet.name.getText()));
+            authorization.setNotes(WorkspacePresentation.stripQuotes(facet.name.getText()));
         }
         model.getEntityManager()
              .persist(authorization);
@@ -335,7 +307,7 @@ public class WorkspaceImporter {
             auth.setNetworkAuthorization(authorization);
             auth.setAuthorizedAttribute(resolve(attribute.key));
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -355,7 +327,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
@@ -371,7 +343,7 @@ public class WorkspaceImporter {
             auth.setAuthorizedAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -390,7 +362,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
@@ -406,7 +378,7 @@ public class WorkspaceImporter {
             auth.setAuthorizedAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -426,7 +398,7 @@ public class WorkspaceImporter {
         authorization.setConnection(resolve(constraint.childRelationship));
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
         authorization.setForward(false);
@@ -442,7 +414,7 @@ public class WorkspaceImporter {
             auth.setAuthorizedAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -462,7 +434,7 @@ public class WorkspaceImporter {
         authorization.setConnection(resolve(constraint.childRelationship));
         authorization.setToParent(resolve(facet.classification));
         authorization.setToRelationship(resolve(facet.classifier));
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
         authorization.setForward(false);
@@ -478,7 +450,7 @@ public class WorkspaceImporter {
             auth.setAuthorizedAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -490,7 +462,7 @@ public class WorkspaceImporter {
                                                                                                                    ConstraintContext constraint,
                                                                                                                    NetworkAuthorization<T> authorization,
                                                                                                                    Function<Agency, AttributeAuthorization<T, Network>> attrAuth) {
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         authorization.setClassifier(resolve(facet.classifier));
         authorization.setClassification(resolve(facet.classification));
         authorization.setChildRelationship(resolve(constraint.childRelationship));
@@ -509,7 +481,7 @@ public class WorkspaceImporter {
             auth.setAuthorizedNetworkAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -531,7 +503,7 @@ public class WorkspaceImporter {
         authorization.setToRelationship(resolve(facet.classifier));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         authorization.setForward(false);
         workspace.add(authorization);
         em.persist(authorization);
@@ -545,7 +517,7 @@ public class WorkspaceImporter {
             auth.setAuthorizedAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -564,7 +536,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
@@ -580,7 +552,7 @@ public class WorkspaceImporter {
             auth.setAuthorizedAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -595,7 +567,7 @@ public class WorkspaceImporter {
         authorization.setFromParent(resolve(facet.classification));
         authorization.setFromRelationship(resolve(facet.classifier));
         authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         resolveTo(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
@@ -611,7 +583,7 @@ public class WorkspaceImporter {
             auth.setAuthorizedAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -629,7 +601,7 @@ public class WorkspaceImporter {
         authorization.setToRelationship(resolve(facet.classifier));
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         authorization.setForward(false);
         workspace.add(authorization);
         em.persist(authorization);
@@ -643,7 +615,7 @@ public class WorkspaceImporter {
             auth.setAuthorizedAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(stripQuotes(attribute.defaultValue.getText()));
+                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             model.getEntityManager()
                  .persist(auth);
@@ -668,7 +640,7 @@ public class WorkspaceImporter {
                                                                   .getAttributeValue(definingProduct,
                                                                                      model.getKernel()
                                                                                           .getIRI());
-        attributeValue.setValue(stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
+        attributeValue.setValue(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
         model.getProductModel()
              .setAttributeValue(attributeValue);
         loadWorkspace();
@@ -677,9 +649,9 @@ public class WorkspaceImporter {
 
     private Product createWorkspaceProduct() {
         Token description = wsp.getWorkspaceDefinition().description;
-        Product workspaceProduct = new Product(stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
+        Product workspaceProduct = new Product(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
                                                description == null ? null
-                                                                   : stripQuotes(description.getText()),
+                                                                   : WorkspacePresentation.stripQuotes(description.getText()),
                                                model.getCurrentPrincipal()
                                                     .getPrincipal());
         workspaceProduct.setId(uuid);
@@ -693,9 +665,9 @@ public class WorkspaceImporter {
                 if (scope.lookup(facet.classification.member.getText()) == null) {
                     @SuppressWarnings("rawtypes")
                     ExistentialRuleform erf = networkedModel.create(facet.name == null ? facet.classification.member.getText()
-                                                                                       : stripQuotes(facet.name.getText()),
+                                                                                       : WorkspacePresentation.stripQuotes(facet.name.getText()),
                                                                     facet.description == null ? null
-                                                                                              : stripQuotes(facet.description.getText()));
+                                                                                              : WorkspacePresentation.stripQuotes(facet.description.getText()));
                     em.persist(erf);
                     workspace.put(facet.classification.member.getText(), erf);
                 }
@@ -735,9 +707,9 @@ public class WorkspaceImporter {
 
     private void loadAgencies() {
         for (AttributedExistentialRuleformContext ruleform : wsp.getAgencies()) {
-            Agency agency = new Agency(stripQuotes(ruleform.existentialRuleform().name.getText()),
+            Agency agency = new Agency(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
                                        ruleform.existentialRuleform().description == null ? null
-                                                                                          : stripQuotes(ruleform.existentialRuleform().description.getText()),
+                                                                                          : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
                                        model.getCurrentPrincipal()
                                             .getPrincipal());
             em.persist(agency);
@@ -750,9 +722,9 @@ public class WorkspaceImporter {
 
     private void loadAttributes() {
         for (AttributeRuleformContext ruleform : wsp.getAttributes()) {
-            Attribute attr = new Attribute(stripQuotes(ruleform.existentialRuleform().name.getText()),
+            Attribute attr = new Attribute(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
                                            ruleform.existentialRuleform().description == null ? null
-                                                                                              : stripQuotes(ruleform.existentialRuleform().description.getText()),
+                                                                                              : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
                                            model.getCurrentPrincipal()
                                                 .getPrincipal());
             setValueType(attr, ruleform.valueType);
@@ -773,7 +745,7 @@ public class WorkspaceImporter {
                 ama.setUpdatedBy(model.getCurrentPrincipal()
                                       .getPrincipal());
                 ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
-                ama.setValueFromString(stripQuotes(av.value.getText()));
+                ama.setValueFromString(WorkspacePresentation.stripQuotes(av.value.getText()));
                 workspace.add(ama);
                 em.persist(ama);
             }
@@ -784,7 +756,7 @@ public class WorkspaceImporter {
                 ama.setMetaAttribute(attr);
                 ama.setUpdatedBy(model.getCurrentPrincipal()
                                       .getPrincipal());
-                ama.setValueFromString(stripQuotes(ruleform.type.getText()));
+                ama.setValueFromString(WorkspacePresentation.stripQuotes(ruleform.type.getText()));
                 em.persist(ama);
                 workspace.add(ama);
             }
@@ -841,9 +813,9 @@ public class WorkspaceImporter {
 
     private void loadIntervals() {
         for (AttributedExistentialRuleformContext rf : wsp.getIntervals()) {
-            Interval ruleform = new Interval(stripQuotes(rf.existentialRuleform().name.getText()),
+            Interval ruleform = new Interval(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
                                              rf.existentialRuleform().description == null ? null
-                                                                                          : stripQuotes(rf.existentialRuleform().description.getText()),
+                                                                                          : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
                                              model.getCurrentPrincipal()
                                                   .getPrincipal());
             em.persist(ruleform);
@@ -860,9 +832,9 @@ public class WorkspaceImporter {
 
     private void loadLocations() {
         for (AttributedExistentialRuleformContext rf : wsp.getLocations()) {
-            Location ruleform = new Location(stripQuotes(rf.existentialRuleform().name.getText()),
+            Location ruleform = new Location(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
                                              rf.existentialRuleform().description == null ? null
-                                                                                          : stripQuotes(rf.existentialRuleform().description.getText()),
+                                                                                          : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
                                              model.getCurrentPrincipal()
                                                   .getPrincipal());
             em.persist(ruleform);
@@ -923,9 +895,9 @@ public class WorkspaceImporter {
 
     private void loadProducts() {
         for (AttributedExistentialRuleformContext rf : wsp.getProducts()) {
-            Product ruleform = new Product(stripQuotes(rf.existentialRuleform().name.getText()),
+            Product ruleform = new Product(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
                                            rf.existentialRuleform().description == null ? null
-                                                                                        : stripQuotes(rf.existentialRuleform().description.getText()),
+                                                                                        : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
                                            model.getCurrentPrincipal()
                                                 .getPrincipal());
             em.persist(ruleform);
@@ -982,21 +954,21 @@ public class WorkspaceImporter {
         for (RelationshipPairContext ctx : wsp.getRelationships()) {
             if (ctx.inverse == null) {
                 Relationship rel = model.getRelationshipModel()
-                                        .create(stripQuotes(ctx.primary.existentialRuleform().name.getText()),
+                                        .create(WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().name.getText()),
                                                 ctx.primary.existentialRuleform().description == null ? null
-                                                                                                      : stripQuotes(ctx.primary.existentialRuleform().description.getText()));
+                                                                                                      : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()));
                 rel.setInverse(rel);
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
                               rel);
             } else {
                 Relationship relA = model.getRelationshipModel()
-                                         .create(stripQuotes(ctx.primary.existentialRuleform().name.getText()),
+                                         .create(WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().name.getText()),
                                                  ctx.primary.existentialRuleform().description == null ? null
-                                                                                                       : stripQuotes(ctx.primary.existentialRuleform().description.getText()),
+                                                                                                       : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()),
 
-                                                 stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
+                                                 WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
                                                  ctx.inverse.existentialRuleform().description == null ? null
-                                                                                                       : stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
+                                                                                                       : WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
 
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
                               relA);
@@ -1040,9 +1012,9 @@ public class WorkspaceImporter {
 
     private void loadStatusCodes() {
         for (AttributedExistentialRuleformContext rf : wsp.getStatusCodes()) {
-            StatusCode ruleform = new StatusCode(stripQuotes(rf.existentialRuleform().name.getText()),
+            StatusCode ruleform = new StatusCode(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
                                                  rf.existentialRuleform().description == null ? null
-                                                                                              : stripQuotes(rf.existentialRuleform().description.getText()),
+                                                                                              : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
                                                  model.getCurrentPrincipal()
                                                       .getPrincipal());
             em.persist(ruleform);
@@ -1076,9 +1048,9 @@ public class WorkspaceImporter {
     private void loadUnits() {
         for (UnitContext unit : wsp.getUnits()) {
             Token description = unit.existentialRuleform().description;
-            Unit ruleform = new Unit(stripQuotes(unit.existentialRuleform().name.getText()),
+            Unit ruleform = new Unit(WorkspacePresentation.stripQuotes(unit.existentialRuleform().name.getText()),
                                      description == null ? null
-                                                         : stripQuotes(description.getText()),
+                                                         : WorkspacePresentation.stripQuotes(description.getText()),
                                      model.getCurrentPrincipal()
                                           .getPrincipal());
             ruleform.setEnumerated(unit.enumerated == null ? null
@@ -1151,7 +1123,7 @@ public class WorkspaceImporter {
 
     private void processImports() {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
-            String uri = stripQuotes(w.uri.getText());
+            String uri = WorkspacePresentation.stripQuotes(w.uri.getText());
             UUID uuid = WorkspaceAccessor.uuidOf(uri);
             Product imported = model.getEntityManager()
                                     .find(Product.class, uuid);
@@ -1334,7 +1306,7 @@ public class WorkspaceImporter {
     private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveFrom(ConstraintContext constraint,
                                                                                                              XDomainNetworkAuthorization<T, ?> authorization) {
 
-        authorization.setName(networkAuthNameOf(constraint));
+        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         if (constraint.anyType == null) {
             authorization.setFromParent(resolve(constraint.authorizedParent));
             authorization.setFromRelationship(resolve(constraint.authorizedRelationship));

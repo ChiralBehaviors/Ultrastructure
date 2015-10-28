@@ -373,6 +373,7 @@ abstract public class Ruleform implements Serializable, Cloneable {
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace")
     protected WorkspaceAuthorization workspace;
+    public static final String KERNEL_IRI = "urn:uuid:00000000-0000-0004-0000-000000000003";
 
     public Ruleform() {
     }

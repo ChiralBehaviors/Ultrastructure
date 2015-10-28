@@ -20,8 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.generator;
 
-import static com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter.stripQuotes;
-import static com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.toTypeName;
+import static com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation.stripQuotes;
+import static com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation.toTypeName;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,7 +31,6 @@ import java.util.Set;
 
 import org.antlr.v4.runtime.Token;
 
-import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.utils.English;
@@ -145,7 +144,7 @@ public class FacetImpl implements Facet {
     public void resolve(Map<FacetKey, Facet> facets,
                         WorkspacePresentation presentation,
                         Map<ScopedName, MappedAttribute> mapped) {
-        resolveAttributes(presentation, mapped);
+        resolveAttributes(mapped);
         resolveRelationships(presentation, facets);
     }
 
@@ -177,7 +176,7 @@ public class FacetImpl implements Facet {
                                                constraint.cardinality.getText()
                                                                      .toUpperCase());
         String className = type.getClassName();
-        String baseName = WorkspaceImporter.networkAuthNameOf(constraint);
+        String baseName = WorkspacePresentation.networkAuthNameOf(constraint);
         baseName = Character.toUpperCase(baseName.charAt(0))
                    + (baseName.length() == 1 ? "" : baseName.substring(1));
 
@@ -239,8 +238,7 @@ public class FacetImpl implements Facet {
         }
     }
 
-    private void resolveAttributes(WorkspacePresentation presentation,
-                                   Map<ScopedName, MappedAttribute> mapped) {
+    private void resolveAttributes(Map<ScopedName, MappedAttribute> mapped) {
         List<ClassifiedAttributeContext> classifiedAttributes = context.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;

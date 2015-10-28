@@ -14,7 +14,7 @@ agencies {
     facets {
         IsA.CoreUser { Login PasswordRounds PasswordHash AccessToken }
             constraints {
-                n LOGIN_TO: InstanceOf.Core named loginCapaility
+                n LOGIN_TO: InstanceOf.Core named loginCapability
             }
         InstanceOf.Core named: "Core Instance"
             constraints {

@@ -45,8 +45,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -99,7 +99,7 @@ public class AuthxResourceTest extends AbstractModelTest {
         System.out.println(token);
         webTarget = client.target(String.format("http://localhost:%s/graphql/workspace",
                                                 application.getPort()));
-        webTarget = webTarget.path(URLEncoder.encode(Kernel.KERNEL_IRI,
+        webTarget = webTarget.path(URLEncoder.encode(Ruleform.KERNEL_IRI,
                                                      "UTF-8"));
         invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON_TYPE);
         QueryRequest request = new QueryRequest("query q { InstancesOfCoreUser { id name } }");

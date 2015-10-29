@@ -48,10 +48,10 @@ import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceMediatedResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.WorkspaceResource;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.BootstrapCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.ClearCommand;
-import com.chiralbehaviors.CoRE.phantasm.service.commands.SnapshotCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadSnapshotCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.LoadWorkspaceCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.commands.ManifestCommand;
+import com.chiralbehaviors.CoRE.phantasm.service.commands.SnapshotCommand;
 import com.chiralbehaviors.CoRE.phantasm.service.config.CORSConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
 import com.chiralbehaviors.CoRE.phantasm.service.config.PhantasmConfiguration;
@@ -65,6 +65,8 @@ import io.dropwizard.auth.CachingAuthenticator;
 import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.jetty.HttpConnectorFactory;
 import io.dropwizard.server.DefaultServerFactory;
+import io.dropwizard.server.ServerFactory;
+import io.dropwizard.server.SimpleServerFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -158,10 +160,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
 
     private void configure(PhantasmConfiguration configuration) throws Exception {
         if (configuration.randomPort) {
-            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
-                                                                                             .get(0)).setPort(0);
-            ((HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getAdminConnectors()
-                                                                                             .get(0)).setPort(0);
+            configureRandomPort(configuration);
         }
         Map<String, String> properties = JpaConfiguration.getDefaultProperties();
         properties.putAll(configuration.jpa.getProperties());
@@ -169,6 +168,22 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         if (emf == null) { // allow tests to set this if needed
             emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                          properties);
+        }
+    }
+
+    private void configureRandomPort(PhantasmConfiguration configuration) {
+        ServerFactory serverFactory = configuration.getServerFactory();
+        if (serverFactory instanceof DefaultServerFactory) {
+            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getApplicationConnectors()
+                                                                          .get(0)).setPort(0);
+            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getAdminConnectors()
+                                                                          .get(0)).setPort(0);
+        } else if (serverFactory instanceof SimpleServerFactory) {
+            ((HttpConnectorFactory) ((SimpleServerFactory) serverFactory).getConnector()).setPort(0);
+        } else {
+            log.warn("Unknown server factory type: {}, unable to set random port",
+                     serverFactory.getClass()
+                                  .getSimpleName());
         }
     }
 

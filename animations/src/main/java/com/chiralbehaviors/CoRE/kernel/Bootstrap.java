@@ -175,7 +175,7 @@ public class Bootstrap {
                                                                   .getAttributeValue(kernelWorkspace,
                                                                                      model.getKernel()
                                                                                           .getIRI());
-        attributeValue.setValue(Kernel.KERNEL_IRI);
+        attributeValue.setValue(Ruleform.KERNEL_IRI);
         model.getProductModel()
              .setAttributeValue(attributeValue);
         model.getEntityManager()

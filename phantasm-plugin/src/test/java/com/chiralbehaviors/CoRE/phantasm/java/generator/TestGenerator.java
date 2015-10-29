@@ -61,15 +61,4 @@ public class TestGenerator {
         PhantasmGenerator generator = new PhantasmGenerator(configuration);
         generator.generate();
     }
-
-    @Test
-    public void testKernelGen() throws IOException {
-        Configuration configuration = new Configuration();
-        configuration.resource = "/kernel.2.wsp";
-        configuration.appendTypeToPackage = true;
-        configuration.outputDirectory = new File(TARGET_PHANTASM_TEST_GENERATION);
-        configuration.packageName = COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_TEST_GENERATED;
-        PhantasmGenerator generator = new PhantasmGenerator(configuration);
-        generator.generate();
-    }
 }

@@ -20,8 +20,8 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.any;
 
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
+import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 
@@ -29,6 +29,6 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
  * @author hhildebrand
  *
  */
-@Facet(classifier = @Key(name = "AnyRelationship") , classification = @Key(name = "AnyLocation") , workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = Location.class)
-public interface AnyLocation extends ScopedPhantasm<Location> {
+@Facet(classifier = @Key(name = "AnyRelationship") , classification = @Key(name = "AnyUnit") , workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = Unit.class)
+public interface AnyUnit extends Phantasm<Unit> {
 }

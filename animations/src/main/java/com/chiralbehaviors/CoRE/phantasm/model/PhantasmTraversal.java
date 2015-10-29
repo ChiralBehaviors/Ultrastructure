@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.phantasm.model;
 
-import java.beans.Introspector;
-
 import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.agency.Agency;
@@ -36,6 +34,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
+import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -136,32 +135,6 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
 
     }
 
-    public static String toFieldName(String name) {
-        return Introspector.decapitalize(toValidName(name));
-    }
-
-    public static String toTypeName(String name) {
-        char chars[] = toValidName(name).toCharArray();
-        chars[0] = Character.toUpperCase(chars[0]);
-        return new String(chars);
-    }
-
-    public static String toValidName(String name) {
-        name = name.replaceAll("\\s", "");
-        StringBuilder sb = new StringBuilder();
-        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
-            sb.append("_");
-        }
-        for (char c : name.toCharArray()) {
-            if (!Character.isJavaIdentifierPart(c)) {
-                sb.append("_");
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
     private static NetworkAuthorization<?> resolveFrom(@SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
                                                        Model model) {
         Aspect<?> aspect = new Aspect<>(auth.getFromRelationship(),
@@ -241,7 +214,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
         for (AttributeAuthorization<RuleForm, Network> auth : networkedModel.getAttributeAuthorizations(facet,
                                                                                                         false)) {
             auth = Ruleform.initializeAndUnproxy(auth);
-            visitor.visit(facet, auth, toFieldName(auth.getAuthorizedAttribute()
+            visitor.visit(facet, auth, WorkspacePresentation.toFieldName(auth.getAuthorizedAttribute()
                                                        .getName()));
         }
     }
@@ -277,7 +250,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
             NetworkAuthorization<RuleForm> child = resolve(auth,
                                                            networkedModel);
             child = Ruleform.initializeAndUnproxy(child);
-            String fieldName = toFieldName(auth.getName());
+            String fieldName = WorkspacePresentation.toFieldName(auth.getName());
             if (auth.getCardinality() == Cardinality.N) {
                 visitor.visitChildren(facet, auth, English.plural(fieldName),
                                       child, fieldName);
@@ -327,7 +300,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform<RuleForm, Ne
                                 @SuppressWarnings("rawtypes") XDomainNetworkAuthorization auth,
                                 NetworkAuthorization<?> child,
                                 PhantasmVisitor<RuleForm, Network> visitor) {
-        String fieldName = toFieldName(auth.getName());
+        String fieldName = WorkspacePresentation.toFieldName(auth.getName());
         auth = Ruleform.initializeAndUnproxy(auth);
         child = Ruleform.initializeAndUnproxy(child);
         if (auth.getCardinality() == Cardinality.N) {

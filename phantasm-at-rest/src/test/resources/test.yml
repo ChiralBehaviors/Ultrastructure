@@ -7,6 +7,7 @@ logging:
     loggers:
         "org.hibernate": ERROR
         "org.glassfish": ERROR
+        graphql: WARN
 
 server: 
   requestLog:

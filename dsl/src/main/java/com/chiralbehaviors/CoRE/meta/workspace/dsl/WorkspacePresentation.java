@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace.dsl;
 
+import java.beans.Introspector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -37,6 +38,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformC
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ChildSequencingsContext;
+import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ConstraintContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.EdgeContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.FacetContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ImportedWorkspaceContext;
@@ -399,5 +401,59 @@ public class WorkspacePresentation {
 
     public WorkspaceDefinitionContext getWorkspaceDefinition() {
         return context.definition;
+    }
+
+    public static String toFieldName(String name) {
+        return Introspector.decapitalize(toValidName(name));
+    }
+
+    public static String toTypeName(String name) {
+        char chars[] = toValidName(name).toCharArray();
+        chars[0] = Character.toUpperCase(chars[0]);
+        return new String(chars);
+    }
+
+    public static String toValidName(String name) {
+        name = name.replaceAll("\\s", "");
+        StringBuilder sb = new StringBuilder();
+        if (!Character.isJavaIdentifierStart(name.charAt(0))) {
+            sb.append("_");
+        }
+        for (char c : name.toCharArray()) {
+            if (!Character.isJavaIdentifierPart(c)) {
+                sb.append("_");
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String networkAuthNameOf(ConstraintContext constraint) {
+        String name;
+        if (constraint.name != null) {
+            name = constraint.name.getText();
+        } else if (constraint.anyType != null) {
+            name = constraint.childRelationship.member.getText();
+        } else if (constraint.methodType != null) {
+            switch (constraint.methodType.getText()) {
+                case "named by relationship":
+                    name = constraint.childRelationship.member.getText();
+                    break;
+                case "named by entity":
+                    name = constraint.authorizedParent.member.getText();
+                    break;
+                default:
+                    throw new IllegalStateException(String.format("Invalid syntax for network authorization name: %s",
+                                                                  constraint.methodType.getText()));
+            }
+        } else {
+            name = constraint.authorizedParent.member.getText();
+        }
+        return name;
+    }
+
+    public static String stripQuotes(String original) {
+        return original.substring(1, original.length() - 1);
     }
 }

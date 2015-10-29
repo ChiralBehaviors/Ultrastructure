@@ -22,7 +22,7 @@ package com.chiralbehaviors.CoRE.phantasm.java.generator;
 
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.phantasm.java.any.AnyAgency;
 
@@ -99,7 +99,7 @@ public class AnyFacet implements Facet {
      */
     @Override
     public String getUri() {
-        return Kernel.KERNEL_IRI;
+        return Ruleform.KERNEL_IRI;
     }
 
     /* (non-Javadoc)

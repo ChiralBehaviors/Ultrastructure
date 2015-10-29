@@ -20,15 +20,15 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.any;
 
-import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand
  *
  */
-@Facet(classifier = @Key(name = "AnyRelationship") , classification = @Key(name = "AnyRelationship") , workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = Relationship.class)
-public interface AnyRelationship extends ScopedPhantasm<Relationship> {
+@Facet(classifier = @Key(name = "AnyRelationship") , classification = @Key(name = "AnyProduct") , workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = Product.class)
+public interface AnyProduct extends Phantasm<Product> {
 }

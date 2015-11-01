@@ -244,8 +244,10 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     }
 
     private void configureFromEnvironment(PhantasmConfiguration configuration) throws Exception {
-        emf = getEmfFromEnvironment(configuration.jpa.getProperties(),
-                                    configuration.jpa.getPersistenceUnit());
+        if (emf == null) {
+            emf = getEmfFromEnvironment(configuration.jpa.getProperties(),
+                                        configuration.jpa.getPersistenceUnit());
+        }
     }
 
     private void configureRandomPort(PhantasmConfiguration configuration) {

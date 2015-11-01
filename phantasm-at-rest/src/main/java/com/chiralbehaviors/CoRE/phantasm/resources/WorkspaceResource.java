@@ -207,7 +207,6 @@ public class WorkspaceResource extends TransactionalResource {
 
     @Timed
     @GET
-    @Path("/")
     public Map<String, Object> getWorkspaces(@Auth(required = false) AuthorizedPrincipal principal) {
         return readOnly(principal, readOnlyModel -> {
             Kernel kernel = readOnlyModel.getKernel();

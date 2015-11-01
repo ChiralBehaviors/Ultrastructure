@@ -42,7 +42,7 @@ public class EmfHealthCheck extends HealthCheck {
             model.getCoreInstance();
             return Result.healthy();
         } catch (Throwable e) {
-            return Result.unhealthy(String.format("Unable to connect to CoRE",
+            return Result.unhealthy(String.format("Unable to connect to CoRE %s",
                                                   e.toString()));
         }
     }

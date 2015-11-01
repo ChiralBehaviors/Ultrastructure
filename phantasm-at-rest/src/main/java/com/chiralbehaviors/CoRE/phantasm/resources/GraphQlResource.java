@@ -118,9 +118,7 @@ public class GraphQlResource extends TransactionalResource {
     }
 
     private static final Logger                      log               = LoggerFactory.getLogger(GraphQlResource.class);
-
     private static final String                      QUERY             = "query";
-
     private static final String                      VARIABLES         = "variables";
 
     private final ConcurrentMap<UUID, GraphQLSchema> cache             = new ConcurrentHashMap<>();
@@ -247,8 +245,7 @@ public class GraphQlResource extends TransactionalResource {
 
     // here only because of insanity
     public ExecutionResult query(@Auth AuthorizedPrincipal principal,
-                                 @PathParam("workspace") String workspace,
-                                 QueryRequest request) {
+                                 String workspace, QueryRequest request) {
         return query(principal, workspace, request.toMap());
 
     }

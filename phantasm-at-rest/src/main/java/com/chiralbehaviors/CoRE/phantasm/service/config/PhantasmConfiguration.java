@@ -74,8 +74,6 @@ public class PhantasmConfiguration extends Configuration
     @NotNull
     public CacheBuilderSpec     authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
 
-    public boolean              configureFromEnvironment  = false;
-
     public CORSConfiguration    CORS                      = new CORSConfiguration();
 
     @NotNull

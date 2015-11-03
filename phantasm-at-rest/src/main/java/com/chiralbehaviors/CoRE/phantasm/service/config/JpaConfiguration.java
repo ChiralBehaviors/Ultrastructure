@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.dropwizard.Configuration;
@@ -29,24 +31,29 @@ import io.dropwizard.Configuration;
  * 
  */
 public class JpaConfiguration extends Configuration {
-    public static final String PERSISTENCE_UNIT = "CoRE";
+    public static final String HIBERNATE_C3P0_ACQUIRE_INCREMENT       = "hibernate.c3p0.acquire_increment";
+    public static final String HIBERNATE_C3P0_IDLE_TEST_PERIOD        = "hibernate.c3p0.idle_test_period";
+    public static final String HIBERNATE_C3P0_MAX_SIZE                = "hibernate.c3p0.max_size";
+    public static final String HIBERNATE_C3P0_MAX_STATEMENTS          = "hibernate.c3p0.max_statements";
+    public static final String HIBERNATE_C3P0_MIN_SIZE                = "hibernate.c3p0.min_size";
+    public static final String HIBERNATE_C3P0_TIMEOUT                 = "hibernate.c3p0.timeout";
+    public static final String HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = "hibernate.cache.use_second_level_cache";
+    public static final String HIBERNATE_DIALECT                      = "hibernate.dialect";
+    public static final String PERSISTENCE_UNIT                       = "CoRE";
 
     public static Map<String, String> getDefaultProperties() {
         Map<String, String> properties = new HashMap<>();
-        properties.put("hibernate.dialect",
-                       "com.chiralbehaviors.CoRE.attribute.json.JsonPostgreSqlDialect");
-        properties.put("hibernate.cache.use_second_level_cache", "true");
-        properties.put("hibernate.c3p0.max_size", "20");
-        properties.put("hibernate.c3p0.min_size", "5");
-        properties.put(" hibernate.c3p0.timeout", "5000");
-        properties.put("hibernate.c3p0.max_statements", "100");
-        properties.put("hibernate.c3p0.idle_test_period", "300");
-        properties.put("hibernate.c3p0.acquire_increment", "2");
+        properties.put(HIBERNATE_DIALECT,
+                       JsonPostgreSqlDialect.class.getCanonicalName());
+        properties.put(HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE, "true");
+        properties.put(HIBERNATE_C3P0_MAX_SIZE, "20");
+        properties.put(HIBERNATE_C3P0_MIN_SIZE, "5");
+        properties.put(HIBERNATE_C3P0_TIMEOUT, "5000");
+        properties.put(HIBERNATE_C3P0_MAX_STATEMENTS, "100");
+        properties.put(HIBERNATE_C3P0_IDLE_TEST_PERIOD, "300");
+        properties.put(HIBERNATE_C3P0_ACQUIRE_INCREMENT, "2");
         return properties;
     }
-
-    @JsonProperty
-    private boolean             debug           = false;
 
     @NotEmpty
     @JsonProperty
@@ -56,15 +63,15 @@ public class JpaConfiguration extends Configuration {
     @JsonProperty
     private Map<String, String> properties      = new HashMap<>();
 
+    public boolean configureFromEnvironment() {
+        return !properties.containsKey(PhantasmBundle.JAVAX_PERSISTENCE_JDBC_PASSWORD);
+    }
+
     public String getPersistenceUnit() {
         return persistenceUnit;
     }
 
     public Map<String, String> getProperties() {
         return properties;
-    }
-
-    public boolean isDebug() {
-        return debug;
     }
 }

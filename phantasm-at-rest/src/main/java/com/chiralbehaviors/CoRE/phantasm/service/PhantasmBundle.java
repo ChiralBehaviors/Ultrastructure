@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -75,7 +75,13 @@ import io.dropwizard.setup.Environment;
  *
  */
 public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
-    private final static Logger log = LoggerFactory.getLogger(PhantasmBundle.class);
+    public static final String  ORG_POSTGRESQL_DRIVER           = "org.postgresql.Driver";
+    public static final String  JAVAX_PERSISTENCE_JDBC_DRIVER   = "javax.persistence.jdbc.driver";
+    public static final String  JAVAX_PERSISTENCE_JDBC_URL      = "javax.persistence.jdbc.url";
+    public static final String  JAVAX_PERSISTENCE_JDBC_PASSWORD = "javax.persistence.jdbc.password";
+    public static final String  JAVAX_PERSISTENCE_JDBC_USER     = "javax.persistence.jdbc.user";
+
+    private final static Logger log                             = LoggerFactory.getLogger(PhantasmBundle.class);
 
     public static EntityManagerFactory getEmfFromEnvironment(Map<String, String> configuredProperties,
                                                              String persistenceUnity) {
@@ -85,13 +91,11 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
 
         CoreDbConfiguration coreConfig = new CoreDbConfiguration();
         coreConfig.initializeFromEnvironment();
-        properties.put("javax.persistence.jdbc.user", coreConfig.coreUsername);
-        properties.put("javax.persistence.jdbc.password",
+        properties.put(JAVAX_PERSISTENCE_JDBC_USER, coreConfig.coreUsername);
+        properties.put(JAVAX_PERSISTENCE_JDBC_PASSWORD,
                        coreConfig.corePassword);
-        properties.put("javax.persistence.jdbc.url",
-                       coreConfig.getCoreJdbcURL());
-        properties.put("javax.persistence.jdbc.driver",
-                       "org.postgresql.Driver");
+        properties.put(JAVAX_PERSISTENCE_JDBC_URL, coreConfig.getCoreJdbcURL());
+        properties.put(JAVAX_PERSISTENCE_JDBC_DRIVER, ORG_POSTGRESQL_DRIVER);
         return Persistence.createEntityManagerFactory(persistenceUnity,
                                                       properties);
     }
@@ -134,7 +138,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         //        environment.jersey()
         //                   .setUrlPattern(null);
         this.environment = environment;
-        if (configuration.configureFromEnvironment) {
+        if (configuration.jpa.configureFromEnvironment()) {
             configureFromEnvironment(configuration);
         } else {
             configure(configuration);
@@ -168,22 +172,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         if (emf == null) { // allow tests to set this if needed
             emf = Persistence.createEntityManagerFactory(configuration.jpa.getPersistenceUnit(),
                                                          properties);
-        }
-    }
-
-    private void configureRandomPort(PhantasmConfiguration configuration) {
-        ServerFactory serverFactory = configuration.getServerFactory();
-        if (serverFactory instanceof DefaultServerFactory) {
-            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getApplicationConnectors()
-                                                                          .get(0)).setPort(0);
-            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getAdminConnectors()
-                                                                          .get(0)).setPort(0);
-        } else if (serverFactory instanceof SimpleServerFactory) {
-            ((HttpConnectorFactory) ((SimpleServerFactory) serverFactory).getConnector()).setPort(0);
-        } else {
-            log.warn("Unknown server factory type: {}, unable to set random port",
-                     serverFactory.getClass()
-                                  .getSimpleName());
         }
     }
 
@@ -256,11 +244,26 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
     }
 
     private void configureFromEnvironment(PhantasmConfiguration configuration) throws Exception {
-        HttpConnectorFactory httpConnectorFactory = (HttpConnectorFactory) ((DefaultServerFactory) configuration.getServerFactory()).getApplicationConnectors()
-                                                                                                                                    .get(0);
-        httpConnectorFactory.setPort(Integer.parseInt(System.getenv("PORT")));
-        emf = getEmfFromEnvironment(configuration.jpa.getProperties(),
-                                    configuration.jpa.getPersistenceUnit());
+        if (emf == null) {
+            emf = getEmfFromEnvironment(configuration.jpa.getProperties(),
+                                        configuration.jpa.getPersistenceUnit());
+        }
+    }
+
+    private void configureRandomPort(PhantasmConfiguration configuration) {
+        ServerFactory serverFactory = configuration.getServerFactory();
+        if (serverFactory instanceof DefaultServerFactory) {
+            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getApplicationConnectors()
+                                                                          .get(0)).setPort(0);
+            ((HttpConnectorFactory) ((DefaultServerFactory) serverFactory).getAdminConnectors()
+                                                                          .get(0)).setPort(0);
+        } else if (serverFactory instanceof SimpleServerFactory) {
+            ((HttpConnectorFactory) ((SimpleServerFactory) serverFactory).getConnector()).setPort(0);
+        } else {
+            log.warn("Unknown server factory type: {}, unable to set random port",
+                     serverFactory.getClass()
+                                  .getSimpleName());
+        }
     }
 
     private void configureServices(Environment environment) {

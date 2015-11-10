@@ -25,6 +25,8 @@ import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -69,6 +71,7 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 
 /**
  * @author hhildebrand
@@ -112,7 +115,7 @@ public class ModelImpl implements Model {
     private final StatusCodeModel   statusCodeModel;
     private final UnitModel         unitModel;
 
-    private final WorkspaceModel workspaceModel;
+    private final WorkspaceModel    workspaceModel;
 
     public ModelImpl(EntityManagerFactory emf) {
         EntityManager entityManager = emf.createEntityManager();
@@ -579,6 +582,11 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public StateSnapshot snapshot() {
+        return new StateSnapshot(getEntityManager(), excludeThisSingleton());
+    }
+
+    @Override
     @SuppressWarnings({ "unchecked" })
     public <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
                                                                                Phantasm<?> ruleform) {
@@ -588,6 +596,19 @@ public class ModelImpl implements Model {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
                                                                                               this);
         return (R) definition.wrap(ruleform.getRuleform(), this);
+    }
+
+    private Collection<? extends Ruleform> excludeThisSingleton() {
+        List<Ruleform> excluded = new ArrayList<>();
+        Agency instance = getCoreInstance().getRuleform();
+        excluded.add(getAgencyModel().getImmediateLink(instance,
+                                                       kernel.getSingletonOf(),
+                                                       kernel.getCore()));
+        excluded.add(getAgencyModel().getImmediateLink(kernel.getCore(),
+                                                       kernel.getSingletonOf()
+                                                             .getInverse(),
+                                                       instance));
+        return excluded;
     }
 
     private void initializeCurrentPrincipal() {

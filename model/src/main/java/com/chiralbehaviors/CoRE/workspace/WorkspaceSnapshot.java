@@ -224,7 +224,7 @@ public class WorkspaceSnapshot {
         return ruleforms.stream()
                         .map(ruleform -> ruleform.getWorkspace() != null)
                         .reduce((prev, cur) -> prev && cur)
-                        .get();
+                        .orElse(false);
     }
 
     /**

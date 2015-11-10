@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 
 /**
  * The meta model for the CoRE
@@ -109,6 +110,9 @@ public interface Model extends AutoCloseable {
      */
     <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
                                                                         Class<R> phantasm);
+
+    @Override
+    void close();
 
     /**
      * Create a new instance of the phantasm's existential ruleform type using
@@ -301,6 +305,8 @@ public interface Model extends AutoCloseable {
     AuthorizedPrincipal principalFrom(Agency principal,
                                       List<UUID> capabilities);
 
+    StateSnapshot snapshot();
+
     /**
      * Wrap the ruleform with an instance of a phantasm using the model
      * 
@@ -310,8 +316,4 @@ public interface Model extends AutoCloseable {
      */
     <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
                                                                         Phantasm<?> ruleform);
-
-    @Override
-    void close();
-
 }

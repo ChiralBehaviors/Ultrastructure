@@ -32,7 +32,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.phantasm.service.config.JpaConfiguration;
-import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.dropwizard.cli.Command;
@@ -75,8 +74,7 @@ public class SnapshotCommand extends Command {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new CoREModule());
             try (FileOutputStream os = new FileOutputStream(new File(namespace.getString("file")))) {
-                StateSnapshot snapshot = new StateSnapshot(model.getEntityManager());
-                objectMapper.writeValue(os, snapshot);
+                objectMapper.writeValue(os, model.snapshot());
             }
         }
     }

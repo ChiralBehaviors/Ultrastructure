@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.workspace;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -52,13 +53,24 @@ public class StateSnapshot {
     }
 
     public StateSnapshot(EntityManager em) {
+        this(em, Collections.emptyList());
+    }
+
+    public StateSnapshot(EntityManager em,
+                         Collection<? extends Ruleform> exclusions) {
         Predicate<Ruleform> systemDefinition = traversing -> traversing.getWorkspace() == null;
         Map<UUID, Ruleform> exits = new HashMap<>();
         Set<UUID> traversed = new OaHashSet<UUID>(1024);
 
         Ruleform.CONCRETE_SUBCLASSES.values()
+                                    .stream()
+                                    .filter(c -> !c.equals(WorkspaceAuthorization.class))
                                     .forEach(form -> {
-                                        ruleforms.addAll(findAll(form, em));
+                                        findAll(form, em).stream()
+                                                         .filter(rf -> !exclusions.contains(rf))
+                                                         .forEach(rf -> {
+                                            ruleforms.add(rf);
+                                        });
                                     });
 
         for (Ruleform ruleform : ruleforms) {

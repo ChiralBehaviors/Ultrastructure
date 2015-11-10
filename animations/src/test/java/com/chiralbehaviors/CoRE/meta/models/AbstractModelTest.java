@@ -59,7 +59,7 @@ public class AbstractModelTest {
     public static final String            TARGET_CLASSES_THING_1_2_JSON = "target/test-classes/thing.1.2.json";
     public static final String            TARGET_CLASSES_THING_1_JSON   = "target/test-classes/thing.1.json";
     public static final String            TARGET_CLASSES_THING_2_JSON   = "target/test-classes/thing.2.json";
-    public static final String            TARGET_CLASSES_THINGS_JSON    = "target/test-classes/things.json";
+    public static final String            TARGET_THINGS_JSON            = "target/things.json";
     public static final String            THING_URI                     = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm";
 
     private static boolean                initialized                   = false;

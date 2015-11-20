@@ -18,7 +18,7 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.resources.plugin;
+package com.chiralbehaviors.CoRE.phantasm.plugin.test;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -35,7 +35,7 @@ public class Thing1_Plugin {
     public static final AtomicReference<String> passThrough = new AtomicReference<>();
 
     public static void constructor(DataFetchingEnvironment env, Model model,
-                                   com.chiralbehaviors.CoRE.phantasm.test.product.Thing1 instance) {
+                                   Thing1 instance) {
         instance.getRuleform()
                 .setDescription(passThrough.get());
     }

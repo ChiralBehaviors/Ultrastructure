@@ -64,26 +64,28 @@ import graphql.schema.GraphQLSchema;
  */
 public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
-    private static final String INTROSPECTION_QUERY = "\n  query IntrospectionQuery "
-                                                      + "{\n    __schema "
-                                                      + "{\n      queryType { name }\n      mutationType { name }\n      "
-                                                      + "types {\n        ...FullType\n      }\n      "
-                                                      + "directives {\n        name\n        description\n        "
-                                                      + "args {\n          ...InputValue\n        }\n        "
-                                                      + "onOperation\n        onFragment\n        onField\n      }\n    }\n  }\n\n  "
-                                                      + "fragment FullType on __Type {\n    kind\n    name\n    description\n    "
-                                                      + "fields {\n      name\n      description\n      args {\n        ...InputValue\n      }\n      "
-                                                      + "type {\n        ...TypeRef\n      }\n      isDeprecated\n      deprecationReason\n    }\n    "
-                                                      + "inputFields {\n      ...InputValue\n    }\n    "
-                                                      + "interfaces {\n      ...TypeRef\n    }\n    "
-                                                      + "enumValues {\n      name\n      description\n      isDeprecated\n      deprecationReason\n    }\n    "
-                                                      + "possibleTypes {\n      ...TypeRef\n    }\n  }\n\n  "
-                                                      + "fragment InputValue on __InputValue {\n    name\n    description\n    "
-                                                      + "type { ...TypeRef }\n    defaultValue\n  }\n\n  "
-                                                      + "fragment TypeRef on __Type {\n    kind\n    name\n    "
-                                                      + "ofType {\n      kind\n      name\n      "
-                                                      + "ofType {\n        kind\n        name\n        "
-                                                      + "ofType {\n          kind\n          name\n        }\n      }\n    }\n  }\n";
+    private static final String COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST = "com.chiralbehaviors.CoRE.phantasm.plugin.test";
+
+    private static final String INTROSPECTION_QUERY                            = "\n  query IntrospectionQuery "
+                                                                                 + "{\n    __schema "
+                                                                                 + "{\n      queryType { name }\n      mutationType { name }\n      "
+                                                                                 + "types {\n        ...FullType\n      }\n      "
+                                                                                 + "directives {\n        name\n        description\n        "
+                                                                                 + "args {\n          ...InputValue\n        }\n        "
+                                                                                 + "onOperation\n        onFragment\n        onField\n      }\n    }\n  }\n\n  "
+                                                                                 + "fragment FullType on __Type {\n    kind\n    name\n    description\n    "
+                                                                                 + "fields {\n      name\n      description\n      args {\n        ...InputValue\n      }\n      "
+                                                                                 + "type {\n        ...TypeRef\n      }\n      isDeprecated\n      deprecationReason\n    }\n    "
+                                                                                 + "inputFields {\n      ...InputValue\n    }\n    "
+                                                                                 + "interfaces {\n      ...TypeRef\n    }\n    "
+                                                                                 + "enumValues {\n      name\n      description\n      isDeprecated\n      deprecationReason\n    }\n    "
+                                                                                 + "possibleTypes {\n      ...TypeRef\n    }\n  }\n\n  "
+                                                                                 + "fragment InputValue on __InputValue {\n    name\n    description\n    "
+                                                                                 + "type { ...TypeRef }\n    defaultValue\n  }\n\n  "
+                                                                                 + "fragment TypeRef on __Type {\n    kind\n    name\n    "
+                                                                                 + "ofType {\n      kind\n      name\n      "
+                                                                                 + "ofType {\n        kind\n        name\n        "
+                                                                                 + "ofType {\n          kind\n          name\n        }\n      }\n    }\n  }\n";
 
     private static ClassLoader  executionScope;
 
@@ -374,7 +376,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         GraphQlResource resource = new GraphQlResource(mockedEmf,
                                                        executionScope);
-        Class<?> thing1Plugin = executionScope.loadClass("com.chiralbehaviors.CoRE.phantasm.resources.plugin.Thing1_Plugin");
+        Class<?> thing1Plugin = executionScope.loadClass(String.format("%s.Thing1_Plugin",
+                                                                       COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST));
         AtomicReference<String> passThrough = (AtomicReference<String>) thing1Plugin.getField("passThrough")
                                                                                     .get(null);
         Map<String, Object> variables = new HashMap<>();
@@ -528,7 +531,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         Plugin testPlugin = model.construct(Plugin.class, "Test Plugin",
                                             "My super green test plugin");
         testPlugin.setFacetName("Thing1");
-        testPlugin.setPackageName("com.chiralbehaviors.CoRE.phantasm.resources.plugin");
+        testPlugin.setPackageName(COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST);
         testPlugin.setConstructor(model.construct(Constructor.class,
                                                   "constructor",
                                                   "For all your construction needs"));

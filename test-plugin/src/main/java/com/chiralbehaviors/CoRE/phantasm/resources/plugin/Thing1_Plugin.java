@@ -23,7 +23,7 @@ package com.chiralbehaviors.CoRE.phantasm.resources.plugin;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.plugin.test.product.Thing1;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -35,7 +35,7 @@ public class Thing1_Plugin {
     public static final AtomicReference<String> passThrough = new AtomicReference<>();
 
     public static void constructor(DataFetchingEnvironment env, Model model,
-                                   Thing1 instance) {
+                                   com.chiralbehaviors.CoRE.phantasm.test.product.Thing1 instance) {
         instance.getRuleform()
                 .setDescription(passThrough.get());
     }

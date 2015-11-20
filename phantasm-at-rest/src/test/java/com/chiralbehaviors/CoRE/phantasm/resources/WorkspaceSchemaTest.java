@@ -27,14 +27,17 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Argument;
@@ -48,7 +51,7 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
-import com.chiralbehaviors.CoRE.phantasm.resources.plugin.Thing1_Plugin;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.product.Product;
 
 import graphql.ExecutionResult;
@@ -81,6 +84,13 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                       + "ofType {\n      kind\n      name\n      "
                                                       + "ofType {\n        kind\n        name\n        "
                                                       + "ofType {\n          kind\n          name\n        }\n      }\n    }\n  }\n";
+
+    private static ClassLoader  executionScope;
+
+    @BeforeClass
+    public static void buildExecutionScope() {
+        executionScope = PhantasmBundle.configureExecutionScope(Collections.singletonList("target/test-plugin.jar"));
+    }
 
     @Test
     public void testCasting() throws Exception {
@@ -354,7 +364,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testPlugin() throws InstantiationException {
+    public void testPlugin() throws Exception {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
@@ -363,7 +373,10 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         workspace.addPlugin(constructPlugin());
 
         GraphQlResource resource = new GraphQlResource(mockedEmf,
-                                                       getClass().getClassLoader());
+                                                       executionScope);
+        Class<?> thing1Plugin = executionScope.loadClass("com.chiralbehaviors.CoRE.phantasm.resources.plugin.Thing1_Plugin");
+        AtomicReference<String> passThrough = (AtomicReference<String>) thing1Plugin.getField("passThrough")
+                                                                                    .get(null);
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "hello");
         String hello = "goodbye";
@@ -376,7 +389,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                 + "   }) { id name description } }",
                                                 variables);
         String bob = "Give me food or give me slack or kill me";
-        Thing1_Plugin.passThrough.set(bob);
+        passThrough.set(bob);
         ExecutionResult result = resource.query(null, TEST_SCENARIO_URI,
                                                 request);
 
@@ -413,7 +426,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing1Result = (Map<String, Object>) ((Map<String, Object>) result.getData()).get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(apple, thing1Result.get("instanceMethod"));
-        assertEquals("me", Thing1_Plugin.passThrough.get());
+        assertEquals("me", passThrough.get());
         assertEquals(apple, thing1Result.get("instanceMethodWithArgument"));
     }
 

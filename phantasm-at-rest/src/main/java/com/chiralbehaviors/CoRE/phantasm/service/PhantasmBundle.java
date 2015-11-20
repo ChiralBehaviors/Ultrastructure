@@ -89,6 +89,34 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
 
     private final static Logger log                             = LoggerFactory.getLogger(PhantasmBundle.class);
 
+    public static ClassLoader configureExecutionScope(List<String> urlStrings) {
+        ClassLoader parent = Thread.currentThread()
+                                   .getContextClassLoader();
+        if (parent == null) {
+            parent = PhantasmBundle.class.getClassLoader();
+        }
+        List<URL> urls = new ArrayList<>();
+        for (String url : urlStrings) {
+            URL resolved;
+            try {
+                resolved = new URL(url);
+            } catch (MalformedURLException e) {
+                try {
+                    resolved = new File(url).toURI()
+                                            .toURL();
+                } catch (MalformedURLException e1) {
+                    log.error("Invalid configured execution scope url: {}", url,
+                              e1);
+                    throw new IllegalArgumentException(String.format("Invalid configured execution scope url: %s",
+                                                                     url),
+                                                       e1);
+                }
+            }
+            urls.add(resolved);
+        }
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
+    }
+
     public static EntityManagerFactory getEmfFromEnvironment(Map<String, String> configuredProperties,
                                                              String persistenceUnity) {
 
@@ -248,30 +276,6 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
                                     Boolean.toString(cors.chainPreflight));
 
         }
-    }
-
-    private ClassLoader configureExecutionScope(List<String> urlStrings) {
-        ClassLoader parent = getClass().getClassLoader();
-        List<URL> urls = new ArrayList<>();
-        for (String url : urlStrings) {
-            URL resolved;
-            try {
-                resolved = new URL(url);
-            } catch (MalformedURLException e) {
-                try {
-                    resolved = new File(url).toURI()
-                                            .toURL();
-                } catch (MalformedURLException e1) {
-                    log.error("Invalid configured execution scope url: {}", url,
-                              e1);
-                    throw new IllegalArgumentException(String.format("Invalid configured execution scope url: %s",
-                                                                     url),
-                                                       e1);
-                }
-            }
-            urls.add(resolved);
-        }
-        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
     }
 
     private void configureFromEnvironment(PhantasmConfiguration configuration) throws Exception {

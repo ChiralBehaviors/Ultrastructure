@@ -93,7 +93,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -144,7 +145,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("artifact", artifact2.getRuleform()
                                            .getId()
@@ -208,7 +210,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -260,9 +263,10 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
     public void testIntrospection() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         EntityManagerFactory mockedEmf = mockedEmf();
-        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
-                                                                          .getWorkspace(),
-                                                                    model);
+        GraphQLSchema schema = new GraphQlResource(mockedEmf,
+                                                   getClass().getClassLoader()).build(thing1.getScope()
+                                                                                            .getWorkspace(),
+                                                                                      model);
         String query = INTROSPECTION_QUERY;
         @SuppressWarnings("rawtypes")
         ExecutionResult execute = new GraphQL(schema).execute(query,
@@ -312,7 +316,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -357,7 +362,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                                .getDefiningProduct());
         workspace.addPlugin(constructPlugin());
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "hello");
         String hello = "goodbye";
@@ -441,9 +447,10 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing3.addDerivedFrom(artifact2);
 
         EntityManagerFactory mockedEmf = mockedEmf();
-        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
-                                                                          .getWorkspace(),
-                                                                    model);
+        GraphQLSchema schema = new GraphQlResource(mockedEmf,
+                                                   getClass().getClassLoader()).build(thing1.getScope()
+                                                                                            .getWorkspace(),
+                                                                                      model);
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()

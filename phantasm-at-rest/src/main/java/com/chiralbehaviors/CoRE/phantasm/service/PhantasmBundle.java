@@ -266,6 +266,10 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         }
     }
 
+    private ClassLoader configureExecutionScope() {
+        return getClass().getClassLoader();
+    }
+
     private void configureServices(Environment environment) {
         environment.jersey()
                    .register(new FacetResource(emf));
@@ -276,7 +280,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         environment.jersey()
                    .register(new WorkspaceMediatedResource(emf));
         environment.jersey()
-                   .register(new GraphQlResource(emf));
+                   .register(new GraphQlResource(emf,
+                                                 configureExecutionScope()));
         environment.healthChecks()
                    .register("EMF Health", new EmfHealthCheck(emf));
     }

@@ -16,6 +16,7 @@
 package com.chiralbehaviors.CoRE.phantasm.service.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -74,12 +75,14 @@ public class PhantasmConfiguration extends Configuration
     @NotNull
     public CacheBuilderSpec     authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
 
+    @NotNull
+    public List<String>         classPath                 = Collections.emptyList();
+
+    @NotNull
     public CORSConfiguration    CORS                      = new CORSConfiguration();
 
     @NotNull
     public JpaConfiguration     jpa                       = new JpaConfiguration();
-
-    public String               name;
 
     public boolean              randomPort                = false;
 

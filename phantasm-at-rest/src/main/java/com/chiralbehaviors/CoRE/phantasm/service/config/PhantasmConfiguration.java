@@ -76,10 +76,10 @@ public class PhantasmConfiguration extends Configuration
     public CacheBuilderSpec     authenticationCachePolicy = CacheBuilderSpec.parse("maximumSize=10000, expireAfterAccess=10m");
 
     @NotNull
-    public List<String>         classPath                 = Collections.emptyList();
+    public CORSConfiguration    CORS                      = new CORSConfiguration();
 
     @NotNull
-    public CORSConfiguration    CORS                      = new CORSConfiguration();
+    public List<String>         executionScope                 = Collections.emptyList();
 
     @NotNull
     public JpaConfiguration     jpa                       = new JpaConfiguration();

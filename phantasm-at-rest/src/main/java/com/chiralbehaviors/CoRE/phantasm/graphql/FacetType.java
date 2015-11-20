@@ -191,13 +191,13 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     public Set<NetworkAuthorization<?>> build(Builder query, Builder mutation,
                                               NetworkAuthorization<?> facetUntyped,
                                               List<Plugin> plugins, Model model,
-                                              Map<Plugin, ClassLoader> executionScopes) {
+                                              ClassLoader executionScope) {
         @SuppressWarnings("unchecked")
         NetworkAuthorization<RuleForm> facet = (NetworkAuthorization<RuleForm>) facetUntyped;
         build(facet);
         new PhantasmTraversal<RuleForm, Network>(model).traverse(facet, this);
 
-        addPlugins(facet, plugins, executionScopes);
+        addPlugins(facet, plugins, executionScope);
 
         GraphQLObjectType type = typeBuilder.build();
 
@@ -522,12 +522,8 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
     }
 
     private void addPlugins(NetworkAuthorization<RuleForm> facet,
-                            List<Plugin> plugins,
-                            Map<Plugin, ClassLoader> executionScopes) {
+                            List<Plugin> plugins, ClassLoader executionScope) {
         plugins.forEach(plugin -> {
-            ClassLoader executionScope = executionScopes.get(plugin);
-            assert executionScope != null : String.format("%s execution scope is null!",
-                                                          plugin);
             String defaultImplementation = Optional.of(plugin.getPackageName())
                                                    .map(pkg -> String.format(S_S_PLUGIN_CONVENTION,
                                                                              pkg,
@@ -580,18 +576,28 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                           executionScope);
 
         constructors.add((env, instance) -> {
-            PhantasmCRUD<RuleForm, Network> crud = ctx(env);
-            if (!checkInvoke(constructor, crud)) {
-                log.info(String.format("Failed invoking %s by: %s", constructor,
-                                       crud.getModel()
-                                           .getCurrentPrincipal()));
-                return null;
+            ClassLoader prev = Thread.currentThread()
+                                     .getContextClassLoader();
+            Thread.currentThread()
+                  .setContextClassLoader(executionScope);
+            try {
+                PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                if (!checkInvoke(constructor, crud)) {
+                    log.info(String.format("Failed invoking %s by: %s",
+                                           constructor, crud.getModel()
+                                                            .getCurrentPrincipal()));
+                    return null;
 
+                }
+                @SuppressWarnings("unchecked")
+                Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
+                Model model = ctx(env).getModel();
+                return invoke(method, env, model,
+                              model.wrap(phantasm, instance));
+            } finally {
+                Thread.currentThread()
+                      .setContextClassLoader(prev);
             }
-            @SuppressWarnings("unchecked")
-            Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
-            Model model = ctx(env).getModel();
-            return invoke(method, env, model, model.wrap(phantasm, instance));
         });
     }
 
@@ -680,12 +686,22 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
                                                   }
                                                   Model model = ctx(env).getModel();
-                                                  return instance == null ? null
-                                                                          : invoke(method,
-                                                                                   env,
-                                                                                   model,
-                                                                                   model.wrap(phantasm,
-                                                                                              instance));
+
+                                                  ClassLoader prev = Thread.currentThread()
+                                                                           .getContextClassLoader();
+                                                  Thread.currentThread()
+                                                        .setContextClassLoader(executionScope);
+                                                  try {
+                                                      return instance == null ? null
+                                                                              : invoke(method,
+                                                                                       env,
+                                                                                       model,
+                                                                                       model.wrap(phantasm,
+                                                                                                  instance));
+                                                  } finally {
+                                                      Thread.currentThread()
+                                                            .setContextClassLoader(prev);
+                                                  }
                                               })
                                               .description(instanceMethod.getDescription())
                                               .build());

@@ -117,15 +117,17 @@ public class GraphQlResource extends TransactionalResource {
         }
     }
 
-    private static final Logger                      log               = LoggerFactory.getLogger(GraphQlResource.class);
-    private static final String                      QUERY             = "query";
-    private static final String                      VARIABLES         = "variables";
+    private static final Logger                      log       = LoggerFactory.getLogger(GraphQlResource.class);
+    private static final String                      QUERY     = "query";
+    private static final String                      VARIABLES = "variables";
 
-    private final ConcurrentMap<UUID, GraphQLSchema> cache             = new ConcurrentHashMap<>();
-    private final ConcurrentMap<Plugin, ClassLoader> executionContexts = new ConcurrentHashMap<>();
+    private final ConcurrentMap<UUID, GraphQLSchema> cache     = new ConcurrentHashMap<>();
+    private final ClassLoader                        executionScope;
 
-    public GraphQlResource(EntityManagerFactory emf) {
+    public GraphQlResource(EntityManagerFactory emf,
+                           ClassLoader executionScope) {
         super(emf);
+        this.executionScope = executionScope;
     }
 
     @Timed
@@ -250,11 +252,6 @@ public class GraphQlResource extends TransactionalResource {
 
     }
 
-    private ClassLoader buildExecutionContext(Plugin plugin) {
-        return Thread.currentThread()
-                     .getContextClassLoader();
-    }
-
     private Deque<NetworkAuthorization<?>> initialState(WorkspaceAccessor workspace,
                                                         Model model) {
         Product definingProduct = workspace.getDefiningProduct();
@@ -291,9 +288,6 @@ public class GraphQlResource extends TransactionalResource {
                                               .description(String.format("Top level mutation for %s",
                                                                          definingProduct.getName()));
         List<Plugin> plugins = workspace.getPlugins();
-        plugins.stream()
-               .forEach(plugin -> executionContexts.computeIfAbsent(plugin,
-                                                                    p -> buildExecutionContext(p)));
         while (!unresolved.isEmpty()) {
             NetworkAuthorization<?> facet = unresolved.pop();
             if (resolved.containsKey(facet)) {
@@ -307,7 +301,7 @@ public class GraphQlResource extends TransactionalResource {
                                                                       .equals(plugin.getFacetName()))
                                                .collect(Collectors.toList());
             type.build(topLevelQuery, topLevelMutation, facet, facetPlugins,
-                       model, executionContexts)
+                       model, executionScope)
                 .stream()
                 .filter(auth -> !resolved.containsKey(auth))
                 .forEach(auth -> unresolved.add(auth));

@@ -20,7 +20,13 @@
 
 package com.chiralbehaviors.CoRE.phantasm.service;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
@@ -75,13 +81,41 @@ import io.dropwizard.setup.Environment;
  *
  */
 public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
-    public static final String  ORG_POSTGRESQL_DRIVER           = "org.postgresql.Driver";
     public static final String  JAVAX_PERSISTENCE_JDBC_DRIVER   = "javax.persistence.jdbc.driver";
-    public static final String  JAVAX_PERSISTENCE_JDBC_URL      = "javax.persistence.jdbc.url";
     public static final String  JAVAX_PERSISTENCE_JDBC_PASSWORD = "javax.persistence.jdbc.password";
+    public static final String  JAVAX_PERSISTENCE_JDBC_URL      = "javax.persistence.jdbc.url";
     public static final String  JAVAX_PERSISTENCE_JDBC_USER     = "javax.persistence.jdbc.user";
+    public static final String  ORG_POSTGRESQL_DRIVER           = "org.postgresql.Driver";
 
     private final static Logger log                             = LoggerFactory.getLogger(PhantasmBundle.class);
+
+    public static ClassLoader configureExecutionScope(List<String> urlStrings) {
+        ClassLoader parent = Thread.currentThread()
+                                   .getContextClassLoader();
+        if (parent == null) {
+            parent = PhantasmBundle.class.getClassLoader();
+        }
+        List<URL> urls = new ArrayList<>();
+        for (String url : urlStrings) {
+            URL resolved;
+            try {
+                resolved = new URL(url);
+            } catch (MalformedURLException e) {
+                try {
+                    resolved = new File(url).toURI()
+                                            .toURL();
+                } catch (MalformedURLException e1) {
+                    log.error("Invalid configured execution scope url: {}", url,
+                              e1);
+                    throw new IllegalArgumentException(String.format("Invalid configured execution scope url: %s",
+                                                                     url),
+                                                       e1);
+                }
+            }
+            urls.add(resolved);
+        }
+        return new URLClassLoader(urls.toArray(new URL[urls.size()]), parent);
+    }
 
     public static EntityManagerFactory getEmfFromEnvironment(Map<String, String> configuredProperties,
                                                              String persistenceUnity) {
@@ -146,7 +180,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
 
         configureAuth(configuration, environment);
         configureCORS(configuration, environment);
-        configureServices(environment);
+        configureServices(environment,
+                          configureExecutionScope(configuration.executionScope));
 
         configuration.assets.forEach(asset -> {
             try {
@@ -266,7 +301,8 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         }
     }
 
-    private void configureServices(Environment environment) {
+    private void configureServices(Environment environment,
+                                   ClassLoader executionScope) {
         environment.jersey()
                    .register(new FacetResource(emf));
         environment.jersey()
@@ -276,7 +312,7 @@ public class PhantasmBundle implements ConfiguredBundle<PhantasmConfiguration> {
         environment.jersey()
                    .register(new WorkspaceMediatedResource(emf));
         environment.jersey()
-                   .register(new GraphQlResource(emf));
+                   .register(new GraphQlResource(emf, executionScope));
         environment.healthChecks()
                    .register("EMF Health", new EmfHealthCheck(emf));
     }

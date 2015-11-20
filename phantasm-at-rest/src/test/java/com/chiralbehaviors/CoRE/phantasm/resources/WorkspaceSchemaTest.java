@@ -27,14 +27,17 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.WebApplicationException;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Argument;
@@ -48,7 +51,7 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
-import com.chiralbehaviors.CoRE.phantasm.resources.plugin.Thing1_Plugin;
+import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
 import com.chiralbehaviors.CoRE.product.Product;
 
 import graphql.ExecutionResult;
@@ -61,26 +64,35 @@ import graphql.schema.GraphQLSchema;
  */
 public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
-    private static final String INTROSPECTION_QUERY = "\n  query IntrospectionQuery "
-                                                      + "{\n    __schema "
-                                                      + "{\n      queryType { name }\n      mutationType { name }\n      "
-                                                      + "types {\n        ...FullType\n      }\n      "
-                                                      + "directives {\n        name\n        description\n        "
-                                                      + "args {\n          ...InputValue\n        }\n        "
-                                                      + "onOperation\n        onFragment\n        onField\n      }\n    }\n  }\n\n  "
-                                                      + "fragment FullType on __Type {\n    kind\n    name\n    description\n    "
-                                                      + "fields {\n      name\n      description\n      args {\n        ...InputValue\n      }\n      "
-                                                      + "type {\n        ...TypeRef\n      }\n      isDeprecated\n      deprecationReason\n    }\n    "
-                                                      + "inputFields {\n      ...InputValue\n    }\n    "
-                                                      + "interfaces {\n      ...TypeRef\n    }\n    "
-                                                      + "enumValues {\n      name\n      description\n      isDeprecated\n      deprecationReason\n    }\n    "
-                                                      + "possibleTypes {\n      ...TypeRef\n    }\n  }\n\n  "
-                                                      + "fragment InputValue on __InputValue {\n    name\n    description\n    "
-                                                      + "type { ...TypeRef }\n    defaultValue\n  }\n\n  "
-                                                      + "fragment TypeRef on __Type {\n    kind\n    name\n    "
-                                                      + "ofType {\n      kind\n      name\n      "
-                                                      + "ofType {\n        kind\n        name\n        "
-                                                      + "ofType {\n          kind\n          name\n        }\n      }\n    }\n  }\n";
+    private static final String COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST = "com.chiralbehaviors.CoRE.phantasm.plugin.test";
+
+    private static final String INTROSPECTION_QUERY                            = "\n  query IntrospectionQuery "
+                                                                                 + "{\n    __schema "
+                                                                                 + "{\n      queryType { name }\n      mutationType { name }\n      "
+                                                                                 + "types {\n        ...FullType\n      }\n      "
+                                                                                 + "directives {\n        name\n        description\n        "
+                                                                                 + "args {\n          ...InputValue\n        }\n        "
+                                                                                 + "onOperation\n        onFragment\n        onField\n      }\n    }\n  }\n\n  "
+                                                                                 + "fragment FullType on __Type {\n    kind\n    name\n    description\n    "
+                                                                                 + "fields {\n      name\n      description\n      args {\n        ...InputValue\n      }\n      "
+                                                                                 + "type {\n        ...TypeRef\n      }\n      isDeprecated\n      deprecationReason\n    }\n    "
+                                                                                 + "inputFields {\n      ...InputValue\n    }\n    "
+                                                                                 + "interfaces {\n      ...TypeRef\n    }\n    "
+                                                                                 + "enumValues {\n      name\n      description\n      isDeprecated\n      deprecationReason\n    }\n    "
+                                                                                 + "possibleTypes {\n      ...TypeRef\n    }\n  }\n\n  "
+                                                                                 + "fragment InputValue on __InputValue {\n    name\n    description\n    "
+                                                                                 + "type { ...TypeRef }\n    defaultValue\n  }\n\n  "
+                                                                                 + "fragment TypeRef on __Type {\n    kind\n    name\n    "
+                                                                                 + "ofType {\n      kind\n      name\n      "
+                                                                                 + "ofType {\n        kind\n        name\n        "
+                                                                                 + "ofType {\n          kind\n          name\n        }\n      }\n    }\n  }\n";
+
+    private static ClassLoader  executionScope;
+
+    @BeforeClass
+    public static void buildExecutionScope() {
+        executionScope = PhantasmBundle.configureExecutionScope(Collections.singletonList("target/test-plugin.jar"));
+    }
 
     @Test
     public void testCasting() throws Exception {
@@ -93,7 +105,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -144,7 +157,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("artifact", artifact2.getRuleform()
                                            .getId()
@@ -208,7 +222,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -260,9 +275,10 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
     public void testIntrospection() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "test", "testy");
         EntityManagerFactory mockedEmf = mockedEmf();
-        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
-                                                                          .getWorkspace(),
-                                                                    model);
+        GraphQLSchema schema = new GraphQlResource(mockedEmf,
+                                                   getClass().getClassLoader()).build(thing1.getScope()
+                                                                                            .getWorkspace(),
+                                                                                      model);
         String query = INTROSPECTION_QUERY;
         @SuppressWarnings("rawtypes")
         ExecutionResult execute = new GraphQL(schema).execute(query,
@@ -312,7 +328,8 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       getClass().getClassLoader());
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -349,7 +366,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testPlugin() throws InstantiationException {
+    public void testPlugin() throws Exception {
 
         EntityManagerFactory mockedEmf = mockedEmf();
 
@@ -357,7 +374,12 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                                .getDefiningProduct());
         workspace.addPlugin(constructPlugin());
 
-        GraphQlResource resource = new GraphQlResource(mockedEmf);
+        GraphQlResource resource = new GraphQlResource(mockedEmf,
+                                                       executionScope);
+        Class<?> thing1Plugin = executionScope.loadClass(String.format("%s.Thing1_Plugin",
+                                                                       COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST));
+        AtomicReference<String> passThrough = (AtomicReference<String>) thing1Plugin.getField("passThrough")
+                                                                                    .get(null);
         Map<String, Object> variables = new HashMap<>();
         variables.put("name", "hello");
         String hello = "goodbye";
@@ -370,7 +392,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
                                                 + "   }) { id name description } }",
                                                 variables);
         String bob = "Give me food or give me slack or kill me";
-        Thing1_Plugin.passThrough.set(bob);
+        passThrough.set(bob);
         ExecutionResult result = resource.query(null, TEST_SCENARIO_URI,
                                                 request);
 
@@ -407,7 +429,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing1Result = (Map<String, Object>) ((Map<String, Object>) result.getData()).get("Thing1");
         assertNotNull(thing1Result);
         assertEquals(apple, thing1Result.get("instanceMethod"));
-        assertEquals("me", Thing1_Plugin.passThrough.get());
+        assertEquals("me", passThrough.get());
         assertEquals(apple, thing1Result.get("instanceMethodWithArgument"));
     }
 
@@ -441,9 +463,10 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         thing3.addDerivedFrom(artifact2);
 
         EntityManagerFactory mockedEmf = mockedEmf();
-        GraphQLSchema schema = new GraphQlResource(mockedEmf).build(thing1.getScope()
-                                                                          .getWorkspace(),
-                                                                    model);
+        GraphQLSchema schema = new GraphQlResource(mockedEmf,
+                                                   getClass().getClassLoader()).build(thing1.getScope()
+                                                                                            .getWorkspace(),
+                                                                                      model);
         Map<String, Object> variables = new HashMap<>();
         variables.put("id", thing1.getRuleform()
                                   .getId()
@@ -508,7 +531,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         Plugin testPlugin = model.construct(Plugin.class, "Test Plugin",
                                             "My super green test plugin");
         testPlugin.setFacetName("Thing1");
-        testPlugin.setPackageName("com.chiralbehaviors.CoRE.phantasm.resources.plugin");
+        testPlugin.setPackageName(COM_CHIRALBEHAVIORS_CO_RE_PHANTASM_PLUGIN_TEST);
         testPlugin.setConstructor(model.construct(Constructor.class,
                                                   "constructor",
                                                   "For all your construction needs"));

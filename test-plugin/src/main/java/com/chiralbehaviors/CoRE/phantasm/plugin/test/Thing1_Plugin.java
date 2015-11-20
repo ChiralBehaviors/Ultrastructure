@@ -18,12 +18,12 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.resources.plugin;
+package com.chiralbehaviors.CoRE.phantasm.plugin.test;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing1;
+import com.chiralbehaviors.CoRE.phantasm.plugin.test.product.Thing1;
 
 import graphql.schema.DataFetchingEnvironment;
 

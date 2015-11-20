@@ -36,11 +36,11 @@ attributes {
     
     PackageName = "Package Name" "The base package name" text;
     FacetName = "Facet Name" "The name of a phantasm facet in a workspace" text;
-    JAR = "JVM Archive" "A compiled JVM class jar providing phantasm plugin implementation" binary;
     InputType = "Input Type" "The input type of an argument" text;
     ReturnType = "Return Type" "The return type of an method" text;
     ImplementationClass = "Implementation Class" "The implementing class" text;
     ImplementationMethod = "Implementation Method" "The name of the implementing method" text;
+    Mutator = "Mutator Method" "A method that mutates state" bool;
 }
 
 products { 
@@ -49,7 +49,6 @@ products {
     InstanceMethod = "Instance Method" "An exposed instance method on a phatasm facet";
     StaticMethod = "Static method" "A phantasm facet scoped static method in a workspace";
     Constructor = "Constructor" "A constructor that is called when the phantasm facet is applied";
-    CodeSource = "Code Source" "A JVM code source that provides JVM executable implementation logic";
     
     edges {
         KernelWorkspace.IsA.Workspace
@@ -64,7 +63,6 @@ products {
             
         IsA.Plugin { FacetName PackageName }
             constraints {
-                n HasCodeSource: IsA.CodeSource
                 n HasStaticMethod: IsA.StaticMethod
                 one HasConstructor: IsA.Constructor
                 n HasInstanceMethod: IsA.InstanceMethod
@@ -72,7 +70,7 @@ products {
         
         IsA.Argument { InputType }
         
-        IsA.InstanceMethod { ReturnType ImplementationClass ImplementationMethod }
+        IsA.InstanceMethod { ReturnType ImplementationClass ImplementationMethod Mutator }
             constraints {
                 n HasArgument: IsA.Argument
             }
@@ -83,8 +81,6 @@ products {
             }
             
         IsA.Constructor { ImplementationClass ImplementationMethod }
-        
-        IsA.CodeSource { JAR }
     }
 }
 

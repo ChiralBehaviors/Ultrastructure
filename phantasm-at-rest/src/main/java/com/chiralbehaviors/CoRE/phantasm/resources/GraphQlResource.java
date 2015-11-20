@@ -252,11 +252,6 @@ public class GraphQlResource extends TransactionalResource {
 
     }
 
-    private ClassLoader buildExecutionContext(Plugin plugin) {
-        return Thread.currentThread()
-                     .getContextClassLoader();
-    }
-
     private Deque<NetworkAuthorization<?>> initialState(WorkspaceAccessor workspace,
                                                         Model model) {
         Product definingProduct = workspace.getDefiningProduct();

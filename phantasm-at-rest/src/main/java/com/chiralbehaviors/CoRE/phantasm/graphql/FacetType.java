@@ -576,18 +576,28 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                           executionScope);
 
         constructors.add((env, instance) -> {
-            PhantasmCRUD<RuleForm, Network> crud = ctx(env);
-            if (!checkInvoke(constructor, crud)) {
-                log.info(String.format("Failed invoking %s by: %s", constructor,
-                                       crud.getModel()
-                                           .getCurrentPrincipal()));
-                return null;
+            ClassLoader prev = Thread.currentThread()
+                                     .getContextClassLoader();
+            Thread.currentThread()
+                  .setContextClassLoader(executionScope);
+            try {
+                PhantasmCRUD<RuleForm, Network> crud = ctx(env);
+                if (!checkInvoke(constructor, crud)) {
+                    log.info(String.format("Failed invoking %s by: %s",
+                                           constructor, crud.getModel()
+                                                            .getCurrentPrincipal()));
+                    return null;
 
+                }
+                @SuppressWarnings("unchecked")
+                Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
+                Model model = ctx(env).getModel();
+                return invoke(method, env, model,
+                              model.wrap(phantasm, instance));
+            } finally {
+                Thread.currentThread()
+                      .setContextClassLoader(prev);
             }
-            @SuppressWarnings("unchecked")
-            Class<? extends Phantasm<RuleForm>> phantasm = (Class<? extends Phantasm<RuleForm>>) method.getParameterTypes()[2];
-            Model model = ctx(env).getModel();
-            return invoke(method, env, model, model.wrap(phantasm, instance));
         });
     }
 
@@ -676,12 +686,22 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
 
                                                   }
                                                   Model model = ctx(env).getModel();
-                                                  return instance == null ? null
-                                                                          : invoke(method,
-                                                                                   env,
-                                                                                   model,
-                                                                                   model.wrap(phantasm,
-                                                                                              instance));
+
+                                                  ClassLoader prev = Thread.currentThread()
+                                                                           .getContextClassLoader();
+                                                  Thread.currentThread()
+                                                        .setContextClassLoader(executionScope);
+                                                  try {
+                                                      return instance == null ? null
+                                                                              : invoke(method,
+                                                                                       env,
+                                                                                       model,
+                                                                                       model.wrap(phantasm,
+                                                                                                  instance));
+                                                  } finally {
+                                                      Thread.currentThread()
+                                                            .setContextClassLoader(prev);
+                                                  }
                                               })
                                               .description(instanceMethod.getDescription())
                                               .build());

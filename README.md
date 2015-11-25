@@ -5,7 +5,7 @@ An implementation of Ultrastructure using PostgreSQL.
 
 ==============
 
-[![Build Status](https://chiralbehaviors.ci.cloudbees.com/view/Maintained%20Open%20Source/job/Ultrastructure/badge/icon)](https://chiralbehaviors.ci.cloudbees.com/view/Maintained%20Open%20Source/job/Ultrastructure/)
+[![Build Status](https://chiralbehaviors.ci.cloudbees.com/buildStatus/icon?job=Ultrastructure)](https://chiralbehaviors.ci.cloudbees.com/view/Maintained%20Open%20Source/job/Ultrastructure/)
 
 - [Ultrastrsucture Wiki](https://github.com/ChiralBehaviors/Ultrastructure/wiki) - for moar information
 

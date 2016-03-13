@@ -27,8 +27,8 @@ import javax.persistence.TypedQuery;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**

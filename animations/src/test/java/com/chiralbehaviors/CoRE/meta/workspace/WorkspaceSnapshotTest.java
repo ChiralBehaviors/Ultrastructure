@@ -36,14 +36,14 @@ import javax.persistence.EntityManager;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.phantasm.test.product.Thing1;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -39,21 +39,21 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.job.Job;
 import com.chiralbehaviors.CoRE.job.JobChronology;
 import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -304,7 +304,7 @@ public class JobModelTest extends AbstractModelTest {
              .createStatusCodeSequencings(childService, sequencings,
                                           kernel.getCore());
 
-        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(service,
+        ChildSequencingAuthorization auth = new ChildSequencingAuthorization(service,
                                                                                            scenario.getAvailable(),
                                                                                            childService,
                                                                                            scenario.getAvailable(),
@@ -407,7 +407,7 @@ public class JobModelTest extends AbstractModelTest {
                                                        scenario.getCompleted() },
                                     kernel.getCore());
 
-        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(pushit,
+        SelfSequencingAuthorization auth = new SelfSequencingAuthorization(pushit,
                                                                                          pushingMe,
                                                                                          shovingMe,
                                                                                          kernel.getCore());
@@ -630,7 +630,7 @@ public class JobModelTest extends AbstractModelTest {
         model.getJobModel()
              .createStatusCodeSequencings(service, sequences, kernel.getCore());
 
-        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization();
+        SelfSequencingAuthorization auth = new SelfSequencingAuthorization();
         auth.setService(service);
         auth.setStatusCode(b);
         auth.setStatusToSet(c);
@@ -673,7 +673,7 @@ public class JobModelTest extends AbstractModelTest {
                                                                  kernel.getCore());
         em.persist(sequence);
 
-        ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(service,
+        SelfSequencingAuthorization auth = new SelfSequencingAuthorization(service,
                                                                                          kickingAss,
                                                                                          takingNames,
                                                                                          kernel.getCore());
@@ -738,13 +738,13 @@ public class JobModelTest extends AbstractModelTest {
                                     new StatusCode[] { pushingMe, shovingMe },
                                     kernel.getCore());
 
-        ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(shoveit,
+        ChildSequencingAuthorization auth = new ChildSequencingAuthorization(shoveit,
                                                                                            shovingMe,
                                                                                            pullit,
                                                                                            shovingMe,
                                                                                            kernel.getCore());
         em.persist(auth);
-        ProductParentSequencingAuthorization auth2 = new ProductParentSequencingAuthorization(shoveit,
+        ParentSequencingAuthorization auth2 = new ParentSequencingAuthorization(shoveit,
                                                                                               shovingMe,
                                                                                               pushit,
                                                                                               shovingMe,

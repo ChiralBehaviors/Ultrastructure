@@ -35,11 +35,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.Unit;
 
 /**
  * The Protocol ruleform.

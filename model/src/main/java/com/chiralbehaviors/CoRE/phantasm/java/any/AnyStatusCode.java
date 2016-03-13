@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.any;
 
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;

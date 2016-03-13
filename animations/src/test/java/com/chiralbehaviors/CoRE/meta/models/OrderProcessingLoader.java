@@ -21,22 +21,22 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import javax.persistence.EntityManager;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ValueType;
 import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.existential.attribute.ValueType;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.existential.network.NetworkInference;
+import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand
@@ -307,14 +307,14 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
     public void createProductSequencingAuthorizations() {
 
-        ProductSiblingSequencingAuthorization activatePrintCustomsDeclaration = new ProductSiblingSequencingAuthorization(core);
+        SiblingSequencingAuthorization activatePrintCustomsDeclaration = new SiblingSequencingAuthorization(core);
         activatePrintCustomsDeclaration.setParent(printPurchaseOrder);
         activatePrintCustomsDeclaration.setStatusCode(completed);
         activatePrintCustomsDeclaration.setNextSibling(printCustomsDeclaration);
         activatePrintCustomsDeclaration.setNextSiblingStatus(available);
         em.persist(activatePrintCustomsDeclaration);
 
-        ProductParentSequencingAuthorization productPicked = new ProductParentSequencingAuthorization(core);
+        ParentSequencingAuthorization productPicked = new ParentSequencingAuthorization(core);
         productPicked.setService(pick);
         productPicked.setStatusCode(completed);
         productPicked.setParent(deliver);
@@ -322,21 +322,21 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         productPicked.setSetIfActiveSiblings(false);
         em.persist(productPicked);
 
-        ProductParentSequencingAuthorization checkCreditCompleted = new ProductParentSequencingAuthorization(core);
+        ParentSequencingAuthorization checkCreditCompleted = new ParentSequencingAuthorization(core);
         checkCreditCompleted.setService(checkCredit);
         checkCreditCompleted.setStatusCode(completed);
         checkCreditCompleted.setParent(pick);
         checkCreditCompleted.setParentStatusToSet(available);
         em.persist(checkCreditCompleted);
 
-        ProductSiblingSequencingAuthorization activateShip = new ProductSiblingSequencingAuthorization(core);
+        SiblingSequencingAuthorization activateShip = new SiblingSequencingAuthorization(core);
         activateShip.setParent(pick);
         activateShip.setStatusCode(completed);
         activateShip.setNextSibling(ship);
         activateShip.setNextSiblingStatus(waitingOnPurchaseOrder);
         em.persist(activateShip);
 
-        ProductParentSequencingAuthorization activateShipFromPrintCustomsDeclaration = new ProductParentSequencingAuthorization(core);
+        ParentSequencingAuthorization activateShipFromPrintCustomsDeclaration = new ParentSequencingAuthorization(core);
         activateShipFromPrintCustomsDeclaration.setService(printCustomsDeclaration);
         activateShipFromPrintCustomsDeclaration.setStatusCode(completed);
         activateShipFromPrintCustomsDeclaration.setParent(ship);
@@ -344,7 +344,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activateShipFromPrintCustomsDeclaration.setSetIfActiveSiblings(false);
         em.persist(activateShipFromPrintCustomsDeclaration);
 
-        ProductParentSequencingAuthorization activateShipFromPrintPurchaseOrder = new ProductParentSequencingAuthorization(core);
+        ParentSequencingAuthorization activateShipFromPrintPurchaseOrder = new ParentSequencingAuthorization(core);
         activateShipFromPrintPurchaseOrder.setService(printPurchaseOrder);
         activateShipFromPrintPurchaseOrder.setStatusCode(completed);
         activateShipFromPrintPurchaseOrder.setParent(ship);
@@ -352,42 +352,42 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activateShipFromPrintPurchaseOrder.setSetIfActiveSiblings(false);
         em.persist(activateShipFromPrintPurchaseOrder);
 
-        ProductChildSequencingAuthorization activatePrintPurchaseOrder = new ProductChildSequencingAuthorization(core);
+        ChildSequencingAuthorization activatePrintPurchaseOrder = new ChildSequencingAuthorization(core);
         activatePrintPurchaseOrder.setParent(ship);
         activatePrintPurchaseOrder.setStatusCode(waitingOnPurchaseOrder);
         activatePrintPurchaseOrder.setNextChild(printPurchaseOrder);
         activatePrintPurchaseOrder.setNextChildStatus(waitingOnFee);
         em.persist(activatePrintPurchaseOrder);
 
-        ProductChildSequencingAuthorization activateCreditCheck = new ProductChildSequencingAuthorization(core);
+        ChildSequencingAuthorization activateCreditCheck = new ChildSequencingAuthorization(core);
         activateCreditCheck.setParent(pick);
         activateCreditCheck.setStatusCode(waitingOnCreditCheck);
         activateCreditCheck.setNextChild(checkCredit);
         activateCreditCheck.setNextChildStatus(available);
         em.persist(activateCreditCheck);
 
-        ProductChildSequencingAuthorization activateFee = new ProductChildSequencingAuthorization(core);
+        ChildSequencingAuthorization activateFee = new ChildSequencingAuthorization(core);
         activateFee.setParent(printPurchaseOrder);
         activateFee.setStatusCode(waitingOnFee);
         activateFee.setNextChild(fee);
         activateFee.setNextChildStatus(available);
         em.persist(activateFee);
 
-        ProductChildSequencingAuthorization activatePick = new ProductChildSequencingAuthorization(core);
+        ChildSequencingAuthorization activatePick = new ChildSequencingAuthorization(core);
         activatePick.setParent(deliver);
         activatePick.setStatusCode(available);
         activatePick.setNextChild(pick);
         activatePick.setNextChildStatus(waitingOnCreditCheck);
         em.persist(activatePick);
 
-        ProductSiblingSequencingAuthorization activateDiscount = new ProductSiblingSequencingAuthorization(core);
+        SiblingSequencingAuthorization activateDiscount = new SiblingSequencingAuthorization(core);
         activateDiscount.setParent(fee);
         activateDiscount.setStatusCode(completed);
         activateDiscount.setNextSibling(discount);
         activateDiscount.setNextSiblingStatus(available);
         em.persist(activateDiscount);
 
-        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromFee = new ProductParentSequencingAuthorization(core);
+        ParentSequencingAuthorization activatePrintPurchaseOrderFromFee = new ParentSequencingAuthorization(core);
         activatePrintPurchaseOrderFromFee.setService(fee);
         activatePrintPurchaseOrderFromFee.setStatusCode(completed);
         activatePrintPurchaseOrderFromFee.setParent(printPurchaseOrder);
@@ -395,7 +395,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activatePrintPurchaseOrderFromFee.setSetIfActiveSiblings(false);
         em.persist(activatePrintPurchaseOrderFromFee);
 
-        ProductParentSequencingAuthorization activatePrintPurchaseOrderFromDiscount = new ProductParentSequencingAuthorization(core);
+        ParentSequencingAuthorization activatePrintPurchaseOrderFromDiscount = new ParentSequencingAuthorization(core);
         activatePrintPurchaseOrderFromDiscount.setService(discount);
         activatePrintPurchaseOrderFromDiscount.setStatusCode(completed);
         activatePrintPurchaseOrderFromDiscount.setParent(printPurchaseOrder);
@@ -403,7 +403,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         activatePrintPurchaseOrderFromDiscount.setSetIfActiveSiblings(false);
         em.persist(activatePrintPurchaseOrderFromDiscount);
 
-        ProductParentSequencingAuthorization completeDeliverFromShip = new ProductParentSequencingAuthorization(core);
+        ParentSequencingAuthorization completeDeliverFromShip = new ParentSequencingAuthorization(core);
         completeDeliverFromShip.setService(ship);
         completeDeliverFromShip.setStatusCode(completed);
         completeDeliverFromShip.setParent(deliver);

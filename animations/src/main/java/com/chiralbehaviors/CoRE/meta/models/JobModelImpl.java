@@ -54,24 +54,26 @@ import javax.persistence.metamodel.SingularAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform_;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.existential.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
 import com.chiralbehaviors.CoRE.job.AbstractProtocol;
 import com.chiralbehaviors.CoRE.job.AbstractProtocol_;
 import com.chiralbehaviors.CoRE.job.Job;
 import com.chiralbehaviors.CoRE.job.JobChronology;
 import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
@@ -79,10 +81,8 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform_;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
 import com.chiralbehaviors.CoRE.product.ProductNetwork_;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -465,12 +465,12 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ProductChildSequencingAuthorization> getChildActions(Job job) {
-        TypedQuery<ProductChildSequencingAuthorization> query = em.createNamedQuery(ProductChildSequencingAuthorization.GET_CHILD_ACTIONS,
-                                                                                    ProductChildSequencingAuthorization.class);
+    public List<ChildSequencingAuthorization> getChildActions(Job job) {
+        TypedQuery<ChildSequencingAuthorization> query = em.createNamedQuery(ChildSequencingAuthorization.GET_CHILD_ACTIONS,
+                                                                                    ChildSequencingAuthorization.class);
         query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
-        List<ProductChildSequencingAuthorization> childActions = query.getResultList();
+        List<ChildSequencingAuthorization> childActions = query.getResultList();
         return childActions;
     }
 
@@ -482,9 +482,9 @@ public class JobModelImpl implements JobModel {
      * .CoRE .product.Product)
      */
     @Override
-    public List<ProductChildSequencingAuthorization> getChildActions(Product parent) {
-        TypedQuery<ProductChildSequencingAuthorization> query = em.createNamedQuery(ProductChildSequencingAuthorization.GET_SEQUENCES,
-                                                                                    ProductChildSequencingAuthorization.class);
+    public List<ChildSequencingAuthorization> getChildActions(Product parent) {
+        TypedQuery<ChildSequencingAuthorization> query = em.createNamedQuery(ChildSequencingAuthorization.GET_SEQUENCES,
+                                                                                    ChildSequencingAuthorization.class);
         query.setParameter("parent", parent);
         return query.getResultList();
     }
@@ -607,9 +607,9 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ProductParentSequencingAuthorization> getParentActions(Job job) {
-        return em.createNamedQuery(ProductParentSequencingAuthorization.GET_PARENT_ACTIONS,
-                                   ProductParentSequencingAuthorization.class)
+    public List<ParentSequencingAuthorization> getParentActions(Job job) {
+        return em.createNamedQuery(ParentSequencingAuthorization.GET_PARENT_ACTIONS,
+                                   ParentSequencingAuthorization.class)
                  .setParameter("service", job.getService())
                  .setParameter("status", job.getStatus())
                  .getResultList();
@@ -623,9 +623,9 @@ public class JobModelImpl implements JobModel {
      * .CoRE .product.Product)
      */
     @Override
-    public List<ProductParentSequencingAuthorization> getParentActions(Product service) {
-        TypedQuery<ProductParentSequencingAuthorization> query = em.createNamedQuery(ProductParentSequencingAuthorization.GET_SEQUENCES,
-                                                                                     ProductParentSequencingAuthorization.class);
+    public List<ParentSequencingAuthorization> getParentActions(Product service) {
+        TypedQuery<ParentSequencingAuthorization> query = em.createNamedQuery(ParentSequencingAuthorization.GET_SEQUENCES,
+                                                                                     ParentSequencingAuthorization.class);
         query.setParameter("service", service);
         return query.getResultList();
     }
@@ -713,9 +713,9 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ProductSelfSequencingAuthorization> getSelfActions(Job job) {
-        TypedQuery<ProductSelfSequencingAuthorization> query = em.createNamedQuery(ProductSelfSequencingAuthorization.GET_SELF_ACTIONS,
-                                                                                   ProductSelfSequencingAuthorization.class);
+    public List<SelfSequencingAuthorization> getSelfActions(Job job) {
+        TypedQuery<SelfSequencingAuthorization> query = em.createNamedQuery(SelfSequencingAuthorization.GET_SELF_ACTIONS,
+                                                                                   SelfSequencingAuthorization.class);
         query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
         try {
@@ -730,9 +730,9 @@ public class JobModelImpl implements JobModel {
      * @return
      */
     @Override
-    public List<ProductSiblingSequencingAuthorization> getSiblingActions(Job job) {
-        TypedQuery<ProductSiblingSequencingAuthorization> query = em.createNamedQuery(ProductSiblingSequencingAuthorization.GET_SIBLING_ACTIONS,
-                                                                                      ProductSiblingSequencingAuthorization.class);
+    public List<SiblingSequencingAuthorization> getSiblingActions(Job job) {
+        TypedQuery<SiblingSequencingAuthorization> query = em.createNamedQuery(SiblingSequencingAuthorization.GET_SIBLING_ACTIONS,
+                                                                                      SiblingSequencingAuthorization.class);
         query.setParameter("parent", job.getService());
         query.setParameter("status", job.getStatus());
         return query.getResultList();
@@ -746,9 +746,9 @@ public class JobModelImpl implements JobModel {
      * .CoRE .product.Product)
      */
     @Override
-    public List<ProductSiblingSequencingAuthorization> getSiblingActions(Product parent) {
-        TypedQuery<ProductSiblingSequencingAuthorization> query = em.createNamedQuery(ProductSiblingSequencingAuthorization.GET_SEQUENCES,
-                                                                                      ProductSiblingSequencingAuthorization.class);
+    public List<SiblingSequencingAuthorization> getSiblingActions(Product parent) {
+        TypedQuery<SiblingSequencingAuthorization> query = em.createNamedQuery(SiblingSequencingAuthorization.GET_SEQUENCES,
+                                                                                      SiblingSequencingAuthorization.class);
         query.setParameter("parent", parent);
         return query.getResultList();
     }
@@ -1018,10 +1018,10 @@ public class JobModelImpl implements JobModel {
         if (log.isTraceEnabled()) {
             log.trace(String.format("Processing children of Job %s", job));
         }
-        Deque<ProductChildSequencingAuthorization> actions = new ArrayDeque<>(getChildActions(job));
+        Deque<ChildSequencingAuthorization> actions = new ArrayDeque<>(getChildActions(job));
         while (!actions.isEmpty()) {
-            ProductChildSequencingAuthorization auth = actions.pop();
-            List<ProductChildSequencingAuthorization> grouped = new ArrayList<>();
+            ChildSequencingAuthorization auth = actions.pop();
+            List<ChildSequencingAuthorization> grouped = new ArrayList<>();
             grouped.add(auth);
             while (!actions.isEmpty() && actions.peekFirst()
                                                 .getNextChild()
@@ -1057,10 +1057,10 @@ public class JobModelImpl implements JobModel {
             log.trace(String.format("Processing parent of Job %s", job));
         }
 
-        Deque<ProductParentSequencingAuthorization> actions = new ArrayDeque<>(getParentActions(job));
+        Deque<ParentSequencingAuthorization> actions = new ArrayDeque<>(getParentActions(job));
         while (!actions.isEmpty()) {
-            ProductParentSequencingAuthorization auth = actions.pop();
-            List<ProductParentSequencingAuthorization> grouped = new ArrayList<>();
+            ParentSequencingAuthorization auth = actions.pop();
+            List<ParentSequencingAuthorization> grouped = new ArrayList<>();
             grouped.add(auth);
             while (!actions.isEmpty() && actions.peekFirst()
                                                 .getParent()
@@ -1077,7 +1077,7 @@ public class JobModelImpl implements JobModel {
             log.trace(String.format("Processing self of Job %s", job));
         }
 
-        for (ProductSelfSequencingAuthorization seq : getSelfActions(job)) {
+        for (SelfSequencingAuthorization seq : getSelfActions(job)) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Processing %s", seq));
             }
@@ -1114,10 +1114,10 @@ public class JobModelImpl implements JobModel {
             log.trace(String.format("Processing siblings of Job %s", job));
         }
 
-        Deque<ProductSiblingSequencingAuthorization> actions = new ArrayDeque<>(getSiblingActions(job));
+        Deque<SiblingSequencingAuthorization> actions = new ArrayDeque<>(getSiblingActions(job));
         while (!actions.isEmpty()) {
-            ProductSiblingSequencingAuthorization auth = actions.pop();
-            List<ProductSiblingSequencingAuthorization> grouped = new ArrayList<>();
+            SiblingSequencingAuthorization auth = actions.pop();
+            List<SiblingSequencingAuthorization> grouped = new ArrayList<>();
             grouped.add(auth);
             while (!actions.isEmpty() && actions.peekFirst()
                                                 .getNextSibling()
@@ -1390,7 +1390,7 @@ public class JobModelImpl implements JobModel {
      * @param grouped
      */
     private void processChildren(Job job,
-                                 List<ProductChildSequencingAuthorization> grouped) {
+                                 List<ChildSequencingAuthorization> grouped) {
         if (grouped.isEmpty()) {
             return;
         }
@@ -1399,7 +1399,7 @@ public class JobModelImpl implements JobModel {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Processing child %s", child));
             }
-            for (ProductChildSequencingAuthorization seq : grouped) {
+            for (ChildSequencingAuthorization seq : grouped) {
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("Processing %s", seq));
                 }
@@ -1440,8 +1440,8 @@ public class JobModelImpl implements JobModel {
      * @param grouped
      */
     private void processParents(Job job,
-                                List<ProductParentSequencingAuthorization> grouped) {
-        for (ProductParentSequencingAuthorization seq : grouped) {
+                                List<ParentSequencingAuthorization> grouped) {
+        for (ParentSequencingAuthorization seq : grouped) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Processing %s", seq));
             }
@@ -1529,7 +1529,7 @@ public class JobModelImpl implements JobModel {
      * @param grouped
      */
     private void processSiblings(Job job,
-                                 List<ProductSiblingSequencingAuthorization> grouped) {
+                                 List<SiblingSequencingAuthorization> grouped) {
         if (grouped.isEmpty()) {
             return;
         }
@@ -1543,7 +1543,7 @@ public class JobModelImpl implements JobModel {
                 log.trace(String.format("Processing sibling change for %s",
                                         sibling));
             }
-            for (ProductSiblingSequencingAuthorization seq : grouped) {
+            for (SiblingSequencingAuthorization seq : grouped) {
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("Processing %s", seq));
                 }

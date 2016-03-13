@@ -19,8 +19,8 @@
  */
 package com.chiralbehaviors.CoRE.meta;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 
 /**
  * An Aspect is the classifier of an networked ruleform within a network. The

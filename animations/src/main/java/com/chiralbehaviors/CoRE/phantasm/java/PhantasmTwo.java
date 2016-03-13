@@ -26,8 +26,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;

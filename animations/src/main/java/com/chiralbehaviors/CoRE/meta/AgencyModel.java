@@ -22,12 +22,12 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.util.List;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
-import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyAttribute;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyLocationAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyNetwork;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyProductAuthorization;
 
 /**
  * @author hhildebrand

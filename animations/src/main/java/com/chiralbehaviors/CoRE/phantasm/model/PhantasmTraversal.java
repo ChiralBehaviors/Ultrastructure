@@ -20,13 +20,16 @@
 
 package com.chiralbehaviors.CoRE.phantasm.model;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyLocationAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyProductAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.network.Cardinality;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
@@ -35,14 +38,11 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
-import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.utils.English;
 
 /**

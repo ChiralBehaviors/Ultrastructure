@@ -22,7 +22,8 @@ package com.chiralbehaviors.CoRE.security;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.existential.AgencyExistentialGrouping;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
@@ -39,7 +40,7 @@ public class AgencyGroupingTest extends DatabaseTest {
         em.persist(agency);
         em.flush();
 
-        AgencyAgencyGrouping aag = new AgencyAgencyGrouping();
+        AgencyExistentialGrouping<Agency> aag = new AgencyExistentialGrouping<Agency>();
         aag.setUpdatedBy(agency);
         aag.setEntity(agency);
         aag.setGroupingAgency(agency);

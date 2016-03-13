@@ -23,7 +23,7 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
-import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;

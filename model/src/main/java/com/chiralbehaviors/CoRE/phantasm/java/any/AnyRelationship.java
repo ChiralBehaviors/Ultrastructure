@@ -20,10 +20,10 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.any;
 
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand

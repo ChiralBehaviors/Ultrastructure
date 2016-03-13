@@ -32,35 +32,40 @@ import javax.persistence.EntityManager;
 
 import org.antlr.v4.runtime.Token;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyLocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyProductAttributeAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.attribute.ValueType;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.existential.attribute.ValueType;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyLocationAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyLocationAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyProductAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyProductAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttribute;
+import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AttributeNetworkAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Interval;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.Unit;
+import com.chiralbehaviors.CoRE.existential.domain.UnitAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.UnitNetworkAuthorization;
+import com.chiralbehaviors.CoRE.existential.network.Cardinality;
+import com.chiralbehaviors.CoRE.existential.network.NetworkInference;
 import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.Aspect;
@@ -69,12 +74,9 @@ import com.chiralbehaviors.CoRE.meta.NetworkedModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.Cardinality;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.network.NetworkInference;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
@@ -82,10 +84,8 @@ import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
-import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
@@ -765,7 +765,7 @@ public class WorkspaceImporter {
 
     private void loadChildSequencing() {
         for (ChildSequencingContext seq : wsp.getChildSequencings()) {
-            ProductChildSequencingAuthorization auth = new ProductChildSequencingAuthorization(resolve(seq.parent),
+            ChildSequencingAuthorization auth = new ChildSequencingAuthorization(resolve(seq.parent),
                                                                                                resolve(seq.status),
                                                                                                resolve(seq.child),
                                                                                                resolve(seq.next),
@@ -882,7 +882,7 @@ public class WorkspaceImporter {
 
     private void loadParentSequencing() {
         for (ParentSequencingContext seq : wsp.getParentSequencings()) {
-            ProductParentSequencingAuthorization auth = new ProductParentSequencingAuthorization(resolve(seq.service),
+            ParentSequencingAuthorization auth = new ParentSequencingAuthorization(resolve(seq.service),
                                                                                                  resolve(seq.status),
                                                                                                  resolve(seq.parent),
                                                                                                  resolve(seq.next),
@@ -980,7 +980,7 @@ public class WorkspaceImporter {
 
     private void loadSelfSequencing() {
         for (SelfSequencingContext seq : wsp.getSelfSequencings()) {
-            ProductSelfSequencingAuthorization auth = new ProductSelfSequencingAuthorization(resolve(seq.service),
+            SelfSequencingAuthorization auth = new SelfSequencingAuthorization(resolve(seq.service),
                                                                                              resolve(seq.status),
                                                                                              resolve(seq.next),
                                                                                              model.getCurrentPrincipal()
@@ -999,7 +999,7 @@ public class WorkspaceImporter {
 
     private void loadSiblingSequencing() {
         for (SiblingSequencingContext seq : wsp.getSiblingSequencings()) {
-            ProductSiblingSequencingAuthorization auth = new ProductSiblingSequencingAuthorization(resolve(seq.parent),
+            SiblingSequencingAuthorization auth = new SiblingSequencingAuthorization(resolve(seq.parent),
                                                                                                    resolve(seq.status),
                                                                                                    resolve(seq.sibling),
                                                                                                    resolve(seq.next),

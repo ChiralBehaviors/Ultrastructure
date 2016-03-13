@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.attribute.ValueType;
+import com.chiralbehaviors.CoRE.existential.attribute.ValueType;
 
 /**
  * @author hhildebrand

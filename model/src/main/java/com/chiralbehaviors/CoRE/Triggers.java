@@ -1,29 +1,21 @@
 package com.chiralbehaviors.CoRE;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.existential.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.Interval;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.Unit;
+import com.chiralbehaviors.CoRE.existential.network.NetworkInference;
+import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.location.LocationNetwork;
-import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
-import com.chiralbehaviors.CoRE.time.Interval;
-import com.chiralbehaviors.CoRE.time.IntervalNetwork;
+import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 
 /**
  * (C) Copyright 2015 Chiral Behaviors, LLC. All Rights Reserved
@@ -52,67 +44,35 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 public interface Triggers {
     void delete(Agency a);
 
-    void delete(AgencyNetwork a);
-
     void delete(Attribute a);
-
-    void delete(AttributeNetwork a);
 
     void delete(Interval i);
 
-    void delete(IntervalNetwork i);
-
     void delete(Location l);
-
-    void delete(LocationNetwork l);
 
     void delete(NetworkInference inference);
 
     void delete(Product p);
 
-    void delete(ProductNetwork p);
-
     void delete(Relationship r);
-
-    void delete(RelationshipNetwork r);
 
     void delete(StatusCode s);
 
-    void delete(StatusCodeNetwork s);
-
     void delete(Unit u);
 
-    void delete(UnitNetwork u);
-
-    void persist(AgencyNetwork a);
-
-    void persist(AttributeNetwork a);
-
-    void persist(IntervalNetwork i);
+    void persist(ChildSequencingAuthorization pcsa);
 
     void persist(Job j);
 
-    void persist(LocationNetwork l);
+    void persist(ParentSequencingAuthorization ppsa);
 
-    void persist(ProductChildSequencingAuthorization pcsa);
+    void persist(SelfSequencingAuthorization pssa);
 
-    void persist(ProductNetwork p);
+    void persist(SiblingSequencingAuthorization pssa);
 
-    void persist(ProductParentSequencingAuthorization ppsa);
-
-    void persist(ProductSelfSequencingAuthorization pssa);
-
-    void persist(ProductSiblingSequencingAuthorization pssa);
-
-    void persist(RelationshipNetwork r);
-
-    void persist(StatusCodeNetwork sc);
-
-    void persist(StatusCodeSequencing scs);
+    void persist(StatusCodeSequencing statusCodeSequencing);
 
     <T extends AttributeValue<?>> void persist(T value);
-
-    void persist(UnitNetwork u);
 
     void update(Job j);
 }

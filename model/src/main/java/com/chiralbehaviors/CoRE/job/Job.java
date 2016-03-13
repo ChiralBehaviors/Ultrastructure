@@ -57,8 +57,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Triggers;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -73,11 +73,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                   + "  AND NOT EXISTS ( "
                                                                   + "   SELECT seq "
                                                                   + "    FROM StatusCodeSequencing AS seq"
-                                                                  + "     WHERE seq.childCode = j.status"
+                                                                  + "     WHERE seq.child = j.status"
                                                                   + "     AND NOT EXISTS ( "
-                                                                  + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                  + "       SELECT seq2.parent FROM StatusCodeSequencing seq2"
                                                                   + "       WHERE seq2.service = seq.service "
-                                                                  + "       AND seq2.parentCode = seq.childCode "
+                                                                  + "       AND seq2.parent = seq.child "
                                                                   + "     ) "
                                                                   + "    AND seq.service = j.service "
                                                                   + "  ) "),
@@ -95,11 +95,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                                  + "  AND NOT EXISTS ( "
                                                                                  + "   SELECT seq "
                                                                                  + "    FROM StatusCodeSequencing AS seq"
-                                                                                 + "     WHERE seq.childCode = j.status"
+                                                                                 + "     WHERE seq.child = j.status"
                                                                                  + "     AND NOT EXISTS ( "
-                                                                                 + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                                 + "       SELECT seq2.parent FROM StatusCodeSequencing seq2"
                                                                                  + "       WHERE seq2.service = seq.service "
-                                                                                 + "       AND seq2.parentCode = seq.childCode "
+                                                                                 + "       AND seq2.parent = seq.child "
                                                                                  + "     ) "
                                                                                  + "    AND seq.service = j.service "
                                                                                  + "  ) "),
@@ -110,11 +110,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                                    + "  AND NOT EXISTS ( "
                                                                                    + "   SELECT seq "
                                                                                    + "    FROM StatusCodeSequencing AS seq"
-                                                                                   + "     WHERE seq.childCode = j.status"
+                                                                                   + "     WHERE seq.child = j.status"
                                                                                    + "     AND NOT EXISTS ( "
-                                                                                   + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                                   + "       SELECT seq2.parent FROM StatusCodeSequencing seq2"
                                                                                    + "       WHERE seq2.service = seq.service "
-                                                                                   + "       AND seq2.parentCode = seq.childCode "
+                                                                                   + "       AND seq2.parent = seq.child "
                                                                                    + "     ) "
                                                                                    + "    AND seq.service = j.service "
                                                                                    + "  ) "),
@@ -129,11 +129,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                               + "  AND NOT EXISTS ( "
                                                                               + "   SELECT seq "
                                                                               + "    FROM StatusCodeSequencing AS seq"
-                                                                              + "     WHERE seq.childCode = j.status"
+                                                                              + "     WHERE seq.child = j.status"
                                                                               + "     AND NOT EXISTS ( "
-                                                                              + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                              + "       SELECT seq2.parent FROM StatusCodeSequencing seq2"
                                                                               + "       WHERE seq2.service = seq.service "
-                                                                              + "       AND seq2.parentCode = seq.childCode "
+                                                                              + "       AND seq2.parent = seq.child "
                                                                               + "     ) "
                                                                               + "    AND seq.service = j.service "
                                                                               + "  ) "),
@@ -146,11 +146,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                   + "  AND NOT EXISTS ( "
                                                                   + "   SELECT seq "
                                                                   + "    FROM StatusCodeSequencing AS seq"
-                                                                  + "     WHERE seq.childCode = j.status"
+                                                                  + "     WHERE seq.child = j.status"
                                                                   + "     AND NOT EXISTS ( "
-                                                                  + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                  + "       SELECT seq2.parent FROM StatusCodeSequencing seq2"
                                                                   + "       WHERE seq2.service = seq.service "
-                                                                  + "       AND seq2.parentCode = seq.childCode "
+                                                                  + "       AND seq2.parent = seq.child "
                                                                   + "     ) "
                                                                   + "    AND seq.service = j.service "
                                                                   + "  ) "),
@@ -160,25 +160,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                   + "  AND NOT EXISTS ( "
                                                                   + "   SELECT seq "
                                                                   + "    FROM StatusCodeSequencing AS seq"
-                                                                  + "     WHERE seq.childCode = j.status"
+                                                                  + "     WHERE seq.child = j.status"
                                                                   + "     AND NOT EXISTS ( "
-                                                                  + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                  + "       SELECT seq2.parent FROM StatusCodeSequencing seq2"
                                                                   + "       WHERE seq2.service = seq.service "
-                                                                  + "       AND seq2.parentCode = seq.childCode "
+                                                                  + "       AND seq2.parent = seq.child "
                                                                   + "     ) "
                                                                   + "    AND seq.service = j.service "
                                                                   + "  ) "),
                 @NamedQuery(name = HAS_SCS, query = "SELECT scs from StatusCodeSequencing scs where scs.service = :service "),
                 @NamedQuery(name = GET_NEXT_STATUS_CODES, query = "SELECT code "
                                                                   + "FROM StatusCodeSequencing AS sequencing, StatusCode AS code "
-                                                                  + "WHERE sequencing.childCode = code "
+                                                                  + "WHERE sequencing.child = code "
                                                                   + "AND sequencing.service = :service "
-                                                                  + "  AND sequencing.parentCode = :parent "),
+                                                                  + "  AND sequencing.parent = :parent "),
                 @NamedQuery(name = GET_STATUS_CODE_SEQUENCES, query = "SELECT sequencing "
                                                                       + " FROM StatusCodeSequencing AS sequencing"
-                                                                      + " WHERE sequencing.childCode = :code "
+                                                                      + " WHERE sequencing.child = :code "
                                                                       + " AND sequencing.service = :service "
-                                                                      + "   AND sequencing.parentCode = :parent "),
+                                                                      + "   AND sequencing.parent = :parent "),
                 @NamedQuery(name = GET_UNSET_SIBLINGS, query = "SELECT j FROM Job AS j "
                                                                + "WHERE j.service = :service "
                                                                + "  AND j.status = :unset "
@@ -196,30 +196,30 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
                                                                      + "  AND NOT EXISTS ( "
                                                                      + "   SELECT seq "
                                                                      + "    FROM StatusCodeSequencing AS seq"
-                                                                     + "     WHERE seq.childCode = j.status"
+                                                                     + "     WHERE seq.child = j.status"
                                                                      + "     AND NOT EXISTS ( "
-                                                                     + "       SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                     + "       SELECT seq2.parent FROM StatusCodeSequencing seq2"
                                                                      + "       WHERE seq2.service = seq.service "
-                                                                     + "       AND seq2.parentCode = seq.childCode "
+                                                                     + "       AND seq2.parent = seq.child "
                                                                      + "     ) "
                                                                      + "    AND seq.service = j.service "
                                                                      + "  ) "),
                 @NamedQuery(name = INITIAL_STATE, query = "SELECT distinct(sc) "
                                                           + "FROM StatusCodeSequencing AS seq, StatusCode AS sc "
-                                                          + "WHERE seq.parentCode = sc "
+                                                          + "WHERE seq.parent = sc "
                                                           + "AND NOT EXISTS( "
-                                                          + "  SELECT seq2.childCode FROM StatusCodeSequencing seq2 "
+                                                          + "  SELECT seq2.child FROM StatusCodeSequencing seq2 "
                                                           + "  WHERE seq2.service = seq.service "
-                                                          + "    AND seq2.childCode = seq.parentCode "
+                                                          + "    AND seq2.child = seq.parent "
                                                           + ") "
                                                           + " AND seq.service = :service"),
                 @NamedQuery(name = GET_TERMINAL_STATES, query = "SELECT DISTINCT(sc) "
                                                                 + "FROM StatusCodeSequencing AS seq, StatusCode AS sc "
-                                                                + "WHERE seq.childCode = sc "
+                                                                + "WHERE seq.child = sc "
                                                                 + "  AND NOT EXISTS ( "
-                                                                + "    SELECT seq2.parentCode FROM StatusCodeSequencing seq2"
+                                                                + "    SELECT seq2.parent FROM StatusCodeSequencing seq2"
                                                                 + "    WHERE seq2.service = seq.service "
-                                                                + "      AND seq2.parentCode = seq.childCode "
+                                                                + "      AND seq2.parent = seq.child "
                                                                 + "  ) "
                                                                 + "  AND seq.service = :service "
                                                                 + "ORDER BY sc.name ASC") })
@@ -255,14 +255,14 @@ public class Job extends AbstractProtocol {
     public static final String TOP_LEVEL_ACTIVE_JOBS                  = "job.topLevelActiveJobs";
     public static final String TOP_LEVEL_JOBS                         = "job.topLevelJobs";
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID                       = 1L;
 
     /**
      * The children of this job
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonIgnore
-    private Set<Job> childJobs;
+    private Set<Job>           childJobs;
 
     /**
      * The chronology of this job
@@ -272,7 +272,7 @@ public class Job extends AbstractProtocol {
     private Set<JobChronology> chronology;
 
     @Column(name = "depth")
-    private int depth = 0;
+    private int                depth                                  = 0;
 
     /**
      * The parent of this job
@@ -280,12 +280,12 @@ public class Job extends AbstractProtocol {
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
-    private Job parent;
+    private Job                parent;
 
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "protocol")
-    private Protocol protocol;
+    private Protocol           protocol;
 
     /**
      * This job's status
@@ -294,7 +294,7 @@ public class Job extends AbstractProtocol {
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
-    private StatusCode status;
+    private StatusCode         status;
 
     public Job() {
     }

@@ -23,9 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import javax.persistence.TypedQuery;
 
 import org.junit.After;
@@ -34,10 +31,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.ValueType;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.existential.ExistentialAttribute;
+import com.chiralbehaviors.CoRE.existential.attribute.ValueType;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Unit;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**
@@ -119,11 +118,11 @@ public class ProductTest extends DatabaseTest {
         Unit aminoAcids = new Unit("Amino Acids",
                                    "A unit of length for protein primary sequences",
                                    core);
-        aminoAcids.setAbbreviation("aa");
         em.persist(aminoAcids);
 
-        ProductAttribute attribute = new ProductAttribute(peptideFoo, diagram,
-                                                          core);
+        ExistentialAttribute<Product> attribute = new ExistentialAttribute<>(peptideFoo,
+                                                                             diagram,
+                                                                             core);
         attribute.setUnit(aminoAcids);
         attribute.setValue("Fooled ya");
         em.persist(attribute);
@@ -153,24 +152,16 @@ public class ProductTest extends DatabaseTest {
         assertEquals(a.getName(), "Diagram");
         LOG.debug(String.format("Attribute is: %s", a));
         em.refresh(b);
-        Set<ProductAttribute> productAttributes = b.getAttributes();
-        assertNotNull(productAttributes);
-        assertEquals(1, productAttributes.size());
 
-        Iterator<ProductAttribute> iter = productAttributes.iterator();
-        ProductAttribute bea = iter.next();
-        assertNotNull(bea);
-        assertEquals(b, bea.getProduct());
-        assertEquals(a, bea.getAttribute());
-        em.flush();
         em.clear();
         b = em.merge(b);
         a = em.merge(a);
-        ProductAttribute value = em.createNamedQuery("productAttribute.getAttribute",
-                                                     ProductAttribute.class)
-                                   .setParameter("ruleform", b)
-                                   .setParameter("attribute", a)
-                                   .getSingleResult();
+        @SuppressWarnings("unchecked")
+        ExistentialAttribute<Product> value = em.createNamedQuery("productAttribute.getAttribute",
+                                                                  ExistentialAttribute.class)
+                                                .setParameter("ruleform", b)
+                                                .setParameter("attribute", a)
+                                                .getSingleResult();
 
         assertEquals("Fooled ya", value.getValue());
     }

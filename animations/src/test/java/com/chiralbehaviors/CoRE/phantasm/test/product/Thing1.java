@@ -6,6 +6,7 @@ package com.chiralbehaviors.CoRE.phantasm.test.product;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import com.chiralbehaviors.CoRE.existential.domain.Product;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Edge;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
@@ -13,7 +14,6 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.PrimitiveState;
 import com.chiralbehaviors.CoRE.phantasm.java.any.AnyProduct;
 import com.chiralbehaviors.CoRE.phantasm.test.location.MavenArtifact;
-import com.chiralbehaviors.CoRE.product.Product;
 
 @Facet(classifier = @Key(name = "IsA") , classification = @Key(name = "Thing1") , ruleformClass = Product.class, workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/phantasm")
 public interface Thing1 extends ScopedPhantasm<Product> {

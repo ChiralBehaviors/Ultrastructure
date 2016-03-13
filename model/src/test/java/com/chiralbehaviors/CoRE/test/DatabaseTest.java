@@ -37,10 +37,10 @@ import org.junit.BeforeClass;
  * 
  */
 abstract public class DatabaseTest {
+    private static boolean                initialized = false;
     protected static Connection           connection;
     protected static EntityManager        em;
     protected static EntityManagerFactory emf;
-    private static boolean                initialized = false;
 
     @AfterClass
     public static void afterClass() {

@@ -19,10 +19,10 @@
  */
 package com.chiralbehaviors.CoRE.meta.models;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
 
 /**
  * @author hhildebrand

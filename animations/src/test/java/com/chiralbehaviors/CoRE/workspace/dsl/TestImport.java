@@ -25,11 +25,11 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.existential.domain.Product;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand

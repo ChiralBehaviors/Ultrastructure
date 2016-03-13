@@ -20,10 +20,10 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.any;
 
+import com.chiralbehaviors.CoRE.existential.domain.Interval;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
-import com.chiralbehaviors.CoRE.time.Interval;
 
 /**
  * @author hhildebrand

@@ -31,7 +31,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Model;

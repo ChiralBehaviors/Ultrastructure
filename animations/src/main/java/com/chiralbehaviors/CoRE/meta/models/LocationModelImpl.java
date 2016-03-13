@@ -32,13 +32,15 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyLocation;
-import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization_;
 import com.chiralbehaviors.CoRE.agency.AgencyLocation_;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyLocation;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyLocationAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.location.LocationAttribute;
 import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
@@ -46,12 +48,10 @@ import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductLocation_;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.security.AgencyLocationGrouping;
 
 /**

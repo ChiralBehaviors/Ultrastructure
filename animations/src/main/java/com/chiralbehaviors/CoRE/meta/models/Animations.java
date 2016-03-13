@@ -31,36 +31,36 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.internal.SessionImpl;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Triggers;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.existential.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyNetwork;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttribute;
+import com.chiralbehaviors.CoRE.existential.domain.AttributeNetwork;
+import com.chiralbehaviors.CoRE.existential.domain.Interval;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.Unit;
+import com.chiralbehaviors.CoRE.existential.domain.UnitNetwork;
+import com.chiralbehaviors.CoRE.existential.network.NetworkInference;
 import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.location.Location;
 import com.chiralbehaviors.CoRE.location.LocationNetwork;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.TriggerException;
 import com.chiralbehaviors.CoRE.meta.models.hibernate.AnimationsInterceptor;
-import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
-import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
@@ -86,7 +86,7 @@ public class Animations implements Triggers {
     private static final int MAX_JOB_PROCESSING = 10;
 
     private final Set<AttributeValue<?>>                     attributeValues  = new HashSet<>();
-    private final Set<ProductChildSequencingAuthorization>   childSequences   = new HashSet<>();
+    private final Set<ChildSequencingAuthorization>   childSequences   = new HashSet<>();
     private final EntityManager                              em;
     private boolean                                          inferAgencyNetwork;
     private boolean                                          inferAttributeNetwork;
@@ -99,9 +99,9 @@ public class Animations implements Triggers {
     private final Set<Job>                                   jobs             = new LinkedHashSet<>();
     private final Model                                      model;
     private final Set<Product>                               modifiedServices = new HashSet<>();
-    private final Set<ProductParentSequencingAuthorization>  parentSequences  = new HashSet<>();
-    private final Set<ProductSelfSequencingAuthorization>    selfSequences    = new HashSet<>();
-    private final Set<ProductSiblingSequencingAuthorization> siblingSequences = new HashSet<>();
+    private final Set<ParentSequencingAuthorization>  parentSequences  = new HashSet<>();
+    private final Set<SelfSequencingAuthorization>    selfSequences    = new HashSet<>();
+    private final Set<SiblingSequencingAuthorization> siblingSequences = new HashSet<>();
 
     public Animations(Model model, EntityManager em) {
         this.model = model;
@@ -384,7 +384,7 @@ public class Animations implements Triggers {
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization)
      */
     @Override
-    public void persist(ProductChildSequencingAuthorization pcsa) {
+    public void persist(ChildSequencingAuthorization pcsa) {
         childSequences.add(pcsa);
     }
 
@@ -400,7 +400,7 @@ public class Animations implements Triggers {
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization)
      */
     @Override
-    public void persist(ProductParentSequencingAuthorization ppsa) {
+    public void persist(ParentSequencingAuthorization ppsa) {
         parentSequences.add(ppsa);
     }
 
@@ -408,7 +408,7 @@ public class Animations implements Triggers {
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization)
      */
     @Override
-    public void persist(ProductSelfSequencingAuthorization pssa) {
+    public void persist(SelfSequencingAuthorization pssa) {
         selfSequences.add(pssa);
     }
 
@@ -416,7 +416,7 @@ public class Animations implements Triggers {
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization)
      */
     @Override
-    public void persist(ProductSiblingSequencingAuthorization pssa) {
+    public void persist(SiblingSequencingAuthorization pssa) {
         siblingSequences.add(pssa);
     }
 
@@ -567,7 +567,7 @@ public class Animations implements Triggers {
     }
 
     private void validateChildSequencing() {
-        for (ProductChildSequencingAuthorization pcsa : childSequences) {
+        for (ChildSequencingAuthorization pcsa : childSequences) {
 
             try {
                 model.getJobModel()
@@ -614,7 +614,7 @@ public class Animations implements Triggers {
     }
 
     private void validateParentSequencing() {
-        for (ProductParentSequencingAuthorization ppsa : parentSequences) {
+        for (ParentSequencingAuthorization ppsa : parentSequences) {
             try {
                 model.getJobModel()
                      .ensureValidServiceAndStatus(ppsa.getParent(),
@@ -626,7 +626,7 @@ public class Animations implements Triggers {
     }
 
     private void validateSelfSequencing() {
-        for (ProductSelfSequencingAuthorization pssa : selfSequences) {
+        for (SelfSequencingAuthorization pssa : selfSequences) {
             try {
                 model.getJobModel()
                      .ensureValidServiceAndStatus(pssa.getService(),
@@ -645,7 +645,7 @@ public class Animations implements Triggers {
     }
 
     private void validateSiblingSequencing() {
-        for (ProductSiblingSequencingAuthorization pssa : siblingSequences) {
+        for (SiblingSequencingAuthorization pssa : siblingSequences) {
             try {
                 model.getJobModel()
                      .ensureValidServiceAndStatus(pssa.getNextSibling(),

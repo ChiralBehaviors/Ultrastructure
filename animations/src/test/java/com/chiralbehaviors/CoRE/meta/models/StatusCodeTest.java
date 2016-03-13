@@ -32,14 +32,14 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.job.Job;
 import com.chiralbehaviors.CoRE.job.JobChronology;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -171,7 +171,7 @@ public class StatusCodeTest extends AbstractModelTest {
              .createStatusCodeSequencings(service2, sequences,
                                           kernel.getCore());
 
-        ProductChildSequencingAuthorization invalidSeq = new ProductChildSequencingAuthorization(service,
+        ChildSequencingAuthorization invalidSeq = new ChildSequencingAuthorization(service,
                                                                                                  startState,
                                                                                                  service2,
                                                                                                  terminalState,

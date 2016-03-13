@@ -23,9 +23,9 @@ package com.chiralbehaviors.CoRE.phantasm.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;

@@ -28,11 +28,11 @@ import javax.persistence.TypedQuery;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.network.NetworkInference;
-import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.network.NetworkInference;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand

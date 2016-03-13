@@ -4,110 +4,47 @@
     http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd" version="2.1"
 >
     <persistence-unit name="CoRE" transaction-type="RESOURCE_LOCAL">
-        <mapping-file>com/chiralbehaviors/CoRE/agency/agency.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/attribute/attribute.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/attribute/unit/unit.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/job/status/statusCode.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/location/location.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/relationship/relationship.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/product/product.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/time/interval.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/agency/agencyNetwork.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/attribute/attributeNetwork.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/attribute/unit/unitNetwork.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/job/status/statusCodeNetwork.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/location/locationNetwork.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/relationship/relationshipNetwork.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/product/productNetwork.xml</mapping-file>
-        <mapping-file>com/chiralbehaviors/CoRE/time/intervalNetwork.xml</mapping-file>
-        <class>com.chiralbehaviors.CoRE.agency.Agency</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyAttribute</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyLocation</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttribute</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyProduct</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyProductAttribute</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyProductAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.agency.AgencyNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.attribute.Attribute</class>
-        <class>com.chiralbehaviors.CoRE.attribute.AttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute</class>
-        <class>com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.attribute.AttributeValue</class>
-        <class>com.chiralbehaviors.CoRE.attribute.AttributeNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.attribute.AttributeNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.attribute.unit.Unit</class>
-        <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute</class>
-        <class>com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.Product</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductAttribute</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductLocation</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductLocationAttribute</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductLocationAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductRelationship</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductRelationshipAttribute</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductRelationshipAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.existential.attribute.ValueType</class>
+        <class>com.chiralbehaviors.CoRE.Ruleform</class>
+
+        <class>com.chiralbehaviors.CoRE.existential.AgencyExistentialGrouping</class>
+        <class>com.chiralbehaviors.CoRE.existential.ExistentialAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.existential.ExistentialAttributeValue</class>
+        <class>com.chiralbehaviors.CoRE.existential.ExistentialRuleform</class>
+
+        <class>com.chiralbehaviors.CoRE.existential.attribute.AttributeValue</class>
+
+        <class>com.chiralbehaviors.CoRE.existential.domain.Agency</class>
+        <class>com.chiralbehaviors.CoRE.existential.domain.Attribute</class>
+        <class>com.chiralbehaviors.CoRE.existential.domain.Interval</class>
+        <class>com.chiralbehaviors.CoRE.existential.domain.Location</class>
+        <class>com.chiralbehaviors.CoRE.existential.domain.Product</class>
+        <class>com.chiralbehaviors.CoRE.existential.domain.Relationship</class>
+        <class>com.chiralbehaviors.CoRE.existential.domain.StatusCode</class>
+        <class>com.chiralbehaviors.CoRE.existential.domain.Unit</class>
+
+        <class>com.chiralbehaviors.CoRE.existential.network.ExistentialNetwork</class>
+        <class>com.chiralbehaviors.CoRE.existential.network.ExistentialNetworkAttributeAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.existential.network.ExistentialNetworkAttribute</class>
+        <class>com.chiralbehaviors.CoRE.existential.network.ExistentialNetworkAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.existential.network.NetworkInference</class>
+
+        <class>com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.SequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization</class>
+        <class>com.chiralbehaviors.CoRE.job.StatusCodeSequencing</class>
+
         <class>com.chiralbehaviors.CoRE.job.AbstractProtocol</class>
         <class>com.chiralbehaviors.CoRE.job.Job</class>
         <class>com.chiralbehaviors.CoRE.job.JobChronology</class>
         <class>com.chiralbehaviors.CoRE.job.MetaProtocol</class>
         <class>com.chiralbehaviors.CoRE.job.Protocol</class>
-        <class>com.chiralbehaviors.CoRE.job.status.StatusCode</class>
-        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute</class>
-        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing</class>
-        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.location.Location</class>
-        <class>com.chiralbehaviors.CoRE.location.LocationAttribute</class>
-        <class>com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.location.LocationNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.relationship.Relationship</class>
-        <class>com.chiralbehaviors.CoRE.relationship.RelationshipAttribute</class>
-        <class>com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.security.AgencyAgencyGrouping</class>
-        <class>com.chiralbehaviors.CoRE.security.AgencyAttributeGrouping</class>
-        <class>com.chiralbehaviors.CoRE.security.AgencyGrouping</class>
-        <class>com.chiralbehaviors.CoRE.security.AgencyIntervalGrouping</class>
-        <class>com.chiralbehaviors.CoRE.security.AgencyLocationGrouping</class>
-        <class>com.chiralbehaviors.CoRE.security.AgencyProductGrouping</class>
-        <class>com.chiralbehaviors.CoRE.security.AgencyRelationshipGrouping</class>
-        <class>com.chiralbehaviors.CoRE.security.AgencyStatusCodeGrouping</class>
-        <class>com.chiralbehaviors.CoRE.security.AgencyUnitGrouping</class>
-        <class>com.chiralbehaviors.CoRE.network.NetworkInference</class>
-        <class>com.chiralbehaviors.CoRE.network.NetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.network.NetworkRuleform</class>
-        <class>com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.ExistentialRuleform</class>
-        <class>com.chiralbehaviors.CoRE.Ruleform</class>
-        <class>com.chiralbehaviors.CoRE.time.Interval</class>
-        <class>com.chiralbehaviors.CoRE.time.IntervalAttribute</class>
-        <class>com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization</class>
-        <class>com.chiralbehaviors.CoRE.time.IntervalNetworkAttribute</class>
-        <class>com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization</class>
+
         <class>com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization</class>
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>
-        	<property name="javax.persistence.validation.mode" value='AUTO'/>
+            <property name="javax.persistence.validation.mode" value='AUTO' />
         </properties>
     </persistence-unit>
 </persistence>

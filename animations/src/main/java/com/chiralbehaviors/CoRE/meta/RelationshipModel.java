@@ -21,8 +21,8 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.util.List;
 
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttribute;
 import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
 import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;

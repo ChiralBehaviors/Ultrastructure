@@ -34,7 +34,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
 
 /**
  * @author hhildebrand

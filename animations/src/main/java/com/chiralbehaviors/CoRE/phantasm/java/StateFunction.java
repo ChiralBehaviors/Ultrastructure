@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 

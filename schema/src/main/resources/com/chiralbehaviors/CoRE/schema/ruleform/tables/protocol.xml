@@ -64,51 +64,51 @@
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="assign_to" baseTableName="protocol" constraintName="protocol_assign_to_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_from" baseTableName="protocol" constraintName="protocol_deliver_from_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_to" baseTableName="protocol" constraintName="protocol_deliver_to_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product" baseTableName="protocol" constraintName="protocol_product_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="children_relationship" baseTableName="protocol" constraintName="protocol_children_relationship_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requester" baseTableName="protocol" constraintName="protocol_requester_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service" baseTableName="protocol" constraintName="protocol_service_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="protocol" constraintName="protocol_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="quantity_unit" baseTableName="protocol" constraintName="protocol_quantity_unit_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
 
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_service" baseTableName="protocol" constraintName="child_service_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_product" baseTableName="protocol" constraintName="child_product_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_assign_to" baseTableName="protocol" constraintName="child_assign_to_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_deliver_to" baseTableName="protocol" constraintName="child_deliver_to_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_deliver_from" baseTableName="protocol" constraintName="child_deliver_from_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
 
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="child_quantity_unit" baseTableName="protocol" constraintName="child_quantity_unit_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
 
         <createIndex schemaName="ruleform" indexName="protocol_updated_by_fkey_idx" tableName="protocol" unique="false">
             <column name="updated_by" />

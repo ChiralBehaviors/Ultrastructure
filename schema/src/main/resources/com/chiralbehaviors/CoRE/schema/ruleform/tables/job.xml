@@ -47,34 +47,34 @@
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="assign_to" baseTableName="job" constraintName="job_assign_to_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_from" baseTableName="job" constraintName="job_deliver_from_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="deliver_to" baseTableName="job" constraintName="job_deliver_to_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="location" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="parent" baseTableName="job" constraintName="job_parent_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" referencedColumnNames="id" referencedTableName="job" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="product" baseTableName="job" constraintName="job_product_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="requester" baseTableName="job" constraintName="job_requester_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="agency" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="service" baseTableName="job" constraintName="job_service_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="status" baseTableName="job" constraintName="job_status_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="status_code" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="job" constraintName="job_updated_by_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />
+            onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="quantity_unit" baseTableName="job" constraintName="job_quantity_unit_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="unit" />
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="protocol" baseTableName="job" constraintName="job_protocol_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="SET NULL"  referencedColumnNames="id" referencedTableName="protocol" />

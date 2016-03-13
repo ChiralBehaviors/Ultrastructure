@@ -49,7 +49,8 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
+import com.chiralbehaviors.CoRE.existential.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Workspace;
@@ -60,7 +61,6 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.graphql.FacetType;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.ObjectMapper;

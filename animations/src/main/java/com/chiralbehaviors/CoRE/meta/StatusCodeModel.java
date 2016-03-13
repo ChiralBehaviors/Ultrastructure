@@ -22,12 +22,12 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.Collection;
 import java.util.List;
 
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.product.Product;
 
 /**
  * @author hhildebrand

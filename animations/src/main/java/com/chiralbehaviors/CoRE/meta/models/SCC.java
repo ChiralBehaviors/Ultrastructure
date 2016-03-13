@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
 
 /**
  * Use Tarjan's algorithm to detect all strongly-connected components (SCCs) in

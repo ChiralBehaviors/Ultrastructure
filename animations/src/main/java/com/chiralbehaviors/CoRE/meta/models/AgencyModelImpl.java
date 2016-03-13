@@ -32,28 +32,28 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
-import com.chiralbehaviors.CoRE.agency.AgencyAttributeAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyLocation;
-import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyLocationAuthorization_;
 import com.chiralbehaviors.CoRE.agency.AgencyLocation_;
-import com.chiralbehaviors.CoRE.agency.AgencyNetwork;
-import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
-import com.chiralbehaviors.CoRE.agency.AgencyProduct;
-import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization_;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct_;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.existential.AgencyExistentialGrouping;
+import com.chiralbehaviors.CoRE.existential.attribute.AttributeValue;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyAttribute;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyLocation;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyLocationAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyNetwork;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyProduct;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyProductAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.meta.AgencyModel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
-import com.chiralbehaviors.CoRE.security.AgencyAgencyGrouping;
 
 /**
  * @author hhildebrand
@@ -416,7 +416,7 @@ public class AgencyModelImpl extends
      */
     @Override
     protected Class<?> getAgencyGroupingClass() {
-        return AgencyAgencyGrouping.class;
+        return AgencyExistentialGrouping.class;
     }
 
     /* (non-Javadoc)

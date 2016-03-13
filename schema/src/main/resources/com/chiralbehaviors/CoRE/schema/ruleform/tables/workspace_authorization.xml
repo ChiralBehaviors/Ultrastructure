@@ -32,11 +32,11 @@
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="workspace_authorization" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="defining_product" baseTableName="workspace_authorization" constraintName="workspace_defining_product_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="product" />
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="workspace_authorization" constraintName="workspace_authorization_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id"
-            referencedTableName="agency" />
+            referencedTableName="existential" />
 
         <createIndex schemaName="ruleform" indexName="workspace_authorization_updated_by_idx" tableName="workspace_authorization"
             unique="false"
@@ -61,11 +61,11 @@
 
         <comment>This contraint needs to be here, instead of agency to deal with circularity constraints</comment>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="agency" constraintName="agency_workspace_fkey" deferrable="true" initiallyDeferred="true"
+            baseColumnNames="workspace" baseTableName="existential" constraintName="agency_workspace_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
         <comment>This contraint needs to be here, instead of agency to deal with circularity constraints</comment>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="product" constraintName="product_workspace_fkey" deferrable="true" initiallyDeferred="true"
+            baseColumnNames="workspace" baseTableName="existential" constraintName="product_workspace_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

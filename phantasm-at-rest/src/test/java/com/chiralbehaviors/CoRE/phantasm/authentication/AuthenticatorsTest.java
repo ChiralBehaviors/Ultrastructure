@@ -31,9 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyAttribute;
-import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyAttribute;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;

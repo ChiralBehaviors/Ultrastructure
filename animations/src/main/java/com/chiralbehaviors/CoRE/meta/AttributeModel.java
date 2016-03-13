@@ -20,10 +20,10 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.attribute.AttributeMetaAttributeAuthorization;
-import com.chiralbehaviors.CoRE.attribute.AttributeNetwork;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttribute;
+import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.AttributeNetwork;
 
 /**
  * @author hhildebrand

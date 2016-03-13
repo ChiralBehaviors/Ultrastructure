@@ -19,7 +19,7 @@
  */
 package com.chiralbehaviors.CoRE.meta;
 
-import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.CoRE.existential.domain.Interval;
 import com.chiralbehaviors.CoRE.time.IntervalAttribute;
 import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
 import com.chiralbehaviors.CoRE.time.IntervalNetwork;

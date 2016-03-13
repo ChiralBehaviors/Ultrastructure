@@ -32,17 +32,18 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyProduct;
-import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
 import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization_;
 import com.chiralbehaviors.CoRE.agency.AgencyProduct_;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.location.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyProduct;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyProductAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocation;
@@ -55,7 +56,6 @@ import com.chiralbehaviors.CoRE.product.ProductRelationship;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization_;
 import com.chiralbehaviors.CoRE.product.ProductRelationship_;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
 
 /**

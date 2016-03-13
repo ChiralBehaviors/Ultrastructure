@@ -22,7 +22,7 @@ package com.chiralbehaviors.CoRE;
 
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.attribute.ValueType;
+import com.chiralbehaviors.CoRE.existential.attribute.ValueType;
 
 /**
  * The repository of the ids of well known objects, as well as string constants
@@ -344,6 +344,14 @@ public interface WellKnownObject {
             return new UUID(WellKnownTypes.ATTRIBUTE.ordinal(), ordinal() + 1);
         }
 
+        public boolean indexed() {
+            return false;
+        }
+
+        public boolean keyed() {
+            return false;
+        }
+
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#tableName()
          */
@@ -353,14 +361,6 @@ public interface WellKnownObject {
         }
 
         abstract public ValueType valueType();
-
-        public boolean indexed() {
-            return false;
-        }
-
-        public boolean keyed() {
-            return false;
-        }
     }
 
     public static enum WellKnownInterval

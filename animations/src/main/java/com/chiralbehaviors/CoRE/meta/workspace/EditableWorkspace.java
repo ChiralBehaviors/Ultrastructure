@@ -21,8 +21,8 @@
 package com.chiralbehaviors.CoRE.meta.workspace;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
 
 /**
  * @author hhildebrand

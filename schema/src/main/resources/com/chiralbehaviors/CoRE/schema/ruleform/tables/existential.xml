@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" remarks="The union table of all existential entities" tableName="existential">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="existential_pkey" />
+            </column>
+            <column name="domain" type="char" />
+            <column name="name" type="TEXT">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="TEXT" />
+            <column name="notes" type="TEXT" />
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column name="workspace" type="uuid" />
+
+            <!-- Relationship inverse column -->
+            <column name="inverse" type="uuid" />
+
+            <!-- Attribute columns -->
+            <column name="value_type" type="INT4" />
+            <column name="keyed" type="boolean" />
+            <column name="indexed" type="boolean" />
+
+            <!-- Status Code columns -->
+            <column name="fail_parent" type="boolean" />
+            <column name="propagate_children" type="boolean" />
+
+        </createTable>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="existential" constraintName="existential_updated_by_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="inverse" baseTableName="existential" constraintName="inverse_fkey" deferrable="true" initiallyDeferred="true"
+            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+        <createIndex schemaName="ruleform" indexName="existential_updated_by_fkey_idx" tableName="existential" unique="false">
+            <column name="updated_by" />
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

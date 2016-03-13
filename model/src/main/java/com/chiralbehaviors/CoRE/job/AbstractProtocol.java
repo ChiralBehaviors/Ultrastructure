@@ -34,11 +34,11 @@ import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Location;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Unit;
 import com.chiralbehaviors.CoRE.json.RuleformIdGenerator;
-import com.chiralbehaviors.CoRE.location.Location;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;

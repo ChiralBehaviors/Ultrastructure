@@ -25,7 +25,7 @@ import java.util.Map;
 import com.chiralbehaviors.CoRE.job.Job;
 import com.chiralbehaviors.CoRE.job.MetaProtocol;
 import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 
 /**
  * A class full of utility methods to aid in debugging.
@@ -109,9 +109,9 @@ public class TestDebuggingUtil {
         for (StatusCodeSequencing s : seqs) {
             System.out.println(String.format("%s: %s -> %s", s.getService()
                                                               .getName(),
-                                             s.getParentCode()
+                                             s.getParent()
                                               .getName(),
-                                             s.getChildCode()
+                                             s.getChild()
                                               .getName()));
         }
     }

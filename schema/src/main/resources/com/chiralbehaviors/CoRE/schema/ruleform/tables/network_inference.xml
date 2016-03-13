@@ -28,16 +28,16 @@
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="premise1" baseTableName="network_inference" constraintName="network_inference_relationship1_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="premise2" baseTableName="network_inference" constraintName="network_inference_relationship2_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="inference" baseTableName="network_inference" constraintName="network_inference_relationship3_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="relationship" />
+            initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="network_inference" constraintName="network_inference_updated_by_fkey" deferrable="true"
-            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="agency" />
+            initiallyDeferred="true" onDelete="SET DEFAULT"  referencedColumnNames="id" referencedTableName="existential" />
         <addUniqueConstraint schemaName="ruleform" columnNames="premise1, premise2, inference" constraintName="network_inference_relationship1_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="network_inference" />
         <createIndex schemaName="ruleform" indexName="network_inference_updated_by_fkey_idx" tableName="network_inference"

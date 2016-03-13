@@ -19,10 +19,10 @@
  */
 package com.chiralbehaviors.CoRE.meta;
 
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
+import com.chiralbehaviors.CoRE.existential.domain.Unit;
+import com.chiralbehaviors.CoRE.existential.domain.UnitAttribute;
+import com.chiralbehaviors.CoRE.existential.domain.UnitAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.UnitNetwork;
 
 /**
  * @author hhildebrand

@@ -23,7 +23,7 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.agency.AgencyProductAuthorization;
-import com.chiralbehaviors.CoRE.product.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
 import com.chiralbehaviors.CoRE.product.ProductAttribute;
 import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
 import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;

@@ -41,8 +41,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
 import com.chiralbehaviors.CoRE.json.CoREModule;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -220,13 +220,6 @@ public class WorkspaceSnapshot {
         return ruleforms;
     }
 
-    public boolean validate() {
-        return ruleforms.stream()
-                        .map(ruleform -> ruleform.getWorkspace() != null)
-                        .reduce((prev, cur) -> prev && cur)
-                        .orElse(false);
-    }
-
     /**
      * Merge the state of the workspace into the database
      * 
@@ -258,6 +251,13 @@ public class WorkspaceSnapshot {
         objMapper.registerModule(new CoREModule());
         objMapper.writerWithDefaultPrettyPrinter()
                  .writeValue(os, this);
+    }
+
+    public boolean validate() {
+        return ruleforms.stream()
+                        .map(ruleform -> ruleform.getWorkspace() != null)
+                        .reduce((prev, cur) -> prev && cur)
+                        .orElse(false);
     }
 
     private boolean sameWorkspace(Ruleform traversing) {

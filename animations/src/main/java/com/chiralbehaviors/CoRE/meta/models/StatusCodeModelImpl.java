@@ -27,19 +27,19 @@ import java.util.Set;
 
 import javax.persistence.TypedQuery;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
 import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
-import com.chiralbehaviors.CoRE.product.Product;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.security.AgencyStatusCodeGrouping;
 
 /**

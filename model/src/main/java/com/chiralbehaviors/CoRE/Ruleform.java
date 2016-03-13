@@ -58,8 +58,8 @@ import org.hibernate.annotations.TypeDefs;
 import org.hibernate.proxy.HibernateProxy;
 import org.reflections.Reflections;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.json.JsonMapType;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -93,13 +93,12 @@ import com.fasterxml.uuid.NoArgGenerator;
 @Cacheable(true)
 abstract public class Ruleform implements Serializable, Cloneable {
     public static final Map<String, Class<? extends Ruleform>> CONCRETE_SUBCLASSES;
-    public static final String                                 FIND_ALL_SUFFIX       = ".findAll";
-    public static final String                                 FIND_BY_ID_SUFFIX     = ".findById";
-    public static final String                                 FIND_BY_NAME_SUFFIX   = ".findByName";
     public static final NoArgGenerator                         GENERATOR             = Generators.timeBasedGenerator();
     public static final String                                 GET_UPDATED_BY_SUFFIX = ".getUpdatedBy";
 
-    private static final long serialVersionUID = 1L;
+    public static final String       KERNEL_IRI = "urn:uuid:00000000-0000-0004-0000-000000000003";
+
+    private static final long                                  serialVersionUID      = 1L;
 
     static {
         Map<String, Class<? extends Ruleform>> concrete = new HashMap<>();
@@ -355,25 +354,23 @@ abstract public class Ruleform implements Serializable, Cloneable {
     }
 
     @Id
-    private UUID id = GENERATOR.generate();
+    private UUID                     id         = GENERATOR.generate();
 
     @Basic(fetch = FetchType.LAZY)
-    private String notes;
+    private String                   notes;
 
     @Version
     @Column(name = "version")
-    private int version = 0;
+    private int                      version    = 0;
 
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by")
-    protected Agency updatedBy;
-
+    protected Agency                 updatedBy;
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace")
     protected WorkspaceAuthorization workspace;
-    public static final String KERNEL_IRI = "urn:uuid:00000000-0000-0004-0000-000000000003";
 
     public Ruleform() {
     }

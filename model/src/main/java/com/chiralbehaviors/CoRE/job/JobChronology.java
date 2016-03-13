@@ -38,7 +38,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
 
 /**
  * The persistent class for the job_chronology database table.
@@ -57,8 +57,7 @@ import com.chiralbehaviors.CoRE.job.status.StatusCode;
 @Entity
 @Table(name = "job_chronology", schema = "ruleform")
 public class JobChronology extends AbstractProtocol {
-    public static final String FIND_ALL                 = "jobChronology"
-                                                          + FIND_ALL_SUFFIX;
+    public static final String FIND_ALL                 = "jobChronology.findAll";
     public static final String FIND_FOR_JOB             = "jobChronology.findForJob";
     public static final String FIND_FOR_PRODUCT         = "jobChronology.findForProduct";
     public static final String GET_LOG_FOR_SEQUENCE     = "jobChronology.getLogForSequenc";
@@ -70,16 +69,16 @@ public class JobChronology extends AbstractProtocol {
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "job")
-    private Job job;
+    private Job                job;
 
     @Column(name = "sequence_number")
-    private int sequenceNumber = 0;
+    private int                sequenceNumber           = 0;
 
     @NotNull
     @ManyToOne(cascade = { CascadeType.PERSIST,
                            CascadeType.DETACH }, fetch = FetchType.LAZY)
     @JoinColumn(name = "status")
-    private StatusCode status;
+    private StatusCode         status;
 
     public JobChronology() {
     }

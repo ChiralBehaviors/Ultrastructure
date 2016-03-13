@@ -35,7 +35,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
+import com.chiralbehaviors.CoRE.existential.network.ExistentialNetwork;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hellblazer.utils.collections.OaHashSet;
 
@@ -69,8 +69,8 @@ public class StateSnapshot {
                                         findAll(form, em).stream()
                                                          .filter(rf -> !exclusions.contains(rf))
                                                          .forEach(rf -> {
-                                            ruleforms.add(rf);
-                                        });
+                                                             ruleforms.add(rf);
+                                                         });
                                     });
 
         for (Ruleform ruleform : ruleforms) {
@@ -104,12 +104,12 @@ public class StateSnapshot {
 
     private Collection<? extends Ruleform> findAll(Class<? extends Ruleform> form,
                                                    EntityManager em) {
-        TypedQuery<? extends Ruleform> query = NetworkRuleform.class.isAssignableFrom(form) ? em.createQuery(String.format("SELECT f FROM %s f WHERE f.workspace IS NULL AND f.inference IS NULL",
-                                                                                                                           form.getSimpleName()),
-                                                                                                             form)
-                                                                                            : em.createQuery(String.format("SELECT f FROM %s f WHERE f.workspace IS NULL",
-                                                                                                                           form.getSimpleName()),
-                                                                                                             form);
+        TypedQuery<? extends Ruleform> query = ExistentialNetwork.class.isAssignableFrom(form) ? em.createQuery(String.format("SELECT f FROM %s f WHERE f.workspace IS NULL AND f.inference IS NULL",
+                                                                                                                              form.getSimpleName()),
+                                                                                                                form)
+                                                                                               : em.createQuery(String.format("SELECT f FROM %s f WHERE f.workspace IS NULL",
+                                                                                                                              form.getSimpleName()),
+                                                                                                                form);
         return query.getResultList();
     }
 

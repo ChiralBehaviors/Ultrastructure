@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.agency.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
 
 /**
  * Represents the Agency and the authorized active aspects the principal has

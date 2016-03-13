@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet author="hhildebrand" id="2.0.0">
+        <createTable schemaName="ruleform" tableName="existential_network_attribute">
+            <column name="workspace" type="uuid" />
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="existential_network_attribute_pkey" />
+            </column>
+            <column name="edge" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="domain" type="char">
+                <constraints nullable="false" />
+            </column>
+            <column name="grouping_agency" type="uuid" />
+            <column name="attribute" type="uuid">
+                <constraints nullable="false" />
+            </column>
+            <column name="key" type="TEXT" />
+            <column name="text_value" remarks="If the Attribute has a text value, it is stored in this column" type="TEXT" />
+            <column name="numeric_value" remarks="If the Attribute has a numeric (real) value, it is stored in this column" type="numeric" />
+            <column name="integer_value" remarks="If the Attribute has an integer value, it is stored in this column" type="INT4" />
+            <column name="boolean_value" remarks="If the Attribute has a boolean value, it is stored in this column" type="boolean" />
+            <column name="timestamp_value" type="TIMESTAMP WITH TIME ZONE" />
+            <column name="binary_value" type="BYTEA" />
+            <column name="unit" remarks="The unit of measurement the Attribute value is measured in, if any" type="uuid" />
+            <column name="notes" remarks="Miscellaneous notes about this rule" type="TEXT" />
+            <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" remarks="The agency that last updated this rule"
+                type="uuid"
+            >
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="INT4" />
+            <column defaultValueNumeric="1" name="sequence_number" type="INT4">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false" />
+            </column>
+            <column name="json_value" type="jsonb" />
+        </createTable>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="attribute" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_attribute_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="edge" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_edge_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential_network" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="grouping_agency" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_grouping_agency_fkey"
+            deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="unit" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_unit_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="updated_by" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_updated_by_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="edge, attribute, sequence_number" constraintName="existential_network_attribute_key"
+            deferrable="false" disabled="false" initiallyDeferred="true" tableName="existential_network_attribute" />
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_attribute_fkey_idx" tableName="existential_network_attribute"
+            unique="false"
+        >
+            <column name="attribute" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_edge_fkey_idx" tableName="existential_network_attribute"
+            unique="false"
+        >
+            <column name="edge" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_unit_fkey_idx" tableName="existential_network_attribute"
+            unique="false"
+        >
+            <column name="unit" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_updated_by_fkey_idx" tableName="existential_network_attribute"
+            unique="false"
+        >
+            <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_key_idx" tableName="existential_network_attribute"
+            unique="false"
+        >
+            <column name="key" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_numeric_idx" tableName="existential_network_attribute"
+            unique="false"
+        >
+            <column name="numeric_value" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_timestamp_idx" tableName="existential_network_attribute"
+            unique="false"
+        >
+            <column name="timestamp_value" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_attribute_numeric_value_idx" tableName="existential_network_attribute"
+            unique="false"
+        >
+            <column name="numeric_value" />
+        </createIndex>
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="workspace" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_workspace_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
+    </changeSet>
+</databaseChangeLog>

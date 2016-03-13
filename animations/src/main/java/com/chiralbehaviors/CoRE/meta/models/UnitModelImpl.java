@@ -25,17 +25,17 @@ import java.util.List;
 
 import javax.persistence.TypedQuery;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
-import com.chiralbehaviors.CoRE.attribute.Attribute;
-import com.chiralbehaviors.CoRE.attribute.unit.Unit;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitAttribute;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitAttributeAuthorization;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork;
-import com.chiralbehaviors.CoRE.attribute.unit.UnitNetworkAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Attribute;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.existential.domain.Unit;
+import com.chiralbehaviors.CoRE.existential.domain.UnitAttribute;
+import com.chiralbehaviors.CoRE.existential.domain.UnitAttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.UnitNetwork;
+import com.chiralbehaviors.CoRE.existential.domain.UnitNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.UnitModel;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 import com.chiralbehaviors.CoRE.security.AgencyUnitGrouping;
 
 /**

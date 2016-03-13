@@ -30,9 +30,10 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
-import com.chiralbehaviors.CoRE.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
@@ -48,7 +49,6 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Inferred;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.PrimitiveState;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
-import com.chiralbehaviors.CoRE.relationship.Relationship;
 
 /**
  * @author hhildebrand

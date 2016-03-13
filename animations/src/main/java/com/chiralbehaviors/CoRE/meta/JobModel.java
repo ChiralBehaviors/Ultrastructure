@@ -25,18 +25,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.agency.Agency;
 import com.chiralbehaviors.CoRE.job.Job;
 import com.chiralbehaviors.CoRE.job.JobChronology;
 import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.job.ProductChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ProductSiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.job.status.StatusCode;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.product.Product;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -259,13 +259,13 @@ public interface JobModel {
      * @return the list of sequencing authorizations that have the job's service
      *         as parent
      */
-    List<ProductChildSequencingAuthorization> getChildActions(Job job);
+    List<ChildSequencingAuthorization> getChildActions(Job job);
 
     /**
      * @param node
      * @return
      */
-    List<ProductChildSequencingAuthorization> getChildActions(Product node);
+    List<ChildSequencingAuthorization> getChildActions(Product node);
 
     /**
      * Gets all immediate children of the parent job having the specified
@@ -350,13 +350,13 @@ public interface JobModel {
      * @param job
      * @return the list of parent actions of the job
      */
-    List<ProductParentSequencingAuthorization> getParentActions(Job job);
+    List<ParentSequencingAuthorization> getParentActions(Job job);
 
     /**
      * @param node
      * @return
      */
-    List<ProductParentSequencingAuthorization> getParentActions(Product node);
+    List<ParentSequencingAuthorization> getParentActions(Product node);
 
     /**
      * Answer the list of unique protocols applicable for a job
@@ -389,7 +389,7 @@ public interface JobModel {
      * @param job
      * @return
      */
-    List<ProductSelfSequencingAuthorization> getSelfActions(Job job);
+    List<SelfSequencingAuthorization> getSelfActions(Job job);
 
     /**
      * Answer the list of sibling actions for the job
@@ -397,13 +397,13 @@ public interface JobModel {
      * @param job
      * @return the list of sibling actions for the job
      */
-    List<ProductSiblingSequencingAuthorization> getSiblingActions(Job job);
+    List<SiblingSequencingAuthorization> getSiblingActions(Job job);
 
     /**
      * @param node
      * @return
      */
-    List<ProductSiblingSequencingAuthorization> getSiblingActions(Product node);
+    List<SiblingSequencingAuthorization> getSiblingActions(Product node);
 
     /**
      * @param service

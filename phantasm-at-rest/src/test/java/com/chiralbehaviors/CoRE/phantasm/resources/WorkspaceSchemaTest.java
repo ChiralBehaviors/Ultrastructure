@@ -40,6 +40,7 @@ import javax.ws.rs.WebApplicationException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.chiralbehaviors.CoRE.existential.Product;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Argument;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
@@ -52,7 +53,6 @@ import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing2;
 import com.chiralbehaviors.CoRE.phantasm.resource.test.product.Thing3;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
 import com.chiralbehaviors.CoRE.phantasm.service.PhantasmBundle;
-import com.chiralbehaviors.CoRE.product.Product;
 
 import graphql.ExecutionResult;
 import graphql.GraphQL;

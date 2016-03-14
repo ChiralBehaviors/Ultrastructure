@@ -66,7 +66,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 
 /**
- * A traversal visitor for Ultrastructure records
+ * A transforming traversal visitor for Ultrastructure records
  *
  * @author hhildebrand
  *
@@ -704,8 +704,9 @@ public interface Transducer {
         }
         if (!traversed.contains(id)) {
             traversed.add(id);
+            return null;
         }
-        return null;
+        return id;
     };
 
     default UUID traverse(WorkspaceAuthorizationRecord record,

@@ -87,6 +87,17 @@ public interface Transducer {
                                               create, traversed, replacements);
     }
 
+    default UUID definingProduct(DSLContext create, UUID workspace) {
+        if (workspace == null) {
+            return null;
+        }
+        return create.select(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT)
+                     .from(WORKSPACE_AUTHORIZATION)
+                     .where(WORKSPACE_AUTHORIZATION.ID.equal(workspace))
+                     .fetchOne()
+                     .value1();
+    }
+
     default UUID existential(UUID id, DSLContext create,
                              Collection<UUID> traversed,
                              Map<UUID, UUID> replacements) {

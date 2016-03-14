@@ -53,12 +53,12 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 
 /**
- * A Transducer that records all non workspace state, with exits
+ * A Transducer that slices state according to workspace membership
  * 
  * @author hhildebrand
  *
  */
-public class StateTransducer implements Transducer {
+abstract public class StateTransducer implements Transducer {
     private final Map<String, List<Record>> closure = new HashMap<>();
 
     @Override
@@ -299,31 +299,25 @@ public class StateTransducer implements Transducer {
     public UUID traverse(WorkspaceAuthorizationRecord record, DSLContext create,
                          Collection<UUID> traversed,
                          Map<UUID, UUID> replacements) {
-        UUID exit = slice(record, record.getId(), record.getWorkspace(), create,
-                          traversed, replacements);
-        if (exit != null) {
+        if (!sameWorkspace(record.getId(), create)) {
+            UUID exit = Ruleform.GENERATOR.generate();
+            replacements.put(record.getId(), exit);
             return exit;
         }
         return Transducer.super.traverse(record, create, traversed,
                                          replacements);
     }
 
-    private void record(Record record) {
+    protected void record(Record record) {
         closure.computeIfAbsent(record.getClass()
                                       .getSimpleName(),
                                 name -> new ArrayList<Record>())
                .add(record);
     }
 
-    private UUID slice(Record record, UUID id, UUID workspace,
-                       DSLContext create, Collection<UUID> traversed,
-                       Map<UUID, UUID> replacements) {
-        if (workspace != null) {
-            UUID exit = Ruleform.GENERATOR.generate();
-            replacements.put(id, exit);
-            return exit;
-        }
-        record(record);
-        return null;
-    }
+    abstract protected boolean sameWorkspace(UUID workspace, DSLContext create);
+
+    abstract protected UUID slice(Record record, UUID id, UUID workspace,
+                                  DSLContext create, Collection<UUID> traversed,
+                                  Map<UUID, UUID> replacements);
 }

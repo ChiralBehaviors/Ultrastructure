@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.workspace;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -31,11 +30,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.existential.network.ExistentialNetwork;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
+import com.chiralbehaviors.CoRE.jooq.tables.WorkspaceAuthorization;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hellblazer.utils.collections.OaHashSet;
 
@@ -45,15 +42,9 @@ import com.hellblazer.utils.collections.OaHashSet;
  */
 public class StateSnapshot {
     @JsonProperty
-    private List<Ruleform> frontier  = new ArrayList<>(1024);
-    @JsonProperty
     private List<Ruleform> ruleforms = new ArrayList<>(1024);
 
     public StateSnapshot() {
-    }
-
-    public StateSnapshot(EntityManager em) {
-        this(em, Collections.emptyList());
     }
 
     public StateSnapshot(EntityManager em,

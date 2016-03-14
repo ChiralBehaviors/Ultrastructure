@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
+ * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
  * 
  
  * This file is part of Ultrastructure.
@@ -18,17 +18,20 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.phantasm.java.any;
+package com.chiralbehaviors.CoRE.workspace;
 
-import com.chiralbehaviors.CoRE.existential.domain.Unit;
-import com.chiralbehaviors.CoRE.phantasm.Phantasm;
-import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
-import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jooq.Record;
+
+import com.chiralbehaviors.CoRE.Transducer;
 
 /**
  * @author hhildebrand
  *
  */
-@Facet(classifier = @Key(name = "AnyRelationship") , classification = @Key(name = "AnyUnit") , workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = Unit.class)
-public interface AnyUnit extends Phantasm<Unit> {
+public class StateTraverser implements Transducer {
+    private final Map<Class<Record>, List<? extends Record>> closure = new HashMap<>();
 }

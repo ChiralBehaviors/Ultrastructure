@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.chiralbehaviors.CoRE.existential.attribute;
+package com.chiralbehaviors.CoRE;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -50,12 +50,6 @@ public enum ValueType {
             return Integer.class;
         }
     },
-    @JsonProperty JSON {
-        @Override
-        public Class<?> valueClass() {
-            return Object.class;
-        }
-    },
     @JsonProperty NUMERIC {
         @Override
         public Class<?> valueClass() {
@@ -72,6 +66,12 @@ public enum ValueType {
         @Override
         public Class<?> valueClass() {
             return Timestamp.class;
+        }
+    },
+    @JsonProperty JSON {
+        @Override
+        public Class<?> valueClass() {
+            return Object.class;
         }
     };
 

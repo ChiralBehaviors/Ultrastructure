@@ -22,6 +22,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
@@ -32,14 +36,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate4</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.uuid</groupId>
@@ -101,62 +97,11 @@
     <build>
         <resources>
             <resource>
-                <directory>${project.build.directory}/generated-resources/queries</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
         <plugins>
-            <plugin>
-                <groupId>org.bsc.maven</groupId>
-                <artifactId>maven-processor-plugin</artifactId>
-                <version>2.2.4</version>
-                <executions>
-                    <execution>
-                        <id>process</id>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <optionMap>
-                                <addSuppressWarningsAnnotation>true</addSuppressWarningsAnnotation>
-                            </optionMap>
-                            <processors>
-                                <!-- list of processors to use -->
-                                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-                            </processors>
-                            <outputDirectory>${project.build.directory}/generated-sources/jpa</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-jpamodelgen</artifactId>
-                        <version>${hibernate.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>com.chiralbehaviors.CoRE</groupId>
-                <artifactId>network-inference-generator</artifactId>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/generated-resources/queries</outputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>network-inference-generator</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -169,33 +114,12 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-resources/queries</source>
-                                <source>${project.build.directory}/generated-sources/jpa</source>
+                                <source>${project.build.directory}/generated-sources/jooq</source>
                             </sources>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <!-- <plugin>
-                <groupId>org.hibernate.orm.tooling</groupId>
-                <artifactId>hibernate-enhance-maven-plugin</artifactId>
-                <version>${hibernate.version}</version>
-                <executions>
-                <execution>
-                <phase>compile</phase>
-                <goals>
-                <goal>enhance</goal>
-                </goals>
-                </execution>
-                </executions>
-                <dependencies>
-                <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
-                </dependency>
-                </dependencies>
-                </plugin> -->
         </plugins>
     </build>
     <profiles>
@@ -249,7 +173,7 @@
                         <executions>
                             <execution>
                                 <id>initialize database</id>
-                                <phase>compile</phase>
+                                <phase>generate-sources</phase>
                                 <goals>
                                     <goal>update</goal>
                                 </goals>
@@ -259,7 +183,7 @@
                             </execution>
                             <execution>
                                 <id>update database</id>
-                                <phase>compile</phase>
+                                <phase>generate-sources</phase>
                                 <goals>
                                     <goal>update</goal>
                                 </goals>
@@ -268,6 +192,61 @@
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-codegen-maven</artifactId>
+                        <version>3.7.3</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <phase>generate-sources</phase>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${postgresql.driver.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <jdbc>
+                                <driver>org.postgresql.Driver</driver>
+                                <url>${jdbc.url}</url>
+                                <user>${db.login}</user>
+                                <password>${db.password}</password>
+                            </jdbc>
+                            <generator>
+                                <database>
+                                    <name>org.jooq.util.postgres.PostgresDatabase</name>
+                                    <includes>.*</includes>
+                                    <excludes></excludes>
+                                    <inputSchema>ruleform</inputSchema>
+                                    <customTypes>
+                                        <customType>
+                                            <name>Map</name>
+                                            <type>java.util.Map</type>
+                                            <binding>com.chiralbehaviors.CoRE.attribute.json</binding>
+                                        </customType>
+                                    </customTypes>
+
+                                    <forcedTypes>
+                                        <forcedType>
+                                            <name>Map</name>
+                                            <expression>.*JSONB.*</expression>
+                                            <types>.*</types>
+                                        </forcedType>
+                                    </forcedTypes>
+                                </database>
+                                <target>
+                                    <packageName>com.chiralbehaviors.CoRE.jooq</packageName>
+                                    <directory>target/generated-sources/jooq</directory>
+                                </target>
+                            </generator>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

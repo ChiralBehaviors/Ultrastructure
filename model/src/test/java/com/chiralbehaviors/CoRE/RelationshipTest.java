@@ -22,13 +22,9 @@ package com.chiralbehaviors.CoRE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import javax.persistence.TypedQuery;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
 
 /**

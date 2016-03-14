@@ -19,16 +19,9 @@
  */
 package com.chiralbehaviors.CoRE.json;
 
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
 
 /**
  * A jackson module for registering serializers and deserializers.
@@ -46,21 +39,8 @@ public class CoREModule extends SimpleModule {
 
     @Override
     public void setupModule(SetupContext context) {
-
-        context.setMixInAnnotations(Ruleform.class,
-                                    PolymorphicRuleformMixin.class);
         ObjectMapper objectMapper = (ObjectMapper) context.getOwner();
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        Hibernate4Module module = new Hibernate4Module();
-        module.enable(Feature.FORCE_LAZY_LOADING);
-        objectMapper.registerModule(module);
-        List<Class<? extends Ruleform>> subTypes = new ArrayList<>();
-        for (Class<? extends Ruleform> form : Ruleform.CONCRETE_SUBCLASSES.values()) {
-            if (!Modifier.isAbstract(form.getModifiers())) {
-                subTypes.add(form);
-            }
-        }
-        registerSubtypes(subTypes.toArray(new Class<?>[subTypes.size()]));
         super.setupModule(context);
     }
 }

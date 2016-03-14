@@ -14,10 +14,7 @@
             <column name="edge" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="domain" type="char">
-                <constraints nullable="false" />
-            </column>
-            <column name="grouping_agency" type="uuid" />
+            <column name="authority" type="uuid" />
             <column name="attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -51,7 +48,7 @@
             baseColumnNames="edge" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_edge_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential_network" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="grouping_agency" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_grouping_agency_fkey"
+            baseColumnNames="authority" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_grouping_agency_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="unit" baseTableName="existential_network_attribute" constraintName="existential_network_attribute_unit_fkey"
@@ -80,6 +77,10 @@
             unique="false"
         >
             <column name="updated_by" />
+        </createIndex><createIndex schemaName="ruleform" indexName="existential_network_attribute_authority_fkey_idx" tableName="existential_network_attribute"
+            unique="false"
+        >
+            <column name="authority" />
         </createIndex>
         <createIndex schemaName="ruleform" indexName="existential_network_attribute_key_idx" tableName="existential_network_attribute"
             unique="false"

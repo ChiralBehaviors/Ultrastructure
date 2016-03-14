@@ -14,9 +14,6 @@
             <column name="existential" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="domain" type="char">
-                <constraints nullable="false" />
-            </column>
             <column name="attribute" type="uuid">
                 <constraints nullable="false" />
             </column>
@@ -38,7 +35,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="json_value" type="jsonb" />
-            <column name="grouping_agency" type="uuid" />
+            <column name="authority" type="uuid" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="existential" baseTableName="existential_attribute" constraintName="existential_attribute_existential_fkey"
@@ -55,7 +52,7 @@
         <addUniqueConstraint schemaName="ruleform" columnNames="existential, attribute, sequence_number" constraintName="existential_attribute_agency_key"
             deferrable="false" disabled="false" initiallyDeferred="true" tableName="existential_attribute" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="grouping_agency" baseTableName="existential_attribute" constraintName="existential_attribute_authorization_grouping_agency_fkey"
+            baseColumnNames="authority" baseTableName="existential_attribute" constraintName="existential_attribute_authorization_grouping_agency_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <createIndex schemaName="ruleform" indexName="existential_attribute_updated_by_fkey_idx" tableName="existential_attribute"
             unique="false"

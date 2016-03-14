@@ -9,11 +9,11 @@
     <include relativeToChangelogFile="true" file="tables/workspace_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/network_inference.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_attribute.xml" />
-    <include relativeToChangelogFile="true" file="tables/existential_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network.xml" />
-    <include relativeToChangelogFile="true" file="tables/existential_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/existential_network_attribute.xml" />
     <include relativeToChangelogFile="true" file="tables/existential_network_attribute_authorization.xml" />
+    <include relativeToChangelogFile="true" file="tables/existential_attribute_authorization.xml" />
     <include relativeToChangelogFile="true" file="tables/agency_existential_grouping.xml" />
     <include relativeToChangelogFile="true" file="tables/protocol.xml" />
     <include relativeToChangelogFile="true" file="tables/job.xml" />

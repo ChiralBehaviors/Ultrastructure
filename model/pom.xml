@@ -240,6 +240,7 @@
                                             <types>.*</types>
                                         </forcedType>
                                     </forcedTypes>
+                                    <recordVersionFields>version</recordVersionFields>
                                 </database>
                                 <target>
                                     <packageName>com.chiralbehaviors.CoRE.jooq</packageName>

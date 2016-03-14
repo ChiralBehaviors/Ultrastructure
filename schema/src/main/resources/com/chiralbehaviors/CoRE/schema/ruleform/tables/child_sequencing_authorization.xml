@@ -38,6 +38,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="version" type="INT4" />
+            <column name="authority" type="uuid" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="next_child" baseTableName="child_sequencing_authorization" constraintName="child_sequencing_authorization_next_child_fkey"

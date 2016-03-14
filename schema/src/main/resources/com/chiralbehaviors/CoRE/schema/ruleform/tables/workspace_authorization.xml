@@ -9,12 +9,11 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="workspace_authorization_pkey" />
             </column>
-            <column name="workspace" type="uuid" />
             <column name="reference" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="TEXT" />
-            <column name="type" type="VARCHAR(256)">
+            <column name="type" type="int">
                 <constraints nullable="false" />
             </column>
             <column name="updated_by" defaultValue= "'00000000-0000-0000-0000-000000000003'" type="uuid">
@@ -62,10 +61,6 @@
         <comment>This contraint needs to be here, instead of agency to deal with circularity constraints</comment>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="workspace" baseTableName="existential" constraintName="agency_workspace_fkey" deferrable="true" initiallyDeferred="true"
-            onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
-        <comment>This contraint needs to be here, instead of agency to deal with circularity constraints</comment>
-        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="workspace" baseTableName="existential" constraintName="product_workspace_fkey" deferrable="true" initiallyDeferred="true"
             onDelete="CASCADE" referencedColumnNames="id" referencedTableName="workspace_authorization" />
     </changeSet>
 </databaseChangeLog>

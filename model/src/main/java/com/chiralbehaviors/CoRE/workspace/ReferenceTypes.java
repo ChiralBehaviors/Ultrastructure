@@ -20,37 +20,17 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
-
-import org.jooq.DSLContext;
-import org.jooq.Record;
-
-import com.chiralbehaviors.CoRE.Ruleform;
-
 /**
- * A state transducer to gather all state not defined in workspaces
- * 
  * @author hhildebrand
  *
  */
-public class SnapshotTransducer extends StateTransducer {
-    @Override
-    public UUID slice(Record record, UUID id, UUID workspace, DSLContext create,
-                      Collection<UUID> traversed,
-                      Map<UUID, UUID> replacements) {
-        if (definingProduct(create, workspace) != null) {
-            UUID exit = Ruleform.GENERATOR.generate();
-            replacements.put(id, exit);
-            return exit;
-        }
-        record(record);
-        return null;
-    }
-
-    @Override
-    protected boolean sameWorkspace(UUID workspace, DSLContext create) {
-        return false;
-    }
+public enum ReferenceTypes {
+    AGENCY_EXISTENTIAL_GROUPING, CHILD_SEQUENCING_AUTHORIZATION, EXISTENTIAL,
+    EXISTENTIAL_ATTRIBUTE, EXISTENTIAL_ATTRIBUTE_AUTHORIZATION,
+    EXISTENTIAL_NETWORK, EXISTENTIAL_NETWORK_ATTRIBUTE,
+    EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION,
+    EXISTENTIAL_NETWORK_AUTHORIZATION, JOB, JOB_CHRONOLOGY, META_PROTOCOL,
+    NETWORK_INFERENCE, PARENT_SEQUENCING_AUTHORIZATION, PROTOCOL,
+    SELF_SEQUENCING_AUTHORIZATION, SIBLING_SEQUENCING_AUTHORIZATION,
+    STATUS_CODE_SEQUENCING, WORKSPACE_AUTHORIZATION
 }

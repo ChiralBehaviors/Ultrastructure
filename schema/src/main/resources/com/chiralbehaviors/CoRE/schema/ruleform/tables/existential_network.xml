@@ -14,16 +14,10 @@
             <column name="parent" type="uuid">
                 <constraints nullable="false" />
             </column>
-            <column name="p_domain" type="char">
-                <constraints nullable="false" />
-            </column>
             <column name="relationship" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="child" type="uuid">
-                <constraints nullable="false" />
-            </column>
-            <column name="c_domain" type="char">
                 <constraints nullable="false" />
             </column>
             <column name="inference" type="uuid" />
@@ -33,6 +27,7 @@
             <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
                 <constraints nullable="false" />
             </column>
+            <column name="authority" type="uuid" />
             <column name="version" type="INT4" />
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
@@ -47,6 +42,9 @@
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="existential_network" constraintName="existential_network_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
+        <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
+            baseColumnNames="authority" baseTableName="existential_network" constraintName="existential_network_authority_fkey" deferrable="true"
+            initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
         <addUniqueConstraint schemaName="ruleform" columnNames="parent, relationship, child, inference, premise1, premise2"
             constraintName="existential_network_parent_key" deferrable="false" disabled="false" initiallyDeferred="true" tableName="existential_network" />
         <createIndex schemaName="ruleform" indexName="existential_network_child_fkey_idx" tableName="existential_network"
@@ -68,6 +66,11 @@
             unique="false"
         >
             <column name="updated_by" />
+        </createIndex>
+        <createIndex schemaName="ruleform" indexName="existential_network_authority_fkey_idx" tableName="existential_network"
+            unique="false"
+        >
+            <column name="authority" />
         </createIndex>
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="premise1" baseTableName="existential_network" constraintName="existential_network_premise1_fkey" deferrable="true"

@@ -30,6 +30,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import org.jooq.DSLContext;
+import org.jooq.TableRecord;
+
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.WorkspaceAuthorization;
@@ -42,13 +45,12 @@ import com.hellblazer.utils.collections.OaHashSet;
  */
 public class StateSnapshot {
     @JsonProperty
-    private List<Ruleform> ruleforms = new ArrayList<>(1024);
+    private List<TableRecord<?>> records = new ArrayList<>(1024);
 
     public StateSnapshot() {
     }
 
-    public StateSnapshot(EntityManager em,
-                         Collection<? extends Ruleform> exclusions) {
+    public StateSnapshot(DSLContext em, Collection<UUID> exclusions) {
         Predicate<Ruleform> systemDefinition = traversing -> traversing.getWorkspace() == null;
         Map<UUID, Ruleform> exits = new HashMap<>();
         Set<UUID> traversed = new OaHashSet<UUID>(1024);
@@ -60,11 +62,11 @@ public class StateSnapshot {
                                         findAll(form, em).stream()
                                                          .filter(rf -> !exclusions.contains(rf))
                                                          .forEach(rf -> {
-                                                             ruleforms.add(rf);
+                                                             records.add(rf);
                                                          });
                                     });
 
-        for (Ruleform ruleform : ruleforms) {
+        for (Ruleform ruleform : records) {
             Ruleform.slice(ruleform, systemDefinition, exits, traversed);
         }
 
@@ -87,7 +89,7 @@ public class StateSnapshot {
             }
             theReplacements.put(exit.getId(), someDudeIKnow);
         }
-        for (ListIterator<Ruleform> iterator = ruleforms.listIterator(); iterator.hasNext();) {
+        for (ListIterator<Ruleform> iterator = records.listIterator(); iterator.hasNext();) {
             iterator.set(Ruleform.smartMerge(em, iterator.next(),
                                              theReplacements));
         }

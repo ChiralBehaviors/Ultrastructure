@@ -38,19 +38,19 @@ public class RelationshipTest extends DatabaseTest {
     public void initData() {
         Agency core = new Agency("CoREd");
         core.setUpdatedBy(core);
-        em.persist(core);
+        create.persist(core);
 
         Relationship massList = new Relationship("mass-list",
                                                  "A is a member of the mass list B",
                                                  core);
-        em.persist(massList);
+        create.persist(massList);
 
         Relationship massListOf = new Relationship("mass-list-of",
                                                    "A is a mass list that has B as a member",
                                                    core, massList);
-        em.persist(massListOf);
-        em.flush();
-        em.clear();
+        create.persist(massListOf);
+        create.flush();
+        create.clear();
     }
 
     @Test
@@ -72,7 +72,7 @@ public class RelationshipTest extends DatabaseTest {
 
     @Test
     public void testInverseMerge() {
-        TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
+        TypedQuery<Agency> query = create.createNamedQuery("agency.findByName",
                                                        Agency.class);
         query.setParameter("name", "CoREd");
         Agency core = query.getSingleResult();
@@ -80,12 +80,12 @@ public class RelationshipTest extends DatabaseTest {
         Relationship relationship = new Relationship();
         relationship.setName("Foo");
         relationship.setUpdatedBy(core);
-        em.persist(relationship);
+        create.persist(relationship);
 
         Relationship inverse = new Relationship();
         inverse.setName("Bar");
         inverse.setUpdatedBy(core);
-        em.persist(inverse);
+        create.persist(inverse);
 
         relationship.setInverse(inverse);
 
@@ -98,7 +98,7 @@ public class RelationshipTest extends DatabaseTest {
         System.out.println("R: " + relationship);
         System.out.println("I: " + relationship.getInverse());
 
-        Relationship r1 = em.merge(relationship);
+        Relationship r1 = create.merge(relationship);
 
         System.out.println("R1: " + r1);
         System.out.println("I1: " + r1.getInverse());

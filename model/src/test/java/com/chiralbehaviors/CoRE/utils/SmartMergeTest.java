@@ -41,8 +41,8 @@ public class SmartMergeTest extends DatabaseTest {
     public void testCircularity() {
         Agency core = new Agency("CoRE");
         core.setUpdatedBy(core);
-        em.persist(core);
-        em.flush();
+        create.persist(core);
+        create.flush();
 
         Relationship massList = new Relationship("mass-list",
                                                  "A is a member of the mass list B",
@@ -52,7 +52,7 @@ public class SmartMergeTest extends DatabaseTest {
                                                    "A is a mass list that has B as a member",
                                                    core, massList);
 
-        Relationship merged = Ruleform.smartMerge(em, massList,
+        Relationship merged = Ruleform.smartMerge(create, massList,
                                               new HashMap<>(1024));
         assertEquals(massList, merged);
         assertEquals(massListOf, merged.getInverse());

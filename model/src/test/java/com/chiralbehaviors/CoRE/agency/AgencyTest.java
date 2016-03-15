@@ -39,17 +39,17 @@ public class AgencyTest extends DatabaseTest {
     public void initData() {
         Agency core = new Agency("PseudoCore");
         core.setUpdatedBy(core);
-        em.persist(core);
+        create.persist(core);
 
         Agency foo = new Agency("Foo", "More Foo", core);
-        em.persist(foo);
-        em.flush();
-        em.clear();
+        create.persist(foo);
+        create.flush();
+        create.clear();
     }
 
     @Test
     public void testEquals() {
-        TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
+        TypedQuery<Agency> query = create.createNamedQuery("agency.findByName",
                                                        Agency.class);
 
         query.setParameter("name", "PseudoCore");

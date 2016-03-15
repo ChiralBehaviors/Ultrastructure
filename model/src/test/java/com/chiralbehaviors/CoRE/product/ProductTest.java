@@ -51,14 +51,14 @@ public class ProductTest extends DatabaseTest {
     @Override
     @After
     public void after() {
-        em.getTransaction()
+        create.getTransaction()
           .rollback();
-        em.clear();
+        create.clear();
     }
 
     @Test
     public void createEntity() {
-        TypedQuery<Agency> query = em.createNamedQuery("agency.findByName",
+        TypedQuery<Agency> query = create.createNamedQuery("agency.findByName",
                                                        Agency.class)
                                      .setParameter("name", "CoREd");
         Agency r = query.getSingleResult();
@@ -75,15 +75,15 @@ public class ProductTest extends DatabaseTest {
         b.setDescription("An Product created solely for testing purposes");
         b.setUpdatedBy(r);
 
-        em.persist(b);
-        em.flush();
+        create.persist(b);
+        create.flush();
 
         // Now check to see that the Product you just made actually got into
         // the database.
 
-        em.clear();
+        create.clear();
 
-        TypedQuery<Product> productQuery = em.createNamedQuery("product.findByName",
+        TypedQuery<Product> productQuery = create.createNamedQuery("product.findByName",
                                                                Product.class)
                                              .setParameter("name", name);
 
@@ -98,41 +98,41 @@ public class ProductTest extends DatabaseTest {
     public void initData() {
         Agency core = new Agency("CoREd");
         core.setUpdatedBy(core);
-        em.persist(core);
+        create.persist(core);
 
         Product peptideFoo = new Product("Peptide Foo",
                                          "The Foo peptide is lethal!  Do not eat!",
                                          core);
-        em.persist(peptideFoo);
+        create.persist(peptideFoo);
 
         Product peptideBar = new Product("Peptide Bar",
                                          "The Foo peptide is lethal!  Do not eat!",
                                          core);
-        em.persist(peptideBar);
+        create.persist(peptideBar);
 
         Attribute diagram = new Attribute("Diagram",
                                           "The D3 Net of the molecule",
                                           ValueType.JSON, core);
-        em.persist(diagram);
+        create.persist(diagram);
 
         Unit aminoAcids = new Unit("Amino Acids",
                                    "A unit of length for protein primary sequences",
                                    core);
-        em.persist(aminoAcids);
+        create.persist(aminoAcids);
 
         ExistentialAttribute<Product> attribute = new ExistentialAttribute<>(peptideFoo,
                                                                              diagram,
                                                                              core);
         attribute.setUnit(aminoAcids);
         attribute.setValue("Fooled ya");
-        em.persist(attribute);
-        em.flush();
+        create.persist(attribute);
+        create.flush();
     }
 
     @SuppressWarnings("boxing")
     @Test
     public void testAttributes() {
-        TypedQuery<Product> findProduct = em.createNamedQuery("product.findByName",
+        TypedQuery<Product> findProduct = create.createNamedQuery("product.findByName",
                                                               Product.class)
                                             .setParameter("name",
                                                           "Peptide Foo");
@@ -141,7 +141,7 @@ public class ProductTest extends DatabaseTest {
         assertEquals(b.getName(), "Peptide Foo");
         LOG.debug(String.format("Product is: %s", b));
 
-        TypedQuery<Attribute> findAttributeValue = em.createNamedQuery("attribute.findByName",
+        TypedQuery<Attribute> findAttributeValue = create.createNamedQuery("attribute.findByName",
                                                                        Attribute.class)
                                                      .setParameter("name",
                                                                    "Diagram");
@@ -151,13 +151,13 @@ public class ProductTest extends DatabaseTest {
         assertNotNull(a);
         assertEquals(a.getName(), "Diagram");
         LOG.debug(String.format("Attribute is: %s", a));
-        em.refresh(b);
+        create.refresh(b);
 
-        em.clear();
-        b = em.merge(b);
-        a = em.merge(a);
+        create.clear();
+        b = create.merge(b);
+        a = create.merge(a);
         @SuppressWarnings("unchecked")
-        ExistentialAttribute<Product> value = em.createNamedQuery("productAttribute.getAttribute",
+        ExistentialAttribute<Product> value = create.createNamedQuery("productAttribute.getAttribute",
                                                                   ExistentialAttribute.class)
                                                 .setParameter("ruleform", b)
                                                 .setParameter("attribute", a)

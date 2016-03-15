@@ -37,17 +37,17 @@ public class AgencyGroupingTest extends DatabaseTest {
         Agency agency = new Agency("prime", "prime");
         agency.setUpdatedBy(agency);
 
-        em.persist(agency);
-        em.flush();
+        create.persist(agency);
+        create.flush();
 
         AgencyExistentialGrouping<Agency> aag = new AgencyExistentialGrouping<Agency>();
         aag.setUpdatedBy(agency);
         aag.setEntity(agency);
         aag.setGroupingAgency(agency);
 
-        em.persist(aag);
+        create.persist(aag);
 
-        em.flush();
+        create.flush();
 
     }
 }

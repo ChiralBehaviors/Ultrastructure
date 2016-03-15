@@ -21,15 +21,15 @@
 package com.chiralbehaviors.CoRE.test;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import org.jooq.DSLContext;
+import org.jooq.exception.DataAccessException;
+import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
 /**
@@ -37,72 +37,48 @@ import org.junit.BeforeClass;
  * 
  */
 abstract public class DatabaseTest {
-    private static boolean                initialized = false;
-    protected static Connection           connection;
-    protected static EntityManager        em;
-    protected static EntityManagerFactory emf;
+    private static boolean      initialized = false;
+    protected static Connection connection;
+    protected static DSLContext create;
 
     @AfterClass
-    public static void afterClass() {
-        if (em != null && em.getTransaction()
-                            .isActive()) {
-            em.getTransaction()
+    public static void afterClass() throws DataAccessException, SQLException {
+        create.configuration()
+              .connectionProvider()
+              .acquire()
               .rollback();
-            em.clear();
-            em.close();
-        }
+        ;
+        create.close();
     }
 
     @BeforeClass
     public static void setup() throws Exception {
         Properties properties = new Properties();
-        properties.load(DatabaseTest.class.getResourceAsStream("/jpa.properties"));
+        properties.load(DatabaseTest.class.getResourceAsStream("/db.properties"));
         if (!initialized) {
             initialized = true;
-            emf = Persistence.createEntityManagerFactory("CoRE", properties);
-        } else {
-            em.close();
-        }
-        em = emf.createEntityManager();
-        em.getTransaction()
-          .begin();
-    }
+            Connection conn = DriverManager.getConnection((String) properties.get("url"),
+                                                          (String) properties.get("user"),
+                                                          (String) properties.get("password"));
+            conn.setAutoCommit(false);
 
-    /**
-     * Initiates a database transaction.
-     */
-    protected static void beginTransaction() {
-        if (!em.getTransaction()
-               .isActive()) {
-            em.getTransaction()
-              .begin();
+            create = PostgresDSL.using(conn);
         }
     }
 
-    /**
-     * Commits the current transaction, if it is still active.
-     */
-    protected static final void commitTransaction() {
-        if (em.getTransaction()
-              .isActive()) {
-            em.getTransaction()
+    protected static final void commitTransaction() throws DataAccessException,
+                                                    SQLException {
+        create.configuration()
+              .connectionProvider()
+              .acquire()
               .commit();
-        }
     }
 
     @After
-    public void after() {
-        if (em.getTransaction()
-              .isActive()) {
-            em.getTransaction()
+    public void after() throws DataAccessException, SQLException {
+        create.configuration()
+              .connectionProvider()
+              .acquire()
               .rollback();
-        }
-        em.clear();
-    }
-
-    @Before
-    public void before() {
-        beginTransaction();
-        em.clear();
     }
 }

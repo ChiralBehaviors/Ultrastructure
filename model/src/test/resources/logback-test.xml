@@ -6,13 +6,9 @@
             <pattern>${testing.logging.consoleLayoutPattern}</pattern>
         </encoder>
     </appender>
-    <logger name="com.chiralbehaviors.CoRE">
-        <level value="INFO" />
-    </logger>
-    <logger name="org.hibernate">
-        <level value="ERROR" />
-    </logger>
-
+    <logger name="org.jooq">
+        <level value="DEBUG" />
+    </logger> 
     <root>
         <level value="ERROR" />
         <appender-ref ref="C" />

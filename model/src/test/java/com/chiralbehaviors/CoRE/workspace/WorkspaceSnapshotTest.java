@@ -47,7 +47,7 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
 
     @Before
     public void setupCore() {
-        core = new ExistentialRecord();
+        core = RECORDS.newAgency(create);
         core.setName("Ye CoRE");
         core.setUpdatedBy(core.getId());
         create.insertInto(EXISTENTIAL)
@@ -56,9 +56,9 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
 
     @Test
     public void testSerializeWorkspaceSnapshot() throws Exception {
-        ExistentialRecord pseudoScientist = RECORDS.newAgency(create);
-        pseudoScientist.setName("Behold the Pseudo Scientist!");
-        pseudoScientist.setUpdatedBy(pseudoScientist.getId());
+        ExistentialRecord pseudoScientist = RECORDS.newAgency(create,
+                                                              "Behold the Pseudo Scientist!",
+                                                              core);
         pseudoScientist.insert();
         ExistentialRecord definingProduct = RECORDS.newProduct(create,
                                                                "zee product",
@@ -74,8 +74,6 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                                  pseudoScientist);
         auth.insert();
 
-        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct.getId(),
-                                                           create);
         WorkspaceSnapshot retrieved = new WorkspaceSnapshot(definingProduct.getId(),
                                                             create);
         assertEquals(4, retrieved.getRecords()
@@ -95,52 +93,4 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                .contains(definingProduct));
 
     }
-
-    //    @Test
-    //    public void testWorkspaceSnapshot() {
-    //        Agency pseudoScientist = new Agency("Behold the Pseudo Scientist!");
-    //        pseudoScientist.setUpdatedBy(pseudoScientist);
-    //        em.persist(pseudoScientist);
-    //        Product definingProduct = new Product("zee product", pseudoScientist);
-    //        em.persist(definingProduct);
-    //        new WorkspaceAuthorization(pseudoScientist, definingProduct,
-    //                                   pseudoScientist, em);
-    //        new WorkspaceAuthorization(definingProduct, definingProduct,
-    //                                   pseudoScientist, em);
-    //        Product aLeak = new Product("Snowden", core);
-    //        em.persist(aLeak);
-    //        new WorkspaceAuthorization(aLeak, definingProduct, pseudoScientist, em);
-    //        em.getTransaction()
-    //          .commit();
-    //        em.getTransaction()
-    //          .begin();
-    //        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct, em);
-    //        em.getTransaction()
-    //          .rollback();
-    //        em.getTransaction()
-    //          .begin();
-    //        assertEquals("Did not find the leak!", 1, snapshot.getFrontier()
-    //                                                          .size());
-    //        Ruleform mole = snapshot.getFrontier()
-    //                                .get(0);
-    //        assertEquals("Imposter!", core, mole);
-    //        em.getTransaction()
-    //          .rollback();
-    //        em.getTransaction()
-    //          .begin();
-    //        List<WorkspaceAuthorization> retrieved = WorkspaceSnapshot.getAuthorizations(definingProduct,
-    //                                                                                     em);
-    //        assertEquals(3, retrieved.size());
-    //        for (WorkspaceAuthorization a : retrieved) {
-    //            Ruleform ruleform = a.getRuleform(em);
-    //            if (ruleform instanceof Agency) {
-    //                assertEquals(pseudoScientist, ruleform);
-    //            } else if (!ruleform.equals(definingProduct)) {
-    //                assertEquals(aLeak, ruleform);
-    //                assertEquals("compromised!", core.getName(),
-    //                             ruleform.getUpdatedBy()
-    //                                     .getName());
-    //            }
-    //        }
-    //    }
 }

@@ -19,6 +19,12 @@
  */
 package com.chiralbehaviors.CoRE.json;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jooq.Record;
+
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -39,8 +45,18 @@ public class CoREModule extends SimpleModule {
 
     @Override
     public void setupModule(SetupContext context) {
+        context.setMixInAnnotations(Record.class, RecordMixin.class);
         ObjectMapper objectMapper = (ObjectMapper) context.getOwner();
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.enableDefaultTyping();
+        addSerializer(new RecordSerializer());
+        List<Class<?>> subTypes = new ArrayList<>();
+        Ruleform.RULEFORM.getTables()
+                         .forEach(table -> {
+                             subTypes.add(table.getRecordType());
+                         });
+        registerSubtypes(subTypes.toArray(new Class<?>[subTypes.size()]));
+
         super.setupModule(context);
     }
 }

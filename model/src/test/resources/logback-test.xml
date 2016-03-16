@@ -7,10 +7,10 @@
         </encoder>
     </appender>
     <logger name="org.jooq">
-        <level value="DEBUG" />
+        <level value="INFO" />
     </logger> 
     <root>
-        <level value="ERROR" />
+        <level value="INFO" />
         <appender-ref ref="C" />
     </root>
 </configuration>

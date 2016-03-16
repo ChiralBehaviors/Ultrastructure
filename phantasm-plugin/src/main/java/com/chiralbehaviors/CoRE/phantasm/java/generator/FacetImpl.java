@@ -31,7 +31,7 @@ import java.util.Set;
 
 import org.antlr.v4.runtime.Token;
 
-import com.chiralbehaviors.CoRE.existential.network.Cardinality;
+import com.chiralbehaviors.CoRE.Cardinality;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.utils.English;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.ClassifiedAttributeContext;
@@ -215,27 +215,28 @@ public class FacetImpl implements Facet {
      * @return
      */
     private Facet resolveAnyFacet(Token anyType) {
-        switch (anyType.getText()) {
-            case "*Agency":
-                return ANY_AGENCY;
-            case "*Attribute":
-                return ANY_ATTRIBUTE;
-            case "*Interval":
-                return ANY_INTERVAL;
-            case "*Location":
-                return ANY_LOCATION;
-            case "*Product":
-                return ANY_PRODUCT;
-            case "*Relationship":
-                return ANY_RELATIONSHIP;
-            case "*StatusCode":
-                return ANY_STATUS_CODE;
-            case "*Unit":
-                return ANY_UNIT;
-            default:
-                throw new IllegalArgumentException(String.format("%s is not a valid *Any",
-                                                                 anyType.getText()));
-        }
+        //        switch (anyType.getText()) {
+        //            case "*Agency":
+        //                return ANY_AGENCY;
+        //            case "*Attribute":
+        //                return ANY_ATTRIBUTE;
+        //            case "*Interval":
+        //                return ANY_INTERVAL;
+        //            case "*Location":
+        //                return ANY_LOCATION;
+        //            case "*Product":
+        //                return ANY_PRODUCT;
+        //            case "*Relationship":
+        //                return ANY_RELATIONSHIP;
+        //            case "*StatusCode":
+        //                return ANY_STATUS_CODE;
+        //            case "*Unit":
+        //                return ANY_UNIT;
+        //            default:
+        //                throw new IllegalArgumentException(String.format("%s is not a valid *Any",
+        //                                                                 anyType.getText()));
+        //        }
+        return null;
     }
 
     private void resolveAttributes(Map<ScopedName, MappedAttribute> mapped) {

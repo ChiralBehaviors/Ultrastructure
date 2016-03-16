@@ -31,6 +31,8 @@ import java.util.UUID;
  */
 public interface WellKnownObject {
 
+    public static final String KERNEL_IRI = "urn:uuid:00000000-0000-0004-0000-000000000003";
+
     public static enum WellKnownAgency
             implements WellKnownObject {
         ANY() {

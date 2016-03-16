@@ -22,14 +22,6 @@ package com.chiralbehaviors.CoRE.phantasm.java.generator;
 
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Attribute;
-import com.chiralbehaviors.CoRE.existential.domain.Interval;
-import com.chiralbehaviors.CoRE.existential.domain.Location;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
-import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
-import com.chiralbehaviors.CoRE.existential.domain.Unit;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 
 /**
@@ -37,14 +29,6 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
  *
  */
 public interface Facet {
-    Facet ANY_AGENCY       = new AnyFacet(Agency.class);
-    Facet ANY_ATTRIBUTE    = new AnyFacet(Attribute.class);
-    Facet ANY_INTERVAL     = new AnyFacet(Interval.class);
-    Facet ANY_LOCATION     = new AnyFacet(Location.class);
-    Facet ANY_PRODUCT      = new AnyFacet(Product.class);
-    Facet ANY_RELATIONSHIP = new AnyFacet(Relationship.class);
-    Facet ANY_STATUS_CODE  = new AnyFacet(StatusCode.class);
-    Facet ANY_UNIT         = new AnyFacet(Unit.class);
 
     ScopedName getClassification();
 

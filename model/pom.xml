@@ -199,7 +199,6 @@
                             </jdbc>
                             <generator>
                                 <generate>
-                                    <pojos>true</pojos>
                                     <daos>true</daos>
                                 </generate>
                                 <database>

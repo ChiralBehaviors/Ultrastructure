@@ -91,6 +91,12 @@ public interface RecordFactory {
         return record;
     }
 
+    default ExistentialRecord newAgency(DSLContext create, String name) {
+        ExistentialRecord record = newAgency(create);
+        record.setName(name);
+        return record;
+    }
+
     default ExistentialRecord newAgency(DSLContext create, String name,
                                         ExistentialRecord updatedBy) {
         ExistentialRecord record = newAgency(create);
@@ -243,6 +249,47 @@ public interface RecordFactory {
         ExistentialRecord record = create.newRecord(EXISTENTIAL);
         record.setDomain("P");
         record.setId(GENERATOR.generate());
+        return record;
+    }
+
+    default ExistentialRecord newRelationship(DSLContext create, String name,
+                                              ExistentialRecord updatedBy) {
+        ExistentialRecord record = newRelationship(create);
+        record.setName(name);
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
+    default ExistentialRecord newRelationship(DSLContext create, String name,
+                                              ExistentialRecord updatedBy,
+                                              ExistentialRecord inverse) {
+        return newRelationship(create, name, null, updatedBy, inverse);
+    }
+
+    default ExistentialRecord newRelationship(DSLContext create, String name,
+                                              String description,
+                                              ExistentialRecord updatedBy) {
+        ExistentialRecord record = newRelationship(create);
+        record.setName(name);
+        record.setDescription(description);
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
+    default ExistentialRecord newRelationship(DSLContext create, String name,
+                                              String description,
+                                              ExistentialRecord updatedBy,
+                                              ExistentialRecord inverse) {
+        ExistentialRecord record = newRelationship(create, name, description,
+                                                   updatedBy);
+        record.setInverse(inverse.getId());
+        inverse.setInverse(record.getId());
+        return record;
+    }
+
+    default ExistentialRecord newRelationshipy(DSLContext create, String name) {
+        ExistentialRecord record = newRelationship(create);
+        record.setName(name);
         return record;
     }
 

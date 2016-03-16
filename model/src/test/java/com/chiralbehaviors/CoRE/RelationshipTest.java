@@ -19,13 +19,15 @@
  */
 package com.chiralbehaviors.CoRE;
 
+import static com.chiralbehaviors.CoRE.RecordFactory.RECORDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.test.DatabaseTest;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.test.DatabaseTest;;
 
 /**
  * @author hhildebrand
@@ -36,77 +38,38 @@ public class RelationshipTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        Agency core = new Agency("CoREd");
-        core.setUpdatedBy(core);
-        create.persist(core);
+        ExistentialRecord core = RECORDS.newAgency(create, "CoREd");
+        core.setUpdatedBy(core.getId());
+        core.insert();
 
-        Relationship massList = new Relationship("mass-list",
-                                                 "A is a member of the mass list B",
-                                                 core);
-        create.persist(massList);
+        ExistentialRecord massList = RECORDS.newRelationship(create,
+                                                             "mass-list",
+                                                             "A is a member of the mass list B",
+                                                             core);
 
-        Relationship massListOf = new Relationship("mass-list-of",
-                                                   "A is a mass list that has B as a member",
-                                                   core, massList);
-        create.persist(massListOf);
-        create.flush();
-        create.clear();
+        ExistentialRecord massListOf = RECORDS.newRelationship(create,
+                                                               "mass-list-of",
+                                                               "A is a mass list that has B as a member",
+                                                               core, massList);
+        massList.insert();
+        massListOf.insert();
     }
 
     @Test
     public void setInverseTest() {
-        Relationship r = new Relationship();
-        r.setName("Foo");
+        ExistentialRecord core = RECORDS.newAgency(create, "CoREd");
+        core.setUpdatedBy(core.getId());
+        core.insert();
+        ExistentialRecord r = RECORDS.newRelationship(create, "Foo", core);
 
-        Relationship i = new Relationship();
-        i.setName("Bar");
-
-        r.setInverse(i);
+        ExistentialRecord i = RECORDS.newRelationship(create, "Bar", core, r);
+        r.insert();
+        i.insert();
 
         assertNotNull(r.getInverse());
-        assertEquals(r.getInverse(), i);
+        assertEquals(i.getId(), r.getInverse());
 
         assertNotNull(i.getInverse());
-        assertEquals(i.getInverse(), r);
-    }
-
-    @Test
-    public void testInverseMerge() {
-        TypedQuery<Agency> query = create.createNamedQuery("agency.findByName",
-                                                       Agency.class);
-        query.setParameter("name", "CoREd");
-        Agency core = query.getSingleResult();
-
-        Relationship relationship = new Relationship();
-        relationship.setName("Foo");
-        relationship.setUpdatedBy(core);
-        create.persist(relationship);
-
-        Relationship inverse = new Relationship();
-        inverse.setName("Bar");
-        inverse.setUpdatedBy(core);
-        create.persist(inverse);
-
-        relationship.setInverse(inverse);
-
-        assertNotNull(relationship.getInverse());
-        assertEquals(inverse, relationship.getInverse());
-
-        assertNotNull(inverse.getInverse());
-        assertEquals(relationship, inverse.getInverse());
-
-        System.out.println("R: " + relationship);
-        System.out.println("I: " + relationship.getInverse());
-
-        Relationship r1 = create.merge(relationship);
-
-        System.out.println("R1: " + r1);
-        System.out.println("I1: " + r1.getInverse());
-
-        System.out.println("R1 Class: " + r1.getClass());
-        System.out.println("I1 Class: " + r1.getInverse()
-                                            .getClass());
-
-        assertNotNull(r1.getInverse());
+        assertEquals(r.getId(), i.getInverse());
     }
 }

@@ -25,18 +25,16 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.job.JobChronology;
-import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
-import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.jooq.tables.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.JobChronology;
+import com.chiralbehaviors.CoRE.jooq.tables.MetaProtocol;
+import com.chiralbehaviors.CoRE.jooq.tables.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
+import com.chiralbehaviors.CoRE.jooq.tables.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -51,8 +49,9 @@ public interface JobModel {
                                                                    false);
 
     /**
-     * Sets the status of the given Job. This should not be done directly on the
-     * job itself because we log the change in the JobChronology ruleform.
+     * Sets the status of the given JobRecord. This should not be done directly
+     * on the job itself because we log the change in the JobChronology
+     * ruleform.
      *
      * @param job
      * @param newStatus
@@ -61,8 +60,8 @@ public interface JobModel {
      *            circumstances surrounding the change, etc.
      * @return the merged job
      */
-    Job changeStatus(Job job, StatusCode newStatus, Agency updagedBy,
-                     String notes);
+    JobRecord changeStatus(JobRecord job, ExistentialRecord newStatus,
+                           ExistentialRecord updagedBy, String notes);
 
     /**
      * Creates and persist a StatusCodeSequencing object for each sequential
@@ -75,17 +74,18 @@ public interface JobModel {
      *            the ordered list of codes to be sequenced
      * @param updatedBy
      */
-    void createStatusCodeChain(Product service, StatusCode[] codes,
-                               Agency updatedBy);
+    void createStatusCodeChain(ExistentialRecord service,
+                               ExistentialRecord[] codes,
+                               ExistentialRecord updatedBy);
 
     /**
      * @param service
      * @param codes
      * @param updatedBy
      */
-    void createStatusCodeSequencings(Product service,
-                                     List<Tuple<StatusCode, StatusCode>> codes,
-                                     Agency updatedBy);
+    void createStatusCodeSequencings(ExistentialRecord service,
+                                     List<Tuple<ExistentialRecord, ExistentialRecord>> codes,
+                                     ExistentialRecord updatedBy);
 
     /**
      * Ensure that the nextStatus is a valid status transition from the
@@ -98,15 +98,15 @@ public interface JobModel {
      * @return
      * @throws SQLException
      */
-    void ensureNextStateIsValid(Job job, Product service,
-                                StatusCode currentStatus,
-                                StatusCode nextStatus) throws SQLException;
+    void ensureNextStateIsValid(JobRecord job, ExistentialRecord service,
+                                ExistentialRecord currentStatus,
+                                ExistentialRecord nextStatus) throws SQLException;
 
     /**
      * @param parent
      * @throws SQLException
      */
-    void ensureValidParentStatus(Job parent) throws SQLException;
+    void ensureValidParentStatus(JobRecord parent) throws SQLException;
 
     /**
      *
@@ -114,12 +114,12 @@ public interface JobModel {
      * @param nextSiblingStatus
      * @throws SQLException
      */
-    void ensureValidServiceAndStatus(Product nextSibling,
-                                     StatusCode nextSiblingStatus) throws SQLException;
+    void ensureValidServiceAndStatus(ExistentialRecord nextSibling,
+                                     ExistentialRecord nextSiblingStatus) throws SQLException;
 
-    Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(Job job);
+    Map<Protocol, Map<MetaProtocol, List<String>>> findMetaProtocolGaps(JobRecord job);
 
-    Map<Protocol, List<String>> findProtocolGaps(Job job);
+    Map<Protocol, List<String>> findProtocolGaps(JobRecord job);
 
     /**
      * For a given job, generates all the implicit jobs that need to be done
@@ -132,7 +132,8 @@ public interface JobModel {
      * @return the list of jobs generated
      * @throws SQLException
      */
-    List<Job> generateImplicitJobs(Job job, Agency updatedBy);
+    List<JobRecord> generateImplicitJobs(JobRecord job,
+                                         ExistentialRecord updatedBy);
 
     /**
      * Generate all the implicit sub jobs for the job
@@ -140,17 +141,18 @@ public interface JobModel {
      * @param job
      * @param updatedBy
      */
-    void generateImplicitJobsForExplicitJobs(Job job, Agency updatedBy);
+    void generateImplicitJobsForExplicitJobs(JobRecord job,
+                                             ExistentialRecord updatedBy);
 
     /**
      * Retrieve a list of all currently active "explicit" (top level) Jobs.
-     * "Explicit" means a Job that has no parent Job. "Active" means Jobs whose
-     * current state is neither "(UNSET)"/pending nor a terminal state for the
-     * Job's Product.
+     * "Explicit" means a JobRecord that has no parent JobRecord. "Active" means
+     * Jobs whose current state is neither "(UNSET)"/pending nor a terminal
+     * state for the JobRecord's ExistentialRecord.
      *
      * @return the list of all active, top level jobs
      */
-    List<Job> getActiveExplicitJobs();
+    List<JobRecord> getActiveExplicitJobs();
 
     /**
      * Answer the list of active jobs that are assigned to a agency
@@ -158,7 +160,7 @@ public interface JobModel {
      * @param agency
      * @return the list of active jobs assigned to the agency
      */
-    List<Job> getActiveJobsFor(Agency agency);
+    List<JobRecord> getActiveJobsFor(ExistentialRecord agency);
 
     /**
      * Answer the list of active jobs that are assigned to a agency, in a any of
@@ -169,7 +171,8 @@ public interface JobModel {
      * @return the list of active jobs assigned to the agency that have the
      *         desired status
      */
-    List<Job> getActiveJobsFor(Agency agency, List<StatusCode> desiredStates);
+    List<JobRecord> getActiveJobsFor(ExistentialRecord agency,
+                                     List<ExistentialRecord> desiredStates);
 
     /**
      * Answer the list of active jobs that are assigned to a agency, in a
@@ -180,7 +183,8 @@ public interface JobModel {
      * @return the list of active jobs assigned to the agency that have the
      *         desired status
      */
-    List<Job> getActiveJobsFor(Agency agency, StatusCode desiredState);
+    List<JobRecord> getActiveJobsFor(ExistentialRecord agency,
+                                     ExistentialRecord desiredState);
 
     /**
      *
@@ -188,7 +192,8 @@ public interface JobModel {
      * @param service
      * @return
      */
-    List<Job> getActiveSubJobsForService(Job job, Product service);
+    List<JobRecord> getActiveSubJobsForService(JobRecord job,
+                                               ExistentialRecord service);
 
     /**
      * Answer the list of active sub jobs (children) of the job
@@ -196,7 +201,7 @@ public interface JobModel {
      * @param job
      * @return the list of active sub jobs of the job
      */
-    List<Job> getActiveSubJobsOf(Job job);
+    List<JobRecord> getActiveSubJobsOf(JobRecord job);
 
     /**
      * Answer the recursive list of all sub jobs - at any level - of a job that
@@ -206,7 +211,7 @@ public interface JobModel {
      * @return the full list of all sub jobs of a job that are active or
      *         terminated
      */
-    Collection<Job> getAllActiveOrTerminatedSubJobsOf(Job job);
+    Collection<JobRecord> getAllActiveOrTerminatedSubJobsOf(JobRecord job);
 
     /**
      * Answer the recursive list of all sub jobs - at any level - of a job that
@@ -216,7 +221,7 @@ public interface JobModel {
      * @return the recursive list of all sub jobs - at any level - of a job that
      *         are active
      */
-    Collection<Job> getAllActiveSubJobsOf(Job job);
+    Collection<JobRecord> getAllActiveSubJobsOf(JobRecord job);
 
     /**
      *
@@ -224,7 +229,8 @@ public interface JobModel {
      * @param agency
      * @return
      */
-    List<Job> getAllActiveSubJobsOf(Job parent, Agency agency);
+    List<JobRecord> getAllActiveSubJobsOf(JobRecord parent,
+                                          ExistentialRecord agency);
 
     /**
      *
@@ -232,7 +238,8 @@ public interface JobModel {
      * @param agency
      * @param jobs
      */
-    void getAllActiveSubJobsOf(Job parent, Agency agency, List<Job> jobs);
+    void getAllActiveSubJobsOf(JobRecord parent, ExistentialRecord agency,
+                               List<JobRecord> jobs);
 
     /**
      * Answer the list of all active subjobs
@@ -241,7 +248,8 @@ public interface JobModel {
      * @param tally
      * @return
      */
-    Collection<Job> getAllActiveSubJobsOf(Job job, Collection<Job> tally);
+    Collection<JobRecord> getAllActiveSubJobsOf(JobRecord job,
+                                                Collection<JobRecord> tally);
 
     /**
      * Get all direct and indirect child jobs of this job, regardless of status
@@ -249,7 +257,7 @@ public interface JobModel {
      * @param job
      * @return
      */
-    List<Job> getAllChildren(Job job);
+    List<JobRecord> getAllChildren(JobRecord job);
 
     /**
      * Answer the list of sequencing authorizations that have the job's service
@@ -259,13 +267,13 @@ public interface JobModel {
      * @return the list of sequencing authorizations that have the job's service
      *         as parent
      */
-    List<ChildSequencingAuthorization> getChildActions(Job job);
+    List<ChildSequencingAuthorization> getChildActions(JobRecord job);
 
     /**
      * @param node
      * @return
      */
-    List<ChildSequencingAuthorization> getChildActions(Product node);
+    List<ChildSequencingAuthorization> getChildActions(ExistentialRecord node);
 
     /**
      * Gets all immediate children of the parent job having the specified
@@ -275,20 +283,21 @@ public interface JobModel {
      * @param service
      * @return
      */
-    List<Job> getChildJobsByService(Job parent, Product service);
+    List<JobRecord> getChildJobsByService(JobRecord parent,
+                                          ExistentialRecord service);
 
     /**
      * Returns an ordered list of all JobChronology rules for the given job.
      * Entries are ordered by the ascending timeStamp (oldest is first, most
      * recent is last)
      *
-     * If the given Job is either null or has a null id property, an empty list
-     * is returned.
+     * If the given JobRecord is either null or has a null id property, an empty
+     * list is returned.
      *
      * @param job
      * @return
      */
-    List<JobChronology> getChronologyForJob(Job job);
+    List<JobChronology> getChronologyForJob(JobRecord job);
 
     /**
      * Answer the immediate child jobs of the job that are active or terminal
@@ -296,7 +305,7 @@ public interface JobModel {
      * @param job
      * @return the immediate child jobs of the job that are active or terminal
      */
-    List<Job> getDirectActiveOrTerminalSubJobsOf(Job job);
+    List<JobRecord> getDirectActiveOrTerminalSubJobsOf(JobRecord job);
 
     /**
      * Answer the initial state of a service
@@ -304,9 +313,9 @@ public interface JobModel {
      * @param service
      * @return the initial state of a service
      */
-    StatusCode getInitialState(Product service);
+    ExistentialRecord getInitialState(ExistentialRecord service);
 
-    List<StatusCode> getInitialStates(Product service);
+    List<ExistentialRecord> getInitialStates(ExistentialRecord service);
 
     /**
      * Answer the list of MetaProtocols that can be applied to the job
@@ -314,25 +323,25 @@ public interface JobModel {
      * @param job
      * @return the list of MetaProtocols that can be applied to the job
      */
-    List<MetaProtocol> getMetaprotocols(Job job);
+    List<MetaProtocol> getMetaprotocols(JobRecord job);
 
     /**
      * @param service
      * @return
      */
-    List<MetaProtocol> getMetaProtocolsFor(Product service);
+    List<MetaProtocol> getMetaProtocolsFor(ExistentialRecord service);
 
     /**
      * Returns the individual JobChronology rule that reflects the most recent
-     * change to the given Job.
+     * change to the given JobRecord.
      *
-     * If the given Job is either null or has a null id property, an empty list
-     * is returned.
+     * If the given JobRecord is either null or has a null id property, an empty
+     * list is returned.
      *
      * @param job
      * @return
      */
-    JobChronology getMostRecentChronologyEntry(Job job);
+    JobChronology getMostRecentChronologyEntry(JobRecord job);
 
     /**
      * Answer the list of child status codes for the service for the parent code
@@ -342,7 +351,8 @@ public interface JobModel {
      * @return the list of child status codes for the service for the parent
      *         code
      */
-    List<StatusCode> getNextStatusCodes(Product service, StatusCode parent);
+    List<ExistentialRecord> getNextStatusCodes(ExistentialRecord service,
+                                               ExistentialRecord parent);
 
     /**
      * Answer the list of parent actions of the job
@@ -350,13 +360,13 @@ public interface JobModel {
      * @param job
      * @return the list of parent actions of the job
      */
-    List<ParentSequencingAuthorization> getParentActions(Job job);
+    List<ParentSequencingAuthorization> getParentActions(JobRecord job);
 
     /**
      * @param node
      * @return
      */
-    List<ParentSequencingAuthorization> getParentActions(Product node);
+    List<ParentSequencingAuthorization> getParentActions(ExistentialRecord node);
 
     /**
      * Answer the list of unique protocols applicable for a job
@@ -364,7 +374,7 @@ public interface JobModel {
      * @param job
      * @return the list of unique protocols applicable for a job
      */
-    Map<Protocol, InferenceMap> getProtocols(Job job);
+    Map<Protocol, InferenceMap> getProtocols(JobRecord job);
 
     /**
      * Answer the matched list of inferred protocols for a job, given the meta
@@ -376,20 +386,20 @@ public interface JobModel {
      *         the meta protocol. The list is a Tuple of protocols, and a
      *         boolean map indicating which field was inferred in the protocol.
      */
-    Map<Protocol, InferenceMap> getProtocols(Job job,
+    Map<Protocol, InferenceMap> getProtocols(JobRecord job,
                                              MetaProtocol metaprotocol);
 
     /**
      * @param service
      * @return The list of protocol mappings for a service.
      */
-    List<Protocol> getProtocolsFor(Product service);
+    List<Protocol> getProtocolsFor(ExistentialRecord service);
 
     /**
      * @param job
      * @return
      */
-    List<SelfSequencingAuthorization> getSelfActions(Job job);
+    List<SelfSequencingAuthorization> getSelfActions(JobRecord job);
 
     /**
      * Answer the list of sibling actions for the job
@@ -397,19 +407,19 @@ public interface JobModel {
      * @param job
      * @return the list of sibling actions for the job
      */
-    List<SiblingSequencingAuthorization> getSiblingActions(Job job);
+    List<SiblingSequencingAuthorization> getSiblingActions(JobRecord job);
 
     /**
      * @param node
      * @return
      */
-    List<SiblingSequencingAuthorization> getSiblingActions(Product node);
+    List<SiblingSequencingAuthorization> getSiblingActions(ExistentialRecord node);
 
     /**
      * @param service
      * @return
      */
-    List<StatusCodeSequencing> getStatusCodeSequencingsFor(Product service);
+    List<StatusCodeSequencing> getStatusCodeSequencingsFor(ExistentialRecord service);
 
     /**
      * Answer the collection of status codes for a service
@@ -417,7 +427,7 @@ public interface JobModel {
      * @param service
      * @return the collection of status codes for a service
      */
-    Collection<StatusCode> getStatusCodesFor(Product service);
+    Collection<ExistentialRecord> getStatusCodesFor(ExistentialRecord service);
 
     /**
      * Answer the list of terminal states for the supplied job
@@ -426,12 +436,12 @@ public interface JobModel {
      * @return
      */
 
-    List<StatusCode> getTerminalStates(Job job);
+    List<ExistentialRecord> getTerminalStates(JobRecord job);
 
     /**
      * @return the list of jobs that have no parent
      */
-    List<Job> getTopLevelJobs();
+    List<JobRecord> getTopLevelJobs();
 
     /**
      * answer the list of jobs with children assigned to an agency
@@ -439,7 +449,7 @@ public interface JobModel {
      * @param agency
      * @return
      */
-    List<Job> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency);
+    List<JobRecord> getTopLevelJobsWithSubJobsAssignedToAgency(ExistentialRecord agency);
 
     /**
      * Answer the list of siblings of a service that have the unset status
@@ -450,7 +460,8 @@ public interface JobModel {
      *            - the service
      * @return the list of siblings of a service that have the unset status
      */
-    List<Job> getUnsetSiblings(Job parent, Product service);
+    List<JobRecord> getUnsetSiblings(JobRecord parent,
+                                     ExistentialRecord service);
 
     /**
      * Answer true if the job has active siblings, false otherwise
@@ -458,7 +469,7 @@ public interface JobModel {
      * @param job
      * @return true if the job has active siblings, false otherwise
      */
-    boolean hasActiveSiblings(Job job);
+    boolean hasActiveSiblings(JobRecord job);
 
     /**
      * Answer true if the service has an initial state, false otherwise
@@ -466,7 +477,7 @@ public interface JobModel {
      * @param service
      * @return true if the service has an initial state, false otherwise
      */
-    boolean hasInitialState(Product service);
+    boolean hasInitialState(ExistentialRecord service);
 
     /**
      * Answer true if the service's status graph has terminal strongly connected
@@ -477,7 +488,7 @@ public interface JobModel {
      *         connected components
      * @throws SQLException
      */
-    boolean hasNonTerminalSCCs(Product service) throws SQLException;
+    boolean hasNonTerminalSCCs(ExistentialRecord service) throws SQLException;
 
     /**
      * Answer true if the service's status graph has strongly connected
@@ -487,7 +498,7 @@ public interface JobModel {
      * @return true if the service's status graph has strongly connected
      *         components
      */
-    boolean hasScs(Product service);
+    boolean hasScs(ExistentialRecord service);
 
     /**
      * Insert a new job
@@ -496,13 +507,13 @@ public interface JobModel {
      * @param protocol
      * @return
      */
-    List<Job> insert(Job parent, Protocol protocol);
+    List<JobRecord> insert(JobRecord parent, Protocol protocol);
 
     /**
      * @param job
      * @return true if the job is in a non terminal state
      */
-    boolean isActive(Job job);
+    boolean isActive(JobRecord job);
 
     /**
      * Answer true if the status code is the terminal state for the event
@@ -512,7 +523,7 @@ public interface JobModel {
      * @return true, if the status code is the terminal state for the event,
      *         false otherwise
      */
-    boolean isTerminalState(StatusCode sc, Product service);
+    boolean isTerminalState(ExistentialRecord sc, ExistentialRecord service);
 
     /**
      * Log the status change of a job at the timestamp
@@ -520,7 +531,7 @@ public interface JobModel {
      * @param job
      * @param notes
      */
-    void log(Job job, String notes);
+    void log(JobRecord job, String notes);
 
     /**
      * @param service
@@ -528,7 +539,8 @@ public interface JobModel {
      * @return a job in which every field has the appropriate NotApplicable
      *         ruleform. Status is set to UNSET
      */
-    Job newInitializedJob(Product service, Agency updatedBy);
+    JobRecord newInitializedJob(ExistentialRecord service,
+                                ExistentialRecord updatedBy);
 
     /**
      * @param service
@@ -536,7 +548,8 @@ public interface JobModel {
      * @return a metaprotocol in which every unspecified field is initialized to
      *         Same
      */
-    MetaProtocol newInitializedMetaProtocol(Product service, Agency updatedBy);
+    MetaProtocol newInitializedMetaProtocol(ExistentialRecord service,
+                                            ExistentialRecord updatedBy);
 
     /**
      * @param service
@@ -544,40 +557,41 @@ public interface JobModel {
      * @return a protocol in which every field has the appropriate NotApplicable
      *         ruleform.
      */
-    Protocol newInitializedProtocol(Product service, Agency updatedBy);
+    Protocol newInitializedProtocol(ExistentialRecord service,
+                                    ExistentialRecord updatedBy);
 
     /**
      * Process all the implicit status changes of the children of a job
      *
      * @param job
      */
-    void processChildSequencing(Job job);
+    void processChildSequencing(JobRecord job);
 
     /**
      * Process all the implicit status changes of a job
      *
      * @param job
      */
-    void processJobSequencing(Job job);
+    void processJobSequencing(JobRecord job);
 
     /**
      * Process all the implicit status changes of the parent of a job
      *
      * @param job
      */
-    void processParentSequencing(Job job);
+    void processParentSequencing(JobRecord job);
 
     /**
      * @param job
      */
-    void processSelfSequencing(Job job);
+    void processSelfSequencing(JobRecord job);
 
     /**
      * Process all the implicit status changes of the siblings of a job
      *
      * @param job
      */
-    void processSiblingSequencing(Job job);
+    void processSiblingSequencing(JobRecord job);
 
     /**
      * Validate that the status graph of the list of services have no loops that
@@ -586,6 +600,6 @@ public interface JobModel {
      * @param modifiedProducts
      * @throws SQLException
      */
-    void validateStateGraph(Collection<Product> modifiedProducts) throws SQLException;
+    void validateStateGraph(Collection<ExistentialRecord> modifiedProducts) throws SQLException;
 
 }

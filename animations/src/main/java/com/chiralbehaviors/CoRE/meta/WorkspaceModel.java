@@ -22,10 +22,9 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.List;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 
 /**
  * @author hhildebrand
@@ -41,20 +40,22 @@ public interface WorkspaceModel {
      * @param updatedBy
      * @return
      */
-    WorkspaceScope createWorkspace(Product definingProduct, Agency updatedBy);
+    WorkspaceScope createWorkspace(ExistentialRecord definingProduct,
+                                   ExistentialRecord updatedBy);
 
     void flush();
 
-    WorkspaceAuthorization get(Product definingProduct, String key);
+    WorkspaceAuthorizationRecord get(ExistentialRecord definingProduct,
+                                     String key);
 
-    List<WorkspaceAuthorization> getByType(Product definingProduct,
-                                           String type);
+    List<WorkspaceAuthorizationRecord> getByType(ExistentialRecord definingProduct,
+                                                 String type);
 
-    WorkspaceScope getScoped(Product definingProduct);
+    WorkspaceScope getScoped(ExistentialRecord definingProduct);
 
     WorkspaceScope getScoped(UUID definingProduct);
 
-    List<WorkspaceAuthorization> getWorkspace(Product definingProduct);
+    List<WorkspaceAuthorizationRecord> getWorkspace(ExistentialRecord definingProduct);
 
-    void unload(Product definingProduct);
+    void unload(ExistentialRecord definingProduct);
 }

@@ -44,7 +44,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.existential.Product;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
-import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
@@ -218,7 +218,7 @@ public class WorkspaceResource extends TransactionalResource {
             context.put(DEFINING_PRODUCT, Constants.ID);
             returned.put(Constants.CONTEXT, context);
             List<Map<String, Object>> facets = new ArrayList<>();
-            NetworkedModel<Product, ?, ?, ?> networkedModel = readOnlyModel.getProductModel();
+            ExistentialModel<Product, ?, ?, ?> networkedModel = readOnlyModel.getProductModel();
             for (Product definingProduct : networkedModel.getChildren(aspect.getClassification(),
                                                                       aspect.getClassifier()
                                                                             .getInverse())) {

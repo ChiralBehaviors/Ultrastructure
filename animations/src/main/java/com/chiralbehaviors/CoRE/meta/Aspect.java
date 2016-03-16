@@ -19,8 +19,7 @@
  */
 package com.chiralbehaviors.CoRE.meta;
 
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 
 /**
  * An Aspect is the classifier of an networked ruleform within a network. The
@@ -30,15 +29,16 @@ import com.chiralbehaviors.CoRE.existential.domain.Relationship;
  * @author hhildebrand
  *
  */
-public class Aspect<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
-    private final RuleForm     classification;
-    private final Relationship classifier;
+public class Aspect {
+    private final ExistentialRecord classification;
+    private final ExistentialRecord classifier;
 
     /**
      * @param classifier
      * @param classification
      */
-    public Aspect(Relationship classifier, RuleForm classification) {
+    public Aspect(ExistentialRecord classifier,
+                  ExistentialRecord classification) {
         this.classification = classification;
         this.classifier = classifier;
     }
@@ -54,29 +54,31 @@ public class Aspect<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
         if (!(obj instanceof Aspect)) {
             return false;
         }
-        Aspect<?> other = (Aspect<?>) obj;
+        Aspect other = (Aspect) obj;
         if (classification == null) {
             if (other.classification != null) {
                 return false;
             }
-        } else if (!classification.equals(other.classification)) {
+        } else if (!classification.getId()
+                                  .equals(other.classification.getId())) {
             return false;
         }
         if (classifier == null) {
             if (other.classifier != null) {
                 return false;
             }
-        } else if (!classifier.equals(other.classifier)) {
+        } else if (!classifier.getId()
+                              .equals(other.classifier.getId())) {
             return false;
         }
         return true;
     }
 
-    public RuleForm getClassification() {
+    public ExistentialRecord getClassification() {
         return classification;
     }
 
-    public Relationship getClassifier() {
+    public ExistentialRecord getClassifier() {
         return classifier;
     }
 
@@ -85,9 +87,10 @@ public class Aspect<RuleForm extends ExistentialRuleform<RuleForm, ?>> {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                 + ((classification == null) ? 0 : classification.hashCode());
-        result = prime * result
-                 + ((classifier == null) ? 0 : classifier.hashCode());
+                 + ((classification == null) ? 0 : classification.getId()
+                                                                 .hashCode());
+        result = prime * result + ((classifier == null) ? 0 : classifier.getId()
+                                                                        .hashCode());
         return result;
     }
 

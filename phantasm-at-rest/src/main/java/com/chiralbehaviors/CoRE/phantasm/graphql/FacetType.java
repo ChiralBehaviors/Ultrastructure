@@ -59,7 +59,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -719,7 +719,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                 InstanceMethod method, RuleForm instance,
                                 PhantasmCRUD<RuleForm, Network> crud) {
         Model model = crud.getModel();
-        NetworkedModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
+        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
         Relationship invoke = crud.getINVOKE();
         return networkedModel.checkCapability(method.getRuleform(), invoke)
                && crud.checkInvoke(facet, instance);

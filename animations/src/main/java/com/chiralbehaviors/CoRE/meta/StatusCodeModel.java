@@ -22,19 +22,14 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.Collection;
 import java.util.List;
 
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
-import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeAttribute;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
+import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 
 /**
  * @author hhildebrand
  *
  */
-public interface StatusCodeModel extends
-        NetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute> {
+public interface StatusCodeModel extends ExistentialModel {
 
     /**
      * Answer the unique status codes associated with a service
@@ -42,7 +37,7 @@ public interface StatusCodeModel extends
      * @param service
      * @return the unique status codes associated with a service
      */
-    Collection<StatusCode> getStatusCodes(Product service);
+    Collection<ExistentialRecord> getStatusCodes(ExistentialRecord service);
 
     /**
      * Answer the list of {@link #StatusCodeSequencing} that refer to a service
@@ -50,48 +45,48 @@ public interface StatusCodeModel extends
      * @param service
      * @return the list of {@link #StatusCodeSequencing} that refer to a service
      */
-    List<StatusCodeSequencing> getStatusCodeSequencing(Product service);
+    List<StatusCodeSequencing> getStatusCodeSequencing(ExistentialRecord service);
 
     /**
      * Answer the list of {@link #StatusCodeSequencing} that refer to the
-     * service with the child {@link #StatusCode}
+     * service with the child {@link #ExistentialRecord}
      *
      * @param service
      * @param child
      * @return
      */
-    List<StatusCodeSequencing> getStatusCodeSequencingChild(Product service,
-                                                            StatusCode child);
+    List<StatusCodeSequencing> getStatusCodeSequencingChild(ExistentialRecord service,
+                                                            ExistentialRecord child);
 
     /**
      * Answer the list of {@link #StatusCodeSequencing} that refer to the child
-     * {@link #StatusCode}
+     * {@link #ExistentialRecord}
      *
      * @param child
      * @return
      */
-    Collection<StatusCodeSequencing> getStatusCodeSequencingChild(StatusCode child);
+    Collection<StatusCodeSequencing> getStatusCodeSequencingChild(ExistentialRecord child);
 
     /**
      * Answer the list of {@link #StatusCodeSequencing} that refer to the
-     * service with the parent {@link #StatusCode}
+     * service with the parent {@link #ExistentialRecord}
      *
      * @param service
      * @param parent
      * @return the list of {@link #StatusCodeSequencing} that refer to the
-     *         service with the parent {@link #StatusCode}
+     *         service with the parent {@link #ExistentialRecord}
      */
-    List<StatusCodeSequencing> getStatusCodeSequencingParent(Product service,
-                                                             StatusCode parent);
+    List<StatusCodeSequencing> getStatusCodeSequencingParent(ExistentialRecord service,
+                                                             ExistentialRecord parent);
 
     /**
      * Answer the list of {@link #StatusCodeSequencing} that refer to the parent
-     * {@link #StatusCode}
+     * {@link #ExistentialRecord}
      *
      * @param service
      * @return the list of {@link #StatusCodeSequencing} that refer to the
-     *         service with the parent {@link #StatusCode}
+     *         service with the parent {@link #ExistentialRecord}
      */
-    List<StatusCodeSequencing> getStatusCodeSequencingParent(StatusCode parent);
+    List<StatusCodeSequencing> getStatusCodeSequencingParent(ExistentialRecord parent);
 
 }

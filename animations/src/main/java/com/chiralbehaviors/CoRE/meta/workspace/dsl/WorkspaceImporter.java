@@ -70,7 +70,7 @@ import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -658,7 +658,7 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
-    private void defineFacetClassificationss(@SuppressWarnings("rawtypes") NetworkedModel networkedModel,
+    private void defineFacetClassificationss(@SuppressWarnings("rawtypes") ExistentialModel networkedModel,
                                              List<FacetContext> facets) {
         for (FacetContext facet : facets) {
             if (facet.classification.namespace == null) {
@@ -871,7 +871,7 @@ public class WorkspaceImporter {
     }
 
     private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void loadNetworks(List<EdgeContext> edges,
-                                                                                                              NetworkedModel<T, ?, ?, ?> networkedModel) {
+                                                                                                              ExistentialModel<T, ?, ?, ?> networkedModel) {
         for (EdgeContext edge : edges) {
             networkedModel.initialize(resolve(edge.parent),
                                       new Aspect<T>(resolve(edge.relationship),

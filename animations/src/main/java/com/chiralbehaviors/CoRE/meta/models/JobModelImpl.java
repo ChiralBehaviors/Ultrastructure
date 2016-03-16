@@ -78,7 +78,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform_;
 import com.chiralbehaviors.CoRE.product.ProductNetwork;
@@ -1370,7 +1370,7 @@ public class JobModelImpl implements JobModel {
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>> boolean pathExists(RuleForm rf,
                                                                                                                                                                                                                                                      Relationship mpRelationship,
                                                                                                                                                                                                                                                      RuleForm child,
-                                                                                                                                                                                                                                                     NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> netModel) {
+                                                                                                                                                                                                                                                     ExistentialModel<RuleForm, Network, AttributeAuth, AttributeType> netModel) {
         if (mpRelationship.isAnyOrSame() || mpRelationship.isNotApplicable()) {
             return true;
         }

@@ -80,7 +80,7 @@ import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.network.NetworkAttribute;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
@@ -96,7 +96,7 @@ import com.hellblazer.utils.Tuple;
  */
 abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>>
         implements
-        NetworkedModel<RuleForm, Network, AttributeAuth, AttributeType> {
+        ExistentialModel<RuleForm, Network, AttributeAuth, AttributeType> {
 
     private static final String                      CHECK_CAP      = ".checkCap";
     private static Logger                            log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);

@@ -33,7 +33,7 @@ import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -85,7 +85,7 @@ public class TransactionalResource {
 
     protected <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(UUID classifier,
                                                                                              UUID classification,
-                                                                                             NetworkedModel<RuleForm, ?, ?, ?> networkedModel) {
+                                                                                             ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
         try {
             return networkedModel.getAspect(classifier, classification);
         } catch (IllegalArgumentException e) {

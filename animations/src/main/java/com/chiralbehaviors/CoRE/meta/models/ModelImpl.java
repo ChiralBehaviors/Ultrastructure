@@ -61,7 +61,7 @@ import com.chiralbehaviors.CoRE.meta.IntervalModel;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.LocationModel;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.NetworkedModel;
+import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.ProductModel;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
@@ -454,26 +454,26 @@ public class ModelImpl implements Model {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> NetworkedModel<RuleForm, Network, ?, ?> getNetworkedModel(ExistentialRuleform<RuleForm, Network> ruleform) {
+    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> ExistentialModel<RuleForm, Network, ?, ?> getNetworkedModel(ExistentialRuleform<RuleForm, Network> ruleform) {
         ExistentialRuleform<RuleForm, Network> unproxied = Ruleform.initializeAndUnproxy(ruleform);
         switch (unproxied.getClass()
                          .getSimpleName()) {
             case "Agency":
-                return (NetworkedModel<RuleForm, Network, ?, ?>) getAgencyModel();
+                return (ExistentialModel<RuleForm, Network, ?, ?>) getAgencyModel();
             case "Attribute":
-                return (NetworkedModel<RuleForm, Network, ?, ?>) getAttributeModel();
+                return (ExistentialModel<RuleForm, Network, ?, ?>) getAttributeModel();
             case "Interval":
-                return (NetworkedModel<RuleForm, Network, ?, ?>) getIntervalModel();
+                return (ExistentialModel<RuleForm, Network, ?, ?>) getIntervalModel();
             case "Location":
-                return (NetworkedModel<RuleForm, Network, ?, ?>) getLocationModel();
+                return (ExistentialModel<RuleForm, Network, ?, ?>) getLocationModel();
             case "Product":
-                return (NetworkedModel<RuleForm, Network, ?, ?>) getProductModel();
+                return (ExistentialModel<RuleForm, Network, ?, ?>) getProductModel();
             case "Relationship":
-                return (NetworkedModel<RuleForm, Network, ?, ?>) getRelationshipModel();
+                return (ExistentialModel<RuleForm, Network, ?, ?>) getRelationshipModel();
             case "StatusCode":
-                return (NetworkedModel<RuleForm, Network, ?, ?>) getStatusCodeModel();
+                return (ExistentialModel<RuleForm, Network, ?, ?>) getStatusCodeModel();
             case "Unit":
-                return (NetworkedModel<RuleForm, Network, ?, ?>) getUnitModel();
+                return (ExistentialModel<RuleForm, Network, ?, ?>) getUnitModel();
             default:
                 throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
                                                                  unproxied.getClass()));
@@ -512,7 +512,7 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#getUnknownNetworkedModel(com.chiralbehaviors.CoRE.ExistentialRuleform)
      */
     @Override
-    public <RuleForm extends ExistentialRuleform<?, ?>> NetworkedModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform) {
+    public <RuleForm extends ExistentialRuleform<?, ?>> ExistentialModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform) {
         RuleForm unproxied = Ruleform.initializeAndUnproxy(ruleform);
         switch (unproxied.getClass()
                          .getSimpleName()) {

@@ -33,6 +33,10 @@ public class AnyFacet implements Facet {
 
     private final Class<?> ruleform;
 
+    public AnyFacet() {
+        ruleform = null;
+    }
+
     public AnyFacet(Class<?> ruleform) {
         this.ruleform = ruleform;
     }

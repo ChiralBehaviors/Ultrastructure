@@ -29,6 +29,14 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
  *
  */
 public interface Facet {
+    Facet ANY_AGENCY       = new AnyFacet();
+    Facet ANY_ATTRIBUTE    = new AnyFacet();
+    Facet ANY_INTERVAL     = new AnyFacet();
+    Facet ANY_LOCATION     = new AnyFacet();
+    Facet ANY_PRODUCT      = new AnyFacet();
+    Facet ANY_RELATIONSHIP = new AnyFacet();
+    Facet ANY_STATUS_CODE  = new AnyFacet();
+    Facet ANY_UNIT         = new AnyFacet();
 
     ScopedName getClassification();
 

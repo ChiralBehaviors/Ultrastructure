@@ -215,28 +215,27 @@ public class FacetImpl implements Facet {
      * @return
      */
     private Facet resolveAnyFacet(Token anyType) {
-        //        switch (anyType.getText()) {
-        //            case "*Agency":
-        //                return ANY_AGENCY;
-        //            case "*Attribute":
-        //                return ANY_ATTRIBUTE;
-        //            case "*Interval":
-        //                return ANY_INTERVAL;
-        //            case "*Location":
-        //                return ANY_LOCATION;
-        //            case "*Product":
-        //                return ANY_PRODUCT;
-        //            case "*Relationship":
-        //                return ANY_RELATIONSHIP;
-        //            case "*StatusCode":
-        //                return ANY_STATUS_CODE;
-        //            case "*Unit":
-        //                return ANY_UNIT;
-        //            default:
-        //                throw new IllegalArgumentException(String.format("%s is not a valid *Any",
-        //                                                                 anyType.getText()));
-        //        }
-        return null;
+        switch (anyType.getText()) {
+            case "*Agency":
+                return ANY_AGENCY;
+            case "*Attribute":
+                return ANY_ATTRIBUTE;
+            case "*Interval":
+                return ANY_INTERVAL;
+            case "*Location":
+                return ANY_LOCATION;
+            case "*Product":
+                return ANY_PRODUCT;
+            case "*Relationship":
+                return ANY_RELATIONSHIP;
+            case "*StatusCode":
+                return ANY_STATUS_CODE;
+            case "*Unit":
+                return ANY_UNIT;
+            default:
+                throw new IllegalArgumentException(String.format("%s is not a valid *Any",
+                                                                 anyType.getText()));
+        }
     }
 
     private void resolveAttributes(Map<ScopedName, MappedAttribute> mapped) {

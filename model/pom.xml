@@ -198,9 +198,6 @@
                                 <password>${db.password}</password>
                             </jdbc>
                             <generator>
-                                <generate>
-                                    <daos>true</daos>
-                                </generate>
                                 <database>
                                     <name>org.jooq.util.postgres.PostgresDatabase</name>
                                     <includes>.*</includes>

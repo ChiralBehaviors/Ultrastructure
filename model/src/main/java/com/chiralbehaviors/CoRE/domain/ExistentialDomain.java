@@ -20,10 +20,12 @@
 
 package com.chiralbehaviors.CoRE.domain;
 
+import java.util.UUID;
+
 /**
  * @author hhildebrand
  *
  */
 public interface ExistentialDomain {
-
+    UUID getId();
 }

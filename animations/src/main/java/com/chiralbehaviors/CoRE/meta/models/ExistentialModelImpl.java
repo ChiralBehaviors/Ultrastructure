@@ -20,6 +20,12 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL_GROUPING;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,6 +47,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +57,10 @@ import com.chiralbehaviors.CoRE.domain.ExistentialDomain;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistentialGrouping;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
@@ -69,21 +80,22 @@ import com.hellblazer.utils.Tuple;
 abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
         implements ExistentialModel<RuleForm> {
 
-    private static final String     CHECK_CAP      = ".checkCap";
-    private static Logger           log            = LoggerFactory.getLogger(ExistentialModelImpl.class);
-    private static int              MAX_DEDUCTIONS = 1000;
-    private static final Long       ZERO           = Long.valueOf(0);
+    private static final String   CHECK_CAP      = ".checkCap";
+    private static Logger         log            = LoggerFactory.getLogger(ExistentialModelImpl.class);
+    private static int            MAX_DEDUCTIONS = 1000;
+    private static final Long     ZERO           = Long.valueOf(0);
 
-    protected final EntityManager   em;
-    protected final Class<RuleForm> entity;
-    protected final Kernel          kernel;
-    protected final Model           model;
+    protected final EntityManager em;
+    protected final Kernel        kernel;
+    protected final Model         model;
+    protected final DSLContext    create;
 
     @SuppressWarnings("unchecked")
-    public ExistentialModelImpl(Model model) {
+    public ExistentialModelImpl(Model model, DSLContext create) {
         this.model = model;
         this.em = model.getEntityManager();
         this.kernel = model.getKernel();
+        this.create = create;
     }
 
     @Override
@@ -132,15 +144,22 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
     public boolean checkCapability(List<Agency> agencies,
                                    ExistentialAttributeAuthorizationRecord stateAuth,
                                    Relationship capability) {
-        TypedQuery<Long> query = em.createNamedQuery(prefix
-                                                     + CHECK_ATTRIBUTE_CAP_SUFFIX,
-                                                     Long.class);
-        query.setParameter("facet", stateAuth.getNetworkAuthorization());
-        query.setParameter("attribute", stateAuth.getAuthorizedAttribute());
-        query.setParameter("agencies", agencies);
-        query.setParameter("capability", capability);
-        return query.getSingleResult()
-                    .equals(ZERO);
+        ExistentialAttributeAuthorization required = EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("required");
+        return create.selectCount()
+                     .from(required)
+                     .where(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNotNull())
+                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(stateAuth.getNetworkAuthorization()))
+                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(stateAuth.getAuthorizedAttribute()))
+                     .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
+                                         .from(EXISTENTIAL_NETWORK)
+                                         .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
+                                                                                      .map(a -> a.getId())
+                                                                                      .collect(Collectors.toList())))
+                                         .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                         .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
+                     .fetchOne()
+                     .value1() == 0;
+
     }
 
     /**
@@ -149,14 +168,19 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
     @Override
     public boolean checkCapability(List<Agency> agencies, RuleForm instance,
                                    Relationship capability) {
-        TypedQuery<Long> query = em.createNamedQuery(prefix
-                                                     + CHECK_INSTANCE_CAP_SUFFIX,
-                                                     Long.class);
-        query.setParameter("instance", instance);
-        query.setParameter("agencies", agencies);
-        query.setParameter("capability", capability);
-        return query.getSingleResult()
-                    .equals(ZERO);
+        AgencyExistentialGrouping required = AGENCY_EXISTENTIAL_GROUPING.as("required");
+        return create.selectCount()
+                     .from(required)
+                     .where(required.ENTITY.equal(instance.getId()))
+                     .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK.AUTHORITY))
+                                         .from(EXISTENTIAL_NETWORK)
+                                         .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
+                                                                                      .map(a -> a.getId())
+                                                                                      .collect(Collectors.toList())))
+                                         .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                         .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
+                     .fetchOne()
+                     .value1() == 0;
     }
 
     /**
@@ -167,20 +191,24 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
     public boolean checkCapability(List<Agency> agencies,
                                    ExistentialNetworkAuthorizationRecord stateAuth,
                                    Relationship capability) {
-        TypedQuery<Long> query = em.createNamedQuery(prefix
-                                                     + CHECK_CHILD_CAP_SUFFIX,
-                                                     Long.class);
-        query.setParameter("classifier", stateAuth.getClassifier());
-        query.setParameter("classification", stateAuth.getClassification());
-        query.setParameter("childRelationship",
-                           stateAuth.getChildRelationship());
-        query.setParameter("authorizedRelationship",
-                           stateAuth.getAuthorizedRelationship());
-        query.setParameter("authorizedParent", stateAuth.getAuthorizedParent());
-        query.setParameter("agencies", agencies);
-        query.setParameter("capability", capability);
-        return query.getSingleResult()
-                    .equals(ZERO);
+        ExistentialNetworkAuthorization required = EXISTENTIAL_NETWORK_AUTHORIZATION.as("required");
+        return create.selectCount()
+                     .from(required)
+                     .where(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNotNull())
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.equal(stateAuth.getClassifier()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.equal(stateAuth.getClassification()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD_RELATIONSHIP.equal(stateAuth.getChildRelationship()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_RELATIONSHIP.equal(stateAuth.getAuthorizedRelationship()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.equal(stateAuth.getAuthorizedParent()))
+                     .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
+                                         .from(EXISTENTIAL_NETWORK)
+                                         .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
+                                                                                      .map(a -> a.getId())
+                                                                                      .collect(Collectors.toList())))
+                                         .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                         .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
+                     .fetchOne()
+                     .value1() == 0;
     }
 
     @Override
@@ -198,15 +226,24 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
     public boolean checkFacetCapability(List<Agency> agencies,
                                         ExistentialNetworkAuthorizationRecord facet,
                                         Relationship capability) {
-        TypedQuery<Long> query = em.createNamedQuery(prefix
-                                                     + CHECK_FACET_CAP_SUFFIX,
-                                                     Long.class);
-        query.setParameter("classifier", facet.getClassifier());
-        query.setParameter("classification", facet.getClassification());
-        query.setParameter("agencies", agencies);
-        query.setParameter("capability", capability);
-        return query.getSingleResult()
-                    .equals(ZERO);
+        ExistentialNetworkAuthorization required = EXISTENTIAL_NETWORK_AUTHORIZATION.as("required");
+        return create.selectCount()
+                     .from(required)
+                     .where(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNotNull())
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.equal(facet.getClassifier()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.equal(facet.getClassification()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD_RELATIONSHIP.isNull())
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_RELATIONSHIP.isNull())
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.isNull())
+                     .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
+                                         .from(EXISTENTIAL_NETWORK)
+                                         .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
+                                                                                      .map(a -> a.getId())
+                                                                                      .collect(Collectors.toList())))
+                                         .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                         .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
+                     .fetchOne()
+                     .value1() == 0;
     }
 
     @Override
@@ -233,16 +270,21 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
     public boolean checkNetworkCapability(List<Agency> agencies,
                                           ExistentialAttributeAuthorizationRecord stateAuth,
                                           Relationship capability) {
-        TypedQuery<Long> query = em.createNamedQuery(prefix
-                                                     + CHECK_NETWORK_ATTRIBUTE_CAP_SUFFIX,
-                                                     Long.class);
-        query.setParameter("auth", stateAuth.getNetworkAuthorization());
-        query.setParameter("attribute",
-                           stateAuth.getAuthorizedNetworkAttribute());
-        query.setParameter("agencies", agencies);
-        query.setParameter("capability", capability);
-        return query.getSingleResult()
-                    .equals(ZERO);
+        ExistentialNetworkAttributeAuthorization required = EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.as("required");
+        return create.selectCount()
+                     .from(required)
+                     .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNotNull())
+                     .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(stateAuth.getNetworkAuthorization()))
+                     .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(stateAuth.getAuthorizedAttribute()))
+                     .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
+                                         .from(EXISTENTIAL_NETWORK)
+                                         .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
+                                                                                      .map(a -> a.getId())
+                                                                                      .collect(Collectors.toList())))
+                                         .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                         .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
+                     .fetchOne()
+                     .value1() == 0;
     }
 
     @Override

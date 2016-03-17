@@ -31,7 +31,8 @@ import java.io.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;
@@ -43,7 +44,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class WorkspaceSnapshotTest extends DatabaseTest {
 
-    private ExistentialRecord core;
+    private Agency core;
 
     @Before
     public void setupCore() {
@@ -56,13 +57,12 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
 
     @Test
     public void testSerializeWorkspaceSnapshot() throws Exception {
-        ExistentialRecord pseudoScientist = RECORDS.newAgency(create,
-                                                              "Behold the Pseudo Scientist!",
-                                                              core);
+        Agency pseudoScientist = RECORDS.newAgency(create,
+                                                   "Behold the Pseudo Scientist!",
+                                                   core);
         pseudoScientist.insert();
-        ExistentialRecord definingProduct = RECORDS.newProduct(create,
-                                                               "zee product",
-                                                               pseudoScientist);
+        Product definingProduct = RECORDS.newProduct(create, "zee product",
+                                                     pseudoScientist);
         definingProduct.insert();
         WorkspaceAuthorizationRecord auth;
         auth = RECORDS.newWorkspaceAuthorization(create, definingProduct,

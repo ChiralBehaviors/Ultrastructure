@@ -41,7 +41,7 @@ import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
  *
  */
 public class IntervalModelImpl extends
-        AbstractNetworkedModel<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
+        ExistentialModelImpl<Interval, IntervalNetwork, IntervalAttributeAuthorization, IntervalAttribute>
         implements IntervalModel {
 
     /**

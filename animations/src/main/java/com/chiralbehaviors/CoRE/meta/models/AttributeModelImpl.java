@@ -43,7 +43,7 @@ import com.chiralbehaviors.CoRE.security.AgencyAttributeGrouping;
  *
  */
 public class AttributeModelImpl extends
-        AbstractNetworkedModel<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
+        ExistentialModelImpl<Attribute, AttributeNetwork, AttributeMetaAttributeAuthorization, AttributeMetaAttribute>
         implements AttributeModel {
 
     public static final String HTTP_WWW_W3_ORG_2001_XML_SCHEMA_BINARY    = "http://www.w3.org/2001/XMLSchema#binary";

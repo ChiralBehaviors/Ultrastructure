@@ -28,6 +28,13 @@ import java.util.concurrent.Callable;
 
 import javax.persistence.EntityManager;
 
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -163,12 +170,12 @@ public interface Model extends AutoCloseable {
     /**
      * @return the Agency model
      */
-    ExistentialModel getAgencyModel();
+    ExistentialModel<Agency> getAgencyModel();
 
     /**
      * @return the Attribute model
      */
-    ExistentialModel getAttributeModel();
+    ExistentialModel<Attribute> getAttributeModel();
 
     /**
      * @return the agency that represents this instance of the CoRE
@@ -191,7 +198,7 @@ public interface Model extends AutoCloseable {
     /**
      * @return the Interval model
      */
-    ExistentialModel getIntervalModel();
+    ExistentialModel<Interval> getIntervalModel();
 
     /**
      * @return the Job Model
@@ -208,17 +215,17 @@ public interface Model extends AutoCloseable {
     /**
      * @return the Location model
      */
-    ExistentialModel getLocationModel();
+    ExistentialModel<Location> getLocationModel();
 
     /**
      * @return the Product model
      */
-    ExistentialModel getProductModel();
+    ExistentialModel<Product> getProductModel();
 
     /**
      * @return the Relationship model
      */
-    ExistentialModel getRelationshipModel();
+    ExistentialModel<Relationship> getRelationshipModel();
 
     /**
      * @return the StatusCode model
@@ -228,7 +235,7 @@ public interface Model extends AutoCloseable {
     /**
      * @return the UnitCode model
      */
-    ExistentialModel getUnitModel();
+    ExistentialModel<Unit> getUnitModel();
 
     /**
      * @return the UnitCode model

@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 
 /**
  * Represents the Agency and the authorized active aspects the principal has
@@ -36,15 +36,16 @@ import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
  *
  */
 public class AuthorizedPrincipal implements Cloneable {
-    private final List<AgencyNetworkAuthorization> asserted;
-    private final List<Agency>                     capabilities;
-    private final Agency                           principal;
+    private final List<ExistentialNetworkAuthorizationRecord> asserted;
+    private final List<Agency>                                capabilities;
+    private final Agency                                      principal;
 
     /**
      * @param principal
      */
     public AuthorizedPrincipal(Agency principal) {
-        this(principal, Collections.<AgencyNetworkAuthorization> emptyList());
+        this(principal,
+             Collections.<ExistentialNetworkAuthorizationRecord> emptyList());
     }
 
     /**
@@ -52,16 +53,16 @@ public class AuthorizedPrincipal implements Cloneable {
      * @param asserted
      */
     public AuthorizedPrincipal(Agency principal,
-                               List<AgencyNetworkAuthorization> asserted) {
+                               List<ExistentialNetworkAuthorizationRecord> asserted) {
         this.principal = principal;
         this.asserted = new ArrayList<>(asserted);
         capabilities = this.asserted.stream()
-                                       .map(auth -> auth.getClassification())
-                                       .collect(Collectors.toList());
+                                    .map(auth -> auth.getClassification())
+                                    .collect(Collectors.toList());
         capabilities.add(0, this.principal);
     }
 
-    public List<AgencyNetworkAuthorization> getAsserted() {
+    public List<ExistentialNetworkAuthorizationRecord> getAsserted() {
         return asserted;
     }
 

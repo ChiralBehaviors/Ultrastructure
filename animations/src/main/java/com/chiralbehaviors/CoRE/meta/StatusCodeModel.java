@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.Collection;
 import java.util.List;
 
+import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 
@@ -29,7 +30,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
  * @author hhildebrand
  *
  */
-public interface StatusCodeModel extends ExistentialModel {
+public interface StatusCodeModel extends ExistentialModel<StatusCode> {
 
     /**
      * Answer the unique status codes associated with a service

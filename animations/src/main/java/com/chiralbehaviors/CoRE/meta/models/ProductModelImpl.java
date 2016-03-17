@@ -63,7 +63,7 @@ import com.chiralbehaviors.CoRE.security.AgencyProductGrouping;
  *
  */
 public class ProductModelImpl extends
-        AbstractNetworkedModel<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute>
+        ExistentialModelImpl<Product, ProductNetwork, ProductAttributeAuthorization, ProductAttribute>
         implements ProductModel {
 
     /**

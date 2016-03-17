@@ -20,26 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.CHECK_ATTRIBUTE_CAP_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.CHECK_CHILD_CAP_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.CHECK_FACET_CAP_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.CHECK_INSTANCE_CAP_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.CHECK_NETWORK_ATTRIBUTE_CAP_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.DEDUCE_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.GENERATE_NETWORK_INVERSES_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.GET_CHILDREN_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.INFERENCE_STEP_FROM_LAST_PASS_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.INFERENCE_STEP_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.INSERT_NEW_NETWORK_RULES_SUFFIX;
-import static com.chiralbehaviors.CoRE.existential.ExistentialRuleform.USED_RELATIONSHIPS_SUFFIX;
-
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,73 +44,51 @@ import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.Ruleform_;
-import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization_;
-import com.chiralbehaviors.CoRE.attribute.XDomainAttrbuteAuthorization;
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.existential.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Attribute;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.existential.domain.Location;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialDomain;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.tables.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ExistentialModel;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
-import com.chiralbehaviors.CoRE.network.NetworkAttribute;
-import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
  *
  */
-abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>>
-        implements
-        ExistentialModel<RuleForm, Network, AttributeAuth, AttributeType> {
+abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
+        implements ExistentialModel<RuleForm> {
 
-    private static final String                      CHECK_CAP      = ".checkCap";
-    private static Logger                            log            = LoggerFactory.getLogger(AbstractNetworkedModel.class);
-    private static int                               MAX_DEDUCTIONS = 1000;
-    private static final Long                        ZERO           = Long.valueOf(0);
+    private static final String     CHECK_CAP      = ".checkCap";
+    private static Logger           log            = LoggerFactory.getLogger(ExistentialModelImpl.class);
+    private static int              MAX_DEDUCTIONS = 1000;
+    private static final Long       ZERO           = Long.valueOf(0);
 
-    protected final Class<AttributeType>             attribute;
-    protected final String                           attributePrefix;
-    protected final Class<AttributeAuth>             authorization;
-    protected final EntityManager                    em;
-    protected final Class<RuleForm>                  entity;
-    protected final Kernel                           kernel;
-    protected final Model                            model;
-    protected final Class<NetworkRuleform<RuleForm>> network;
-    protected final String                           networkPrefix;
-    protected final String                           prefix;
+    protected final EntityManager   em;
+    protected final Class<RuleForm> entity;
+    protected final Kernel          kernel;
+    protected final Model           model;
 
     @SuppressWarnings("unchecked")
-    public AbstractNetworkedModel(Model model) {
+    public ExistentialModelImpl(Model model) {
         this.model = model;
         this.em = model.getEntityManager();
         this.kernel = model.getKernel();
-        entity = extractedEntity();
-        authorization = extractedAuthorization();
-        attribute = extractedAttribute();
-        network = (Class<NetworkRuleform<RuleForm>>) extractedNetwork();
-        prefix = ModelImpl.prefixFor(entity);
-        networkPrefix = ModelImpl.prefixFor(network);
-        attributePrefix = ModelImpl.prefixFor(attribute);
     }
 
     @Override
     public void authorize(RuleForm ruleform, Relationship relationship,
-                          Agency authorized) {
+                          ExistentialDomain authorized) {
         throw new UnsupportedOperationException(String.format("Authorizations between %s and Agency are not defined",
                                                               ruleform.getClass()
                                                                       .getSimpleName()));
@@ -138,95 +96,22 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     @Override
     public void authorize(RuleForm ruleform, Relationship relationship,
-                          Location authorized) {
-        throw new UnsupportedOperationException(String.format("Authorizations between %s and Location are not defined",
-                                                              ruleform.getClass()
-                                                                      .getSimpleName()));
-    }
-
-    @Override
-    public void authorize(RuleForm ruleform, Relationship relationship,
-                          Product authorized) {
-        throw new UnsupportedOperationException(String.format("Authorizations between %s and Product are not defined",
-                                                              ruleform.getClass()
-                                                                      .getSimpleName()));
-    }
-
-    @Override
-    public void authorize(RuleForm ruleform, Relationship relationship,
-                          Relationship authorized) {
-        throw new UnsupportedOperationException(String.format("Authorizations between %s and Relationship are not defined",
-                                                              ruleform.getClass()
-                                                                      .getSimpleName()));
-    }
-
-    @Override
-    public void authorizeAgencies(RuleForm ruleform, Relationship relationship,
-                                  List<Agency> authorized) {
-        for (Agency agency : authorized) {
+                          List<ExistentialDomain> authorized) {
+        for (ExistentialDomain agency : authorized) {
             authorize(ruleform, relationship, agency);
         }
     }
 
     @Override
-    public void authorizeLocations(RuleForm ruleform, Relationship relationship,
-                                   List<Location> authorized) {
-        for (Location location : authorized) {
-            authorize(ruleform, relationship, location);
-        }
-    }
-
-    @Override
-    public void authorizeProducts(RuleForm ruleform, Relationship relationship,
-                                  List<Product> authorized) {
-        for (Product product : authorized) {
-            authorize(ruleform, relationship, product);
-        }
-    }
-
-    @Override
-    public void authorizeRelationships(RuleForm ruleform,
-                                       Relationship relationship,
-                                       List<Relationship> authorized) {
-        for (Relationship auth : authorized) {
-            authorize(ruleform, relationship, auth);
-        }
-    }
-
-    @Override
     public void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                                  Agency authorized) {
+                                  ExistentialDomain authorized) {
         deauthorize(ruleform, relationship,
                     getAuthorizedAgency(ruleform, relationship));
         authorize(ruleform, relationship, authorized);
     }
 
     @Override
-    public void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                                  Location authorized) {
-        deauthorize(ruleform, relationship,
-                    getAuthorizedLocation(ruleform, relationship));
-        authorize(ruleform, relationship, authorized);
-    }
-
-    @Override
-    public void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                                  Product authorized) {
-        deauthorize(ruleform, relationship,
-                    getAuthorizedProduct(ruleform, relationship));
-        authorize(ruleform, relationship, authorized);
-    }
-
-    @Override
-    public void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                                  Relationship authorized) {
-        deauthorize(ruleform, relationship,
-                    getAuthorizedRelationship(ruleform, relationship));
-        authorize(ruleform, relationship, authorized);
-    }
-
-    @Override
-    public boolean checkCapability(AttributeAuthorization<RuleForm, ?> stateAuth,
+    public boolean checkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
                                    Relationship capability) {
         return checkCapability(model.getCurrentPrincipal()
                                     .getCapabilities(),
@@ -234,8 +119,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public boolean checkCapability(ExistentialRuleform<?, ?> instance,
-                                   Relationship capability) {
+    public boolean checkCapability(RuleForm instance, Relationship capability) {
         return checkCapability(model.getCurrentPrincipal()
                                     .getCapabilities(),
                                instance, capability);
@@ -246,7 +130,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     @Override
     public boolean checkCapability(List<Agency> agencies,
-                                   AttributeAuthorization<RuleForm, ?> stateAuth,
+                                   ExistentialAttributeAuthorizationRecord stateAuth,
                                    Relationship capability) {
         TypedQuery<Long> query = em.createNamedQuery(prefix
                                                      + CHECK_ATTRIBUTE_CAP_SUFFIX,
@@ -263,8 +147,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * Check the capability of an agency on an instance.
      */
     @Override
-    public boolean checkCapability(List<Agency> agencies,
-                                   ExistentialRuleform<?, ?> instance,
+    public boolean checkCapability(List<Agency> agencies, RuleForm instance,
                                    Relationship capability) {
         TypedQuery<Long> query = em.createNamedQuery(prefix
                                                      + CHECK_INSTANCE_CAP_SUFFIX,
@@ -282,7 +165,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     @Override
     public boolean checkCapability(List<Agency> agencies,
-                                   NetworkAuthorization<RuleForm> stateAuth,
+                                   ExistentialNetworkAuthorizationRecord stateAuth,
                                    Relationship capability) {
         TypedQuery<Long> query = em.createNamedQuery(prefix
                                                      + CHECK_CHILD_CAP_SUFFIX,
@@ -300,69 +183,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                     .equals(ZERO);
     }
 
-    /**
-     * Check the capability of an agency on an attribute of the authorized cross
-     * domain relationship of the facet child relationship.
-     */
     @Override
-    public boolean checkCapability(List<Agency> agencies,
-                                   XDomainAttrbuteAuthorization<?, ?> stateAuth,
-                                   Relationship capability) {
-        TypedQuery<Long> query = em.createNamedQuery(stateAuth.getClass()
-                                                              .getSimpleName()
-                                                     + CHECK_CAP, Long.class);
-        query.setParameter("facet", stateAuth.getNetworkAuthorization());
-        query.setParameter("attribute", stateAuth.getAuthorizedAttribute());
-        query.setParameter("agencies", agencies);
-        query.setParameter("capability", capability);
-        return query.getSingleResult()
-                    .equals(ZERO);
-    }
-
-    /**
-     * Check the capability of an agency on the authorized relationship of the
-     * facet child relationship.
-     */
-    @Override
-    public boolean checkCapability(List<Agency> agencies,
-                                   XDomainNetworkAuthorization<?, ?> stateAuth,
-                                   Relationship capability) {
-        TypedQuery<Long> query = em.createNamedQuery(stateAuth.getClass()
-                                                              .getSimpleName()
-                                                     + CHECK_CAP, Long.class);
-        query.setParameter("fromRelationship", stateAuth.getFromRelationship());
-        query.setParameter("fromParent", stateAuth.getFromParent());
-        query.setParameter("connection", stateAuth.getConnection());
-        query.setParameter("toRelationship", stateAuth.getToRelationship());
-        query.setParameter("toParent", stateAuth.getToParent());
-        query.setParameter("agencies", agencies);
-        query.setParameter("capability", capability);
-        return query.getSingleResult()
-                    .equals(ZERO);
-    }
-
-    @Override
-    public boolean checkCapability(NetworkAuthorization<RuleForm> auth,
+    public boolean checkCapability(ExistentialNetworkAuthorizationRecord auth,
                                    Relationship capability) {
         return checkCapability(model.getCurrentPrincipal()
                                     .getCapabilities(),
                                auth, capability);
-    }
-
-    @Override
-    public boolean checkCapability(XDomainAttrbuteAuthorization<?, ?> stateAuth,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
-                                    .getCapabilities(),
-                               stateAuth, capability);
-    }
-
-    @Override
-    public boolean checkCapability(XDomainNetworkAuthorization<?, ?> stateAuth,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
-                                    .getCapabilities(),
-                               stateAuth, capability);
     }
 
     /**
@@ -370,7 +196,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     @Override
     public boolean checkFacetCapability(List<Agency> agencies,
-                                        NetworkAuthorization<RuleForm> facet,
+                                        ExistentialNetworkAuthorizationRecord facet,
                                         Relationship capability) {
         TypedQuery<Long> query = em.createNamedQuery(prefix
                                                      + CHECK_FACET_CAP_SUFFIX,
@@ -384,7 +210,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public boolean checkFacetCapability(NetworkAuthorization<RuleForm> facet,
+    public boolean checkFacetCapability(ExistentialNetworkAuthorizationRecord facet,
                                         Relationship capability) {
         return checkFacetCapability(model.getCurrentPrincipal()
                                          .getCapabilities(),
@@ -392,7 +218,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public boolean checkNetworkCapability(AttributeAuthorization<RuleForm, ?> stateAuth,
+    public boolean checkNetworkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
                                           Relationship capability) {
         return checkNetworkCapability(model.getCurrentPrincipal()
                                            .getCapabilities(),
@@ -405,7 +231,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     @Override
     public boolean checkNetworkCapability(List<Agency> agencies,
-                                          AttributeAuthorization<RuleForm, ?> stateAuth,
+                                          ExistentialAttributeAuthorizationRecord stateAuth,
                                           Relationship capability) {
         TypedQuery<Long> query = em.createNamedQuery(prefix
                                                      + CHECK_NETWORK_ATTRIBUTE_CAP_SUFFIX,
@@ -421,7 +247,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     @Override
     public void deauthorize(RuleForm ruleform, Relationship relationship,
-                            Agency authorized) {
+                            ExistentialDomain authorized) {
         throw new UnsupportedOperationException(String.format("Authorizations between %s and Agency are not defined",
                                                               ruleform.getClass()
                                                                       .getSimpleName()));
@@ -429,61 +255,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     @Override
     public void deauthorize(RuleForm ruleform, Relationship relationship,
-                            Location authorized) {
-        throw new UnsupportedOperationException(String.format("Authorizations between %s and Location are not defined",
-                                                              ruleform.getClass()
-                                                                      .getSimpleName()));
-    }
-
-    @Override
-    public void deauthorize(RuleForm ruleform, Relationship relationship,
-                            Product authorized) {
-        throw new UnsupportedOperationException(String.format("Authorizations between %s and Product are not defined",
-                                                              ruleform.getClass()
-                                                                      .getSimpleName()));
-    }
-
-    @Override
-    public void deauthorize(RuleForm ruleform, Relationship relationship,
-                            Relationship authorized) {
-        throw new UnsupportedOperationException(String.format("Authorizations between %s and Relationship are not defined",
-                                                              ruleform.getClass()
-                                                                      .getSimpleName()));
-    }
-
-    @Override
-    public void deauthorizeAgencies(RuleForm ruleform,
-                                    Relationship relationship,
-                                    List<Agency> authorized) {
-        for (Agency agency : authorized) {
+                            List<ExistentialDomain> authorized) {
+        for (ExistentialDomain agency : authorized) {
             deauthorize(ruleform, relationship, agency);
-        }
-    }
-
-    @Override
-    public void deauthorizeLocations(RuleForm ruleform,
-                                     Relationship relationship,
-                                     List<Location> authorized) {
-        for (Location location : authorized) {
-            deauthorize(ruleform, relationship, location);
-        }
-    }
-
-    @Override
-    public void deauthorizeProducts(RuleForm ruleform,
-                                    Relationship relationship,
-                                    List<Product> authorized) {
-        for (Product product : authorized) {
-            deauthorize(ruleform, relationship, product);
-        }
-    }
-
-    @Override
-    public void deauthorizeRelationships(RuleForm ruleform,
-                                         Relationship relationship,
-                                         List<Relationship> authorized) {
-        for (Relationship auth : authorized) {
-            deauthorize(ruleform, relationship, auth);
         }
     }
 
@@ -509,17 +283,17 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public List<Aspect<RuleForm>> getAllFacets() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         @SuppressWarnings("unchecked")
-        Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();
-        CriteriaQuery<NetworkAuthorization<RuleForm>> query = cb.createQuery(clazz);
-        Root<NetworkAuthorization<RuleForm>> networkRoot = query.from(clazz);
+        Class<ExistentialNetworkAuthorizationRecord<RuleForm>> clazz = (Class<ExistentialNetworkAuthorizationRecord<RuleForm>>) getNetworkAuthClass();
+        CriteriaQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> query = cb.createQuery(clazz);
+        Root<ExistentialNetworkAuthorizationRecord<RuleForm>> networkRoot = query.from(clazz);
         query.select(networkRoot)
              .where(cb.and(cb.isNull(networkRoot.get("authorizedParent")),
                            cb.isNull(networkRoot.get("authorizedRelationship")),
                            cb.isNull(networkRoot.get("childRelationship")),
                            cb.isNull(networkRoot.get("groupingAgency"))));
-        TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
+        TypedQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> q = em.createQuery(query);
         List<Aspect<RuleForm>> facets = new ArrayList<>();
-        for (NetworkAuthorization<RuleForm> auth : q.getResultList()) {
+        for (ExistentialNetworkAuthorizationRecord<RuleForm> auth : q.getResultList()) {
             facets.add(new Aspect<>(auth.getClassifier(),
                                     auth.getClassification()));
         }
@@ -553,8 +327,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
             throw new IllegalArgumentException(String.format("classification %s does not exist",
                                                              classification));
         }
-        return new Aspect<RuleForm>(Ruleform.initializeAndUnproxy(rel),
-                                    Ruleform.initializeAndUnproxy(rf));
+        return new Aspect<RuleForm>(rel, rf);
     }
 
     /*
@@ -565,10 +338,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * .hellblazer.CoRE.agency.Agency)
      */
     @Override
-    public List<AttributeAuth> getAttributeAuthorizations(Agency groupingAgency) {
-        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
-                                                              + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX,
-                                                              authorization);
+    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Agency groupingAgency) {
+        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createNamedQuery(prefix
+                                                                                        + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX,
+                                                                                        authorization);
         query.setParameter("groupingAgency", groupingAgency);
         return query.getResultList();
     }
@@ -581,11 +354,11 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * .hellblazer.CoRE.agency.Agency, com.chiralbehaviors.CoRE.attribute.Attribute)
      */
     @Override
-    public List<AttributeAuth> getAttributeAuthorizations(Agency groupingAgency,
-                                                          Attribute attribute) {
-        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
-                                                              + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
-                                                              authorization);
+    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Agency groupingAgency,
+                                                                                    Attribute attribute) {
+        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createNamedQuery(prefix
+                                                                                        + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
+                                                                                        authorization);
         query.setParameter("groupingAgency", groupingAgency);
         query.setParameter("attribute", attribute);
         return query.getResultList();
@@ -599,11 +372,11 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * .hellblazer.CoRE.meta.Aspect, com.chiralbehaviors.CoRE.attribute.Attribute)
      */
     @Override
-    public List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
-                                                          Attribute attribute) {
-        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
-                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
-                                                              authorization);
+    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                                                    Attribute attribute) {
+        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createNamedQuery(prefix
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
+                                                                                        authorization);
         query.setParameter("classifier", aspect.getClassifier());
         query.setParameter("classification", aspect.getClassification());
         query.setParameter("attribute", attribute);
@@ -611,14 +384,14 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public List<AttributeAuth> getAttributeAuthorizations(Aspect<RuleForm> aspect,
-                                                          boolean includeGrouping) {
-        TypedQuery<AttributeAuth> query = em.createNamedQuery(prefix
-                                                              + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
-                                                              authorization);
+    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                                                    boolean includeGrouping) {
+        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createNamedQuery(prefix
+                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
+                                                                                        authorization);
         query.setParameter("classifier", aspect.getClassifier());
         query.setParameter("classification", aspect.getClassification());
-        List<AttributeAuth> result = query.getResultList();
+        List<ExistentialAttributeAuthorizationRecord> result = query.getResultList();
         return includeGrouping ? result.stream()
                                        .filter(classifier -> classifier.getGroupingAgency() == null)
                                        .collect(Collectors.toList())
@@ -626,16 +399,16 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public List<AttributeAuth> getAttributeAuthorizations(NetworkAuthorization<RuleForm> facet,
-                                                          boolean includeGrouping) {
+    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(ExistentialNetworkAuthorizationRecord facet,
+                                                                                    boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<AttributeAuth> query = cb.createQuery(authorization);
-        Root<AttributeAuth> authRoot = query.from(authorization);
+        CriteriaQuery<ExistentialAttributeAuthorizationRecord> query = cb.createQuery(authorization);
+        Root<ExistentialAttributeAuthorizationRecord> authRoot = query.from(authorization);
         query.select(authRoot)
              .where(cb.and(cb.equal(authRoot.get("networkAuthorization"),
                                     facet),
                            cb.isNull(authRoot.get(AttributeAuthorization_.groupingAgency))));
-        TypedQuery<AttributeAuth> q = em.createQuery(query);
+        TypedQuery<ExistentialAttributeAuthorizationRecord> q = em.createQuery(query);
         return q.getResultList();
     }
 
@@ -688,7 +461,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public NetworkAttribute<?> getAttributeValue(Network edge,
+    public NetworkAttribute<?> getAttributeValue(ExistentialNetworkRecord edge,
                                                  Attribute attribute) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         @SuppressWarnings("unchecked")
@@ -724,7 +497,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public NetworkAttribute<?> getAttributeValue(RuleForm parent,
                                                  Relationship r, RuleForm child,
                                                  Attribute attribute) {
-        Network edge = getImmediateChildLink(parent, r, child);
+        ExistentialNetworkRecord edge = getImmediateChildLink(parent, r, child);
         if (edge == null) {
             return null;
         }
@@ -838,7 +611,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public RuleForm getChild(RuleForm parent, Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(entity);
-        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        Root<ExistentialNetworkRecord> networkRoot = query.from(network);
         Path<RuleForm> path;
         try {
             path = networkRoot.get("child");
@@ -865,7 +638,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                       Relationship relationship) {
         String prefix = entity.getSimpleName()
                               .toLowerCase()
-                        + "Network";
+                        + "ExistentialNetworkRecord";
         TypedQuery<RuleForm> q = em.createNamedQuery(prefix
                                                      + ExistentialRuleform.GET_CHILDREN_SUFFIX,
                                                      entity);
@@ -876,12 +649,12 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public NetworkAuthorization<RuleForm> getFacetDeclaration(@SuppressWarnings("rawtypes") Aspect aspect) {
+    public ExistentialNetworkAuthorizationRecord getFacetDeclaration(@SuppressWarnings("rawtypes") Aspect aspect) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         @SuppressWarnings("unchecked")
-        Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();
-        CriteriaQuery<NetworkAuthorization<RuleForm>> query = cb.createQuery(clazz);
-        Root<NetworkAuthorization<RuleForm>> networkRoot = query.from(clazz);
+        Class<ExistentialNetworkAuthorizationRecord<RuleForm>> clazz = (Class<ExistentialNetworkAuthorizationRecord<RuleForm>>) getNetworkAuthClass();
+        CriteriaQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> query = cb.createQuery(clazz);
+        Root<ExistentialNetworkAuthorizationRecord<RuleForm>> networkRoot = query.from(clazz);
         query.select(networkRoot)
              .where(cb.and(cb.equal(networkRoot.get("classification"),
                                     aspect.getClassification()),
@@ -891,18 +664,18 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                            cb.isNull(networkRoot.get("authorizedRelationship")),
                            cb.isNull(networkRoot.get("authorizedParent")),
                            cb.isNull(networkRoot.get("groupingAgency"))));
-        TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
-        List<NetworkAuthorization<RuleForm>> results = q.getResultList();
+        TypedQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> q = em.createQuery(query);
+        List<ExistentialNetworkAuthorizationRecord<RuleForm>> results = q.getResultList();
         return results.isEmpty() ? null : results.get(0);
     }
 
     @Override
-    public List<NetworkAuthorization<RuleForm>> getFacets(Product workspace) {
+    public List<ExistentialNetworkAuthorizationRecord> getFacets(Product workspace) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         @SuppressWarnings("unchecked")
-        Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();
-        CriteriaQuery<NetworkAuthorization<RuleForm>> query = cb.createQuery(clazz);
-        Root<NetworkAuthorization<RuleForm>> networkRoot = query.from(clazz);
+        Class<ExistentialNetworkAuthorizationRecord<RuleForm>> clazz = (Class<ExistentialNetworkAuthorizationRecord<RuleForm>>) getNetworkAuthClass();
+        CriteriaQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> query = cb.createQuery(clazz);
+        Root<ExistentialNetworkAuthorizationRecord<RuleForm>> networkRoot = query.from(clazz);
         Root<WorkspaceAuthorization> workspaces = query.from(WorkspaceAuthorization.class);
         query.select(networkRoot)
              .where(cb.and(cb.and(cb.equal(workspaces.get(WorkspaceAuthorization_.definingProduct),
@@ -914,7 +687,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                   cb.isNull(networkRoot.get("childRelationship")),
                                   cb.isNull(networkRoot.get("authorizedRelationship")),
                                   cb.isNull(networkRoot.get("groupingAgency")))));
-        TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
+        TypedQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> q = em.createQuery(query);
         return q.getResultList();
     }
 
@@ -923,7 +696,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                       Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(entity);
-        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        Root<ExistentialNetworkRecord> networkRoot = query.from(network);
         Path<RuleForm> path;
         try {
             path = networkRoot.get("child");
@@ -945,21 +718,21 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     @Override
     @SuppressWarnings("unchecked")
-    public Network getImmediateChildLink(RuleForm parent,
-                                         Relationship relationship,
-                                         RuleForm child) {
+    public ExistentialNetworkRecord getImmediateChildLink(RuleForm parent,
+                                                          Relationship relationship,
+                                                          RuleForm child) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<NetworkRuleform<RuleForm>> query = cb.createQuery(network);
-        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        CriteriaQuery<ExistentialNetworkRecord> query = cb.createQuery(network);
+        Root<ExistentialNetworkRecord> networkRoot = query.from(network);
         query.select(networkRoot)
              .where(cb.and(cb.equal(networkRoot.get("parent"), parent),
                            cb.equal(networkRoot.get("relationship"),
                                     relationship),
                            cb.equal(networkRoot.get("child"), child),
                            cb.isNull(networkRoot.get("inference"))));
-        TypedQuery<NetworkRuleform<RuleForm>> q = em.createQuery(query);
+        TypedQuery<ExistentialNetworkRecord> q = em.createQuery(query);
         try {
-            return (Network) q.getSingleResult();
+            return (ExistentialNetworkRecord) q.getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -970,7 +743,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
                                                Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(entity);
-        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        Root<ExistentialNetworkRecord> networkRoot = query.from(network);
         Path<RuleForm> path;
         try {
             path = networkRoot.get("child");
@@ -988,18 +761,18 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Network> getImmediateChildrenLinks(RuleForm parent,
-                                                   Relationship relationship) {
+    public List<ExistentialNetworkRecord> getImmediateChildrenLinks(RuleForm parent,
+                                                                    Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<NetworkRuleform<RuleForm>> query = cb.createQuery(network);
-        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        CriteriaQuery<ExistentialNetworkRecord> query = cb.createQuery(network);
+        Root<ExistentialNetworkRecord> networkRoot = query.from(network);
         query.select(networkRoot)
              .where(cb.and(cb.equal(networkRoot.get("parent"), parent),
                            cb.equal(networkRoot.get("relationship"),
                                     relationship),
                            cb.isNull(networkRoot.get("inference"))));
-        TypedQuery<NetworkRuleform<RuleForm>> q = em.createQuery(query);
-        return (List<Network>) q.getResultList();
+        TypedQuery<ExistentialNetworkRecord> q = em.createQuery(query);
+        return (List<ExistentialNetworkRecord>) q.getResultList();
     }
 
     /**
@@ -1008,19 +781,19 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      * @return
      */
     @Override
-    public NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
-                                                      Relationship relationship,
-                                                      RuleForm child) {
+    public ExistentialNetworkRecord getImmediateLink(RuleForm parent,
+                                                     Relationship relationship,
+                                                     RuleForm child) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<NetworkRuleform<RuleForm>> query = cb.createQuery(network);
-        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        CriteriaQuery<ExistentialNetworkRecord> query = cb.createQuery(network);
+        Root<ExistentialNetworkRecord> networkRoot = query.from(network);
         query.select(networkRoot)
              .where(cb.and(cb.equal(networkRoot.get("parent"), parent),
                            cb.equal(networkRoot.get("relationship"),
                                     relationship),
                            cb.equal(networkRoot.get("child"), child),
                            cb.isNull(networkRoot.get("inference"))));
-        TypedQuery<NetworkRuleform<RuleForm>> q = em.createQuery(query);
+        TypedQuery<ExistentialNetworkRecord> q = em.createQuery(query);
         try {
             return q.getSingleResult();
         } catch (NoResultException e) {
@@ -1029,9 +802,9 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public Collection<Network> getImmediateNetworkEdges(RuleForm parent) {
-        List<Network> edges = new ArrayList<Network>();
-        for (Network edge : parent.getNetworkByParent()) {
+    public Collection<ExistentialNetworkRecord> getImmediateNetworkEdges(RuleForm parent) {
+        List<ExistentialNetworkRecord> edges = new ArrayList<ExistentialNetworkRecord>();
+        for (ExistentialNetworkRecord edge : parent.getNetworkByParent()) {
             if (!edge.isInferred()) {
                 edges.add(edge);
             }
@@ -1050,7 +823,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public Collection<Relationship> getImmediateRelationships(RuleForm parent) {
         Set<Relationship> relationships = new HashSet<Relationship>();
         Set<Relationship> inverses = new HashSet<Relationship>();
-        for (Network network : parent.getNetworkByParent()) {
+        for (ExistentialNetworkRecord network : parent.getNetworkByParent()) {
             if (!network.isInferred()) {
                 Relationship relationship = network.getRelationship();
                 if (!inverses.contains(relationship)) {
@@ -1086,7 +859,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
          */
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<RuleForm> query = cb.createQuery(entity);
-        Root<NetworkRuleform<RuleForm>> networkForm = query.from(network);
+        Root<ExistentialNetworkRecord> networkForm = query.from(network);
         query.select(networkForm.get("child"));
         query.where(cb.equal(networkForm.get("relationship"), relationship),
                     cb.notEqual(networkForm.get("child"), parent));
@@ -1095,13 +868,13 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public List<NetworkAuthorization<RuleForm>> getNetworkAuthorizations(Aspect<RuleForm> aspect,
-                                                                         boolean includeGrouping) {
+    public List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(Aspect<RuleForm> aspect,
+                                                                                boolean includeGrouping) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         @SuppressWarnings("unchecked")
-        Class<NetworkAuthorization<RuleForm>> clazz = (Class<NetworkAuthorization<RuleForm>>) getNetworkAuthClass();
-        CriteriaQuery<NetworkAuthorization<RuleForm>> query = cb.createQuery(clazz);
-        Root<NetworkAuthorization<RuleForm>> networkRoot = query.from(clazz);
+        Class<ExistentialNetworkAuthorizationRecord<RuleForm>> clazz = (Class<ExistentialNetworkAuthorizationRecord<RuleForm>>) getNetworkAuthClass();
+        CriteriaQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> query = cb.createQuery(clazz);
+        Root<ExistentialNetworkAuthorizationRecord<RuleForm>> networkRoot = query.from(clazz);
         Predicate match = cb.and(cb.equal(networkRoot.get("classification"),
                                           aspect.getClassification()),
                                  cb.equal(networkRoot.get("classifier"),
@@ -1114,7 +887,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
         query.select(networkRoot)
              .where(match);
-        TypedQuery<NetworkAuthorization<RuleForm>> q = em.createQuery(query);
+        TypedQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> q = em.createQuery(query);
         return q.getResultList();
     }
 
@@ -1171,7 +944,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         Set<Relationship> inverses = new HashSet<Relationship>();
         Set<RuleForm> visited = new HashSet<RuleForm>();
         visited.add(parent);
-        for (Network network : parent.getNetworkByParent()) {
+        for (ExistentialNetworkRecord network : parent.getNetworkByParent()) {
             addTransitiveRelationships(network, inverses, visited,
                                        relationships);
         }
@@ -1196,17 +969,18 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         Agency principal = model.getCurrentPrincipal()
                                 .getPrincipal();
         if (getImmediateChildren(ruleform, aspect.getClassifier()).isEmpty()) {
-            Tuple<Network, Network> links = ruleform.link(aspect.getClassifier(),
-                                                          aspect.getClassification(),
-                                                          principal, principal,
-                                                          em);
+            Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = ruleform.link(aspect.getClassifier(),
+                                                                                            aspect.getClassification(),
+                                                                                            principal,
+                                                                                            principal,
+                                                                                            em);
             if (workspace != null) {
                 workspace.add(links.a);
                 workspace.add(links.b);
             }
         }
-        for (AttributeAuth authorization : getAttributeAuthorizations(aspect,
-                                                                      false)) {
+        for (ExistentialAttributeAuthorizationRecord authorization : getAttributeAuthorizations(aspect,
+                                                                                                false)) {
             Attribute authorizedAttribute = authorization.getAuthorizedAttribute();
             if (!authorizedAttribute.getKeyed()
                 && !authorizedAttribute.getIndexed()) {
@@ -1226,7 +1000,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     @Override
     public void initialize(RuleForm instance,
-                           NetworkAuthorization<RuleForm> facet,
+                           ExistentialNetworkAuthorizationRecord facet,
                            Agency principal) {
         initialize(instance, new Aspect<RuleForm>(facet.getClassifier(),
                                                   facet.getClassification()));
@@ -1250,8 +1024,10 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public Tuple<Network, Network> link(RuleForm parent, Relationship r,
-                                        RuleForm child, Agency updatedBy) {
+    public Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(RuleForm parent,
+                                                                          Relationship r,
+                                                                          RuleForm child,
+                                                                          Agency updatedBy) {
         return parent.link(r, child, updatedBy, model.getCurrentPrincipal()
                                                      .getPrincipal(),
                            em);
@@ -1276,7 +1052,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     }
 
     @Override
-    public void setAttributeValue(AttributeType value) {
+    public void setAttributeValue(ExistentialAttributeRecord value) {
         Attribute attribute = value.getAttribute();
         Attribute validatingAttribute = model.getAttributeModel()
                                              .getSingleChild(attribute,
@@ -1359,8 +1135,8 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
     public void unlink(RuleForm parent, Relationship relationship,
                        RuleForm child) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaDelete<NetworkRuleform<RuleForm>> query = cb.createCriteriaDelete(network);
-        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        CriteriaDelete<ExistentialNetworkRecord> query = cb.createCriteriaDelete(network);
+        Root<ExistentialNetworkRecord> networkRoot = query.from(network);
         query.where(cb.or(cb.and(cb.equal(networkRoot.get("parent"), parent),
                                  cb.equal(networkRoot.get("relationship"),
                                           relationship),
@@ -1378,14 +1154,14 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
 
     @Override
     public void unlinkImmediate(RuleForm parent, Relationship relationship) {
-        NetworkRuleform<RuleForm> link = getImmediateLink(parent, relationship);
+        ExistentialNetworkRecord link = getImmediateLink(parent, relationship);
         em.remove(link);
         em.remove(getImmediateChildLink(link.getChild(),
                                         relationship.getInverse(), parent));
         model.inferNetworks(parent);
     }
 
-    private void addTransitiveRelationships(Network edge,
+    private void addTransitiveRelationships(ExistentialNetworkRecord edge,
                                             Set<Relationship> inverses,
                                             Set<RuleForm> visited,
                                             Set<Relationship> relationships) {
@@ -1398,7 +1174,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
         inverses.add(relationship.getInverse());
         RuleForm child = edge.getChild();
-        for (Network network : child.getNetworkByParent()) {
+        for (ExistentialNetworkRecord network : child.getNetworkByParent()) {
             RuleForm traversing = network.getChild();
             if (visited.add(traversing)) {
                 addTransitiveRelationships(network, inverses, visited,
@@ -1478,30 +1254,6 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Class<AttributeType> extractedAttribute() {
-        return (Class<AttributeType>) ((ParameterizedType) this.getClass()
-                                                               .getGenericSuperclass()).getActualTypeArguments()[3];
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<AttributeAuth> extractedAuthorization() {
-        return (Class<AttributeAuth>) ((ParameterizedType) this.getClass()
-                                                               .getGenericSuperclass()).getActualTypeArguments()[2];
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<RuleForm> extractedEntity() {
-        return (Class<RuleForm>) ((ParameterizedType) this.getClass()
-                                                          .getGenericSuperclass()).getActualTypeArguments()[0];
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<Network> extractedNetwork() {
-        return (Class<Network>) ((ParameterizedType) this.getClass()
-                                                         .getGenericSuperclass()).getActualTypeArguments()[1];
-    }
-
     private void generateInverses() {
         long then = System.currentTimeMillis();
         int inverses = em.createNamedQuery(String.format("%s%s", networkPrefix,
@@ -1560,7 +1312,7 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
      */
     @SuppressWarnings("unchecked")
     protected <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                           List<AttributeAuth> authorizations) {
+                                                           List<ExistentialAttributeAuthorizationRecord> authorizations) {
         switch (attribute.getValueType()) {
             case BOOLEAN: {
                 return (List<ValueType>) Arrays.asList(Boolean.TRUE,
@@ -1573,25 +1325,23 @@ abstract public class AbstractNetworkedModel<RuleForm extends ExistentialRulefor
         }
 
         List<ValueType> allowedValues = new ArrayList<ValueType>();
-        for (AttributeAuth authorization : authorizations) {
+        for (ExistentialAttributeAuthorizationRecord authorization : authorizations) {
             allowedValues.add((ValueType) authorization.getValue());
         }
         return allowedValues;
     }
 
-    abstract protected Class<?> getAttributeAuthorizationClass();
-
-    protected NetworkRuleform<RuleForm> getImmediateLink(RuleForm parent,
-                                                         Relationship relationship) {
+    protected ExistentialNetworkRecord getImmediateLink(RuleForm parent,
+                                                        Relationship relationship) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<NetworkRuleform<RuleForm>> query = cb.createQuery(network);
-        Root<NetworkRuleform<RuleForm>> networkRoot = query.from(network);
+        CriteriaQuery<ExistentialNetworkRecord> query = cb.createQuery(network);
+        Root<ExistentialNetworkRecord> networkRoot = query.from(network);
         query.select(networkRoot)
              .where(cb.and(cb.equal(networkRoot.get("parent"), parent),
                            cb.equal(networkRoot.get("relationship"),
                                     relationship),
                            cb.isNull(networkRoot.get("inference"))));
-        TypedQuery<NetworkRuleform<RuleForm>> q = em.createQuery(query);
+        TypedQuery<ExistentialNetworkRecord> q = em.createQuery(query);
         try {
             return q.getSingleResult();
         } catch (NoResultException e) {

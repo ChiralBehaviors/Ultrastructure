@@ -60,7 +60,7 @@ import com.chiralbehaviors.CoRE.meta.Model;
  *
  */
 public class AgencyModelImpl extends
-        AbstractNetworkedModel<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute>
+        ExistentialModelImpl<Agency, AgencyNetwork, AgencyAttributeAuthorization, AgencyAttribute>
         implements AgencyModel {
 
     /**

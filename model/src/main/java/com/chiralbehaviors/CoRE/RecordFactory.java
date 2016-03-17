@@ -42,6 +42,12 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
 import org.jooq.DSLContext;
 
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
@@ -84,39 +90,40 @@ public interface RecordFactory {
     static final RecordFactory  RECORDS   = new RecordFactory() {
                                           };
 
-    default ExistentialRecord newAgency(DSLContext create) {
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+    default Agency newAgency(DSLContext create) {
+        Agency record = create.newRecord(EXISTENTIAL)
+                              .into(Agency.class);
         record.setDomain("A");
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialRecord newAgency(DSLContext create, String name) {
-        ExistentialRecord record = newAgency(create);
+    default Agency newAgency(DSLContext create, String name) {
+        Agency record = newAgency(create);
         record.setName(name);
         return record;
     }
 
-    default ExistentialRecord newAgency(DSLContext create, String name,
-                                        ExistentialRecord updatedBy) {
-        ExistentialRecord record = newAgency(create);
+    default Agency newAgency(DSLContext create, String name,
+                             ExistentialRecord updatedBy) {
+        Agency record = newAgency(create);
         record.setName(name);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default ExistentialRecord newAgency(DSLContext create, String name,
-                                        String description,
-                                        ExistentialRecord updatedBy) {
-        ExistentialRecord record = newAgency(create);
+    default Agency newAgency(DSLContext create, String name, String description,
+                             ExistentialRecord updatedBy) {
+        Agency record = newAgency(create);
         record.setName(name);
         record.setDescription(description);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default ExistentialRecord newAttribute(DSLContext create) {
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+    default Attribute newAttribute(DSLContext create) {
+        Attribute record = create.newRecord(EXISTENTIAL)
+                                 .into(Attribute.class);
         record.setDomain("T");
         record.setId(GENERATOR.generate());
         return record;
@@ -214,25 +221,26 @@ public interface RecordFactory {
         return record;
     }
 
-    default ExistentialRecord newProduct(DSLContext create) {
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+    default Product newProduct(DSLContext create) {
+        Product record = create.newRecord(EXISTENTIAL)
+                               .into(Product.class);
         record.setDomain("P");
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialRecord newProduct(DSLContext create, String name,
-                                         ExistentialRecord updatedBy) {
-        ExistentialRecord record = newProduct(create);
+    default Product newProduct(DSLContext create, String name,
+                               ExistentialRecord updatedBy) {
+        Product record = newProduct(create);
         record.setName(name);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default ExistentialRecord newProduct(DSLContext create, String name,
-                                         String description,
-                                         ExistentialRecord updatedBy) {
-        ExistentialRecord record = newProduct(create);
+    default Product newProduct(DSLContext create, String name,
+                               String description,
+                               ExistentialRecord updatedBy) {
+        Product record = newProduct(create).into(Product.class);
         record.setName(name);
         record.setDescription(description);
         record.setUpdatedBy(updatedBy.getId());
@@ -245,50 +253,51 @@ public interface RecordFactory {
         return record;
     }
 
-    default ExistentialRecord newRelationship(DSLContext create) {
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+    default Relationship newRelationship(DSLContext create) {
+        Relationship record = create.newRecord(EXISTENTIAL)
+                                    .into(Relationship.class);
         record.setDomain("P");
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialRecord newRelationship(DSLContext create, String name,
-                                              ExistentialRecord updatedBy) {
-        ExistentialRecord record = newRelationship(create);
+    default Relationship newRelationship(DSLContext create, String name,
+                                         ExistentialRecord updatedBy) {
+        Relationship record = newRelationship(create);
         record.setName(name);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default ExistentialRecord newRelationship(DSLContext create, String name,
-                                              ExistentialRecord updatedBy,
-                                              ExistentialRecord inverse) {
+    default Relationship newRelationship(DSLContext create, String name,
+                                         ExistentialRecord updatedBy,
+                                         ExistentialRecord inverse) {
         return newRelationship(create, name, null, updatedBy, inverse);
     }
 
-    default ExistentialRecord newRelationship(DSLContext create, String name,
-                                              String description,
-                                              ExistentialRecord updatedBy) {
-        ExistentialRecord record = newRelationship(create);
+    default Relationship newRelationship(DSLContext create, String name,
+                                         String description,
+                                         ExistentialRecord updatedBy) {
+        Relationship record = newRelationship(create);
         record.setName(name);
         record.setDescription(description);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default ExistentialRecord newRelationship(DSLContext create, String name,
-                                              String description,
-                                              ExistentialRecord updatedBy,
-                                              ExistentialRecord inverse) {
-        ExistentialRecord record = newRelationship(create, name, description,
-                                                   updatedBy);
+    default Relationship newRelationship(DSLContext create, String name,
+                                         String description,
+                                         ExistentialRecord updatedBy,
+                                         ExistentialRecord inverse) {
+        Relationship record = newRelationship(create, name, description,
+                                              updatedBy);
         record.setInverse(inverse.getId());
         inverse.setInverse(record.getId());
         return record;
     }
 
-    default ExistentialRecord newRelationshipy(DSLContext create, String name) {
-        ExistentialRecord record = newRelationship(create);
+    default Relationship newRelationshipy(DSLContext create, String name) {
+        Relationship record = newRelationship(create);
         record.setName(name);
         return record;
     }
@@ -305,8 +314,9 @@ public interface RecordFactory {
         return record;
     }
 
-    default ExistentialRecord newStatusCode(DSLContext create) {
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+    default StatusCode newStatusCode(DSLContext create) {
+        StatusCode record = create.newRecord(EXISTENTIAL)
+                                  .into(StatusCode.class);
         record.setDomain("S");
         record.setId(GENERATOR.generate());
         return record;
@@ -318,8 +328,9 @@ public interface RecordFactory {
         return record;
     }
 
-    default ExistentialRecord newUnit(DSLContext create) {
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+    default Unit newUnit(DSLContext create) {
+        Unit record = create.newRecord(EXISTENTIAL)
+                            .into(Unit.class);
         record.setDomain("U");
         record.setId(GENERATOR.generate());
         return record;

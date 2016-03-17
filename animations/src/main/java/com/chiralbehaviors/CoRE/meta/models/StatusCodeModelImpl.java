@@ -47,7 +47,7 @@ import com.chiralbehaviors.CoRE.security.AgencyStatusCodeGrouping;
  *
  */
 public class StatusCodeModelImpl extends
-        AbstractNetworkedModel<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute>
+        ExistentialModelImpl<StatusCode, StatusCodeNetwork, StatusCodeAttributeAuthorization, StatusCodeAttribute>
         implements StatusCodeModel {
 
     /**

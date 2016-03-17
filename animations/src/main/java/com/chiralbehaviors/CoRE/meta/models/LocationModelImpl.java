@@ -59,7 +59,7 @@ import com.chiralbehaviors.CoRE.security.AgencyLocationGrouping;
  *
  */
 public class LocationModelImpl extends
-        AbstractNetworkedModel<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute>
+        ExistentialModelImpl<Location, LocationNetwork, LocationAttributeAuthorization, LocationAttribute>
         implements LocationModel {
 
     /**

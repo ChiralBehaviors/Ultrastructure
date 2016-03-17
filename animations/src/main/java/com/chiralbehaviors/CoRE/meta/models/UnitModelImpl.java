@@ -43,7 +43,7 @@ import com.chiralbehaviors.CoRE.security.AgencyUnitGrouping;
  *
  */
 public class UnitModelImpl extends
-        AbstractNetworkedModel<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute>
+        ExistentialModelImpl<Unit, UnitNetwork, UnitAttributeAuthorization, UnitAttribute>
         implements UnitModel {
 
     /**

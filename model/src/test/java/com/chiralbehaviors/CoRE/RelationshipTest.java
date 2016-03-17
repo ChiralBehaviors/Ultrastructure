@@ -26,7 +26,8 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.test.DatabaseTest;;
 
 /**
@@ -38,31 +39,30 @@ public class RelationshipTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        ExistentialRecord core = RECORDS.newAgency(create, "CoREd");
+        Agency core = RECORDS.newAgency(create, "CoREd");
         core.setUpdatedBy(core.getId());
         core.insert();
 
-        ExistentialRecord massList = RECORDS.newRelationship(create,
-                                                             "mass-list",
-                                                             "A is a member of the mass list B",
-                                                             core);
+        Relationship massList = RECORDS.newRelationship(create, "mass-list",
+                                                        "A is a member of the mass list B",
+                                                        core);
 
-        ExistentialRecord massListOf = RECORDS.newRelationship(create,
-                                                               "mass-list-of",
-                                                               "A is a mass list that has B as a member",
-                                                               core, massList);
+        Relationship massListOf = RECORDS.newRelationship(create,
+                                                          "mass-list-of",
+                                                          "A is a mass list that has B as a member",
+                                                          core, massList);
         massList.insert();
         massListOf.insert();
     }
 
     @Test
     public void setInverseTest() {
-        ExistentialRecord core = RECORDS.newAgency(create, "CoREd");
+        Agency core = RECORDS.newAgency(create, "CoREd");
         core.setUpdatedBy(core.getId());
         core.insert();
-        ExistentialRecord r = RECORDS.newRelationship(create, "Foo", core);
+        Relationship r = RECORDS.newRelationship(create, "Foo", core);
 
-        ExistentialRecord i = RECORDS.newRelationship(create, "Bar", core, r);
+        Relationship i = RECORDS.newRelationship(create, "Bar", core, r);
         r.insert();
         i.insert();
 

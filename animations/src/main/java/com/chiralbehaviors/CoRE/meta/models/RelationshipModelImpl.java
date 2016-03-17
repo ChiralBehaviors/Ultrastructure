@@ -54,7 +54,7 @@ import com.chiralbehaviors.CoRE.security.AgencyRelationshipGrouping;
  *
  */
 public class RelationshipModelImpl extends
-        AbstractNetworkedModel<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute>
+        ExistentialModelImpl<Relationship, RelationshipNetwork, RelationshipAttributeAuthorization, RelationshipAttribute>
         implements RelationshipModel {
 
     /**

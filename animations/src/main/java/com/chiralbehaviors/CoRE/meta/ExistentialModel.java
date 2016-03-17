@@ -25,14 +25,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttribute;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialDomain;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.hellblazer.utils.Tuple;
 
@@ -43,11 +46,11 @@ import com.hellblazer.utils.Tuple;
  * @author hhildebrand
  *
  */
-public interface ExistentialModel {
+public interface ExistentialModel<RuleForm extends ExistentialDomain> {
 
-    public abstract ExistentialAttributeRecord create(ExistentialRecord ruleform,
-                                                      ExistentialRecord attribute,
-                                                      ExistentialRecord updatedBy);
+    public abstract ExistentialAttribute create(RuleForm ruleform,
+                                                Attribute attribute,
+                                                Agency updatedBy);
 
     /**
      * Create a new instance with the supplied aspects
@@ -58,7 +61,7 @@ public interface ExistentialModel {
      *            the description of the new instance
      * @return the new instance
      */
-    public ExistentialRecord create(String name, String description);
+    public RuleForm create(String name, String description);
 
     /**
      * Create a new instance with the supplied aspects
@@ -72,9 +75,12 @@ public interface ExistentialModel {
      *            - the initial aspects of the instance
      * @return the new instance
      */
-    public ExistentialRecord create(String name, String description,
-                                    Aspect aspect, ExistentialRecord updatedBy,
-                                    Aspect... aspects);
+    public RuleForm create(String name, String description,
+                           Aspect<RuleForm> aspect, Agency updatedBy,
+                           @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
+
+    public void deauthorize(RuleForm ruleform, Relationship relationship,
+                            List<ExistentialDomain> authorized);
 
     /**
      * Answer the list of attribute values of the attribute on the ruleform
@@ -82,18 +88,17 @@ public interface ExistentialModel {
      * @param attribute
      * @return
      */
-    public List<ExistentialAttributeRecord> getAttributeValues(ExistentialRecord ruleform,
-                                                               ExistentialRecord attribute);
+    public List<ExistentialAttribute> getAttributeValues(RuleForm ruleform,
+                                                         Attribute attribute);
 
-    public ExistentialRecord getSingleChild(ExistentialRecord parent,
-                                            ExistentialRecord r);
+    public RuleForm getSingleChild(RuleForm parent, Relationship r);
 
     /**
      * Answer the list of relationships used in this ruleform's networks.
      *
      * @return
      */
-    public List<ExistentialRecord> getUsedExistentialRecords();
+    public List<Relationship> getUsedRelationships();
 
     /**
      * Assign the attributes as authorized atrributes of the aspect
@@ -101,101 +106,139 @@ public interface ExistentialModel {
      * @param aspect
      * @param attributes
      */
-    void authorize(Aspect aspect, ExistentialRecord... attributes);
+    void authorize(Aspect<RuleForm> aspect, Attribute... attributes);
 
-    void authorize(ExistentialRecord ruleform, ExistentialRecord relationship,
-                   ExistentialRecord authorized);
+    void authorize(RuleForm ruleform, Relationship relationship,
+                   ExistentialDomain authorized);
 
-    void authorize(ExistentialRecord ruleform, ExistentialRecord relationship,
-                   List<ExistentialRecord> authorized);
+    void authorize(RuleForm ruleform, Relationship relationship,
+                   List<ExistentialDomain> authorized);
+
+    void authorizeSingular(RuleForm ruleform, Relationship relationship,
+                           ExistentialDomain authorized);
+
+    /**
+     * Check the capability of the current principal on an attribute of a
+     * ruleform.
+     */
+    boolean checkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
+                            Relationship capability);
+
+    /**
+     * Check the capability of the current principal on the authorized
+     * relationship of the facet child relationship.
+     */
+    boolean checkCapability(ExistentialNetworkAuthorizationRecord auth,
+                            Relationship capability);
 
     /**
      * Check the capability of the agencies on an attribute of a ruleform.
      */
-    boolean checkCapability(List<ExistentialRecord> agencies,
+    boolean checkCapability(List<Agency> agencies,
                             ExistentialAttributeAuthorizationRecord stateAuth,
-                            ExistentialRecord capability);
-
-    /**
-     * Check the capability of the agencies on an instance.
-     */
-    boolean checkCapability(List<ExistentialRecord> agencies,
-                            ExistentialRecord instance,
-                            ExistentialRecord capability);
+                            Relationship capability);
 
     /**
      * Check the capability of the agencies on the authorized relationship of
      * the facet child relationship.
      */
-    boolean checkCapability(List<ExistentialRecord> agencies,
+    boolean checkCapability(List<Agency> agencies,
                             ExistentialNetworkAuthorizationRecord auth,
-                            ExistentialRecord capability);
+                            Relationship capability);
+
+    /**
+     * Check the capability of the agencies on an instance.
+     */
+    boolean checkCapability(List<Agency> agencies, RuleForm instance,
+                            Relationship capability);
+
+    /**
+     * Check the capability of the current principal on an instance.
+     */
+    boolean checkCapability(RuleForm instance, Relationship capability);
 
     /**
      * Check the capability of the current principal on the facet.
      */
     boolean checkFacetCapability(ExistentialNetworkAuthorizationRecord facet,
-                                 ExistentialRecord capability);
+                                 Relationship capability);
 
     /**
-     * Create a new instance of the ExistentialRecord based on the provided
-     * prototype
+     * Check the capability of the agencies on the facet.
+     */
+    boolean checkFacetCapability(List<Agency> agencies,
+                                 ExistentialNetworkAuthorizationRecord facet,
+                                 Relationship capability);
+
+    /**
+     * Check the capability of the current principal on an attribute of the
+     * authorized relationship of the facet child relationship.
+     */
+    boolean checkNetworkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
+                                   Relationship capability);
+
+    /**
+     * Check the capability of the agencies on an attribute of the authorized
+     * relationship of the facet child relationship.
+     */
+    boolean checkNetworkCapability(List<Agency> agencies,
+                                   ExistentialAttributeAuthorizationRecord stateAuth,
+                                   Relationship capability);
+
+    /**
+     * Create a new instance of the RuleForm based on the provided prototype
      *
      * @param prototype
      *            - the model for the new instance
      * @return the new instance
      */
-    ExistentialRecord create(ExistentialRecord prototype);
+    RuleForm create(RuleForm prototype);
 
-    void deauthorize(ExistentialRecord ruleform, ExistentialRecord relationship,
-                     ExistentialRecord authorized);
-
-    void deauthorize(ExistentialRecord ruleform, ExistentialRecord relationship,
-                     List<ExistentialRecord> authorized);
+    void deauthorize(RuleForm ruleform, Relationship relationship,
+                     ExistentialDomain authorized);
 
     /**
      * @param id
      * @return the ruleform with the specified id
      */
-    ExistentialRecord find(UUID id);
+    RuleForm find(UUID id);
 
     /**
      *
      * @return all existential ruleforms that exist for this model
      */
-    List<ExistentialRecord> findAll();
+    List<RuleForm> findAll();
 
     /**
-     * @return the list of aspects representing all facets for the
-     *         ExistentialRecord
+     * @return the list of aspects representing all facets for the RuleForm
      */
-    List<Aspect> getAllFacets();
+    List<Aspect<RuleForm>> getAllFacets();
 
     /**
-     * Answer the allowed values for an ExistentialRecord, classified by the
-     * supplied aspect
+     * Answer the allowed values for an Attribute, classified by the supplied
+     * aspect
      *
      * @param attribute
-     *            - the ExistentialRecord
-     * @param groupingExistentialRecord
-     *            - the grouping ExistentialRecord
+     *            - the Attribute
+     * @param groupingAgency
+     *            - the grouping Agency
      * @return the List of allowed values for this attribute
      */
-    <ValueType> List<ValueType> getAllowedValues(ExistentialRecord attribute,
-                                                 ExistentialRecord groupingExistentialRecord);
+    <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
+                                                 Agency groupingAgency);
 
     /**
-     * Answer the allowed values for an ExistentialRecord, classified by the
-     * supplied aspect
+     * Answer the allowed values for an Attribute, classified by the supplied
+     * aspect
      *
      * @param attribute
-     *            - the ExistentialRecord
+     *            - the Attribute
      * @param aspect
      *            - the classifying aspect
      * @return the List of allowed values for this attribute
      */
-    <ValueType> List<ValueType> getAllowedValues(ExistentialRecord attribute,
-                                                 Aspect aspect);
+    <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
+                                                 Aspect<RuleForm> aspect);
 
     /**
      * Answer the aspect identified by the primary keys
@@ -205,27 +248,27 @@ public interface ExistentialModel {
      * @return
      */
 
-    Aspect getAspect(UUID classifier, UUID classification);
+    Aspect<RuleForm> getAspect(UUID classifier, UUID classification);
 
     /**
      * Answer the list of attribute authorizations that are classified by the
      * grouping agency
      *
-     * @param groupingExistentialRecord
+     * @param groupingAgency
      * @return
      */
-    List<ExistentialAttributeAuthorization> getAttributeAuthorizations(ExistentialRecord groupingExistentialRecord);
+    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Agency groupingAgency);
 
     /**
      * Answer the list of attribute authorizations that are classified by the
      * grouping agency, defined for the particular attribute
      *
-     * @param groupingExistentialRecord
+     * @param groupingAgency
      * @param attribute
      * @return
      */
-    List<ExistentialAttributeAuthorization> getAttributeAuthorizations(ExistentialRecord groupingExistentialRecord,
-                                                                       ExistentialRecord attribute);
+    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Agency groupingAgency,
+                                                                             Attribute attribute);
 
     /**
      * Answer the list of attribute authorizations that are classified by an
@@ -236,8 +279,8 @@ public interface ExistentialModel {
      * @param attribute
      * @return
      */
-    List<ExistentialAttributeAuthorization> getAttributeAuthorizations(Aspect aspect,
-                                                                       ExistentialRecord attribute);
+    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                                             Attribute attribute);
 
     /**
      * Answer the list of attribute authorizations that are classified by an
@@ -248,8 +291,8 @@ public interface ExistentialModel {
      * @param includeGrouping
      * @return
      */
-    List<ExistentialAttributeAuthorization> getAttributeAuthorizations(Aspect aspect,
-                                                                       boolean includeGrouping);
+    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<RuleForm> aspect,
+                                                                             boolean includeGrouping);
 
     /**
      * Answer the list of attribute authorizations that are classified by a
@@ -260,21 +303,21 @@ public interface ExistentialModel {
      * @param includeGrouping
      * @return
      */
-    List<ExistentialAttributeAuthorization> getAttributeAuthorizations(ExistentialNetworkAuthorization facet,
-                                                                       boolean includeGrouping);
+    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(ExistentialNetworkAuthorizationRecord facet,
+                                                                             boolean includeGrouping);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
-     * authorized by the groupingExistentialRecord
+     * authorized by the groupingAgency
      *
      * @param ruleform
      *            - the instance
-     * @param groupingExistentialRecord
+     * @param groupingAgency
      *            - the classifying agency
      * @return the list of existing attributes authorized by this classifier
      */
-    List<ExistentialAttributeRecord> getAttributesClassifiedBy(ExistentialRecord ruleform,
-                                                               ExistentialRecord groupingExistentialRecord);
+    List<ExistentialAttribute> getAttributesClassifiedBy(RuleForm ruleform,
+                                                         Agency groupingAgency);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -286,8 +329,8 @@ public interface ExistentialModel {
      *            - the classifying aspect
      * @return the list of existing attributes authorized by this classifier
      */
-    List<ExistentialAttributeRecord> getAttributesClassifiedBy(ExistentialRecord ruleform,
-                                                               Aspect aspect);
+    List<ExistentialAttribute> getAttributesClassifiedBy(RuleForm ruleform,
+                                                         Aspect<RuleForm> aspect);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -295,30 +338,46 @@ public interface ExistentialModel {
      *
      * @param ruleform
      *            - the instance
-     * @param groupingExistentialRecord
+     * @param groupingAgency
      *            - the agency
      * @return the list of existing attributes for this instance that are
      *         grouped by the given agency
      */
-    List<ExistentialAttributeRecord> getAttributesGroupedBy(ExistentialRecord ruleform,
-                                                            ExistentialRecord groupingExistentialRecord);
+    List<ExistentialAttribute> getAttributesGroupedBy(RuleForm ruleform,
+                                                      Agency groupingAgency);
 
-    ExistentialNetworkAttribute getAttributeValue(ExistentialNetwork edge,
-                                                  ExistentialRecord attribute);
+    ExistentialNetworkAttributeRecord getAttributeValue(ExistentialNetworkRecord edge,
+                                                        Attribute attribute);
 
-    ExistentialAttributeRecord getAttributeValue(ExistentialRecord ruleform,
-                                                 ExistentialRecord attribute);
+    ExistentialAttribute getAttributeValue(RuleForm ruleform,
+                                           Attribute attribute);
 
-    ExistentialNetworkAttribute getAttributeValue(ExistentialRecord parent,
-                                                  ExistentialRecord r,
-                                                  ExistentialRecord child,
-                                                  ExistentialRecord attribute);
+    ExistentialNetworkAttributeRecord getAttributeValue(RuleForm parent,
+                                                        Relationship r,
+                                                        RuleForm child,
+                                                        Attribute attribute);
 
-    ExistentialRecord getAuthorized(ExistentialRecord ruleform,
-                                    ExistentialRecord relationship);
+    List<Agency> getAuthorizedAgencies(RuleForm ruleform,
+                                       Relationship relationship);
 
-    List<ExistentialRecord> getAllAuthorized(ExistentialRecord ruleform,
-                                             ExistentialRecord relationship);
+    Agency getAuthorizedAgency(RuleForm ruleform, Relationship relationship);
+
+    Location getAuthorizedLocation(RuleForm ruleform,
+                                   Relationship relationship);
+
+    List<Location> getAuthorizedLocations(RuleForm ruleform,
+                                          Relationship relationship);
+
+    Product getAuthorizedProduct(RuleForm ruleform, Relationship relationship);
+
+    List<Product> getAuthorizedProducts(RuleForm ruleform,
+                                        Relationship relationship);
+
+    Relationship getAuthorizedRelationship(RuleForm ruleform,
+                                           Relationship relationship);
+
+    List<Relationship> getAuthorizedRelationships(RuleForm ruleform,
+                                                  Relationship relationship);
 
     /**
      * Answer the child that is connected to the parent via the relationship
@@ -327,8 +386,7 @@ public interface ExistentialModel {
      * @param relationship
      * @return the child that is connected to the parent via the relationship
      */
-    ExistentialRecord getChild(ExistentialRecord parent,
-                               ExistentialRecord relationship);
+    RuleForm getChild(RuleForm parent, Relationship relationship);
 
     /**
      *
@@ -336,10 +394,9 @@ public interface ExistentialModel {
      * @param relationship
      * @return
      */
-    List<ExistentialRecord> getChildren(ExistentialRecord parent,
-                                        ExistentialRecord relationship);
+    List<RuleForm> getChildren(RuleForm parent, Relationship relationship);
 
-    ExistentialNetworkAuthorizationRecord getFacetDeclaration(Aspect aspect);
+    ExistentialNetworkAuthorizationRecord getFacetDeclaration(@SuppressWarnings("rawtypes") Aspect aspect);
 
     /**
      * Answer the list of network authorizations that represent a facet defined
@@ -348,7 +405,7 @@ public interface ExistentialModel {
      * @param workspace
      * @return the list of facet network authorizations in the workspace
      */
-    List<ExistentialNetworkAuthorizationRecord> getFacets(ExistentialRecord workspace);
+    List<ExistentialNetworkAuthorizationRecord> getFacets(Product workspace);
 
     /**
      * Answer the non inferred child that is connected to the parent via the
@@ -359,8 +416,7 @@ public interface ExistentialModel {
      * @return the non inferred child that is connected to the parent via the
      *         relationship
      */
-    ExistentialRecord getImmediateChild(ExistentialRecord parent,
-                                        ExistentialRecord relationship);
+    RuleForm getImmediateChild(RuleForm parent, Relationship relationship);
 
     /**
      * 
@@ -369,9 +425,9 @@ public interface ExistentialModel {
      * @param child
      * @return
      */
-    ExistentialNetwork getImmediateChildLink(ExistentialRecord parent,
-                                             ExistentialRecord relationship,
-                                             ExistentialRecord child);
+    ExistentialNetworkRecord getImmediateChildLink(RuleForm parent,
+                                                   Relationship relationship,
+                                                   RuleForm child);
 
     /**
      *
@@ -379,8 +435,8 @@ public interface ExistentialModel {
      * @param relationship
      * @return
      */
-    List<ExistentialRecord> getImmediateChildren(ExistentialRecord parent,
-                                                 ExistentialRecord relationship);
+    List<RuleForm> getImmediateChildren(RuleForm parent,
+                                        Relationship relationship);
 
     /**
      *
@@ -388,26 +444,26 @@ public interface ExistentialModel {
      * @param relationship
      * @return
      */
-    List<ExistentialNetwork> getImmediateChildrenLinks(ExistentialRecord parent,
-                                                       ExistentialRecord relationship);
+    List<ExistentialNetworkRecord> getImmediateChildrenLinks(RuleForm parent,
+                                                             Relationship relationship);
 
-    ExistentialNetwork getImmediateLink(ExistentialRecord parent,
-                                        ExistentialRecord relationship,
-                                        ExistentialRecord child);
-
-    /**
-     *
-     * @param parent
-     * @return
-     */
-    Collection<ExistentialNetwork> getImmediateNetworkEdges(ExistentialRecord parent);
+    ExistentialNetworkRecord getImmediateLink(RuleForm parent,
+                                              Relationship relationship,
+                                              RuleForm child);
 
     /**
      *
      * @param parent
      * @return
      */
-    Collection<ExistentialRecord> getImmediateExistentialRecords(ExistentialRecord parent);
+    Collection<ExistentialNetworkRecord> getImmediateNetworkEdges(RuleForm parent);
+
+    /**
+     *
+     * @param parent
+     * @return
+     */
+    Collection<Relationship> getImmediateRelationships(RuleForm parent);
 
     /**
      * 
@@ -416,20 +472,19 @@ public interface ExistentialModel {
      * @param child
      * @return
      */
-    List<ExistentialRecord> getInferredChildren(ExistentialRecord parent,
-                                                ExistentialRecord relationship);
+    List<RuleForm> getInferredChildren(RuleForm parent,
+                                       Relationship relationship);
 
     /**
      * @param parent
      * @param relationship
      * @return
      */
-    List<ExistentialRecord> getInGroup(ExistentialRecord parent,
-                                       ExistentialRecord relationship);
+    List<RuleForm> getInGroup(RuleForm parent, Relationship relationship);
 
-    List<ExistentialNetwork> getInterconnections(Collection<ExistentialRecord> parents,
-                                                 Collection<ExistentialRecord> relationships,
-                                                 Collection<ExistentialRecord> children);
+    List<ExistentialNetworkRecord> getInterconnections(Collection<RuleForm> parents,
+                                                       Collection<Relationship> relationships,
+                                                       Collection<RuleForm> children);
 
     /**
      * 
@@ -437,7 +492,7 @@ public interface ExistentialModel {
      * @param includeGrouping
      * @return the list of network authorizations for this aspect
      */
-    List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(Aspect aspect,
+    List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(Aspect<RuleForm> aspect,
                                                                          boolean includeGrouping);
 
     /**
@@ -446,15 +501,14 @@ public interface ExistentialModel {
      * @param relationship
      * @return
      */
-    List<ExistentialRecord> getNotInGroup(ExistentialRecord parent,
-                                          ExistentialRecord relationship);
+    List<RuleForm> getNotInGroup(RuleForm parent, Relationship relationship);
 
     /**
      *
      * @param parent
      * @return
      */
-    Collection<ExistentialRecord> getTransitiveExistentialRecords(ExistentialRecord parent);
+    Collection<Relationship> getTransitiveRelationships(RuleForm parent);
 
     /**
      * Initialize the ruleform with the classified attributes for this aspect
@@ -462,7 +516,7 @@ public interface ExistentialModel {
      * @param ruleform
      * @param aspect
      */
-    void initialize(ExistentialRecord ruleform, Aspect aspect);
+    void initialize(RuleForm ruleform, Aspect<RuleForm> aspect);
 
     /**
      * Initialize the ruleform with the classified attributes for this aspect,
@@ -471,7 +525,7 @@ public interface ExistentialModel {
      * @param ruleform
      * @param aspect
      */
-    void initialize(ExistentialRecord ruleform, Aspect aspect,
+    void initialize(RuleForm ruleform, Aspect<RuleForm> aspect,
                     EditableWorkspace workspace);
 
     /**
@@ -479,9 +533,9 @@ public interface ExistentialModel {
      * @param facet
      * @param principal
      */
-    void initialize(ExistentialRecord instance,
+    void initialize(RuleForm instance,
                     ExistentialNetworkAuthorizationRecord facet,
-                    ExistentialRecord principal);
+                    Agency principal);
 
     /**
      *
@@ -490,9 +544,8 @@ public interface ExistentialModel {
      * @param child
      * @return
      */
-    boolean isAccessible(ExistentialRecord parent,
-                         ExistentialRecord relationship,
-                         ExistentialRecord child);
+    boolean isAccessible(RuleForm parent, Relationship relationship,
+                         RuleForm child);
 
     /**
      *
@@ -501,10 +554,10 @@ public interface ExistentialModel {
      * @param child
      * @param updatedBy
      */
-    Tuple<ExistentialNetwork, ExistentialNetwork> link(ExistentialRecord parent,
-                                                       ExistentialRecord r,
-                                                       ExistentialRecord child,
-                                                       ExistentialRecord updatedBy);
+    Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(RuleForm parent,
+                                                                   Relationship r,
+                                                                   RuleForm child,
+                                                                   Agency updatedBy);
 
     /**
      * Propagate the network inferences based on the tracked additions,
@@ -521,19 +574,20 @@ public interface ExistentialModel {
      * 
      * @param value
      */
-    void setAttributeValue(ExistentialAttributeRecord value);
+    void setAttributeValue(ExistentialAttribute value);
 
-    void setAuthorizedAgencies(ExistentialRecord ruleform,
-                               ExistentialRecord relationship,
-                               List<ExistentialRecord> authorized);
+    void setAuthorizedAgencies(RuleForm ruleform, Relationship relationship,
+                               List<Agency> authorized);
 
-    void setAuthorized(ExistentialRecord ruleform,
-                       ExistentialRecord relationship,
-                       List<ExistentialRecord> authorized);
+    void setAuthorizedLocations(RuleForm ruleform, Relationship relationship,
+                                List<Location> authorized);
 
-    void setAuthorizedExistentialRecords(ExistentialRecord ruleform,
-                                         ExistentialRecord relationship,
-                                         List<ExistentialRecord> authorized);
+    void setAuthorizedProducts(RuleForm ruleform, Relationship relationship,
+                               List<Product> authorized);
+
+    void setAuthorizedRelationships(RuleForm ruleform,
+                                    Relationship relationship,
+                                    List<Relationship> authorized);
 
     /**
      * Sets the child of the immediate relationship defined by the parent and
@@ -545,19 +599,15 @@ public interface ExistentialModel {
      * @param child
      * @param updatedBy
      */
-    void setImmediateChild(ExistentialRecord parent,
-                           ExistentialRecord relationship,
-                           ExistentialRecord child,
-                           ExistentialRecord updatedBy);
+    void setImmediateChild(RuleForm parent, Relationship relationship,
+                           RuleForm child, Agency updatedBy);
 
-    void unlink(ExistentialRecord parent, ExistentialRecord r,
-                ExistentialRecord child);
+    void unlink(RuleForm parent, Relationship r, RuleForm child);
 
     /**
      * @param parent
      * @param relationship
      */
-    void unlinkImmediate(ExistentialRecord parent,
-                         ExistentialRecord relationship);
+    void unlinkImmediate(RuleForm parent, Relationship relationship);
 
 }

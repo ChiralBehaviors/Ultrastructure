@@ -27,8 +27,7 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
-import com.chiralbehaviors.CoRE.domain.ExistentialDomain;
-import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
@@ -46,59 +45,7 @@ import com.hellblazer.utils.Tuple;
  * @author hhildebrand
  *
  */
-public interface ExistentialModel<RuleForm extends ExistentialDomain> {
-
-    public abstract ExistentialAttributeRecord create(RuleForm ruleform,
-                                                      Attribute attribute,
-                                                      Agency updatedBy);
-
-    /**
-     * Create a new instance with the supplied aspects
-     *
-     * @param name
-     *            The name of the new instance
-     * @param description
-     *            the description of the new instance
-     * @return the new instance
-     */
-    public RuleForm create(String name, String description);
-
-    /**
-     * Create a new instance with the supplied aspects
-     *
-     * @param name
-     *            The name of the new instance
-     * @param description
-     *            the description of the new instance
-     * @param updatedBy
-     * @param aspects
-     *            - the initial aspects of the instance
-     * @return the new instance
-     */
-    public RuleForm create(String name, String description,
-                           Aspect<RuleForm> aspect, Agency updatedBy,
-                           @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
-
-    public void deauthorize(RuleForm ruleform, Relationship relationship,
-                            List<ExistentialDomain> authorized);
-
-    /**
-     * Answer the list of attribute values of the attribute on the ruleform
-     *
-     * @param attribute
-     * @return
-     */
-    public List<ExistentialAttributeRecord> getAttributeValues(RuleForm ruleform,
-                                                               Attribute attribute);
-
-    public RuleForm getSingleChild(RuleForm parent, Relationship r);
-
-    /**
-     * Answer the list of relationships used in this ruleform's networks.
-     *
-     * @return
-     */
-    public List<Relationship> getUsedRelationships();
+public interface ExistentialModel<RuleForm extends ExistentialRuleform> {
 
     /**
      * Assign the attributes as authorized atrributes of the aspect
@@ -109,13 +56,13 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
     void authorize(Aspect<RuleForm> aspect, Attribute... attributes);
 
     void authorize(RuleForm ruleform, Relationship relationship,
-                   ExistentialDomain authorized);
+                   ExistentialRuleform authorized);
 
-    void authorize(RuleForm ruleform, Relationship relationship,
-                   List<ExistentialDomain> authorized);
+    void authorizeAll(RuleForm ruleform, Relationship relationship,
+                      List<? extends ExistentialRuleform> authorized);
 
     void authorizeSingular(RuleForm ruleform, Relationship relationship,
-                           ExistentialDomain authorized);
+                           ExistentialRuleform authorized);
 
     /**
      * Check the capability of the current principal on an attribute of a
@@ -194,8 +141,42 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
      */
     RuleForm create(RuleForm prototype);
 
+    abstract ExistentialAttributeRecord create(RuleForm ruleform,
+                                               Attribute attribute,
+                                               Agency updatedBy);
+
+    /**
+     * Create a new instance with the supplied aspects
+     *
+     * @param name
+     *            The name of the new instance
+     * @param description
+     *            the description of the new instance
+     * @return the new instance
+     */
+    RuleForm create(String name, String description);
+
+    /**
+     * Create a new instance with the supplied aspects
+     *
+     * @param name
+     *            The name of the new instance
+     * @param description
+     *            the description of the new instance
+     * @param updatedBy
+     * @param aspects
+     *            - the initial aspects of the instance
+     * @return the new instance
+     */
+    RuleForm create(String name, String description, Aspect<RuleForm> aspect,
+                    Agency updatedBy,
+                    @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
+
     void deauthorize(RuleForm ruleform, Relationship relationship,
-                     ExistentialDomain authorized);
+                     ExistentialRuleform authorized);
+
+    void deauthorizeAll(RuleForm ruleform, Relationship relationship,
+                        List<? extends ExistentialRuleform> authorized);
 
     /**
      * @param id
@@ -325,27 +306,20 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
                                                         RuleForm child,
                                                         Attribute attribute);
 
-    List<Agency> getAuthorizedAgencies(RuleForm ruleform,
-                                       Relationship relationship);
+    /**
+     * Answer the list of attribute values of the attribute on the ruleform
+     *
+     * @param attribute
+     * @return
+     */
+    List<ExistentialAttributeRecord> getAttributeValues(RuleForm ruleform,
+                                                        Attribute attribute);
 
-    Agency getAuthorizedAgency(RuleForm ruleform, Relationship relationship);
+    <T extends ExistentialRuleform> List<T> getAllAuthorized(RuleForm ruleform,
+                                                             Relationship relationship);
 
-    Location getAuthorizedLocation(RuleForm ruleform,
-                                   Relationship relationship);
-
-    List<Location> getAuthorizedLocations(RuleForm ruleform,
-                                          Relationship relationship);
-
-    Product getAuthorizedProduct(RuleForm ruleform, Relationship relationship);
-
-    List<Product> getAuthorizedProducts(RuleForm ruleform,
-                                        Relationship relationship);
-
-    Relationship getAuthorizedRelationship(RuleForm ruleform,
-                                           Relationship relationship);
-
-    List<Relationship> getAuthorizedRelationships(RuleForm ruleform,
-                                                  Relationship relationship);
+    <T extends ExistentialRuleform> T getAuthorized(RuleForm ruleform,
+                                                    Relationship relationship);
 
     /**
      * Answer the child that is connected to the parent via the relationship
@@ -471,12 +445,7 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
      */
     List<RuleForm> getNotInGroup(RuleForm parent, Relationship relationship);
 
-    /**
-     *
-     * @param parent
-     * @return
-     */
-    Collection<Relationship> getTransitiveRelationships(RuleForm parent);
+    RuleForm getSingleChild(RuleForm parent, Relationship r);
 
     /**
      * Initialize the ruleform with the classified attributes for this aspect
@@ -544,18 +513,8 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
      */
     void setAttributeValue(ExistentialAttributeRecord value);
 
-    void setAuthorizedAgencies(RuleForm ruleform, Relationship relationship,
-                               List<Agency> authorized);
-
-    void setAuthorizedLocations(RuleForm ruleform, Relationship relationship,
-                                List<Location> authorized);
-
-    void setAuthorizedProducts(RuleForm ruleform, Relationship relationship,
-                               List<Product> authorized);
-
-    void setAuthorizedRelationships(RuleForm ruleform,
-                                    Relationship relationship,
-                                    List<Relationship> authorized);
+    void setAuthorized(RuleForm ruleform, Relationship relationship,
+                       List<? extends ExistentialRuleform> authorized);
 
     /**
      * Sets the child of the immediate relationship defined by the parent and

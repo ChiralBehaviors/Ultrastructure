@@ -132,25 +132,25 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
         ExistentialRuleform<?, ?> childAuthClassification = auth.isForward() ? auth.getToParent()
                                                                              : auth.getFromParent();
         if (childAuthClassification instanceof Agency) {
-            networkedModel.authorize(instance, model.getEntityManager()
+            networkedModel.authorizeAll(instance, model.getEntityManager()
                                                     .getReference(Relationship.class,
                                                                   auth.getConnection()
                                                                       .getId()),
                                      (Agency) child);
         } else if (childAuthClassification instanceof Location) {
-            networkedModel.authorize(instance, model.getEntityManager()
+            networkedModel.authorizeAll(instance, model.getEntityManager()
                                                     .getReference(Relationship.class,
                                                                   auth.getConnection()
                                                                       .getId()),
                                      (Location) child);
         } else if (childAuthClassification instanceof Product) {
-            networkedModel.authorize(instance, model.getEntityManager()
+            networkedModel.authorizeAll(instance, model.getEntityManager()
                                                     .getReference(Relationship.class,
                                                                   auth.getConnection()
                                                                       .getId()),
                                      (Product) child);
         } else if (childAuthClassification instanceof Relationship) {
-            networkedModel.authorize(instance, model.getEntityManager()
+            networkedModel.authorizeAll(instance, model.getEntityManager()
                                                     .getReference(Relationship.class,
                                                                   auth.getConnection()
                                                                       .getId()),
@@ -219,21 +219,21 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                 .peek(child -> cast(child, auth))
                 .forEach(child -> {
                     if (childAuthClassification instanceof Agency) {
-                        networkedModel.authorize(instance,
+                        networkedModel.authorizeAll(instance,
                                                  model.getEntityManager()
                                                       .getReference(Relationship.class,
                                                                     auth.getConnection()
                                                                         .getId()),
                                                  (Agency) child);
                     } else if (childAuthClassification instanceof Location) {
-                        networkedModel.authorize(instance,
+                        networkedModel.authorizeAll(instance,
                                                  model.getEntityManager()
                                                       .getReference(Relationship.class,
                                                                     auth.getConnection()
                                                                         .getId()),
                                                  (Location) child);
                     } else if (childAuthClassification instanceof Product) {
-                        networkedModel.authorize(instance,
+                        networkedModel.authorizeAll(instance,
                                                  model.getEntityManager()
                                                       .getReference(Relationship.class,
                                                                     auth.getConnection()
@@ -241,7 +241,7 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
                                                  (Product) child);
                     } else
                         if (childAuthClassification instanceof Relationship) {
-                        networkedModel.authorize(instance,
+                        networkedModel.authorizeAll(instance,
                                                  model.getEntityManager()
                                                       .getReference(Relationship.class,
                                                                     auth.getConnection()

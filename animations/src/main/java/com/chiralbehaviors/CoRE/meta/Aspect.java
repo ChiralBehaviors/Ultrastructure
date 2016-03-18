@@ -21,7 +21,7 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.domain.ExistentialDomain;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 
 /**
  * An Aspect is the classifier of an networked ruleform within a network. The
@@ -31,7 +31,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialDomain;
  * @author hhildebrand
  *
  */
-public class Aspect<RuleForm extends ExistentialDomain> {
+public class Aspect<RuleForm extends ExistentialRuleform> {
     private final UUID classification;
     private final UUID classifier;
 

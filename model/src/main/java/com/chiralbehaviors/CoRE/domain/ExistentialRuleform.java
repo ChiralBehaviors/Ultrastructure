@@ -26,7 +26,7 @@ import java.util.UUID;
  * @author hhildebrand
  *
  */
-public interface ExistentialDomain {
+public interface ExistentialRuleform {
     UUID getId();
 
     String getName();

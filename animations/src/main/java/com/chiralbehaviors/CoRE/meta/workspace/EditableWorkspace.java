@@ -20,16 +20,65 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 
 /**
  * @author hhildebrand
  *
  */
 public interface EditableWorkspace extends WorkspaceAccessor {
-    <T extends Ruleform> void add(T ruleform);
+    void add(AgencyExistentialGroupingRecord ruleform);
+
+    void add(ChildSequencingAuthorizationRecord ruleform);
+
+    void add(ExistentialAttributeAuthorizationRecord ruleform);
+
+    void add(ExistentialAttributeRecord ruleform);
+
+    void add(ExistentialNetworkAttributeAuthorizationRecord ruleform);
+
+    void add(ExistentialNetworkAttributeRecord ruleform);
+
+    void add(ExistentialNetworkAuthorizationRecord ruleform);
+
+    void add(ExistentialNetworkRecord ruleform);
+
+    void add(ExistentialRecord ruleform);
+
+    void add(JobChronologyRecord ruleform);
+
+    void add(JobRecord ruleform);
+
+    void add(MetaProtocolRecord ruleform);
+
+    void add(NetworkInferenceRecord ruleform);
+
+    void add(ParentSequencingAuthorizationRecord ruleform);
+
+    void add(ProtocolRecord ruleform);
+
+    void add(SelfSequencingAuthorizationRecord ruleform);
+
+    void add(StatusCodeSequencingRecord ruleform);
 
     void addImport(String namespace, Product workspace);
 

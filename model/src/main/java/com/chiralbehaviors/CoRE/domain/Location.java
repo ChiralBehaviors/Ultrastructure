@@ -26,7 +26,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
  * @author hhildebrand
  *
  */
-public class Location extends ExistentialRecord implements ExistentialDomain {
+public class Location extends ExistentialRecord implements ExistentialRuleform {
 
     private static final long serialVersionUID = 1L;
 

@@ -21,8 +21,11 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.AGENCY_EXISTENTIAL_GROUPING;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 
@@ -36,7 +39,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -48,6 +50,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.SelectOnConditionStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,14 +62,17 @@ import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistentialGrouping;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.ExistentialModel;
@@ -80,23 +87,23 @@ import com.hellblazer.utils.Tuple;
 abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
         implements ExistentialModel<RuleForm> {
 
-    private static final String   CHECK_CAP      = ".checkCap";
-    private static Logger         log            = LoggerFactory.getLogger(ExistentialModelImpl.class);
-    private static int            MAX_DEDUCTIONS = 1000;
-    private static final Long     ZERO           = Long.valueOf(0);
+    private static final String CHECK_CAP      = ".checkCap";
+    private static Logger       log            = LoggerFactory.getLogger(ExistentialModelImpl.class);
+    private static int          MAX_DEDUCTIONS = 1000;
+    private static final Long   ZERO           = Long.valueOf(0);
 
-    protected final EntityManager em;
-    protected final Kernel        kernel;
-    protected final Model         model;
-    protected final DSLContext    create;
+    protected final Kernel      kernel;
+    protected final Model       model;
+    protected final DSLContext  create;
 
     @SuppressWarnings("unchecked")
     public ExistentialModelImpl(Model model, DSLContext create) {
         this.model = model;
-        this.em = model.getEntityManager();
+        this.create = model.getEntityManager();
         this.kernel = model.getKernel();
-        this.create = create;
     }
+
+    abstract protected String domain();
 
     @Override
     public void authorize(RuleForm ruleform, Relationship relationship,
@@ -308,38 +315,40 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
      */
     @Override
     public RuleForm find(UUID id) {
-        RuleForm rf = em.find(entity, id);
-        return rf;
+        return (RuleForm) create.selectFrom(EXISTENTIAL)
+                                .where(EXISTENTIAL.ID.equal(id))
+                                .and(EXISTENTIAL.DOMAIN.equal(domain()))
+                                .fetchOne()
+                                .into(domainClass());
     }
+
+    abstract protected Class<? extends ExistentialRecord> domainClass();
 
     @Override
     public List<RuleForm> findAll() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<RuleForm> cq = cb.createQuery(entity);
-        cq.from(entity);
-        return em.createQuery(cq)
-                 .getResultList();
+        return (List<RuleForm>) create.selectFrom(EXISTENTIAL)
+                                      .where(EXISTENTIAL.DOMAIN.equal(domain()))
+                                      .fetch()
+                                      .into(domainClass());
     }
 
     @Override
     public List<Aspect<RuleForm>> getAllFacets() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        @SuppressWarnings("unchecked")
-        Class<ExistentialNetworkAuthorizationRecord<RuleForm>> clazz = (Class<ExistentialNetworkAuthorizationRecord<RuleForm>>) getNetworkAuthClass();
-        CriteriaQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> query = cb.createQuery(clazz);
-        Root<ExistentialNetworkAuthorizationRecord<RuleForm>> networkRoot = query.from(clazz);
-        query.select(networkRoot)
-             .where(cb.and(cb.isNull(networkRoot.get("authorizedParent")),
-                           cb.isNull(networkRoot.get("authorizedRelationship")),
-                           cb.isNull(networkRoot.get("childRelationship")),
-                           cb.isNull(networkRoot.get("groupingAgency"))));
-        TypedQuery<ExistentialNetworkAuthorizationRecord<RuleForm>> q = em.createQuery(query);
-        List<Aspect<RuleForm>> facets = new ArrayList<>();
-        for (ExistentialNetworkAuthorizationRecord<RuleForm> auth : q.getResultList()) {
-            facets.add(new Aspect<>(auth.getClassifier(),
-                                    auth.getClassification()));
-        }
-        return facets;
+        return create.selectDistinct(EXISTENTIAL_NETWORK_AUTHORIZATION.fields())
+                     .from(EXISTENTIAL_NETWORK_AUTHORIZATION)
+                     .join(EXISTENTIAL)
+                     .on(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.equal(EXISTENTIAL.ID))
+                     .where(EXISTENTIAL.DOMAIN.equal(domain()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.isNull())
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_RELATIONSHIP.isNull())
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.isNull())
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNull())
+                     .fetch()
+                     .into(EXISTENTIAL_NETWORK_AUTHORIZATION)
+                     .stream()
+                     .map(auth -> new Aspect<RuleForm>(auth.getClassifier(),
+                                                       auth.getClassification()))
+                     .collect(Collectors.toList());
     }
 
     @Override
@@ -357,37 +366,6 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
                                 getAttributeAuthorizations(aspect, attribute));
     }
 
-    @Override
-    public Aspect<RuleForm> getAspect(UUID classifier, UUID classification) {
-        Relationship rel = em.find(Relationship.class, classifier);
-        if (rel == null) {
-            throw new IllegalArgumentException(String.format("classifying relationship %s does not exist",
-                                                             classifier));
-        }
-        RuleForm rf = find(classification);
-        if (rf == null) {
-            throw new IllegalArgumentException(String.format("classification %s does not exist",
-                                                             classification));
-        }
-        return new Aspect<RuleForm>(rel, rf);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com
-     * .hellblazer.CoRE.agency.Agency)
-     */
-    @Override
-    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Agency groupingAgency) {
-        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createNamedQuery(prefix
-                                                                                        + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_SUFFIX,
-                                                                                        authorization);
-        query.setParameter("groupingAgency", groupingAgency);
-        return query.getResultList();
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -398,12 +376,17 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
     @Override
     public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Agency groupingAgency,
                                                                                     Attribute attribute) {
-        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createNamedQuery(prefix
-                                                                                        + FIND_GROUPED_ATTRIBUTE_ATHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
-                                                                                        authorization);
-        query.setParameter("groupingAgency", groupingAgency);
-        query.setParameter("attribute", attribute);
-        return query.getResultList();
+
+        return create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
+                     .from(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
+                     .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
+                     .on(EXISTENTIAL_NETWORK_AUTHORIZATION.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION)))
+                     .join(EXISTENTIAL_NETWORK.as("network"))
+                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
+                     .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
+                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(attribute.getId()))
+                     .fetch()
+                     .into(ExistentialAttributeAuthorizationRecord.class);
     }
 
     /*
@@ -416,53 +399,50 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
     @Override
     public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<RuleForm> aspect,
                                                                                     Attribute attribute) {
-        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createNamedQuery(prefix
-                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_FOR_ATTRIBUTE_SUFFIX,
-                                                                                        authorization);
-        query.setParameter("classifier", aspect.getClassifier());
-        query.setParameter("classification", aspect.getClassification());
-        query.setParameter("attribute", attribute);
-        return query.getResultList();
+
+        return create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
+                     .from(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
+                     .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
+                     .on(EXISTENTIAL_NETWORK_AUTHORIZATION.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION)))
+                     .join(EXISTENTIAL_NETWORK.as("network"))
+                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
+                     .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.eq(aspect.getClassifier()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.eq(aspect.getClassification()))
+                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(attribute.getId()))
+                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNull())
+                     .fetch()
+                     .into(ExistentialAttributeAuthorizationRecord.class);
     }
 
     @Override
     public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<RuleForm> aspect,
                                                                                     boolean includeGrouping) {
-        TypedQuery<ExistentialAttributeAuthorizationRecord> query = em.createNamedQuery(prefix
-                                                                                        + FIND_CLASSIFIED_ATTRIBUTE_AUTHORIZATIONS_SUFFIX,
-                                                                                        authorization);
-        query.setParameter("classifier", aspect.getClassifier());
-        query.setParameter("classification", aspect.getClassification());
-        List<ExistentialAttributeAuthorizationRecord> result = query.getResultList();
-        return includeGrouping ? result.stream()
-                                       .filter(classifier -> classifier.getGroupingAgency() == null)
-                                       .collect(Collectors.toList())
-                               : result;
+
+        SelectOnConditionStep<Record> and = create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
+                                                  .from(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
+                                                  .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
+                                                  .on(EXISTENTIAL_NETWORK_AUTHORIZATION.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION)))
+                                                  .join(EXISTENTIAL_NETWORK.as("network"))
+                                                  .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
+                                                  .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
+                                                  .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.eq(aspect.getClassifier()))
+                                                  .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.eq(aspect.getClassification()));
+        if (!includeGrouping) {
+            and = and.and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNull());
+        }
+        return and.fetch()
+                  .into(ExistentialAttributeAuthorizationRecord.class)
+                  .stream()
+                  .collect(Collectors.toList());
     }
 
     @Override
     public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(ExistentialNetworkAuthorizationRecord facet,
                                                                                     boolean includeGrouping) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<ExistentialAttributeAuthorizationRecord> query = cb.createQuery(authorization);
-        Root<ExistentialAttributeAuthorizationRecord> authRoot = query.from(authorization);
-        query.select(authRoot)
-             .where(cb.and(cb.equal(authRoot.get("networkAuthorization"),
-                                    facet),
-                           cb.isNull(authRoot.get(AttributeAuthorization_.groupingAgency))));
-        TypedQuery<ExistentialAttributeAuthorizationRecord> q = em.createQuery(query);
-        return q.getResultList();
-    }
-
-    @Override
-    public List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
-                                                         Agency groupingAgency) {
-        TypedQuery<AttributeType> query = em.createNamedQuery(prefix
-                                                              + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
-                                                              attribute);
-        query.setParameter("ruleform", ruleform);
-        query.setParameter("agency", groupingAgency);
-        return query.getResultList();
+        return getAttributeAuthorizations(new Aspect<RuleForm>(facet.getClassifier(),
+                                                               facet.getClassification()),
+                                          includeGrouping);
     }
 
     /*
@@ -473,15 +453,23 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
      * .hellblazer.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.meta.Aspect)
      */
     @Override
-    public List<AttributeType> getAttributesClassifiedBy(RuleForm ruleform,
-                                                         Aspect<RuleForm> aspect) {
-        TypedQuery<AttributeType> query = em.createNamedQuery(prefix
-                                                              + FIND_CLASSIFIED_ATTRIBUTE_VALUES_SUFFIX,
-                                                              attribute);
-        query.setParameter("ruleform", ruleform);
-        query.setParameter("classifier", aspect.getClassifier());
-        query.setParameter("classification", aspect.getClassification());
-        return query.getResultList();
+    public List<ExistentialAttributeRecord> getAttributesClassifiedBy(RuleForm ruleform,
+                                                                      Aspect<RuleForm> aspect) {
+        return create.selectDistinct(EXISTENTIAL_ATTRIBUTE.fields())
+                     .from(EXISTENTIAL_ATTRIBUTE.as("attrValue"))
+                     .join(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
+                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
+                     .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
+                     .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.eq(EXISTENTIAL_NETWORK_AUTHORIZATION.ID))
+                     .join(EXISTENTIAL_NETWORK.as("network"))
+                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
+                     .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
+                     .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.eq(aspect.getClassification()))
+                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.eq(aspect.getClassifier()))
+                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNull())
+                     .fetch()
+                     .into(ExistentialAttributeRecord.class);
     }
 
     /*
@@ -492,39 +480,38 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
      * .CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.agency.Agency)
      */
     @Override
-    public List<AttributeType> getAttributesGroupedBy(RuleForm ruleform,
-                                                      Agency groupingAgency) {
-        TypedQuery<AttributeType> query = em.createNamedQuery(prefix
-                                                              + FIND_GROUPED_ATTRIBUTE_VALUES_SUFFIX,
-                                                              attribute);
-        query.setParameter("ruleform", ruleform);
-        query.setParameter("agency", groupingAgency);
-        return query.getResultList();
+    public List<ExistentialAttributeRecord> getAttributesGroupedBy(RuleForm ruleform,
+                                                                   Agency groupingAgency) {
+        return create.selectDistinct(EXISTENTIAL_ATTRIBUTE.fields())
+                     .from(EXISTENTIAL_ATTRIBUTE.as("attrValue"))
+                     .join(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
+                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
+                     .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
+                     .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.eq(EXISTENTIAL_NETWORK_AUTHORIZATION.ID))
+                     .join(EXISTENTIAL_NETWORK.as("network"))
+                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
+                     .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
+                     .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
+                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.eq(groupingAgency.getId()))
+                     .fetch()
+                     .into(ExistentialAttributeRecord.class);
     }
 
     @Override
-    public NetworkAttribute<?> getAttributeValue(ExistentialNetworkRecord edge,
-                                                 Attribute attribute) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        @SuppressWarnings("unchecked")
-        CriteriaQuery<NetworkAttribute<?>> query = (CriteriaQuery<NetworkAttribute<?>>) cb.createQuery(edge.getAttributeClass());
-        @SuppressWarnings("unchecked")
-        Root<NetworkAttribute<?>> attributeRoot = (Root<NetworkAttribute<?>>) query.from(edge.getAttributeClass());
-        query.select(attributeRoot)
-             .where(cb.and(cb.equal(attributeRoot.get("attribute"), attribute),
-                           cb.equal(attributeRoot.get("network"), edge)));
-        TypedQuery<NetworkAttribute<?>> q = em.createQuery(query);
-        try {
-            return q.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+    public ExistentialNetworkAttributeRecord getAttributeValue(ExistentialNetworkRecord edge,
+                                                               Attribute attribute) {
+        return create.selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE.as("attrValue"))
+                     .where(EXISTENTIAL_NETWORK_ATTRIBUTE.EDGE.eq(edge.getId()))
+                     .and(EXISTENTIAL_NETWORK_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
+                     .fetchOne()
+                     .into(ExistentialNetworkAttributeRecord.class);
     }
 
     @Override
-    public AttributeType getAttributeValue(RuleForm ruleform,
-                                           Attribute attribute) {
-        List<AttributeType> values = getAttributeValues(ruleform, attribute);
+    public ExistentialAttributeRecord getAttributeValue(RuleForm ruleform,
+                                                        Attribute attribute) {
+        List<ExistentialAttributeRecord> values = getAttributeValues(ruleform,
+                                                                     attribute);
         if (values.size() > 1) {
             throw new IllegalStateException(String.format("%s has multiple values for %s",
                                                           attribute, ruleform));
@@ -536,9 +523,10 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
     }
 
     @Override
-    public NetworkAttribute<?> getAttributeValue(RuleForm parent,
-                                                 Relationship r, RuleForm child,
-                                                 Attribute attribute) {
+    public ExistentialNetworkAttributeRecord getAttributeValue(RuleForm parent,
+                                                               Relationship r,
+                                                               RuleForm child,
+                                                               Attribute attribute) {
         ExistentialNetworkRecord edge = getImmediateChildLink(parent, r, child);
         if (edge == null) {
             return null;
@@ -547,14 +535,13 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
     }
 
     @Override
-    public List<AttributeType> getAttributeValues(RuleForm ruleform,
-                                                  Attribute attribute) {
-        TypedQuery<AttributeType> q = em.createNamedQuery(attributePrefix
-                                                          + AttributeValue.GET_ATTRIBUTE_SUFFIX,
-                                                          this.attribute);
-        q.setParameter("ruleform", ruleform);
-        q.setParameter("attribute", attribute);
-        return q.getResultList();
+    public List<ExistentialAttributeRecord> getAttributeValues(RuleForm ruleform,
+                                                               Attribute attribute) {
+        return create.selectFrom(EXISTENTIAL_ATTRIBUTE.as("attrValue"))
+                     .where(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
+                     .and(EXISTENTIAL_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
+                     .fetch()
+                     .into(ExistentialAttributeRecord.class);
     }
 
     @Override
@@ -1027,9 +1014,9 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialDomain>
             if (!authorizedAttribute.getKeyed()
                 && !authorizedAttribute.getIndexed()) {
                 if (getAttributeValue(ruleform, authorizedAttribute) == null) {
-                    AttributeType attribute = create(ruleform,
-                                                     authorizedAttribute,
-                                                     principal);
+                    ExistentialAttribute attribute = create(ruleform,
+                                                            authorizedAttribute,
+                                                            principal);
                     attribute.setValue(authorization.getValue());
                     em.persist(attribute);
                     if (workspace != null) {

@@ -31,8 +31,8 @@ import com.chiralbehaviors.CoRE.domain.ExistentialDomain;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
@@ -48,9 +48,9 @@ import com.hellblazer.utils.Tuple;
  */
 public interface ExistentialModel<RuleForm extends ExistentialDomain> {
 
-    public abstract ExistentialAttribute create(RuleForm ruleform,
-                                                Attribute attribute,
-                                                Agency updatedBy);
+    public abstract ExistentialAttributeRecord create(RuleForm ruleform,
+                                                      Attribute attribute,
+                                                      Agency updatedBy);
 
     /**
      * Create a new instance with the supplied aspects
@@ -88,8 +88,8 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
      * @param attribute
      * @return
      */
-    public List<ExistentialAttribute> getAttributeValues(RuleForm ruleform,
-                                                         Attribute attribute);
+    public List<ExistentialAttributeRecord> getAttributeValues(RuleForm ruleform,
+                                                               Attribute attribute);
 
     public RuleForm getSingleChild(RuleForm parent, Relationship r);
 
@@ -241,25 +241,6 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
                                                  Aspect<RuleForm> aspect);
 
     /**
-     * Answer the aspect identified by the primary keys
-     * 
-     * @param classifier
-     * @param classification
-     * @return
-     */
-
-    Aspect<RuleForm> getAspect(UUID classifier, UUID classification);
-
-    /**
-     * Answer the list of attribute authorizations that are classified by the
-     * grouping agency
-     *
-     * @param groupingAgency
-     * @return
-     */
-    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Agency groupingAgency);
-
-    /**
      * Answer the list of attribute authorizations that are classified by the
      * grouping agency, defined for the particular attribute
      *
@@ -308,19 +289,6 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
-     * authorized by the groupingAgency
-     *
-     * @param ruleform
-     *            - the instance
-     * @param groupingAgency
-     *            - the classifying agency
-     * @return the list of existing attributes authorized by this classifier
-     */
-    List<ExistentialAttribute> getAttributesClassifiedBy(RuleForm ruleform,
-                                                         Agency groupingAgency);
-
-    /**
-     * Answer the list of existing attributes for the ruleform instance that are
      * authorized by the classifier relationship described by the aspect
      *
      * @param ruleform
@@ -329,8 +297,8 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
      *            - the classifying aspect
      * @return the list of existing attributes authorized by this classifier
      */
-    List<ExistentialAttribute> getAttributesClassifiedBy(RuleForm ruleform,
-                                                         Aspect<RuleForm> aspect);
+    List<ExistentialAttributeRecord> getAttributesClassifiedBy(RuleForm ruleform,
+                                                               Aspect<RuleForm> aspect);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -343,14 +311,14 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
      * @return the list of existing attributes for this instance that are
      *         grouped by the given agency
      */
-    List<ExistentialAttribute> getAttributesGroupedBy(RuleForm ruleform,
-                                                      Agency groupingAgency);
+    List<ExistentialAttributeRecord> getAttributesGroupedBy(RuleForm ruleform,
+                                                            Agency groupingAgency);
 
     ExistentialNetworkAttributeRecord getAttributeValue(ExistentialNetworkRecord edge,
                                                         Attribute attribute);
 
-    ExistentialAttribute getAttributeValue(RuleForm ruleform,
-                                           Attribute attribute);
+    ExistentialAttributeRecord getAttributeValue(RuleForm ruleform,
+                                                 Attribute attribute);
 
     ExistentialNetworkAttributeRecord getAttributeValue(RuleForm parent,
                                                         Relationship r,
@@ -574,7 +542,7 @@ public interface ExistentialModel<RuleForm extends ExistentialDomain> {
      * 
      * @param value
      */
-    void setAttributeValue(ExistentialAttribute value);
+    void setAttributeValue(ExistentialAttributeRecord value);
 
     void setAuthorizedAgencies(RuleForm ruleform, Relationship relationship,
                                List<Agency> authorized);

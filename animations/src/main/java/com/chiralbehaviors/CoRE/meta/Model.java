@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import javax.persistence.EntityManager;
+import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
@@ -193,7 +193,7 @@ public interface Model extends AutoCloseable {
      *
      * @return
      */
-    EntityManager getEntityManager();
+    DSLContext getEntityManager();
 
     /**
      * @return the Interval model

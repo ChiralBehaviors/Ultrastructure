@@ -48,6 +48,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
@@ -93,7 +94,7 @@ public interface RecordFactory {
     default Agency newAgency(DSLContext create) {
         Agency record = create.newRecord(EXISTENTIAL)
                               .into(Agency.class);
-        record.setDomain("A");
+        record.setDomain(ExistentialDomain.A);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -124,7 +125,7 @@ public interface RecordFactory {
     default Attribute newAttribute(DSLContext create) {
         Attribute record = create.newRecord(EXISTENTIAL)
                                  .into(Attribute.class);
-        record.setDomain("T");
+        record.setDomain(ExistentialDomain.T);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -179,7 +180,7 @@ public interface RecordFactory {
 
     default ExistentialRecord newInterval(DSLContext create) {
         ExistentialRecord record = create.newRecord(EXISTENTIAL);
-        record.setDomain("I");
+        record.setDomain(ExistentialDomain.I);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -198,7 +199,7 @@ public interface RecordFactory {
 
     default ExistentialRecord newLocation(DSLContext create) {
         ExistentialRecord record = create.newRecord(EXISTENTIAL);
-        record.setDomain("L");
+        record.setDomain(ExistentialDomain.L);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -224,7 +225,7 @@ public interface RecordFactory {
     default Product newProduct(DSLContext create) {
         Product record = create.newRecord(EXISTENTIAL)
                                .into(Product.class);
-        record.setDomain("P");
+        record.setDomain(ExistentialDomain.P);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -256,7 +257,7 @@ public interface RecordFactory {
     default Relationship newRelationship(DSLContext create) {
         Relationship record = create.newRecord(EXISTENTIAL)
                                     .into(Relationship.class);
-        record.setDomain("P");
+        record.setDomain(ExistentialDomain.R);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -317,7 +318,7 @@ public interface RecordFactory {
     default StatusCode newStatusCode(DSLContext create) {
         StatusCode record = create.newRecord(EXISTENTIAL)
                                   .into(StatusCode.class);
-        record.setDomain("S");
+        record.setDomain(ExistentialDomain.S);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -331,7 +332,7 @@ public interface RecordFactory {
     default Unit newUnit(DSLContext create) {
         Unit record = create.newRecord(EXISTENTIAL)
                             .into(Unit.class);
-        record.setDomain("U");
+        record.setDomain(ExistentialDomain.U);
         record.setId(GENERATOR.generate());
         return record;
     }

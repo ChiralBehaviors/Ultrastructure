@@ -28,4 +28,10 @@ import java.util.UUID;
  */
 public interface ExistentialDomain {
     UUID getId();
+
+    String getName();
+
+    String getNotes();
+
+    UUID getUpdatedBy();
 }

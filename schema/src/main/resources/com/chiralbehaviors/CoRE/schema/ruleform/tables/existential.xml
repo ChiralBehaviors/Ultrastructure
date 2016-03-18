@@ -10,7 +10,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="existential_pkey" />
             </column>
-            <column name="domain" type="char" />
+            <column name="domain" type="existential_domain" />
             <column name="name" type="TEXT">
                 <constraints nullable="false" />
             </column>

@@ -189,7 +189,7 @@ public class Animations implements Triggers {
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.network.NetworkInference)
      */
     @Override
-    public void delete(NetworkInference inference) {
+    public void delete(Inference inference) {
         propagateAll();
     }
 

@@ -801,7 +801,7 @@ public class WorkspaceImporter {
 
     private void loadInferences() {
         for (EdgeContext edge : wsp.getInferences()) {
-            NetworkInference inference = new NetworkInference(resolve(edge.parent),
+            Inference inference = new Inference(resolve(edge.parent),
                                                               resolve(edge.relationship),
                                                               resolve(edge.child),
                                                               model.getCurrentPrincipal()

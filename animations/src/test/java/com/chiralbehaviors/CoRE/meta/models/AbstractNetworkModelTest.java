@@ -55,7 +55,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
                                                 "an alias for equals", core);
         equals2.setInverse(equals2);
         em.persist(equals2);
-        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+        Inference aEqualsA = new Inference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
         Agency a = new Agency("A", "A", core);
@@ -98,7 +98,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         assertEquals(8, model.getAgencyModel()
                              .getChildren(a, equals)
                              .size());
-        aEqualsA = em.find(NetworkInference.class, aEqualsA.getId());
+        aEqualsA = em.find(Inference.class, aEqualsA.getId());
         em.remove(aEqualsA);
         em.flush();
         a = em.find(Agency.class, a.getId());
@@ -121,7 +121,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
                                                 "an alias for equals", core);
         equals2.setInverse(equals2);
         em.persist(equals2);
-        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+        Inference aEqualsA = new Inference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
         Agency a = new Agency("A", "A", core);
@@ -193,7 +193,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
                                                 "an alias for equals", core);
         equals2.setInverse(equals2);
         em.persist(equals2);
-        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+        Inference aEqualsA = new Inference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
         Agency a = new Agency("A", "A", core);
@@ -266,17 +266,17 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         Relationship g = model.getRelationshipModel()
                               .create("g", "g", "g'", "g'");
 
-        NetworkInference aIsB = new NetworkInference(a, b, a, core);
+        Inference aIsB = new Inference(a, b, a, core);
         em.persist(aIsB);
-        NetworkInference aIsC = new NetworkInference(a, c, a, core);
+        Inference aIsC = new Inference(a, c, a, core);
         em.persist(aIsC);
-        NetworkInference aIsD = new NetworkInference(a, d, a, core);
+        Inference aIsD = new Inference(a, d, a, core);
         em.persist(aIsD);
-        NetworkInference aIsE = new NetworkInference(a, e, a, core);
+        Inference aIsE = new Inference(a, e, a, core);
         em.persist(aIsE);
-        NetworkInference aIsF = new NetworkInference(a, f, a, core);
+        Inference aIsF = new Inference(a, f, a, core);
         em.persist(aIsF);
-        NetworkInference aIsG = new NetworkInference(a, g, a, core);
+        Inference aIsG = new Inference(a, g, a, core);
         em.persist(aIsG);
         Agency A = new Agency("A", "A", core);
         em.persist(A);
@@ -329,7 +329,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
         em.persist(equals);
         equals2.setInverse(equals2);
         em.persist(equals2);
-        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+        Inference aEqualsA = new Inference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
         Agency a = new Agency("A", "A", core);
@@ -363,7 +363,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
                                                 "an alias for equals", core);
         equals2.setInverse(equals2);
         em.persist(equals2);
-        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+        Inference aEqualsA = new Inference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
         em.flush();
@@ -428,7 +428,7 @@ public class AbstractNetworkModelTest extends AbstractModelTest {
                                                 "an alias for equals", core);
         equals2.setInverse(equals2);
         em.persist(equals2);
-        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+        Inference aEqualsA = new Inference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
         Agency a = new Agency("A", "A", core);

@@ -238,44 +238,44 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createNetworkInferences() {
-        NetworkInference areaToRegion = new NetworkInference(areaOf, regionOf,
+        Inference areaToRegion = new Inference(areaOf, regionOf,
                                                              areaOf, core);
         em.persist(areaToRegion);
 
-        NetworkInference areaToState = new NetworkInference(areaOf, stateOf,
+        Inference areaToState = new Inference(areaOf, stateOf,
                                                             areaOf, core);
         em.persist(areaToState);
 
-        NetworkInference areaToCity = new NetworkInference(areaOf, cityOf,
+        Inference areaToCity = new Inference(areaOf, cityOf,
                                                            areaOf, core);
         em.persist(areaToCity);
 
-        NetworkInference areaToStreet = new NetworkInference(areaOf, streetOf,
+        Inference areaToStreet = new Inference(areaOf, streetOf,
                                                              areaOf, core);
         em.persist(areaToStreet);
 
-        NetworkInference regionToState = new NetworkInference(regionOf, stateOf,
+        Inference regionToState = new Inference(regionOf, stateOf,
                                                               regionOf, core);
         em.persist(regionToState);
 
-        NetworkInference regionToCity = new NetworkInference(regionOf, cityOf,
+        Inference regionToCity = new Inference(regionOf, cityOf,
                                                              regionOf, core);
         em.persist(regionToCity);
 
-        NetworkInference regionToStreet = new NetworkInference(regionOf,
+        Inference regionToStreet = new Inference(regionOf,
                                                                streetOf,
                                                                regionOf, core);
         em.persist(regionToStreet);
 
-        NetworkInference stateToCity = new NetworkInference(stateOf, cityOf,
+        Inference stateToCity = new Inference(stateOf, cityOf,
                                                             stateOf, core);
         em.persist(stateToCity);
 
-        NetworkInference stateToStreet = new NetworkInference(stateOf, streetOf,
+        Inference stateToStreet = new Inference(stateOf, streetOf,
                                                               stateOf, core);
         em.persist(stateToStreet);
 
-        NetworkInference cityToStreet = new NetworkInference(cityOf, streetOf,
+        Inference cityToStreet = new Inference(cityOf, streetOf,
                                                              cityOf, core);
         em.persist(cityToStreet);
     }

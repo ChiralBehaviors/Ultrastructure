@@ -30,22 +30,15 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import javax.persistence.Query;
 
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectOnConditionStep;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
@@ -77,17 +70,13 @@ import com.hellblazer.utils.Tuple;
  */
 abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         implements ExistentialModel<RuleForm> {
-
-    private static Logger        log            = LoggerFactory.getLogger(ExistentialModelImpl.class);
-    private static int           MAX_DEDUCTIONS = 1000;
-    private static final Integer ZERO           = Integer.valueOf(0);
+    private static final Integer ZERO = Integer.valueOf(0);
 
     protected final DSLContext   create;
     protected final Kernel       kernel;
     protected final Model        model;
 
-    @SuppressWarnings("unchecked")
-    public ExistentialModelImpl(Model model, DSLContext create) {
+    public ExistentialModelImpl(Model model) {
         this.model = model;
         this.create = model.getEntityManager();
         this.kernel = model.getKernel();
@@ -296,6 +285,76 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
                                  .value1());
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.chiralbehaviors.CoRE.meta.NetworkedModel#create(com.chiralbehaviors.CoRE.network
+     * .Networked)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public RuleForm create(RuleForm prototype) {
+        ExistentialRecord copy = ((ExistentialRecord) prototype).into(ExistentialRecord.class);
+        //        copy.setUpdatedBy(model.getCurrentPrincipal()
+        //                               .getPrincipal()
+        //                               .getId());
+        //        for (AgencyNetwork network : prototype.getNetworkByParent()) {
+        //            network.getParent()
+        //                   .link(network.getRelationship(), copy,
+        //                         model.getCurrentPrincipal()
+        //                              .getPrincipal(),
+        //                         model.getCurrentPrincipal()
+        //                              .getPrincipal(),
+        //                         em);
+        //        }
+        //        for (AttributeValue<Agency> attribute : prototype.getAttributes()) {
+        //            AgencyAttribute clone = (AgencyAttribute) attribute.clone();
+        //            em.detach(clone);
+        //            em.persist(clone);
+        //            clone.setAgency(copy);
+        //            clone.setUpdatedBy(model.getCurrentPrincipal()
+        //                                    .getPrincipal());
+        //        }
+        return (RuleForm) copy;
+    }
+
+    @Override
+    public ExistentialAttributeRecord create(RuleForm ruleform,
+                                             Attribute attribute,
+                                             Agency updateBy) {
+        return null;
+    }
+
+    @Override
+    public final RuleForm create(String name, String description) {
+        //        Agency agency = new Agency(name, description,
+        //                                   model.getCurrentPrincipal()
+        //                                        .getPrincipal());
+        //        em.persist(agency);
+        //        return agency;
+        return null;
+    }
+
+    @SafeVarargs
+    @Override
+    public final RuleForm create(String name, String description,
+                                 Aspect<RuleForm> aspect, Agency updatedBy,
+                                 Aspect<RuleForm>... aspects) {
+        //        RuleForm agency = new Agency(name, description,
+        //                                     model.getCurrentPrincipal()
+        //                                          .getPrincipal());
+        //        em.persist(agency);
+        //        initialize(agency, aspect);
+        //        if (aspects != null) {
+        //            for (Aspect<Agency> a : aspects) {
+        //                initialize(agency, a);
+        //            }
+        //        }
+        //        return agency;
+        return null;
+    }
+
     @Override
     public void deauthorize(RuleForm ruleform, Relationship relationship,
                             ExistentialRuleform authorized) {
@@ -342,6 +401,14 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     }
 
     @Override
+    public <T extends ExistentialRuleform> List<T> getAllAuthorized(RuleForm ruleform,
+                                                                    Relationship relationship) {
+        throw new UnsupportedOperationException(String.format("%s to Agency authorizations are undefined",
+                                                              ruleform.getClass()
+                                                                      .getSimpleName()));
+    }
+
+    @Override
     public List<Aspect<RuleForm>> getAllFacets() {
         return create.selectDistinct(EXISTENTIAL_NETWORK_AUTHORIZATION.fields())
                      .from(EXISTENTIAL_NETWORK_AUTHORIZATION)
@@ -358,21 +425,6 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
                      .map(auth -> new Aspect<RuleForm>(auth.getClassifier(),
                                                        auth.getClassification()))
                      .collect(Collectors.toList());
-    }
-
-    @Override
-    public <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                        Agency groupingAgency) {
-        return getAllowedValues(attribute,
-                                getAttributeAuthorizations(groupingAgency,
-                                                           attribute));
-    }
-
-    @Override
-    public <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                        Aspect<RuleForm> aspect) {
-        return getAllowedValues(attribute,
-                                getAttributeAuthorizations(aspect, attribute));
     }
 
     /*
@@ -554,14 +606,6 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     }
 
     @Override
-    public <T extends ExistentialRuleform> List<T> getAllAuthorized(RuleForm ruleform,
-                                                                    Relationship relationship) {
-        throw new UnsupportedOperationException(String.format("%s to Agency authorizations are undefined",
-                                                              ruleform.getClass()
-                                                                      .getSimpleName()));
-    }
-
-    @Override
     public <T extends ExistentialRuleform> T getAuthorized(RuleForm ruleform,
                                                            Relationship relationship) {
         List<T> result = getAllAuthorized(ruleform, relationship);
@@ -656,7 +700,6 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ExistentialNetworkRecord getImmediateChildLink(RuleForm parent,
                                                           Relationship relationship,
                                                           RuleForm child) {
@@ -675,7 +718,6 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         return getImmediateChildren(parent.getId(), relationship.getId());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<ExistentialNetworkRecord> getImmediateChildrenLinks(RuleForm parent,
                                                                     Relationship relationship) {
@@ -848,12 +890,6 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         }
     }
 
-    private void setValue(ExistentialAttributeRecord attribute,
-                          ExistentialAttributeAuthorizationRecord authorization) {
-        // TODO Auto-generated method stub
-
-    }
-
     @Override
     public void initialize(RuleForm instance,
                            ExistentialNetworkAuthorizationRecord facet,
@@ -905,24 +941,6 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         inverse.setChild(parent);
         inverse.setUpdatedBy(updatedBy);
         return new Tuple<>(forward, inverse);
-    }
-
-    @Override
-    public void propagate(boolean initial) {
-        createDeductionTemporaryTables(initial);
-        boolean firstPass = true;
-        do {
-            if (infer(firstPass) == 0) {
-                break;
-            }
-            firstPass = false;
-            deduce();
-            if (insert() == 0) {
-                break;
-            }
-            alterDeductionTablesForNextPass();
-        } while (true);
-        generateInverses();
     }
 
     @Override
@@ -995,89 +1013,6 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
               .execute();
     }
 
-    private void alterDeductionTablesForNextPass() {
-        em.createNativeQuery("TRUNCATE TABLE last_pass_rules")
-          .executeUpdate();
-        em.createNativeQuery("ALTER TABLE current_pass_rules RENAME TO temp_last_pass_rules")
-          .executeUpdate();
-        em.createNativeQuery("ALTER TABLE last_pass_rules RENAME TO current_pass_rules")
-          .executeUpdate();
-        em.createNativeQuery("ALTER TABLE temp_last_pass_rules RENAME TO last_pass_rules")
-          .executeUpdate();
-        em.createNativeQuery("TRUNCATE working_memory")
-          .executeUpdate();
-    }
-
-    private void createCurrentPassRules() {
-        em.createNativeQuery("CREATE TEMPORARY TABLE IF NOT EXISTS current_pass_rules ("
-                             + "id uuid NOT NULL," + "parent uuid NOT NULL,"
-                             + "relationship uuid NOT NULL,"
-                             + "child uuid NOT NULL,"
-                             + "premise1 uuid NOT NULL,"
-                             + "premise2 uuid NOT NULL,"
-                             + "inference uuid NOT NULL )")
-          .executeUpdate();
-    }
-
-    private void createDeductionTemporaryTables(boolean initial) {
-        if (initial) {
-            createWorkingMemory();
-            createCurrentPassRules();
-            createLastPassRules();
-        }
-        em.createNativeQuery("TRUNCATE working_memory")
-          .executeUpdate();
-        em.createNativeQuery("TRUNCATE current_pass_rules")
-          .executeUpdate();
-        em.createNativeQuery("TRUNCATE last_pass_rules")
-          .executeUpdate();
-    }
-
-    private void createLastPassRules() {
-        em.createNativeQuery("CREATE TEMPORARY TABLE IF NOT EXISTS last_pass_rules ("
-                             + "id uuid NOT NULL," + "parent uuid NOT NULL,"
-                             + "relationship uuid NOT NULL,"
-                             + "child uuid NOT NULL,"
-                             + "premise1 uuid NOT NULL,"
-                             + "premise2 uuid NOT NULL,"
-                             + "inference uuid NOT NULL )")
-          .executeUpdate();
-    }
-
-    private void createWorkingMemory() {
-        em.createNativeQuery("CREATE TEMPORARY TABLE IF NOT EXISTS working_memory("
-                             + "parent uuid NOT NULL,"
-                             + "relationship uuid NOT NULL,"
-                             + "child uuid NOT NULL,"
-                             + "premise1 uuid NOT NULL,"
-                             + "premise2 uuid NOT NULL,"
-                             + "inference uuid NOT NULL )")
-          .executeUpdate();
-    }
-
-    // Deduce the new rules
-    private void deduce() {
-        int deductions = em.createNamedQuery(networkPrefix
-                                             + DEDUCE_NEW_NETWORK_RULES_SUFFIX)
-                           .executeUpdate();
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("deduced %s rules", deductions));
-
-        }
-    }
-
-    private void generateInverses() {
-        long then = System.currentTimeMillis();
-        int inverses = em.createNamedQuery(String.format("%s%s", networkPrefix,
-                                                         GENERATE_NETWORK_INVERSES_SUFFIX))
-                         .executeUpdate();
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("created %s inverse rules of %s in %s ms",
-                                    inverses, networkPrefix,
-                                    System.currentTimeMillis() - then));
-        }
-    }
-
     @SuppressWarnings("unchecked")
     private List<RuleForm> getImmediateChildren(UUID parent,
                                                 UUID relationship) {
@@ -1091,41 +1026,10 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
                                       .into(domainClass());
     }
 
-    // Infer all possible rules
-    private int infer(boolean firstPass) {
-        int newRules;
-        if (firstPass) {
-            newRules = em.createNamedQuery(networkPrefix
-                                           + INFERENCE_STEP_SUFFIX)
-                         .executeUpdate();
-            firstPass = false;
-        } else {
-            newRules = em.createNamedQuery(networkPrefix
-                                           + INFERENCE_STEP_FROM_LAST_PASS_SUFFIX)
-                         .executeUpdate();
-        }
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("inferred %s new rules", newRules));
-        }
-        return newRules;
-    }
+    private void setValue(ExistentialAttributeRecord attribute,
+                          ExistentialAttributeAuthorizationRecord authorization) {
+        // TODO Auto-generated method stub
 
-    /**
-     * @return
-     */
-    private int insert() {// Insert the new rules
-        Query insert = em.createNamedQuery(networkPrefix
-                                           + INSERT_NEW_NETWORK_RULES_SUFFIX);
-        int inserted = insert.executeUpdate();
-        if (log.isTraceEnabled()) {
-            log.trace(String.format("inserted %s new rules", inserted));
-        }
-        if (inserted > MAX_DEDUCTIONS) {
-            throw new IllegalStateException(String.format("Inserted more than %s deductions: %s, possible runaway inference",
-                                                          MAX_DEDUCTIONS,
-                                                          inserted));
-        }
-        return inserted;
     }
 
     abstract protected ExistentialDomain domain();
@@ -1134,29 +1038,4 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
 
     abstract protected Class<?> getAgencyGroupingClass();
 
-    /**
-     * @param attribute
-     * @param authorizations
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    protected <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                           List<ExistentialAttributeAuthorizationRecord> authorizations) {
-        switch (attribute.getValueType()) {
-            case BOOLEAN: {
-                return (List<ValueType>) Arrays.asList(Boolean.TRUE,
-                                                       Boolean.FALSE);
-            }
-            case BINARY: {
-                return Collections.EMPTY_LIST;
-            }
-            default:
-        }
-
-        List<ValueType> allowedValues = new ArrayList<ValueType>();
-        for (ExistentialAttributeAuthorizationRecord authorization : authorizations) {
-            allowedValues.add((ValueType) authorization.getValue());
-        }
-        return allowedValues;
-    }
 }

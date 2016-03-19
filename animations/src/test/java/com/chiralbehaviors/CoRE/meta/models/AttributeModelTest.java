@@ -111,7 +111,7 @@ public class AttributeModelTest extends AbstractModelTest {
                                                 "an alias for equals", core);
         equals2.setInverse(equals2);
         em.persist(equals2);
-        NetworkInference aEqualsA = new NetworkInference(equals, equals2,
+        Inference aEqualsA = new Inference(equals, equals2,
                                                          equals, core);
         em.persist(aEqualsA);
         Attribute a = new Attribute("A", "A", ValueType.BOOLEAN, core);

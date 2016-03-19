@@ -196,32 +196,6 @@ public interface ExistentialModel<RuleForm extends ExistentialRuleform> {
     List<Aspect<RuleForm>> getAllFacets();
 
     /**
-     * Answer the allowed values for an Attribute, classified by the supplied
-     * aspect
-     *
-     * @param attribute
-     *            - the Attribute
-     * @param groupingAgency
-     *            - the grouping Agency
-     * @return the List of allowed values for this attribute
-     */
-    <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                 Agency groupingAgency);
-
-    /**
-     * Answer the allowed values for an Attribute, classified by the supplied
-     * aspect
-     *
-     * @param attribute
-     *            - the Attribute
-     * @param aspect
-     *            - the classifying aspect
-     * @return the List of allowed values for this attribute
-     */
-    <ValueType> List<ValueType> getAllowedValues(Attribute attribute,
-                                                 Aspect<RuleForm> aspect);
-
-    /**
      * Answer the list of attribute authorizations that are classified by the
      * grouping agency, defined for the particular attribute
      *

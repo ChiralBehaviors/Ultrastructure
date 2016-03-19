@@ -25,10 +25,8 @@ import java.util.List;
 
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.Aspect;
@@ -47,15 +45,6 @@ public class StatusCodeModelImpl extends ExistentialModelImpl<StatusCode>
      */
     public StatusCodeModelImpl(Model model) {
         super(model);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getInterconnections(java.util.List, java.util.List, java.util.List)
-     */
-    @Override
-    public List<ExistentialNetworkRecord> getInterconnections(Collection<StatusCode> parents,
-                                                              Collection<Relationship> relationships,
-                                                              Collection<StatusCode> children) {
     }
 
     /* (non-Javadoc)
@@ -122,8 +111,7 @@ public class StatusCodeModelImpl extends ExistentialModelImpl<StatusCode>
      */
     @Override
     protected ExistentialDomain domain() {
-        // TODO Auto-generated method stub
-        return null;
+        return ExistentialDomain.S;
     }
 
     /* (non-Javadoc)
@@ -131,17 +119,7 @@ public class StatusCodeModelImpl extends ExistentialModelImpl<StatusCode>
      */
     @Override
     protected Class<? extends ExistentialRecord> domainClass() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.models.ExistentialModelImpl#getAgencyGroupingClass()
-     */
-    @Override
-    protected Class<?> getAgencyGroupingClass() {
-        // TODO Auto-generated method stub
-        return null;
+        return StatusCode.class;
     }
 
 }

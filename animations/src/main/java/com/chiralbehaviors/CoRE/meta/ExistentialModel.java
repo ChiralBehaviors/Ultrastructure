@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -469,16 +468,6 @@ public interface ExistentialModel<RuleForm extends ExistentialRuleform> {
                                                                    Relationship r,
                                                                    RuleForm child,
                                                                    Agency updatedBy);
-
-    /**
-     * Propagate the network inferences based on the tracked additions,
-     * deletions and modifications
-     * 
-     * @param initial
-     *
-     * @throws SQLException
-     */
-    void propagate(boolean initial);
 
     /**
      * Sets a value for an attribute after validating it first

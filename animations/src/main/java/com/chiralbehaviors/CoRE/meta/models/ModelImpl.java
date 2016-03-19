@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.Ruleform.FIND_BY_NAME_SUFFIX;
-
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -34,8 +32,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -45,33 +41,30 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
 
-import com.chiralbehaviors.CoRE.Ruleform;
+import org.jooq.DSLContext;
+
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
-import com.chiralbehaviors.CoRE.attribute.AttributeValue_;
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.existential.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Unit;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
-import com.chiralbehaviors.CoRE.meta.AgencyModel;
-import com.chiralbehaviors.CoRE.meta.AttributeModel;
-import com.chiralbehaviors.CoRE.meta.IntervalModel;
-import com.chiralbehaviors.CoRE.meta.JobModel;
-import com.chiralbehaviors.CoRE.meta.LocationModel;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.ExistentialModel;
-import com.chiralbehaviors.CoRE.meta.ProductModel;
+import com.chiralbehaviors.CoRE.meta.JobModel;
+import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
-import com.chiralbehaviors.CoRE.meta.UnitModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
-import com.chiralbehaviors.CoRE.workspace.StateSnapshot;
 
 /**
  * @author hhildebrand
@@ -101,39 +94,99 @@ public class ModelImpl implements Model {
         return builder.toString();
     }
 
-    private final AgencyModel       agencyModel;
-    private final Animations        animations;
-    private final AttributeModel    attributeModel;
-    private AuthorizedPrincipal     currentPrincipal;
-    private final EntityManager     em;
-    private final IntervalModel     intervalModel;
-    private final JobModel          jobModel;
-    private final Kernel            kernel;
-    private final LocationModel     locationModel;
-    private final ProductModel      productModel;
-    private final RelationshipModel relationshipModel;
-    private final StatusCodeModel   statusCodeModel;
-    private final UnitModel         unitModel;
+    private final ExistentialModel<Agency>    agencyModel;
+    private final Animations                  animations;
+    private final ExistentialModel<Attribute> attributeModel;
+    private AuthorizedPrincipal               currentPrincipal;
+    private final DSLContext                  em;
+    private final ExistentialModel<Interval>  intervalModel;
+    private final JobModel                    jobModel;
+    private final Kernel                      kernel;
+    private final ExistentialModel<Location>  locationModel;
+    private final ExistentialModel<Product>   productModel;
+    private final RelationshipModel           relationshipModel;
+    private final StatusCodeModel             statusCodeModel;
+    private final ExistentialModel<Unit>      unitModel;
 
-    private final WorkspaceModel    workspaceModel;
+    private final WorkspaceModel              workspaceModel;
 
-    public ModelImpl(EntityManagerFactory emf) {
-        EntityManager entityManager = emf.createEntityManager();
-        animations = new Animations(this, entityManager);
-        em = new EmWrapper(animations, entityManager);
+    public ModelImpl(DSLContext create) {
+        animations = new Animations(this, null);
+        em = create;
         workspaceModel = new WorkspaceModelImpl(this);
         kernel = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id())
                                .getWorkspace()
                                .getAccessor(Kernel.class);
-        attributeModel = new AttributeModelImpl(this);
-        productModel = new ProductModelImpl(this);
-        intervalModel = new IntervalModelImpl(this);
-        locationModel = new LocationModelImpl(this);
-        agencyModel = new AgencyModelImpl(this);
+        attributeModel = new ExistentialModelImpl(this) {
+            @Override
+            protected ExistentialDomain domain() {
+                return ExistentialDomain.T;
+            }
+
+            @Override
+            protected Class domainClass() {
+                return Attribute.class;
+            }
+        };
+        productModel = new ExistentialModelImpl(this) {
+            @Override
+            protected ExistentialDomain domain() {
+                return ExistentialDomain.P;
+            }
+
+            @Override
+            protected Class domainClass() {
+                return Product.class;
+            }
+        };
+        intervalModel = new ExistentialModelImpl(this) {
+            @Override
+            protected ExistentialDomain domain() {
+                return ExistentialDomain.I;
+            }
+
+            @Override
+            protected Class domainClass() {
+                return Interval.class;
+            }
+        };
+        locationModel = new ExistentialModelImpl(this) {
+            @Override
+            protected ExistentialDomain domain() {
+                return ExistentialDomain.L;
+            }
+
+            @Override
+            protected Class domainClass() {
+                return Location.class;
+            }
+        };
+        agencyModel = new ExistentialModelImpl(this) {
+            @Override
+            protected ExistentialDomain domain() {
+                return ExistentialDomain.A;
+            }
+
+            @Override
+            protected Class domainClass() {
+                return Agency.class;
+            }
+        };
         jobModel = new JobModelImpl(this);
         relationshipModel = new RelationshipModelImpl(this);
         statusCodeModel = new StatusCodeModelImpl(this);
-        unitModel = new UnitModelImpl(this);
+        unitModel = new ExistentialModelImpl(this) {
+            @Override
+            protected ExistentialDomain domain() {
+                return ExistentialDomain.U;
+            }
+
+            @Override
+            protected Class domainClass() {
+                return Unit.class;
+            }
+        };
+        ;
         initializeCurrentPrincipal();
     }
 
@@ -142,8 +195,8 @@ public class ModelImpl implements Model {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R apply(Class<R> phantasm,
-                                                                                Phantasm<? extends T> target) {
+    public <T extends ExistentialRuleform, R extends Phantasm<T>> R apply(Class<R> phantasm,
+                                                                          Phantasm<? extends T> target) {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
                                                                                               this);
         return (R) definition.construct(target.getRuleform(), this,
@@ -159,8 +212,8 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#cast(com.chiralbehaviors.CoRE.phantasm.Phantasm, java.lang.Class)
      */
     @Override
-    public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
-                                                                               Class<R> phantasm) {
+    public <T extends ExistentialRuleform, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
+                                                                         Class<R> phantasm) {
         return (R) wrap(phantasm, source.getRuleform());
     }
 
@@ -180,9 +233,9 @@ public class ModelImpl implements Model {
      */
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public <T extends ExistentialRuleform<T, ?>, R extends Phantasm<T>> R construct(Class<R> phantasm,
-                                                                                    String name,
-                                                                                    String description) throws InstantiationException {
+    public <T extends ExistentialRuleform, R extends Phantasm<T>> R construct(Class<R> phantasm,
+                                                                              String name,
+                                                                              String description) throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm,
                                                                                  this);
         ExistentialRuleform<? extends T, ?> ruleform;
@@ -307,8 +360,8 @@ public class ModelImpl implements Model {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <RuleForm extends ExistentialRuleform<?, ?>> RuleForm find(String name,
-                                                                      Class<RuleForm> ruleform) {
+    public <RuleForm extends ExistentialRuleform> RuleForm find(String name,
+                                                                Class<RuleForm> ruleform) {
         try {
             return (RuleForm) em.createNamedQuery(prefixFor(ruleform)
                                                   + FIND_BY_NAME_SUFFIX)
@@ -370,7 +423,7 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#getAgencyModel()
      */
     @Override
-    public AgencyModel getAgencyModel() {
+    public ExistentialModel<Agency> getAgencyModel() {
         return agencyModel;
     }
 
@@ -380,7 +433,7 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#getAttributeModel()
      */
     @Override
-    public AttributeModel getAttributeModel() {
+    public ExistentialModel<Attribute> getAttributeModel() {
         return attributeModel;
     }
 
@@ -413,12 +466,12 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#getEntityManager()
      */
     @Override
-    public EntityManager getEntityManager() {
+    public DSLContext getEntityManager() {
         return em;
     }
 
     @Override
-    public IntervalModel getIntervalModel() {
+    public ExistentialModel<Interval> getIntervalModel() {
         return intervalModel;
     }
 
@@ -448,7 +501,7 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#getLocationModel()
      */
     @Override
-    public LocationModel getLocationModel() {
+    public ExistentialModel<Location> getLocationModel() {
         return locationModel;
     }
 
@@ -486,7 +539,7 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#getProductModel()
      */
     @Override
-    public ProductModel getProductModel() {
+    public ExistentialModel<Product> getProductModel() {
         return productModel;
     }
 
@@ -504,7 +557,7 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#getUnitModel()
      */
     @Override
-    public UnitModel getUnitModel() {
+    public ExistentialModel<Unit> getUnitModel() {
         return unitModel;
     }
 
@@ -512,7 +565,7 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#getUnknownNetworkedModel(com.chiralbehaviors.CoRE.ExistentialRuleform)
      */
     @Override
-    public <RuleForm extends ExistentialRuleform<?, ?>> ExistentialModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform) {
+    public <RuleForm extends ExistentialRuleform> ExistentialModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform) {
         RuleForm unproxied = Ruleform.initializeAndUnproxy(ruleform);
         switch (unproxied.getClass()
                          .getSimpleName()) {
@@ -547,14 +600,14 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public void inferNetworks(ExistentialRuleform<?, ?> ruleform) {
+    public void inferNetworks(ExistentialRuleform ruleform) {
         animations.inferNetworks(ruleform);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ExistentialRuleform<T, ?>, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
-                                                                                                UUID uuid) {
+    public <T extends ExistentialRuleform, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                                          UUID uuid) {
         RuleForm ruleform = (RuleForm) getEntityManager().find(Model.getExistentialRuleform(phantasm),
                                                                uuid);
         if (ruleform == null) {
@@ -588,8 +641,8 @@ public class ModelImpl implements Model {
 
     @Override
     @SuppressWarnings({ "unchecked" })
-    public <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
-                                                                               Phantasm<?> ruleform) {
+    public <T extends ExistentialRuleform, R extends Phantasm<?>> R wrap(Class<R> phantasm,
+                                                                         Phantasm<?> ruleform) {
         if (ruleform == null) {
             return null;
         }

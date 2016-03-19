@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.TypedQuery;
+
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SelectConditionStep;
@@ -80,6 +82,29 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         this.model = model;
         this.create = model.getEntityManager();
         this.kernel = model.getKernel();
+    }
+
+    @Override
+    public void authorize(Aspect<RuleForm> aspect, Attribute... attributes) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public List<ExistentialNetworkRecord> getInterconnections(Collection<RuleForm> parents,
+                                                              Collection<Relationship> relationships,
+                                                              Collection<RuleForm> children) {
+        if (parents == null || parents.size() == 0 || relationships == null
+            || relationships.size() == 0 || children == null
+            || children.size() == 0) {
+            return null;
+        }
+        TypedQuery<RelationshipNetwork> query = em.createNamedQuery(RelationshipNetwork.GET_NETWORKS,
+                                                                    RelationshipNetwork.class);
+        query.setParameter("parents", parents);
+        query.setParameter("relationships", relationships);
+        query.setParameter("children", children);
+        return query.getResultList();
     }
 
     @Override
@@ -1035,7 +1060,5 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     abstract protected ExistentialDomain domain();
 
     abstract protected Class<? extends ExistentialRecord> domainClass();
-
-    abstract protected Class<?> getAgencyGroupingClass();
 
 }

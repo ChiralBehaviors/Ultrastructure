@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
@@ -71,13 +73,30 @@ public interface Model extends AutoCloseable {
     }
 
     /**
+     * @param phantasm
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    static <T extends ExistentialRuleform> Constructor<? super T> getExistentialRuleformConstructor(Class<?> phantasm) {
+        try {
+            return (Constructor<? super T>) getExistentialRuleform(phantasm).getConstructor(String.class,
+                                                                                            String.class,
+                                                                                            Agency.class);
+        } catch (NoSuchMethodException | SecurityException e) {
+            throw new IllegalStateException("Cannot access or find constructor for ruleform",
+                                            e);
+        }
+    }
+
+    /**
      * Apply the phantasm to the target.
      * 
      * @param phantasm
      * @param target
      * @return
      */
-    Phantasm apply(Class<Phantasm> phantasm, Phantasm target);
+    <T extends ExistentialRuleform, R extends Phantasm<T>> R apply(Class<R> phantasm,
+                                                                   Phantasm<? extends T> target);
 
     /**
      * Answer the cached facet definition for a phantasm class
@@ -85,7 +104,7 @@ public interface Model extends AutoCloseable {
      * @param phantasm
      * @return
      */
-    PhantasmDefinition<?> cached(Class<? extends Phantasm> phantasm);
+    PhantasmDefinition<?> cached(Class<? extends Phantasm<?>> phantasm);
 
     /**
      * Cast the phantasm to another facet
@@ -94,7 +113,8 @@ public interface Model extends AutoCloseable {
      * @param ruleform
      * @return
      */
-    Phantasm cast(Phantasm source, Class<Phantasm> phantasm);
+    <T extends ExistentialRuleform, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
+                                                                  Class<R> phantasm);
 
     @Override
     void close();
@@ -108,8 +128,9 @@ public interface Model extends AutoCloseable {
      * @return
      * @throws InstantiationException
      */
-    Phantasm construct(Class<Phantasm> phantasm, String name,
-                       String description) throws InstantiationException;
+    <T extends ExistentialRuleform, R extends Phantasm<T>> R construct(Class<R> phantasm,
+                                                                       String name,
+                                                                       String description) throws InstantiationException;
 
     /**
      * Execute the function within in the context of the authenticated
@@ -131,6 +152,16 @@ public interface Model extends AutoCloseable {
      * @return the collection of ruleform instances that match the attribute
      */
     ExistentialRecord find(ExistentialAttribute attributeValue);
+
+    /**
+     * Find an instance of the ExistentialRuleform using the name
+     *
+     * @param name
+     * @return the instance that has the supplied name, or null if the instance
+     *         does not exist
+     */
+    <RuleForm extends ExistentialRuleform> RuleForm find(String name,
+                                                         Class<RuleForm> ruleform);
 
     /**
      * Find an instance using the id
@@ -257,7 +288,8 @@ public interface Model extends AutoCloseable {
      * @param uuid
      * @return
      */
-    Phantasm lookup(Class<Phantasm> phantasm, UUID uuid);
+    <T extends ExistentialRuleform, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
+                                                                                   UUID uuid);
 
     AuthorizedPrincipal principalFrom(ExistentialRecord principal,
                                       List<UUID> capabilities);
@@ -269,5 +301,6 @@ public interface Model extends AutoCloseable {
      * @param ruleform
      * @return
      */
-    Phantasm wrap(Class<Phantasm> phantasm, Phantasm ruleform);
+    <T extends ExistentialRuleform, R extends Phantasm<?>> R wrap(Class<R> phantasm,
+                                                                  Phantasm<?> ruleform);
 }

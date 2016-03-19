@@ -74,7 +74,7 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                                  pseudoScientist);
         auth.insert();
 
-        WorkspaceSnapshot retrieved = new WorkspaceSnapshot(definingProduct.getId(),
+        WorkspaceSnapshot retrieved = new WorkspaceSnapshot(definingProduct,
                                                             create);
         assertEquals(4, retrieved.getRecords()
                                  .size());

@@ -36,17 +36,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.ProductModel;
-import com.chiralbehaviors.CoRE.network.NetworkAttribute;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.product.ProductNetworkAttribute;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization_;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.hellblazer.utils.Tuple;
 
@@ -56,9 +51,9 @@ import com.hellblazer.utils.Tuple;
  */
 public class DatabaseBackedWorkspace implements EditableWorkspace {
     public class EntityList<T extends Ruleform> extends AbstractList<T> {
-        private final List<WorkspaceAuthorization> backingList;
+        private final List<WorkspaceAuthorizationRecord> backingList;
 
-        public EntityList(List<WorkspaceAuthorization> backingList) {
+        public EntityList(List<WorkspaceAuthorizationRecord> backingList) {
             this.backingList = backingList;
         }
 
@@ -130,7 +125,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @Override
     public <T extends Ruleform> void add(T ruleform) {
-        WorkspaceAuthorization authorization = new WorkspaceAuthorization();
+        WorkspaceAuthorizationRecord authorization = new WorkspaceAuthorizationRecord();
         authorization.setRuleform(ruleform, em);
         authorization.setDefiningProduct(getDefiningProduct());
         authorization.setUpdatedBy(ruleform.getUpdatedBy());
@@ -194,12 +189,12 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         if (cached != null) {
             return (T) cached;
         }
-        TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATION_BY_ID,
-                                                                       WorkspaceAuthorization.class);
+        TypedQuery<WorkspaceAuthorizationRecord> query = em.createNamedQuery(WorkspaceAuthorizationRecord.GET_AUTHORIZATION_BY_ID,
+                                                                             WorkspaceAuthorizationRecord.class);
         query.setParameter("productId", definingProductId);
         query.setParameter("key", key);
         try {
-            WorkspaceAuthorization authorization = query.getSingleResult();
+            WorkspaceAuthorizationRecord authorization = query.getSingleResult();
             T ruleform = authorization.getEntity(em);
             cache.put(key, ruleform);
             return ruleform;
@@ -222,8 +217,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public <T extends Ruleform> List<T> getCollection(Class<T> ruleformClass) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<WorkspaceAuthorization> query = cb.createQuery(WorkspaceAuthorization.class);
-        Root<WorkspaceAuthorization> from = query.from(WorkspaceAuthorization.class);
+        CriteriaQuery<WorkspaceAuthorizationRecord> query = cb.createQuery(WorkspaceAuthorizationRecord.class);
+        Root<WorkspaceAuthorizationRecord> from = query.from(WorkspaceAuthorizationRecord.class);
         query.select(from)
              .where(cb.and(cb.equal(from.get(WorkspaceAuthorization_.type),
                                     ruleformClass.getSimpleName()),
@@ -283,8 +278,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public List<String> getKeys() {
         List<String> keys = new ArrayList<>();
-        for (WorkspaceAuthorization auth : WorkspaceSnapshot.getAuthorizations(getDefiningProduct(),
-                                                                               em)) {
+        for (WorkspaceAuthorizationRecord auth : WorkspaceSnapshot.getAuthorizations(getDefiningProduct(),
+                                                                                     em)) {
             if (auth.getKey() != null) {
                 keys.add(auth.getKey());
             }
@@ -311,7 +306,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public <T extends Ruleform> void put(String key, T ruleform) {
         cache.put(key, ruleform);
-        WorkspaceAuthorization authorization = new WorkspaceAuthorization();
+        WorkspaceAuthorizationRecord authorization = new WorkspaceAuthorizationRecord();
         authorization.setDefiningProduct(getDefiningProduct());
         authorization.setRuleform(ruleform, em);
         authorization.setKey(key);

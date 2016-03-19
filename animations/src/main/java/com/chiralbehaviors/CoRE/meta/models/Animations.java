@@ -31,37 +31,25 @@ import javax.persistence.EntityManager;
 
 import org.hibernate.internal.SessionImpl;
 
-import com.chiralbehaviors.CoRE.Triggers;
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.existential.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyNetwork;
-import com.chiralbehaviors.CoRE.existential.domain.Attribute;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeNetwork;
-import com.chiralbehaviors.CoRE.existential.domain.Interval;
-import com.chiralbehaviors.CoRE.existential.domain.Location;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
-import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
-import com.chiralbehaviors.CoRE.existential.domain.Unit;
-import com.chiralbehaviors.CoRE.existential.domain.UnitNetwork;
-import com.chiralbehaviors.CoRE.existential.network.NetworkInference;
-import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetwork;
-import com.chiralbehaviors.CoRE.location.LocationNetwork;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.domain.Unit;
+import com.chiralbehaviors.CoRE.jooq.tables.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.Job;
+import com.chiralbehaviors.CoRE.jooq.tables.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.TriggerException;
 import com.chiralbehaviors.CoRE.meta.models.hibernate.AnimationsInterceptor;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
-import com.chiralbehaviors.CoRE.time.IntervalNetwork;
 
 /**
  * @author hhildebrand
@@ -83,25 +71,25 @@ import com.chiralbehaviors.CoRE.time.IntervalNetwork;
  */
 public class Animations implements Triggers {
 
-    private static final int MAX_JOB_PROCESSING = 10;
+    private static final int                          MAX_JOB_PROCESSING = 10;
 
-    private final Set<AttributeValue<?>>                     attributeValues  = new HashSet<>();
-    private final Set<ChildSequencingAuthorization>   childSequences   = new HashSet<>();
-    private final EntityManager                              em;
-    private boolean                                          inferAgencyNetwork;
-    private boolean                                          inferAttributeNetwork;
-    private boolean                                          inferIntervalNetwork;
-    private boolean                                          inferLocationNetwork;
-    private boolean                                          inferProductNetwork;
-    private boolean                                          inferRelationshipNetwork;
-    private boolean                                          inferStatusCodeNetwork;
-    private boolean                                          inferUnitNetwork;
-    private final Set<Job>                                   jobs             = new LinkedHashSet<>();
-    private final Model                                      model;
-    private final Set<Product>                               modifiedServices = new HashSet<>();
-    private final Set<ParentSequencingAuthorization>  parentSequences  = new HashSet<>();
-    private final Set<SelfSequencingAuthorization>    selfSequences    = new HashSet<>();
-    private final Set<SiblingSequencingAuthorization> siblingSequences = new HashSet<>();
+    private final Set<AttributeValue<?>>              attributeValues    = new HashSet<>();
+    private final Set<ChildSequencingAuthorization>   childSequences     = new HashSet<>();
+    private final EntityManager                       em;
+    private boolean                                   inferAgencyNetwork;
+    private boolean                                   inferAttributeNetwork;
+    private boolean                                   inferIntervalNetwork;
+    private boolean                                   inferLocationNetwork;
+    private boolean                                   inferProductNetwork;
+    private boolean                                   inferRelationshipNetwork;
+    private boolean                                   inferStatusCodeNetwork;
+    private boolean                                   inferUnitNetwork;
+    private final Set<Job>                            jobs               = new LinkedHashSet<>();
+    private final Model                               model;
+    private final Set<Product>                        modifiedServices   = new HashSet<>();
+    private final Set<ParentSequencingAuthorization>  parentSequences    = new HashSet<>();
+    private final Set<SelfSequencingAuthorization>    selfSequences      = new HashSet<>();
+    private final Set<SiblingSequencingAuthorization> siblingSequences   = new HashSet<>();
 
     public Animations(Model model, EntityManager em) {
         this.model = model;

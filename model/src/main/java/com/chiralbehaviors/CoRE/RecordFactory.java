@@ -44,6 +44,7 @@ import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
@@ -105,8 +106,7 @@ public interface RecordFactory {
         return record;
     }
 
-    default Agency newAgency(DSLContext create, String name,
-                             ExistentialRecord updatedBy) {
+    default Agency newAgency(DSLContext create, String name, Agency updatedBy) {
         Agency record = newAgency(create);
         record.setName(name);
         record.setUpdatedBy(updatedBy.getId());
@@ -114,7 +114,7 @@ public interface RecordFactory {
     }
 
     default Agency newAgency(DSLContext create, String name, String description,
-                             ExistentialRecord updatedBy) {
+                             Agency updatedBy) {
         Agency record = newAgency(create);
         record.setName(name);
         record.setDescription(description);
@@ -231,7 +231,7 @@ public interface RecordFactory {
     }
 
     default Product newProduct(DSLContext create, String name,
-                               ExistentialRecord updatedBy) {
+                               Agency updatedBy) {
         Product record = newProduct(create);
         record.setName(name);
         record.setUpdatedBy(updatedBy.getId());
@@ -239,8 +239,7 @@ public interface RecordFactory {
     }
 
     default Product newProduct(DSLContext create, String name,
-                               String description,
-                               ExistentialRecord updatedBy) {
+                               String description, Agency updatedBy) {
         Product record = newProduct(create).into(Product.class);
         record.setName(name);
         record.setDescription(description);
@@ -263,7 +262,7 @@ public interface RecordFactory {
     }
 
     default Relationship newRelationship(DSLContext create, String name,
-                                         ExistentialRecord updatedBy) {
+                                         Agency updatedBy) {
         Relationship record = newRelationship(create);
         record.setName(name);
         record.setUpdatedBy(updatedBy.getId());
@@ -271,14 +270,13 @@ public interface RecordFactory {
     }
 
     default Relationship newRelationship(DSLContext create, String name,
-                                         ExistentialRecord updatedBy,
-                                         ExistentialRecord inverse) {
+                                         Agency updatedBy,
+                                         Relationship inverse) {
         return newRelationship(create, name, null, updatedBy, inverse);
     }
 
     default Relationship newRelationship(DSLContext create, String name,
-                                         String description,
-                                         ExistentialRecord updatedBy) {
+                                         String description, Agency updatedBy) {
         Relationship record = newRelationship(create);
         record.setName(name);
         record.setDescription(description);
@@ -287,9 +285,8 @@ public interface RecordFactory {
     }
 
     default Relationship newRelationship(DSLContext create, String name,
-                                         String description,
-                                         ExistentialRecord updatedBy,
-                                         ExistentialRecord inverse) {
+                                         String description, Agency updatedBy,
+                                         Relationship inverse) {
         Relationship record = newRelationship(create, name, description,
                                               updatedBy);
         record.setInverse(inverse.getId());
@@ -344,9 +341,9 @@ public interface RecordFactory {
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(DSLContext create,
-                                                                   ExistentialRecord definingProduct,
-                                                                   ExistentialRecord reference,
-                                                                   ExistentialRecord updatedBy) {
+                                                                   Product definingProduct,
+                                                                   ExistentialRuleform reference,
+                                                                   Agency updatedBy) {
         WorkspaceAuthorizationRecord record = newWorkspaceAuthorization(create);
         record.setDefiningProduct(definingProduct.getId());
         record.setReference(reference.getId());

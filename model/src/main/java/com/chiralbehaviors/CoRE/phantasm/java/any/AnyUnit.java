@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.any;
 
+import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
@@ -29,5 +30,5 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
  *
  */
 @Facet(classifier = @Key(name = "AnyRelationship"), classification = @Key(name = "AnyUnit"), workspace = "urn:uuid:00000000-0000-0004-0000-000000000003")
-public interface AnyUnit extends Phantasm {
+public interface AnyUnit extends Phantasm<Unit> {
 }

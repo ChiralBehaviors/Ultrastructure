@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java.any;
 
+import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
@@ -29,5 +30,5 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
  *
  */
 @Facet(classifier = @Key(name = "AnyInterval"), classification = @Key(name = "AnyInterval"), workspace = "urn:uuid:00000000-0000-0004-0000-000000000003")
-public interface AnyInterval extends Phantasm {
+public interface AnyInterval extends Phantasm<Interval> {
 }

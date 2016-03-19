@@ -32,6 +32,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.TableRecord;
 
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.hellblazer.utils.collections.OaHashSet;
@@ -49,7 +50,7 @@ public class WorkspaceSnapshot {
                      .fetch();
     }
 
-    private UUID         definingProduct;
+    private Product      definingProduct;
     private List<Record> records;
 
     public WorkspaceSnapshot() {
@@ -57,7 +58,7 @@ public class WorkspaceSnapshot {
         definingProduct = null;
     }
 
-    public WorkspaceSnapshot(UUID definingProduct, DSLContext create) {
+    public WorkspaceSnapshot(Product definingProduct, DSLContext create) {
         this.definingProduct = definingProduct;
         records = new ArrayList<>();
         loadFromDb(create);
@@ -105,7 +106,7 @@ public class WorkspaceSnapshot {
         return delta;
     }
 
-    public UUID getDefiningProduct() {
+    public Product getDefiningProduct() {
         return definingProduct;
     }
 
@@ -129,12 +130,12 @@ public class WorkspaceSnapshot {
                                  records.addAll(create.selectDistinct(t.fields())
                                                       .from(t)
                                                       .join(WORKSPACE_AUTHORIZATION)
-                                                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct))
+                                                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
                                                       .fetchInto(t.getRecordType()));
                              }
                          });
         records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)
-                             .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct))
+                             .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct.getId()))
                              .fetch());
     }
 }

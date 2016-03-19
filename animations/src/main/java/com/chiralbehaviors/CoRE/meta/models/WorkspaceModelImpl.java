@@ -24,18 +24,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
+import org.jooq.DSLContext;
+
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.WorkspaceAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -44,7 +46,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public class WorkspaceModelImpl implements WorkspaceModel {
 
-    private final EntityManager             em;
+    private final DSLContext                em;
     private final Model                     model;
     private final Map<UUID, WorkspaceScope> scopes = new HashMap<>();
 
@@ -82,7 +84,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public WorkspaceAuthorization get(Product definingProduct, String key) {
+    public WorkspaceAuthorizationRecord get(Product definingProduct,
+                                            String key) {
         TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATION,
                                                                        WorkspaceAuthorization.class);
         query.setParameter("product", definingProduct);
@@ -91,8 +94,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public List<WorkspaceAuthorization> getByType(Product definingProduct,
-                                                  String type) {
+    public List<WorkspaceAuthorizationRecord> getByType(Product definingProduct,
+                                                        String type) {
         TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATIONS_BY_TYPE,
                                                                        WorkspaceAuthorization.class);
         query.setParameter("product", definingProduct);
@@ -126,7 +129,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public List<WorkspaceAuthorization> getWorkspace(Product definingProduct) {
+    public List<WorkspaceAuthorizationRecord> getWorkspace(Product definingProduct) {
         TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_WORKSPACE,
                                                                        WorkspaceAuthorization.class);
         query.setParameter("product", definingProduct);

@@ -54,35 +54,26 @@ import javax.persistence.metamodel.SingularAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.Ruleform_;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
-import com.chiralbehaviors.CoRE.attribute.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.existential.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
-import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
-import com.chiralbehaviors.CoRE.job.AbstractProtocol;
-import com.chiralbehaviors.CoRE.job.AbstractProtocol_;
-import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.job.JobChronology;
-import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.jooq.tables.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.Job;
+import com.chiralbehaviors.CoRE.jooq.tables.JobChronology;
+import com.chiralbehaviors.CoRE.jooq.tables.MetaProtocol;
+import com.chiralbehaviors.CoRE.jooq.tables.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
+import com.chiralbehaviors.CoRE.jooq.tables.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
+import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform_;
-import com.chiralbehaviors.CoRE.product.ProductNetwork;
-import com.chiralbehaviors.CoRE.product.ProductNetwork_;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -467,7 +458,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<ChildSequencingAuthorization> getChildActions(Job job) {
         TypedQuery<ChildSequencingAuthorization> query = em.createNamedQuery(ChildSequencingAuthorization.GET_CHILD_ACTIONS,
-                                                                                    ChildSequencingAuthorization.class);
+                                                                             ChildSequencingAuthorization.class);
         query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
         List<ChildSequencingAuthorization> childActions = query.getResultList();
@@ -484,7 +475,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<ChildSequencingAuthorization> getChildActions(Product parent) {
         TypedQuery<ChildSequencingAuthorization> query = em.createNamedQuery(ChildSequencingAuthorization.GET_SEQUENCES,
-                                                                                    ChildSequencingAuthorization.class);
+                                                                             ChildSequencingAuthorization.class);
         query.setParameter("parent", parent);
         return query.getResultList();
     }
@@ -625,7 +616,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<ParentSequencingAuthorization> getParentActions(Product service) {
         TypedQuery<ParentSequencingAuthorization> query = em.createNamedQuery(ParentSequencingAuthorization.GET_SEQUENCES,
-                                                                                     ParentSequencingAuthorization.class);
+                                                                              ParentSequencingAuthorization.class);
         query.setParameter("service", service);
         return query.getResultList();
     }
@@ -715,7 +706,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<SelfSequencingAuthorization> getSelfActions(Job job) {
         TypedQuery<SelfSequencingAuthorization> query = em.createNamedQuery(SelfSequencingAuthorization.GET_SELF_ACTIONS,
-                                                                                   SelfSequencingAuthorization.class);
+                                                                            SelfSequencingAuthorization.class);
         query.setParameter("service", job.getService());
         query.setParameter("status", job.getStatus());
         try {
@@ -732,7 +723,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<SiblingSequencingAuthorization> getSiblingActions(Job job) {
         TypedQuery<SiblingSequencingAuthorization> query = em.createNamedQuery(SiblingSequencingAuthorization.GET_SIBLING_ACTIONS,
-                                                                                      SiblingSequencingAuthorization.class);
+                                                                               SiblingSequencingAuthorization.class);
         query.setParameter("parent", job.getService());
         query.setParameter("status", job.getStatus());
         return query.getResultList();
@@ -748,7 +739,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<SiblingSequencingAuthorization> getSiblingActions(Product parent) {
         TypedQuery<SiblingSequencingAuthorization> query = em.createNamedQuery(SiblingSequencingAuthorization.GET_SEQUENCES,
-                                                                                      SiblingSequencingAuthorization.class);
+                                                                               SiblingSequencingAuthorization.class);
         query.setParameter("parent", parent);
         return query.getResultList();
     }

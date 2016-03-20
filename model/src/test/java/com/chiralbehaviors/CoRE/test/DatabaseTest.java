@@ -32,14 +32,17 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
+
 /**
  * @author hhildebrand
  * 
  */
 abstract public class DatabaseTest {
-    private static boolean      initialized = false;
-    protected static Connection connection;
-    protected static DSLContext create;
+    private static boolean          initialized = false;
+    protected static Connection     connection;
+    protected static DSLContext     create;
+    protected static RecordsFactory RECORDS;
 
     @AfterClass
     public static void afterClass() throws DataAccessException, SQLException {
@@ -63,6 +66,13 @@ abstract public class DatabaseTest {
             conn.setAutoCommit(false);
 
             create = PostgresDSL.using(conn);
+            RECORDS = new RecordsFactory() {
+
+                @Override
+                public DSLContext create() {
+                    return create;
+                }
+            };
         }
     }
 

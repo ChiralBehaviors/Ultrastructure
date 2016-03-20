@@ -54,7 +54,6 @@ import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
 import com.chiralbehaviors.CoRE.existential.domain.Unit;
 <facet.imports: {dec| import <dec>;<\n>}>
 
-@SuppressWarnings("unused")
 @Facet(classifier = <key(facet.classifier)>, classification = <key(facet.classification)>,
         ruleformClass=<facet.ruleformType>.class,
         workspace = <facet.uri>)

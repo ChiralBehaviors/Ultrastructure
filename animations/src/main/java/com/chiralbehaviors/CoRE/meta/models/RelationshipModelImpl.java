@@ -20,8 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.RecordsFactory.RECORDS;
-
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -45,12 +43,12 @@ public class RelationshipModelImpl extends ExistentialModelImpl<Relationship>
     @Override
     public final Relationship create(String rel1Name, String rel1Description,
                                      String rel2Name, String rel2Description) {
-        Relationship relationship = RECORDS.newRelationship(create, rel1Name,
+        Relationship relationship = factory.newRelationship(rel1Name,
                                                             rel1Description,
                                                             model.getCurrentPrincipal()
                                                                  .getPrincipal());
 
-        Relationship relationship2 = RECORDS.newRelationship(create, rel2Name,
+        Relationship relationship2 = factory.newRelationship(rel2Name,
                                                              rel2Description,
                                                              model.getCurrentPrincipal()
                                                                   .getPrincipal());

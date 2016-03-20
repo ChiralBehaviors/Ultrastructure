@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
@@ -47,14 +48,21 @@ import com.chiralbehaviors.CoRE.meta.Model;
  */
 abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         implements ExistentialModel<RuleForm> {
-    protected final DSLContext create;
-    protected final Kernel     kernel;
-    protected final Model      model;
+    protected final DSLContext     create;
+    protected final Kernel         kernel;
+    protected final Model          model;
+    protected final RecordsFactory factory;
 
     public ExistentialModelImpl(Model model) {
         this.model = model;
         this.create = model.getDSLContext();
         this.kernel = model.getKernel();
+        factory = new RecordsFactory() {
+            @Override
+            public DSLContext create() {
+                return create;
+            }
+        };
     }
 
     /*

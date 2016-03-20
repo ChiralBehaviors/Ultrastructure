@@ -39,7 +39,6 @@ import org.jooq.Record;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectOnConditionStep;
 
-import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -55,7 +54,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeR
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
@@ -68,18 +66,17 @@ import com.hellblazer.utils.Tuple;
  */
 public class PhantasmModelImpl implements PhantasmModel {
     private static final Integer ZERO = Integer.valueOf(0);
-    protected final DSLContext   create;
-    protected final Kernel       kernel;
-    protected final Model        model;
+
+    private final DSLContext     create;
+    private final Model          model;
 
     public PhantasmModelImpl(Model model) {
         this.model = model;
         this.create = model.getDSLContext();
-        this.kernel = model.getKernel();
     }
 
     @Override
-    public void authorize(Aspect<ExistentialRuleform> aspect,
+    public void authorize(Aspect<? extends ExistentialRuleform> aspect,
                           Attribute... attributes) {
         // TODO Auto-generated method stub
 
@@ -364,7 +361,7 @@ public class PhantasmModelImpl implements PhantasmModel {
      * .hellblazer.CoRE.meta.Aspect, com.chiralbehaviors.CoRE.attribute.Attribute)
      */
     @Override
-    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<ExistentialRuleform> aspect,
+    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
                                                                                     Attribute attribute) {
 
         return create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
@@ -383,7 +380,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<ExistentialRuleform> aspect,
+    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
                                                                                     boolean includeGrouping) {
 
         SelectOnConditionStep<Record> and = create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
@@ -421,7 +418,7 @@ public class PhantasmModelImpl implements PhantasmModel {
      */
     @Override
     public List<ExistentialAttributeRecord> getAttributesClassifiedBy(ExistentialRuleform ruleform,
-                                                                      Aspect<ExistentialRuleform> aspect) {
+                                                                      Aspect<? extends ExistentialRuleform> aspect) {
         return create.selectDistinct(EXISTENTIAL_ATTRIBUTE.fields())
                      .from(EXISTENTIAL_ATTRIBUTE.as("attrValue"))
                      .join(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
@@ -531,14 +528,15 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public ExistentialRuleform getChild(ExistentialRuleform parent,
                                         Relationship relationship) {
-        return RecordsFactory.resolve(create.selectDistinct(EXISTENTIAL.fields())
-                                            .from(EXISTENTIAL)
-                                            .join(EXISTENTIAL_NETWORK)
-                                            .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                            .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                            .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                                            .fetchOne()
-                                            .into(ExistentialRecord.class));
+        return model.records()
+                    .resolve(create.selectDistinct(EXISTENTIAL.fields())
+                                   .from(EXISTENTIAL)
+                                   .join(EXISTENTIAL_NETWORK)
+                                   .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                   .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                   .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                                   .fetchOne()
+                                   .into(ExistentialRecord.class));
     }
 
     /*
@@ -560,7 +558,8 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
-                     .map(r -> RecordsFactory.resolve(r))
+                     .map(r -> model.records()
+                                    .resolve(r))
                      .collect(Collectors.toList());
     }
 
@@ -580,15 +579,16 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public ExistentialRuleform getImmediateChild(ExistentialRuleform parent,
                                                  Relationship relationship) {
-        return RecordsFactory.resolve(create.selectDistinct(EXISTENTIAL.fields())
-                                            .from(EXISTENTIAL)
-                                            .join(EXISTENTIAL_NETWORK)
-                                            .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                            .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                            .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                                            .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                                            .fetchOne()
-                                            .into(ExistentialRecord.class));
+        return model.records()
+                    .resolve(create.selectDistinct(EXISTENTIAL.fields())
+                                   .from(EXISTENTIAL)
+                                   .join(EXISTENTIAL_NETWORK)
+                                   .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                   .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                   .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                                   .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                   .fetchOne()
+                                   .into(ExistentialRecord.class));
     }
 
     @Override
@@ -678,7 +678,8 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
-                     .map(r -> RecordsFactory.resolve(r))
+                     .map(r -> model.records()
+                                    .resolve(r))
                      .collect(Collectors.toList());
     }
 
@@ -695,7 +696,8 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
-                     .map(r -> RecordsFactory.resolve(r))
+                     .map(r -> model.records()
+                                    .resolve(r))
                      .collect(Collectors.toList());
     }
 
@@ -747,32 +749,43 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
-                     .map(r -> RecordsFactory.resolve(r))
+                     .map(r -> model.records()
+                                    .resolve(r))
                      .collect(Collectors.toList());
     }
 
     @Override
     public ExistentialRuleform getSingleChild(ExistentialRuleform parent,
                                               Relationship relationship) {
-        return RecordsFactory.resolve(create.selectDistinct(EXISTENTIAL.fields())
-                                            .from(EXISTENTIAL)
-                                            .join(EXISTENTIAL_NETWORK)
-                                            .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                            .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                            .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                                            .fetchOne()
-                                            .into(ExistentialRecord.class));
+        return model.records()
+                    .resolve(create.selectDistinct(EXISTENTIAL.fields())
+                                   .from(EXISTENTIAL)
+                                   .join(EXISTENTIAL_NETWORK)
+                                   .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                   .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                   .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                                   .fetchOne()
+                                   .into(ExistentialRecord.class));
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
+     */
+    @Override
+    public Object getValue(ExistentialAttributeRecord attributeValue) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
     public final void initialize(ExistentialRuleform ruleform,
-                                 Aspect<ExistentialRuleform> aspect) {
+                                 Aspect<? extends ExistentialRuleform> aspect) {
         initialize(ruleform, aspect, null);
     }
 
     @Override
     public final void initialize(ExistentialRuleform ruleform,
-                                 Aspect<ExistentialRuleform> aspect,
+                                 Aspect<? extends ExistentialRuleform> aspect,
                                  EditableWorkspace workspace) {
         Agency principal = model.getCurrentPrincipal()
                                 .getPrincipal();
@@ -916,6 +929,16 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#setValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord, java.lang.Object)
+     */
+    @Override
+    public void setValue(ExistentialAttributeRecord attributeValue,
+                         Object value) {
+        // TODO Auto-generated method stub
+
+    }
+
     @Override
     public void unlink(ExistentialRuleform parent, Relationship relationship,
                        ExistentialRuleform child) {
@@ -936,6 +959,15 @@ public class PhantasmModelImpl implements PhantasmModel {
               .execute();
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#valueClass(com.chiralbehaviors.CoRE.domain.Attribute)
+     */
+    @Override
+    public Class<?> valueClass(Attribute attribute) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     private List<ExistentialRuleform> getImmediateChildren(UUID parent,
                                                            UUID relationship) {
         return create.selectDistinct(EXISTENTIAL.fields())
@@ -947,7 +979,8 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
-                     .map(r -> RecordsFactory.resolve(r))
+                     .map(r -> model.records()
+                                    .resolve(r))
                      .collect(Collectors.toList());
     }
 
@@ -955,33 +988,5 @@ public class PhantasmModelImpl implements PhantasmModel {
                           ExistentialAttributeAuthorizationRecord authorization) {
         // TODO Auto-generated method stub
 
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
-     */
-    @Override
-    public Object getValue(ExistentialAttributeRecord attributeValue) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#setValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord, java.lang.Object)
-     */
-    @Override
-    public void setValue(ExistentialAttributeRecord attributeValue,
-                         Object value) {
-        // TODO Auto-generated method stub
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#valueClass(com.chiralbehaviors.CoRE.domain.Attribute)
-     */
-    @Override
-    public Class<?> valueClass(Attribute attribute) {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

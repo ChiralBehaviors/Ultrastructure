@@ -50,7 +50,8 @@ public interface PhantasmModel {
      * @param aspect
      * @param attributes
      */
-    void authorize(Aspect<ExistentialRuleform> aspect, Attribute... attributes);
+    void authorize(Aspect<? extends ExistentialRuleform> aspect,
+                   Attribute... attributes);
 
     void authorize(ExistentialRuleform ruleform, Relationship relationship,
                    ExistentialRuleform authorized);
@@ -163,7 +164,7 @@ public interface PhantasmModel {
      * @param attribute
      * @return
      */
-    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<ExistentialRuleform> aspect,
+    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
                                                                              Attribute attribute);
 
     /**
@@ -175,7 +176,7 @@ public interface PhantasmModel {
      * @param includeGrouping
      * @return
      */
-    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<ExistentialRuleform> aspect,
+    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
                                                                              boolean includeGrouping);
 
     /**
@@ -201,7 +202,7 @@ public interface PhantasmModel {
      * @return the list of existing attributes authorized by this classifier
      */
     List<ExistentialAttributeRecord> getAttributesClassifiedBy(ExistentialRuleform ruleform,
-                                                               Aspect<ExistentialRuleform> aspect);
+                                                               Aspect<? extends ExistentialRuleform> aspect);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -259,7 +260,7 @@ public interface PhantasmModel {
     List<ExistentialRuleform> getChildren(ExistentialRuleform parent,
                                           Relationship relationship);
 
-    ExistentialNetworkAuthorizationRecord getFacetDeclaration(@SuppressWarnings("rawtypes") Aspect aspect);
+    ExistentialNetworkAuthorizationRecord getFacetDeclaration(Aspect<? extends ExistentialRuleform> aspect);
 
     /**
      * Answer the non inferred child that is connected to the parent via the
@@ -372,7 +373,7 @@ public interface PhantasmModel {
      * @param aspect
      */
     void initialize(ExistentialRuleform ruleform,
-                    Aspect<ExistentialRuleform> aspect);
+                    Aspect<? extends ExistentialRuleform> aspect);
 
     /**
      * Initialize the ruleform with the classified attributes for this aspect,
@@ -382,7 +383,7 @@ public interface PhantasmModel {
      * @param aspect
      */
     void initialize(ExistentialRuleform ruleform,
-                    Aspect<ExistentialRuleform> aspect,
+                    Aspect<? extends ExistentialRuleform> aspect,
                     EditableWorkspace workspace);
 
     /**

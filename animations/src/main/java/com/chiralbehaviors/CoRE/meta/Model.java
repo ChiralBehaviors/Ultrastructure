@@ -29,6 +29,7 @@ import java.util.concurrent.Callable;
 
 import org.jooq.DSLContext;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -183,6 +184,8 @@ public interface Model extends AutoCloseable {
      */
     ExistentialModel<Agency> getAgencyModel();
 
+    Attribute getAttribute(UUID id);
+
     /**
      * @return the Attribute model
      */
@@ -228,6 +231,8 @@ public interface Model extends AutoCloseable {
      */
     ExistentialModel<Location> getLocationModel();
 
+    PhantasmModel getPhantasmModel();
+
     /**
      * @return the Product model
      */
@@ -253,6 +258,8 @@ public interface Model extends AutoCloseable {
      */
     WorkspaceModel getWorkspaceModel();
 
+    void inferNetworks();
+
     /**
      * Infer networks for the existential ruleform
      * 
@@ -271,8 +278,12 @@ public interface Model extends AutoCloseable {
     <T extends ExistentialRuleform, R extends Phantasm<T>> R lookup(Class<R> phantasm,
                                                                     UUID uuid);
 
+    ExistentialRecord lookupExistential(UUID id);
+
     AuthorizedPrincipal principalFrom(ExistentialRecord principal,
                                       List<UUID> capabilities);
+
+    RecordsFactory records();
 
     /**
      * Wrap the ruleform with an instance of a phantasm using the model
@@ -283,12 +294,4 @@ public interface Model extends AutoCloseable {
      */
     <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
                                                                   Phantasm<T> ruleform);
-
-    void inferNetworks();
-
-    PhantasmModel getPhantasmModel();
-
-    ExistentialRecord lookupExistential(UUID id);
-
-    Attribute getAttribute(UUID id);
 }

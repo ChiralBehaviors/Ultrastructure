@@ -21,10 +21,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.job.Job;
-import com.chiralbehaviors.CoRE.job.Protocol;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.Job;
+import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 
 /**

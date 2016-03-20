@@ -93,18 +93,24 @@ public interface RecordsFactory {
     }
 
     static final NoArgGenerator GENERATOR = Generators.timeBasedGenerator();
-    static final RecordsFactory RECORDS   = new RecordsFactory() {
-                                          };
 
-    static ExistentialRuleform createExistential(DSLContext create,
-                                                 UUID classification,
-                                                 String name,
-                                                 String description,
-                                                 Agency updatedBy) {
-        ExistentialRecord clazz = create.selectFrom(EXISTENTIAL)
-                                        .where(EXISTENTIAL.ID.equal(classification))
-                                        .fetchOne();
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+    default ExistentialRecord copy(ExistentialRecord rf) {
+        ExistentialRecord copy = ((ExistentialRecord) rf).copy();
+        copy.setId(GENERATOR.generate());
+        return copy;
+
+    }
+
+    DSLContext create();
+
+    default ExistentialRuleform createExistential(UUID classification,
+                                                  String name,
+                                                  String description,
+                                                  Agency updatedBy) {
+        ExistentialRecord clazz = create().selectFrom(EXISTENTIAL)
+                                          .where(EXISTENTIAL.ID.equal(classification))
+                                          .fetchOne();
+        ExistentialRecord record = create().newRecord(EXISTENTIAL);
         record.setId(GENERATOR.generate());
         record.setName(name);
         record.setDescription(description);
@@ -113,112 +119,51 @@ public interface RecordsFactory {
         return resolve(record);
     }
 
-    static ExistentialRuleform resolve(ExistentialRecord record) {
-        switch (record.getDomain()) {
-            case A:
-                return record.into(Agency.class);
-            case I:
-                return record.into(Interval.class);
-            case L:
-                return record.into(Location.class);
-            case P:
-                return record.into(Product.class);
-            case R:
-                return record.into(Relationship.class);
-            case S:
-                return record.into(StatusCode.class);
-            case T:
-                return record.into(Attribute.class);
-            case U:
-                return record.into(Unit.class);
-            default:
-                throw new IllegalArgumentException(String.format("Unknown domain %s",
-                                                                 record.getDomain()));
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T extends ExistentialRuleform> T resolve(DSLContext create,
-                                                     UUID id) {
-        ExistentialRecord record = create.selectFrom(EXISTENTIAL)
-                                         .where(EXISTENTIAL.ID.equal(id))
-                                         .fetchOne();
-        switch (record.getDomain()) {
-            case A:
-                return (T) record.into(Agency.class);
-            case I:
-                return (T) record.into(Interval.class);
-            case L:
-                return (T) record.into(Location.class);
-            case P:
-                return (T) record.into(Product.class);
-            case R:
-                return (T) record.into(Relationship.class);
-            case S:
-                return (T) record.into(StatusCode.class);
-            case T:
-                return (T) record.into(Attribute.class);
-            case U:
-                return (T) record.into(Unit.class);
-            default:
-                throw new IllegalArgumentException(String.format("Unknown domain %s",
-                                                                 record.getDomain()));
-        }
-    }
-
-    default ExistentialRecord copy(DSLContext create, ExistentialRecord rf) {
-        ExistentialRecord copy = ((ExistentialRecord) rf).copy();
-        copy.setId(GENERATOR.generate());
-        return copy;
-
-    }
-
-    default Agency newAgency(DSLContext create) {
-        Agency record = create.newRecord(EXISTENTIAL)
-                              .into(Agency.class);
+    default Agency newAgency() {
+        Agency record = create().newRecord(EXISTENTIAL)
+                                .into(Agency.class);
         record.setDomain(ExistentialDomain.A);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default Agency newAgency(DSLContext create, String name) {
-        Agency record = newAgency(create);
+    default Agency newAgency(String name) {
+        Agency record = newAgency();
         record.setName(name);
         return record;
     }
 
-    default Agency newAgency(DSLContext create, String name, Agency updatedBy) {
-        Agency record = newAgency(create);
+    default Agency newAgency(String name, Agency updatedBy) {
+        Agency record = newAgency();
         record.setName(name);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default Agency newAgency(DSLContext create, String name, String description,
+    default Agency newAgency(String name, String description,
                              Agency updatedBy) {
-        Agency record = newAgency(create);
+        Agency record = newAgency();
         record.setName(name);
         record.setDescription(description);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default Attribute newAttribute(DSLContext create) {
-        Attribute record = create.newRecord(EXISTENTIAL)
-                                 .into(Attribute.class);
+    default Attribute newAttribute() {
+        Attribute record = create().newRecord(EXISTENTIAL)
+                                   .into(Attribute.class);
         record.setDomain(ExistentialDomain.T);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(DSLContext create) {
-        ChildSequencingAuthorizationRecord record = create.newRecord(CHILD_SEQUENCING_AUTHORIZATION);
+    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization() {
+        ChildSequencingAuthorizationRecord record = create().newRecord(CHILD_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialRuleform newExistential(DSLContext create,
-                                               ExistentialDomain domain) {
+    default ExistentialRuleform newExistential(ExistentialDomain domain) {
         Class<? extends ExistentialRecord> existential;
         switch (domain) {
             case A:
@@ -249,226 +194,297 @@ public interface RecordsFactory {
                 throw new IllegalArgumentException(String.format("Unknown domain %s",
                                                                  domain));
         }
-        ExistentialRecord record = create.newRecord(EXISTENTIAL)
-                                         .into(existential);
+        ExistentialRecord record = create().newRecord(EXISTENTIAL)
+                                           .into(existential);
         record.setDomain(domain);
         record.setId(GENERATOR.generate());
         return (ExistentialRuleform) record;
     }
 
-    default ExistentialAttributeRecord newExistentialAttribute(DSLContext create) {
-        ExistentialAttributeRecord record = create.newRecord(EXISTENTIAL_ATTRIBUTE);
+    default ExistentialAttributeRecord newExistentialAttribute() {
+        ExistentialAttributeRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(DSLContext create) {
-        ExistentialAttributeAuthorizationRecord record = create.newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
+    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization() {
+        ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default AgencyExistentialGroupingRecord newExistentialGrouping(DSLContext create) {
-        AgencyExistentialGroupingRecord record = create.newRecord(AGENCY_EXISTENTIAL_GROUPING);
+    default AgencyExistentialGroupingRecord newExistentialGrouping() {
+        AgencyExistentialGroupingRecord record = create().newRecord(AGENCY_EXISTENTIAL_GROUPING);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialNetworkRecord newExistentialNetwork(DSLContext create) {
-        ExistentialNetworkRecord record = create.newRecord(EXISTENTIAL_NETWORK);
+    default ExistentialNetworkRecord newExistentialNetwork() {
+        ExistentialNetworkRecord record = create().newRecord(EXISTENTIAL_NETWORK);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(DSLContext create) {
-        ExistentialNetworkAttributeRecord record = create.newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE);
+    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute() {
+        ExistentialNetworkAttributeRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization(DSLContext create) {
-        ExistentialNetworkAttributeAuthorizationRecord record = create.newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
+    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization() {
+        ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization(DSLContext create) {
-        ExistentialNetworkAuthorizationRecord record = create.newRecord(EXISTENTIAL_NETWORK_AUTHORIZATION);
+    default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization() {
+        ExistentialNetworkAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialRecord newInterval(DSLContext create) {
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+    default ExistentialRecord newInterval() {
+        ExistentialRecord record = create().newRecord(EXISTENTIAL);
         record.setDomain(ExistentialDomain.I);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default JobRecord newJob(DSLContext create) {
-        JobRecord record = create.newRecord(JOB);
+    default JobRecord newJob() {
+        JobRecord record = create().newRecord(JOB);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default JobChronologyRecord newJobChronology(DSLContext create) {
-        JobChronologyRecord record = create.newRecord(JOB_CHRONOLOGY);
+    default JobChronologyRecord newJobChronology() {
+        JobChronologyRecord record = create().newRecord(JOB_CHRONOLOGY);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ExistentialRecord newLocation(DSLContext create) {
-        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+    default ExistentialRecord newLocation() {
+        ExistentialRecord record = create().newRecord(EXISTENTIAL);
         record.setDomain(ExistentialDomain.L);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default MetaProtocolRecord newMetaProtocol(DSLContext create) {
-        MetaProtocolRecord record = create.newRecord(META_PROTOCOL);
+    default MetaProtocolRecord newMetaProtocol() {
+        MetaProtocolRecord record = create().newRecord(META_PROTOCOL);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default NetworkInferenceRecord newNetworkInferrence(DSLContext create) {
-        NetworkInferenceRecord record = create.newRecord(NETWORK_INFERENCE);
+    default NetworkInferenceRecord newNetworkInferrence() {
+        NetworkInferenceRecord record = create().newRecord(NETWORK_INFERENCE);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default ParentSequencingAuthorizationRecord newParentSequencingAuthorization(DSLContext create) {
-        ParentSequencingAuthorizationRecord record = create.newRecord(PARENT_SEQUENCING_AUTHORIZATION);
+    default ParentSequencingAuthorizationRecord newParentSequencingAuthorization() {
+        ParentSequencingAuthorizationRecord record = create().newRecord(PARENT_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default Product newProduct(DSLContext create) {
-        Product record = create.newRecord(EXISTENTIAL)
-                               .into(Product.class);
+    default Product newProduct() {
+        Product record = create().newRecord(EXISTENTIAL)
+                                 .into(Product.class);
         record.setDomain(ExistentialDomain.P);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default Product newProduct(DSLContext create, String name,
-                               Agency updatedBy) {
-        Product record = newProduct(create);
+    default Product newProduct(String name, Agency updatedBy) {
+        Product record = newProduct();
         record.setName(name);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default Product newProduct(DSLContext create, String name,
-                               String description, Agency updatedBy) {
-        Product record = newProduct(create).into(Product.class);
+    default Product newProduct(String name, String description,
+                               Agency updatedBy) {
+        Product record = newProduct().into(Product.class);
         record.setName(name);
         record.setDescription(description);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default ProtocolRecord newProtocol(DSLContext create) {
-        ProtocolRecord record = create.newRecord(PROTOCOL);
+    default ProtocolRecord newProtocol() {
+        ProtocolRecord record = create().newRecord(PROTOCOL);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default Relationship newRelationship(DSLContext create) {
-        Relationship record = create.newRecord(EXISTENTIAL)
-                                    .into(Relationship.class);
+    default Relationship newRelationship() {
+        Relationship record = create().newRecord(EXISTENTIAL)
+                                      .into(Relationship.class);
         record.setDomain(ExistentialDomain.R);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default Relationship newRelationship(DSLContext create, String name,
-                                         Agency updatedBy) {
-        Relationship record = newRelationship(create);
+    default Relationship newRelationship(String name, Agency updatedBy) {
+        Relationship record = newRelationship();
         record.setName(name);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default Relationship newRelationship(DSLContext create, String name,
-                                         Agency updatedBy,
+    default Relationship newRelationship(String name, Agency updatedBy,
                                          Relationship inverse) {
-        return newRelationship(create, name, null, updatedBy, inverse);
+        return newRelationship(name, null, updatedBy, inverse);
     }
 
-    default Relationship newRelationship(DSLContext create, String name,
-                                         String description, Agency updatedBy) {
-        Relationship record = newRelationship(create);
+    default Relationship newRelationship(String name, String description,
+                                         Agency updatedBy) {
+        Relationship record = newRelationship();
         record.setName(name);
         record.setDescription(description);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default Relationship newRelationship(DSLContext create, String name,
-                                         String description, Agency updatedBy,
+    default Relationship newRelationship(String name, String description,
+                                         Agency updatedBy,
                                          Relationship inverse) {
-        Relationship record = newRelationship(create, name, description,
-                                              updatedBy);
+        Relationship record = newRelationship(name, description, updatedBy);
         record.setInverse(inverse.getId());
         inverse.setInverse(record.getId());
         return record;
     }
 
-    default Relationship newRelationshipy(DSLContext create, String name) {
-        Relationship record = newRelationship(create);
+    default Relationship newRelationshipy(String name) {
+        Relationship record = newRelationship();
         record.setName(name);
         return record;
     }
 
-    default SelfSequencingAuthorizationRecord newSelfSequencingAuthorization(DSLContext create) {
-        SelfSequencingAuthorizationRecord record = create.newRecord(SELF_SEQUENCING_AUTHORIZATION);
+    default SelfSequencingAuthorizationRecord newSelfSequencingAuthorization() {
+        SelfSequencingAuthorizationRecord record = create().newRecord(SELF_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization(DSLContext create) {
-        SiblingSequencingAuthorizationRecord record = create.newRecord(SIBLING_SEQUENCING_AUTHORIZATION);
+    default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization() {
+        SiblingSequencingAuthorizationRecord record = create().newRecord(SIBLING_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default StatusCode newStatusCode(DSLContext create) {
-        StatusCode record = create.newRecord(EXISTENTIAL)
-                                  .into(StatusCode.class);
+    default StatusCode newStatusCode() {
+        StatusCode record = create().newRecord(EXISTENTIAL)
+                                    .into(StatusCode.class);
         record.setDomain(ExistentialDomain.S);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default StatusCodeSequencingRecord newStatusCodeSequencing(DSLContext create) {
-        StatusCodeSequencingRecord record = create.newRecord(STATUS_CODE_SEQUENCING);
+    default StatusCode newStatusCode(String string, Agency core) {
+        StatusCode code = newStatusCode();
+        code.setName(string);
+        code.setUpdatedBy(core.getId());
+        return code;
+    }
+
+    default StatusCodeSequencingRecord newStatusCodeSequencing() {
+        StatusCodeSequencingRecord record = create().newRecord(STATUS_CODE_SEQUENCING);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default Unit newUnit(DSLContext create) {
-        Unit record = create.newRecord(EXISTENTIAL)
-                            .into(Unit.class);
+    default StatusCodeSequencingRecord newStatusCodeSequencing(Product service,
+                                                               StatusCode parent,
+                                                               StatusCode child,
+                                                               Agency core) {
+        StatusCodeSequencingRecord record = newStatusCodeSequencing();
+        record.setService(service.getId());
+        record.setParent(parent.getId());
+        record.setChild(child.getId());
+        return record;
+    }
+
+    default Unit newUnit() {
+        Unit record = create().newRecord(EXISTENTIAL)
+                              .into(Unit.class);
         record.setDomain(ExistentialDomain.U);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(DSLContext create) {
-        WorkspaceAuthorizationRecord record = create.newRecord(WORKSPACE_AUTHORIZATION);
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization() {
+        WorkspaceAuthorizationRecord record = create().newRecord(WORKSPACE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(DSLContext create,
-                                                                   Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ExistentialRuleform reference,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord record = newWorkspaceAuthorization(create);
+        WorkspaceAuthorizationRecord record = newWorkspaceAuthorization();
         record.setDefiningProduct(definingProduct.getId());
         record.setReference(reference.getId());
         record.setUpdatedBy(updatedBy.getId());
         record.setType(ReferenceType.EXISTENTIAL.ordinal());
         return record;
+    }
+
+    default ExistentialRuleform resolve(ExistentialRecord record) {
+        if (record == null) {
+            return null;
+        }
+        switch (record.getDomain()) {
+            case A:
+                return record.into(Agency.class);
+            case I:
+                return record.into(Interval.class);
+            case L:
+                return record.into(Location.class);
+            case P:
+                return record.into(Product.class);
+            case R:
+                return record.into(Relationship.class);
+            case S:
+                return record.into(StatusCode.class);
+            case T:
+                return record.into(Attribute.class);
+            case U:
+                return record.into(Unit.class);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown domain %s",
+                                                                 record.getDomain()));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    default <T extends ExistentialRuleform> T resolve(UUID id) {
+        ExistentialRecord record = create().selectFrom(EXISTENTIAL)
+                                           .where(EXISTENTIAL.ID.equal(id))
+                                           .fetchOne();
+        if (record == null) {
+            return null;
+        }
+        switch (record.getDomain()) {
+            case A:
+                return (T) record.into(Agency.class);
+            case I:
+                return (T) record.into(Interval.class);
+            case L:
+                return (T) record.into(Location.class);
+            case P:
+                return (T) record.into(Product.class);
+            case R:
+                return (T) record.into(Relationship.class);
+            case S:
+                return (T) record.into(StatusCode.class);
+            case T:
+                return (T) record.into(Attribute.class);
+            case U:
+                return (T) record.into(Unit.class);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown domain %s",
+                                                                 record.getDomain()));
+        }
     }
 }

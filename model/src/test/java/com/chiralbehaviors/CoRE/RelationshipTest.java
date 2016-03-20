@@ -19,7 +19,6 @@
  */
 package com.chiralbehaviors.CoRE;
 
-import static com.chiralbehaviors.CoRE.RecordsFactory.RECORDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -39,16 +38,15 @@ public class RelationshipTest extends DatabaseTest {
 
     @Before
     public void initData() {
-        Agency core = RECORDS.newAgency(create, "CoREd");
+        Agency core = RECORDS.newAgency("CoREd");
         core.setUpdatedBy(core.getId());
         core.insert();
 
-        Relationship massList = RECORDS.newRelationship(create, "mass-list",
+        Relationship massList = RECORDS.newRelationship("mass-list",
                                                         "A is a member of the mass list B",
                                                         core);
 
-        Relationship massListOf = RECORDS.newRelationship(create,
-                                                          "mass-list-of",
+        Relationship massListOf = RECORDS.newRelationship("mass-list-of",
                                                           "A is a mass list that has B as a member",
                                                           core, massList);
         massList.insert();
@@ -57,12 +55,12 @@ public class RelationshipTest extends DatabaseTest {
 
     @Test
     public void setInverseTest() {
-        Agency core = RECORDS.newAgency(create, "CoREd");
+        Agency core = RECORDS.newAgency("CoREd");
         core.setUpdatedBy(core.getId());
         core.insert();
-        Relationship r = RECORDS.newRelationship(create, "Foo", core);
+        Relationship r = RECORDS.newRelationship("Foo", core);
 
-        Relationship i = RECORDS.newRelationship(create, "Bar", core, r);
+        Relationship i = RECORDS.newRelationship("Bar", core, r);
         r.insert();
         i.insert();
 

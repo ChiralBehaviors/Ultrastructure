@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.RecordsFactory.resolve;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 
 import java.lang.reflect.InvocationTargetException;
@@ -104,12 +103,20 @@ public class ModelImpl implements Model {
     private final RelationshipModel           relationshipModel;
     private final StatusCodeModel             statusCodeModel;
     private final ExistentialModel<Unit>      unitModel;
-
     private final WorkspaceModel              workspaceModel;
+    private final RecordsFactory              factory;
 
     public ModelImpl(DSLContext create) {
-        animations = new Animations(this, null);
+        animations = null;
         this.create = create;
+        factory = new RecordsFactory() {
+
+            @Override
+            public DSLContext create() {
+                return create;
+            }
+
+        };
         workspaceModel = new WorkspaceModelImpl(this);
         kernel = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id())
                                .getWorkspace()
@@ -187,9 +194,6 @@ public class ModelImpl implements Model {
         initializeCurrentPrincipal();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#apply(com.chiralbehaviors.CoRE.phantasm.Phantasm, java.lang.Class)
-     */
     @SuppressWarnings("unchecked")
     @Override
     public <T extends ExistentialRuleform, R extends Phantasm<T>> R apply(Class<R> phantasm,
@@ -205,26 +209,17 @@ public class ModelImpl implements Model {
         return cached(phantasm, this);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#cast(com.chiralbehaviors.CoRE.phantasm.Phantasm, java.lang.Class)
-     */
     @Override
     public <T extends ExistentialRuleform, R extends Phantasm<T>> R cast(T source,
                                                                          Class<R> phantasm) {
         return wrap(phantasm, source);
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.AutoCloseable#close()
-     */
     @Override
     public void close() {
         create.close();
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#construct(java.lang.Class, java.lang.String, java.lang.String, com.chiralbehaviors.CoRE.agency.Agency)
-     */
     @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public <T extends ExistentialRuleform, R extends Phantasm<T>> R construct(Class<R> phantasm,
@@ -249,9 +244,6 @@ public class ModelImpl implements Model {
                                         getCurrentPrincipal().getPrincipal());
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#executeAs(com.chiralbehaviors.CoRE.security.AuthenticatedPrincipal, java.util.concurrent.Callable)
-     */
     @Override
     public <V> V executeAs(AuthorizedPrincipal principal,
                            Callable<V> function) throws Exception {
@@ -266,47 +258,30 @@ public class ModelImpl implements Model {
         return value;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#flushWorkspaces()
-     */
     @Override
     public void flushWorkspaces() {
         workspaceModel.flush();
         initializeCurrentPrincipal();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#getAgencyModel()
-     */
     @Override
     public ExistentialModel<Agency> getAgencyModel() {
         return agencyModel;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#getAttributeModel()
-     */
     @Override
     public ExistentialModel<Attribute> getAttributeModel() {
         return attributeModel;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#getCoreInstance()
-     */
     @SuppressWarnings("unchecked")
     @Override
     public CoreInstance getCoreInstance() {
         try {
             return wrap(CoreInstance.class,
                         phantasmModel.getChild(getKernel().getCore(),
-                                               resolve(create,
-                                                       getKernel().getSingletonOf()
-                                                                  .getInverse())));
+                                               factory.resolve(getKernel().getSingletonOf()
+                                                                          .getInverse())));
         } catch (NoResultException e) {
             throw new IllegalStateException("The CoRE system has not been initialized properly",
                                             e);
@@ -320,11 +295,6 @@ public class ModelImpl implements Model {
                                            : authorizedPrincipal;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#getEntityManager()
-     */
     @Override
     public DSLContext getDSLContext() {
         return create;
@@ -335,41 +305,21 @@ public class ModelImpl implements Model {
         return intervalModel;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#getJobModel()
-     */
     @Override
     public JobModel getJobModel() {
         return jobModel;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#getKernel()
-     */
     @Override
     public Kernel getKernel() {
         return kernel;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#getLocationModel()
-     */
     @Override
     public ExistentialModel<Location> getLocationModel() {
         return locationModel;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#getProductModel()
-     */
     @Override
     public ExistentialModel<Product> getProductModel() {
         return productModel;
@@ -385,17 +335,11 @@ public class ModelImpl implements Model {
         return statusCodeModel;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#getUnitModel()
-     */
     @Override
     public ExistentialModel<Unit> getUnitModel() {
         return unitModel;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#getUnknownNetworkedModel(com.chiralbehaviors.CoRE.ExistentialRuleform)
-     */
     public <RuleForm extends ExistentialRuleform> ExistentialModel<?> getUnknownNetworkedModel(RuleForm ruleform) {
         switch (ruleform.getClass()
                         .getSimpleName()) {
@@ -421,9 +365,6 @@ public class ModelImpl implements Model {
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#getWorkspaceModel()
-     */
     @Override
     public WorkspaceModel getWorkspaceModel() {
         return workspaceModel;
@@ -438,9 +379,7 @@ public class ModelImpl implements Model {
     @Override
     public <T extends ExistentialRuleform, R extends Phantasm<T>> R lookup(Class<R> phantasm,
                                                                            UUID uuid) {
-        T ruleform = (T) RecordsFactory.resolve(create.selectFrom(EXISTENTIAL)
-                                                      .where(EXISTENTIAL.ID.equal(uuid))
-                                                      .fetchOne());
+        T ruleform = (T) factory.resolve(uuid);
         if (ruleform == null) {
             return null;
         }
@@ -457,9 +396,8 @@ public class ModelImpl implements Model {
                                                     kernel.getSingletonOf(),
                                                     kernel.getCore()));
         excluded.add(phantasmModel.getImmediateLink(kernel.getCore(),
-                                                    resolve(create,
-                                                            kernel.getSingletonOf()
-                                                                  .getInverse()),
+                                                    factory.resolve(kernel.getSingletonOf()
+                                                                          .getInverse()),
                                                     instance));
         return excluded;
     }
@@ -471,18 +409,12 @@ public class ModelImpl implements Model {
                                                          .into(Agency.class));
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#find(com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute)
-     */
     @Override
     public ExistentialRecord find(ExistentialAttribute attributeValue) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#findUpdatedBy(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord, java.lang.Class)
-     */
     @Override
     public <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(ExistentialRecord updatedBy,
                                                                     Class<Ruleform> ruleform) {
@@ -490,27 +422,18 @@ public class ModelImpl implements Model {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#findAll(java.lang.Class)
-     */
     @Override
     public <RuleForm extends Ruleform> List<RuleForm> findAll(Class<RuleForm> ruleform) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#inferNetworks(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord)
-     */
     @Override
     public void inferNetworks(ExistentialRecord ruleform) {
         // TODO Auto-generated method stub
 
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#principalFrom(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord, java.util.List)
-     */
     @Override
     public AuthorizedPrincipal principalFrom(ExistentialRecord principal,
                                              List<UUID> capabilities) {
@@ -518,18 +441,12 @@ public class ModelImpl implements Model {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#getPhantasmModel()
-     */
     @Override
     public PhantasmModel getPhantasmModel() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#wrap(java.lang.Class, com.chiralbehaviors.CoRE.phantasm.Phantasm)
-     */
     @Override
     public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
                                                                          Phantasm<T> ruleform) {
@@ -537,21 +454,20 @@ public class ModelImpl implements Model {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#lookupExistential(java.util.UUID)
-     */
     @Override
     public ExistentialRecord lookupExistential(UUID id) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#getAttribute(java.util.UUID)
-     */
     @Override
     public Attribute getAttribute(UUID id) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public RecordsFactory records() {
+        return factory;
     }
 }

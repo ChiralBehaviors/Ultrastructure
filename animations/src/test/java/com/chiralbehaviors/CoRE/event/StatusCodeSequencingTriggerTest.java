@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.hellblazer.utils.Tuple;
 

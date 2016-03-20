@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.jooq.DSLContext;
-
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
@@ -42,13 +40,11 @@ import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
  */
 public class WorkspaceModelImpl implements WorkspaceModel {
 
-    private final DSLContext                create;
     private final Model                     model;
     private final Map<UUID, WorkspaceScope> scopes = new HashMap<>();
 
     public WorkspaceModelImpl(Model model) {
         this.model = model;
-        create = model.getDSLContext();
     }
 
     @Override
@@ -60,9 +56,9 @@ public class WorkspaceModelImpl implements WorkspaceModel {
         Kernel kernel = model.getKernel();
         Aspect<Product> aspect = new Aspect<Product>(kernel.getIsA(),
                                                      kernel.getWorkspace());
-        model.getProductModel()
+        model.getPhantasmModel()
              .initialize(definingProduct, aspect, workspace);
-        create.persist(definingProduct);
+        definingProduct.insert();
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         return scope;
@@ -108,7 +104,8 @@ public class WorkspaceModelImpl implements WorkspaceModel {
 
     @Override
     public WorkspaceScope getScoped(UUID definingProduct) {
-        Product product = null;
+        Product product = model.records()
+                               .resolve(definingProduct);
         return getScoped(product);
     }
 

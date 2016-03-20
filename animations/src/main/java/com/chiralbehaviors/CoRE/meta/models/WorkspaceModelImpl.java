@@ -26,9 +26,9 @@ import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
@@ -54,8 +54,9 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                                                                         model);
         workspace.add(definingProduct);
         Kernel kernel = model.getKernel();
-        Aspect<Product> aspect = new Aspect<Product>(kernel.getIsA(),
-                                                     kernel.getWorkspace());
+        FacetRecord aspect = model.getPhantasmModel()
+                                  .getFacetDeclaration(kernel.getIsA(),
+                                                       kernel.getWorkspace());
         model.getPhantasmModel()
              .initialize(definingProduct, aspect, workspace);
         definingProduct.insert();

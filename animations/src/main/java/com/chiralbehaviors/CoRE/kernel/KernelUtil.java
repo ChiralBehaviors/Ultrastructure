@@ -30,9 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-
-import org.hibernate.internal.SessionImpl;
+import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.ThisCoreInstance;
@@ -55,7 +53,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 public class KernelUtil {
 
     public static final List<URL> KERNEL_LOADS;
-    public static final String    SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    public static final String    SELECT_TABLE    = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
     private static final String[] KERNEL_VERSIONS = { "/kernel.2.json" };
 
@@ -101,8 +99,8 @@ public class KernelUtil {
         }
     }
 
-    public static void clearAndLoadKernel(EntityManager em) throws SQLException,
-                                                            IOException {
+    public static void clearAndLoadKernel(DSLContext em) throws SQLException,
+                                                         IOException {
         clear(em);
         loadKernel(em);
     }
@@ -114,7 +112,7 @@ public class KernelUtil {
         model.apply(CoreInstance.class, core);
     }
 
-    public static void loadKernel(EntityManager em) throws IOException {
+    public static void loadKernel(DSLContext em) throws IOException {
         if (!em.getTransaction()
                .isActive()) {
             em.getTransaction()

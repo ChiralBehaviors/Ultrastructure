@@ -23,15 +23,17 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jooq.DSLContext;
+import org.jooq.util.postgres.PostgresDSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.kernel.KernelUtil;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
@@ -156,9 +158,9 @@ public class Loader {
         log.info(String.format("Bootstrapping core in db %s",
                                configuration.coreDb));
         String txfmd;
-        try (InputStream is = getClass().getResourceAsStream("/jpa.properties")) {
+        try (InputStream is = getClass().getResourceAsStream("/db.properties")) {
             if (is == null) {
-                throw new IllegalStateException("jpa properties missing");
+                throw new IllegalStateException("db properties missing");
             }
             Map<String, String> props = new HashMap<>();
             props.put("init.db.login", configuration.coreUsername);
@@ -170,32 +172,23 @@ public class Loader {
         }
         Properties properties = new Properties();
         properties.load(new ByteArrayInputStream(txfmd.getBytes()));
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                                          properties);
+        Connection conn = DriverManager.getConnection((String) properties.get("url"),
+                                                      (String) properties.get("user"),
+                                                      (String) properties.get("password"));
+        conn.setAutoCommit(false);
 
-        EntityManager loadingEm = emf.createEntityManager();
+        DSLContext create = PostgresDSL.using(conn);
         try {
-            KernelUtil.loadKernel(loadingEm);
+            create.transaction(config -> KernelUtil.loadKernel(create));
         } finally {
-            if (loadingEm.getTransaction()
-                         .isActive()) {
-                loadingEm.getTransaction()
-                         .rollback();
-            }
-            loadingEm.close();
+            create.close();
         }
-        try (Model model = new ModelImpl(emf)) {
-            EntityTransaction transaction = model.getDSLContext()
-                                                 .getTransaction();
-            transaction.begin();
-            KernelUtil.initializeInstance(model, configuration.coreDb,
-                                          "CoRE instance");
-            transaction.commit();
-        } catch (InstantiationException e) {
-            throw new IllegalStateException("Unable to create CoRE instance",
-                                            e);
+        try (Model model = new ModelImpl(create)) {
+            create.transaction(config -> KernelUtil.initializeInstance(model,
+                                                                       configuration.coreDb,
+                                                                       "CoRE instance"));
         } finally {
-            emf.close();
+            create.close();
         }
         log.info("Bootstrapping complete");
     }

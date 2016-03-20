@@ -20,8 +20,9 @@
 
 package com.chiralbehaviors.CoRE.phantasm.model;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -30,21 +31,19 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.existential.attribute.AttributeValue;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Attribute;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.Location;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
+import com.chiralbehaviors.CoRE.RecordsFactory;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
-import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.google.common.base.Function;
 
 /**
@@ -56,7 +55,7 @@ import com.google.common.base.Function;
  * @author hhildebrand
  *
  */
-public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> {
+public class PhantasmCRUD {
 
     private final Relationship apply;
     private final Relationship create;
@@ -93,75 +92,22 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param auth
      * @param child
      */
-    public RuleForm addChild(NetworkAuthorization<RuleForm> facet,
-                             RuleForm instance,
-                             NetworkAuthorization<RuleForm> auth,
-                             RuleForm child) {
+    public ExistentialRuleform addChild(NetworkAuthorization facet,
+                                        ExistentialRuleform instance,
+                                        NetworkAuthorization auth,
+                                        ExistentialRuleform child) {
         if (instance == null) {
             return null;
         }
         cast(child, auth);
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
+        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
             return instance;
         }
 
-        networkedModel.link(instance, model.getEntityManager()
-                                           .getReference(Relationship.class,
-                                                         auth.getChildRelationship()
-                                                             .getId()),
-                            child, model.getCurrentPrincipal()
-                                        .getPrincipal());
-        return instance;
-    }
-
-    public RuleForm addChild(NetworkAuthorization<RuleForm> facet,
-                             RuleForm instance,
-                             XDomainNetworkAuthorization<?, ?> auth,
-                             ExistentialRuleform<?, ?> child) {
-        if (instance == null) {
-            return null;
-        }
-        cast(child, auth);
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
-            return instance;
-        }
-        ExistentialRuleform<?, ?> childAuthClassification = auth.isForward() ? auth.getToParent()
-                                                                             : auth.getFromParent();
-        if (childAuthClassification instanceof Agency) {
-            networkedModel.authorizeAll(instance, model.getEntityManager()
-                                                    .getReference(Relationship.class,
-                                                                  auth.getConnection()
-                                                                      .getId()),
-                                     (Agency) child);
-        } else if (childAuthClassification instanceof Location) {
-            networkedModel.authorizeAll(instance, model.getEntityManager()
-                                                    .getReference(Relationship.class,
-                                                                  auth.getConnection()
-                                                                      .getId()),
-                                     (Location) child);
-        } else if (childAuthClassification instanceof Product) {
-            networkedModel.authorizeAll(instance, model.getEntityManager()
-                                                    .getReference(Relationship.class,
-                                                                  auth.getConnection()
-                                                                      .getId()),
-                                     (Product) child);
-        } else if (childAuthClassification instanceof Relationship) {
-            networkedModel.authorizeAll(instance, model.getEntityManager()
-                                                    .getReference(Relationship.class,
-                                                                  auth.getConnection()
-                                                                      .getId()),
-                                     (Relationship) child);
-        } else {
-            throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
-                                                             instance.getClass()
-                                                                     .getSimpleName(),
-                                                             childAuthClassification.getClass()
-                                                                                    .getSimpleName()));
-        }
+        model.getPhantasmModel()
+             .link(instance, auth.getChildRelationship(), child,
+                   model.getCurrentPrincipal()
+                        .getPrincipal());
         return instance;
     }
 
@@ -173,90 +119,25 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param auth
      * @param children
      */
-    public RuleForm addChildren(NetworkAuthorization<RuleForm> facet,
-                                RuleForm instance,
-                                NetworkAuthorization<RuleForm> auth,
-                                List<RuleForm> children) {
+    public ExistentialRuleform addChildren(NetworkAuthorization facet,
+                                           ExistentialRuleform instance,
+                                           NetworkAuthorization auth,
+                                           List<ExistentialRuleform> children) {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
+        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
             return instance;
         }
         children.stream()
-                .filter(child -> checkREAD(child, networkedModel))
+                .filter(child -> checkREAD(child))
                 .peek(child -> cast(child, auth))
-                .forEach(child -> networkedModel.link(instance,
-                                                      model.getEntityManager()
-                                                           .getReference(Relationship.class,
-                                                                         auth.getChildRelationship()
-                                                                             .getId()),
-                                                      child,
-                                                      model.getCurrentPrincipal()
-                                                           .getPrincipal()));
+                .forEach(child -> model.getPhantasmModel()
+                                       .link(instance,
+                                             auth.getChildRelationship(), child,
+                                             model.getCurrentPrincipal()
+                                                  .getPrincipal()));
         return instance;
-    }
-
-    public RuleForm addChildren(NetworkAuthorization<RuleForm> facet,
-                                RuleForm instance,
-                                XDomainNetworkAuthorization<?, ?> auth,
-                                List<ExistentialRuleform<?, ?>> children) {
-        if (instance == null) {
-            return null;
-        }
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
-            return instance;
-        }
-        ExistentialRuleform<?, ?> childAuthClassification = auth.isForward() ? auth.getToParent()
-                                                                             : auth.getFromParent();
-        children.stream()
-                .filter(child -> checkREAD(child,
-                                           model.getUnknownNetworkedModel(child)))
-                .peek(child -> cast(child, auth))
-                .forEach(child -> {
-                    if (childAuthClassification instanceof Agency) {
-                        networkedModel.authorizeAll(instance,
-                                                 model.getEntityManager()
-                                                      .getReference(Relationship.class,
-                                                                    auth.getConnection()
-                                                                        .getId()),
-                                                 (Agency) child);
-                    } else if (childAuthClassification instanceof Location) {
-                        networkedModel.authorizeAll(instance,
-                                                 model.getEntityManager()
-                                                      .getReference(Relationship.class,
-                                                                    auth.getConnection()
-                                                                        .getId()),
-                                                 (Location) child);
-                    } else if (childAuthClassification instanceof Product) {
-                        networkedModel.authorizeAll(instance,
-                                                 model.getEntityManager()
-                                                      .getReference(Relationship.class,
-                                                                    auth.getConnection()
-                                                                        .getId()),
-                                                 (Product) child);
-                    } else
-                        if (childAuthClassification instanceof Relationship) {
-                        networkedModel.authorizeAll(instance,
-                                                 model.getEntityManager()
-                                                      .getReference(Relationship.class,
-                                                                    auth.getConnection()
-                                                                        .getId()),
-                                                 (Relationship) child);
-                    } else {
-                        throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
-                                                                         instance.getClass()
-                                                                                 .getSimpleName(),
-                                                                         childAuthClassification.getClass()
-                                                                                                .getSimpleName()));
-                    }
-                });
-        return instance;
-
     }
 
     /**
@@ -268,21 +149,19 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @throws SecurityException
      */
     @SuppressWarnings("unchecked")
-    public RuleForm apply(NetworkAuthorization<RuleForm> facet,
-                          RuleForm instance,
-                          Function<RuleForm, RuleForm> constructor) throws SecurityException {
+    public ExistentialRuleform apply(NetworkAuthorization facet,
+                                     ExistentialRuleform instance,
+                                     Function<ExistentialRuleform, ExistentialRuleform> constructor) throws SecurityException {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
-        if (!networkedModel.checkFacetCapability(facet, getAPPLY())) {
+        if (!model.getPhantasmModel()
+                  .checkFacetCapability(facet.getAuth(), getAPPLY())) {
             return instance;
         }
-        networkedModel.initialize(instance, model.getEntityManager()
-                                                 .getReference(facet.getClass(),
-                                                               facet.getId()),
-                                  model.getCurrentPrincipal()
-                                       .getPrincipal());
+        model.getPhantasmModel()
+             .initialize(instance, facet.getAuth(), model.getCurrentPrincipal()
+                                                         .getPrincipal());
         if (!checkInvoke(facet, instance)) {
             return null;
         }
@@ -298,49 +177,25 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      */
     public void cast(ExistentialRuleform ruleform,
                      NetworkAuthorization authorization) {
-        ExistentialModel networkedModel = model.getUnknownNetworkedModel(ruleform);
-        if (!networkedModel.isAccessible(ruleform,
-                                         authorization.getAuthorizedRelationship(),
-                                         authorization.getAuthorizedParent())) {
-            throw new ClassCastException(String.format("%s not of facet type %s:%s",
+        if (!model.getPhantasmModel()
+                  .isAccessible(ruleform,
+                                authorization.getAuthorizedRelationship(),
+                                authorization.getAuthorizedParent())) {
+            throw new ClassCastException(String.format("%s not of facet type %s",
                                                        ruleform,
-                                                       authorization.getAuthorizedRelationship()
-                                                                    .getName(),
-                                                       authorization.getAuthorizedParent()
-                                                                    .getName()));
+                                                       PhantasmDefinition.factString(model,
+                                                                                     new Aspect<>(authorization.getClassifier(),
+                                                                                                  authorization.getClassification()))));
         }
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    /**
-     * Throws ClassCastException if not an instance of the to/from facet type,
-     * depending on directionality
-     * 
-     * @param ruleform
-     * @param facet
-     */
-    public void cast(ExistentialRuleform ruleform,
-                     XDomainNetworkAuthorization authorization) {
-        ExistentialModel networkedModel = model.getUnknownNetworkedModel(ruleform);
-        Relationship classifier = authorization.isForward() ? authorization.getToRelationship()
-                                                            : authorization.getFromRelationship();
-        ExistentialRuleform classification = authorization.isForward() ? authorization.getToParent()
-                                                                       : authorization.getFromParent();
-        if (!networkedModel.isAccessible(ruleform, classifier,
-                                         classification)) {
-            throw new ClassCastException(String.format("%s not of facet type %s:%s",
-                                                       ruleform,
-                                                       classifier.getName(),
-                                                       classification.getName()));
-        }
-    }
-
-    public boolean checkInvoke(NetworkAuthorization<RuleForm> facet,
-                               RuleForm instance) {
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
+    public boolean checkInvoke(NetworkAuthorization facet,
+                               ExistentialRuleform instance) {
         Relationship invoke = getINVOKE();
-        return networkedModel.checkCapability(instance, invoke)
-               && networkedModel.checkFacetCapability(facet, invoke);
+        return model.getPhantasmModel()
+                    .checkCapability(instance, invoke)
+               && model.getPhantasmModel()
+                       .checkFacetCapability(facet.getAuth(), invoke);
     }
 
     /**
@@ -355,36 +210,24 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @throws SecurityException
      */
     @SuppressWarnings("unchecked")
-    public RuleForm createInstance(NetworkAuthorization<RuleForm> facet,
-                                   String name, String description,
-                                   Function<RuleForm, RuleForm> constructor) {
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
-        if (!networkedModel.checkFacetCapability(facet, getCREATE())) {
+    public ExistentialRuleform createInstance(NetworkAuthorization facet,
+                                              String name, String description,
+                                              Function<ExistentialRuleform, ExistentialRuleform> constructor) {
+        if (!model.getPhantasmModel()
+                  .checkFacetCapability(facet.getAuth(), getCREATE())) {
             return null;
         }
-        RuleForm instance;
-        try {
-            instance = (RuleForm) Ruleform.initializeAndUnproxy(facet.getClassification())
-                                          .getClass()
-                                          .getConstructor(String.class,
-                                                          String.class,
-                                                          Agency.class)
-                                          .newInstance(name, description,
-                                                       model.getCurrentPrincipal()
-                                                            .getPrincipal());
-        } catch (IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | InstantiationException
-                | NoSuchMethodException e) {
-            throw new IllegalStateException(String.format("Cannot construct instance of existential ruleform for %s",
-                                                          new Aspect<RuleForm>(facet.getClassifier(),
-                                                                               facet.getClassification())),
-                                            e);
-        }
-        networkedModel.initialize(instance, model.getEntityManager()
-                                                 .getReference(facet.getClass(),
-                                                               facet.getId()),
-                                  model.getCurrentPrincipal()
-                                       .getPrincipal());
+        ExistentialRuleform instance;
+        instance = (ExistentialRuleform) RecordsFactory.createExistential(model.getDSLContext(),
+                                                                          facet.getAuth()
+                                                                               .getClassification(),
+                                                                          name,
+                                                                          description,
+                                                                          model.getCurrentPrincipal()
+                                                                               .getPrincipal());
+        model.getPhantasmModel()
+             .initialize(instance, facet.getAuth(), model.getCurrentPrincipal()
+                                                         .getPrincipal());
         if (!checkInvoke(facet, instance)) {
             return null;
         }
@@ -404,29 +247,24 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * 
      * @return
      */
-    public Object getAttributeValue(NetworkAuthorization<RuleForm> facet,
-                                    RuleForm instance,
-                                    AttributeAuthorization<RuleForm, Network> stateAuth) {
+    public Object getAttributeValue(NetworkAuthorization facet,
+                                    ExistentialRuleform instance,
+                                    AttributeAuthorization stateAuth) {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(stateAuth.getNetworkAuthorization()
-                                                                                            .getClassification());
-        if (!checkREAD(facet, networkedModel)
-            || !checkREAD(stateAuth, networkedModel)) {
+        if (!checkREAD(facet) || !checkREAD(stateAuth)) {
             return null;
         }
-        Attribute authorizedAttribute = stateAuth.getAuthorizedAttribute();
+        Attribute authorizedAttribute = stateAuth.getAttribute();
         if (authorizedAttribute.getIndexed()) {
-            return getIndexedAttributeValue(instance, authorizedAttribute,
-                                            networkedModel);
+            return getIndexedAttributeValue(instance, authorizedAttribute);
         } else if (authorizedAttribute.getKeyed()) {
-            return getMappedAttributeValue(instance, authorizedAttribute,
-                                           networkedModel);
+            return getMappedAttributeValue(instance, authorizedAttribute);
         }
-        Object value = networkedModel.getAttributeValue(instance,
-                                                        authorizedAttribute)
-                                     .getValue();
+        Object value = model.getPhantasmModel()
+                            .getAttributeValue(instance, authorizedAttribute)
+                            .getValue();
         return value;
     }
 
@@ -439,73 +277,22 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * 
      * @return
      */
-    public List<RuleForm> getChildren(NetworkAuthorization<RuleForm> facet,
-                                      RuleForm instance,
-                                      NetworkAuthorization<RuleForm> auth) {
+    public List<ExistentialRuleform> getChildren(NetworkAuthorization facet,
+                                                 ExistentialRuleform instance,
+                                                 NetworkAuthorization auth) {
         if (instance == null) {
             return Collections.emptyList();
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        if (!checkREAD(facet, networkedModel)
-            || !checkREAD(auth, networkedModel)) {
+        if (!checkREAD(facet) || !checkREAD(auth)) {
             return Collections.emptyList();
         }
-        return networkedModel.getChildren(instance, auth.getChildRelationship())
-                             .stream()
-                             .filter(child -> networkedModel.checkCapability(child,
-                                                                             getREAD()))
-                             .collect(Collectors.toList());
+        return model.getPhantasmModel()
+                    .getChildren(instance, auth.getChildRelationship())
+                    .stream()
+                    .filter(child -> model.getPhantasmModel()
+                                          .checkCapability(child, getREAD()))
+                    .collect(Collectors.toList());
 
-    }
-
-    /***
-     * Answer the xd children of the instance
-     * 
-     * @param facet
-     * @param instance
-     * @param auth
-     * 
-     * @return
-     */
-
-    public List<ExistentialRuleform<?, ?>> getChildren(NetworkAuthorization<RuleForm> facet,
-                                                       RuleForm instance,
-                                                       XDomainNetworkAuthorization<?, ?> auth) {
-        if (instance == null) {
-            return Collections.emptyList();
-        }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkREAD(facet, networkedModel)
-            || !checkREAD(auth, networkedModel)) {
-            return Collections.emptyList();
-        }
-        ExistentialRuleform<?, ?> childAuthClassification = auth.isForward() ? auth.getToParent()
-                                                                             : auth.getFromParent();
-        List<? extends ExistentialRuleform<?, ?>> result;
-        if (childAuthClassification instanceof Agency) {
-            result = networkedModel.getAuthorizedAgencies(instance,
-                                                          auth.getConnection());
-        } else if (childAuthClassification instanceof Location) {
-            result = networkedModel.getAuthorizedLocations(instance,
-                                                           auth.getConnection());
-        } else if (childAuthClassification instanceof Product) {
-            result = networkedModel.getAuthorizedProducts(instance,
-                                                          auth.getConnection());
-        } else if (childAuthClassification instanceof Relationship) {
-            result = networkedModel.getAuthorizedRelationships(instance,
-                                                               auth.getConnection());
-        } else {
-            throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
-                                                             instance.getClass()
-                                                                     .getSimpleName(),
-                                                             childAuthClassification.getClass()
-                                                                                    .getSimpleName()));
-        }
-        ExistentialModel<?, ?, ?, ?> childNetworkModel = model.getUnknownNetworkedModel(childAuthClassification);
-        return result.stream()
-                     .filter(child -> childNetworkModel.checkCapability(child,
-                                                                        getREAD()))
-                     .collect(Collectors.toList());
     }
 
     public Relationship getCREATE() {
@@ -525,23 +312,23 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * 
      * @return
      */
-    public List<RuleForm> getImmediateChildren(NetworkAuthorization<RuleForm> facet,
-                                               RuleForm instance,
-                                               NetworkAuthorization<RuleForm> auth) {
+    @SuppressWarnings("unchecked")
+    public List<ExistentialRuleform> getImmediateChildren(NetworkAuthorization facet,
+                                                          ExistentialRuleform instance,
+                                                          NetworkAuthorization auth) {
         if (instance == null) {
             return Collections.emptyList();
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        if (!checkREAD(facet, networkedModel)
-            || !checkREAD(auth, networkedModel)) {
+        if (!checkREAD(facet) || !checkREAD(auth)) {
             return Collections.emptyList();
         }
-        return networkedModel.getImmediateChildren(instance,
-                                                   auth.getChildRelationship())
-                             .stream()
-                             .filter(child -> networkedModel.checkCapability(child,
-                                                                             getREAD()))
-                             .collect(Collectors.toList());
+        return model.getPhantasmModel()
+                    .getImmediateChildren(instance, auth.getChildRelationship())
+                    .stream()
+                    .map(r -> (ExistentialRuleform) r)
+                    .filter(child -> model.getPhantasmModel()
+                                          .checkCapability(child, getREAD()))
+                    .collect(Collectors.toList());
     }
 
     /**
@@ -550,18 +337,19 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param facet
      * @return
      */
-    public List<RuleForm> getInstances(NetworkAuthorization<RuleForm> facet) {
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
-        if (!networkedModel.checkFacetCapability(facet, getREAD())) {
+    @SuppressWarnings("unchecked")
+    public List<ExistentialRuleform> getInstances(NetworkAuthorization facet) {
+        if (!model.getPhantasmModel()
+                  .checkFacetCapability(facet.getAuth(), getREAD())) {
             return Collections.emptyList();
         }
-        return networkedModel.getChildren(facet.getClassification(),
-                                          facet.getClassifier()
-                                               .getInverse())
-                             .stream()
-                             .filter(instance -> checkREAD(networkedModel,
-                                                           instance))
-                             .collect(Collectors.toList());
+        return model.getPhantasmModel()
+                    .getChildren(facet.getClassification(),
+                                 facet.getClassifier())
+                    .stream()
+                    .map(e -> (ExistentialRuleform) e)
+                    .filter(instance -> checkREAD(instance))
+                    .collect(Collectors.toList());
     }
 
     public Relationship getINVOKE() {
@@ -589,104 +377,57 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * 
      * @return
      */
-    public RuleForm getSingularChild(NetworkAuthorization<RuleForm> facet,
-                                     RuleForm instance,
-                                     NetworkAuthorization<RuleForm> auth) {
+    public ExistentialRuleform getSingularChild(NetworkAuthorization facet,
+                                                ExistentialRuleform instance,
+                                                NetworkAuthorization auth) {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        if (!checkREAD(facet, networkedModel)
-            || !checkREAD(auth, networkedModel)) {
+        if (!checkREAD(facet) || !checkREAD(auth)) {
             return null;
         }
-        RuleForm child = networkedModel.getImmediateChild(instance,
-                                                          auth.getChildRelationship());
-        return checkREAD(child, networkedModel) ? child : null;
-    }
-
-    /**
-     * Answer the singular xd child of the instance
-     * 
-     * @param facet
-     * @param instance
-     * @param auth
-     * 
-     * @return
-     */
-    public ExistentialRuleform<?, ?> getSingularChild(NetworkAuthorization<RuleForm> facet,
-                                                      RuleForm instance,
-                                                      XDomainNetworkAuthorization<?, ?> auth) {
-        if (instance == null) {
-            return null;
-        }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkREAD(facet, networkedModel)
-            || !checkREAD(auth, networkedModel)) {
-            return null;
-        }
-        @SuppressWarnings("rawtypes")
-        ExistentialRuleform childAuthClassification = auth.isForward() ? auth.getToParent()
-                                                                       : auth.getFromParent();
-        @SuppressWarnings("rawtypes")
-        ExistentialRuleform child;
-        if (childAuthClassification instanceof Agency) {
-            child = networkedModel.getAuthorizedAgency(instance,
-                                                       auth.getConnection());
-        } else if (childAuthClassification instanceof Location) {
-            child = networkedModel.getAuthorizedLocation(instance,
-                                                         auth.getConnection());
-        } else if (childAuthClassification instanceof Product) {
-            child = networkedModel.getAuthorizedProduct(instance,
-                                                        auth.getConnection());
-        } else if (childAuthClassification instanceof Relationship) {
-            child = networkedModel.getAuthorizedRelationship(instance,
-                                                             auth.getConnection());
-        } else {
-            throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
-                                                             instance.getClass()
-                                                                     .getSimpleName(),
-                                                             childAuthClassification.getClass()
-                                                                                    .getSimpleName()));
-        }
-        return checkREAD(child,
-                         model.getUnknownNetworkedModel(childAuthClassification)) ? child
-                                                                                  : null;
+        @SuppressWarnings("unchecked")
+        ExistentialRuleform child = (ExistentialRuleform) model.getPhantasmModel()
+                                                               .getImmediateChild(instance,
+                                                                                  auth.getChildRelationship());
+        return checkREAD(child) ? child : null;
     }
 
     public Relationship getUPDATE() {
         return update;
     }
 
-    public List<ExistentialRuleform<?, ?>> lookup(NetworkAuthorization<?> auth,
-                                                  List<String> ids) {
-        ExistentialModel<?, ?, ?, ?> networkedModel = model.getUnknownNetworkedModel(auth.getClassification());
+    public List<ExistentialRuleform> lookup(List<String> ids) {
         return ids.stream()
-                  .map(id -> networkedModel.find(UUID.fromString(id)))
-                  .filter(rf -> rf != null)
-                  .filter(child -> networkedModel.checkCapability(child,
-                                                                  getREAD()))
+                  .map(id -> existential(id))
+                  .map(r -> RecordsFactory.resolve(r))
+                  .filter(child -> model.getPhantasmModel()
+                                        .checkCapability(child, getREAD()))
                   .collect(Collectors.toList());
     }
 
-    public ExistentialRuleform<?, ?> lookup(NetworkAuthorization<?> auth,
-                                            String id) {
-        ExistentialModel<?, ?, ?, ?> networkedModel = model.getUnknownNetworkedModel(auth.getClassification());
-        return Optional.ofNullable(networkedModel.find(UUID.fromString(id)))
+    private ExistentialRecord existential(String id) {
+        return model.getDSLContext()
+                    .selectFrom(EXISTENTIAL)
+                    .where(EXISTENTIAL.ID.eq(UUID.fromString(id)))
+                    .fetchOne();
+    }
+
+    public ExistentialRuleform lookup(String id) {
+        return Optional.ofNullable(existential(id))
+                       .map(r -> RecordsFactory.resolve(r))
                        .filter(rf -> rf != null)
-                       .filter(child -> networkedModel.checkCapability(child,
-                                                                       getREAD()))
+                       .filter(child -> model.getPhantasmModel()
+                                             .checkCapability(child, getREAD()))
                        .orElse(null);
     }
 
-    public List<RuleForm> lookupRuleForm(NetworkAuthorization<RuleForm> auth,
-                                         List<String> ids) {
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
+    @SuppressWarnings("unchecked")
+    public List<ExistentialRuleform> lookupRuleForm(List<String> ids) {
         return ids.stream()
-                  .map(id -> networkedModel.find(UUID.fromString(id)))
-                  .filter(rf -> rf != null)
-                  .filter(child -> networkedModel.checkCapability(child,
-                                                                  getREAD()))
+                  .map(id -> existential(id))
+                  .map(r -> RecordsFactory.resolve(r))
+                  .map(r -> (ExistentialRuleform) r)
                   .collect(Collectors.toList());
     }
 
@@ -698,18 +439,19 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @return
      * @throws SecurityException
      */
-    public RuleForm remove(NetworkAuthorization<RuleForm> facet,
-                           RuleForm instance,
-                           boolean deleteAttributes) throws SecurityException {
+    public ExistentialRuleform remove(ExistentialNetworkAuthorizationRecord facet,
+                                      ExistentialRuleform instance,
+                                      boolean deleteAttributes) throws SecurityException {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(facet.getClassification());
-        if (!networkedModel.checkFacetCapability(facet, getREMOVE())) {
+        if (!model.getPhantasmModel()
+                  .checkFacetCapability(facet, getREMOVE())) {
             return instance;
         }
-        networkedModel.initialize(instance, facet, model.getCurrentPrincipal()
-                                                        .getPrincipal());
+        model.getPhantasmModel()
+             .initialize(instance, facet, model.getCurrentPrincipal()
+                                               .getPrincipal());
         return instance;
     }
 
@@ -721,56 +463,18 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param auth
      * @param child
      */
-    public RuleForm removeChild(NetworkAuthorization<RuleForm> facet,
-                                RuleForm instance,
-                                NetworkAuthorization<RuleForm> auth,
-                                RuleForm child) {
+    public ExistentialRuleform removeChild(NetworkAuthorization facet,
+                                           ExistentialRuleform instance,
+                                           NetworkAuthorization auth,
+                                           ExistentialRuleform child) {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
+        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
             return instance;
         }
-        networkedModel.unlink(instance, auth.getChildRelationship(), child);
-        return instance;
-    }
-
-    public RuleForm removeChild(NetworkAuthorization<RuleForm> facet,
-                                RuleForm instance,
-                                XDomainNetworkAuthorization<?, ?> auth,
-                                ExistentialRuleform<?, ?> child) {
-        if (instance == null) {
-            return null;
-        }
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
-            return instance;
-        }
-        @SuppressWarnings("rawtypes")
-        ExistentialRuleform childAuthClassification = auth.isForward() ? auth.getToParent()
-                                                                       : auth.getFromParent();
-        if (childAuthClassification instanceof Agency) {
-            networkedModel.deauthorize(instance, auth.getConnection(),
-                                       (Agency) child);
-        } else if (childAuthClassification instanceof Location) {
-            networkedModel.deauthorize(instance, auth.getConnection(),
-                                       (Location) child);
-        } else if (childAuthClassification instanceof Product) {
-            networkedModel.deauthorize(instance, auth.getConnection(),
-                                       (Product) child);
-        } else if (childAuthClassification instanceof Relationship) {
-            networkedModel.deauthorize(instance, auth.getConnection(),
-                                       (Relationship) child);
-        } else {
-            throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
-                                                             instance.getClass()
-                                                                     .getSimpleName(),
-                                                             childAuthClassification.getClass()
-                                                                                    .getSimpleName()));
-        }
+        model.getPhantasmModel()
+             .unlink(instance, auth.getChildRelationship(), child);
         return instance;
     }
 
@@ -782,115 +486,65 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param auth
      * @param children
      */
-    public RuleForm removeChildren(NetworkAuthorization<RuleForm> facet,
-                                   RuleForm instance,
-                                   NetworkAuthorization<RuleForm> auth,
-                                   List<RuleForm> children) {
+    public ExistentialRuleform removeChildren(NetworkAuthorization facet,
+                                              ExistentialRuleform instance,
+                                              NetworkAuthorization auth,
+                                              List<ExistentialRuleform> children) {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
+        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
             return instance;
         }
-        for (RuleForm child : children) {
-            networkedModel.unlink(instance, auth.getChildRelationship(), child);
+        for (ExistentialRuleform child : children) {
+            model.getPhantasmModel()
+                 .unlink(instance, auth.getChildRelationship(), child);
         }
         return instance;
     }
 
-    public RuleForm removeChildren(NetworkAuthorization<RuleForm> facet,
-                                   RuleForm instance,
-                                   XDomainNetworkAuthorization<?, ?> auth,
-                                   List<ExistentialRuleform<?, ?>> children) {
-        if (instance == null) {
-            return null;
-        }
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
-            return instance;
-        }
-        ExistentialRuleform<?, ?> childAuthClassification = auth.isForward() ? auth.getToParent()
-                                                                             : auth.getFromParent();
-        for (ExistentialRuleform<?, ?> child : children) {
-            if (childAuthClassification instanceof Agency) {
-                networkedModel.deauthorize(instance, auth.getConnection(),
-                                           (Agency) child);
-            } else if (childAuthClassification instanceof Location) {
-                networkedModel.deauthorize(instance, auth.getConnection(),
-                                           (Location) child);
-            } else if (childAuthClassification instanceof Product) {
-                networkedModel.deauthorize(instance, auth.getConnection(),
-                                           (Product) child);
-            } else if (childAuthClassification instanceof Relationship) {
-                networkedModel.deauthorize(instance, auth.getConnection(),
-                                           (Relationship) child);
-            } else {
-                throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
-                                                                 instance.getClass()
-                                                                         .getSimpleName(),
-                                                                 childAuthClassification.getClass()
-                                                                                        .getSimpleName()));
-            }
-        }
-        return instance;
-    }
-
-    public RuleForm setAttributeValue(NetworkAuthorization<RuleForm> facet,
-                                      RuleForm instance,
-                                      AttributeAuthorization<RuleForm, Network> stateAuth,
-                                      List<Object> value) {
+    public ExistentialRuleform setAttributeValue(NetworkAuthorization facet,
+                                                 ExistentialRuleform instance,
+                                                 AttributeAuthorization stateAuth,
+                                                 List<Object> value) {
         return setAttributeValue(facet, instance, stateAuth, value.toArray());
     }
 
-    public RuleForm setAttributeValue(NetworkAuthorization<RuleForm> facet,
-                                      RuleForm instance,
-                                      AttributeAuthorization<RuleForm, Network> stateAuth,
-                                      Map<String, Object> value) {
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(stateAuth, networkedModel)) {
+    public ExistentialRuleform setAttributeValue(NetworkAuthorization facet,
+                                                 ExistentialRuleform instance,
+                                                 AttributeAuthorization stateAuth,
+                                                 Map<String, Object> value) {
+        if (!checkUPDATE(facet) || !checkUPDATE(stateAuth)) {
             return instance;
         }
-        setAttributeMap(instance, stateAuth.getAuthorizedAttribute(), value,
-                        networkedModel);
+        setAttributeMap(instance, stateAuth.getAttribute(), value);
         return instance;
     }
 
-    public RuleForm setAttributeValue(NetworkAuthorization<RuleForm> facet,
-                                      RuleForm instance,
-                                      AttributeAuthorization<RuleForm, Network> stateAuth,
-                                      Object value) {
+    public ExistentialRuleform setAttributeValue(NetworkAuthorization facet,
+                                                 ExistentialRuleform instance,
+                                                 AttributeAuthorization stateAuth,
+                                                 Object value) {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(stateAuth.getNetworkAuthorization()
-                                                                                            .getClassification());
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(stateAuth, networkedModel)) {
+        if (!checkUPDATE(facet) || !checkUPDATE(stateAuth)) {
             return instance;
         }
-        networkedModel.getAttributeValue(instance, model.getEntityManager()
-                                                        .getReference(Attribute.class,
-                                                                      stateAuth.getAuthorizedAttribute()
-                                                                               .getId()))
-                      .setValue(value);
+        model.getPhantasmModel()
+             .getAttributeValue(instance, stateAuth.getAttribute())
+             .setValue(value);
         return instance;
     }
 
-    public RuleForm setAttributeValue(NetworkAuthorization<RuleForm> facet,
-                                      RuleForm instance,
-                                      AttributeAuthorization<RuleForm, Network> stateAuth,
-                                      Object[] value) {
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(stateAuth, networkedModel)) {
+    public ExistentialRuleform setAttributeValue(NetworkAuthorization facet,
+                                                 ExistentialRuleform instance,
+                                                 AttributeAuthorization stateAuth,
+                                                 Object[] value) {
+        if (!checkUPDATE(facet) || !checkUPDATE(stateAuth)) {
             return instance;
         }
-        setAttributeArray(instance, stateAuth.getAuthorizedAttribute(), value,
-                          networkedModel);
+        setAttributeArray(instance, stateAuth.getAttribute(), value);
         return instance;
     }
 
@@ -903,99 +557,30 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param auth
      * @param children
      */
-    public RuleForm setChildren(NetworkAuthorization<RuleForm> facet,
-                                RuleForm instance,
-                                NetworkAuthorization<RuleForm> auth,
-                                List<RuleForm> children) {
+    public ExistentialRuleform setChildren(NetworkAuthorization facet,
+                                           ExistentialRuleform instance,
+                                           NetworkAuthorization auth,
+                                           List<ExistentialRuleform> children) {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
+        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
             return instance;
         }
 
-        for (NetworkRuleform<RuleForm> childLink : networkedModel.getImmediateChildrenLinks(instance,
-                                                                                            auth.getChildRelationship())) {
-            model.getEntityManager()
-                 .remove(childLink);
+        for (ExistentialNetworkRecord childLink : model.getPhantasmModel()
+                                                       .getImmediateChildrenLinks(instance,
+                                                                                  auth.getChildRelationship())) {
+            childLink.delete();
         }
-        Relationship reference = model.getEntityManager()
-                                      .getReference(Relationship.class,
-                                                    auth.getChildRelationship()
-                                                        .getId());
         children.stream()
-                .filter(child -> checkREAD(child, networkedModel))
+                .filter(child -> checkREAD(child))
                 .peek(child -> cast(child, auth))
-                .forEach(child -> networkedModel.link(instance, reference,
-                                                      child,
-                                                      model.getCurrentPrincipal()
-                                                           .getPrincipal()));
-        return instance;
-    }
-
-    /**
-     * Set the xd children of the instance.
-     * 
-     * @param facet
-     * @param instance
-     * @param auth
-     * @param children
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public RuleForm setChildren(NetworkAuthorization<RuleForm> facet,
-                                RuleForm instance,
-                                XDomainNetworkAuthorization<?, ?> auth,
-                                List<?> children) {
-        if (instance == null) {
-            return null;
-        }
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
-            return instance;
-        }
-        children.stream()
-                .forEach(child -> cast((ExistentialRuleform) child, auth));
-
-        ExistentialRuleform childAuthClassification = auth.isForward() ? auth.getToParent()
-                                                                       : auth.getFromParent();
-        if (childAuthClassification instanceof Agency) {
-            networkedModel.setAuthorizedAgencies(instance,
-                                                 model.getEntityManager()
-                                                      .getReference(Relationship.class,
-                                                                    auth.getConnection()
-                                                                        .getId()),
-                                                 (List<Agency>) children);
-        } else if (childAuthClassification instanceof Location) {
-            networkedModel.setAuthorizedLocations(instance,
-                                                  model.getEntityManager()
-                                                       .getReference(Relationship.class,
-                                                                     auth.getConnection()
-                                                                         .getId()),
-                                                  (List<Location>) children);
-        } else if (childAuthClassification instanceof Product) {
-            networkedModel.setAuthorizedProducts(instance,
-                                                 model.getEntityManager()
-                                                      .getReference(Relationship.class,
-                                                                    auth.getConnection()
-                                                                        .getId()),
-                                                 (List<Product>) children);
-        } else if (childAuthClassification instanceof Relationship) {
-            networkedModel.setAuthorizedRelationships(instance,
-                                                      model.getEntityManager()
-                                                           .getReference(Relationship.class,
-                                                                         auth.getConnection()
-                                                                             .getId()),
-                                                      (List<Relationship>) children);
-        } else {
-            throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
-                                                             instance.getClass()
-                                                                     .getSimpleName(),
-                                                             childAuthClassification.getClass()
-                                                                                    .getSimpleName()));
-        }
+                .forEach(child -> model.getPhantasmModel()
+                                       .link(instance,
+                                             auth.getChildRelationship(), child,
+                                             model.getCurrentPrincipal()
+                                                  .getPrincipal()));
         return instance;
     }
 
@@ -1004,24 +589,24 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param id
      * @return
      */
-    public RuleForm setDescription(RuleForm instance, String description) {
+    public ExistentialRuleform setDescription(ExistentialRuleform instance,
+                                              String description) {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(instance, networkedModel)) {
+        if (!checkUPDATE(instance)) {
             return instance;
         }
         instance.setDescription(description);
         return instance;
     }
 
-    public RuleForm setName(RuleForm instance, String name) {
+    public ExistentialRuleform setName(ExistentialRuleform instance,
+                                       String name) {
         if (instance == null) {
             return null;
         }
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(instance, networkedModel)) {
+        if (!checkUPDATE(instance)) {
             return instance;
         }
         instance.setName(name);
@@ -1036,296 +621,194 @@ public class PhantasmCRUD<RuleForm extends ExistentialRuleform<RuleForm, Network
      * @param auth
      * @param child
      */
-    public RuleForm setSingularChild(NetworkAuthorization<RuleForm> facet,
-                                     RuleForm instance,
-                                     NetworkAuthorization<RuleForm> auth,
-                                     RuleForm child) {
+    public ExistentialRuleform setSingularChild(NetworkAuthorization facet,
+                                                ExistentialRuleform instance,
+                                                NetworkAuthorization auth,
+                                                ExistentialRuleform child) {
         if (instance == null) {
             return null;
         }
 
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(auth.getClassification());
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
+        if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
             return instance;
         }
 
         if (child == null) {
-            networkedModel.unlinkImmediate(child, auth.getChildRelationship());
+            model.getPhantasmModel()
+                 .unlinkImmediate(child, auth.getChildRelationship());
         } else {
             cast(child, auth);
-            networkedModel.setImmediateChild(instance, model.getEntityManager()
-                                                            .getReference(Relationship.class,
-                                                                          auth.getChildRelationship()
-                                                                              .getId()),
-                                             child, model.getCurrentPrincipal()
-                                                         .getPrincipal());
+            model.getPhantasmModel()
+                 .setImmediateChild(instance, auth.getChildRelationship(),
+                                    child, model.getCurrentPrincipal()
+                                                .getPrincipal());
         }
         return instance;
     }
 
-    /**
-     * Set the singular xd child of the instance
-     * 
-     * @param facet
-     * @param instance
-     * @param auth
-     * @param child
-     * 
-     * @return
-     */
-    public RuleForm setSingularChild(NetworkAuthorization<RuleForm> facet,
-                                     RuleForm instance,
-                                     XDomainNetworkAuthorization<?, ?> auth,
-                                     ExistentialRuleform<?, ?> child) {
-        if (instance == null) {
-            return null;
-        }
-        ExistentialModel<RuleForm, ?, ?, ?> networkedModel = model.getNetworkedModel(instance);
-        if (!checkUPDATE(facet, networkedModel)
-            || !checkUPDATE(auth, networkedModel)) {
-            return instance;
-        }
-        cast(child, auth);
-        ExistentialRuleform<?, ?> childAuthClassification = auth.isForward() ? auth.getToParent()
-                                                                             : auth.getFromParent();
-        if (childAuthClassification instanceof Agency) {
-            networkedModel.authorizeSingular(instance, model.getEntityManager()
-                                                            .getReference(Relationship.class,
-                                                                          auth.getConnection()
-                                                                              .getId()),
-                                             (Agency) child);
-        } else if (childAuthClassification instanceof Location) {
-            networkedModel.authorizeSingular(instance, model.getEntityManager()
-                                                            .getReference(Relationship.class,
-                                                                          auth.getConnection()
-                                                                              .getId()),
-                                             (Location) child);
-        } else if (childAuthClassification instanceof Product) {
-            networkedModel.authorizeSingular(instance, model.getEntityManager()
-                                                            .getReference(Relationship.class,
-                                                                          auth.getConnection()
-                                                                              .getId()),
-                                             (Product) child);
-        } else if (childAuthClassification instanceof Relationship) {
-            networkedModel.authorizeSingular(instance, model.getEntityManager()
-                                                            .getReference(Relationship.class,
-                                                                          auth.getConnection()
-                                                                              .getId()),
-                                             (Relationship) child);
-        } else {
-            throw new IllegalArgumentException(String.format("Invalid XdAuth %s -> %s",
-                                                             instance.getClass()
-                                                                     .getSimpleName(),
-                                                             childAuthClassification.getClass()
-                                                                                    .getSimpleName()));
-        }
-        return instance;
+    private boolean checkREAD(AttributeAuthorization stateAuth) {
+        return model.getPhantasmModel()
+                    .checkCapability(stateAuth.getAuth(), getREAD());
     }
 
-    private boolean checkREAD(AttributeAuthorization<RuleForm, Network> stateAuth,
-                              ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(stateAuth, getREAD());
+    private boolean checkREAD(ExistentialRuleform child) {
+        return model.getPhantasmModel()
+                    .checkCapability(child, getREAD());
     }
 
-    private boolean checkREAD(@SuppressWarnings("rawtypes") ExistentialRuleform child,
-                              ExistentialModel<?, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(child, getREAD());
+    private boolean checkREAD(NetworkAuthorization auth) {
+        return model.getPhantasmModel()
+                    .checkFacetCapability(auth.getAuth(), getREAD());
     }
 
-    private boolean checkREAD(NetworkAuthorization<RuleForm> auth,
-                              ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-        return networkedModel.checkFacetCapability(auth, getREAD());
+    private boolean checkUPDATE(AttributeAuthorization stateAuth) {
+        return model.getPhantasmModel()
+                    .checkCapability(stateAuth.getAuth(), getUPDATE());
     }
 
-    private boolean checkREAD(ExistentialModel<RuleForm, ?, ?, ?> networkedModel,
-                              RuleForm instance) {
-        return networkedModel.checkCapability(instance, getREAD());
+    private boolean checkUPDATE(@SuppressWarnings("rawtypes") ExistentialRuleform child) {
+        return model.getPhantasmModel()
+                    .checkCapability(child, getUPDATE());
     }
 
-    private boolean checkREAD(XDomainNetworkAuthorization<?, ?> auth,
-                              ExistentialModel<?, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(auth, getREAD());
+    private boolean checkUPDATE(NetworkAuthorization auth) {
+        return model.getPhantasmModel()
+                    .checkCapability(auth.getAuth(), getUPDATE());
     }
 
-    private boolean checkUPDATE(AttributeAuthorization<RuleForm, Network> stateAuth,
-                                ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(stateAuth, getUPDATE());
-    }
+    private Object[] getIndexedAttributeValue(ExistentialRuleform instance,
+                                              Attribute authorizedAttribute) {
 
-    private boolean checkUPDATE(@SuppressWarnings("rawtypes") ExistentialRuleform child,
-                                ExistentialModel<?, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(child, getUPDATE());
-    }
-
-    private boolean checkUPDATE(NetworkAuthorization<RuleForm> auth,
-                                ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(auth, getUPDATE());
-    }
-
-    private boolean checkUPDATE(XDomainNetworkAuthorization<?, ?> auth,
-                                ExistentialModel<?, ?, ?, ?> networkedModel) {
-        return networkedModel.checkCapability(auth, getUPDATE());
-    }
-
-    private Object[] getIndexedAttributeValue(RuleForm instance,
-                                              Attribute authorizedAttribute,
-                                              ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-
-        AttributeValue<RuleForm>[] attributeValues = getValueArray(instance,
-                                                                   authorizedAttribute,
-                                                                   networkedModel);
+        ExistentialAttributeRecord[] attributeValues = getValueArray(instance,
+                                                                     authorizedAttribute);
 
         Object[] values = (Object[]) Array.newInstance(authorizedAttribute.valueClass(),
                                                        attributeValues.length);
-        for (AttributeValue<RuleForm> value : attributeValues) {
+        for (ExistentialAttributeRecord value : attributeValues) {
             values[value.getSequenceNumber()] = value.getValue();
         }
         return values;
     }
 
-    private Map<String, Object> getMappedAttributeValue(RuleForm instance,
-                                                        Attribute authorizedAttribute,
-                                                        ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
+    private Map<String, Object> getMappedAttributeValue(ExistentialRuleform instance,
+                                                        Attribute authorizedAttribute) {
         Map<String, Object> map = new HashMap<>();
-        for (Map.Entry<String, AttributeValue<RuleForm>> entry : getValueMap(instance,
-                                                                             authorizedAttribute,
-                                                                             networkedModel).entrySet()) {
+        for (Map.Entry<String, ExistentialAttributeRecord> entry : getValueMap(instance,
+                                                                               authorizedAttribute).entrySet()) {
             map.put(entry.getKey(), entry.getValue()
                                          .getValue());
         }
         return map;
     }
 
-    private AttributeValue<RuleForm>[] getValueArray(RuleForm instance,
-                                                     Attribute attribute,
-                                                     ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-        List<? extends AttributeValue<RuleForm>> values = networkedModel.getAttributeValues(instance,
-                                                                                            attribute);
+    private ExistentialAttributeRecord[] getValueArray(ExistentialRuleform instance,
+                                                       Attribute attribute) {
+        List<? extends ExistentialAttributeRecord> values = model.getPhantasmModel()
+                                                                 .getAttributeValues(instance,
+                                                                                     attribute);
         int max = 0;
-        for (AttributeValue<RuleForm> value : values) {
+        for (ExistentialAttributeRecord value : values) {
             max = Math.max(max, value.getSequenceNumber() + 1);
         }
         @SuppressWarnings("unchecked")
-        AttributeValue<RuleForm>[] returnValue = new AttributeValue[max];
-        for (AttributeValue<RuleForm> form : values) {
+        ExistentialAttributeRecord[] returnValue = new ExistentialAttributeRecord[max];
+        for (ExistentialAttributeRecord form : values) {
             returnValue[form.getSequenceNumber()] = form;
         }
         return returnValue;
     }
 
-    private Map<String, AttributeValue<RuleForm>> getValueMap(RuleForm instance,
-                                                              Attribute attribute,
-                                                              ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-        Map<String, AttributeValue<RuleForm>> map = new HashMap<>();
-        for (AttributeValue<RuleForm> value : networkedModel.getAttributeValues(instance,
-                                                                                attribute)) {
+    private Map<String, ExistentialAttributeRecord> getValueMap(ExistentialRuleform instance,
+                                                                Attribute attribute) {
+        Map<String, ExistentialAttributeRecord> map = new HashMap<>();
+        for (ExistentialAttributeRecord value : model.getPhantasmModel()
+                                                     .getAttributeValues(instance,
+                                                                         attribute)) {
             map.put(value.getKey(), value);
         }
         return map;
     }
 
-    private AttributeValue<RuleForm> newAttributeValue(RuleForm instance,
-                                                       Attribute attribute,
-                                                       int i,
-                                                       ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-        AttributeValue<RuleForm> value = networkedModel.create(instance,
-                                                               attribute,
-                                                               model.getCurrentPrincipal()
-                                                                    .getPrincipal());
+    private ExistentialAttributeRecord newAttributeValue(ExistentialRuleform instance,
+                                                         Attribute attribute,
+                                                         int i) {
+        ExistentialAttributeRecord value = model.getPhantasmModel()
+                                                .create(instance, attribute,
+                                                        model.getCurrentPrincipal()
+                                                             .getPrincipal());
         value.setSequenceNumber(i);
         return value;
     }
 
-    private void setAttributeArray(RuleForm instance,
+    private void setAttributeArray(ExistentialRuleform instance,
                                    Attribute authorizedAttribute,
-                                   Object[] values,
-                                   ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-        AttributeValue<RuleForm>[] old = getValueArray(instance,
-                                                       authorizedAttribute,
-                                                       networkedModel);
-        authorizedAttribute = model.getEntityManager()
-                                   .getReference(Attribute.class,
-                                                 authorizedAttribute.getId());
+                                   Object[] values) {
+        ExistentialAttributeRecord[] old = getValueArray(instance,
+                                                         authorizedAttribute);
         if (values == null) {
             if (old != null) {
-                for (AttributeValue<RuleForm> value : old) {
-                    model.getEntityManager()
-                         .remove(value);
+                for (ExistentialAttributeRecord value : old) {
+                    value.delete();
                 }
             }
         } else if (old == null) {
             for (int i = 0; i < values.length; i++) {
-                setValue(instance, authorizedAttribute, i, null, values[i],
-                         networkedModel);
+                setValue(instance, authorizedAttribute, i, null, values[i]);
             }
         } else if (old.length == values.length) {
             for (int i = 0; i < values.length; i++) {
-                setValue(instance, authorizedAttribute, i, old[i], values[i],
-                         networkedModel);
+                setValue(instance, authorizedAttribute, i, old[i], values[i]);
             }
         } else if (old.length < values.length) {
             int i;
             for (i = 0; i < old.length; i++) {
-                setValue(instance, authorizedAttribute, i, old[i], values[i],
-                         networkedModel);
+                setValue(instance, authorizedAttribute, i, old[i], values[i]);
             }
             for (; i < values.length; i++) {
-                setValue(instance, authorizedAttribute, i, null, values[i],
-                         networkedModel);
+                setValue(instance, authorizedAttribute, i, null, values[i]);
             }
         } else if (old.length > values.length) {
             int i;
             for (i = 0; i < values.length; i++) {
-                setValue(instance, authorizedAttribute, i, old[i], values[i],
-                         networkedModel);
+                setValue(instance, authorizedAttribute, i, old[i], values[i]);
             }
             for (; i < old.length; i++) {
-                model.getEntityManager()
-                     .remove(old[i]);
+                old[i].delete();
             }
         }
     }
 
-    private void setAttributeMap(RuleForm instance,
+    private void setAttributeMap(ExistentialRuleform instance,
                                  Attribute authorizedAttribute,
-                                 Map<String, Object> values,
-                                 ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
-        Map<String, AttributeValue<RuleForm>> valueMap = getValueMap(instance,
-                                                                     authorizedAttribute,
-                                                                     networkedModel);
+                                 Map<String, Object> values) {
+        Map<String, ExistentialAttributeRecord> valueMap = getValueMap(instance,
+                                                                       authorizedAttribute);
         values.keySet()
               .stream()
               .filter(keyName -> !valueMap.containsKey(keyName))
               .forEach(keyName -> valueMap.remove(keyName));
         int maxSeq = 0;
-        for (AttributeValue<RuleForm> value : valueMap.values()) {
+        for (ExistentialAttributeRecord value : valueMap.values()) {
             maxSeq = Math.max(maxSeq, value.getSequenceNumber());
         }
-        authorizedAttribute = model.getEntityManager()
-                                   .getReference(Attribute.class,
-                                                 authorizedAttribute.getId());
         for (Map.Entry<String, Object> entry : values.entrySet()) {
-            AttributeValue<RuleForm> value = valueMap.get(entry.getKey());
+            ExistentialAttributeRecord value = valueMap.get(entry.getKey());
             if (value == null) {
                 value = newAttributeValue(instance, authorizedAttribute,
-                                          ++maxSeq, networkedModel);
-                model.getEntityManager()
-                     .persist(value);
+                                          ++maxSeq);
+                value.insert();
                 value.setKey(entry.getKey());
             }
             value.setValue(entry.getValue());
         }
     }
 
-    private void setValue(RuleForm instance, Attribute attribute, int i,
-                          AttributeValue<RuleForm> existing, Object newValue,
-                          ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
+    private void setValue(ExistentialRuleform instance, Attribute attribute,
+                          int i, ExistentialAttributeRecord existing,
+                          Object newValue) {
         if (existing == null) {
-            existing = newAttributeValue(instance, attribute, i,
-                                         networkedModel);
-            model.getEntityManager()
-                 .persist(existing);
+            existing = newAttributeValue(instance, attribute, i);
+            existing.insert();
         }
         existing.setValue(newValue);
     }

@@ -101,20 +101,20 @@ public class AbstractModelTest {
             KernelUtil.clearAndLoadKernel(em);
             em.close();
             try (Model myModel = new ModelImpl(emf)) {
-                myModel.getEntityManager()
+                myModel.getDSLContext()
                        .getTransaction()
                        .begin();
                 KernelUtil.initializeInstance(myModel,
                                               "Abstract Model Test CoRE Instance",
                                               "CoRE instance for an Abstract Model Test");
-                myModel.getEntityManager()
+                myModel.getDSLContext()
                        .getTransaction()
                        .commit();
             }
         }
         model = new ModelImpl(emf);
         kernel = model.getKernel();
-        em = model.getEntityManager();
+        em = model.getDSLContext();
     }
 
     public static EntityManagerFactory mockedEmf() {

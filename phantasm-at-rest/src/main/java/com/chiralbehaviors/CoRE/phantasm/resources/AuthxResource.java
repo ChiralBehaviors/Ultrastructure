@@ -102,7 +102,7 @@ public class AuthxResource extends TransactionalResource {
                             @HeaderParam(HttpHeaders.AUTHORIZATION) String bearerToken) {
         perform(principal, model -> {
             UUID uuid = UUID.fromString(UsOAuthFactory.parse(bearerToken));
-            EntityManager em = model.getEntityManager();
+            EntityManager em = model.getDSLContext();
             em.remove(em.find(AgencyAttribute.class, uuid));
             Agency user = principal.getPrincipal();
             log.info("Deauthorized {} for {}:{}", uuid, user.getId(),
@@ -154,7 +154,7 @@ public class AuthxResource extends TransactionalResource {
 
     private AgencyAttribute generateToken(Credential cred, CoreUser user,
                                           Model model) {
-        EntityManager em = model.getEntityManager();
+        EntityManager em = model.getDSLContext();
         em.getTransaction()
           .begin();
         List<AgencyAttribute> values = model.getAgencyModel()
@@ -172,7 +172,7 @@ public class AuthxResource extends TransactionalResource {
         accessToken.setValue(cred);
         accessToken.setUpdated(new Timestamp(System.currentTimeMillis()));
         accessToken.setSequenceNumber(seqNum);
-        model.getEntityManager()
+        model.getDSLContext()
              .persist(accessToken);
         em.getTransaction()
           .commit();

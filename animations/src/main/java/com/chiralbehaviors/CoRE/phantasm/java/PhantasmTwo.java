@@ -20,17 +20,18 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.ScopedPhantasm;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
@@ -39,9 +40,8 @@ import com.chiralbehaviors.CoRE.phantasm.model.PhantasmCRUD;
  * @author hhildebrand
  *
  */
-public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>>
-        extends PhantasmCRUD<RuleForm, NetworkRuleform<RuleForm>>
-        implements InvocationHandler, ScopedPhantasm<RuleForm> {
+public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
+        PhantasmCRUD implements InvocationHandler, ScopedPhantasm<RuleForm> {
     private final PhantasmDefinition<RuleForm> definition;
     private final RuleForm                     ruleform;
 
@@ -57,7 +57,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
      */
     @Override
     public <T extends Phantasm<RuleForm>> T cast(Class<T> toPhantasm) {
-        return model.cast(ruleform, toPhantasm);
+        return model.cast(getRuleform(), toPhantasm);
     }
 
     @Override
@@ -96,12 +96,12 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
                     .getScoped(facetDefinition.getWorkspace());
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.Phantasm#getUpdatedBy()
-     */
-    @Override
     public Agency getUpdatedBy() {
-        return ruleform.getUpdatedBy();
+        return model.getDSLContext()
+                    .selectFrom(EXISTENTIAL)
+                    .where(EXISTENTIAL.ID.equal(ruleform.getUpdatedBy()))
+                    .fetchOne()
+                    .into(Agency.class);
     }
 
     /* (non-Javadoc)
@@ -165,8 +165,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform<RuleForm, NetworkR
      * @param ruleform2
      * @return
      */
-    public <T extends ExistentialRuleform<?, ?>, R extends Phantasm<?>> R wrap(Class<R> phantasm,
-                                                                               ExistentialRuleform<?, ?> ruleform) {
+    public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
+                                                                         T ruleform) {
         return model.wrap(phantasm, ruleform);
     }
 

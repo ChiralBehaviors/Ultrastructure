@@ -70,7 +70,7 @@ import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
 import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
+import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -160,7 +160,7 @@ public class WorkspaceImporter {
     public WorkspaceImporter(WorkspacePresentation wsp, Model model) {
         this.wsp = wsp;
         this.model = model;
-        this.em = model.getEntityManager();
+        this.em = model.getDSLContext();
     }
 
     public WorkspaceAccessor getWorkspace() {
@@ -294,7 +294,7 @@ public class WorkspaceImporter {
         if (facet.description != null) {
             authorization.setNotes(WorkspacePresentation.stripQuotes(facet.name.getText()));
         }
-        model.getEntityManager()
+        model.getDSLContext()
              .persist(authorization);
         workspace.add(authorization);
         List<ClassifiedAttributeContext> classifiedAttributes = facet.classifiedAttribute();
@@ -309,7 +309,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
 
@@ -345,7 +345,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -380,7 +380,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -416,7 +416,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -452,7 +452,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -483,7 +483,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -519,7 +519,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -554,7 +554,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -585,7 +585,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -617,7 +617,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getEntityManager()
+            model.getDSLContext()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -658,7 +658,7 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
-    private void defineFacetClassificationss(@SuppressWarnings("rawtypes") ExistentialModel networkedModel,
+    private void defineFacetClassificationss(@SuppressWarnings("rawtypes") PhantasmModel networkedModel,
                                              List<FacetContext> facets) {
         for (FacetContext facet : facets) {
             if (facet.classification.namespace == null) {
@@ -871,7 +871,7 @@ public class WorkspaceImporter {
     }
 
     private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void loadNetworks(List<EdgeContext> edges,
-                                                                                                              ExistentialModel<T, ?, ?, ?> networkedModel) {
+                                                                                                              PhantasmModel<T, ?, ?, ?> networkedModel) {
         for (EdgeContext edge : edges) {
             networkedModel.initialize(resolve(edge.parent),
                                       new Aspect<T>(resolve(edge.relationship),
@@ -1125,7 +1125,7 @@ public class WorkspaceImporter {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = WorkspacePresentation.stripQuotes(w.uri.getText());
             UUID uuid = WorkspaceAccessor.uuidOf(uri);
-            Product imported = model.getEntityManager()
+            Product imported = model.getDSLContext()
                                     .find(Product.class, uuid);
             if (imported == null) {
                 throw new IllegalStateException(String.format("the import is not found: %s:%s",

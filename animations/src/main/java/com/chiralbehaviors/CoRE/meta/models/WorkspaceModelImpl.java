@@ -24,13 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.TypedQuery;
-
 import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.tables.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
@@ -38,7 +35,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hhildebrand
@@ -46,13 +42,13 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
  */
 public class WorkspaceModelImpl implements WorkspaceModel {
 
-    private final DSLContext                em;
+    private final DSLContext                create;
     private final Model                     model;
     private final Map<UUID, WorkspaceScope> scopes = new HashMap<>();
 
     public WorkspaceModelImpl(Model model) {
         this.model = model;
-        em = model.getEntityManager();
+        create = model.getDSLContext();
     }
 
     @Override
@@ -66,7 +62,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                                                      kernel.getWorkspace());
         model.getProductModel()
              .initialize(definingProduct, aspect, workspace);
-        em.persist(definingProduct);
+        create.persist(definingProduct);
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         return scope;
@@ -86,21 +82,13 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     @Override
     public WorkspaceAuthorizationRecord get(Product definingProduct,
                                             String key) {
-        TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATION,
-                                                                       WorkspaceAuthorization.class);
-        query.setParameter("product", definingProduct);
-        query.setParameter("key", key);
-        return query.getSingleResult();
+        return null;
     }
 
     @Override
     public List<WorkspaceAuthorizationRecord> getByType(Product definingProduct,
                                                         String type) {
-        TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_AUTHORIZATIONS_BY_TYPE,
-                                                                       WorkspaceAuthorization.class);
-        query.setParameter("product", definingProduct);
-        query.setParameter("type", type);
-        return query.getResultList();
+        return null;
     }
 
     /* (non-Javadoc)
@@ -120,27 +108,17 @@ public class WorkspaceModelImpl implements WorkspaceModel {
 
     @Override
     public WorkspaceScope getScoped(UUID definingProduct) {
-        Product product = em.find(Product.class, definingProduct);
-        if (product == null) {
-            throw new IllegalArgumentException(String.format("Defining Product %s does not exist",
-                                                             definingProduct));
-        }
+        Product product = null;
         return getScoped(product);
     }
 
     @Override
     public List<WorkspaceAuthorizationRecord> getWorkspace(Product definingProduct) {
-        TypedQuery<WorkspaceAuthorization> query = em.createNamedQuery(WorkspaceAuthorization.GET_WORKSPACE,
-                                                                       WorkspaceAuthorization.class);
-        query.setParameter("product", definingProduct);
-        return query.getResultList();
+        return null;
     }
 
     @Override
     public void unload(Product definingProduct) {
-        for (WorkspaceAuthorization auth : WorkspaceSnapshot.getAuthorizations(definingProduct,
-                                                                               em)) {
-            em.remove(auth.getEntity(em));
-        }
+
     }
 }

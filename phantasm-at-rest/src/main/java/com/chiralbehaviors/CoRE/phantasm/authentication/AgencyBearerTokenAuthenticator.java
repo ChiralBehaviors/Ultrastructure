@@ -80,7 +80,7 @@ public class AgencyBearerTokenAuthenticator
             return Optional.absent();
         }
         try (Model model = new ModelImpl(emf);) {
-            EntityManager em = model.getEntityManager();
+            EntityManager em = model.getDSLContext();
             em.getTransaction()
               .begin();
 

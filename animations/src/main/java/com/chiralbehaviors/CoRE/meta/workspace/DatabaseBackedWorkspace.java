@@ -87,7 +87,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         assert definingProduct != null;
         this.definingProductId = definingProduct.getId();
         this.model = model;
-        this.em = model.getEntityManager();
+        this.em = model.getDSLContext();
         this.scope = new WorkspaceScope(this);
         // We need the kernel workspace to lookup workspaces, so special case the kernel
         if (!definingProduct.getId()
@@ -231,7 +231,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public Product getDefiningProduct() {
         if (definingProductCache == null) {
-            definingProductCache = model.getEntityManager()
+            definingProductCache = model.getDSLContext()
                                         .getReference(Product.class,
                                                       definingProductId);
         }

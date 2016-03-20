@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 
@@ -59,10 +59,11 @@ public class WorkspaceScope {
      * @param key
      * @return the value associated with the key in the named scope, or null
      */
-    public Ruleform lookup(Key key) {
+    @SuppressWarnings("unchecked")
+    public <T> T lookup(Key key) {
         String namespace = key.namespace();
         String name = key.name();
-        return lookup(namespace, name);
+        return (T) lookup(namespace, name);
     }
 
     /**

@@ -190,7 +190,7 @@ public class Loader {
             loadingEm.close();
         }
         try (Model model = new ModelImpl(emf)) {
-            EntityTransaction transaction = model.getEntityManager()
+            EntityTransaction transaction = model.getDSLContext()
                                                  .getTransaction();
             transaction.begin();
             KernelUtil.initializeInstance(model, configuration.coreDb,

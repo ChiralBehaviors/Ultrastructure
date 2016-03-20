@@ -20,15 +20,19 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+
 /**
  * @author hhildebrand
  *
  */
-public interface Phantasm<ExistentialRuleform> {
+public interface Phantasm<T extends ExistentialRuleform> {
 
     String getDescription();
 
     String getName();
 
     String getNotes();
+
+    T getRuleform();
 }

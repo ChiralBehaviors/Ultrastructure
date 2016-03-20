@@ -68,7 +68,7 @@ public class ManifestCommand extends Command {
         EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
                                                                         JpaConfiguration.PERSISTENCE_UNIT);
         try (Model model = new ModelImpl(emf)) {
-            EntityTransaction t = model.getEntityManager()
+            EntityTransaction t = model.getDSLContext()
                                        .getTransaction();
             t.begin();
             WorkspaceImporter.manifest(namespace.getList("files")

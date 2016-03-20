@@ -20,16 +20,15 @@
 
 package com.chiralbehaviors.CoRE.phantasm;
 
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 
 /**
  * @author hhildebrand
  *
  */
-public interface ScopedPhantasm<RuleForm extends ExistentialRuleform<RuleForm, ? extends NetworkRuleform<RuleForm>>>
+public interface ScopedPhantasm<RuleForm extends ExistentialRuleform>
         extends Phantasm<RuleForm> {
     <T extends Phantasm<RuleForm>> T cast(Class<T> toPhantasm);
 

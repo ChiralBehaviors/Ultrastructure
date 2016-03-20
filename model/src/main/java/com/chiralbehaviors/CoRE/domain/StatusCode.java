@@ -26,8 +26,14 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
  * @author hhildebrand
  *
  */
-public class StatusCode extends ExistentialRecord implements ExistentialRuleform {
+public class StatusCode extends ExistentialRecord
+        implements ExistentialRuleform {
 
     private static final long serialVersionUID = 1L;
+
+    @Override
+    public StatusCode getRuleform() {
+        return this;
+    }
 
 }

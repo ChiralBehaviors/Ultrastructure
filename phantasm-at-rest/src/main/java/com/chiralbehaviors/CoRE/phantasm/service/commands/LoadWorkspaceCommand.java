@@ -67,10 +67,10 @@ public class LoadWorkspaceCommand extends Command {
         EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
                                                                         JpaConfiguration.PERSISTENCE_UNIT);
         try (Model model = new ModelImpl(emf)) {
-            EntityTransaction t = model.getEntityManager()
+            EntityTransaction t = model.getDSLContext()
                                        .getTransaction();
             t.begin();
-            WorkspaceSnapshot.load(model.getEntityManager(),
+            WorkspaceSnapshot.load(model.getDSLContext(),
                                    namespace.getList("files")
                                             .stream()
                                             .map(file -> {

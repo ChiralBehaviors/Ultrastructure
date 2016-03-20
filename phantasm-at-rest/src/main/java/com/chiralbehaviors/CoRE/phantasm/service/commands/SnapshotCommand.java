@@ -68,7 +68,7 @@ public class SnapshotCommand extends Command {
         EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
                                                                         JpaConfiguration.PERSISTENCE_UNIT);
         try (Model model = new ModelImpl(emf)) {
-            EntityTransaction t = model.getEntityManager()
+            EntityTransaction t = model.getDSLContext()
                                        .getTransaction();
             t.begin();
             ObjectMapper objectMapper = new ObjectMapper();

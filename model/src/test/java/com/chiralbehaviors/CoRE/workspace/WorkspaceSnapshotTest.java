@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
-import static com.chiralbehaviors.CoRE.RecordFactory.RECORDS;
+import static com.chiralbehaviors.CoRE.RecordsFactory.RECORDS;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

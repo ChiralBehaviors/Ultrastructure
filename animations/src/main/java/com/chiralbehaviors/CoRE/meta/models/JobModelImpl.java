@@ -70,7 +70,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.SelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.SiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
+import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -126,7 +126,7 @@ public class JobModelImpl implements JobModel {
 
     public JobModelImpl(Model model) {
         this.model = model;
-        em = model.getEntityManager();
+        em = model.getDSLContext();
         kernel = model.getKernel();
     }
 
@@ -1361,7 +1361,7 @@ public class JobModelImpl implements JobModel {
     private <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>, AttributeAuth extends AttributeAuthorization<RuleForm, Network>, AttributeType extends AttributeValue<RuleForm>> boolean pathExists(RuleForm rf,
                                                                                                                                                                                                                                                      Relationship mpRelationship,
                                                                                                                                                                                                                                                      RuleForm child,
-                                                                                                                                                                                                                                                     ExistentialModel<RuleForm, Network, AttributeAuth, AttributeType> netModel) {
+                                                                                                                                                                                                                                                     PhantasmModel<RuleForm, Network, AttributeAuth, AttributeType> netModel) {
         if (mpRelationship.isAnyOrSame() || mpRelationship.isNotApplicable()) {
             return true;
         }

@@ -19,7 +19,7 @@
  */
 package com.chiralbehaviors.CoRE;
 
-import static com.chiralbehaviors.CoRE.RecordFactory.RECORDS;
+import static com.chiralbehaviors.CoRE.RecordsFactory.RECORDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

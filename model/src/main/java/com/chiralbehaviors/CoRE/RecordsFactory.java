@@ -40,11 +40,15 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.SIBLING_SEQUENCING_AUTHORIZAT
 import static com.chiralbehaviors.CoRE.jooq.Tables.STATUS_CODE_SEQUENCING;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
+import java.util.UUID;
+
 import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
@@ -76,7 +80,7 @@ import com.fasterxml.uuid.NoArgGenerator;
  * @author hhildebrand
  *
  */
-public interface RecordFactory {
+public interface RecordsFactory {
     public static enum ReferenceType {
         AGENCY_EXISTENTIAL_GROUPING, CHILD_SEQUENCING_AUTHORIZATION,
         EXISTENTIAL, EXISTENTIAL_ATTRIBUTE, EXISTENTIAL_ATTRIBUTE_AUTHORIZATION,
@@ -89,8 +93,85 @@ public interface RecordFactory {
     }
 
     static final NoArgGenerator GENERATOR = Generators.timeBasedGenerator();
-    static final RecordFactory  RECORDS   = new RecordFactory() {
+    static final RecordsFactory RECORDS   = new RecordsFactory() {
                                           };
+
+    static ExistentialRuleform createExistential(DSLContext create,
+                                                 UUID classification,
+                                                 String name,
+                                                 String description,
+                                                 Agency updatedBy) {
+        ExistentialRecord clazz = create.selectFrom(EXISTENTIAL)
+                                        .where(EXISTENTIAL.ID.equal(classification))
+                                        .fetchOne();
+        ExistentialRecord record = create.newRecord(EXISTENTIAL);
+        record.setId(GENERATOR.generate());
+        record.setName(name);
+        record.setDescription(description);
+        record.setUpdatedBy(updatedBy.getId());
+        record.setDomain(clazz.getDomain());
+        return resolve(record);
+    }
+
+    static ExistentialRuleform resolve(ExistentialRecord record) {
+        switch (record.getDomain()) {
+            case A:
+                return record.into(Agency.class);
+            case I:
+                return record.into(Interval.class);
+            case L:
+                return record.into(Location.class);
+            case P:
+                return record.into(Product.class);
+            case R:
+                return record.into(Relationship.class);
+            case S:
+                return record.into(StatusCode.class);
+            case T:
+                return record.into(Attribute.class);
+            case U:
+                return record.into(Unit.class);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown domain %s",
+                                                                 record.getDomain()));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T extends ExistentialRuleform> T resolve(DSLContext create,
+                                                     UUID id) {
+        ExistentialRecord record = create.selectFrom(EXISTENTIAL)
+                                         .where(EXISTENTIAL.ID.equal(id))
+                                         .fetchOne();
+        switch (record.getDomain()) {
+            case A:
+                return (T) record.into(Agency.class);
+            case I:
+                return (T) record.into(Interval.class);
+            case L:
+                return (T) record.into(Location.class);
+            case P:
+                return (T) record.into(Product.class);
+            case R:
+                return (T) record.into(Relationship.class);
+            case S:
+                return (T) record.into(StatusCode.class);
+            case T:
+                return (T) record.into(Attribute.class);
+            case U:
+                return (T) record.into(Unit.class);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown domain %s",
+                                                                 record.getDomain()));
+        }
+    }
+
+    default ExistentialRecord copy(DSLContext create, ExistentialRecord rf) {
+        ExistentialRecord copy = ((ExistentialRecord) rf).copy();
+        copy.setId(GENERATOR.generate());
+        return copy;
+
+    }
 
     default Agency newAgency(DSLContext create) {
         Agency record = create.newRecord(EXISTENTIAL)
@@ -134,6 +215,45 @@ public interface RecordFactory {
         ChildSequencingAuthorizationRecord record = create.newRecord(CHILD_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
         return record;
+    }
+
+    default ExistentialRuleform newExistential(DSLContext create,
+                                               ExistentialDomain domain) {
+        Class<? extends ExistentialRecord> existential;
+        switch (domain) {
+            case A:
+                existential = Agency.class;
+                break;
+            case I:
+                existential = Interval.class;
+                break;
+            case L:
+                existential = Location.class;
+                break;
+            case P:
+                existential = Product.class;
+                break;
+            case R:
+                existential = Relationship.class;
+                break;
+            case S:
+                existential = StatusCode.class;
+                break;
+            case T:
+                existential = Attribute.class;
+                break;
+            case U:
+                existential = Unit.class;
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("Unknown domain %s",
+                                                                 domain));
+        }
+        ExistentialRecord record = create.newRecord(EXISTENTIAL)
+                                         .into(existential);
+        record.setDomain(domain);
+        record.setId(GENERATOR.generate());
+        return (ExistentialRuleform) record;
     }
 
     default ExistentialAttributeRecord newExistentialAttribute(DSLContext create) {

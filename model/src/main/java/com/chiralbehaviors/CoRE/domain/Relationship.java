@@ -31,4 +31,9 @@ public class Relationship extends ExistentialRecord
 
     private static final long serialVersionUID = 1L;
 
+    @Override
+    public Relationship getRuleform() {
+        return this;
+    }
+
 }

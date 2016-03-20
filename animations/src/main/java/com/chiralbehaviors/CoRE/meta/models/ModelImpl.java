@@ -20,9 +20,10 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
+import static com.chiralbehaviors.CoRE.RecordsFactory.resolve;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,19 +31,12 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
 
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.SingularAttribute;
 
 import org.jooq.DSLContext;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Agency;
@@ -54,11 +48,14 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
+import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
@@ -71,7 +68,6 @@ import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
  *
  */
 public class ModelImpl implements Model {
-
     private final static ConcurrentMap<Class<?>, PhantasmDefinition<?>> cache = new ConcurrentHashMap<>();
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -98,9 +94,10 @@ public class ModelImpl implements Model {
     private final Animations                  animations;
     private final ExistentialModel<Attribute> attributeModel;
     private AuthorizedPrincipal               currentPrincipal;
-    private final DSLContext                  em;
+    private final DSLContext                  create;
     private final ExistentialModel<Interval>  intervalModel;
     private final JobModel                    jobModel;
+    private final PhantasmModel               phantasmModel;
     private final Kernel                      kernel;
     private final ExistentialModel<Location>  locationModel;
     private final ExistentialModel<Product>   productModel;
@@ -112,81 +109,81 @@ public class ModelImpl implements Model {
 
     public ModelImpl(DSLContext create) {
         animations = new Animations(this, null);
-        em = create;
+        this.create = create;
         workspaceModel = new WorkspaceModelImpl(this);
         kernel = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id())
                                .getWorkspace()
                                .getAccessor(Kernel.class);
-        attributeModel = new ExistentialModelImpl(this) {
+        attributeModel = new ExistentialModelImpl<Attribute>(this) {
             @Override
             protected ExistentialDomain domain() {
                 return ExistentialDomain.T;
             }
 
             @Override
-            protected Class domainClass() {
+            protected Class<Attribute> domainClass() {
                 return Attribute.class;
             }
         };
-        productModel = new ExistentialModelImpl(this) {
+        productModel = new ExistentialModelImpl<Product>(this) {
             @Override
             protected ExistentialDomain domain() {
                 return ExistentialDomain.P;
             }
 
             @Override
-            protected Class domainClass() {
+            protected Class<Product> domainClass() {
                 return Product.class;
             }
         };
-        intervalModel = new ExistentialModelImpl(this) {
+        intervalModel = new ExistentialModelImpl<Interval>(this) {
             @Override
             protected ExistentialDomain domain() {
                 return ExistentialDomain.I;
             }
 
             @Override
-            protected Class domainClass() {
+            protected Class<Interval> domainClass() {
                 return Interval.class;
             }
         };
-        locationModel = new ExistentialModelImpl(this) {
+        locationModel = new ExistentialModelImpl<Location>(this) {
             @Override
             protected ExistentialDomain domain() {
                 return ExistentialDomain.L;
             }
 
             @Override
-            protected Class domainClass() {
+            protected Class<Location> domainClass() {
                 return Location.class;
             }
         };
-        agencyModel = new ExistentialModelImpl(this) {
+        agencyModel = new ExistentialModelImpl<Agency>(this) {
             @Override
             protected ExistentialDomain domain() {
                 return ExistentialDomain.A;
             }
 
             @Override
-            protected Class domainClass() {
+            protected Class<Agency> domainClass() {
                 return Agency.class;
             }
         };
         jobModel = new JobModelImpl(this);
         relationshipModel = new RelationshipModelImpl(this);
         statusCodeModel = new StatusCodeModelImpl(this);
-        unitModel = new ExistentialModelImpl(this) {
+        unitModel = new ExistentialModelImpl<Unit>(this) {
             @Override
             protected ExistentialDomain domain() {
                 return ExistentialDomain.U;
             }
 
             @Override
-            protected Class domainClass() {
+            protected Class<Unit> domainClass() {
                 return Unit.class;
             }
         };
-        ;
+        phantasmModel = new PhantasmModelImpl(this);
         initializeCurrentPrincipal();
     }
 
@@ -196,9 +193,9 @@ public class ModelImpl implements Model {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends ExistentialRuleform, R extends Phantasm<T>> R apply(Class<R> phantasm,
-                                                                          Phantasm<? extends T> target) {
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                              this);
+                                                                          Phantasm<T> target) {
+        PhantasmDefinition<T> definition = (PhantasmDefinition<T>) cached(phantasm,
+                                                                          this);
         return (R) definition.construct(target.getRuleform(), this,
                                         getCurrentPrincipal().getPrincipal());
     }
@@ -212,9 +209,9 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#cast(com.chiralbehaviors.CoRE.phantasm.Phantasm, java.lang.Class)
      */
     @Override
-    public <T extends ExistentialRuleform, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
+    public <T extends ExistentialRuleform, R extends Phantasm<T>> R cast(T source,
                                                                          Class<R> phantasm) {
-        return (R) wrap(phantasm, source.getRuleform());
+        return wrap(phantasm, source);
     }
 
     /* (non-Javadoc)
@@ -222,10 +219,7 @@ public class ModelImpl implements Model {
      */
     @Override
     public void close() {
-        if (!em.isOpen()) {
-            return;
-        }
-        getEntityManager().close();
+        create.close();
     }
 
     /* (non-Javadoc)
@@ -238,7 +232,7 @@ public class ModelImpl implements Model {
                                                                               String description) throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm,
                                                                                  this);
-        ExistentialRuleform<? extends T, ?> ruleform;
+        T ruleform;
         try {
             ruleform = (T) Model.getExistentialRuleformConstructor(phantasm)
                                 .newInstance(name, description,
@@ -250,7 +244,7 @@ public class ModelImpl implements Model {
             ex.initCause(e);
             throw ex;
         }
-        getEntityManager().persist(ruleform);
+        ((ExistentialRecord) ruleform).insert();
         return (R) definition.construct(ruleform, this,
                                         getCurrentPrincipal().getPrincipal());
     }
@@ -270,142 +264,6 @@ public class ModelImpl implements Model {
             currentPrincipal = previous;
         }
         return value;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#find(com.chiralbehaviors.CoRE.attribute.
-     * AttributeValue)
-     */
-    @Override
-    public <AttributeType extends AttributeValue<RuleForm>, RuleForm extends Ruleform> List<RuleForm> find(AttributeType attributeValue) {
-        /*
-         * SELECT e FROM Product e, ProductAttribute ea, Attribute a WHERE
-         * ea.product = e, ea.value = :value, a = :attribute;
-         */
-
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-        Class<RuleForm> ruleformClass = attributeValue.getRuleformClass();
-
-        CriteriaQuery<RuleForm> query = criteriaBuilder.createQuery(ruleformClass);
-        Root<RuleForm> ruleform = query.from(ruleformClass);
-        Expression<RuleForm> rf = ruleform.as(ruleformClass);
-
-        query.select(ruleform);
-
-        @SuppressWarnings("unchecked")
-        Root<AttributeValue<?>> attributeValue_ = (Root<AttributeValue<?>>) query.from(attributeValue.getClass());
-
-        Predicate whereAttribute = criteriaBuilder.equal(attributeValue_.get("attribute"),
-                                                         attributeValue.getAttribute());
-
-        @SuppressWarnings("unchecked")
-        SingularAttribute<? super AttributeValue<?>, RuleForm> ruleformAttribute = (SingularAttribute<? super AttributeValue<?>, RuleForm>) (SingularAttribute<AttributeType, RuleForm>) attributeValue.getRuleformAttribute();
-        Predicate whereRuleform = criteriaBuilder.equal(attributeValue_.join(ruleformAttribute),
-                                                        rf);
-
-        Predicate whereAttributeValue = null;
-        switch (attributeValue.getAttribute()
-                              .getValueType()) {
-            case BINARY: {
-                whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.binaryValue),
-                                                            (byte[]) attributeValue.getValue());
-                break;
-            }
-            case INTEGER: {
-                whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.integerValue),
-                                                            (Integer) attributeValue.getValue());
-                break;
-            }
-            case BOOLEAN: {
-                whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.booleanValue),
-                                                            (Boolean) attributeValue.getValue());
-                break;
-            }
-            case NUMERIC: {
-                whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.numericValue),
-                                                            (BigDecimal) attributeValue.getValue());
-                break;
-            }
-            case TEXT: {
-                whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.textValue),
-                                                            (String) attributeValue.getValue());
-                break;
-            }
-            case TIMESTAMP: {
-                whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.timestampValue),
-                                                            (Timestamp) attributeValue.getValue());
-                break;
-            }
-            case JSON: {
-                whereAttributeValue = criteriaBuilder.equal(attributeValue_.get(AttributeValue_.jsonValue),
-                                                            attributeValue.getValue());
-                break;
-            }
-        }
-        query.where(criteriaBuilder.and(whereAttribute, whereAttributeValue,
-                                        whereRuleform));
-
-        return em.createQuery(query)
-                 .getResultList();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#find(java.lang.String,
-     * java.lang.Class)
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <RuleForm extends ExistentialRuleform> RuleForm find(String name,
-                                                                Class<RuleForm> ruleform) {
-        try {
-            return (RuleForm) em.createNamedQuery(prefixFor(ruleform)
-                                                  + FIND_BY_NAME_SUFFIX)
-                                .setParameter("name", name)
-                                .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.chiralbehaviors.CoRE.meta.Model#find(java.lang.Long, java.lang.Class)
-     */
-    @Override
-    public <RuleForm extends Ruleform> RuleForm find(UUID id,
-                                                     Class<RuleForm> clazz) {
-        return em.find(clazz, id);
-    }
-
-    @Override
-    public <RuleForm extends Ruleform> List<RuleForm> findAll(Class<RuleForm> ruleform) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<RuleForm> query = cb.createQuery(ruleform);
-        Root<RuleForm> root = query.from(ruleform);
-        TypedQuery<RuleForm> q = em.createQuery(query.select(root));
-        return q.getResultList();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.Model#findUpdatedBy(com.chiralbehaviors.CoRE.agency
-     * .Agency, java.lang.Class)
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(Agency updatedBy,
-                                                                    Class<Ruleform> ruleform) {
-        return em.createNamedQuery(prefixFor(ruleform) + FIND_BY_NAME_SUFFIX)
-                 .setParameter("agency", updatedBy)
-                 .getResultList();
     }
 
     /* (non-Javadoc)
@@ -440,13 +298,15 @@ public class ModelImpl implements Model {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.Model#getCoreInstance()
      */
+    @SuppressWarnings("unchecked")
     @Override
     public CoreInstance getCoreInstance() {
         try {
             return wrap(CoreInstance.class,
-                        getAgencyModel().getChild(getKernel().getCore(),
-                                                  getKernel().getSingletonOf()
-                                                             .getInverse()));
+                        phantasmModel.getChild(getKernel().getCore(),
+                                               resolve(create,
+                                                       getKernel().getSingletonOf()
+                                                                  .getInverse())));
         } catch (NoResultException e) {
             throw new IllegalStateException("The CoRE system has not been initialized properly",
                                             e);
@@ -466,8 +326,8 @@ public class ModelImpl implements Model {
      * @see com.chiralbehaviors.CoRE.meta.Model#getEntityManager()
      */
     @Override
-    public DSLContext getEntityManager() {
-        return em;
+    public DSLContext getDSLContext() {
+        return create;
     }
 
     @Override
@@ -505,34 +365,6 @@ public class ModelImpl implements Model {
         return locationModel;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <RuleForm extends ExistentialRuleform<RuleForm, Network>, Network extends NetworkRuleform<RuleForm>> ExistentialModel<RuleForm, Network, ?, ?> getNetworkedModel(ExistentialRuleform<RuleForm, Network> ruleform) {
-        ExistentialRuleform<RuleForm, Network> unproxied = Ruleform.initializeAndUnproxy(ruleform);
-        switch (unproxied.getClass()
-                         .getSimpleName()) {
-            case "Agency":
-                return (ExistentialModel<RuleForm, Network, ?, ?>) getAgencyModel();
-            case "Attribute":
-                return (ExistentialModel<RuleForm, Network, ?, ?>) getAttributeModel();
-            case "Interval":
-                return (ExistentialModel<RuleForm, Network, ?, ?>) getIntervalModel();
-            case "Location":
-                return (ExistentialModel<RuleForm, Network, ?, ?>) getLocationModel();
-            case "Product":
-                return (ExistentialModel<RuleForm, Network, ?, ?>) getProductModel();
-            case "Relationship":
-                return (ExistentialModel<RuleForm, Network, ?, ?>) getRelationshipModel();
-            case "StatusCode":
-                return (ExistentialModel<RuleForm, Network, ?, ?>) getStatusCodeModel();
-            case "Unit":
-                return (ExistentialModel<RuleForm, Network, ?, ?>) getUnitModel();
-            default:
-                throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
-                                                                 unproxied.getClass()));
-        }
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -564,11 +396,9 @@ public class ModelImpl implements Model {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.Model#getUnknownNetworkedModel(com.chiralbehaviors.CoRE.ExistentialRuleform)
      */
-    @Override
-    public <RuleForm extends ExistentialRuleform> ExistentialModel<?, ?, ?, ?> getUnknownNetworkedModel(RuleForm ruleform) {
-        RuleForm unproxied = Ruleform.initializeAndUnproxy(ruleform);
-        switch (unproxied.getClass()
-                         .getSimpleName()) {
+    public <RuleForm extends ExistentialRuleform> ExistentialModel<?> getUnknownNetworkedModel(RuleForm ruleform) {
+        switch (ruleform.getClass()
+                        .getSimpleName()) {
             case "Agency":
                 return getAgencyModel();
             case "Attribute":
@@ -587,7 +417,7 @@ public class ModelImpl implements Model {
                 return getUnitModel();
             default:
                 throw new IllegalArgumentException(String.format("Not a known existential ruleform: %s",
-                                                                 unproxied.getClass()));
+                                                                 ruleform.getClass()));
         }
     }
 
@@ -600,79 +430,128 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public void inferNetworks(ExistentialRuleform ruleform) {
-        animations.inferNetworks(ruleform);
+    public void inferNetworks() {
+        animations.inferNetworks();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends ExistentialRuleform, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
-                                                                                          UUID uuid) {
-        RuleForm ruleform = (RuleForm) getEntityManager().find(Model.getExistentialRuleform(phantasm),
-                                                               uuid);
+    public <T extends ExistentialRuleform, R extends Phantasm<T>> R lookup(Class<R> phantasm,
+                                                                           UUID uuid) {
+        T ruleform = (T) RecordsFactory.resolve(create.selectFrom(EXISTENTIAL)
+                                                      .where(EXISTENTIAL.ID.equal(uuid))
+                                                      .fetchOne());
         if (ruleform == null) {
             return null;
         }
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
                                                                                               this);
-        return (Phantasm<? super T>) definition.wrap(ruleform, this);
+        return (R) definition.wrap(ruleform, this);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#principalFrom(com.chiralbehaviors.CoRE.agency.Agency, java.util.List)
-     */
-    @Override
-    public AuthorizedPrincipal principalFrom(Agency principal,
-                                             List<UUID> capabilities) {
-        return new AuthorizedPrincipal(principal, capabilities.stream()
-                                                              .map(uuid -> em.find(AgencyNetworkAuthorization.class,
-                                                                                   uuid))
-                                                              .filter(auth -> auth != null)
-                                                              .filter(auth -> agencyModel.isAccessible(principal,
-                                                                                                       auth.getClassifier(),
-                                                                                                       auth.getClassification()))
-                                                              .collect(Collectors.toList()));
-    }
-
-    @Override
-    public StateSnapshot snapshot() {
-        return new StateSnapshot(getEntityManager(), excludeThisSingleton());
-    }
-
-    @Override
-    @SuppressWarnings({ "unchecked" })
-    public <T extends ExistentialRuleform, R extends Phantasm<?>> R wrap(Class<R> phantasm,
-                                                                         Phantasm<?> ruleform) {
-        if (ruleform == null) {
-            return null;
-        }
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                              this);
-        return (R) definition.wrap(ruleform.getRuleform(), this);
-    }
-
-    private Collection<? extends Ruleform> excludeThisSingleton() {
-        List<Ruleform> excluded = new ArrayList<>();
+    @SuppressWarnings("unused")
+    private Collection<?> excludeThisSingleton() {
+        List<Object> excluded = new ArrayList<>();
         Agency instance = getCoreInstance().getRuleform();
-        excluded.add(getAgencyModel().getImmediateLink(instance,
-                                                       kernel.getSingletonOf(),
-                                                       kernel.getCore()));
-        excluded.add(getAgencyModel().getImmediateLink(kernel.getCore(),
-                                                       kernel.getSingletonOf()
-                                                             .getInverse(),
-                                                       instance));
+        excluded.add(phantasmModel.getImmediateLink(instance,
+                                                    kernel.getSingletonOf(),
+                                                    kernel.getCore()));
+        excluded.add(phantasmModel.getImmediateLink(kernel.getCore(),
+                                                    resolve(create,
+                                                            kernel.getSingletonOf()
+                                                                  .getInverse()),
+                                                    instance));
         return excluded;
     }
 
     private void initializeCurrentPrincipal() {
-        if (em.getTransaction()
-              .isActive()
-            && em.getTransaction()
-                 .getRollbackOnly()) {
-            currentPrincipal = null;
-        } else {
-            currentPrincipal = new AuthorizedPrincipal(em.getReference(Agency.class,
-                                                                       WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()));
-        }
+        currentPrincipal = new AuthorizedPrincipal(create.selectFrom(EXISTENTIAL)
+                                                         .where(EXISTENTIAL.ID.equal(WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()))
+                                                         .fetchOne()
+                                                         .into(Agency.class));
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#find(com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute)
+     */
+    @Override
+    public ExistentialRecord find(ExistentialAttribute attributeValue) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#findUpdatedBy(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord, java.lang.Class)
+     */
+    @Override
+    public <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(ExistentialRecord updatedBy,
+                                                                    Class<Ruleform> ruleform) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#findAll(java.lang.Class)
+     */
+    @Override
+    public <RuleForm extends Ruleform> List<RuleForm> findAll(Class<RuleForm> ruleform) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#inferNetworks(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord)
+     */
+    @Override
+    public void inferNetworks(ExistentialRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#principalFrom(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord, java.util.List)
+     */
+    @Override
+    public AuthorizedPrincipal principalFrom(ExistentialRecord principal,
+                                             List<UUID> capabilities) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#getPhantasmModel()
+     */
+    @Override
+    public PhantasmModel getPhantasmModel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#wrap(java.lang.Class, com.chiralbehaviors.CoRE.phantasm.Phantasm)
+     */
+    @Override
+    public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
+                                                                         Phantasm<T> ruleform) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#lookupExistential(java.util.UUID)
+     */
+    @Override
+    public ExistentialRecord lookupExistential(UUID id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#getAttribute(java.util.UUID)
+     */
+    @Override
+    public Attribute getAttribute(UUID id) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

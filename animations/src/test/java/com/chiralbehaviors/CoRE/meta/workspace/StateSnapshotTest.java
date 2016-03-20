@@ -50,7 +50,7 @@ public class StateSnapshotTest extends AbstractModelTest {
     public void testSnap() throws Exception {
         UUID id;
         try (Model myModel = new ModelImpl(emf)) {
-            myModel.getEntityManager()
+            myModel.getDSLContext()
                    .getTransaction()
                    .begin();
             CoreUser frank = myModel.construct(CoreUser.class, "frank",
@@ -67,7 +67,7 @@ public class StateSnapshotTest extends AbstractModelTest {
         assertNull("Shouldn't be alive", frankenstein);
 
         try (Model myModel = new ModelImpl(emf)) {
-            myModel.getEntityManager()
+            myModel.getDSLContext()
                    .getTransaction()
                    .begin();
             StateSnapshot snapshot;
@@ -76,10 +76,10 @@ public class StateSnapshotTest extends AbstractModelTest {
                                              .readValue(os,
                                                         StateSnapshot.class);
             }
-            snapshot.retarget(myModel.getEntityManager());
-            myModel.getEntityManager()
+            snapshot.retarget(myModel.getDSLContext());
+            myModel.getDSLContext()
                    .flush();
-            frankenstein = myModel.getEntityManager()
+            frankenstein = myModel.getDSLContext()
                                   .find(Agency.class, id);
             assertNotNull("Should be found", frankenstein);
         }

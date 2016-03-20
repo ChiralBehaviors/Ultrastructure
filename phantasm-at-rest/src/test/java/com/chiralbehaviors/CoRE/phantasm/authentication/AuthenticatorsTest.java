@@ -31,13 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyAttribute;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
+import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.AuthxResource.CapabilityRequest;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -166,9 +163,9 @@ public class AuthenticatorsTest extends AbstractModelTest {
         authBob = authenticated.get();
 
         assertEquals(bob, authBob.getPrincipal());
-        assertEquals(1, authBob.getAsserted()
+        assertEquals(1, authBob.getCapabilities()
                                .size());
-        assertEquals(asserted, authBob.getAsserted()
+        assertEquals(asserted, authBob.getCapabilities()
                                       .get(0));
 
         assertEquals(2, authBob.getCapabilities()

@@ -47,7 +47,7 @@ import com.chiralbehaviors.CoRE.existential.Attribute;
 import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
+import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
@@ -173,7 +173,7 @@ public class FacetResource extends TransactionalResource {
 
             List<Map<String, Object>> facets = new ArrayList<>();
             returned.put(Constants.GRAPH, facets);
-            ExistentialModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+            PhantasmModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
             for (RuleForm ruleform : networkedModel.getChildren(aspect.getClassification(),
                                                                 aspect.getClassifier()
                                                                       .getInverse())) {
@@ -321,7 +321,7 @@ public class FacetResource extends TransactionalResource {
         return readOnly(principal, readOnlyModel -> {
             Aspect<RuleForm> aspect = getAspect(ruleformType, relationship,
                                                 ruleform, readOnlyModel);
-            ExistentialModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
+            PhantasmModel<RuleForm, ?, ?, ?> networkedModel = readOnlyModel.getNetworkedModel(aspect.getClassification());
             RuleForm instance = Ruleform.initializeAndUnproxy(networkedModel.find(existential));
             if (instance == null) {
                 throw new WebApplicationException(String.format("node %s is not found %s (%s)",
@@ -393,7 +393,7 @@ public class FacetResource extends TransactionalResource {
         });
     }
 
-    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Map<String, Object> getFacets(ExistentialModel<RuleForm, ?, ?, ?> networkedModel,
+    private <RuleForm extends ExistentialRuleform<RuleForm, ?>> Map<String, Object> getFacets(PhantasmModel<RuleForm, ?, ?, ?> networkedModel,
                                                                                               Class<?> clazz,
                                                                                               Model readOnlyModel) {
 

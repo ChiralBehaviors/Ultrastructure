@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.RecordFactory.RECORDS;
+import static com.chiralbehaviors.CoRE.RecordsFactory.RECORDS;
 
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;

@@ -96,7 +96,7 @@ public interface Model extends AutoCloseable {
      * @return
      */
     <T extends ExistentialRuleform, R extends Phantasm<T>> R apply(Class<R> phantasm,
-                                                                   Phantasm<? extends T> target);
+                                                                   Phantasm<T> target);
 
     /**
      * Answer the cached facet definition for a phantasm class
@@ -113,7 +113,7 @@ public interface Model extends AutoCloseable {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform, R extends Phantasm<T>> R cast(Phantasm<? extends T> source,
+    <T extends ExistentialRuleform, R extends Phantasm<T>> R cast(T source,
                                                                   Class<R> phantasm);
 
     @Override
@@ -152,26 +152,6 @@ public interface Model extends AutoCloseable {
      * @return the collection of ruleform instances that match the attribute
      */
     ExistentialRecord find(ExistentialAttribute attributeValue);
-
-    /**
-     * Find an instance of the ExistentialRuleform using the name
-     *
-     * @param name
-     * @return the instance that has the supplied name, or null if the instance
-     *         does not exist
-     */
-    <RuleForm extends ExistentialRuleform> RuleForm find(String name,
-                                                         Class<RuleForm> ruleform);
-
-    /**
-     * Find an instance using the id
-     *
-     * @param id
-     * @return the instance corresponding to the supplied id, or null if the
-     *         instance does not exist
-     */
-    <RuleForm extends Ruleform> RuleForm find(UUID id,
-                                              Class<RuleForm> ruleform);
 
     /**
      * Find all rows of a ruleform. not a smart thing to do, really. will need
@@ -224,7 +204,7 @@ public interface Model extends AutoCloseable {
      *
      * @return
      */
-    DSLContext getEntityManager();
+    DSLContext getDSLContext();
 
     /**
      * @return the Interval model
@@ -288,8 +268,8 @@ public interface Model extends AutoCloseable {
      * @param uuid
      * @return
      */
-    <T extends ExistentialRuleform, RuleForm extends T> Phantasm<? super T> lookup(Class<? extends Phantasm<? extends T>> phantasm,
-                                                                                   UUID uuid);
+    <T extends ExistentialRuleform, R extends Phantasm<T>> R lookup(Class<R> phantasm,
+                                                                    UUID uuid);
 
     AuthorizedPrincipal principalFrom(ExistentialRecord principal,
                                       List<UUID> capabilities);
@@ -301,6 +281,14 @@ public interface Model extends AutoCloseable {
      * @param ruleform
      * @return
      */
-    <T extends ExistentialRuleform, R extends Phantasm<?>> R wrap(Class<R> phantasm,
-                                                                  Phantasm<?> ruleform);
+    <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
+                                                                  Phantasm<T> ruleform);
+
+    void inferNetworks();
+
+    PhantasmModel getPhantasmModel();
+
+    ExistentialRecord lookupExistential(UUID id);
+
+    Attribute getAttribute(UUID id);
 }

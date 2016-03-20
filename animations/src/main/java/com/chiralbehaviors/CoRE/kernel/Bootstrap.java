@@ -164,7 +164,7 @@ public class Bootstrap {
 
         // Ain Soph
         ModelImpl model = new ModelImpl(em.getEntityManagerFactory());
-        model.getEntityManager()
+        model.getDSLContext()
              .getTransaction()
              .begin();
 
@@ -178,11 +178,11 @@ public class Bootstrap {
         attributeValue.setValue(Ruleform.KERNEL_IRI);
         model.getProductModel()
              .setAttributeValue(attributeValue);
-        model.getEntityManager()
+        model.getDSLContext()
              .getTransaction()
              .commit();
 
-        model.getEntityManager()
+        model.getDSLContext()
              .close();
 
         // Ain Soph Aur

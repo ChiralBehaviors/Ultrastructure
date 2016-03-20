@@ -33,7 +33,6 @@ import org.hibernate.internal.SessionImpl;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
-import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
@@ -49,7 +48,6 @@ import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.TriggerException;
-import com.chiralbehaviors.CoRE.meta.models.hibernate.AnimationsInterceptor;
 
 /**
  * @author hhildebrand
@@ -69,7 +67,7 @@ import com.chiralbehaviors.CoRE.meta.models.hibernate.AnimationsInterceptor;
  *
  *         This is the Rule Engine (tm).
  */
-public class Animations implements Triggers {
+public class Animations {
 
     private static final int                          MAX_JOB_PROCESSING = 10;
 
@@ -112,7 +110,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.agency.Agency)
      */
-    @Override
+
     public void delete(Agency a) {
         inferAgencyNetwork = true;
     }
@@ -120,7 +118,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.agency.AgencyNetwork)
      */
-    @Override
+
     public void delete(AgencyNetwork a) {
         inferAgencyNetwork = true;
     }
@@ -128,7 +126,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.attribute.Attribute)
      */
-    @Override
+
     public void delete(Attribute a) {
         inferAttributeNetwork = true;
     }
@@ -136,7 +134,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.attribute.AttributeNetwork)
      */
-    @Override
+
     public void delete(AttributeNetwork a) {
         inferAttributeNetwork = true;
     }
@@ -144,7 +142,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.time.Interval)
      */
-    @Override
+
     public void delete(Interval i) {
         inferIntervalNetwork = true;
     }
@@ -152,7 +150,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.time.IntervalNetwork)
      */
-    @Override
+
     public void delete(IntervalNetwork i) {
         inferAttributeNetwork = true;
     }
@@ -160,7 +158,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.location.Location)
      */
-    @Override
+
     public void delete(Location l) {
         inferLocationNetwork = true;
     }
@@ -168,7 +166,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.location.LocationNetwork)
      */
-    @Override
+
     public void delete(LocationNetwork l) {
         inferLocationNetwork = true;
     }
@@ -176,7 +174,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.network.NetworkInference)
      */
-    @Override
+
     public void delete(Inference inference) {
         propagateAll();
     }
@@ -184,7 +182,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.product.Product)
      */
-    @Override
+
     public void delete(Product p) {
         inferProductNetwork = true;
     }
@@ -192,7 +190,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.product.ProductNetwork)
      */
-    @Override
+
     public void delete(ProductNetwork p) {
         inferProductNetwork = true;
     }
@@ -200,7 +198,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.network.Relationship)
      */
-    @Override
+
     public void delete(Relationship r) {
         inferRelationshipNetwork = true;
     }
@@ -208,7 +206,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.network.RelationshipNetwork)
      */
-    @Override
+
     public void delete(RelationshipNetwork r) {
         inferRelationshipNetwork = true;
     }
@@ -216,7 +214,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.event.status.StatusCode)
      */
-    @Override
+
     public void delete(StatusCode s) {
         inferStatusCodeNetwork = true;
     }
@@ -224,7 +222,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork)
      */
-    @Override
+
     public void delete(StatusCodeNetwork s) {
         inferStatusCodeNetwork = true;
     }
@@ -232,7 +230,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.attribute.unit.Unit)
      */
-    @Override
+
     public void delete(Unit u) {
         inferUnitNetwork = true;
     }
@@ -240,7 +238,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#delete(com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork)
      */
-    @Override
+
     public void delete(UnitNetwork u) {
         inferUnitNetwork = true;
     }
@@ -276,7 +274,7 @@ public class Animations implements Triggers {
     }
 
     public EntityManager getEm() {
-        return model.getEntityManager();
+        return model.getDSLContext();
     }
 
     /**
@@ -286,7 +284,7 @@ public class Animations implements Triggers {
         return model;
     }
 
-    public void inferNetworks(ExistentialRuleform<?, ?> ruleform) {
+    public void inferNetworks() {
         if (ruleform instanceof Agency) {
             inferAgencyNetwork = true;
             return;
@@ -331,7 +329,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.agency.AgencyNetwork)
      */
-    @Override
+
     public void persist(AgencyNetwork a) {
         inferAgencyNetwork = true;
     }
@@ -339,7 +337,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.attribute.AttributeNetwork)
      */
-    @Override
+
     public void persist(AttributeNetwork a) {
         inferAttributeNetwork = true;
     }
@@ -347,7 +345,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.time.IntervalNetwork)
      */
-    @Override
+
     public void persist(IntervalNetwork i) {
         inferIntervalNetwork = true;
     }
@@ -355,7 +353,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.Job)
      */
-    @Override
+
     public void persist(Job j) {
         jobs.add(j);
     }
@@ -363,7 +361,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.location.LocationNetwork)
      */
-    @Override
+
     public void persist(LocationNetwork l) {
         inferLocationNetwork = true;
     }
@@ -371,7 +369,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductChildSequencingAuthorization)
      */
-    @Override
+
     public void persist(ChildSequencingAuthorization pcsa) {
         childSequences.add(pcsa);
     }
@@ -379,7 +377,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.product.ProductNetwork)
      */
-    @Override
+
     public void persist(ProductNetwork p) {
         inferProductNetwork = true;
     }
@@ -387,7 +385,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductParentSequencingAuthorization)
      */
-    @Override
+
     public void persist(ParentSequencingAuthorization ppsa) {
         parentSequences.add(ppsa);
     }
@@ -395,7 +393,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductSelfSequencingAuthorization)
      */
-    @Override
+
     public void persist(SelfSequencingAuthorization pssa) {
         selfSequences.add(pssa);
     }
@@ -403,7 +401,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.ProductSiblingSequencingAuthorization)
      */
-    @Override
+
     public void persist(SiblingSequencingAuthorization pssa) {
         siblingSequences.add(pssa);
     }
@@ -411,7 +409,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.network.RelationshipNetwork)
      */
-    @Override
+
     public void persist(RelationshipNetwork r) {
         inferRelationshipNetwork = true;
     }
@@ -419,7 +417,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.status.StatusCodeNetwork)
      */
-    @Override
+
     public void persist(StatusCodeNetwork sc) {
         inferStatusCodeNetwork = true;
     }
@@ -427,12 +425,11 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.event.status.StatusCodeSequencing)
      */
-    @Override
+
     public void persist(StatusCodeSequencing scs) {
         modifiedServices.add(scs.getService());
     }
 
-    @Override
     public <T extends AttributeValue<?>> void persist(T value) {
         attributeValues.add(value);
     }
@@ -440,7 +437,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#persist(com.chiralbehaviors.CoRE.attribute.unit.UnitNetwork)
      */
-    @Override
+
     public void persist(UnitNetwork u) {
         inferUnitNetwork = true;
     }
@@ -455,7 +452,7 @@ public class Animations implements Triggers {
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.Triggers#update(com.chiralbehaviors.CoRE.event.Job)
      */
-    @Override
+
     public void update(Job j) {
         jobs.add(j);
     }

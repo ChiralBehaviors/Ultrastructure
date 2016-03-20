@@ -20,16 +20,15 @@
 
 package com.chiralbehaviors.CoRE.phantasm.java;
 
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 
 /**
  * @author hhildebrand
  *
  */
 @FunctionalInterface
-public interface StateFunction<RuleForm extends ExistentialRuleform<RuleForm, NetworkRuleform<RuleForm>>> {
+public interface StateFunction<RuleForm extends ExistentialRuleform> {
     Object invoke(PhantasmTwo<RuleForm> state, WorkspaceScope scope,
                   Object[] arguments);
 }

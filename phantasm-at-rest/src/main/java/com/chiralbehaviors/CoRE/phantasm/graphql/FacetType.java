@@ -59,7 +59,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.product.Constructor;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.InstanceMethod;
 import com.chiralbehaviors.CoRE.kernel.phantasm.product.Plugin;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
+import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspacePresentation;
 import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
@@ -401,8 +401,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                          (RuleForm) update.get(AT_RULEFORM),
                                          auth,
                                          id == null ? null
-                                                    : (RuleForm) crud.lookup(auth,
-                                                                             id));
+                                                    : (RuleForm) crud.lookup(id));
         });
         references.add(child);
     }
@@ -431,8 +430,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.setSingularChild(facet,
                                                              (RuleForm) update.get(AT_RULEFORM),
                                                              auth,
-                                                             crud.lookup(child,
-                                                                         (String) update.get(setter))));
+                                                             crud.lookup((String) update.get(setter))));
         references.add(child);
     }
 
@@ -453,8 +451,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.addChild(facet,
                                                      (RuleForm) update.get(AT_RULEFORM),
                                                      auth,
-                                                     (RuleForm) crud.lookup(auth,
-                                                                            (String) update.get(add))));
+                                                     (RuleForm) crud.lookup((String) update.get(add))));
     }
 
     @SuppressWarnings("unchecked")
@@ -475,8 +472,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.addChild(facet,
                                                      (RuleForm) update.get(AT_RULEFORM),
                                                      auth,
-                                                     crud.lookup(child,
-                                                                 (String) update.get(add))));
+                                                     crud.lookup((String) update.get(add))));
     }
 
     @SuppressWarnings("unchecked")
@@ -496,8 +492,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.addChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
-                                                                                             (List<String>) update.get(addChildren))));
+                                                        (List<RuleForm>) crud.lookupRuleForm((List<String>) update.get(addChildren))));
     }
 
     @SuppressWarnings("unchecked")
@@ -517,8 +512,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.addChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
                                                         auth,
-                                                        crud.lookup(child,
-                                                                    (List<String>) update.get(addChildren))));
+                                                        crud.lookup((List<String>) update.get(addChildren))));
     }
 
     private void addPlugins(NetworkAuthorization<RuleForm> facet,
@@ -553,8 +547,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .type(GraphQLString)
                                                           .build())
                                    .dataFetcher(env -> {
-                                       RuleForm ruleform = (RuleForm) ctx(env).lookup(facet,
-                                                                                      (String) env.getArgument(ID));
+                                       RuleForm ruleform = (RuleForm) ctx(env).lookup((String) env.getArgument(ID));
                                        PhantasmCRUD<RuleForm, Network> crud = ctx(env);
                                        return crud.apply(facet, ruleform,
                                                          instance -> {
@@ -719,7 +712,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                 InstanceMethod method, RuleForm instance,
                                 PhantasmCRUD<RuleForm, Network> crud) {
         Model model = crud.getModel();
-        ExistentialModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
+        PhantasmModel<RuleForm, Network, ?, ?> networkedModel = model.getNetworkedModel(instance);
         Relationship invoke = crud.getINVOKE();
         return networkedModel.checkCapability(method.getRuleform(), invoke)
                && crud.checkInvoke(facet, instance);
@@ -887,8 +880,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .description("id of the facet")
                                                           .type(new GraphQLNonNull(GraphQLString))
                                                           .build())
-                                   .dataFetcher(env -> ctx(env).lookup(facet,
-                                                                       (String) env.getArgument(ID)))
+                                   .dataFetcher(env -> ctx(env).lookup((String) env.getArgument(ID)))
                                    .build();
     }
 
@@ -905,8 +897,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .dataFetcher(context -> {
                                        @SuppressWarnings("unchecked")
                                        List<String> ids = ((List<String>) context.getArgument(ID));
-                                       return ids != null ? ctx(context).lookup(facet,
-                                                                                ids)
+                                       return ids != null ? ctx(context).lookup(ids)
                                                           : ctx(context).getInstances(facet);
                                    })
                                    .build();
@@ -948,8 +939,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                                           .type(GraphQLString)
                                                           .build())
                                    .dataFetcher(env -> ctx(env).remove(facet,
-                                                                       (RuleForm) ctx(env).lookup(facet,
-                                                                                                  (String) env.getArgument(ID)),
+                                                                       (RuleForm) ctx(env).lookup((String) env.getArgument(ID)),
                                                                        true))
                                    .build();
     }
@@ -969,8 +959,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.removeChild(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (RuleForm) crud.lookup(auth,
-                                                                               (String) update.get(remove))));
+                                                        (RuleForm) crud.lookup((String) update.get(remove))));
     }
 
     @SuppressWarnings("unchecked")
@@ -989,8 +978,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.removeChild(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
                                                         auth,
-                                                        crud.lookup(child,
-                                                                    (String) update.get(remove))));
+                                                        crud.lookup((String) update.get(remove))));
     }
 
     @SuppressWarnings("unchecked")
@@ -1008,8 +996,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.removeChildren(facet,
                                                            (RuleForm) update.get(AT_RULEFORM),
                                                            auth,
-                                                           (List<RuleForm>) crud.lookupRuleForm(auth,
-                                                                                                (List<String>) update.get(removeChildren))));
+                                                           (List<RuleForm>) crud.lookupRuleForm((List<String>) update.get(removeChildren))));
     }
 
     @SuppressWarnings("unchecked")
@@ -1028,8 +1015,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.removeChildren(facet,
                                                            (RuleForm) update.get(AT_RULEFORM),
                                                            auth,
-                                                           crud.lookup(child,
-                                                                       (List<String>) update.get(removeChildren))));
+                                                           crud.lookup((List<String>) update.get(removeChildren))));
     }
 
     @SuppressWarnings("unchecked")
@@ -1048,8 +1034,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.setChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
                                                         auth,
-                                                        (List<RuleForm>) crud.lookupRuleForm(auth,
-                                                                                             (List<String>) update.get(setter))));
+                                                        (List<RuleForm>) crud.lookupRuleForm((List<String>) update.get(setter))));
     }
 
     @SuppressWarnings("unchecked")
@@ -1068,8 +1053,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                             update) -> crud.setChildren(facet,
                                                         (RuleForm) update.get(AT_RULEFORM),
                                                         auth,
-                                                        crud.lookup(child,
-                                                                    (List<String>) update.get(setter))));
+                                                        crud.lookup((List<String>) update.get(setter))));
     }
 
     private GraphQLOutputType typeOf(Attribute attribute) {
@@ -1114,8 +1098,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                    .dataFetcher(env -> {
                                        Map<String, Object> updateState = (Map<String, Object>) env.getArgument(STATE);
                                        PhantasmCRUD<RuleForm, Network> crud = ctx(env);
-                                       RuleForm ruleform = (RuleForm) crud.lookup(facet,
-                                                                                  (String) updateState.get(ID));
+                                       RuleForm ruleform = (RuleForm) crud.lookup((String) updateState.get(ID));
                                        update(ruleform, updateState, crud,
                                               detachedUpdateTemplate);
                                        return ruleform;
@@ -1154,8 +1137,7 @@ public class FacetType<RuleForm extends ExistentialRuleform<RuleForm, Network>, 
                                        PhantasmCRUD<RuleForm, Network> crud = ctx(env);
                                        return updateStates.stream()
                                                           .map(updateState -> {
-                                           RuleForm ruleform = (RuleForm) crud.lookup(facet,
-                                                                                      (String) updateState.get(ID));
+                                           RuleForm ruleform = (RuleForm) crud.lookup((String) updateState.get(ID));
                                            update(ruleform, updateState, crud,
                                                   detachedUpdateTemplate);
                                            return ruleform;

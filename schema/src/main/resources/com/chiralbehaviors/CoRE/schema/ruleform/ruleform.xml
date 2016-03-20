@@ -7,6 +7,5 @@
     <include relativeToChangelogFile="true" file="existential_domain.xml" />
     <include relativeToChangelogFile="true" file="null_zero.xml" />
     <include relativeToChangelogFile="true" file="tables.xml" />
-    <include relativeToChangelogFile="true" file="ensure_domain.xml" />
 
 </databaseChangeLog>

@@ -33,7 +33,7 @@ import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.existential.domain.Relationship;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
+import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.network.NetworkRuleform;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -61,7 +61,7 @@ public class TransactionalResource {
                                                             ruleformType),
                                               Status.NOT_FOUND);
         }
-        Relationship classifier = readOnlyModel.getEntityManager()
+        Relationship classifier = readOnlyModel.getDSLContext()
                                                .find(Relationship.class,
                                                      relationship);
         if (classifier == null) {
@@ -70,7 +70,7 @@ public class TransactionalResource {
                                               Status.NOT_FOUND);
         }
         classifier = Ruleform.initializeAndUnproxy(classifier);
-        ExistentialRuleform classification = readOnlyModel.getEntityManager()
+        ExistentialRuleform classification = readOnlyModel.getDSLContext()
                                                           .find(ruleformClass,
                                                                 ruleform);
         if (classification == null) {
@@ -85,7 +85,7 @@ public class TransactionalResource {
 
     protected <RuleForm extends ExistentialRuleform<RuleForm, ?>> Aspect<RuleForm> getAspect(UUID classifier,
                                                                                              UUID classification,
-                                                                                             ExistentialModel<RuleForm, ?, ?, ?> networkedModel) {
+                                                                                             PhantasmModel<RuleForm, ?, ?, ?> networkedModel) {
         try {
             return networkedModel.getAspect(classifier, classification);
         } catch (IllegalArgumentException e) {
@@ -100,7 +100,7 @@ public class TransactionalResource {
     protected <T> T perform(AuthorizedPrincipal principal,
                             Function<Model, T> txn) throws WebApplicationException {
         Model model = new ModelImpl(emf);
-        EntityManager em = model.getEntityManager();
+        EntityManager em = model.getDSLContext();
         em.getTransaction()
           .begin();
         if (principal == null) {
@@ -134,7 +134,7 @@ public class TransactionalResource {
     protected <T> T readOnly(AuthorizedPrincipal principal,
                              Function<Model, T> txn) throws WebApplicationException {
         Model model = new ModelImpl(emf);
-        EntityManager em = model.getEntityManager();
+        EntityManager em = model.getDSLContext();
         em.getTransaction()
           .begin();
         em.getTransaction()

@@ -23,13 +23,11 @@ package com.chiralbehaviors.CoRE.meta.models;
 import java.util.Collection;
 import java.util.List;
 
-import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
-import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 
@@ -95,15 +93,6 @@ public class StatusCodeModelImpl extends ExistentialModelImpl<StatusCode>
     @Override
     public List<StatusCodeSequencingRecord> getStatusCodeSequencingParent(StatusCode parent) {
         return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.ExistentialModel#authorize(com.chiralbehaviors.CoRE.meta.Aspect, com.chiralbehaviors.CoRE.domain.Attribute[])
-     */
-    @Override
-    public void authorize(Aspect<StatusCode> aspect, Attribute... attributes) {
-        // TODO Auto-generated method stub
-
     }
 
     /* (non-Javadoc)

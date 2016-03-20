@@ -99,7 +99,7 @@ public class WorkspaceDslLoader extends AbstractMojo {
                                              e);
         }
         Model model = new ModelImpl(emf);
-        EntityManager em = model.getEntityManager();
+        EntityManager em = model.getDSLContext();
         em.getTransaction()
           .begin();
         try {

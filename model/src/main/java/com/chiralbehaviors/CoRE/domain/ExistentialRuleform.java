@@ -22,16 +22,31 @@ package com.chiralbehaviors.CoRE.domain;
 
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.phantasm.Phantasm;
+
 /**
  * @author hhildebrand
  *
  */
-public interface ExistentialRuleform {
+@SuppressWarnings("rawtypes")
+public interface ExistentialRuleform extends Phantasm {
+    @Override
+    String getDescription();
+
     UUID getId();
 
+    @Override
     String getName();
 
+    @Override
     String getNotes();
 
     UUID getUpdatedBy();
+
+    void setDescription(String description);
+
+    void setName(String name);
+
+    void setNotes(String notes);
+
 }

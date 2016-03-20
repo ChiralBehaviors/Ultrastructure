@@ -55,7 +55,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     private Product             sameProduct;
 
     public OrderProcessingLoader(Model model) throws Exception {
-        this.em = model.getEntityManager();
+        this.em = model.getDSLContext();
         this.model = model;
         kernel = model.getKernel();
         core = kernel.getCore();

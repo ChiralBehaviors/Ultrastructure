@@ -69,7 +69,7 @@ public class LoadSnapshotCommand extends Command {
         EntityManagerFactory emf = PhantasmBundle.getEmfFromEnvironment(Collections.emptyMap(),
                                                                         JpaConfiguration.PERSISTENCE_UNIT);
         try (Model model = new ModelImpl(emf)) {
-            EntityTransaction t = model.getEntityManager()
+            EntityTransaction t = model.getDSLContext()
                                        .getTransaction();
             t.begin();
             ObjectMapper objectMapper = new ObjectMapper();
@@ -78,7 +78,7 @@ public class LoadSnapshotCommand extends Command {
                                                         namespace.getString("file"))) {
                 StateSnapshot snapshot = objectMapper.readValue(is,
                                                                 StateSnapshot.class);
-                snapshot.retarget(model.getEntityManager());
+                snapshot.retarget(model.getDSLContext());
             }
             t.commit();
         }

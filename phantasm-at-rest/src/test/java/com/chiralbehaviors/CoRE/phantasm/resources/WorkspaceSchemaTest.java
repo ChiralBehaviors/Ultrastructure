@@ -406,7 +406,7 @@ public class WorkspaceSchemaTest extends ThingWorkspaceTest {
         assertEquals(bob, thing1Result.get("description"));
         String thing1ID = (String) thing1Result.get("id");
         assertNotNull(thing1ID);
-        Thing1 thing1 = model.wrap(Thing1.class, model.getEntityManager()
+        Thing1 thing1 = model.wrap(Thing1.class, model.getDSLContext()
                                                       .find(Product.class,
                                                             UUID.fromString(thing1ID)));
         assertEquals(bob, thing1.getDescription());

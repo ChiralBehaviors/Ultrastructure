@@ -44,7 +44,7 @@ import com.chiralbehaviors.CoRE.Ruleform;
 import com.chiralbehaviors.CoRE.existential.Product;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Aspect;
-import com.chiralbehaviors.CoRE.meta.ExistentialModel;
+import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 import com.chiralbehaviors.CoRE.phantasm.jsonld.Constants;
@@ -110,7 +110,7 @@ public class WorkspaceResource extends TransactionalResource {
             }
             return Ruleform.initializeAndUnproxy(resolved);
         } else if (key.countTokens() == 2) {
-            Ruleform resolved = scope.lookup(key.nextToken(), key.nextToken());
+            Ruleform resolved = scope.lookup(key.nextToken());
             if (resolved == null) {
                 throw new WebApplicationException(String.format("The workspace key [%s] is not defined in %s",
                                                                 qualifiedName,
@@ -194,7 +194,7 @@ public class WorkspaceResource extends TransactionalResource {
     public WorkspaceSnapshot getWorkspace(@Auth(required = false) AuthorizedPrincipal principal,
                                           @PathParam("workspace") UUID wsp) {
         return readOnly(principal, readOnlyModel -> {
-            EntityManager em = readOnlyModel.getEntityManager();
+            EntityManager em = readOnlyModel.getDSLContext();
             Product workspace = em.find(Product.class, wsp);
             if (workspace == null) {
                 throw new WebApplicationException(String.format("Workspace not found: %s",
@@ -218,7 +218,7 @@ public class WorkspaceResource extends TransactionalResource {
             context.put(DEFINING_PRODUCT, Constants.ID);
             returned.put(Constants.CONTEXT, context);
             List<Map<String, Object>> facets = new ArrayList<>();
-            ExistentialModel<Product, ?, ?, ?> networkedModel = readOnlyModel.getProductModel();
+            PhantasmModel<Product, ?, ?, ?> networkedModel = readOnlyModel.getProductModel();
             for (Product definingProduct : networkedModel.getChildren(aspect.getClassification(),
                                                                       aspect.getClassifier()
                                                                             .getInverse())) {
@@ -289,7 +289,7 @@ public class WorkspaceResource extends TransactionalResource {
                                                                 workspace),
                                                   Status.NOT_FOUND);
             }
-            Ruleform resolved = scope.lookup(namespace, member);
+            Ruleform resolved = scope.lookup(member);
             if (resolved == null) {
                 throw new WebApplicationException(String.format("%s:%s not found in workspace: %s",
                                                                 namespace,

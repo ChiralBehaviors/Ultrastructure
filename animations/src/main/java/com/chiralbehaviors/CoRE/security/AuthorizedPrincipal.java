@@ -20,13 +20,10 @@
 
 package com.chiralbehaviors.CoRE.security;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 
 /**
  * Represents the Agency and the authorized active aspects the principal has
@@ -36,34 +33,24 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizat
  *
  */
 public class AuthorizedPrincipal implements Cloneable {
-    private final List<ExistentialNetworkAuthorizationRecord> asserted;
-    private final List<Agency>                                capabilities;
-    private final Agency                                      principal;
+    private final List<Agency> capabilities;
+    private final Agency       principal;
 
     /**
      * @param principal
      */
     public AuthorizedPrincipal(Agency principal) {
-        this(principal,
-             Collections.<ExistentialNetworkAuthorizationRecord> emptyList());
+        this(principal, Collections.<Agency> emptyList());
     }
 
     /**
      * @param principal
      * @param asserted
      */
-    public AuthorizedPrincipal(Agency principal,
-                               List<ExistentialNetworkAuthorizationRecord> asserted) {
+    public AuthorizedPrincipal(Agency principal, List<Agency> asserted) {
         this.principal = principal;
-        this.asserted = new ArrayList<>(asserted);
-        capabilities = this.asserted.stream()
-                                    .map(auth -> auth.getClassification())
-                                    .collect(Collectors.toList());
+        capabilities = asserted;
         capabilities.add(0, this.principal);
-    }
-
-    public List<ExistentialNetworkAuthorizationRecord> getAsserted() {
-        return asserted;
     }
 
     public Agency getPrincipal() {

@@ -111,7 +111,7 @@ public class WorkspaceSnapshotGenerator extends AbstractMojo {
                                             export.iri));
 
                 try (Model model = new ModelImpl(emf)) {
-                    EntityManager em = model.getEntityManager();
+                    EntityManager em = model.getDSLContext();
                     em.getTransaction()
                       .begin();
                     WorkspaceScope scope = model.getWorkspaceModel()

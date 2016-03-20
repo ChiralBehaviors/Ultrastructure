@@ -29,6 +29,6 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
  * @author hhildebrand
  *
  */
-@Facet(classifier = @Key(name = "AnyRelationship"), classification = @Key(name = "AnyUnit"), workspace = "urn:uuid:00000000-0000-0004-0000-000000000003")
+@Facet(classifier = @Key(name = "AnyRelationship"), classification = @Key(name = "AnyUnit"), workspace = "urn:uuid:00000000-0000-0004-0000-000000000003", ruleformClass = Unit.class)
 public interface AnyUnit extends Phantasm<Unit> {
 }

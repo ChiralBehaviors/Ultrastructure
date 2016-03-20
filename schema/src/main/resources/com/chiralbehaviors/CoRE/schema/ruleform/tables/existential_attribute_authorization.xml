@@ -11,7 +11,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true" primaryKeyName="existential_attribute_authorization_pkey" />
             </column>
-            <column name="network_authorization" remarks="The network relationship that authorizes the attributes" type="uuid">
+            <column name="facet" remarks="The network relationship that authorizes the attributes" type="uuid">
                 <constraints nullable="false" />
             </column>
             <column name="authorized_attribute" remarks="An Attribute the existential entity is expected to have" type="uuid">
@@ -38,17 +38,17 @@
             baseColumnNames="authorized_attribute" baseTableName="existential_attribute_authorization" constraintName="existential_attribute_authorization_authorized_attribute_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
-            baseColumnNames="network_authorization" baseTableName="existential_attribute_authorization" constraintName="existential_attribute_authorization_network_authorization_fkey"
-            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential_network_authorization" />
+            baseColumnNames="facet" baseTableName="existential_attribute_authorization" constraintName="existential_attribute_authorization_facet_fkey"
+            deferrable="true" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="facet" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="authority" baseTableName="existential_attribute_authorization" constraintName="existential_attribute_authorization_grouping_agency_fkey"
             deferrable="false" initiallyDeferred="true" onDelete="CASCADE" referencedColumnNames="id" referencedTableName="existential" />
         <addForeignKeyConstraint baseTableSchemaName="ruleform " referencedTableSchemaName="ruleform"
             baseColumnNames="updated_by" baseTableName="existential_attribute_authorization" constraintName="existential_attribute_authorization_updated_by_fkey"
             deferrable="true" initiallyDeferred="true" onDelete="SET DEFAULT" referencedColumnNames="id" referencedTableName="existential" />
-        <addUniqueConstraint schemaName="ruleform"
-            columnNames="network_authorization, authorized_attribute, authority" constraintName="existential_attribute_authorization_classification_attribute_clas_key"
-            deferrable="false" disabled="false" initiallyDeferred="true" tableName="existential_attribute_authorization" />
+        <addUniqueConstraint schemaName="ruleform" columnNames="facet, authorized_attribute, authority"
+            constraintName="existential_attribute_authorization_classification_attribute_clas_key" deferrable="false" disabled="false"
+            initiallyDeferred="true" tableName="existential_attribute_authorization" />
         <createIndex schemaName="ruleform" indexName="existential_attribute_authorization_updated_by_fkey_idx" tableName="existential_attribute_authorization"
             unique="false"
         >
@@ -57,7 +57,7 @@
         <createIndex schemaName="ruleform" indexName="existential_attribute_authorization_network_authorization_fkey_idx"
             tableName="existential_attribute_authorization" unique="false"
         >
-            <column name="network_authorization" />
+            <column name="facet" />
         </createIndex>
         <createIndex schemaName="ruleform" indexName="existential_attribute_authorization_authorized_attribute_fkey_idx"
             tableName="existential_attribute_authorization" unique="false"

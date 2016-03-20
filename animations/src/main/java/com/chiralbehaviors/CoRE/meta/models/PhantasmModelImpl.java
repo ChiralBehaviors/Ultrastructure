@@ -28,6 +28,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,13 +49,15 @@ import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.Facet;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
@@ -76,8 +79,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public void authorize(Aspect<? extends ExistentialRuleform> aspect,
-                          Attribute... attributes) {
+    public void authorize(FacetRecord aspect, Attribute... attributes) {
         // TODO Auto-generated method stub
 
     }
@@ -119,7 +121,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                   Relationship relationship,
                                   ExistentialRuleform authorized) {
         deauthorize(ruleform, relationship,
-                    getAuthorized(ruleform, relationship));
+                    getImmediateChild(ruleform, relationship));
         authorize(ruleform, relationship, authorized);
     }
 
@@ -158,7 +160,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         return ZERO.equals(create.selectCount()
                                  .from(required)
                                  .where(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNotNull())
-                                 .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(stateAuth.getNetworkAuthorization()))
+                                 .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.equal(stateAuth.getFacet()))
                                  .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(stateAuth.getAuthorizedAttribute()))
                                  .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
                                                      .from(EXISTENTIAL_NETWORK)
@@ -184,11 +186,9 @@ public class PhantasmModelImpl implements PhantasmModel {
         return ZERO.equals(create.selectCount()
                                  .from(required)
                                  .where(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNotNull())
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.equal(stateAuth.getClassifier()))
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.equal(stateAuth.getClassification()))
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD_RELATIONSHIP.equal(stateAuth.getChildRelationship()))
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_RELATIONSHIP.equal(stateAuth.getAuthorizedRelationship()))
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.equal(stateAuth.getAuthorizedParent()))
+                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(stateAuth.getParent()))
+                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(stateAuth.getRelationship()))
+                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD.equal(stateAuth.getChild()))
                                  .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
                                                      .from(EXISTENTIAL_NETWORK)
                                                      .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
@@ -223,46 +223,41 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public boolean checkFacetCapability(ExistentialNetworkAuthorizationRecord facet,
-                                        Relationship capability) {
-        return checkFacetCapability(model.getCurrentPrincipal()
-                                         .getCapabilities(),
-                                    facet, capability);
+    public boolean checkCapability(FacetRecord facet, Relationship capability) {
+        return checkCapability(model.getCurrentPrincipal()
+                                    .getCapabilities(),
+                               facet, capability);
     }
 
     /**
      * Check the capability of an agency on the facet.
      */
     @Override
-    public boolean checkFacetCapability(List<Agency> agencies,
-                                        ExistentialNetworkAuthorizationRecord facet,
-                                        Relationship capability) {
-        ExistentialNetworkAuthorization required = EXISTENTIAL_NETWORK_AUTHORIZATION.as("required");
+    public boolean checkCapability(List<Agency> agencies, FacetRecord facet,
+                                   Relationship capability) {
+        Facet required = FACET.as("required");
         return ZERO.equals(create.selectCount()
                                  .from(required)
                                  .where(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNotNull())
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.equal(facet.getClassifier()))
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.equal(facet.getClassification()))
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD_RELATIONSHIP.isNull())
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_RELATIONSHIP.isNull())
-                                 .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.isNull())
-                                 .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
+                                 .and(FACET.CLASSIFIER.equal(facet.getClassifier()))
+                                 .and(FACET.CLASSIFICATION.equal(facet.getClassification()))
+                                 .andNotExists(create.select(required.field(FACET.AUTHORITY))
                                                      .from(EXISTENTIAL_NETWORK)
                                                      .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
                                                                                                   .map(a -> a.getId())
                                                                                                   .collect(Collectors.toList())))
                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
+                                                     .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(FACET.AUTHORITY))))
                                  .fetchOne()
                                  .value1());
     }
 
     @Override
-    public boolean checkNetworkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
-                                          Relationship capability) {
-        return checkNetworkCapability(model.getCurrentPrincipal()
-                                           .getCapabilities(),
-                                      stateAuth, capability);
+    public boolean checkCapability(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+                                   Relationship capability) {
+        return checkCapability(model.getCurrentPrincipal()
+                                    .getCapabilities(),
+                               stateAuth, capability);
     }
 
     /**
@@ -270,9 +265,9 @@ public class PhantasmModelImpl implements PhantasmModel {
      * relationship of the facet child relationship.
      */
     @Override
-    public boolean checkNetworkCapability(List<Agency> agencies,
-                                          ExistentialAttributeAuthorizationRecord stateAuth,
-                                          Relationship capability) {
+    public boolean checkCapability(List<Agency> agencies,
+                                   ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+                                   Relationship capability) {
         ExistentialNetworkAttributeAuthorization required = EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.as("required");
         return ZERO.equals(create.selectCount()
                                  .from(required)
@@ -322,37 +317,6 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
     }
 
-    @Override
-    public <T extends ExistentialRuleform> List<T> getAllAuthorized(ExistentialRuleform ruleform,
-                                                                    Relationship relationship) {
-        throw new UnsupportedOperationException(String.format("%s to Agency authorizations are undefined",
-                                                              ruleform.getClass()
-                                                                      .getSimpleName()));
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.chiralbehaviors.CoRE.meta.NetworkedModel#getAttributeAuthorizations(com
-     * .hellblazer.CoRE.agency.Agency, com.chiralbehaviors.CoRE.attribute.Attribute)
-     */
-    @Override
-    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Agency groupingAgency,
-                                                                                    Attribute attribute) {
-
-        return create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
-                     .from(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
-                     .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
-                     .on(EXISTENTIAL_NETWORK_AUTHORIZATION.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION)))
-                     .join(EXISTENTIAL_NETWORK.as("network"))
-                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
-                     .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
-                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(attribute.getId()))
-                     .fetch()
-                     .into(ExistentialAttributeAuthorizationRecord.class);
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -361,18 +325,16 @@ public class PhantasmModelImpl implements PhantasmModel {
      * .hellblazer.CoRE.meta.Aspect, com.chiralbehaviors.CoRE.attribute.Attribute)
      */
     @Override
-    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
+    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(FacetRecord aspect,
                                                                                     Attribute attribute) {
 
         return create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
                      .from(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
-                     .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
-                     .on(EXISTENTIAL_NETWORK_AUTHORIZATION.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION)))
+                     .join(FACET.as("na"))
+                     .on(FACET.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET))
                      .join(EXISTENTIAL_NETWORK.as("network"))
-                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
-                     .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.eq(aspect.getClassifier()))
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.eq(aspect.getClassification()))
+                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(aspect.getClassifier()))
+                     .and(EXISTENTIAL_NETWORK.CHILD.equal(aspect.getClassification()))
                      .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(attribute.getId()))
                      .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNull())
                      .fetch()
@@ -380,18 +342,17 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
+    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(FacetRecord aspect,
                                                                                     boolean includeGrouping) {
 
         SelectOnConditionStep<Record> and = create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
                                                   .from(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
-                                                  .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
-                                                  .on(EXISTENTIAL_NETWORK_AUTHORIZATION.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION)))
+                                                  .join(FACET)
+                                                  .on(FACET.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET))
                                                   .join(EXISTENTIAL_NETWORK.as("network"))
-                                                  .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
-                                                  .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
-                                                  .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.eq(aspect.getClassifier()))
-                                                  .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.eq(aspect.getClassification()));
+                                                  .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(aspect.getClassifier()))
+                                                  .and(EXISTENTIAL_NETWORK.CHILD.equal(aspect.getClassification()))
+                                                  .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNull());
         if (!includeGrouping) {
             and = and.and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNull());
         }
@@ -399,14 +360,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                   .into(ExistentialAttributeAuthorizationRecord.class)
                   .stream()
                   .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(ExistentialNetworkAuthorizationRecord facet,
-                                                                                    boolean includeGrouping) {
-        return getAttributeAuthorizations(new Aspect<ExistentialRuleform>(facet.getClassifier(),
-                                                                          facet.getClassification()),
-                                          includeGrouping);
     }
 
     /*
@@ -418,20 +371,25 @@ public class PhantasmModelImpl implements PhantasmModel {
      */
     @Override
     public List<ExistentialAttributeRecord> getAttributesClassifiedBy(ExistentialRuleform ruleform,
-                                                                      Aspect<? extends ExistentialRuleform> aspect) {
+                                                                      FacetRecord aspect) {
         return create.selectDistinct(EXISTENTIAL_ATTRIBUTE.fields())
                      .from(EXISTENTIAL_ATTRIBUTE.as("attrValue"))
+
                      .join(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
-                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
-                     .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
-                     .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.eq(EXISTENTIAL_NETWORK_AUTHORIZATION.ID))
+                     .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.equal(FACET.ID))
+
+                     .join(FACET.as("na"))
+                     .on(FACET.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.ID))
+                     .and(FACET.CLASSIFICATION.eq(aspect.getClassification()))
+                     .and(FACET.CLASSIFIER.eq(aspect.getClassifier()))
+
                      .join(EXISTENTIAL_NETWORK.as("network"))
-                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
-                     .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
+                     .on(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(FACET.CLASSIFIER))
+                     .and(EXISTENTIAL_NETWORK.CHILD.equal(FACET.CLASSIFICATION))
+
+                     .where(EXISTENTIAL_ATTRIBUTE.ATTRIBUTE.equal(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE))
                      .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.eq(aspect.getClassification()))
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.eq(aspect.getClassifier()))
-                     .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNull())
                      .fetch()
                      .into(ExistentialAttributeRecord.class);
     }
@@ -448,13 +406,13 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                    Agency groupingAgency) {
         return create.selectDistinct(EXISTENTIAL_ATTRIBUTE.fields())
                      .from(EXISTENTIAL_ATTRIBUTE.as("attrValue"))
-                     .join(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
-                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
-                     .join(EXISTENTIAL_NETWORK_AUTHORIZATION.as("na"))
-                     .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.eq(EXISTENTIAL_NETWORK_AUTHORIZATION.ID))
+                     .join(FACET.as("auth"))
+                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(FACET.CLASSIFIER))
+                     .join(FACET.as("na"))
+                     .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.eq(FACET.ID))
                      .join(EXISTENTIAL_NETWORK.as("network"))
-                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER))
-                     .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION))
+                     .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(FACET.CLASSIFIER))
+                     .and(EXISTENTIAL_NETWORK.CHILD.equal(FACET.CLASSIFICATION))
                      .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
                      .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.eq(groupingAgency.getId()))
                      .fetch()
@@ -508,20 +466,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .into(ExistentialAttributeRecord.class);
     }
 
-    @Override
-    public <T extends ExistentialRuleform> T getAuthorized(ExistentialRuleform ruleform,
-                                                           Relationship relationship) {
-        List<T> result = getAllAuthorized(ruleform, relationship);
-        if (result.isEmpty()) {
-            return null;
-        } else if (result.size() > 1) {
-            throw new IllegalStateException(String.format("%s is a non singular authorization of %s",
-                                                          relationship,
-                                                          ruleform));
-        }
-        return result.get(0);
-    }
-
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.NetworkedModel#getChild(com.chiralbehaviors.CoRE.ExistentialRuleform, com.chiralbehaviors.CoRE.network.Relationship)
      */
@@ -564,16 +508,13 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public ExistentialNetworkAuthorizationRecord getFacetDeclaration(@SuppressWarnings("rawtypes") Aspect aspect) {
-        return create.selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
-                     .where(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.equal(aspect.getClassifier()))
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.equal(aspect.getClassification()))
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.isNull())
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_RELATIONSHIP.isNull())
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD_RELATIONSHIP.isNull())
+    public FacetRecord getFacetDeclaration(Relationship classifier,
+                                           ExistentialRuleform classification) {
+        return create.selectFrom(FACET)
+                     .where(FACET.CLASSIFIER.equal(classifier.getId()))
+                     .and(FACET.CLASSIFICATION.equal(classification.getId()))
                      .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNull())
-                     .fetchOne()
-                     .into(ExistentialNetworkAuthorizationRecord.class);
+                     .fetchOne();
     }
 
     @Override
@@ -720,15 +661,12 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
+    public List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(FacetRecord aspect,
                                                                                 boolean includeGrouping) {
 
         SelectConditionStep<ExistentialNetworkAuthorizationRecord> and = create.selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
-                                                                               .where(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFIER.equal(aspect.getClassifier()))
-                                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.equal(aspect.getClassification()))
-                                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.isNotNull())
-                                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_RELATIONSHIP.isNotNull())
-                                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD_RELATIONSHIP.isNotNull());
+                                                                               .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(aspect.getId()));
+
         if (!includeGrouping) {
             and = and.and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNull());
         }
@@ -779,13 +717,13 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public final void initialize(ExistentialRuleform ruleform,
-                                 Aspect<? extends ExistentialRuleform> aspect) {
+                                 FacetRecord aspect) {
         initialize(ruleform, aspect, null);
     }
 
     @Override
     public final void initialize(ExistentialRuleform ruleform,
-                                 Aspect<? extends ExistentialRuleform> aspect,
+                                 FacetRecord aspect,
                                  EditableWorkspace workspace) {
         Agency principal = model.getCurrentPrincipal()
                                 .getPrincipal();
@@ -819,16 +757,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                 }
             }
         }
-    }
-
-    @Override
-    public void initialize(ExistentialRuleform instance,
-                           ExistentialNetworkAuthorizationRecord facet,
-                           Agency principal) {
-        initialize(instance,
-                   new Aspect<ExistentialRuleform>(facet.getClassifier(),
-                                                   facet.getClassification()));
-
     }
 
     /* (non-Javadoc)
@@ -920,6 +848,21 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
+    public List<? extends ExistentialRuleform> getAllAuthorized(ExistentialRuleform ruleform,
+                                                                Relationship relationship) {
+        return create.selectDistinct()
+                     .from(EXISTENTIAL)
+                     .join(EXISTENTIAL_NETWORK)
+                     .on(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
+                     .fetch()
+                     .into(ExistentialRecord.class)
+                     .stream()
+                     .map(r -> model.records()
+                                    .resolve(r))
+                     .collect(Collectors.toList());
+    }
+
+    @Override
     public void setImmediateChild(ExistentialRuleform parent,
                                   Relationship relationship,
                                   ExistentialRuleform child, Agency updatedBy) {
@@ -986,6 +929,35 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     private void setValue(ExistentialAttributeRecord attribute,
                           ExistentialAttributeAuthorizationRecord authorization) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getAllAuthorized(com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord)
+     */
+    @Override
+    public <T extends ExistentialRuleform> List<T> getAllAuthorized(FacetRecord facet) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getAuthorized(com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord)
+     */
+    @Override
+    public <T extends ExistentialRuleform> T getAuthorized(FacetRecord facet) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#initialize(com.chiralbehaviors.CoRE.domain.ExistentialRuleform, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord, com.chiralbehaviors.CoRE.domain.Agency)
+     */
+    @Override
+    public void initialize(ExistentialRuleform instance,
+                           ExistentialNetworkAuthorizationRecord facet,
+                           Agency principal) {
         // TODO Auto-generated method stub
 
     }

@@ -26,7 +26,7 @@ import java.util.UUID;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 
 /**
  * @author hhildebrand
@@ -66,9 +66,8 @@ public interface ExistentialModel<RuleForm extends ExistentialRuleform> {
      *            - the initial aspects of the instance
      * @return the new instance
      */
-    RuleForm create(String name, String description, Aspect<RuleForm> aspect,
-                    Agency updatedBy,
-                    @SuppressWarnings("unchecked") Aspect<RuleForm>... aspects);
+    RuleForm create(String name, String description, FacetRecord aspect,
+                    Agency updatedBy, FacetRecord... aspects);
 
     /**
      * @param id
@@ -85,15 +84,15 @@ public interface ExistentialModel<RuleForm extends ExistentialRuleform> {
     /**
      * @return the list of aspects representing all facets for the RuleForm
      */
-    List<Aspect<RuleForm>> getAllFacets();
+    List<FacetRecord> getAllFacets();
 
     /**
      * Answer the list of network authorizations that represent a facet defined
      * in the workspace.
      * 
      * @param workspace
-     * @return the list of facet network authorizations in the workspace
+     * @return the list of facet authorizations in the workspace
      */
-    List<ExistentialNetworkAuthorizationRecord> getFacets(Product workspace);
+    List<FacetRecord> getFacets(Product workspace);
 
 }

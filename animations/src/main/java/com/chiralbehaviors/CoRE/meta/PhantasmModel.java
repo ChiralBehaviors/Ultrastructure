@@ -29,9 +29,11 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.hellblazer.utils.Tuple;
 
@@ -50,8 +52,7 @@ public interface PhantasmModel {
      * @param aspect
      * @param attributes
      */
-    void authorize(Aspect<? extends ExistentialRuleform> aspect,
-                   Attribute... attributes);
+    void authorize(FacetRecord aspect, Attribute... attributes);
 
     void authorize(ExistentialRuleform ruleform, Relationship relationship,
                    ExistentialRuleform authorized);
@@ -107,30 +108,28 @@ public interface PhantasmModel {
     /**
      * Check the capability of the current principal on the facet.
      */
-    boolean checkFacetCapability(ExistentialNetworkAuthorizationRecord facet,
-                                 Relationship capability);
+    boolean checkCapability(FacetRecord facet, Relationship capability);
 
     /**
      * Check the capability of the agencies on the facet.
      */
-    boolean checkFacetCapability(List<Agency> agencies,
-                                 ExistentialNetworkAuthorizationRecord facet,
-                                 Relationship capability);
+    boolean checkCapability(List<Agency> agencies, FacetRecord facet,
+                            Relationship capability);
 
     /**
      * Check the capability of the current principal on an attribute of the
      * authorized relationship of the facet child relationship.
      */
-    boolean checkNetworkCapability(ExistentialAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability);
+    boolean checkCapability(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+                            Relationship capability);
 
     /**
      * Check the capability of the agencies on an attribute of the authorized
      * relationship of the facet child relationship.
      */
-    boolean checkNetworkCapability(List<Agency> agencies,
-                                   ExistentialAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability);
+    boolean checkCapability(List<Agency> agencies,
+                            ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+                            Relationship capability);
 
     ExistentialAttributeRecord create(ExistentialRuleform ruleform,
                                       Attribute attribute, Agency updatedBy);
@@ -141,19 +140,7 @@ public interface PhantasmModel {
     void deauthorizeAll(ExistentialRuleform ruleform, Relationship relationship,
                         List<? extends ExistentialRuleform> authorized);
 
-    <T extends ExistentialRuleform> List<T> getAllAuthorized(ExistentialRuleform ruleform,
-                                                             Relationship relationship);
-
-    /**
-     * Answer the list of attribute authorizations that are classified by the
-     * grouping agency, defined for the particular attribute
-     *
-     * @param groupingAgency
-     * @param attribute
-     * @return
-     */
-    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Agency groupingAgency,
-                                                                             Attribute attribute);
+    <T extends ExistentialRuleform> List<T> getAllAuthorized(FacetRecord facet);
 
     /**
      * Answer the list of attribute authorizations that are classified by an
@@ -164,7 +151,7 @@ public interface PhantasmModel {
      * @param attribute
      * @return
      */
-    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
+    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(FacetRecord aspect,
                                                                              Attribute attribute);
 
     /**
@@ -176,19 +163,7 @@ public interface PhantasmModel {
      * @param includeGrouping
      * @return
      */
-    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
-                                                                             boolean includeGrouping);
-
-    /**
-     * Answer the list of attribute authorizations that are classified by a
-     * facet
-     *
-     * @param facet
-     *            - the classifying aspect.
-     * @param includeGrouping
-     * @return
-     */
-    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(ExistentialNetworkAuthorizationRecord facet,
+    List<ExistentialAttributeAuthorizationRecord> getAttributeAuthorizations(FacetRecord aspect,
                                                                              boolean includeGrouping);
 
     /**
@@ -202,7 +177,7 @@ public interface PhantasmModel {
      * @return the list of existing attributes authorized by this classifier
      */
     List<ExistentialAttributeRecord> getAttributesClassifiedBy(ExistentialRuleform ruleform,
-                                                               Aspect<? extends ExistentialRuleform> aspect);
+                                                               FacetRecord aspect);
 
     /**
      * Answer the list of existing attributes for the ruleform instance that are
@@ -238,8 +213,7 @@ public interface PhantasmModel {
     List<ExistentialAttributeRecord> getAttributeValues(ExistentialRuleform ruleform,
                                                         Attribute attribute);
 
-    <T extends ExistentialRuleform> T getAuthorized(ExistentialRuleform ruleform,
-                                                    Relationship relationship);
+    <T extends ExistentialRuleform> T getAuthorized(FacetRecord facet);
 
     /**
      * Answer the child that is connected to the parent via the relationship
@@ -260,7 +234,8 @@ public interface PhantasmModel {
     List<ExistentialRuleform> getChildren(ExistentialRuleform parent,
                                           Relationship relationship);
 
-    ExistentialNetworkAuthorizationRecord getFacetDeclaration(Aspect<? extends ExistentialRuleform> aspect);
+    FacetRecord getFacetDeclaration(Relationship classifier,
+                                    ExistentialRuleform classification);
 
     /**
      * Answer the non inferred child that is connected to the parent via the
@@ -349,7 +324,7 @@ public interface PhantasmModel {
      * @param includeGrouping
      * @return the list of network authorizations for this aspect
      */
-    List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(Aspect<? extends ExistentialRuleform> aspect,
+    List<ExistentialNetworkAuthorizationRecord> getNetworkAuthorizations(FacetRecord aspect,
                                                                          boolean includeGrouping);
 
     /**
@@ -372,8 +347,7 @@ public interface PhantasmModel {
      * @param ruleform
      * @param aspect
      */
-    void initialize(ExistentialRuleform ruleform,
-                    Aspect<? extends ExistentialRuleform> aspect);
+    void initialize(ExistentialRuleform ruleform, FacetRecord aspect);
 
     /**
      * Initialize the ruleform with the classified attributes for this aspect,
@@ -382,8 +356,7 @@ public interface PhantasmModel {
      * @param ruleform
      * @param aspect
      */
-    void initialize(ExistentialRuleform ruleform,
-                    Aspect<? extends ExistentialRuleform> aspect,
+    void initialize(ExistentialRuleform ruleform, FacetRecord aspect,
                     EditableWorkspace workspace);
 
     /**
@@ -449,4 +422,6 @@ public interface PhantasmModel {
     void unlinkImmediate(ExistentialRuleform parent, Relationship relationship);
 
     Class<?> valueClass(Attribute attribute);
+
+    List<? extends ExistentialRuleform> getAllAuthorized(ExistentialRuleform ruleform, Relationship relationship);
 }

@@ -31,17 +31,15 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
-import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.google.common.base.Function;
@@ -92,20 +90,20 @@ public class PhantasmCRUD {
      * @param auth
      * @param child
      */
-    public ExistentialRuleform addChild(NetworkAuthorization facet,
+    public ExistentialRuleform addChild(Aspect facet,
                                         ExistentialRuleform instance,
                                         NetworkAuthorization auth,
                                         ExistentialRuleform child) {
         if (instance == null) {
             return null;
         }
-        cast(child, auth);
+        cast(child, auth.getChild());
         if (!checkUPDATE(facet) || !checkUPDATE(auth)) {
             return instance;
         }
 
         model.getPhantasmModel()
-             .link(instance, auth.getChildRelationship(), child,
+             .link(instance, auth.getRelationship(), child,
                    model.getCurrentPrincipal()
                         .getPrincipal());
         return instance;
@@ -119,7 +117,7 @@ public class PhantasmCRUD {
      * @param auth
      * @param children
      */
-    public ExistentialRuleform addChildren(NetworkAuthorization facet,
+    public ExistentialRuleform addChildren(Aspect facet,
                                            ExistentialRuleform instance,
                                            NetworkAuthorization auth,
                                            List<ExistentialRuleform> children) {
@@ -131,12 +129,11 @@ public class PhantasmCRUD {
         }
         children.stream()
                 .filter(child -> checkREAD(child))
-                .peek(child -> cast(child, auth))
+                .peek(child -> cast(child, auth.getChild()))
                 .forEach(child -> model.getPhantasmModel()
-                                       .link(instance,
-                                             auth.getChildRelationship(), child,
-                                             model.getCurrentPrincipal()
-                                                  .getPrincipal()));
+                                       .link(instance, auth.getRelationship(),
+                                             child, model.getCurrentPrincipal()
+                                                         .getPrincipal()));
         return instance;
     }
 
@@ -148,19 +145,17 @@ public class PhantasmCRUD {
      * @return
      * @throws SecurityException
      */
-    public ExistentialRuleform apply(NetworkAuthorization facet,
-                                     ExistentialRuleform instance,
+    public ExistentialRuleform apply(Aspect facet, ExistentialRuleform instance,
                                      Function<ExistentialRuleform, ExistentialRuleform> constructor) throws SecurityException {
         if (instance == null) {
             return null;
         }
         if (!model.getPhantasmModel()
-                  .checkFacetCapability(facet.getAuth(), getAPPLY())) {
+                  .checkCapability(facet.getFacet(), getAPPLY())) {
             return instance;
         }
         model.getPhantasmModel()
-             .initialize(instance, facet.getAuth(), model.getCurrentPrincipal()
-                                                         .getPrincipal());
+             .initialize(instance, facet.getFacet());
         if (!checkInvoke(facet, instance)) {
             return null;
         }
@@ -173,27 +168,23 @@ public class PhantasmCRUD {
      * @param ruleform
      * @param facet
      */
-    public void cast(ExistentialRuleform ruleform,
-                     NetworkAuthorization authorization) {
+    public void cast(ExistentialRuleform ruleform, Aspect facet) {
         if (!model.getPhantasmModel()
-                  .isAccessible(ruleform,
-                                authorization.getAuthorizedRelationship(),
-                                authorization.getAuthorizedParent())) {
+                  .isAccessible(ruleform, facet.getClassifier(),
+                                facet.getClassification())) {
             throw new ClassCastException(String.format("%s not of facet type %s",
                                                        ruleform,
                                                        PhantasmDefinition.factString(model,
-                                                                                     new Aspect<>(authorization.getClassifier(),
-                                                                                                  authorization.getClassification()))));
+                                                                                     facet.getFacet())));
         }
     }
 
-    public boolean checkInvoke(NetworkAuthorization facet,
-                               ExistentialRuleform instance) {
+    public boolean checkInvoke(Aspect facet, ExistentialRuleform instance) {
         Relationship invoke = getINVOKE();
         return model.getPhantasmModel()
                     .checkCapability(instance, invoke)
                && model.getPhantasmModel()
-                       .checkFacetCapability(facet.getAuth(), invoke);
+                       .checkCapability(facet.getFacet(), invoke);
     }
 
     /**
@@ -207,24 +198,23 @@ public class PhantasmCRUD {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    public ExistentialRuleform createInstance(NetworkAuthorization facet,
-                                              String name, String description,
+    public ExistentialRuleform createInstance(Aspect facet, String name,
+                                              String description,
                                               Function<ExistentialRuleform, ExistentialRuleform> constructor) {
         if (!model.getPhantasmModel()
-                  .checkFacetCapability(facet.getAuth(), getCREATE())) {
+                  .checkCapability(facet.getFacet(), getCREATE())) {
             return null;
         }
         ExistentialRuleform instance;
-        instance = (ExistentialRuleform) RecordsFactory.createExistential(model.getDSLContext(),
-                                                                          facet.getAuth()
-                                                                               .getClassification(),
-                                                                          name,
-                                                                          description,
-                                                                          model.getCurrentPrincipal()
-                                                                               .getPrincipal());
+        instance = (ExistentialRuleform) model.records()
+                                              .createExistential(facet.getFacet()
+                                                                      .getClassification(),
+                                                                 name,
+                                                                 description,
+                                                                 model.getCurrentPrincipal()
+                                                                      .getPrincipal());
         model.getPhantasmModel()
-             .initialize(instance, facet.getAuth(), model.getCurrentPrincipal()
-                                                         .getPrincipal());
+             .initialize(instance, facet.getFacet());
         if (!checkInvoke(facet, instance)) {
             return null;
         }
@@ -244,8 +234,7 @@ public class PhantasmCRUD {
      * 
      * @return
      */
-    public Object getAttributeValue(NetworkAuthorization facet,
-                                    ExistentialRuleform instance,
+    public Object getAttributeValue(Aspect facet, ExistentialRuleform instance,
                                     AttributeAuthorization stateAuth) {
         if (instance == null) {
             return null;
@@ -274,7 +263,7 @@ public class PhantasmCRUD {
      * 
      * @return
      */
-    public List<ExistentialRuleform> getChildren(NetworkAuthorization facet,
+    public List<ExistentialRuleform> getChildren(Aspect facet,
                                                  ExistentialRuleform instance,
                                                  NetworkAuthorization auth) {
         if (instance == null) {
@@ -284,7 +273,7 @@ public class PhantasmCRUD {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
-                    .getChildren(instance, auth.getChildRelationship())
+                    .getChildren(instance, auth.getRelationship())
                     .stream()
                     .filter(child -> model.getPhantasmModel()
                                           .checkCapability(child, getREAD()))
@@ -309,7 +298,7 @@ public class PhantasmCRUD {
      * 
      * @return
      */
-    public List<ExistentialRuleform> getImmediateChildren(NetworkAuthorization facet,
+    public List<ExistentialRuleform> getImmediateChildren(Aspect facet,
                                                           ExistentialRuleform instance,
                                                           NetworkAuthorization auth) {
         if (instance == null) {
@@ -319,7 +308,7 @@ public class PhantasmCRUD {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
-                    .getImmediateChildren(instance, auth.getChildRelationship())
+                    .getImmediateChildren(instance, auth.getRelationship())
                     .stream()
                     .map(r -> (ExistentialRuleform) r)
                     .filter(child -> model.getPhantasmModel()
@@ -333,9 +322,9 @@ public class PhantasmCRUD {
      * @param facet
      * @return
      */
-    public List<ExistentialRuleform> getInstances(NetworkAuthorization facet) {
+    public List<ExistentialRuleform> getInstances(Aspect facet) {
         if (!model.getPhantasmModel()
-                  .checkFacetCapability(facet.getAuth(), getREAD())) {
+                  .checkCapability(facet.getFacet(), getREAD())) {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
@@ -372,7 +361,7 @@ public class PhantasmCRUD {
      * 
      * @return
      */
-    public ExistentialRuleform getSingularChild(NetworkAuthorization facet,
+    public ExistentialRuleform getSingularChild(Aspect facet,
                                                 ExistentialRuleform instance,
                                                 NetworkAuthorization auth) {
         if (instance == null) {
@@ -383,7 +372,7 @@ public class PhantasmCRUD {
         }
         ExistentialRuleform child = (ExistentialRuleform) model.getPhantasmModel()
                                                                .getImmediateChild(instance,
-                                                                                  auth.getChildRelationship());
+                                                                                  auth.getRelationship());
         return checkREAD(child) ? child : null;
     }
 
@@ -394,22 +383,17 @@ public class PhantasmCRUD {
     public List<ExistentialRuleform> lookup(List<String> ids) {
         return ids.stream()
                   .map(id -> existential(id))
-                  .map(r -> RecordsFactory.resolve(r))
+                  .map(r -> model.records()
+                                 .resolve(r))
                   .filter(child -> model.getPhantasmModel()
                                         .checkCapability(child, getREAD()))
                   .collect(Collectors.toList());
     }
 
-    private ExistentialRecord existential(String id) {
-        return model.getDSLContext()
-                    .selectFrom(EXISTENTIAL)
-                    .where(EXISTENTIAL.ID.eq(UUID.fromString(id)))
-                    .fetchOne();
-    }
-
     public ExistentialRuleform lookup(String id) {
         return Optional.ofNullable(existential(id))
-                       .map(r -> RecordsFactory.resolve(r))
+                       .map(r -> model.records()
+                                      .resolve(r))
                        .filter(rf -> rf != null)
                        .filter(child -> model.getPhantasmModel()
                                              .checkCapability(child, getREAD()))
@@ -419,7 +403,8 @@ public class PhantasmCRUD {
     public List<ExistentialRuleform> lookupRuleForm(List<String> ids) {
         return ids.stream()
                   .map(id -> existential(id))
-                  .map(r -> RecordsFactory.resolve(r))
+                  .map(r -> model.records()
+                                 .resolve(r))
                   .map(r -> (ExistentialRuleform) r)
                   .collect(Collectors.toList());
     }
@@ -432,19 +417,18 @@ public class PhantasmCRUD {
      * @return
      * @throws SecurityException
      */
-    public ExistentialRuleform remove(ExistentialNetworkAuthorizationRecord facet,
+    public ExistentialRuleform remove(Aspect facet,
                                       ExistentialRuleform instance,
                                       boolean deleteAttributes) throws SecurityException {
         if (instance == null) {
             return null;
         }
         if (!model.getPhantasmModel()
-                  .checkFacetCapability(facet, getREMOVE())) {
+                  .checkCapability(facet.getFacet(), getREMOVE())) {
             return instance;
         }
         model.getPhantasmModel()
-             .initialize(instance, facet, model.getCurrentPrincipal()
-                                               .getPrincipal());
+             .initialize(instance, facet.getFacet());
         return instance;
     }
 
@@ -456,7 +440,7 @@ public class PhantasmCRUD {
      * @param auth
      * @param child
      */
-    public ExistentialRuleform removeChild(NetworkAuthorization facet,
+    public ExistentialRuleform removeChild(Aspect facet,
                                            ExistentialRuleform instance,
                                            NetworkAuthorization auth,
                                            ExistentialRuleform child) {
@@ -467,7 +451,7 @@ public class PhantasmCRUD {
             return instance;
         }
         model.getPhantasmModel()
-             .unlink(instance, auth.getChildRelationship(), child);
+             .unlink(instance, auth.getRelationship(), child);
         return instance;
     }
 
@@ -479,7 +463,7 @@ public class PhantasmCRUD {
      * @param auth
      * @param children
      */
-    public ExistentialRuleform removeChildren(NetworkAuthorization facet,
+    public ExistentialRuleform removeChildren(Aspect facet,
                                               ExistentialRuleform instance,
                                               NetworkAuthorization auth,
                                               List<ExistentialRuleform> children) {
@@ -491,19 +475,19 @@ public class PhantasmCRUD {
         }
         for (ExistentialRuleform child : children) {
             model.getPhantasmModel()
-                 .unlink(instance, auth.getChildRelationship(), child);
+                 .unlink(instance, auth.getRelationship(), child);
         }
         return instance;
     }
 
-    public ExistentialRuleform setAttributeValue(NetworkAuthorization facet,
+    public ExistentialRuleform setAttributeValue(Aspect facet,
                                                  ExistentialRuleform instance,
                                                  AttributeAuthorization stateAuth,
                                                  List<Object> value) {
         return setAttributeValue(facet, instance, stateAuth, value.toArray());
     }
 
-    public ExistentialRuleform setAttributeValue(NetworkAuthorization facet,
+    public ExistentialRuleform setAttributeValue(Aspect facet,
                                                  ExistentialRuleform instance,
                                                  AttributeAuthorization stateAuth,
                                                  Map<String, Object> value) {
@@ -514,7 +498,7 @@ public class PhantasmCRUD {
         return instance;
     }
 
-    public ExistentialRuleform setAttributeValue(NetworkAuthorization facet,
+    public ExistentialRuleform setAttributeValue(Aspect facet,
                                                  ExistentialRuleform instance,
                                                  AttributeAuthorization stateAuth,
                                                  Object value) {
@@ -532,7 +516,7 @@ public class PhantasmCRUD {
         return instance;
     }
 
-    public ExistentialRuleform setAttributeValue(NetworkAuthorization facet,
+    public ExistentialRuleform setAttributeValue(Aspect facet,
                                                  ExistentialRuleform instance,
                                                  AttributeAuthorization stateAuth,
                                                  Object[] value) {
@@ -552,7 +536,7 @@ public class PhantasmCRUD {
      * @param auth
      * @param children
      */
-    public ExistentialRuleform setChildren(NetworkAuthorization facet,
+    public ExistentialRuleform setChildren(Aspect facet,
                                            ExistentialRuleform instance,
                                            NetworkAuthorization auth,
                                            List<ExistentialRuleform> children) {
@@ -565,17 +549,16 @@ public class PhantasmCRUD {
 
         for (ExistentialNetworkRecord childLink : model.getPhantasmModel()
                                                        .getImmediateChildrenLinks(instance,
-                                                                                  auth.getChildRelationship())) {
+                                                                                  auth.getRelationship())) {
             childLink.delete();
         }
         children.stream()
                 .filter(child -> checkREAD(child))
-                .peek(child -> cast(child, auth))
+                .peek(child -> cast(child, auth.getChild()))
                 .forEach(child -> model.getPhantasmModel()
-                                       .link(instance,
-                                             auth.getChildRelationship(), child,
-                                             model.getCurrentPrincipal()
-                                                  .getPrincipal()));
+                                       .link(instance, auth.getRelationship(),
+                                             child, model.getCurrentPrincipal()
+                                                         .getPrincipal()));
         return instance;
     }
 
@@ -616,7 +599,7 @@ public class PhantasmCRUD {
      * @param auth
      * @param child
      */
-    public ExistentialRuleform setSingularChild(NetworkAuthorization facet,
+    public ExistentialRuleform setSingularChild(Aspect facet,
                                                 ExistentialRuleform instance,
                                                 NetworkAuthorization auth,
                                                 ExistentialRuleform child) {
@@ -630,13 +613,13 @@ public class PhantasmCRUD {
 
         if (child == null) {
             model.getPhantasmModel()
-                 .unlinkImmediate(child, auth.getChildRelationship());
+                 .unlinkImmediate(child, auth.getRelationship());
         } else {
-            cast(child, auth);
+            cast(child, auth.getChild());
             model.getPhantasmModel()
-                 .setImmediateChild(instance, auth.getChildRelationship(),
-                                    child, model.getCurrentPrincipal()
-                                                .getPrincipal());
+                 .setImmediateChild(instance, auth.getRelationship(), child,
+                                    model.getCurrentPrincipal()
+                                         .getPrincipal());
         }
         return instance;
     }
@@ -651,14 +634,24 @@ public class PhantasmCRUD {
                     .checkCapability(child, getREAD());
     }
 
-    private boolean checkREAD(NetworkAuthorization auth) {
+    private boolean checkREAD(Aspect auth) {
         return model.getPhantasmModel()
-                    .checkFacetCapability(auth.getAuth(), getREAD());
+                    .checkCapability(auth.getFacet(), getREAD());
+    }
+
+    private boolean checkREAD(NetworkAuthorization stateAuth) {
+        return model.getPhantasmModel()
+                    .checkCapability(stateAuth.getAuth(), getREAD());
     }
 
     private boolean checkUPDATE(AttributeAuthorization stateAuth) {
         return model.getPhantasmModel()
                     .checkCapability(stateAuth.getAuth(), getUPDATE());
+    }
+
+    private boolean checkUPDATE(Aspect stateAuth) {
+        return model.getPhantasmModel()
+                    .checkCapability(stateAuth.getFacet(), getUPDATE());
     }
 
     private boolean checkUPDATE(ExistentialRuleform child) {
@@ -669,6 +662,13 @@ public class PhantasmCRUD {
     private boolean checkUPDATE(NetworkAuthorization auth) {
         return model.getPhantasmModel()
                     .checkCapability(auth.getAuth(), getUPDATE());
+    }
+
+    private ExistentialRecord existential(String id) {
+        return model.getDSLContext()
+                    .selectFrom(EXISTENTIAL)
+                    .where(EXISTENTIAL.ID.eq(UUID.fromString(id)))
+                    .fetchOne();
     }
 
     private Object[] getIndexedAttributeValue(ExistentialRuleform instance,

@@ -29,6 +29,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.META_PROTOCOL;
@@ -64,6 +65,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeR
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
@@ -90,6 +92,12 @@ public interface RecordsFactory {
         copy.setId(GENERATOR.generate());
         return copy;
 
+    }
+
+    default FacetRecord findFacetRecord(UUID id) {
+        return create().selectFrom(FACET)
+                       .where(FACET.ID.equal(id))
+                       .fetchOne();
     }
 
     DSLContext create();
@@ -244,6 +252,12 @@ public interface RecordsFactory {
 
     default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization(Agency updatedBy) {
         ExistentialNetworkAuthorizationRecord record = newExistentialNetworkAuthorization();
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
+    default FacetRecord newFacet(Agency updatedBy) {
+        FacetRecord record = new FacetRecord();
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
@@ -491,6 +505,13 @@ public interface RecordsFactory {
                                                                    Agency updatedBy) {
         return newWorkspaceAuthorization(definingProduct, existential.getId(),
                                          ReferenceType.Existential, updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   FacetRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Facet, updatedBy);
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,

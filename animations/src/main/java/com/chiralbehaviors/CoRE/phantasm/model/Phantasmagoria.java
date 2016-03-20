@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor;
 
@@ -40,43 +40,32 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform>
 
     public final Map<String, AttributeAuthorization> attributes          = new HashMap<>();
     public final Map<String, NetworkAuthorization>   childAuthorizations = new HashMap<>();
-    public final NetworkAuthorization                facet;
+    public final Aspect                               facet;
 
-    public Phantasmagoria(ExistentialNetworkAuthorizationRecord facet) {
-        this.facet = new NetworkAuthorization(null, facet);
+    public Phantasmagoria(Aspect facet) {
+        this.facet = facet;
     }
 
     public void traverse(PhantasmTraversal<RuleForm> traverser) {
         traverser.traverse(facet, this);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor#visit(com.chiralbehaviors.CoRE.network.NetworkAuthorization, com.chiralbehaviors.CoRE.attribute.AttributeAuthorization, java.lang.String)
-     */
     @Override
-    public void visit(NetworkAuthorization facet, AttributeAuthorization auth,
+    public void visit(Aspect facet, AttributeAuthorization auth,
                       String fieldName) {
         attributes.put(fieldName, auth);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor#visitChildren(com.chiralbehaviors.CoRE.network.NetworkAuthorization, com.chiralbehaviors.CoRE.network.NetworkAuthorization, java.lang.String, com.chiralbehaviors.CoRE.network.NetworkAuthorization, java.lang.String)
-     */
     @Override
-    public void visitChildren(NetworkAuthorization facet,
-                              NetworkAuthorization auth, String fieldName,
-                              NetworkAuthorization child,
+    public void visitChildren(Aspect facet, NetworkAuthorization auth,
+                              String fieldName, Aspect child,
                               String singularFieldName) {
-        childAuthorizations.put(fieldName, child);
+        childAuthorizations.put(fieldName, auth);
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor#visitSingular(com.chiralbehaviors.CoRE.network.NetworkAuthorization, com.chiralbehaviors.CoRE.network.NetworkAuthorization, java.lang.String, com.chiralbehaviors.CoRE.network.NetworkAuthorization)
-     */
     @Override
-    public void visitSingular(NetworkAuthorization facet,
-                              NetworkAuthorization auth, String fieldName,
-                              NetworkAuthorization child) {
-        childAuthorizations.put(fieldName, child);
+    public void visitSingular(Aspect facet, NetworkAuthorization auth,
+                              String fieldName, Aspect child) {
+        childAuthorizations.put(fieldName, auth);
     }
 }

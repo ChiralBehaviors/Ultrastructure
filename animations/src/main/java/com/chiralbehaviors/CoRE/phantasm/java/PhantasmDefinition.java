@@ -31,8 +31,7 @@ import java.util.stream.Collectors;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -43,6 +42,7 @@ import com.chiralbehaviors.CoRE.phantasm.java.annotations.Facet;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Inferred;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.PrimitiveState;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.Phantasmagoria;
@@ -59,8 +59,8 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
 
     private static final String                                         SET   = "set";
 
-    public static ExistentialNetworkAuthorizationRecord facetFrom(Class<? extends Phantasm<?>> phantasm,
-                                                                  Model model) {
+    public static Aspect facetFrom(Class<? extends Phantasm<?>> phantasm,
+                                   Model model) {
         Facet facet = phantasm.getAnnotation(Facet.class);
         if (facet == null) {
             throw new IllegalStateException(String.format("Not a facet: %s",
@@ -83,12 +83,12 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                                                           uuid,
                                                           facet.workspace()));
         }
-        Aspect<?> aspect = new Aspect<>(classifier, classification);
-        return model.getPhantasmModel()
-                    .getFacetDeclaration(aspect);
+        return new Aspect(model.getDSLContext(), model.getPhantasmModel()
+                                                      .getFacetDeclaration(classifier,
+                                                                           classification));
     }
 
-    public static String factString(Model model, Aspect<?> aspect) {
+    public static String factString(Model model, FacetRecord aspect) {
         return String.format("%s:%s",
                              model.lookupExistential(aspect.getClassifier())
                                   .getName(),
@@ -107,8 +107,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
     protected final Map<Method, StateFunction<RuleForm>> methods = new HashMap<>();
 
     public PhantasmDefinition(Class<Phantasm<RuleForm>> phantasm, Model model) {
-        super((ExistentialNetworkAuthorizationRecord) facetFrom(phantasm,
-                                                                model));
+        super(facetFrom(phantasm, model));
 
         traverse(new PhantasmTraversal<>(model));
         this.phantasm = phantasm;
@@ -142,8 +141,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
             throw new ClassCastException(String.format("%s does not have required facet %s of state %s",
                                                        ruleform,
                                                        factString(model,
-                                                                  new Aspect<>(facet.getClassifier(),
-                                                                               facet.getClassification())),
+                                                                  facet.getFacet()),
                                                        phantasm));
         }
     }
@@ -151,8 +149,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
     public Phantasm<RuleForm> construct(ExistentialRuleform ruleform,
                                         Model model, Agency updatedBy) {
         model.getPhantasmModel()
-             .initialize(ruleform, new Aspect<>(facet.getClassifier(),
-                                                facet.getClassification()));
+             .initialize(ruleform, facet.getFacet());
         return wrap(ruleform, model);
     }
 

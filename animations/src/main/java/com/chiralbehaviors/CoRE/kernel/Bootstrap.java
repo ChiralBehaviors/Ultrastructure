@@ -49,8 +49,8 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
@@ -225,8 +225,8 @@ public class Bootstrap {
      * @param core
      * @param kernelWorkspace
      */
-    private void populate(ExistentialNetworkAuthorizationRecord auth,
-                          Agency core, Product kernelWorkspace) {
+    private void populate(FacetRecord auth, Agency core,
+                          Product kernelWorkspace) {
         records.newWorkspaceAuthorization(kernelWorkspace, auth, core)
                .insert();
     }
@@ -264,56 +264,56 @@ public class Bootstrap {
      * @param kernelWorkspace
      */
     private void populateAnyFacets(Agency core, Product kernelWorkspace) {
-        ExistentialNetworkAuthorizationRecord anyAgency = records.newExistentialNetworkAuthorization(core);
+        FacetRecord anyAgency = records.newFacet(core);
         anyAgency.setClassifier(WellKnownRelationship.ANY.id());
         anyAgency.setClassification(WellKnownAgency.ANY.id());
         anyAgency.setName("AnyAgency");
         anyAgency.setNotes("The facet that represents any agency");
         populate(anyAgency, core, kernelWorkspace);
 
-        ExistentialNetworkAuthorizationRecord anyAttribute = records.newExistentialNetworkAuthorization(core);
+        FacetRecord anyAttribute = records.newFacet(core);
         anyAttribute.setClassifier(WellKnownRelationship.ANY.id());
         anyAttribute.setClassification(WellKnownAttribute.ANY.id());
         anyAttribute.setName("AnyAttribute");
         anyAttribute.setNotes("The facet that represents any attribute");
         populate(anyAttribute, core, kernelWorkspace);
 
-        ExistentialNetworkAuthorizationRecord anyInterval = records.newExistentialNetworkAuthorization(core);
+        FacetRecord anyInterval = records.newFacet(core);
         anyInterval.setClassifier(WellKnownRelationship.ANY.id());
         anyInterval.setClassification(WellKnownInterval.ANY.id());
         anyInterval.setName("AnyInterval");
         anyInterval.setNotes("The facet that represents any interval");
         populate(anyInterval, core, kernelWorkspace);
 
-        ExistentialNetworkAuthorizationRecord anyLocation = records.newExistentialNetworkAuthorization(core);
+        FacetRecord anyLocation = records.newFacet(core);
         anyLocation.setClassifier(WellKnownRelationship.ANY.id());
         anyLocation.setClassification(WellKnownLocation.ANY.id());
         anyLocation.setName("AnyLocation");
         anyLocation.setNotes("The facet that represents any location");
         populate(anyLocation, core, kernelWorkspace);
 
-        ExistentialNetworkAuthorizationRecord anyProduct = records.newExistentialNetworkAuthorization(core);
+        FacetRecord anyProduct = records.newFacet(core);
         anyProduct.setClassifier(WellKnownRelationship.ANY.id());
         anyProduct.setClassification(WellKnownProduct.ANY.id());
         anyProduct.setName("AnyProduct");
         anyProduct.setNotes("The facet that represents any product");
         populate(anyProduct, core, kernelWorkspace);
 
-        ExistentialNetworkAuthorizationRecord anyRelationship = records.newExistentialNetworkAuthorization(core);
+        FacetRecord anyRelationship = records.newFacet(core);
         anyRelationship.setClassifier(WellKnownRelationship.ANY.id());
         anyRelationship.setClassification(WellKnownRelationship.ANY.id());
         populate(anyRelationship, core, kernelWorkspace);
         anyRelationship.setName("AnyRelationship");
         anyRelationship.setNotes("The facet that represents any relationship");
 
-        ExistentialNetworkAuthorizationRecord anyStatusCode = records.newExistentialNetworkAuthorization(core);
+        FacetRecord anyStatusCode = records.newFacet(core);
         anyStatusCode.setClassifier(WellKnownRelationship.ANY.id());
         anyStatusCode.setClassification(WellKnownStatusCode.ANY.id());
         anyStatusCode.setName("AnyStatusCode");
         anyAgency.setNotes("The facet that represents any statusCode");
         populate(anyStatusCode, core, kernelWorkspace);
 
-        ExistentialNetworkAuthorizationRecord anyUnit = records.newExistentialNetworkAuthorization(core);
+        FacetRecord anyUnit = records.newFacet(core);
         anyUnit.setClassifier(WellKnownRelationship.ANY.id());
         anyUnit.setClassification(WellKnownUnit.ANY.id());
         anyUnit.setName("AnyUnit");

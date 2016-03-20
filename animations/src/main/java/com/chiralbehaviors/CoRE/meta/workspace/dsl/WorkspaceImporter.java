@@ -30,6 +30,7 @@ import java.util.function.Function;
 import javax.management.openmbean.InvalidKeyException;
 
 import org.antlr.v4.runtime.Token;
+import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.Cardinality;
 import com.chiralbehaviors.CoRE.ValueType;
@@ -50,6 +51,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
 import com.chiralbehaviors.CoRE.jooq.tables.SelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.SiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
@@ -113,7 +115,7 @@ public class WorkspaceImporter {
         });
     }
 
-    private final EntityManager         em;
+    private final DSLContext            em;
     private final Model                 model;
     private WorkspaceScope              scope;
 
@@ -200,10 +202,7 @@ public class WorkspaceImporter {
         }
     }
 
-    /**
-     * @param facet
-     */
-    private void agencyNetworkConstraints(FacetContext facet) {
+    private void networkConstraints(FacetContext facet) {
         NetworkConstraintsContext networkConstraints = facet.networkConstraints();
         if (networkConstraints == null) {
             return;
@@ -211,17 +210,11 @@ public class WorkspaceImporter {
         networkConstraints.constraint()
                           .forEach(constraint -> {
                               Class<?> authParentClass = resolveAuthParent(constraint);
-                              if (authParentClass.equals(Agency.class)) {
-                                  createNetworkAuth(facet, constraint,
-                                                    new AgencyNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                        .getPrincipal()),
-                                                    agency -> new AgencyAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                    .getPrincipal()));
-                              } else if (authParentClass.equals(Location.class)) {
-                                  createAgencyLocationAuth(facet, constraint);
-                              } else if (authParentClass.equals(Product.class)) {
-                                  createAgencyProductAuth(facet, constraint);
-                              }
+                              createNetworkAuth(facet, constraint,
+                                                new AgencyNetworkAuthorization(model.getCurrentPrincipal()
+                                                                                    .getPrincipal()),
+                                                agency -> new AgencyAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                .getPrincipal()));
                           });
     }
 
@@ -287,152 +280,9 @@ public class WorkspaceImporter {
         });
     }
 
-    /**
-     * @param facet
-     * @param constraint
-     */
-    private void createAgencyLocationAuth(FacetContext facet,
-                                          ConstraintContext constraint) {
-        AgencyLocationAuthorization authorization = new AgencyLocationAuthorization(model.getCurrentPrincipal()
-                                                                                         .getPrincipal());
-        authorization.setFromParent(resolve(facet.classification));
-        authorization.setFromRelationship(resolve(facet.classifier));
-        authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        resolveTo(constraint, authorization);
-        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
-                                                                               .toUpperCase()));
-        workspace.add(authorization);
-        em.persist(authorization);
-        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
-        if (classifiedAttributes == null) {
-            return;
-        }
-        classifiedAttributes.forEach(attribute -> {
-            AgencyLocationAttributeAuthorization auth = new AgencyLocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                      .getPrincipal());
-            auth.setAuthorizedAttribute(resolve(attribute.key));
-            auth.setNetworkAuthorization(authorization);
-            if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
-            }
-            model.getDSLContext()
-                 .persist(auth);
-            workspace.add(auth);
-        });
-    }
-
-    /**
-     * @param facet
-     * @param constraint
-     */
-    private void createAgencyProductAuth(FacetContext facet,
-                                         ConstraintContext constraint) {
-        AgencyProductAuthorization authorization = new AgencyProductAuthorization(model.getCurrentPrincipal()
-                                                                                       .getPrincipal());
-        authorization.setFromParent(resolve(facet.classification));
-        authorization.setFromRelationship(resolve(facet.classifier));
-        authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        resolveTo(constraint, authorization);
-        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
-                                                                               .toUpperCase()));
-        workspace.add(authorization);
-        em.persist(authorization);
-        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
-        if (classifiedAttributes == null) {
-            return;
-        }
-        classifiedAttributes.forEach(attribute -> {
-            AgencyProductAttributeAuthorization auth = new AgencyProductAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                    .getPrincipal());
-            auth.setAuthorizedAttribute(resolve(attribute.key));
-            auth.setNetworkAuthorization(authorization);
-            if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
-            }
-            model.getDSLContext()
-                 .persist(auth);
-            workspace.add(auth);
-        });
-    }
-
-    /**
-     * @param facet
-     * @param constraint
-     */
-    private void createLocationAgencyAuth(FacetContext facet,
-                                          ConstraintContext constraint) {
-        AgencyLocationAuthorization authorization = new AgencyLocationAuthorization(model.getCurrentPrincipal()
-                                                                                         .getPrincipal());
-        resolveFrom(constraint, authorization);
-        authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setToParent(resolve(facet.classification));
-        authorization.setToRelationship(resolve(facet.classifier));
-        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
-                                                                               .toUpperCase()));
-        authorization.setForward(false);
-        em.persist(authorization);
-        workspace.add(authorization);
-        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
-        if (classifiedAttributes == null) {
-            return;
-        }
-        classifiedAttributes.forEach(attribute -> {
-            AgencyLocationAttributeAuthorization auth = new AgencyLocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                      .getPrincipal());
-            auth.setAuthorizedAttribute(resolve(attribute.key));
-            auth.setNetworkAuthorization(authorization);
-            if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
-            }
-            model.getDSLContext()
-                 .persist(auth);
-            workspace.add(auth);
-        });
-    }
-
-    /**
-     * @param facet
-     * @param constraint
-     */
-    private void createLocationProductAuth(FacetContext facet,
-                                           ConstraintContext constraint) {
-        ProductLocationAuthorization authorization = new ProductLocationAuthorization(model.getCurrentPrincipal()
-                                                                                           .getPrincipal());
-        resolveFrom(constraint, authorization);
-        authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setToParent(resolve(facet.classification));
-        authorization.setToRelationship(resolve(facet.classifier));
-        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
-                                                                               .toUpperCase()));
-        authorization.setForward(false);
-        workspace.add(authorization);
-        em.persist(authorization);
-        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
-        if (classifiedAttributes == null) {
-            return;
-        }
-        classifiedAttributes.forEach(attribute -> {
-            ProductLocationAttributeAuthorization auth = new ProductLocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                        .getPrincipal());
-            auth.setAuthorizedAttribute(resolve(attribute.key));
-            auth.setNetworkAuthorization(authorization);
-            if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
-            }
-            model.getDSLContext()
-                 .persist(auth);
-            workspace.add(auth);
-        });
-    }
-
-    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void createNetworkAuth(FacetContext facet,
-                                                                                                                   ConstraintContext constraint,
-                                                                                                                   NetworkAuthorization<T> authorization,
-                                                                                                                   Function<Agency, AttributeAuthorization<T, Network>> attrAuth) {
+    private void createNetworkAuth(FacetContext facet,
+                                   ConstraintContext constraint,
+                                   ExistentialNetworkAuthorizationRecord authorization) {
         authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
         authorization.setClassifier(resolve(facet.classifier));
         authorization.setClassification(resolve(facet.classification));
@@ -441,7 +291,7 @@ public class WorkspaceImporter {
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
         workspace.add(authorization);
-        em.persist(authorization);
+        authorization.insert();
         List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
@@ -450,140 +300,6 @@ public class WorkspaceImporter {
             AttributeAuthorization<T, Network> auth = attrAuth.apply(model.getCurrentPrincipal()
                                                                           .getPrincipal());
             auth.setAuthorizedNetworkAttribute(resolve(attribute.key));
-            auth.setNetworkAuthorization(authorization);
-            if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
-            }
-            model.getDSLContext()
-                 .persist(auth);
-            workspace.add(auth);
-        });
-    }
-
-    /**
-     * @param facet
-     * @param constraint
-     */
-    private void createProductAgencyAuth(FacetContext facet,
-                                         ConstraintContext constraint) {
-        AgencyProductAuthorization authorization = new AgencyProductAuthorization(model.getCurrentPrincipal()
-                                                                                       .getPrincipal());
-        resolveFrom(constraint, authorization);
-        authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setToParent(resolve(facet.classification));
-        authorization.setToRelationship(resolve(facet.classifier));
-        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
-                                                                               .toUpperCase()));
-        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        authorization.setForward(false);
-        workspace.add(authorization);
-        em.persist(authorization);
-        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
-        if (classifiedAttributes == null) {
-            return;
-        }
-        classifiedAttributes.forEach(attribute -> {
-            AgencyProductAttributeAuthorization auth = new AgencyProductAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                    .getPrincipal());
-            auth.setAuthorizedAttribute(resolve(attribute.key));
-            auth.setNetworkAuthorization(authorization);
-            if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
-            }
-            model.getDSLContext()
-                 .persist(auth);
-            workspace.add(auth);
-        });
-    }
-
-    /**
-     * @param facet
-     * @param constraint
-     */
-    private void createProductLocationAuth(FacetContext facet,
-                                           ConstraintContext constraint) {
-        ProductLocationAuthorization authorization = new ProductLocationAuthorization(model.getCurrentPrincipal()
-                                                                                           .getPrincipal());
-        authorization.setFromParent(resolve(facet.classification));
-        authorization.setFromRelationship(resolve(facet.classifier));
-        authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        resolveTo(constraint, authorization);
-        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
-                                                                               .toUpperCase()));
-        workspace.add(authorization);
-        em.persist(authorization);
-        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
-        if (classifiedAttributes == null) {
-            return;
-        }
-        classifiedAttributes.forEach(attribute -> {
-            ProductLocationAttributeAuthorization auth = new ProductLocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                        .getPrincipal());
-            auth.setAuthorizedAttribute(resolve(attribute.key));
-            auth.setNetworkAuthorization(authorization);
-            if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
-            }
-            model.getDSLContext()
-                 .persist(auth);
-            workspace.add(auth);
-        });
-    }
-
-    private void createProductRelationshipAuth(FacetContext facet,
-                                               ConstraintContext constraint) {
-        ProductRelationshipAuthorization authorization = new ProductRelationshipAuthorization(model.getCurrentPrincipal()
-                                                                                                   .getPrincipal());
-        authorization.setFromParent(resolve(facet.classification));
-        authorization.setFromRelationship(resolve(facet.classifier));
-        authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        resolveTo(constraint, authorization);
-        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
-                                                                               .toUpperCase()));
-        workspace.add(authorization);
-        em.persist(authorization);
-        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
-        if (classifiedAttributes == null) {
-            return;
-        }
-        classifiedAttributes.forEach(attribute -> {
-            ProductRelationshipAttributeAuthorization auth = new ProductRelationshipAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                .getPrincipal());
-            auth.setAuthorizedAttribute(resolve(attribute.key));
-            auth.setNetworkAuthorization(authorization);
-            if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
-            }
-            model.getDSLContext()
-                 .persist(auth);
-            workspace.add(auth);
-        });
-    }
-
-    private void createRelationshipProductAuth(FacetContext facet,
-                                               ConstraintContext constraint) {
-        ProductRelationshipAuthorization authorization = new ProductRelationshipAuthorization(model.getCurrentPrincipal()
-                                                                                                   .getPrincipal());
-        resolveFrom(constraint, authorization);
-        authorization.setConnection(resolve(constraint.childRelationship));
-        authorization.setToParent(resolve(facet.classification));
-        authorization.setToRelationship(resolve(facet.classifier));
-        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
-                                                                               .toUpperCase()));
-        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        authorization.setForward(false);
-        workspace.add(authorization);
-        em.persist(authorization);
-        List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
-        if (classifiedAttributes == null) {
-            return;
-        }
-        classifiedAttributes.forEach(attribute -> {
-            ProductRelationshipAttributeAuthorization auth = new ProductRelationshipAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                .getPrincipal());
-            auth.setAuthorizedAttribute(resolve(attribute.key));
             auth.setNetworkAuthorization(authorization);
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
@@ -1175,7 +891,7 @@ public class WorkspaceImporter {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Ruleform> T resolve(QualifiedNameContext qualifiedName) {
+    private UUID resolve(QualifiedNameContext qualifiedName) {
         if (qualifiedName == null) {
             throw new IllegalArgumentException("Qualified name is null");
         }

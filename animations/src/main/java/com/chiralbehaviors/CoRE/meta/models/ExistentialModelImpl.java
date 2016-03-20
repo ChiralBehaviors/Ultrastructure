@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
 import java.util.List;
@@ -35,10 +36,9 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
-import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 
@@ -112,8 +112,8 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     @SafeVarargs
     @Override
     public final RuleForm create(String name, String description,
-                                 Aspect<RuleForm> aspect, Agency updatedBy,
-                                 Aspect<RuleForm>... aspects) {
+                                 FacetRecord aspect, Agency updatedBy,
+                                 FacetRecord... aspects) {
         //        RuleForm agency = new Agency(name, description,
         //                                     model.getCurrentPrincipal()
         //                                          .getPrincipal());
@@ -151,37 +151,33 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     }
 
     @Override
-    public List<Aspect<RuleForm>> getAllFacets() {
-        return create.selectDistinct(EXISTENTIAL_NETWORK_AUTHORIZATION.fields())
-                     .from(EXISTENTIAL_NETWORK_AUTHORIZATION)
+    public List<FacetRecord> getAllFacets() {
+        return create.selectDistinct(FACET.fields())
+                     .from(FACET)
                      .join(EXISTENTIAL)
-                     .on(EXISTENTIAL_NETWORK_AUTHORIZATION.CLASSIFICATION.equal(EXISTENTIAL.ID))
+                     .on(FACET.CLASSIFICATION.equal(EXISTENTIAL.ID))
                      .where(EXISTENTIAL.DOMAIN.equal(domain()))
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.isNull())
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_RELATIONSHIP.isNull())
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.isNull())
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNull())
+                     .and(FACET.CLASSIFIER.isNull())
+                     .and(FACET.AUTHORITY.isNull())
                      .fetch()
-                     .into(EXISTENTIAL_NETWORK_AUTHORIZATION)
+                     .into(FacetRecord.class)
                      .stream()
-                     .map(auth -> new Aspect<RuleForm>(auth.getClassifier(),
-                                                       auth.getClassification()))
                      .collect(Collectors.toList());
     }
 
     @Override
-    public List<ExistentialNetworkAuthorizationRecord> getFacets(Product workspace) {
-        return create.selectDistinct(EXISTENTIAL_NETWORK_AUTHORIZATION.fields())
-                     .from(EXISTENTIAL_NETWORK_AUTHORIZATION)
+    public List<FacetRecord> getFacets(Product workspace) {
+        return create.selectDistinct(FACET.fields())
+                     .from(FACET)
                      .join(WORKSPACE_AUTHORIZATION)
                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(workspace.getId()))
                      .and(WORKSPACE_AUTHORIZATION.REFERENCE.equal(EXISTENTIAL_NETWORK_AUTHORIZATION.ID))
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_PARENT.isNull())
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORIZED_RELATIONSHIP.isNull())
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD_RELATIONSHIP.isNull())
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNull())
+                     .join(EXISTENTIAL)
+                     .on(FACET.CLASSIFICATION.equal(EXISTENTIAL.ID))
+                     .where(EXISTENTIAL.DOMAIN.equal(domain()))
+                     .and(FACET.AUTHORITY.isNull())
                      .fetch()
-                     .into(ExistentialNetworkAuthorizationRecord.class);
+                     .into(FacetRecord.class);
     }
 
     abstract protected ExistentialDomain domain();

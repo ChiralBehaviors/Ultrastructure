@@ -7,7 +7,7 @@
     <changeSet id="2.0.0" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
             CREATE TYPE reference_type AS ENUM (
-                'Agency Existential Grouping', 'Child Sequencing Authorization', 'Attribute Authorization', 
+                'Agency Existential Grouping', 'Child Sequencing Authorization', 'Attribute Authorization', 'Facet',
                 'Attribute', 'Network Attribute', 'Network Attribute Authorization','Network Authorization', 'Network', 'Existential',
                 'Job Chronology', 'Job', 'Meta Protocol', 'Network Inference', 'Parent Sequencing Authorization',
                 'Protocol', 'Self Sequencing Authorization', 'Sibling Sequencing Authorization', 'Status Code Sequencing'

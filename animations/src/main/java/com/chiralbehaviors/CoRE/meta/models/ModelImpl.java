@@ -31,8 +31,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.persistence.NoResultException;
-
 import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
@@ -277,15 +275,10 @@ public class ModelImpl implements Model {
     @SuppressWarnings("unchecked")
     @Override
     public CoreInstance getCoreInstance() {
-        try {
-            return wrap(CoreInstance.class,
-                        phantasmModel.getChild(getKernel().getCore(),
-                                               factory.resolve(getKernel().getSingletonOf()
-                                                                          .getInverse())));
-        } catch (NoResultException e) {
-            throw new IllegalStateException("The CoRE system has not been initialized properly",
-                                            e);
-        }
+        return wrap(CoreInstance.class,
+                    phantasmModel.getChild(getKernel().getCore(),
+                                           factory.resolve(getKernel().getSingletonOf()
+                                                                      .getInverse())));
     }
 
     @Override
@@ -469,5 +462,15 @@ public class ModelImpl implements Model {
     @Override
     public RecordsFactory records() {
         return factory;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#wrap(java.lang.Class, com.chiralbehaviors.CoRE.domain.ExistentialRuleform)
+     */
+    @Override
+    public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
+                                                                         T ruleform) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

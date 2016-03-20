@@ -21,22 +21,6 @@
             <artifactId>stringtemplate</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-testing</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>log4j</artifactId>
-                    <groupId>log4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.chiralbehaviors.CoRE</groupId>
             <artifactId>thing-ontology</artifactId>
             <scope>test</scope>

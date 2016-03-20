@@ -294,4 +294,14 @@ public interface Model extends AutoCloseable {
      */
     <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
                                                                   Phantasm<T> ruleform);
+
+    /**
+     * Wrap the ruleform with an instance of a phantasm using the model
+     * 
+     * @param phantasm
+     * @param ruleform
+     * @return
+     */
+    <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
+                                                                  T ruleform);
 }

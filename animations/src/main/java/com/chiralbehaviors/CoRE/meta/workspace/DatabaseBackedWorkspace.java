@@ -36,10 +36,29 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import com.chiralbehaviors.CoRE.RecordsFactory.ReferenceType;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttribute;
+import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
@@ -50,7 +69,7 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public class DatabaseBackedWorkspace implements EditableWorkspace {
-    public class EntityList<T extends Ruleform> extends AbstractList<T> {
+    public class EntityList<T> extends AbstractList<T> {
         private final List<WorkspaceAuthorizationRecord> backingList;
 
         public EntityList(List<WorkspaceAuthorizationRecord> backingList) {
@@ -63,8 +82,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         @SuppressWarnings("unchecked")
         @Override
         public T get(int index) {
-            return (T) backingList.get(index)
-                                  .getRuleform(em);
+            return (T) getRuleform(backingList.get(index));
         }
 
         /* (non-Javadoc)
@@ -79,7 +97,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     private final UUID                    definingProductId;
     private Product                       definingProductCache;
     protected final Map<String, Ruleform> cache = new HashMap<String, Ruleform>();
-    protected final EntityManager         em;
     protected final Model                 model;
     protected final WorkspaceScope        scope;
 
@@ -87,7 +104,6 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         assert definingProduct != null;
         this.definingProductId = definingProduct.getId();
         this.model = model;
-        this.em = model.getDSLContext();
         this.scope = new WorkspaceScope(this);
         // We need the kernel workspace to lookup workspaces, so special case the kernel
         if (!definingProduct.getId()
@@ -99,6 +115,15 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                .getWorkspace());
             }
         }
+    }
+
+    /**
+     * @param workspaceAuthorizationRecord
+     * @return
+     */
+    public Object getRuleform(WorkspaceAuthorizationRecord workspaceAuthorizationRecord) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     public List<Entry<String, Tuple<Product, Integer>>> getSortedImports() {
@@ -120,48 +145,47 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         return imports;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.workspace.NeuvoWorkspace#add(com.chiralbehaviors.CoRE.Ruleform)
-     */
-    @Override
-    public <T extends Ruleform> void add(T ruleform) {
-        WorkspaceAuthorizationRecord authorization = new WorkspaceAuthorizationRecord();
-        authorization.setRuleform(ruleform, em);
-        authorization.setDefiningProduct(getDefiningProduct());
-        authorization.setUpdatedBy(ruleform.getUpdatedBy());
-        em.persist(authorization);
+    protected void add(ReferenceType type, UUID reference) {
+        WorkspaceAuthorizationRecord authorization = model.records()
+                                                          .newWorkspaceAuthorization(getDefiningProduct(),
+                                                                                     reference,
+                                                                                     model.getCurrentPrincipal()
+                                                                                          .getPrincipal());
+        authorization.insert();
     }
 
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#addImport(com.chiralbehaviors.CoRE.product.Product)
      */
     @Override
-    public void addImport(String namespace, Product workspace) {
-        ProductModel productModel = model.getProductModel();
-        if (!productModel.isAccessible(getDefiningProduct(), model.getKernel()
-                                                                  .getIsA(),
-                                       model.getKernel()
-                                            .getWorkspace())) {
+    public void addImport(String name, Product workspace) {
+        if (!model.getPhantasmModel()
+                  .isAccessible(getDefiningProduct(), model.getKernel()
+                                                           .getIsA(),
+                                model.getKernel()
+                                     .getWorkspace())) {
             throw new IllegalArgumentException(String.format("Import is not classified as a Workspace: %s",
                                                              workspace));
         }
-        scope.add(namespace, model.getWorkspaceModel()
-                                  .getScoped(workspace)
-                                  .getWorkspace());
-        Tuple<ProductNetwork, ProductNetwork> links = productModel.link(getDefiningProduct(),
-                                                                        model.getKernel()
-                                                                             .getImports(),
-                                                                        workspace,
-                                                                        model.getCurrentPrincipal()
-                                                                             .getPrincipal());
-        ProductNetworkAttribute attribute = new ProductNetworkAttribute(model.getKernel()
-                                                                             .getNamespace(),
-                                                                        namespace,
-                                                                        model.getCurrentPrincipal()
-                                                                             .getPrincipal());
+        scope.add(name, model.getWorkspaceModel()
+                             .getScoped(workspace)
+                             .getWorkspace());
+        Tuple<ProductNetwork, ProductNetwork> links = model.getPhantasmModel()
+                                                           .link(getDefiningProduct(),
+                                                                 model.getKernel()
+                                                                      .getImports(),
+                                                                 workspace,
+                                                                 model.getCurrentPrincipal()
+                                                                      .getPrincipal());
+        ExistentialNetworkAttribute attribute = model.records()
+                                                     .newExistentialNetworkAttribute(model.getKernel()
+                                                                                          .getNamespace(),
+                                                                                     name,
+                                                                                     model.getCurrentPrincipal()
+                                                                                          .getPrincipal());
         attribute.setNetwork(links.a);
         em.persist(attribute);
-        attribute.setValue(namespace);
+        attribute.setValue(name);
         add(links.a);
         add(links.b);
         add(attribute);
@@ -181,7 +205,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends Ruleform> T get(String key) {
+    public Object get(String key) {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null");
         }
@@ -349,5 +373,176 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public String toString() {
         return String.format("DatabaseBackedWorkspace[%s]",
                              getDefiningProduct().getName());
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor#get(java.lang.String)
+     */
+    @Override
+    public <T> T get(String key) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor#getCollection(java.lang.Class)
+     */
+    @Override
+    public <T> List<T> getCollection(Class<T> ruleformClass) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord)
+     */
+    @Override
+    public void add(AgencyExistentialGroupingRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord)
+     */
+    @Override
+    public void add(ChildSequencingAuthorizationRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord)
+     */
+    @Override
+    public void add(ExistentialAttributeAuthorizationRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
+     */
+    @Override
+    public void add(ExistentialAttributeRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkAttributeAuthorizationRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkAttributeRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkAuthorizationRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord)
+     */
+    @Override
+    public void add(ExistentialRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord)
+     */
+    @Override
+    public void add(JobChronologyRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord)
+     */
+    @Override
+    public void add(JobRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord)
+     */
+    @Override
+    public void add(MetaProtocolRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord)
+     */
+    @Override
+    public void add(NetworkInferenceRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord)
+     */
+    @Override
+    public void add(ParentSequencingAuthorizationRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord)
+     */
+    @Override
+    public void add(ProtocolRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord)
+     */
+    @Override
+    public void add(SelfSequencingAuthorizationRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord)
+     */
+    @Override
+    public void add(StatusCodeSequencingRecord ruleform) {
+        // TODO Auto-generated method stub
+
     }
 }

@@ -231,6 +231,14 @@ public interface RecordsFactory {
         return record;
     }
 
+    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(Attribute attribute,
+                                                                             Agency updatedBy) {
+        ExistentialNetworkAttributeRecord record = new ExistentialNetworkAttributeRecord();
+        record.setAttribute(attribute.getId());
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
     default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization() {
         ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
@@ -420,11 +428,11 @@ public interface RecordsFactory {
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
-                                                                   ExistentialRuleform reference,
+                                                                   UUID reference,
                                                                    Agency updatedBy) {
         WorkspaceAuthorizationRecord record = newWorkspaceAuthorization();
         record.setDefiningProduct(definingProduct.getId());
-        record.setReference(reference.getId());
+        record.setReference(reference);
         record.setUpdatedBy(updatedBy.getId());
         record.setType(ReferenceType.EXISTENTIAL.ordinal());
         return record;

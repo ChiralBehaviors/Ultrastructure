@@ -20,15 +20,16 @@
 
 package com.chiralbehaviors.CoRE.kernel;
 
+import org.junit.Test;
+
 /**
  * @author hhildebrand
  *
  */
 public class BootstrapTest {
-    // uncomment to test zee bootstrapping. commented out because pretty much everything tests bootstrapping
-    // @Test
+    @Test
     public void testBootstrap() throws Exception {
-        Bootstrap.main(new String[] { "target/test-classes/jpa.properties",
+        Bootstrap.main(new String[] { "target/test-classes/db.properties",
                                       "target/bootstrap-out.json" });
     }
 }

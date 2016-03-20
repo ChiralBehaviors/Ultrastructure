@@ -242,6 +242,12 @@ public interface RecordsFactory {
         return record;
     }
 
+    default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization(Agency updatedBy) {
+        ExistentialNetworkAuthorizationRecord record = newExistentialNetworkAuthorization();
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
     default ExistentialRecord newInterval() {
         ExistentialRecord record = create().newRecord(EXISTENTIAL);
         record.setDomain(ExistentialDomain.Interval);

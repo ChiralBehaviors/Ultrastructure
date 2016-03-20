@@ -24,6 +24,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +44,8 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.collections.OaHashSet;
 
@@ -101,7 +104,9 @@ public class WorkspaceSnapshot {
             }
         }
     }
-    public static void load(DSLContext create, URL resource) throws IOException {
+
+    public static void load(DSLContext create,
+                            URL resource) throws IOException {
         load(create, Collections.singletonList(resource));
     }
 
@@ -177,6 +182,14 @@ public class WorkspaceSnapshot {
             TableRecord r2 = (TableRecord) r;
             create.executeInsert(r2);
         });
+    }
+
+    public void serializeTo(OutputStream os) throws JsonGenerationException,
+                                             JsonMappingException, IOException {
+        ObjectMapper objMapper = new ObjectMapper();
+        objMapper.registerModule(new CoREModule());
+        objMapper.writerWithDefaultPrettyPrinter()
+                 .writeValue(os, this);
     }
 
     private void loadFromDb(DSLContext create) {

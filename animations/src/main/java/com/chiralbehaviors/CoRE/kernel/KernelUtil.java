@@ -38,13 +38,6 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
- * Repository of immutable kernal rules
- *
- * This used to be the standard. Now we use workspaces. However, kernel is a
- * fundamental workspace, and it's needed a lot. Consequently, because of the
- * way we do Java stored procedures, reentrancy requires a new image of the
- * kernel workspace in the context of the entity manager. Sucks to be us.
- *
  * Utilities for the Kernel
  *
  * @author hhildebrand
@@ -75,15 +68,11 @@ public class KernelUtil {
                                     .executeQuery(KernelUtil.SELECT_TABLE);
             while (r.next()) {
                 String table = r.getString("name");
-                if (!table.equals("ruleform.agency")) {
-                    String query = String.format("TRUNCATE TABLE %s CASCADE",
-                                                 table);
-                    connection.createStatement()
-                              .execute(query);
-                }
+                String query = String.format("TRUNCATE TABLE %s CASCADE",
+                                             table);
+                connection.createStatement()
+                          .execute(query);
             }
-            connection.createStatement()
-                      .execute("TRUNCATE TABLE ruleform.agency CASCADE");
             r.close();
             connection.commit();
             committed = true;

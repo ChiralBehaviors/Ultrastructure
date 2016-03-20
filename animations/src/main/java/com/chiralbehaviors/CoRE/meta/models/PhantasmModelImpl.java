@@ -956,4 +956,32 @@ public class PhantasmModelImpl implements PhantasmModel {
         // TODO Auto-generated method stub
 
     }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
+     */
+    @Override
+    public Object getValue(ExistentialAttributeRecord attributeValue) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#setValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord, java.lang.Object)
+     */
+    @Override
+    public void setValue(ExistentialAttributeRecord attributeValue,
+                         Object value) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#valueClass(com.chiralbehaviors.CoRE.domain.Attribute)
+     */
+    @Override
+    public Class<?> valueClass(Attribute attribute) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

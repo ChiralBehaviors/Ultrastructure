@@ -363,6 +363,8 @@ public interface PhantasmModel {
     ExistentialRuleform getSingleChild(ExistentialRuleform parent,
                                        Relationship r);
 
+    Object getValue(ExistentialAttributeRecord attributeValue);
+
     /**
      * Initialize the ruleform with the classified attributes for this aspect
      * 
@@ -438,8 +440,12 @@ public interface PhantasmModel {
                            Relationship relationship, ExistentialRuleform child,
                            Agency updatedBy);
 
+    void setValue(ExistentialAttributeRecord attributeValue, Object value);
+
     void unlink(ExistentialRuleform parent, Relationship r,
                 ExistentialRuleform child);
 
     void unlinkImmediate(ExistentialRuleform parent, Relationship relationship);
+
+    Class<?> valueClass(Attribute attribute);
 }

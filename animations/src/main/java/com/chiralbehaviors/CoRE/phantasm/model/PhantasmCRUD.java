@@ -148,7 +148,6 @@ public class PhantasmCRUD {
      * @return
      * @throws SecurityException
      */
-    @SuppressWarnings("unchecked")
     public ExistentialRuleform apply(NetworkAuthorization facet,
                                      ExistentialRuleform instance,
                                      Function<ExistentialRuleform, ExistentialRuleform> constructor) throws SecurityException {
@@ -168,7 +167,6 @@ public class PhantasmCRUD {
         return constructor.apply(instance);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     /**
      * Throws ClassCastException if not an instance of the authorized facet type
      * 
@@ -209,7 +207,6 @@ public class PhantasmCRUD {
      * @throws NoSuchMethodException
      * @throws SecurityException
      */
-    @SuppressWarnings("unchecked")
     public ExistentialRuleform createInstance(NetworkAuthorization facet,
                                               String name, String description,
                                               Function<ExistentialRuleform, ExistentialRuleform> constructor) {
@@ -262,10 +259,10 @@ public class PhantasmCRUD {
         } else if (authorizedAttribute.getKeyed()) {
             return getMappedAttributeValue(instance, authorizedAttribute);
         }
-        Object value = model.getPhantasmModel()
-                            .getAttributeValue(instance, authorizedAttribute)
-                            .getValue();
-        return value;
+        return model.getPhantasmModel()
+                    .getValue(model.getPhantasmModel()
+                                   .getAttributeValue(instance,
+                                                      authorizedAttribute));
     }
 
     /**
@@ -312,7 +309,6 @@ public class PhantasmCRUD {
      * 
      * @return
      */
-    @SuppressWarnings("unchecked")
     public List<ExistentialRuleform> getImmediateChildren(NetworkAuthorization facet,
                                                           ExistentialRuleform instance,
                                                           NetworkAuthorization auth) {
@@ -337,7 +333,6 @@ public class PhantasmCRUD {
      * @param facet
      * @return
      */
-    @SuppressWarnings("unchecked")
     public List<ExistentialRuleform> getInstances(NetworkAuthorization facet) {
         if (!model.getPhantasmModel()
                   .checkFacetCapability(facet.getAuth(), getREAD())) {
@@ -386,7 +381,6 @@ public class PhantasmCRUD {
         if (!checkREAD(facet) || !checkREAD(auth)) {
             return null;
         }
-        @SuppressWarnings("unchecked")
         ExistentialRuleform child = (ExistentialRuleform) model.getPhantasmModel()
                                                                .getImmediateChild(instance,
                                                                                   auth.getChildRelationship());
@@ -422,7 +416,6 @@ public class PhantasmCRUD {
                        .orElse(null);
     }
 
-    @SuppressWarnings("unchecked")
     public List<ExistentialRuleform> lookupRuleForm(List<String> ids) {
         return ids.stream()
                   .map(id -> existential(id))
@@ -532,8 +525,10 @@ public class PhantasmCRUD {
             return instance;
         }
         model.getPhantasmModel()
-             .getAttributeValue(instance, stateAuth.getAttribute())
-             .setValue(value);
+             .setValue(model.getPhantasmModel()
+                            .getAttributeValue(instance,
+                                               stateAuth.getAttribute()),
+                       value);
         return instance;
     }
 
@@ -666,7 +661,7 @@ public class PhantasmCRUD {
                     .checkCapability(stateAuth.getAuth(), getUPDATE());
     }
 
-    private boolean checkUPDATE(@SuppressWarnings("rawtypes") ExistentialRuleform child) {
+    private boolean checkUPDATE(ExistentialRuleform child) {
         return model.getPhantasmModel()
                     .checkCapability(child, getUPDATE());
     }
@@ -682,10 +677,12 @@ public class PhantasmCRUD {
         ExistentialAttributeRecord[] attributeValues = getValueArray(instance,
                                                                      authorizedAttribute);
 
-        Object[] values = (Object[]) Array.newInstance(authorizedAttribute.valueClass(),
+        Object[] values = (Object[]) Array.newInstance(model.getPhantasmModel()
+                                                            .valueClass(authorizedAttribute),
                                                        attributeValues.length);
         for (ExistentialAttributeRecord value : attributeValues) {
-            values[value.getSequenceNumber()] = value.getValue();
+            values[value.getSequenceNumber()] = model.getPhantasmModel()
+                                                     .getValue(value);
         }
         return values;
     }
@@ -695,8 +692,8 @@ public class PhantasmCRUD {
         Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, ExistentialAttributeRecord> entry : getValueMap(instance,
                                                                                authorizedAttribute).entrySet()) {
-            map.put(entry.getKey(), entry.getValue()
-                                         .getValue());
+            map.put(entry.getKey(), model.getPhantasmModel()
+                                         .getValue(entry.getValue()));
         }
         return map;
     }
@@ -710,7 +707,6 @@ public class PhantasmCRUD {
         for (ExistentialAttributeRecord value : values) {
             max = Math.max(max, value.getSequenceNumber() + 1);
         }
-        @SuppressWarnings("unchecked")
         ExistentialAttributeRecord[] returnValue = new ExistentialAttributeRecord[max];
         for (ExistentialAttributeRecord form : values) {
             returnValue[form.getSequenceNumber()] = form;
@@ -799,7 +795,8 @@ public class PhantasmCRUD {
                 value.insert();
                 value.setKey(entry.getKey());
             }
-            value.setValue(entry.getValue());
+            model.getPhantasmModel()
+                 .setValue(value, entry.getValue());
         }
     }
 
@@ -810,6 +807,7 @@ public class PhantasmCRUD {
             existing = newAttributeValue(instance, attribute, i);
             existing.insert();
         }
-        existing.setValue(newValue);
+        model.getPhantasmModel()
+             .setValue(existing, newValue);
     }
 }

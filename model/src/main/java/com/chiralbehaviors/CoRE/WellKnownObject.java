@@ -22,6 +22,8 @@ package com.chiralbehaviors.CoRE;
 
 import java.util.UUID;
 
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+
 /**
  * The repository of the ids of well known objects, as well as string constants
  * for naming them.
@@ -30,8 +32,6 @@ import java.util.UUID;
  *
  */
 public interface WellKnownObject {
-
-    public static final String KERNEL_IRI = "urn:uuid:00000000-0000-0004-0000-000000000003";
 
     public static enum WellKnownAgency
             implements WellKnownObject {
@@ -211,6 +211,11 @@ public interface WellKnownObject {
         public String tableName() {
             return "ruleform.agency";
         }
+
+        @Override
+        public ExistentialDomain domain() {
+            return ExistentialDomain.Agency;
+        }
     }
 
     public static enum WellKnownAttribute
@@ -336,6 +341,11 @@ public interface WellKnownObject {
 
         };
 
+        @Override
+        public ExistentialDomain domain() {
+            return ExistentialDomain.Attribute;
+        }
+
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
          */
@@ -431,6 +441,11 @@ public interface WellKnownObject {
         };
 
         @Override
+        public ExistentialDomain domain() {
+            return ExistentialDomain.Interval;
+        }
+
+        @Override
         public UUID id() {
             return new UUID(WellKnownTypes.INTERVAL.ordinal(), ordinal() + 1);
         }
@@ -510,6 +525,11 @@ public interface WellKnownObject {
             }
 
         };
+
+        @Override
+        public ExistentialDomain domain() {
+            return ExistentialDomain.Location;
+        }
 
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
@@ -622,6 +642,11 @@ public interface WellKnownObject {
                 return WellKnownObject.WORKSPACE;
             }
         };
+
+        @Override
+        public ExistentialDomain domain() {
+            return ExistentialDomain.Product;
+        }
 
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
@@ -1373,6 +1398,11 @@ public interface WellKnownObject {
             }
         };
 
+        @Override
+        public ExistentialDomain domain() {
+            return ExistentialDomain.Relationship;
+        }
+
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
          */
@@ -1474,6 +1504,11 @@ public interface WellKnownObject {
             }
 
         };
+
+        @Override
+        public ExistentialDomain domain() {
+            return ExistentialDomain.StatusCode;
+        }
 
         @Override
         public UUID id() {
@@ -1691,6 +1726,11 @@ public interface WellKnownObject {
         };
 
         @Override
+        public ExistentialDomain domain() {
+            return ExistentialDomain.Unit;
+        }
+
+        @Override
         public UUID id() {
             return new UUID(WellKnownTypes.UNIT.ordinal(), ordinal() + 1);
         }
@@ -1704,80 +1744,86 @@ public interface WellKnownObject {
         }
     }
 
-    String ANY                       = "(ANY)";
-    String ANYTHING                  = "anything";
-    String CONTAINS                  = "contains";
-    String COORDINATE                = "Coordinate";
-    String COPY                      = "(COPY)";
-    String CORE                      = "CoRE";
-    String CORE_ANIMATION_SOFTWARE   = "CoRE Animation Software";
-    String CORE_MODEL                = "CoRE Model";
-    String CORE_USER                 = "CoRE User";
-    String DAYS                      = "days";
-    String DEVELOPED                 = "developed";
-    String DEVELOPED_BY              = "developed-by";
-    String EQUALS                    = "=";
-    String EVENT                     = "Event";
-    String FORMER_MEMBER_OF          = "former-member-of";
-    String GREATER_THAN              = ">";
-    String GREATER_THAN_OR_EQUALS    = ">=";
-    String HAD_MEMBER                = "had-member";
-    String HAS_EXCEPTION             = "has-exception";
-    String HAS_HEAD                  = "has-head";
-    String HAS_MEMBER                = "has-member";
-    String HAS_VERSION               = "has-version";
-    String HEAD_OF                   = "head-of";
-    String HOURS                     = "Hours";
-    String IMPORTED_BY               = "imported by";
-    String IMPORTS                   = "imports";
-    String IN_WORKSPACE              = "in-workspace";
-    String INCLUDES                  = "includes";
-    String INVERSE_SOFTWARE          = "Inverse Software";
-    String IRI                       = "IRI";
-    String IS_A                      = "is-a";
-    String IS_CONTAINED_IN           = "is-contained-in";
-    String IS_EXCEPTION_TO           = "is-exception-to";
-    String IS_LOCATION_OF            = "is-location-of";
-    String IS_VALIDATED_BY           = "is-validated-by";
-    String JSONLD_TYPE               = "@type";
-    String KERNEL_WORKSPACE          = "kernelWorkspace";
-    String LESS_THAN                 = "<";
-    String LESS_THAN_OR_EQUALS       = "<=";
-    String LOCATION_CONTEXT          = "LocationContext";
-    String LOCATION_PROTOTYPE_COPIER = "Location Protototype Copier";
-    String LOGIN                     = "login";
-    String MAPS_TO_LOCATION          = "maps-to-location";
-    String MEMBER                    = "member";
-    String MEMBER_OF                 = "member-of";
-    String MICROSECONDS              = "Microseconds";
-    String MILLISECONDS              = "Milliseonds";
-    String MINUTES                   = "Minutes";
-    String NAMESPACE                 = "namespace";
-    String NANOSECONDS               = "Nanoseconds";
-    String NOT_APPLICABLE            = "(N/A)";
-    String NULLABLE                  = "Nullable";
-    String OWNED_BY                  = "ownedBy";
-    String OWNS                      = "owns";
-    String PASSWORD_HASH             = "password-hash";
-    String PASSWORD_ROUNDS           = "password-rounds";
-    String PROPAGATION_SOFTWARE      = "Propagation Software";
-    String PROTOTYPE                 = "prototype";
-    String PROTOTYPE_OF              = "prototype-of";
-    String SAME                      = "(SAME)";
-    String SECONDS                   = "Seconds";
-    String SPECIAL_SYSTEM_AGENCY     = "Special System Agency";
-    String SPECIAL_SYSTEM_EVENT      = "Special System Event";
-    String SUPER_USER                = "CoRE Super User";
-    String UNSET                     = "(UNSET)";
-    String VALIDATES                 = "validates";
-    String VERSION_OF                = "version-of";
-    String WORKSPACE                 = "Workspace";
-    String WORKSPACE_OF              = "workspace-of";
+    String                     ANY                       = "(ANY)";
+    String                     ANYTHING                  = "anything";
+    String                     CONTAINS                  = "contains";
+    String                     COORDINATE                = "Coordinate";
+    String                     COPY                      = "(COPY)";
+    String                     CORE                      = "CoRE";
+    String                     CORE_ANIMATION_SOFTWARE   = "CoRE Animation Software";
+    String                     CORE_MODEL                = "CoRE Model";
+    String                     CORE_USER                 = "CoRE User";
+    String                     DAYS                      = "days";
+    String                     DEVELOPED                 = "developed";
+    String                     DEVELOPED_BY              = "developed-by";
+    String                     EQUALS                    = "=";
+    String                     EVENT                     = "Event";
+    String                     FORMER_MEMBER_OF          = "former-member-of";
+    String                     GREATER_THAN              = ">";
+    String                     GREATER_THAN_OR_EQUALS    = ">=";
+    String                     HAD_MEMBER                = "had-member";
+    String                     HAS_EXCEPTION             = "has-exception";
+    String                     HAS_HEAD                  = "has-head";
+    String                     HAS_MEMBER                = "has-member";
+    String                     HAS_VERSION               = "has-version";
+    String                     HEAD_OF                   = "head-of";
+    String                     HOURS                     = "Hours";
+    String                     IMPORTED_BY               = "imported by";
+    String                     IMPORTS                   = "imports";
+    String                     IN_WORKSPACE              = "in-workspace";
+    String                     INCLUDES                  = "includes";
+    String                     INVERSE_SOFTWARE          = "Inverse Software";
+    String                     IRI                       = "IRI";
+    String                     IS_A                      = "is-a";
+    String                     IS_CONTAINED_IN           = "is-contained-in";
+    String                     IS_EXCEPTION_TO           = "is-exception-to";
+    String                     IS_LOCATION_OF            = "is-location-of";
+    String                     IS_VALIDATED_BY           = "is-validated-by";
+    String                     JSONLD_TYPE               = "@type";
+    public static final String KERNEL_IRI                = "urn:uuid:00000000-0000-0004-0000-000000000003";
+    String                     KERNEL_WORKSPACE          = "kernelWorkspace";
+    String                     LESS_THAN                 = "<";
+    String                     LESS_THAN_OR_EQUALS       = "<=";
+    String                     LOCATION_CONTEXT          = "LocationContext";
+    String                     LOCATION_PROTOTYPE_COPIER = "Location Protototype Copier";
+    String                     LOGIN                     = "login";
+    String                     MAPS_TO_LOCATION          = "maps-to-location";
+    String                     MEMBER                    = "member";
+    String                     MEMBER_OF                 = "member-of";
+    String                     MICROSECONDS              = "Microseconds";
+    String                     MILLISECONDS              = "Milliseonds";
+    String                     MINUTES                   = "Minutes";
+    String                     NAMESPACE                 = "namespace";
+    String                     NANOSECONDS               = "Nanoseconds";
+    String                     NOT_APPLICABLE            = "(N/A)";
+    String                     NULLABLE                  = "Nullable";
+    String                     OWNED_BY                  = "ownedBy";
+    String                     OWNS                      = "owns";
+    String                     PASSWORD_HASH             = "password-hash";
+    String                     PASSWORD_ROUNDS           = "password-rounds";
+    String                     PROPAGATION_SOFTWARE      = "Propagation Software";
+    String                     PROTOTYPE                 = "prototype";
+    String                     PROTOTYPE_OF              = "prototype-of";
+    String                     SAME                      = "(SAME)";
+    String                     SECONDS                   = "Seconds";
+    String                     SPECIAL_SYSTEM_AGENCY     = "Special System Agency";
+    String                     SPECIAL_SYSTEM_EVENT      = "Special System Event";
+    String                     SUPER_USER                = "CoRE Super User";
+    String                     UNSET                     = "(UNSET)";
+    String                     VALIDATES                 = "validates";
+    String                     VERSION_OF                = "version-of";
+    String                     WORKSPACE                 = "Workspace";
+    String                     WORKSPACE_OF              = "workspace-of";
 
     /**
      * @return the descriptions of the wko
      */
     String description();
+
+    /**
+     * @return the existential domain of the wko
+     */
+    ExistentialDomain domain();
 
     /**
      *

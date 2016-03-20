@@ -100,7 +100,7 @@ public class StatusCodeModelImpl extends ExistentialModelImpl<StatusCode>
      */
     @Override
     protected ExistentialDomain domain() {
-        return ExistentialDomain.S;
+        return ExistentialDomain.StatusCode;
     }
 
     /* (non-Javadoc)

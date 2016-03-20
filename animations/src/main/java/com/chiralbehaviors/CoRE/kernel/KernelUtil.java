@@ -64,12 +64,11 @@ public class KernelUtil {
                                                           .collect(Collectors.toList()));
     }
 
-    public static void clear(EntityManager em) throws SQLException {
+    public static void clear(DSLContext em) throws SQLException {
         boolean committed = false;
-        Connection connection = em.unwrap(SessionImpl.class)
-                                  .connection();
-        em.getTransaction()
-          .begin();
+        Connection connection = em.configuration()
+                                  .connectionProvider()
+                                  .acquire();
         try {
             connection.setAutoCommit(false);
             ResultSet r = connection.createStatement()
@@ -87,14 +86,10 @@ public class KernelUtil {
                       .execute("TRUNCATE TABLE ruleform.agency CASCADE");
             r.close();
             connection.commit();
-            em.getTransaction()
-              .commit();
             committed = true;
         } finally {
             if (!committed) {
                 connection.rollback();
-                em.getTransaction()
-                  .rollback();
             }
         }
     }
@@ -113,13 +108,6 @@ public class KernelUtil {
     }
 
     public static void loadKernel(DSLContext em) throws IOException {
-        if (!em.getTransaction()
-               .isActive()) {
-            em.getTransaction()
-              .begin();
-        }
-        WorkspaceSnapshot.load(em, KERNEL_LOADS);
-        em.getTransaction()
-          .commit();
+        em.transaction(config -> WorkspaceSnapshot.load(em, KERNEL_LOADS));
     }
 }

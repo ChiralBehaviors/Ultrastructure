@@ -6,7 +6,7 @@
 >
     <changeSet id="2.0.0" author="hhildebrand">
         <sql splitStatements="false"><![CDATA[
-            CREATE TYPE existential_domain AS ENUM ('A', 'T', 'I', 'L', 'P', 'R', 'S', 'U');
+            CREATE TYPE existential_domain AS ENUM ('Agency', 'Attribute', 'Interval', 'Location', 'Product', 'Relationship', 'StatusCode', 'Unit');
             ]]>
         </sql>
         <rollback> DROP TYPE existential_domain; </rollback>

@@ -28,66 +28,37 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import javax.management.openmbean.InvalidKeyException;
-import javax.persistence.EntityManager;
 
 import org.antlr.v4.runtime.Token;
 
-import com.chiralbehaviors.CoRE.Ruleform;
-import com.chiralbehaviors.CoRE.existential.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.existential.attribute.ValueType;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyAttributeAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyLocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyLocationAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyProductAttributeAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyProductAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.Attribute;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttributeAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.Interval;
-import com.chiralbehaviors.CoRE.existential.domain.Location;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
-import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
-import com.chiralbehaviors.CoRE.existential.domain.Unit;
-import com.chiralbehaviors.CoRE.existential.domain.UnitAttributeAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.UnitNetworkAuthorization;
-import com.chiralbehaviors.CoRE.existential.network.Cardinality;
-import com.chiralbehaviors.CoRE.existential.network.NetworkInference;
-import com.chiralbehaviors.CoRE.job.MetaProtocol;
-import com.chiralbehaviors.CoRE.job.ChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.ParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.SelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.SiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.job.StatusCodeSequencing;
-import com.chiralbehaviors.CoRE.job.Protocol;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeAttributeAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.location.LocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
+import com.chiralbehaviors.CoRE.Cardinality;
+import com.chiralbehaviors.CoRE.ValueType;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.domain.Unit;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.ChildSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.MetaProtocol;
+import com.chiralbehaviors.CoRE.jooq.tables.ParentSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
+import com.chiralbehaviors.CoRE.jooq.tables.SelfSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.SiblingSequencingAuthorization;
+import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.meta.Aspect;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
+import com.chiralbehaviors.CoRE.meta.models.Inference;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.network.NetworkAuthorization;
-import com.chiralbehaviors.CoRE.network.NetworkRuleform;
-import com.chiralbehaviors.CoRE.network.XDomainNetworkAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductAttribute;
-import com.chiralbehaviors.CoRE.product.ProductAttributeAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductLocationAttributeAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductLocationAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductRelationshipAttributeAuthorization;
-import com.chiralbehaviors.CoRE.product.ProductRelationshipAuthorization;
-import com.chiralbehaviors.CoRE.relationship.RelationshipAttributeAuthorization;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
-import com.chiralbehaviors.CoRE.time.IntervalAttributeAuthorization;
-import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeValueContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
@@ -766,11 +737,11 @@ public class WorkspaceImporter {
     private void loadChildSequencing() {
         for (ChildSequencingContext seq : wsp.getChildSequencings()) {
             ChildSequencingAuthorization auth = new ChildSequencingAuthorization(resolve(seq.parent),
-                                                                                               resolve(seq.status),
-                                                                                               resolve(seq.child),
-                                                                                               resolve(seq.next),
-                                                                                               model.getCurrentPrincipal()
-                                                                                                    .getPrincipal());
+                                                                                 resolve(seq.status),
+                                                                                 resolve(seq.child),
+                                                                                 resolve(seq.next),
+                                                                                 model.getCurrentPrincipal()
+                                                                                      .getPrincipal());
             em.persist(auth);
             workspace.add(auth);
         }
@@ -802,10 +773,10 @@ public class WorkspaceImporter {
     private void loadInferences() {
         for (EdgeContext edge : wsp.getInferences()) {
             Inference inference = new Inference(resolve(edge.parent),
-                                                              resolve(edge.relationship),
-                                                              resolve(edge.child),
-                                                              model.getCurrentPrincipal()
-                                                                   .getPrincipal());
+                                                resolve(edge.relationship),
+                                                resolve(edge.child),
+                                                model.getCurrentPrincipal()
+                                                     .getPrincipal());
             em.persist(inference);
             workspace.add(inference);
         }
@@ -883,11 +854,11 @@ public class WorkspaceImporter {
     private void loadParentSequencing() {
         for (ParentSequencingContext seq : wsp.getParentSequencings()) {
             ParentSequencingAuthorization auth = new ParentSequencingAuthorization(resolve(seq.service),
-                                                                                                 resolve(seq.status),
-                                                                                                 resolve(seq.parent),
-                                                                                                 resolve(seq.next),
-                                                                                                 model.getCurrentPrincipal()
-                                                                                                      .getPrincipal());
+                                                                                   resolve(seq.status),
+                                                                                   resolve(seq.parent),
+                                                                                   resolve(seq.next),
+                                                                                   model.getCurrentPrincipal()
+                                                                                        .getPrincipal());
             em.persist(auth);
             workspace.add(auth);
         }
@@ -981,10 +952,10 @@ public class WorkspaceImporter {
     private void loadSelfSequencing() {
         for (SelfSequencingContext seq : wsp.getSelfSequencings()) {
             SelfSequencingAuthorization auth = new SelfSequencingAuthorization(resolve(seq.service),
-                                                                                             resolve(seq.status),
-                                                                                             resolve(seq.next),
-                                                                                             model.getCurrentPrincipal()
-                                                                                                  .getPrincipal());
+                                                                               resolve(seq.status),
+                                                                               resolve(seq.next),
+                                                                               model.getCurrentPrincipal()
+                                                                                    .getPrincipal());
             em.persist(auth);
             workspace.add(auth);
         }
@@ -1000,11 +971,11 @@ public class WorkspaceImporter {
     private void loadSiblingSequencing() {
         for (SiblingSequencingContext seq : wsp.getSiblingSequencings()) {
             SiblingSequencingAuthorization auth = new SiblingSequencingAuthorization(resolve(seq.parent),
-                                                                                                   resolve(seq.status),
-                                                                                                   resolve(seq.sibling),
-                                                                                                   resolve(seq.next),
-                                                                                                   model.getCurrentPrincipal()
-                                                                                                        .getPrincipal());
+                                                                                     resolve(seq.status),
+                                                                                     resolve(seq.sibling),
+                                                                                     resolve(seq.next),
+                                                                                     model.getCurrentPrincipal()
+                                                                                          .getPrincipal());
             em.persist(auth);
             workspace.add(auth);
         }

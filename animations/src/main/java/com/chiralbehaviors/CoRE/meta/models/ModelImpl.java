@@ -122,7 +122,7 @@ public class ModelImpl implements Model {
         attributeModel = new ExistentialModelImpl<Attribute>(this) {
             @Override
             protected ExistentialDomain domain() {
-                return ExistentialDomain.T;
+                return ExistentialDomain.Attribute;
             }
 
             @Override
@@ -133,7 +133,7 @@ public class ModelImpl implements Model {
         productModel = new ExistentialModelImpl<Product>(this) {
             @Override
             protected ExistentialDomain domain() {
-                return ExistentialDomain.P;
+                return ExistentialDomain.Product;
             }
 
             @Override
@@ -144,7 +144,7 @@ public class ModelImpl implements Model {
         intervalModel = new ExistentialModelImpl<Interval>(this) {
             @Override
             protected ExistentialDomain domain() {
-                return ExistentialDomain.I;
+                return ExistentialDomain.Interval;
             }
 
             @Override
@@ -155,7 +155,7 @@ public class ModelImpl implements Model {
         locationModel = new ExistentialModelImpl<Location>(this) {
             @Override
             protected ExistentialDomain domain() {
-                return ExistentialDomain.L;
+                return ExistentialDomain.Location;
             }
 
             @Override
@@ -166,7 +166,7 @@ public class ModelImpl implements Model {
         agencyModel = new ExistentialModelImpl<Agency>(this) {
             @Override
             protected ExistentialDomain domain() {
-                return ExistentialDomain.A;
+                return ExistentialDomain.Agency;
             }
 
             @Override
@@ -180,7 +180,7 @@ public class ModelImpl implements Model {
         unitModel = new ExistentialModelImpl<Unit>(this) {
             @Override
             protected ExistentialDomain domain() {
-                return ExistentialDomain.U;
+                return ExistentialDomain.Unit;
             }
 
             @Override

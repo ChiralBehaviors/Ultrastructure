@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.uuid.Generators;

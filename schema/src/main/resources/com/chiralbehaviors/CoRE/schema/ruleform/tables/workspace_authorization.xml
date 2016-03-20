@@ -13,7 +13,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="notes" type="TEXT" />
-            <column name="type" type="int">
+            <column name="type" type="reference_type">
                 <constraints nullable="false" />
             </column>
             <column name="updated_by" defaultValue= "'00000000-0000-0000-0000-000000000003'" type="uuid">

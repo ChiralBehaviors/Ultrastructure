@@ -67,7 +67,7 @@ public class RelationshipModelImpl extends ExistentialModelImpl<Relationship>
     @Override
     protected ExistentialDomain domain() {
         // TODO Auto-generated method stub
-        return ExistentialDomain.R;
+        return ExistentialDomain.Relationship;
     }
 
     /* (non-Javadoc)

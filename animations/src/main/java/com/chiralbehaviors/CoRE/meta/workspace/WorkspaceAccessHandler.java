@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.security.InvalidKeyException;
 
-import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 
 /**

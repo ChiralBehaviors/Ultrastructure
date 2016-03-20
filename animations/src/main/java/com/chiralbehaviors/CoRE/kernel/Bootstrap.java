@@ -26,17 +26,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.UUID;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import org.jooq.DSLContext;
+import org.jooq.util.postgres.PostgresDSL;
 
-import org.hibernate.internal.SessionImpl;
-
-import com.chiralbehaviors.CoRE.Ruleform;
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAgency;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownAttribute;
@@ -46,26 +45,17 @@ import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownRelationship;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownUnit;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.AgencyNetworkAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.Attribute;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.existential.domain.Interval;
-import com.chiralbehaviors.CoRE.existential.domain.Location;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
-import com.chiralbehaviors.CoRE.existential.domain.StatusCode;
-import com.chiralbehaviors.CoRE.existential.domain.Unit;
-import com.chiralbehaviors.CoRE.existential.domain.UnitNetworkAuthorization;
-import com.chiralbehaviors.CoRE.job.status.StatusCodeNetworkAuthorization;
-import com.chiralbehaviors.CoRE.location.LocationNetworkAuthorization;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.domain.Location;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.domain.Unit;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
-import com.chiralbehaviors.CoRE.product.ProductAttribute;
-import com.chiralbehaviors.CoRE.product.ProductNetworkAuthorization;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetworkAuthorization;
-import com.chiralbehaviors.CoRE.time.IntervalNetworkAuthorization;
-import com.chiralbehaviors.CoRE.workspace.WorkspaceAuthorization;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
@@ -75,7 +65,7 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 public class Bootstrap {
     public static void main(String[] argv) throws Exception {
         if (argv.length != 2) {
-            System.err.println("Usage: Bootstrap <jpa.properties> <output file>");
+            System.err.println("Usage: Bootstrap <db.properties> <output file>");
             System.exit(1);
         }
         Properties properties = new Properties();
@@ -83,29 +73,34 @@ public class Bootstrap {
             properties.load(is);
         }
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(WellKnownObject.CORE,
-                                                                          properties);
-        EntityManager em = emf.createEntityManager();
-        Bootstrap bootstrap = new Bootstrap(em);
+        Connection conn = DriverManager.getConnection((String) properties.get("url"),
+                                                      (String) properties.get("user"),
+                                                      (String) properties.get("password"));
+        conn.setAutoCommit(false);
+
+        DSLContext create = PostgresDSL.using(conn);
+        Bootstrap bootstrap = new Bootstrap(create);
         bootstrap.clear();
-        em.getTransaction()
-          .begin();
-        bootstrap.bootstrap();
-        em.getTransaction()
-          .commit();
+        create.transaction(config -> bootstrap.bootstrap());
         bootstrap.serialize(argv[1]);
-        em.close();
-        emf.close();
     }
 
-    private final Connection    connection;
-    private final EntityManager em;
+    private final Connection     connection;
+    private final RecordsFactory records;
+    private final DSLContext     create;
 
-    public Bootstrap(EntityManager em) throws SQLException {
-        connection = em.unwrap(SessionImpl.class)
-                       .connection();
+    public Bootstrap(DSLContext create) throws SQLException {
+        connection = create.configuration()
+                           .connectionProvider()
+                           .acquire();
         connection.setAutoCommit(false);
-        this.em = em;
+        records = new RecordsFactory() {
+            @Override
+            public DSLContext create() {
+                return create;
+            }
+        };
+        this.create = create;
     }
 
     public void bootstrap() throws SQLException, IOException {
@@ -134,15 +129,11 @@ public class Bootstrap {
             insert(wko);
         }
         connection.commit();
-        em.getTransaction()
-          .commit();
-        em.getTransaction()
-          .begin();
         constructKernelWorkspace();
     }
 
     public void clear() throws SQLException {
-        KernelUtil.clear(em);
+        KernelUtil.clear(create);
     }
 
     private void constructKernelWorkspace() throws IOException, SQLException {
@@ -159,35 +150,27 @@ public class Bootstrap {
         populateStatusCodes(core, kernelWorkspace);
         populateUnits(core, kernelWorkspace);
         populateAnyFacets(core, kernelWorkspace);
-        em.getTransaction()
-          .commit();
+        connection.commit();
 
         // Ain Soph
-        ModelImpl model = new ModelImpl(em.getEntityManagerFactory());
-        model.getDSLContext()
-             .getTransaction()
-             .begin();
+        ModelImpl model = new ModelImpl(create);
 
         new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
                               model).initialize()
                                     .load(kernelWorkspace);
-        ProductAttribute attributeValue = (ProductAttribute) model.getProductModel()
-                                                                  .getAttributeValue(kernelWorkspace,
-                                                                                     model.getKernel()
-                                                                                          .getIRI());
-        attributeValue.setValue(Ruleform.KERNEL_IRI);
-        model.getProductModel()
+        ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
+                                                         .getAttributeValue(kernelWorkspace,
+                                                                            model.getKernel()
+                                                                                 .getIRI());
+        model.getPhantasmModel()
+             .setValue(attributeValue, WellKnownObject.KERNEL_IRI);
+        model.getPhantasmModel()
              .setAttributeValue(attributeValue);
-        model.getDSLContext()
-             .getTransaction()
-             .commit();
+        connection.commit();
 
-        model.getDSLContext()
-             .close();
+        model.close();
 
         // Ain Soph Aur
-        em.getTransaction()
-          .begin();
 
     }
 
@@ -197,7 +180,7 @@ public class Bootstrap {
      * @return the {@link Agency} corresponding to the well known object
      */
     private Agency find(WellKnownAgency wko) {
-        return em.find(Agency.class, wko.id());
+        return records.resolve(wko.id());
     }
 
     /**
@@ -206,11 +189,11 @@ public class Bootstrap {
      * @return the {@link Attribute} corresponding to the well known object
      */
     private Attribute find(WellKnownAttribute wko) {
-        return em.find(Attribute.class, wko.id());
+        return records.resolve(wko.id());
     }
 
     private Interval find(WellKnownInterval wko) {
-        return em.find(Interval.class, wko.id());
+        return records.resolve(wko.id());
     }
 
     /**
@@ -219,7 +202,7 @@ public class Bootstrap {
      * @return the {@link Location} corresponding to the well known object
      */
     private Location find(WellKnownLocation wko) {
-        return em.find(Location.class, wko.id());
+        return records.resolve(wko.id());
     }
 
     /**
@@ -228,7 +211,7 @@ public class Bootstrap {
      * @return the {@link Product} corresponding to the well known object
      */
     private Product find(WellKnownProduct wko) {
-        return em.find(Product.class, wko.id());
+        return records.resolve(wko.id());
     }
 
     /**
@@ -237,7 +220,7 @@ public class Bootstrap {
      * @return the {@link Relationship} corresponding to the well known object
      */
     private Relationship find(WellKnownRelationship wko) {
-        return em.find(Relationship.class, wko.id());
+        return records.resolve(wko.id());
     }
 
     /**
@@ -246,11 +229,11 @@ public class Bootstrap {
      * @return the {@link StatusCode} corresponding to the well known object
      */
     private StatusCode find(WellKnownStatusCode wko) {
-        return em.find(StatusCode.class, wko.id());
+        return records.resolve(wko.id());
     }
 
     private Unit find(WellKnownUnit wko) {
-        return em.find(Unit.class, wko.id());
+        return records.resolve(wko.id());
     }
 
     private void insert(WellKnownAttribute wko) throws SQLException {
@@ -351,20 +334,20 @@ public class Bootstrap {
         }
     }
 
-    private void populate(Ruleform ruleform, Agency core,
+    private void populate(WellKnownObject wko, Agency core,
                           Product kernelWorkspace) {
-        em.persist(new WorkspaceAuthorization(ruleform, kernelWorkspace, core,
-                                              em));
+        records.newWorkspaceAuthorization(kernelWorkspace, wko.id(), core)
+               .insert();
     }
 
-    private void populate(String key, Ruleform ruleform, Agency core,
+    private void populate(String key, UUID referece, Agency core,
                           Product kernelWorkspace) {
-        em.persist(new WorkspaceAuthorization(key, ruleform, kernelWorkspace,
-                                              core, em));
+        records.newWorkspaceAuthorization(key, referece, kernelWorkspace, core)
+               .insert();
     }
 
     private void populateAgencies(Agency core, Product kernelWorkspace) {
-        populate("AnyAgency", find(WellKnownAgency.ANY), core, kernelWorkspace);
+        populate("AnyAgency", WellKnownAgency.ANY, core, kernelWorkspace);
         populate("CopyAgency", find(WellKnownAgency.COPY), core,
                  kernelWorkspace);
         populate("Core", find(WellKnownAgency.CORE), core, kernelWorkspace);
@@ -609,7 +592,8 @@ public class Bootstrap {
 
     private void serialize(String fileName) throws IOException {
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
-        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(kernelWorkspace, em);
+        WorkspaceSnapshot snapshot = new WorkspaceSnapshot(kernelWorkspace,
+                                                           create);
         try (FileOutputStream os = new FileOutputStream(new File(fileName))) {
             snapshot.serializeTo(os);
         }

@@ -54,6 +54,7 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
@@ -81,16 +82,6 @@ import com.fasterxml.uuid.NoArgGenerator;
  *
  */
 public interface RecordsFactory {
-    public static enum ReferenceType {
-        AGENCY_EXISTENTIAL_GROUPING, CHILD_SEQUENCING_AUTHORIZATION,
-        EXISTENTIAL, EXISTENTIAL_ATTRIBUTE, EXISTENTIAL_ATTRIBUTE_AUTHORIZATION,
-        EXISTENTIAL_NETWORK, EXISTENTIAL_NETWORK_ATTRIBUTE,
-        EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION,
-        EXISTENTIAL_NETWORK_AUTHORIZATION, JOB, JOB_CHRONOLOGY, META_PROTOCOL,
-        NETWORK_INFERENCE, PARENT_SEQUENCING_AUTHORIZATION, PROTOCOL,
-        SELF_SEQUENCING_AUTHORIZATION, SIBLING_SEQUENCING_AUTHORIZATION,
-        STATUS_CODE_SEQUENCING, WORKSPACE_AUTHORIZATION;
-    }
 
     static final NoArgGenerator GENERATOR = Generators.timeBasedGenerator();
 
@@ -122,7 +113,7 @@ public interface RecordsFactory {
     default Agency newAgency() {
         Agency record = create().newRecord(EXISTENTIAL)
                                 .into(Agency.class);
-        record.setDomain(ExistentialDomain.A);
+        record.setDomain(ExistentialDomain.Agency);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -152,7 +143,7 @@ public interface RecordsFactory {
     default Attribute newAttribute() {
         Attribute record = create().newRecord(EXISTENTIAL)
                                    .into(Attribute.class);
-        record.setDomain(ExistentialDomain.T);
+        record.setDomain(ExistentialDomain.Attribute);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -166,28 +157,28 @@ public interface RecordsFactory {
     default ExistentialRuleform newExistential(ExistentialDomain domain) {
         Class<? extends ExistentialRecord> existential;
         switch (domain) {
-            case A:
+            case Agency:
                 existential = Agency.class;
                 break;
-            case I:
+            case Interval:
                 existential = Interval.class;
                 break;
-            case L:
+            case Location:
                 existential = Location.class;
                 break;
-            case P:
+            case Product:
                 existential = Product.class;
                 break;
-            case R:
+            case Relationship:
                 existential = Relationship.class;
                 break;
-            case S:
+            case StatusCode:
                 existential = StatusCode.class;
                 break;
-            case T:
+            case Attribute:
                 existential = Attribute.class;
                 break;
-            case U:
+            case Unit:
                 existential = Unit.class;
                 break;
             default:
@@ -253,7 +244,7 @@ public interface RecordsFactory {
 
     default ExistentialRecord newInterval() {
         ExistentialRecord record = create().newRecord(EXISTENTIAL);
-        record.setDomain(ExistentialDomain.I);
+        record.setDomain(ExistentialDomain.Interval);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -272,7 +263,7 @@ public interface RecordsFactory {
 
     default ExistentialRecord newLocation() {
         ExistentialRecord record = create().newRecord(EXISTENTIAL);
-        record.setDomain(ExistentialDomain.L);
+        record.setDomain(ExistentialDomain.Location);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -298,7 +289,7 @@ public interface RecordsFactory {
     default Product newProduct() {
         Product record = create().newRecord(EXISTENTIAL)
                                  .into(Product.class);
-        record.setDomain(ExistentialDomain.P);
+        record.setDomain(ExistentialDomain.Product);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -328,7 +319,7 @@ public interface RecordsFactory {
     default Relationship newRelationship() {
         Relationship record = create().newRecord(EXISTENTIAL)
                                       .into(Relationship.class);
-        record.setDomain(ExistentialDomain.R);
+        record.setDomain(ExistentialDomain.Relationship);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -384,7 +375,7 @@ public interface RecordsFactory {
     default StatusCode newStatusCode() {
         StatusCode record = create().newRecord(EXISTENTIAL)
                                     .into(StatusCode.class);
-        record.setDomain(ExistentialDomain.S);
+        record.setDomain(ExistentialDomain.StatusCode);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -416,7 +407,7 @@ public interface RecordsFactory {
     default Unit newUnit() {
         Unit record = create().newRecord(EXISTENTIAL)
                               .into(Unit.class);
-        record.setDomain(ExistentialDomain.U);
+        record.setDomain(ExistentialDomain.Unit);
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -428,13 +419,166 @@ public interface RecordsFactory {
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   AgencyExistentialGroupingRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Agency_Existential_Grouping,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ChildSequencingAuthorizationRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Child_Sequencing_Authorization,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ExistentialAttributeAuthorizationRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Attribute_Authorization,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ExistentialAttributeRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Attribute, updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ExistentialNetworkAttributeAuthorizationRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Network_Attribute_Authorization,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ExistentialNetworkAttributeRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Network_Attribute,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ExistentialNetworkAuthorizationRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Network_Authorization,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ExistentialNetworkRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Network, updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ExistentialRuleform existential,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, existential.getId(),
+                                         ReferenceType.Existential, updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   JobChronologyRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Job_Chronology,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   JobRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Job, updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   MetaProtocolRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Meta_Protocol,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   NetworkInferenceRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Network_Inference,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ParentSequencingAuthorizationRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Parent_Sequencing_Authorization,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   ProtocolRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Protocol, updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   SelfSequencingAuthorizationRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Self_Sequencing_Authorization,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   SiblingSequencingAuthorizationRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Sibling_Sequencing_Authorization,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+                                                                   StatusCodeSequencingRecord record,
+                                                                   Agency updatedBy) {
+        return newWorkspaceAuthorization(definingProduct, record.getId(),
+                                         ReferenceType.Status_Code_Sequencing,
+                                         updatedBy);
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    UUID reference,
+                                                                   ReferenceType referenceType,
                                                                    Agency updatedBy) {
         WorkspaceAuthorizationRecord record = newWorkspaceAuthorization();
         record.setDefiningProduct(definingProduct.getId());
         record.setReference(reference);
         record.setUpdatedBy(updatedBy.getId());
-        record.setType(ReferenceType.EXISTENTIAL.ordinal());
+        record.setType(referenceType);
+        return record;
+    }
+
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   UUID referece,
+                                                                   ReferenceType referenceType,
+                                                                   Product definingProduct,
+                                                                   Agency updatedBy) {
+        WorkspaceAuthorizationRecord record = newWorkspaceAuthorization(definingProduct,
+                                                                        referece,
+                                                                        referenceType,
+                                                                        updatedBy);
+        record.setKey(key);
         return record;
     }
 
@@ -443,21 +587,21 @@ public interface RecordsFactory {
             return null;
         }
         switch (record.getDomain()) {
-            case A:
+            case Agency:
                 return record.into(Agency.class);
-            case I:
+            case Interval:
                 return record.into(Interval.class);
-            case L:
+            case Location:
                 return record.into(Location.class);
-            case P:
+            case Product:
                 return record.into(Product.class);
-            case R:
+            case Relationship:
                 return record.into(Relationship.class);
-            case S:
+            case StatusCode:
                 return record.into(StatusCode.class);
-            case T:
+            case Attribute:
                 return record.into(Attribute.class);
-            case U:
+            case Unit:
                 return record.into(Unit.class);
             default:
                 throw new IllegalArgumentException(String.format("Unknown domain %s",
@@ -474,21 +618,21 @@ public interface RecordsFactory {
             return null;
         }
         switch (record.getDomain()) {
-            case A:
+            case Agency:
                 return (T) record.into(Agency.class);
-            case I:
+            case Interval:
                 return (T) record.into(Interval.class);
-            case L:
+            case Location:
                 return (T) record.into(Location.class);
-            case P:
+            case Product:
                 return (T) record.into(Product.class);
-            case R:
+            case Relationship:
                 return (T) record.into(Relationship.class);
-            case S:
+            case StatusCode:
                 return (T) record.into(StatusCode.class);
-            case T:
+            case Attribute:
                 return (T) record.into(Attribute.class);
-            case U:
+            case Unit:
                 return (T) record.into(Unit.class);
             default:
                 throw new IllegalArgumentException(String.format("Unknown domain %s",

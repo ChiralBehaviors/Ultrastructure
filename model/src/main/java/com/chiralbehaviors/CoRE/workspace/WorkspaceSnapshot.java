@@ -22,7 +22,11 @@ package com.chiralbehaviors.CoRE.workspace;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -31,10 +35,15 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.TableRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
+import com.chiralbehaviors.CoRE.json.CoREModule;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hellblazer.utils.collections.OaHashSet;
 
 /**
@@ -42,6 +51,7 @@ import com.hellblazer.utils.collections.OaHashSet;
  *
  */
 public class WorkspaceSnapshot {
+    private static final Logger log = LoggerFactory.getLogger(WorkspaceSnapshot.class);
 
     public static Result<WorkspaceAuthorizationRecord> getAuthorizations(UUID definingProduct,
                                                                          DSLContext create) {
@@ -50,7 +60,53 @@ public class WorkspaceSnapshot {
                      .fetch();
     }
 
+    public static void load(DSLContext create,
+                            List<URL> resources) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new CoREModule());
+        for (URL resource : resources) {
+            WorkspaceSnapshot workspace;
+            try (InputStream is = resource.openStream();) {
+                workspace = mapper.readValue(is, WorkspaceSnapshot.class);
+            } catch (IOException e) {
+                log.warn("Unable to load workspace: {}",
+                         resource.toExternalForm(), e);
+                throw e;
+            }
+            Product definingProduct = workspace.getDefiningProduct();
+            Product existing = new RecordsFactory() {
+
+                @Override
+                public DSLContext create() {
+                    return create;
+                }
+            }.resolve(definingProduct.getId());
+            if (existing == null) {
+                log.info("Creating workspace [{}] version: {} from: {}",
+                         definingProduct.getName(),
+                         definingProduct.getVersion(),
+                         resource.toExternalForm());
+                workspace.load(create);
+            } else if (existing.getVersion() < definingProduct.getVersion()) {
+                log.info("Updating workspace [{}] from version:{} to version: {} from: {}",
+                         definingProduct.getName(), existing.getVersion(),
+                         definingProduct.getVersion(),
+                         resource.toExternalForm());
+                workspace.load(create);
+            } else {
+                log.info("Not updating workspace [{}] existing version: {} is higher than version: {} from: {}",
+                         definingProduct.getName(), existing.getVersion(),
+                         definingProduct.getVersion(),
+                         resource.toExternalForm());
+            }
+        }
+    }
+    public static void load(DSLContext create, URL resource) throws IOException {
+        load(create, Collections.singletonList(resource));
+    }
+
     private Product      definingProduct;
+
     private List<Record> records;
 
     public WorkspaceSnapshot() {

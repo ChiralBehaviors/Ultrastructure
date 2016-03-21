@@ -20,7 +20,7 @@
 
 package com.chiralbehaviors.CoRE.security;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
@@ -40,7 +40,7 @@ public class AuthorizedPrincipal implements Cloneable {
      * @param principal
      */
     public AuthorizedPrincipal(Agency principal) {
-        this(principal, Collections.<Agency> emptyList());
+        this(principal, new ArrayList<>());
     }
 
     /**

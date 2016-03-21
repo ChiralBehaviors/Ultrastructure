@@ -258,6 +258,7 @@ public interface RecordsFactory {
 
     default FacetRecord newFacet(Agency updatedBy) {
         FacetRecord record = new FacetRecord();
+        record.setId(GENERATOR.generate());
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
@@ -526,13 +527,6 @@ public interface RecordsFactory {
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
-                                                                   ExistentialRecord record,
-                                                                   Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Existential, updatedBy);
-    }
-
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ExistentialRuleform existential,
                                                                    Agency updatedBy) {
         return newWorkspaceAuthorization(definingProduct, existential.getId(),
@@ -621,6 +615,7 @@ public interface RecordsFactory {
                                                                    ReferenceType referenceType,
                                                                    Agency updatedBy) {
         WorkspaceAuthorizationRecord record = newWorkspaceAuthorization();
+        record.setId(GENERATOR.generate());
         record.setDefiningProduct(definingProduct.getId());
         record.setReference(reference);
         record.setUpdatedBy(updatedBy.getId());

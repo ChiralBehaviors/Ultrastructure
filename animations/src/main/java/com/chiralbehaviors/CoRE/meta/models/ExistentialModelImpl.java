@@ -55,7 +55,7 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
 
     public ExistentialModelImpl(Model model) {
         this.model = model;
-        this.create = model.getDSLContext();
+        this.create = model.create();
         this.kernel = model.getKernel();
         factory = new RecordsFactory() {
             @Override

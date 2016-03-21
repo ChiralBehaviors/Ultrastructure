@@ -61,7 +61,7 @@ public class TransactionalResource {
                                                             ruleformType),
                                               Status.NOT_FOUND);
         }
-        Relationship classifier = readOnlyModel.getDSLContext()
+        Relationship classifier = readOnlyModel.create()
                                                .find(Relationship.class,
                                                      relationship);
         if (classifier == null) {
@@ -70,7 +70,7 @@ public class TransactionalResource {
                                               Status.NOT_FOUND);
         }
         classifier = Ruleform.initializeAndUnproxy(classifier);
-        ExistentialRuleform classification = readOnlyModel.getDSLContext()
+        ExistentialRuleform classification = readOnlyModel.create()
                                                           .find(ruleformClass,
                                                                 ruleform);
         if (classification == null) {
@@ -100,7 +100,7 @@ public class TransactionalResource {
     protected <T> T perform(AuthorizedPrincipal principal,
                             Function<Model, T> txn) throws WebApplicationException {
         Model model = new ModelImpl(emf);
-        EntityManager em = model.getDSLContext();
+        EntityManager em = model.create();
         em.getTransaction()
           .begin();
         if (principal == null) {
@@ -134,7 +134,7 @@ public class TransactionalResource {
     protected <T> T readOnly(AuthorizedPrincipal principal,
                              Function<Model, T> txn) throws WebApplicationException {
         Model model = new ModelImpl(emf);
-        EntityManager em = model.getDSLContext();
+        EntityManager em = model.create();
         em.getTransaction()
           .begin();
         em.getTransaction()

@@ -75,7 +75,7 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     public PhantasmModelImpl(Model model) {
         this.model = model;
-        this.create = model.getDSLContext();
+        this.create = model.create();
     }
 
     @Override

@@ -194,7 +194,7 @@ public class WorkspaceResource extends TransactionalResource {
     public WorkspaceSnapshot getWorkspace(@Auth(required = false) AuthorizedPrincipal principal,
                                           @PathParam("workspace") UUID wsp) {
         return readOnly(principal, readOnlyModel -> {
-            EntityManager em = readOnlyModel.getDSLContext();
+            EntityManager em = readOnlyModel.create();
             Product workspace = em.find(Product.class, wsp);
             if (workspace == null) {
                 throw new WebApplicationException(String.format("Workspace not found: %s",

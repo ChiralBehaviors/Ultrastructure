@@ -255,7 +255,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public Product getDefiningProduct() {
         if (definingProductCache == null) {
-            definingProductCache = model.getDSLContext()
+            definingProductCache = model.create()
                                         .getReference(Product.class,
                                                       definingProductId);
         }

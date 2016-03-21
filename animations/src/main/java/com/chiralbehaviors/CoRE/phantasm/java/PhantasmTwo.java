@@ -97,7 +97,7 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
     }
 
     public Agency getUpdatedBy() {
-        return model.getDSLContext()
+        return model.create()
                     .selectFrom(EXISTENTIAL)
                     .where(EXISTENTIAL.ID.equal(ruleform.getUpdatedBy()))
                     .fetchOne()

@@ -207,7 +207,7 @@ public interface Model extends AutoCloseable {
      *
      * @return
      */
-    DSLContext getDSLContext();
+    DSLContext create();
 
     /**
      * @return the Interval model

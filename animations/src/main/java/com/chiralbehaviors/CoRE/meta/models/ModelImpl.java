@@ -289,7 +289,7 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public DSLContext getDSLContext() {
+    public DSLContext create() {
         return create;
     }
 

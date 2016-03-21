@@ -241,7 +241,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
                                                                  .getAttributeAuthorizations(facet.facet,
                                                                                              false)) {
             visitor.visit(facet,
-                          new AttributeAuthorization(model.getDSLContext(),
+                          new AttributeAuthorization(model.create(),
                                                      auth),
                           WorkspacePresentation.toFieldName(model.getAttribute(auth.getAuthorizedAttribute())
                                                                  .getName()));
@@ -251,7 +251,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
     private void traverseNetworkAuths(Aspect facet,
                                       PhantasmVisitor<RuleForm> visitor) {
 
-        DSLContext create = model.getDSLContext();
+        DSLContext create = model.create();
         for (ExistentialNetworkAuthorizationRecord auth : model.getPhantasmModel()
                                                                .getNetworkAuthorizations(facet.facet,
                                                                                          false)) {

@@ -83,7 +83,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                                                           uuid,
                                                           facet.workspace()));
         }
-        return new Aspect(model.getDSLContext(), model.getPhantasmModel()
+        return new Aspect(model.create(), model.getPhantasmModel()
                                                       .getFacetDeclaration(classifier,
                                                                            classification));
     }

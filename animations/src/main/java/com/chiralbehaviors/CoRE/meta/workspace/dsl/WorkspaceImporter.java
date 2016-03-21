@@ -133,7 +133,7 @@ public class WorkspaceImporter {
     public WorkspaceImporter(WorkspacePresentation wsp, Model model) {
         this.wsp = wsp;
         this.model = model;
-        this.em = model.getDSLContext();
+        this.em = model.create();
     }
 
     public WorkspaceAccessor getWorkspace() {
@@ -258,7 +258,7 @@ public class WorkspaceImporter {
         if (facet.description != null) {
             authorization.setNotes(WorkspacePresentation.stripQuotes(facet.name.getText()));
         }
-        model.getDSLContext()
+        model.create()
              .persist(authorization);
         workspace.add(authorization);
         List<ClassifiedAttributeContext> classifiedAttributes = facet.classifiedAttribute();
@@ -273,7 +273,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getDSLContext()
+            model.create()
                  .persist(auth);
             workspace.add(auth);
 
@@ -304,7 +304,7 @@ public class WorkspaceImporter {
             if (attribute.defaultValue != null) {
                 auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.getDSLContext()
+            model.create()
                  .persist(auth);
             workspace.add(auth);
         });
@@ -812,7 +812,7 @@ public class WorkspaceImporter {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = WorkspacePresentation.stripQuotes(w.uri.getText());
             UUID uuid = WorkspaceAccessor.uuidOf(uri);
-            Product imported = model.getDSLContext()
+            Product imported = model.create()
                                     .find(Product.class, uuid);
             if (imported == null) {
                 throw new IllegalStateException(String.format("the import is not found: %s:%s",

@@ -665,7 +665,7 @@ public class PhantasmCRUD {
     }
 
     private ExistentialRecord existential(String id) {
-        return model.getDSLContext()
+        return model.create()
                     .selectFrom(EXISTENTIAL)
                     .where(EXISTENTIAL.ID.eq(UUID.fromString(id)))
                     .fetchOne();

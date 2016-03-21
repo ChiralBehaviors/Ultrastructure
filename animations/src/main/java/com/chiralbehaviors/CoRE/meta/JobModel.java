@@ -93,15 +93,11 @@ public interface JobModel {
      * currentStatus for the service
      *
      * @param job
-     * @param service
-     * @param currentStatus
      * @param nextStatus
      * @return
      * @throws SQLException
      */
-    void ensureNextStateIsValid(JobRecord job, Product service,
-                                StatusCode currentStatus,
-                                StatusCode nextStatus) throws SQLException;
+    void ensureNextStateIsValid(JobRecord job, StatusCode nextStatus) throws SQLException;
 
     /**
      * @param parent

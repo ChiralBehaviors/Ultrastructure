@@ -274,7 +274,7 @@ public class Animations {
     }
 
     public EntityManager getEm() {
-        return model.getDSLContext();
+        return model.create();
     }
 
     /**

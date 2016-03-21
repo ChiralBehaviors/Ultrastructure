@@ -59,7 +59,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         File version2File = new File(TARGET_CLASSES_THING_2_JSON);
         File version2_1File = new File(TARGET_CLASSES_THING_1_2_JSON);
         try (Model myModel = new ModelImpl(emf)) {
-            EntityManager myEm = myModel.getDSLContext();
+            EntityManager myEm = myModel.create();
             myEm.getTransaction()
                 .begin();
             WorkspaceImporter importer;
@@ -80,7 +80,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         }
 
         try (Model myModel = new ModelImpl(emf)) {
-            EntityManager myEm = myModel.getDSLContext();
+            EntityManager myEm = myModel.create();
             myEm.getTransaction()
                 .begin();
             WorkspaceSnapshot.load(myEm, Arrays.asList(version1File.toURI()
@@ -104,7 +104,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         }
 
         try (Model myModel = new ModelImpl(emf)) {
-            EntityManager myEm = myModel.getDSLContext();
+            EntityManager myEm = myModel.create();
             myEm.getTransaction()
                 .begin();
 
@@ -150,7 +150,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         }
 
         try (Model myModel = new ModelImpl(emf)) {
-            EntityManager myEm = myModel.getDSLContext();
+            EntityManager myEm = myModel.create();
             myEm.getTransaction()
                 .begin();
 
@@ -182,15 +182,15 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
 
         Thing1 thing1 = model.construct(Thing1.class, "Freddy",
                                         "He always comes back");
-        model.getDSLContext()
+        model.create()
              .flush();
-        model.getDSLContext()
+        model.create()
              .clear();
         model.getWorkspaceModel()
              .unload(definingProduct);
-        model.getDSLContext()
+        model.create()
              .flush();
-        model.getDSLContext()
+        model.create()
              .clear();
         try {
             assertNull(model.wrap(Thing1.class, thing1.getRuleform()));

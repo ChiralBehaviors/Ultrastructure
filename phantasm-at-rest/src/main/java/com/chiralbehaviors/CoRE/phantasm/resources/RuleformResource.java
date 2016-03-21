@@ -118,7 +118,7 @@ public class RuleformResource extends TransactionalResource {
                                            @PathParam("ruleform") String ruleform,
                                            @PathParam("instance") UUID instance) {
         return readOnly(principal, readOnlyModel -> {
-            Ruleform ruleformInstance = Ruleform.initializeAndUnproxy(readOnlyModel.getDSLContext()
+            Ruleform ruleformInstance = Ruleform.initializeAndUnproxy(readOnlyModel.create()
                                                                                    .find(entityMap.get(ruleform),
                                                                                          instance));
             if (ruleformInstance == null) {

@@ -196,7 +196,7 @@ public class GraphQlResource extends TransactionalResource {
 
             @SuppressWarnings("rawtypes")
             PhantasmCRUD crud = new PhantasmCRUD(model);
-            Product definingProduct = model.getDSLContext()
+            Product definingProduct = model.create()
                                            .find(Product.class, uuid);
             if (!model.getNetworkedModel(definingProduct)
                       .checkCapability(definingProduct, crud.getREAD())

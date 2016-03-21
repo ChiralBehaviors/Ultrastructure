@@ -32,6 +32,7 @@ import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
 
 /**
@@ -50,7 +51,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     @Override
     public WorkspaceScope createWorkspace(Product definingProduct,
                                           Agency updatedBy) {
-        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
+        EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
                                                                         model);
         workspace.add(definingProduct);
         Kernel kernel = model.getKernel();

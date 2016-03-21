@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.domain;
 
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownInterval;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 
 /**
@@ -35,4 +36,39 @@ public class Interval extends ExistentialRecord implements ExistentialRuleform {
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isAny()
+     */
+    @Override
+    public boolean isAny() {
+        return WellKnownInterval.ANY.id()
+                                    .equals(getId());
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isCopy()
+     */
+    @Override
+    public boolean isCopy() {
+        return WellKnownInterval.COPY.id()
+                                     .equals(getId());
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownInterval.NOT_APPLICABLE.id()
+                                               .equals(getId());
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isSame()
+     */
+    @Override
+    public boolean isSame() {
+        return WellKnownInterval.SAME.id()
+                                     .equals(getId());
+    }
 }

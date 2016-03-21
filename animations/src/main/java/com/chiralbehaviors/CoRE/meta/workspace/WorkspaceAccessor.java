@@ -63,8 +63,4 @@ public interface WorkspaceAccessor {
     WorkspaceScope getScope();
 
     WorkspaceSnapshot getSnapshot();
-
-    void replaceFrom(EntityManager em);
-
-    void retarget(EntityManager em);
 }

@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.chiralbehaviors.CoRE.existential.domain.Product;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
+import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 
@@ -54,7 +55,7 @@ public class TestImport extends AbstractModelTest {
         }
 
         em.flush();
-        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
+        EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
                                                                         model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
@@ -76,7 +77,7 @@ public class TestImport extends AbstractModelTest {
 
         WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
                                                                 model);
-        DatabaseBackedWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
+        EditableWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
                                                                                 .getDefiningProduct(),
                                                                         model);
         assertNotNull(workspace);

@@ -32,7 +32,6 @@ import javax.management.openmbean.InvalidKeyException;
 import org.antlr.v4.runtime.Token;
 import org.jooq.DSLContext;
 
-import com.chiralbehaviors.CoRE.Cardinality;
 import com.chiralbehaviors.CoRE.ValueType;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
@@ -44,6 +43,7 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
 import com.chiralbehaviors.CoRE.jooq.tables.ChildSequencingAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.MetaProtocol;
 import com.chiralbehaviors.CoRE.jooq.tables.ParentSequencingAuthorization;
@@ -51,14 +51,17 @@ import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
 import com.chiralbehaviors.CoRE.jooq.tables.SelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.SiblingSequencingAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.meta.Aspect;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.models.Inference;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
@@ -323,12 +326,14 @@ public class WorkspaceImporter {
                                       model.getCurrentPrincipal()
                                            .getPrincipal());
         workspace = (EditableWorkspace) scope.getWorkspace();
-        ProductAttribute attributeValue = (ProductAttribute) model.getProductModel()
-                                                                  .getAttributeValue(definingProduct,
-                                                                                     model.getKernel()
-                                                                                          .getIRI());
-        attributeValue.setValue(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
-        model.getProductModel()
+        ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
+                                                         .getAttributeValue(definingProduct,
+                                                                            model.getKernel()
+                                                                                 .getIRI());
+        model.getPhantasmModel()
+             .setValue(attributeValue,
+                       WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().uri.getText()));
+        model.getPhantasmModel()
              .setAttributeValue(attributeValue);
         loadWorkspace();
         return workspace;
@@ -336,26 +341,27 @@ public class WorkspaceImporter {
 
     private Product createWorkspaceProduct() {
         Token description = wsp.getWorkspaceDefinition().description;
-        Product workspaceProduct = new Product(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
-                                               description == null ? null
-                                                                   : WorkspacePresentation.stripQuotes(description.getText()),
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
+        Product workspaceProduct = model.records()
+                                        .newProduct(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
+                                                    description == null ? null
+                                                                        : WorkspacePresentation.stripQuotes(description.getText()),
+                                                    model.getCurrentPrincipal()
+                                                         .getPrincipal());
         workspaceProduct.setId(uuid);
         return workspaceProduct;
     }
 
-    private void defineFacetClassificationss(@SuppressWarnings("rawtypes") PhantasmModel networkedModel,
+    private void defineFacetClassificationss(ExistentialModel<?> networkedModel,
                                              List<FacetContext> facets) {
         for (FacetContext facet : facets) {
             if (facet.classification.namespace == null) {
                 if (scope.lookup(facet.classification.member.getText()) == null) {
                     @SuppressWarnings("rawtypes")
-                    ExistentialRuleform erf = networkedModel.create(facet.name == null ? facet.classification.member.getText()
-                                                                                       : WorkspacePresentation.stripQuotes(facet.name.getText()),
-                                                                    facet.description == null ? null
-                                                                                              : WorkspacePresentation.stripQuotes(facet.description.getText()));
-                    em.persist(erf);
+                    ExistentialRecord erf = (ExistentialRecord) networkedModel.create(facet.name == null ? facet.classification.member.getText()
+                                                                                                         : WorkspacePresentation.stripQuotes(facet.name.getText()),
+                                                                                      facet.description == null ? null
+                                                                                                                : WorkspacePresentation.stripQuotes(facet.description.getText()));
+                    erf.insert();
                     workspace.put(facet.classification.member.getText(), erf);
                 }
             }

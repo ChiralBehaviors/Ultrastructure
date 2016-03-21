@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.domain;
 
+import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownUnit;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 
 /**
@@ -35,4 +36,39 @@ public class Unit extends ExistentialRecord implements ExistentialRuleform {
         return this;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isAny()
+     */
+    @Override
+    public boolean isAny() {
+        return WellKnownUnit.ANY.id()
+                                .equals(getId());
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isCopy()
+     */
+    @Override
+    public boolean isCopy() {
+        return WellKnownUnit.COPY.id()
+                                 .equals(getId());
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isNotApplicable()
+     */
+    @Override
+    public boolean isNotApplicable() {
+        return WellKnownUnit.NOT_APPLICABLE.id()
+                                           .equals(getId());
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.domain.ExistentialRuleform#isSame()
+     */
+    @Override
+    public boolean isSame() {
+        return WellKnownUnit.SAME.id()
+                                 .equals(getId());
+    }
 }

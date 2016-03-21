@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -20,9 +20,11 @@
 
 package com.chiralbehaviors.CoRE.meta.workspace;
 
+import java.util.List;
+
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
@@ -32,6 +34,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeR
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
@@ -39,6 +42,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 
 /**
@@ -82,7 +86,46 @@ public interface EditableWorkspace extends WorkspaceAccessor {
 
     void addImport(String namespace, Product workspace);
 
-    <T extends Ruleform> void put(String key, T ruleform);
+    <T> List<T> getCollection(ReferenceType type);
+
+    void put(String key, AgencyExistentialGroupingRecord ruleform);
+
+    void put(String key, ChildSequencingAuthorizationRecord ruleform);
+
+    void put(String key, ExistentialAttributeAuthorizationRecord ruleform);
+
+    void put(String key, ExistentialAttributeRecord ruleform);
+
+    void put(String key,
+             ExistentialNetworkAttributeAuthorizationRecord ruleform);
+
+    void put(String key, ExistentialNetworkAttributeRecord ruleform);
+
+    void put(String key, ExistentialNetworkAuthorizationRecord ruleform);
+
+    void put(String key, ExistentialNetworkRecord ruleform);
+
+    void put(String key, ExistentialRecord ruleform);
+
+    void put(String key, FacetRecord ruleform);
+
+    void put(String key, JobChronologyRecord ruleform);
+
+    void put(String key, JobRecord ruleform);
+
+    void put(String key, MetaProtocolRecord ruleform);
+
+    void put(String key, NetworkInferenceRecord ruleform);
+
+    void put(String key, ParentSequencingAuthorizationRecord ruleform);
+
+    void put(String key, ProtocolRecord ruleform);
+
+    void put(String key, SelfSequencingAuthorizationRecord ruleform);
+
+    void put(String key, SiblingSequencingAuthorizationRecord ruleform);
+
+    void put(String key, StatusCodeSequencingRecord ruleform);
 
     void removeImport(Product workspace, Agency updatedBy);
 }

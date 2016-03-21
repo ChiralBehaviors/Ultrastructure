@@ -22,6 +22,9 @@ package com.chiralbehaviors.CoRE.domain;
 
 import java.util.UUID;
 
+import org.jooq.Record;
+
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 
 /**
@@ -60,5 +63,28 @@ public interface ExistentialRuleform extends Phantasm {
     void setName(String name);
 
     void setNotes(String notes);
+
+    /**
+     * Yes, this is really intentional
+     * 
+     * @param record
+     * @return
+     */
+    default boolean equals(Record record) {
+        if (record instanceof ExistentialRecord) {
+            return equals((ExistentialRecord) record);
+        }
+        return false;
+    }
+
+    /**
+     * Yes, this is really intentional
+     * 
+     * @param record
+     * @return
+     */
+    default boolean equals(ExistentialRecord record) {
+        return record == null ? false : getId().equals(record.getId());
+    }
 
 }

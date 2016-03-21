@@ -29,7 +29,6 @@ import java.util.UUID;
 import javax.management.openmbean.InvalidKeyException;
 
 import org.antlr.v4.runtime.Token;
-import org.jooq.DSLContext;
 
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -111,10 +110,8 @@ public class WorkspaceImporter {
         });
     }
 
-    private final DSLContext            em;
     private final Model                 model;
     private WorkspaceScope              scope;
-
     private UUID                        uuid;
     private EditableWorkspace           workspace;
     private String                      workspaceUri;
@@ -129,7 +126,6 @@ public class WorkspaceImporter {
     public WorkspaceImporter(WorkspacePresentation wsp, Model model) {
         this.wsp = wsp;
         this.model = model;
-        this.em = model.create();
     }
 
     public WorkspaceAccessor getWorkspace() {
@@ -341,8 +337,6 @@ public class WorkspaceImporter {
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           record);
         }
-        defineFacetClassificationss(model.getExistentialModel(domain),
-                                    wsp.getAgencyFacets());
     }
 
     private void loadAttributes() {
@@ -419,6 +413,8 @@ public class WorkspaceImporter {
     }
 
     private void loadFacets() {
+
+        defineFacetClassifications();
         facets(wsp.getAgencyFacets());
         facets(wsp.getAttributeFacets());
         facets(wsp.getIntervalFacets());
@@ -427,6 +423,24 @@ public class WorkspaceImporter {
         facets(wsp.getRelationshipFacets());
         facets(wsp.getStatusCodeFacets());
         facets(wsp.getUnitFacets());
+    }
+
+    private void defineFacetClassifications() {
+        defineFacetClassificationss(model.getAgencyModel(),
+                                    wsp.getAgencyFacets());
+        defineFacetClassificationss(model.getAttributeModel(),
+                                    wsp.getAttributeFacets());
+        defineFacetClassificationss(model.getIntervalModel(),
+                                    wsp.getIntervalFacets());
+        defineFacetClassificationss(model.getLocationModel(),
+                                    wsp.getLocationFacets());
+        defineFacetClassificationss(model.getProductModel(),
+                                    wsp.getProductFacets());
+        defineFacetClassificationss(model.getRelationshipModel(),
+                                    wsp.getRelationshipFacets());
+        defineFacetClassificationss(model.getStatusCodeModel(),
+                                    wsp.getStatusCodeFacets());
+        defineFacetClassificationss(model.getUnitModel(), wsp.getUnitFacets());
     }
 
     private void loadInferences() {

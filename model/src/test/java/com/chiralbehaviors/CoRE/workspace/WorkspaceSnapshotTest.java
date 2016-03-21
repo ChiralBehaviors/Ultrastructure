@@ -85,10 +85,13 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                                           WorkspaceSnapshot.class);
         assertEquals(4, deserialized.getRecords()
                                     .size());
+
         assertTrue(deserialized.getRecords()
-                               .contains(pseudoScientist));
+                               .stream()
+                               .anyMatch(r -> pseudoScientist.equals(r)));
         assertTrue(deserialized.getRecords()
-                               .contains(definingProduct));
+                               .stream()
+                               .anyMatch(r -> definingProduct.equals(r)));
 
     }
 }

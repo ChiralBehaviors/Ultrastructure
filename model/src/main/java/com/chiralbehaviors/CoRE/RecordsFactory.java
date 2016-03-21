@@ -599,147 +599,210 @@ public interface RecordsFactory {
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    AgencyExistentialGroupingRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Agency_Existential_Grouping,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Agency_Existential_Grouping,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ChildSequencingAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Child_Sequencing_Authorization,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Child_Sequencing_Authorization,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ExistentialAttributeAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Attribute_Authorization,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Attribute_Authorization,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ExistentialAttributeRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Attribute, updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Attribute,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ExistentialNetworkAttributeAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Network_Attribute_Authorization,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Network_Attribute_Authorization,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ExistentialNetworkAttributeRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Network_Attribute,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Network_Attribute,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ExistentialNetworkAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Network_Authorization,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Network_Authorization,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ExistentialNetworkRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Network, updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Network,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
-                                                                   ExistentialRecord existential,
+                                                                   ExistentialRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, existential.getId(),
-                                         ReferenceType.Existential, updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Existential,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    FacetRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Facet, updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Facet,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    JobChronologyRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Job_Chronology,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Job_Chronology,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    JobRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Job, updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Job,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    MetaProtocolRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Meta_Protocol,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Meta_Protocol,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    NetworkInferenceRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Network_Inference,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Network_Inference,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ParentSequencingAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Parent_Sequencing_Authorization,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Parent_Sequencing_Authorization,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    ProtocolRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Protocol, updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Protocol,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    SelfSequencingAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Self_Sequencing_Authorization,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Self_Sequencing_Authorization,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    SiblingSequencingAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Sibling_Sequencing_Authorization,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Sibling_Sequencing_Authorization,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
                                                                    StatusCodeSequencingRecord record,
                                                                    Agency updatedBy) {
-        return newWorkspaceAuthorization(definingProduct, record.getId(),
-                                         ReferenceType.Status_Code_Sequencing,
-                                         updatedBy);
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+                                                                      record.getId(),
+                                                                      ReferenceType.Status_Code_Sequencing,
+                                                                      updatedBy);
+        record.setWorkspace(auth.getId());
+        return auth;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,

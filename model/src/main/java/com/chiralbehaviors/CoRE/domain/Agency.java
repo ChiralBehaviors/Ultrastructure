@@ -71,5 +71,4 @@ public class Agency extends ExistentialRecord implements ExistentialRuleform {
         return WellKnownAgency.SAME.id()
                                    .equals(getId());
     }
-
 }

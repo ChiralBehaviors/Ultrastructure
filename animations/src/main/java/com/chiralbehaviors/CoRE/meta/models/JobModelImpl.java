@@ -20,8 +20,10 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static com.chiralbehaviors.CoRE.jooq.Tables.*;
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
+import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
+import static com.chiralbehaviors.CoRE.jooq.Tables.META_PROTOCOL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.STATUS_CODE_SEQUENCING;
 import static java.lang.String.format;
 
@@ -46,7 +48,6 @@ import java.util.stream.Collectors;
 
 import javax.sql.rowset.Predicate;
 
-import org.jooq.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,8 +81,8 @@ import com.hellblazer.utils.Tuple;
  */
 public class JobModelImpl implements JobModel {
 
-    private static final Integer ZERO = Integer.valueOf(0);
     private static final Logger  log  = LoggerFactory.getLogger(JobModelImpl.class);
+    private static final Integer ZERO = Integer.valueOf(0);
 
     /**
      * Iterate through all SCCs in the graph, testing each one to see if there
@@ -204,19 +205,6 @@ public class JobModelImpl implements JobModel {
             throw new SQLException(String.format("'Cannot insert a job because parent %s is in a terminal state %s.'",
                                                  parent, parent.getStatus()));
         }
-    }
-
-    private boolean isTerminalState(UUID status, UUID service) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return !ZERO.equals(model.create()
-                                 .selectCount()
-                                 .from(Arrays.asList(seq))
-                                 .where(seq.CHILD.equal(status))
-                                 .andNotExists(model.create()
-                                                    .selectFrom(STATUS_CODE_SEQUENCING)
-                                                    .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                    .and(STATUS_CODE_SEQUENCING.PARENT.equal(seq.field(STATUS_CODE_SEQUENCING.CHILD))))
-                                 .and(STATUS_CODE_SEQUENCING.SERVICE.equal(service)));
     }
 
     @Override
@@ -790,7 +778,7 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<SiblingSequencingAuthorizationRecord> getSiblingActions(Product parent) {
-        S;
+        return null;
     }
 
     @Override
@@ -1428,6 +1416,19 @@ public class JobModelImpl implements JobModel {
                                cb.equal(root.get(NetworkRuleform_.relationship),
                                         relationship)));
         return inference;
+    }
+
+    private boolean isTerminalState(UUID status, UUID service) {
+        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
+        return !ZERO.equals(model.create()
+                                 .selectCount()
+                                 .from(Arrays.asList(seq))
+                                 .where(seq.CHILD.equal(status))
+                                 .andNotExists(model.create()
+                                                    .selectFrom(STATUS_CODE_SEQUENCING)
+                                                    .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
+                                                    .and(STATUS_CODE_SEQUENCING.PARENT.equal(seq.field(STATUS_CODE_SEQUENCING.CHILD))))
+                                 .and(STATUS_CODE_SEQUENCING.SERVICE.equal(service)));
     }
 
     /**

@@ -51,6 +51,8 @@ public interface ExistentialRuleform extends Phantasm {
 
     boolean isCopy();
 
+    boolean isNotApplicable();
+
     boolean isSame();
 
     void setDescription(String description);

@@ -287,6 +287,25 @@ public interface RecordsFactory {
         return record;
     }
 
+    default JobChronologyRecord newJobChronologyRecord(JobRecord job,
+                                                       String notes) {
+        JobChronologyRecord record = newJobChronology();
+        record.setNotes(notes);
+        record.setAssignTo(job.getAssignTo());
+        record.setDeliverFrom(job.getDeliverFrom());
+        record.setDeliverTo(record.getDeliverTo());
+        record.setJob(job.getId());
+        record.setProduct(job.getProduct());
+        record.setQuantity(job.getQuantity());
+        record.setQuantityUnit(job.getQuantityUnit());
+        record.setRequester(job.getRequester());
+        record.setStatus(job.getService());
+        record.setUpdatedBy(job.getUpdatedBy());
+        record.setSequenceNumber(job.getVersion());
+        return record;
+
+    }
+
     default ExistentialRecord newLocation() {
         ExistentialRecord record = create().newRecord(EXISTENTIAL);
         record.setDomain(ExistentialDomain.Location);
@@ -673,22 +692,13 @@ public interface RecordsFactory {
         }
     }
 
-    default JobChronologyRecord newJobChronologyRecord(JobRecord job,
-                                                       String notes) {
-        JobChronologyRecord record = newJobChronology();
-        record.setNotes(notes);
-        record.setAssignTo(job.getAssignTo());
-        record.setDeliverFrom(job.getDeliverFrom());
-        record.setDeliverTo(record.getDeliverTo());
-        record.setJob(job.getId());
-        record.setProduct(job.getProduct());
-        record.setQuantity(job.getQuantity());
-        record.setQuantityUnit(job.getQuantityUnit());
-        record.setRequester(job.getRequester());
-        record.setStatus(job.getService());
-        record.setUpdatedBy(job.getUpdatedBy());
-        record.setSequenceNumber(job.getVersion());
-        return record;
-
+    /**
+     * @param parent
+     * @return
+     */
+    default JobRecord resolveJob(UUID id) {
+        return create().selectFrom(JOB)
+                       .where(JOB.ID.equal(id))
+                       .fetchOne();
     }
 }

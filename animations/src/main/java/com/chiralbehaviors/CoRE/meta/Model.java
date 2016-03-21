@@ -39,6 +39,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
@@ -134,6 +135,13 @@ public interface Model extends AutoCloseable {
                                                                        String description) throws InstantiationException;
 
     /**
+     * Answer the entity manager used for this model instance
+     *
+     * @return
+     */
+    DSLContext create();
+
+    /**
      * Execute the function within in the context of the authenticated
      * principal.
      * 
@@ -202,12 +210,7 @@ public interface Model extends AutoCloseable {
      */
     AuthorizedPrincipal getCurrentPrincipal();
 
-    /**
-     * Answer the entity manager used for this model instance
-     *
-     * @return
-     */
-    DSLContext create();
+    ExistentialModel<? extends ExistentialRuleform> getExistentialModel(ExistentialDomain domain);
 
     /**
      * @return the Interval model
@@ -293,15 +296,5 @@ public interface Model extends AutoCloseable {
      * @return
      */
     <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                  Phantasm<T> ruleform);
-
-    /**
-     * Wrap the ruleform with an instance of a phantasm using the model
-     * 
-     * @param phantasm
-     * @param ruleform
-     * @return
-     */
-    <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                  T ruleform);
+                                                                  ExistentialRuleform ruleform);
 }

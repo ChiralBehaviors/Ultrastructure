@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.jooq.Record1;
 import org.jooq.Record2;
 
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
@@ -92,8 +93,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         }
     }
 
-    private final UUID                  definingProductId;
     private Product                     definingProductCache;
+    private final UUID                  definingProductId;
     protected final Map<String, Object> cache = new HashMap<>();
     protected final Model               model;
     protected final WorkspaceScope      scope;
@@ -115,38 +116,149 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         }
     }
 
-    public Object getRuleform(WorkspaceAuthorizationRecord workspaceAuthorizationRecord) {
-        // TODO Auto-generated method stub
-        return null;
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord)
+     */
+    @Override
+    public void add(AgencyExistentialGroupingRecord ruleform) {
+        put(null, ruleform);
     }
 
-    public List<Entry<String, Tuple<Product, Integer>>> getSortedImports() {
-        List<Entry<String, Tuple<Product, Integer>>> imports = new ArrayList<>(getImports().entrySet());
-        Collections.sort(imports, (a, b) -> {
-            Integer aOrdering = a.getValue().b;
-            Integer bOrdering = b.getValue().b;
-            if (aOrdering.equals(bOrdering)) {
-                return 0;
-            }
-            if (aOrdering < 0) {
-                return -1;
-            }
-            if (bOrdering < 0) {
-                return 1;
-            }
-            return aOrdering.compareTo(bOrdering);
-        });
-        return imports;
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord)
+     */
+    @Override
+    public void add(ChildSequencingAuthorizationRecord ruleform) {
+        put(null, ruleform);
     }
 
-    protected void add(ReferenceType type, UUID reference) {
-        WorkspaceAuthorizationRecord authorization = model.records()
-                                                          .newWorkspaceAuthorization(getDefiningProduct(),
-                                                                                     reference,
-                                                                                     type,
-                                                                                     model.getCurrentPrincipal()
-                                                                                          .getPrincipal());
-        authorization.insert();
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord)
+     */
+    @Override
+    public void add(ExistentialAttributeAuthorizationRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
+     */
+    @Override
+    public void add(ExistentialAttributeRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkAttributeAuthorizationRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkAttributeRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkAuthorizationRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord)
+     */
+    @Override
+    public void add(ExistentialNetworkRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord)
+     */
+    @Override
+    public void add(ExistentialRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord)
+     */
+    @Override
+    public void add(FacetRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord)
+     */
+    @Override
+    public void add(JobChronologyRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord)
+     */
+    @Override
+    public void add(JobRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord)
+     */
+    @Override
+    public void add(MetaProtocolRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord)
+     */
+    @Override
+    public void add(NetworkInferenceRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord)
+     */
+    @Override
+    public void add(ParentSequencingAuthorizationRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord)
+     */
+    @Override
+    public void add(ProtocolRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord)
+     */
+    @Override
+    public void add(SelfSequencingAuthorizationRecord ruleform) {
+        put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord)
+     */
+    @Override
+    public void add(StatusCodeSequencingRecord ruleform) {
+        put(null, ruleform);
+
     }
 
     /* (non-Javadoc)
@@ -241,12 +353,38 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     }
 
     @Override
+    public <T> List<T> getCollection(Class<T> ruleformClass) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor#getCollection(java.lang.Class)
+     */
+    @Override
+    public <T> List<T> getCollection(ReferenceType type) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public Product getDefiningProduct() {
         if (definingProductCache == null) {
             definingProductCache = model.records()
                                         .resolve(definingProductId);
         }
         return definingProductCache;
+    }
+
+    @Override
+    public UUID getId(String name) {
+        Record1<UUID> id = model.create()
+                                .select(WORKSPACE_AUTHORIZATION.REFERENCE)
+                                .from(WORKSPACE_AUTHORIZATION)
+                                .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(getDefiningProduct().getId()))
+                                .and(WORKSPACE_AUTHORIZATION.KEY.equal(name))
+                                .fetchOne();
+        return id != null ? id.value1() : null;
     }
 
     /* (non-Javadoc)
@@ -300,6 +438,11 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                     .collect(Collectors.toList());
     }
 
+    public Object getRuleform(WorkspaceAuthorizationRecord workspaceAuthorizationRecord) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /* (non-Javadoc)
      * @see com.chiralbehaviors.CoRE.meta.workspace.Workspace#getScope()
      */
@@ -313,11 +456,262 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         return new WorkspaceSnapshot(getDefiningProduct(), model.create());
     }
 
+    public List<Entry<String, Tuple<Product, Integer>>> getSortedImports() {
+        List<Entry<String, Tuple<Product, Integer>>> imports = new ArrayList<>(getImports().entrySet());
+        Collections.sort(imports, (a, b) -> {
+            Integer aOrdering = a.getValue().b;
+            Integer bOrdering = b.getValue().b;
+            if (aOrdering.equals(bOrdering)) {
+                return 0;
+            }
+            if (aOrdering < 0) {
+                return -1;
+            }
+            if (bOrdering < 0) {
+                return 1;
+            }
+            return aOrdering.compareTo(bOrdering);
+        });
+        return imports;
+    }
+
     @Override
     public void put(String key, AgencyExistentialGroupingRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord)
+     */
+    @Override
+    public void put(String key, ChildSequencingAuthorizationRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord)
+     */
+    @Override
+    public void put(String key,
+                    ExistentialAttributeAuthorizationRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
+     */
+    @Override
+    public void put(String key, ExistentialAttributeRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord)
+     */
+    @Override
+    public void put(String key,
+                    ExistentialNetworkAttributeAuthorizationRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord)
+     */
+    @Override
+    public void put(String key, ExistentialNetworkAttributeRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    @Override
+    public void put(String key,
+                    ExistentialNetworkAuthorizationRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord)
+     */
+    @Override
+    public void put(String key, ExistentialNetworkRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    @Override
+    public void put(String key, ExistentialRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord)
+     */
+    @Override
+    public void put(String key, FacetRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord)
+     */
+    @Override
+    public void put(String key, JobChronologyRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord)
+     */
+    @Override
+    public void put(String key, JobRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord)
+     */
+    @Override
+    public void put(String key, MetaProtocolRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord)
+     */
+    @Override
+    public void put(String key, NetworkInferenceRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord)
+     */
+    @Override
+    public void put(String key, ParentSequencingAuthorizationRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord)
+     */
+    @Override
+    public void put(String key, ProtocolRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord)
+     */
+    @Override
+    public void put(String key, SelfSequencingAuthorizationRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord)
+     */
+    @Override
+    public void put(String key, SiblingSequencingAuthorizationRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
+                                        model.getCurrentPrincipal()
+                                             .getPrincipal())
+             .insert();
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord)
+     */
+    @Override
+    public void put(String key, StatusCodeSequencingRecord ruleform) {
+        cache.put(key, ruleform);
+        model.records()
+             .newWorkspaceAuthorization(getDefiningProduct(), ruleform,
                                         model.getCurrentPrincipal()
                                              .getPrincipal())
              .insert();
@@ -351,387 +745,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                              getDefiningProduct().getName());
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor#getCollection(java.lang.Class)
-     */
-    @Override
-    public <T> List<T> getCollection(ReferenceType type) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord)
-     */
-    @Override
-    public void add(AgencyExistentialGroupingRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord)
-     */
-    @Override
-    public void add(ChildSequencingAuthorizationRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord)
-     */
-    @Override
-    public void add(ExistentialAttributeAuthorizationRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
-     */
-    @Override
-    public void add(ExistentialAttributeRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord)
-     */
-    @Override
-    public void add(ExistentialNetworkAttributeAuthorizationRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord)
-     */
-    @Override
-    public void add(ExistentialNetworkAttributeRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord)
-     */
-    @Override
-    public void add(ExistentialNetworkAuthorizationRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord)
-     */
-    @Override
-    public void add(ExistentialNetworkRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord)
-     */
-    @Override
-    public void add(ExistentialRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord)
-     */
-    @Override
-    public void add(JobChronologyRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord)
-     */
-    @Override
-    public void add(JobRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord)
-     */
-    @Override
-    public void add(MetaProtocolRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord)
-     */
-    @Override
-    public void add(NetworkInferenceRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord)
-     */
-    @Override
-    public void add(ParentSequencingAuthorizationRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord)
-     */
-    @Override
-    public void add(ProtocolRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord)
-     */
-    @Override
-    public void add(SelfSequencingAuthorizationRecord ruleform) {
-        put(null, ruleform);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord)
-     */
-    @Override
-    public void add(StatusCodeSequencingRecord ruleform) {
-        put(null, ruleform);
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord)
-     */
-    @Override
-    public void put(String key, ChildSequencingAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord)
-     */
-    @Override
-    public void put(String key,
-                    ExistentialAttributeAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord)
-     */
-    @Override
-    public void put(String key, ExistentialAttributeRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord)
-     */
-    @Override
-    public void put(String key,
-                    ExistentialNetworkAttributeAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord)
-     */
-    @Override
-    public void put(String key, ExistentialNetworkAttributeRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord)
-     */
-    @Override
-    public void put(String key, ExistentialNetworkRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    @Override
-    public void put(String key, ExistentialRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord)
-     */
-    @Override
-    public void put(String key, FacetRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord)
-     */
-    @Override
-    public void put(String key, JobChronologyRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord)
-     */
-    @Override
-    public void put(String key, JobRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord)
-     */
-    @Override
-    public void put(String key, MetaProtocolRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord)
-     */
-    @Override
-    public void put(String key, NetworkInferenceRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord)
-     */
-    @Override
-    public void put(String key, ParentSequencingAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord)
-     */
-    @Override
-    public void put(String key, ProtocolRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord)
-     */
-    @Override
-    public void put(String key, SelfSequencingAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord)
-     */
-    @Override
-    public void put(String key, SiblingSequencingAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#put(java.lang.String, com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord)
-     */
-    @Override
-    public void put(String key, StatusCodeSequencingRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
-    }
-
-    @Override
-    public <T> List<T> getCollection(Class<T> ruleformClass) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void put(String key,
-                    ExistentialNetworkAuthorizationRecord ruleform) {
-        cache.put(key, ruleform);
-        model.records()
-             .newWorkspaceAuthorization(definingProductCache, ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
-             .insert();
+    protected void add(ReferenceType type, UUID reference) {
+        WorkspaceAuthorizationRecord authorization = model.records()
+                                                          .newWorkspaceAuthorization(getDefiningProduct(),
+                                                                                     reference,
+                                                                                     type,
+                                                                                     model.getCurrentPrincipal()
+                                                                                          .getPrincipal());
+        authorization.insert();
     }
 }

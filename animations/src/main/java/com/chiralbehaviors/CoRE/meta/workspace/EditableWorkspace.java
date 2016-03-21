@@ -68,6 +68,8 @@ public interface EditableWorkspace extends WorkspaceAccessor {
 
     void add(ExistentialRecord ruleform);
 
+    void add(FacetRecord ruleform);
+
     void add(JobChronologyRecord ruleform);
 
     void add(JobRecord ruleform);
@@ -81,6 +83,8 @@ public interface EditableWorkspace extends WorkspaceAccessor {
     void add(ProtocolRecord ruleform);
 
     void add(SelfSequencingAuthorizationRecord ruleform);
+
+    void add(SiblingSequencingAuthorizationRecord ruleform);
 
     void add(StatusCodeSequencingRecord ruleform);
 

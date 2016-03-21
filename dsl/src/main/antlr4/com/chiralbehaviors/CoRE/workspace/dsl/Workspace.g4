@@ -46,7 +46,7 @@ definedLocations: 'locations' LB  (attributedExistentialRuleform SC)* (edges)? (
 definedProducts: 'products' LB  (attributedExistentialRuleform SC)* (edges)? (facets)? RB;
 definedRelationships: 'relationships' LB  (relationshipPair SC)* (edges)? (facets)? RB;
 definedStatusCodes: 'status codes' LB  (attributedExistentialRuleform SC)* (edges)? (facets)? RB;
-definedUnits: 'units' LB  (unit SC)*  (edges)? (facets)? RB;
+definedUnits: 'units' LB  (attributedExistentialRuleform SC)*  (edges)? (facets)? RB;
 definedStatusCodeSequencings: 'status code sequencings' LB (statusCodeSequencingSet)* (edges)? (facets)? RB;
 definedSequencingAuthorizations: 'sequencing auths' LB (selfSequencings)? (parentSequencings)? (siblingSequencings)? (childSequencings)?  RB;
 definedInferences: 'inferences' LB (edge)+ RB ;
@@ -101,14 +101,6 @@ attributeRuleform:
     ('keyed:' keyed = ('true' | 'false'))?
     valueType = ('int' | 'bool' | 'text' | 'binary' | 'numeric' | 'timestamp' | 'json')
     ('attribute values' LB (attributeValue)+ RB)?; 
-
-unit: 
-    existentialRuleform
-    datatype = ObjectName
-    ('enumerated:' enumerated = Boolean)?
-    ('min:' min = Number)?
-    ('max:' max = Number)?
-    ('attribute values' LB (attributeValue)+ RB)?;
     
 attributeValue:
     attribute = qualifiedName 

@@ -156,9 +156,32 @@ public interface RecordsFactory {
         return record;
     }
 
+    default Attribute newAttribute(String name, String description,
+                                   Agency updatedBy) {
+        Attribute record = newAttribute();
+        record.setName(name);
+        record.setDescription(description);
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
     default ChildSequencingAuthorizationRecord newChildSequencingAuthorization() {
         ChildSequencingAuthorizationRecord record = create().newRecord(CHILD_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        return record;
+    }
+
+    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(UUID parent,
+                                                                               UUID status,
+                                                                               UUID child,
+                                                                               UUID next,
+                                                                               Agency updatedBy) {
+        ChildSequencingAuthorizationRecord record = newChildSequencingAuthorization();
+        record.setParent(parent);
+        record.setStatusCode(status);
+        record.setNextChild(child);
+        record.setNextChildStatus(next);
+        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -200,9 +223,31 @@ public interface RecordsFactory {
         return (ExistentialRuleform) record;
     }
 
+    default ExistentialRecord newExistential(ExistentialDomain domain,
+                                             String name, String description,
+                                             Agency updatedBy) {
+        ExistentialRecord record = (ExistentialRecord) newExistential(domain);
+        record.setName(name);
+        record.setDescription(description);
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
     default ExistentialAttributeRecord newExistentialAttribute() {
         ExistentialAttributeRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE);
         record.setId(GENERATOR.generate());
+        return record;
+    }
+
+    default ExistentialAttributeRecord newExistentialAttribute(Agency updatedBy) {
+        ExistentialAttributeRecord record = newExistentialAttribute();
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
+    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAttributeAuthorization(Agency updatedBy) {
+        ExistentialAttributeAuthorizationRecord record = new ExistentialAttributeAuthorizationRecord();
+        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -241,6 +286,12 @@ public interface RecordsFactory {
     default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization() {
         ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        return record;
+    }
+
+    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization(Agency updatedBy) {
+        ExistentialNetworkAttributeAuthorizationRecord record = newExistentialNetworkAttributeAuthorization();
+        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -320,6 +371,17 @@ public interface RecordsFactory {
         return record;
     }
 
+    default NetworkInferenceRecord newNetworkInference(UUID premise1,
+                                                       UUID premise2,
+                                                       UUID inference,
+                                                       Agency updatedBy) {
+        NetworkInferenceRecord record = newNetworkInferrence();
+        record.setPremise1(premise1);
+        record.setPremise2(premise2);
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
     default NetworkInferenceRecord newNetworkInferrence() {
         NetworkInferenceRecord record = create().newRecord(NETWORK_INFERENCE);
         record.setId(GENERATOR.generate());
@@ -329,6 +391,20 @@ public interface RecordsFactory {
     default ParentSequencingAuthorizationRecord newParentSequencingAuthorization() {
         ParentSequencingAuthorizationRecord record = create().newRecord(PARENT_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        return record;
+    }
+
+    default ParentSequencingAuthorizationRecord newParentSequencingAuthorization(UUID service,
+                                                                                 UUID status,
+                                                                                 UUID parent,
+                                                                                 UUID next,
+                                                                                 Agency updatedBy) {
+        ParentSequencingAuthorizationRecord record = newParentSequencingAuthorization();
+        record.setService(service);
+        record.setStatusCode(status);
+        record.setParent(parent);
+        record.setParentStatusToSet(next);
+        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -400,6 +476,21 @@ public interface RecordsFactory {
         return record;
     }
 
+    default Relationship newRelationship(String name, String description,
+                                         String inverseName,
+                                         String inverseDescription,
+                                         Agency updatedBy) {
+        Relationship record = newRelationship(inverseName, inverseDescription,
+                                              updatedBy);
+        Relationship inverse = newRelationship(inverseName, inverseDescription,
+                                               updatedBy);
+        record.setInverse(inverse.getId());
+        inverse.setInverse(record.getId());
+        inverse.insert();
+        record.insert();
+        return record;
+    }
+
     default Relationship newRelationshipy(String name) {
         Relationship record = newRelationship();
         record.setName(name);
@@ -412,9 +503,35 @@ public interface RecordsFactory {
         return record;
     }
 
+    default SelfSequencingAuthorizationRecord newSelfSequencingAuthorization(UUID service,
+                                                                             UUID status,
+                                                                             UUID next,
+                                                                             Agency updatedBy) {
+        SelfSequencingAuthorizationRecord record = newSelfSequencingAuthorization();
+        record.setService(service);
+        record.setStatusCode(status);
+        record.setStatusToSet(next);
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
     default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization() {
         SiblingSequencingAuthorizationRecord record = create().newRecord(SIBLING_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        return record;
+    }
+
+    default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization(UUID parent,
+                                                                                   UUID status,
+                                                                                   UUID sibling,
+                                                                                   UUID next,
+                                                                                   Agency updatedBy) {
+        SiblingSequencingAuthorizationRecord record = newSiblingSequencingAuthorization();
+        record.setParent(parent);
+        record.setStatusCode(status);
+        record.setNextSibling(sibling);
+        record.setNextSiblingStatus(next);
+        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -426,11 +543,18 @@ public interface RecordsFactory {
         return record;
     }
 
-    default StatusCode newStatusCode(String string, Agency core) {
+    default StatusCode newStatusCode(String name, Agency updatedBy) {
         StatusCode code = newStatusCode();
-        code.setName(string);
-        code.setUpdatedBy(core.getId());
+        code.setName(name);
+        code.setUpdatedBy(updatedBy.getId());
         return code;
+    }
+
+    default StatusCode newStatusCode(String name, String description,
+                                     Agency updatedBy) {
+        StatusCode record = newStatusCode(name, updatedBy);
+        record.setDescription(description);
+        return record;
     }
 
     default StatusCodeSequencingRecord newStatusCodeSequencing() {
@@ -456,6 +580,14 @@ public interface RecordsFactory {
         record.setDomain(ExistentialDomain.Unit);
         record.setId(GENERATOR.generate());
         return record;
+    }
+
+    default Unit newUnit(String name, String description, Agency updatedBy) {
+        Unit unit = newUnit();
+        unit.setName(name);
+        unit.setDescription(description);
+        unit.setUpdatedBy(updatedBy.getId());
+        return unit;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization() {
@@ -527,7 +659,7 @@ public interface RecordsFactory {
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
-                                                                   ExistentialRuleform existential,
+                                                                   ExistentialRecord existential,
                                                                    Agency updatedBy) {
         return newWorkspaceAuthorization(definingProduct, existential.getId(),
                                          ReferenceType.Existential, updatedBy);
@@ -807,5 +939,4 @@ public interface RecordsFactory {
                        .where(WORKSPACE_AUTHORIZATION.ID.equal(id))
                        .fetchOne();
     }
-
 }

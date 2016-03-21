@@ -63,4 +63,6 @@ public interface WorkspaceAccessor {
     WorkspaceScope getScope();
 
     WorkspaceSnapshot getSnapshot();
+
+    UUID getId(String name);
 }

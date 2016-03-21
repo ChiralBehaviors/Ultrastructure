@@ -23,6 +23,7 @@ package com.chiralbehaviors.CoRE;
 import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 
 /**
  * The repository of the ids of well known objects, as well as string constants
@@ -232,7 +233,7 @@ public interface WellKnownObject {
              */
             @Override
             public ValueType valueType() {
-                return ValueType.TEXT;
+                return ValueType.Text;
             }
 
             /* (non-Javadoc)
@@ -256,7 +257,7 @@ public interface WellKnownObject {
              */
             @Override
             public ValueType valueType() {
-                return ValueType.TEXT;
+                return ValueType.Text;
             }
 
             /* (non-Javadoc)
@@ -280,7 +281,7 @@ public interface WellKnownObject {
              */
             @Override
             public ValueType valueType() {
-                return ValueType.TEXT;
+                return ValueType.Text;
             }
 
             /* (non-Javadoc)
@@ -304,7 +305,7 @@ public interface WellKnownObject {
              */
             @Override
             public ValueType valueType() {
-                return ValueType.BOOLEAN;
+                return ValueType.Boolean;
             }
 
             /* (non-Javadoc)
@@ -328,7 +329,7 @@ public interface WellKnownObject {
              */
             @Override
             public ValueType valueType() {
-                return ValueType.TEXT;
+                return ValueType.Text;
             }
 
             /* (non-Javadoc)

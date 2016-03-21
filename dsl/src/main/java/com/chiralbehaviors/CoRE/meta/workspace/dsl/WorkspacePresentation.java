@@ -51,7 +51,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingsCon
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingsContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.WorkspaceDefinitionContext;
 
@@ -391,12 +390,12 @@ public class WorkspacePresentation {
                             .edge();
     }
 
-    public List<UnitContext> getUnits() {
+    public List<AttributedExistentialRuleformContext> getUnits() {
         if (context.units == null) {
             return Collections.emptyList();
         }
-
-        return context.units.unit();
+        List<AttributedExistentialRuleformContext> ruleforms = context.units.attributedExistentialRuleform();
+        return ruleforms == null ? Collections.emptyList() : ruleforms;
     }
 
     public WorkspaceDefinitionContext getWorkspaceDefinition() {

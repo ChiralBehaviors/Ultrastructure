@@ -27,7 +27,7 @@
             <column name="inverse" type="uuid" />
 
             <!-- Attribute columns -->
-            <column name="value_type" type="INT4" />
+            <column name="value_type" type="value_type" />
             <column name="keyed" type="boolean" />
             <column name="indexed" type="boolean" />
 

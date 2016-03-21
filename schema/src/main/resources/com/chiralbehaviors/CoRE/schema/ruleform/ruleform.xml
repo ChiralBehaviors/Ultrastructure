@@ -5,6 +5,7 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
 >
     <include relativeToChangelogFile="true" file="existential_domain.xml" />
+    <include relativeToChangelogFile="true" file="value_type.xml" />
     <include relativeToChangelogFile="true" file="null_zero.xml" />
     <include relativeToChangelogFile="true" file="reference_type.xml" />
     <include relativeToChangelogFile="true" file="cardinality.xml" />

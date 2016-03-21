@@ -189,8 +189,7 @@ public class Bootstrap {
         record.setUpdatedBy(WellKnownAgency.CORE.id());
         record.setIndexed(wko.indexed());
         record.setKeyed(wko.keyed());
-        record.setValueType(wko.valueType()
-                               .ordinal());
+        record.setValueType(wko.valueType());
         record.setVersion(0);
         record.insert();
     }

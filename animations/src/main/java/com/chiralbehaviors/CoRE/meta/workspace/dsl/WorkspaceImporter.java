@@ -25,45 +25,39 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 
 import javax.management.openmbean.InvalidKeyException;
 
 import org.antlr.v4.runtime.Token;
 import org.jooq.DSLContext;
 
-import com.chiralbehaviors.CoRE.ValueType;
-import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.domain.Interval;
-import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
-import com.chiralbehaviors.CoRE.domain.Unit;
-import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
-import com.chiralbehaviors.CoRE.jooq.tables.ChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.MetaProtocol;
-import com.chiralbehaviors.CoRE.jooq.tables.ParentSequencingAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
-import com.chiralbehaviors.CoRE.jooq.tables.SelfSequencingAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.SiblingSequencingAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.Model;
-import com.chiralbehaviors.CoRE.meta.PhantasmModel;
-import com.chiralbehaviors.CoRE.meta.models.Inference;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceAccessor;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeRuleformContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributeValueContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.AttributedExistentialRuleformContext;
@@ -83,7 +77,6 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingCont
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
-import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.UnitContext;
 
 /**
  * @author hparry
@@ -194,103 +187,56 @@ public class WorkspaceImporter {
         return load(definingProduct);
     }
 
-    private void agencyFacets() {
-        for (FacetContext facet : wsp.getAgencyFacets()) {
-            classifiedAttributes(facet,
-                                 new AgencyNetworkAuthorization(model.getCurrentPrincipal()
-                                                                     .getPrincipal()),
-                                 agency -> new AgencyAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                 .getPrincipal()));
-            agencyNetworkConstraints(facet);
-        }
-    }
-
-    private void networkConstraints(FacetContext facet) {
-        NetworkConstraintsContext networkConstraints = facet.networkConstraints();
-        if (networkConstraints == null) {
-            return;
-        }
-        networkConstraints.constraint()
-                          .forEach(constraint -> {
-                              Class<?> authParentClass = resolveAuthParent(constraint);
-                              createNetworkAuth(facet, constraint,
-                                                new AgencyNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                    .getPrincipal()),
-                                                agency -> new AgencyAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                .getPrincipal()));
-                          });
-    }
-
-    private void attributeFacets() {
-        for (FacetContext facet : wsp.getAttributeFacets()) {
-            classifiedAttributes(facet,
-                                 new AttributeNetworkAuthorization(model.getCurrentPrincipal()
-                                                                        .getPrincipal()),
-                                 agency -> new AttributeMetaAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                        .getPrincipal()));
-            attributeNetworkConstraints(facet);
-        }
-    }
-
-    private void attributeNetworkConstraints(FacetContext facet) {
-        NetworkConstraintsContext networkConstraints = facet.networkConstraints();
-        if (networkConstraints == null) {
-            return;
-        }
-        networkConstraints.constraint()
-                          .forEach(constraint -> {
-                              createNetworkAuth(facet, constraint,
-                                                new AttributeNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                       .getPrincipal()),
-                                                agency -> new AttributeMetaAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                       .getPrincipal()));
-                          });
-    }
-
-    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void classifiedAttributes(FacetContext facet,
-                                                                                                                      NetworkAuthorization<T> authorization,
-                                                                                                                      Function<Agency, AttributeAuthorization<T, Network>> attrAuth) {
-        authorization.setClassifier(resolve(facet.classifier));
-        authorization.setClassification(resolve(facet.classification));
-        if (facet.name != null) {
-            authorization.setName(WorkspacePresentation.stripQuotes(facet.name.getText()));
-        } else {
-            authorization.setName(authorization.getClassification()
-                                               .getName());
-        }
-        if (facet.description != null) {
-            authorization.setNotes(WorkspacePresentation.stripQuotes(facet.name.getText()));
-        }
-        model.create()
-             .persist(authorization);
-        workspace.add(authorization);
+    private void classifiedAttributes(FacetContext facet,
+                                      FacetRecord authorization) {
         List<ClassifiedAttributeContext> classifiedAttributes = facet.classifiedAttribute();
         if (classifiedAttributes == null) {
             return;
         }
         classifiedAttributes.forEach(attribute -> {
-            AttributeAuthorization<T, Network> auth = attrAuth.apply(model.getCurrentPrincipal()
-                                                                          .getPrincipal());
-            auth.setNetworkAuthorization(authorization);
+            ExistentialAttributeAuthorizationRecord auth = model.records()
+                                                                .newExistentialAttributeAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                                    .getPrincipal());
+            auth.setFacet(authorization.getId());
             auth.setAuthorizedAttribute(resolve(attribute.key));
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
+                setValueFromString(auth,
+                                   WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.create()
-                 .persist(auth);
+            auth.insert();
             workspace.add(auth);
 
         });
     }
 
-    private void createNetworkAuth(FacetContext facet,
+    private FacetRecord createFacet(FacetContext facet) {
+        FacetRecord authorization = model.records()
+                                         .newFacet(model.getCurrentPrincipal()
+                                                        .getPrincipal());
+        authorization.setClassifier(resolve(facet.classifier));
+        authorization.setClassification(resolve(facet.classification));
+        if (facet.name != null) {
+            authorization.setName(WorkspacePresentation.stripQuotes(facet.name.getText()));
+        } else {
+            authorization.setName(model.records()
+                                       .resolve(authorization.getClassification())
+                                       .getName());
+        }
+        if (facet.description != null) {
+            authorization.setNotes(WorkspacePresentation.stripQuotes(facet.name.getText()));
+        }
+        authorization.insert();
+        workspace.add(authorization);
+        return authorization;
+    }
+
+    private void createNetworkAuth(FacetContext facet, FacetRecord facetAuth,
                                    ConstraintContext constraint,
                                    ExistentialNetworkAuthorizationRecord authorization) {
         authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        authorization.setClassifier(resolve(facet.classifier));
-        authorization.setClassification(resolve(facet.classification));
-        authorization.setChildRelationship(resolve(constraint.childRelationship));
-        resolveAuthorized(constraint, authorization);
+        authorization.setParent(facetAuth.getId());
+        authorization.setRelationship(resolve(constraint.childRelationship));
+        resolveChild(constraint, authorization);
         authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
                                                                                .toUpperCase()));
         workspace.add(authorization);
@@ -300,16 +246,17 @@ public class WorkspaceImporter {
             return;
         }
         classifiedAttributes.forEach(attribute -> {
-            AttributeAuthorization<T, Network> auth = attrAuth.apply(model.getCurrentPrincipal()
-                                                                          .getPrincipal());
-            auth.setAuthorizedNetworkAttribute(resolve(attribute.key));
-            auth.setNetworkAuthorization(authorization);
+            ExistentialNetworkAttributeAuthorizationRecord attrAuth = model.records()
+                                                                           .newExistentialNetworkAttributeAuthorization(model.getCurrentPrincipal()
+                                                                                                                             .getPrincipal());
+            attrAuth.setAuthorizedAttribute(resolve(attribute.key));
+            attrAuth.setNetworkAuthorization(authorization.getId());
             if (attribute.defaultValue != null) {
-                auth.setValueFromString(WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
+                setValueFromString(attrAuth,
+                                   WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
-            model.create()
-                 .persist(auth);
-            workspace.add(auth);
+            attrAuth.insert();
+            workspace.add(attrAuth);
         });
     }
 
@@ -351,12 +298,11 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
-    private void defineFacetClassificationss(ExistentialModel<?> networkedModel,
+    private void defineFacetClassificationss(ExistentialModel<? extends ExistentialRuleform> networkedModel,
                                              List<FacetContext> facets) {
         for (FacetContext facet : facets) {
             if (facet.classification.namespace == null) {
                 if (scope.lookup(facet.classification.member.getText()) == null) {
-                    @SuppressWarnings("rawtypes")
                     ExistentialRecord erf = (ExistentialRecord) networkedModel.create(facet.name == null ? facet.classification.member.getText()
                                                                                                          : WorkspacePresentation.stripQuotes(facet.name.getText()),
                                                                                       facet.description == null ? null
@@ -368,58 +314,45 @@ public class WorkspaceImporter {
         }
     }
 
+    private void facets(List<FacetContext> facets) {
+        for (FacetContext facet : facets) {
+            FacetRecord authorization = createFacet(facet);
+            classifiedAttributes(facet, authorization);
+            networkConstraints(facet, authorization);
+        }
+    }
+
     private Product getWorkspaceProduct() {
-        return Ruleform.initializeAndUnproxy(em.find(Product.class, uuid));
+        return model.records()
+                    .resolve(uuid);
     }
 
-    private void intervalFacets() {
-        for (FacetContext facet : wsp.getIntervalFacets()) {
-            classifiedAttributes(facet,
-                                 new IntervalNetworkAuthorization(model.getCurrentPrincipal()
-                                                                       .getPrincipal()),
-                                 agency -> new IntervalAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                   .getPrincipal()));
-            intervalNetworkConstraints(facet);
-        }
-    }
-
-    private void intervalNetworkConstraints(FacetContext facet) {
-        NetworkConstraintsContext networkConstraints = facet.networkConstraints();
-        if (networkConstraints == null) {
-            return;
-        }
-        networkConstraints.constraint()
-                          .forEach(constraint -> {
-                              createNetworkAuth(facet, constraint,
-                                                new IntervalNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                      .getPrincipal()),
-                                                agency -> new IntervalAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                  .getPrincipal()));
-                          });
-    }
-
-    private void loadAgencies() {
-        for (AttributedExistentialRuleformContext ruleform : wsp.getAgencies()) {
-            Agency agency = new Agency(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
-                                       ruleform.existentialRuleform().description == null ? null
-                                                                                          : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
-                                       model.getCurrentPrincipal()
-                                            .getPrincipal());
-            em.persist(agency);
+    private void load(ExistentialDomain domain,
+                      List<AttributedExistentialRuleformContext> existentials) {
+        for (AttributedExistentialRuleformContext ruleform : existentials) {
+            ExistentialRecord record = model.records()
+                                            .newExistential(domain,
+                                                            WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
+                                                            ruleform.existentialRuleform().description == null ? null
+                                                                                                               : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
+                                                            model.getCurrentPrincipal()
+                                                                 .getPrincipal());
+            record.insert();
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
-                          agency);
+                          record);
         }
-        defineFacetClassificationss(model.getAgencyModel(),
+        defineFacetClassificationss(model.getExistentialModel(domain),
                                     wsp.getAgencyFacets());
     }
 
     private void loadAttributes() {
         for (AttributeRuleformContext ruleform : wsp.getAttributes()) {
-            Attribute attr = new Attribute(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
-                                           ruleform.existentialRuleform().description == null ? null
-                                                                                              : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
-                                           model.getCurrentPrincipal()
-                                                .getPrincipal());
+            Attribute attr = model.records()
+                                  .newAttribute(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
+                                                ruleform.existentialRuleform().description == null ? null
+                                                                                                   : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
+                                                model.getCurrentPrincipal()
+                                                     .getPrincipal());
             setValueType(attr, ruleform.valueType);
             attr.setIndexed(ruleform.indexed == null ? false
                                                      : ruleform.indexed.getText()
@@ -427,123 +360,95 @@ public class WorkspaceImporter {
             attr.setKeyed(ruleform.keyed == null ? false
                                                  : ruleform.keyed.getText()
                                                                  .equals("true"));
-            em.persist(attr);
+            attr.insert();
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           attr);
             for (AttributeValueContext av : ruleform.attributeValue()) {
-                AttributeMetaAttribute ama = new AttributeMetaAttribute();
-                ama.setAttribute(attr);
-                Attribute metaAttribute = resolve(av.attribute);
-                ama.setMetaAttribute(metaAttribute);
+                ExistentialAttributeRecord ama = model.records()
+                                                      .newExistentialAttribute();
+                ama.setExistential(attr.getId());
+                UUID metaAttribute = resolve(av.attribute);
+                ama.setAttribute(metaAttribute);
                 ama.setUpdatedBy(model.getCurrentPrincipal()
-                                      .getPrincipal());
+                                      .getPrincipal()
+                                      .getId());
                 ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
-                ama.setValueFromString(WorkspacePresentation.stripQuotes(av.value.getText()));
+                setValueFromString(ama,
+                                   WorkspacePresentation.stripQuotes(av.value.getText()));
                 workspace.add(ama);
-                em.persist(ama);
-            }
-            if (ruleform.type != null) {
-                AttributeMetaAttribute ama = new AttributeMetaAttribute();
-                ama.setAttribute(model.getKernel()
-                                      .getJsonldType());
-                ama.setMetaAttribute(attr);
-                ama.setUpdatedBy(model.getCurrentPrincipal()
-                                      .getPrincipal());
-                ama.setValueFromString(WorkspacePresentation.stripQuotes(ruleform.type.getText()));
-                em.persist(ama);
-                workspace.add(ama);
+                ama.insert();
             }
         }
     }
 
     private void loadChildSequencing() {
         for (ChildSequencingContext seq : wsp.getChildSequencings()) {
-            ChildSequencingAuthorization auth = new ChildSequencingAuthorization(resolve(seq.parent),
-                                                                                 resolve(seq.status),
-                                                                                 resolve(seq.child),
-                                                                                 resolve(seq.next),
-                                                                                 model.getCurrentPrincipal()
-                                                                                      .getPrincipal());
-            em.persist(auth);
+            ChildSequencingAuthorizationRecord auth = model.records()
+                                                           .newChildSequencingAuthorization(resolve(seq.parent),
+                                                                                            resolve(seq.status),
+                                                                                            resolve(seq.child),
+                                                                                            resolve(seq.next),
+                                                                                            model.getCurrentPrincipal()
+                                                                                                 .getPrincipal());
+            auth.insert();
             workspace.add(auth);
         }
     }
 
     private void loadEdges() {
-        loadNetworks(wsp.getAgencyNetworks(), model.getAgencyModel());
-        loadNetworks(wsp.getAttributeNetworks(), model.getAttributeModel());
-        loadNetworks(wsp.getIntervalNetworks(), model.getIntervalModel());
-        loadLocationNetworks();
-        loadNetworks(wsp.getProductNetworks(), model.getProductModel());
-        loadNetworks(wsp.getRelationshipNetworks(),
-                     model.getRelationshipModel());
-        loadNetworks(wsp.getStatusCodeNetworks(), model.getStatusCodeModel());
-        loadNetworks(wsp.getUnitNetworks(), model.getUnitModel());
+        loadNetworks(wsp.getAgencyNetworks());
+        loadNetworks(wsp.getAttributeNetworks());
+        loadNetworks(wsp.getIntervalNetworks());
+        loadNetworks(wsp.getLocationNetworks());
+        loadNetworks(wsp.getProductNetworks());
+        loadNetworks(wsp.getRelationshipNetworks());
+        loadNetworks(wsp.getStatusCodeNetworks());
+        loadNetworks(wsp.getUnitNetworks());
+    }
+
+    private void loadExistentials() {
+        load(ExistentialDomain.Agency, wsp.getAgencies());
+        load(ExistentialDomain.Location, wsp.getLocations());
+        load(ExistentialDomain.Product, wsp.getProducts());
+        load(ExistentialDomain.Interval, wsp.getIntervals());
+        load(ExistentialDomain.Unit, wsp.getUnits());
+        loadRelationships();
+        loadAttributes();
+        loadStatusCodes();
+        loadStatusCodeSequencings();
     }
 
     private void loadFacets() {
-        agencyFacets();
-        attributeFacets();
-        intervalFacets();
-        locationFacets();
-        productFacets();
-        relationshipFacets();
-        statusCodeFacets();
-        unitFacets();
+        facets(wsp.getAgencyFacets());
+        facets(wsp.getAttributeFacets());
+        facets(wsp.getIntervalFacets());
+        facets(wsp.getLocationFacets());
+        facets(wsp.getProductFacets());
+        facets(wsp.getRelationshipFacets());
+        facets(wsp.getStatusCodeFacets());
+        facets(wsp.getUnitFacets());
     }
 
     private void loadInferences() {
         for (EdgeContext edge : wsp.getInferences()) {
-            Inference inference = new Inference(resolve(edge.parent),
-                                                resolve(edge.relationship),
-                                                resolve(edge.child),
-                                                model.getCurrentPrincipal()
-                                                     .getPrincipal());
-            em.persist(inference);
+            NetworkInferenceRecord inference = model.records()
+                                                    .newNetworkInference(resolve(edge.parent),
+                                                                         resolve(edge.relationship),
+                                                                         resolve(edge.child),
+                                                                         model.getCurrentPrincipal()
+                                                                              .getPrincipal());
+            inference.insert();
             workspace.add(inference);
         }
     }
 
-    private void loadIntervals() {
-        for (AttributedExistentialRuleformContext rf : wsp.getIntervals()) {
-            Interval ruleform = new Interval(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
-                                             rf.existentialRuleform().description == null ? null
-                                                                                          : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
-                                             model.getCurrentPrincipal()
-                                                  .getPrincipal());
-            em.persist(ruleform);
-            workspace.put(rf.existentialRuleform().workspaceName.getText(),
-                          ruleform);
-        }
-        defineFacetClassificationss(model.getIntervalModel(),
-                                    wsp.getIntervalFacets());
-    }
-
-    private void loadLocationNetworks() {
-        loadNetworks(wsp.getLocationNetworks(), model.getLocationModel());
-    }
-
-    private void loadLocations() {
-        for (AttributedExistentialRuleformContext rf : wsp.getLocations()) {
-            Location ruleform = new Location(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
-                                             rf.existentialRuleform().description == null ? null
-                                                                                          : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
-                                             model.getCurrentPrincipal()
-                                                  .getPrincipal());
-            em.persist(ruleform);
-            workspace.put(rf.existentialRuleform().workspaceName.getText(),
-                          ruleform);
-        }
-        defineFacetClassificationss(model.getLocationModel(),
-                                    wsp.getLocationFacets());
-    }
-
     private void loadMetaprotocols() {
         for (MetaProtocolContext mpc : wsp.getMetaProtocols()) {
-            MetaProtocol metaProtocol = model.getJobModel()
-                                             .newInitializedMetaProtocol(resolve(mpc.service),
-                                                                         model.getCurrentPrincipal()
-                                                                              .getPrincipal());
+            MetaProtocolRecord metaProtocol = model.getJobModel()
+                                                   .newInitializedMetaProtocol(model.records()
+                                                                                    .resolve(resolve(mpc.service)),
+                                                                               model.getCurrentPrincipal()
+                                                                                    .getPrincipal());
             if (mpc.product != null)
                 metaProtocol.setProduct(resolve(mpc.product));
             if (mpc.from != null)
@@ -563,50 +468,41 @@ public class WorkspaceImporter {
         }
     }
 
-    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void loadNetworks(List<EdgeContext> edges,
-                                                                                                              PhantasmModel<T, ?, ?, ?> networkedModel) {
+    private void loadNetworks(List<EdgeContext> edges) {
         for (EdgeContext edge : edges) {
-            networkedModel.initialize(resolve(edge.parent),
-                                      new Aspect<T>(resolve(edge.relationship),
-                                                    resolve(edge.child)),
-                                      workspace);
+            model.getPhantasmModel()
+                 .initialize(model.records()
+                                  .resolve(resolve(edge.parent)),
+                             model.getPhantasmModel()
+                                  .getFacetDeclaration(model.records()
+                                                            .resolve(resolve(edge.relationship)),
+                                                       model.records()
+                                                            .resolve(resolve(edge.child))),
+                             workspace);
         }
     }
 
     private void loadParentSequencing() {
         for (ParentSequencingContext seq : wsp.getParentSequencings()) {
-            ParentSequencingAuthorization auth = new ParentSequencingAuthorization(resolve(seq.service),
-                                                                                   resolve(seq.status),
-                                                                                   resolve(seq.parent),
-                                                                                   resolve(seq.next),
-                                                                                   model.getCurrentPrincipal()
-                                                                                        .getPrincipal());
-            em.persist(auth);
+            ParentSequencingAuthorizationRecord auth = model.records()
+                                                            .newParentSequencingAuthorization(resolve(seq.service),
+                                                                                              resolve(seq.status),
+                                                                                              resolve(seq.parent),
+                                                                                              resolve(seq.next),
+                                                                                              model.getCurrentPrincipal()
+                                                                                                   .getPrincipal());
+            auth.insert();
             workspace.add(auth);
         }
     }
 
-    private void loadProducts() {
-        for (AttributedExistentialRuleformContext rf : wsp.getProducts()) {
-            Product ruleform = new Product(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
-                                           rf.existentialRuleform().description == null ? null
-                                                                                        : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
-                                           model.getCurrentPrincipal()
-                                                .getPrincipal());
-            em.persist(ruleform);
-            workspace.put(rf.existentialRuleform().workspaceName.getText(),
-                          ruleform);
-        }
-        defineFacetClassificationss(model.getProductModel(),
-                                    wsp.getProductFacets());
-    }
-
     private void loadProtocols() {
         for (ProtocolContext pc : wsp.getProtocols()) {
-            Protocol protocol = model.getJobModel()
-                                     .newInitializedProtocol(resolve(pc.matchJob().service),
-                                                             model.getCurrentPrincipal()
-                                                                  .getPrincipal());
+            ProtocolRecord protocol = model.getJobModel()
+                                           .newInitializedProtocol(model.records()
+                                                                        .resolve(resolve(pc.matchJob().service)),
+                                                                   model.getCurrentPrincipal()
+                                                                        .getPrincipal());
             if (pc.matchJob().product != null)
                 protocol.setProduct(resolve(pc.matchJob().product));
             if (pc.matchJob().from != null)
@@ -646,39 +542,45 @@ public class WorkspaceImporter {
     private void loadRelationships() {
         for (RelationshipPairContext ctx : wsp.getRelationships()) {
             if (ctx.inverse == null) {
-                Relationship rel = model.getRelationshipModel()
-                                        .create(WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().name.getText()),
-                                                ctx.primary.existentialRuleform().description == null ? null
-                                                                                                      : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()));
-                rel.setInverse(rel);
+                Relationship rel = model.records()
+                                        .newRelationship(WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().name.getText()),
+                                                         ctx.primary.existentialRuleform().description == null ? null
+                                                                                                               : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()),
+                                                         model.getCurrentPrincipal()
+                                                              .getPrincipal());
+                rel.setInverse(rel.getId());
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
                               rel);
             } else {
-                Relationship relA = model.getRelationshipModel()
-                                         .create(WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().name.getText()),
-                                                 ctx.primary.existentialRuleform().description == null ? null
-                                                                                                       : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()),
+                Relationship relA = model.records()
+                                         .newRelationship(WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().name.getText()),
+                                                          ctx.primary.existentialRuleform().description == null ? null
+                                                                                                                : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()),
 
-                                                 WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
-                                                 ctx.inverse.existentialRuleform().description == null ? null
-                                                                                                       : WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
+                                                          WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
+                                                          ctx.inverse.existentialRuleform().description == null ? null
+                                                                                                                : WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().description.getText()),
+                                                          model.getCurrentPrincipal()
+                                                               .getPrincipal());
 
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
                               relA);
                 workspace.put(ctx.inverse.existentialRuleform().workspaceName.getText(),
-                              relA.getInverse());
+                              (Relationship) model.records()
+                                                  .resolve(relA.getInverse()));
             }
         }
     }
 
     private void loadSelfSequencing() {
         for (SelfSequencingContext seq : wsp.getSelfSequencings()) {
-            SelfSequencingAuthorization auth = new SelfSequencingAuthorization(resolve(seq.service),
-                                                                               resolve(seq.status),
-                                                                               resolve(seq.next),
-                                                                               model.getCurrentPrincipal()
-                                                                                    .getPrincipal());
-            em.persist(auth);
+            SelfSequencingAuthorizationRecord auth = model.records()
+                                                          .newSelfSequencingAuthorization(resolve(seq.service),
+                                                                                          resolve(seq.status),
+                                                                                          resolve(seq.next),
+                                                                                          model.getCurrentPrincipal()
+                                                                                               .getPrincipal());
+            auth.insert();
             workspace.add(auth);
         }
     }
@@ -692,25 +594,28 @@ public class WorkspaceImporter {
 
     private void loadSiblingSequencing() {
         for (SiblingSequencingContext seq : wsp.getSiblingSequencings()) {
-            SiblingSequencingAuthorization auth = new SiblingSequencingAuthorization(resolve(seq.parent),
-                                                                                     resolve(seq.status),
-                                                                                     resolve(seq.sibling),
-                                                                                     resolve(seq.next),
-                                                                                     model.getCurrentPrincipal()
-                                                                                          .getPrincipal());
-            em.persist(auth);
+            SiblingSequencingAuthorizationRecord auth = model.records()
+                                                             .newSiblingSequencingAuthorization(resolve(seq.parent),
+                                                                                                resolve(seq.status),
+                                                                                                resolve(seq.sibling),
+                                                                                                resolve(seq.next),
+                                                                                                model.getCurrentPrincipal()
+                                                                                                     .getPrincipal());
+            auth.insert();
             workspace.add(auth);
         }
     }
 
     private void loadStatusCodes() {
-        for (AttributedExistentialRuleformContext rf : wsp.getStatusCodes()) {
-            StatusCode ruleform = new StatusCode(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
-                                                 rf.existentialRuleform().description == null ? null
-                                                                                              : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
-                                                 model.getCurrentPrincipal()
-                                                      .getPrincipal());
-            em.persist(ruleform);
+        List<AttributedExistentialRuleformContext> statusCodes = wsp.getStatusCodes();
+        for (AttributedExistentialRuleformContext rf : statusCodes) {
+            StatusCode ruleform = model.records()
+                                       .newStatusCode(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
+                                                      rf.existentialRuleform().description == null ? null
+                                                                                                   : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
+                                                      model.getCurrentPrincipal()
+                                                           .getPrincipal());
+            ruleform.insert();
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
@@ -720,56 +625,32 @@ public class WorkspaceImporter {
 
     private void loadStatusCodeSequencings() {
         for (StatusCodeSequencingSetContext entry : wsp.getStatusCodeSequencings()) {
-            Product service = resolve(entry.service);
+            Product service = model.records()
+                                   .resolve(resolve(entry.service));
             for (SequencePairContext pair : entry.sequencePair()) {
-                StatusCode first = resolve(pair.first);
-                StatusCode second = resolve(pair.second);
-                StatusCodeSequencing sequence = new StatusCodeSequencing(service,
-                                                                         first,
-                                                                         second,
-                                                                         service.getUpdatedBy());
-                em.persist(sequence);
+                StatusCode parent = model.records()
+                                         .resolve(resolve(pair.first));
+                StatusCode child = model.records()
+                                        .resolve(resolve(pair.second));
+                StatusCodeSequencingRecord sequence = model.records()
+                                                           .newStatusCodeSequencing(service,
+                                                                                    parent,
+                                                                                    child,
+                                                                                    model.getCurrentPrincipal()
+                                                                                         .getPrincipal());
+                sequence.insert();
                 String key = String.format(STATUS_CODE_SEQUENCING_FORMAT,
-                                           service.getName(), first.getName(),
-                                           second.getName());
+                                           service.getName(), parent.getName(),
+                                           child.getName());
                 workspace.put(key, sequence);
             }
         }
 
     }
 
-    private void loadUnits() {
-        for (UnitContext unit : wsp.getUnits()) {
-            Token description = unit.existentialRuleform().description;
-            Unit ruleform = new Unit(WorkspacePresentation.stripQuotes(unit.existentialRuleform().name.getText()),
-                                     description == null ? null
-                                                         : WorkspacePresentation.stripQuotes(description.getText()),
-                                     model.getCurrentPrincipal()
-                                          .getPrincipal());
-            ruleform.setEnumerated(unit.enumerated == null ? null
-                                                           : Boolean.valueOf(unit.enumerated.getText()));
-            ruleform.setDatatype(unit.datatype.getText());
-            ruleform.setMin(unit.min == null ? null
-                                             : BigDecimal.valueOf(Long.valueOf(unit.min.getText())));
-            ruleform.setMax(unit.max == null ? null
-                                             : BigDecimal.valueOf(Long.valueOf(unit.max.getText())));
-            em.persist(ruleform);
-            workspace.put(unit.existentialRuleform().workspaceName.getText(),
-                          ruleform);
-        }
-    }
-
     private void loadWorkspace() {
         processImports();
-        loadRelationships();
-        loadAgencies();
-        loadAttributes();
-        loadLocations();
-        loadProducts();
-        loadStatusCodes();
-        loadStatusCodeSequencings();
-        loadUnits();
-        loadIntervals();
+        loadExistentials();
         loadFacets();
         loadEdges();
         loadSequencingAuths();
@@ -778,39 +659,18 @@ public class WorkspaceImporter {
         loadMetaprotocols();
     }
 
-    private void locationFacets() {
-        for (FacetContext facet : wsp.getLocationFacets()) {
-            classifiedAttributes(facet,
-                                 new LocationNetworkAuthorization(model.getCurrentPrincipal()
-                                                                       .getPrincipal()),
-                                 agency -> new LocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                   .getPrincipal()));
-            locationNetworkConstraints(facet);
-        }
-    }
-
-    private void locationNetworkConstraints(FacetContext facet) {
+    private void networkConstraints(FacetContext facet,
+                                    FacetRecord authorization) {
         NetworkConstraintsContext networkConstraints = facet.networkConstraints();
         if (networkConstraints == null) {
             return;
         }
         networkConstraints.constraint()
                           .forEach(constraint -> {
-                              Class<?> authParentClass = resolveAuthParent(constraint);
-                              if (authParentClass.equals(Location.class)) {
-                                  createNetworkAuth(facet, constraint,
-                                                    new LocationNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                          .getPrincipal()),
-                                                    agency -> new LocationAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                      .getPrincipal()));
-                              } else if (authParentClass.equals(Agency.class)) {
-                                  createLocationAgencyAuth(facet, constraint);
-                              } else if (authParentClass.equals(Product.class)) {
-                                  createLocationProductAuth(facet, constraint);
-                              } else if (authParentClass.equals(Relationship.class)) {
-                                  createRelationshipProductAuth(facet,
-                                                                constraint);
-                              }
+                              createNetworkAuth(facet, authorization,
+                                                constraint, model.records()
+                                                                 .newExistentialNetworkAuthorization(model.getCurrentPrincipal()
+                                                                                                          .getPrincipal()));
                           });
     }
 
@@ -818,8 +678,8 @@ public class WorkspaceImporter {
         for (ImportedWorkspaceContext w : wsp.getImports()) {
             String uri = WorkspacePresentation.stripQuotes(w.uri.getText());
             UUID uuid = WorkspaceAccessor.uuidOf(uri);
-            Product imported = model.create()
-                                    .find(Product.class, uuid);
+            Product imported = model.records()
+                                    .resolve(uuid);
             if (imported == null) {
                 throw new IllegalStateException(String.format("the import is not found: %s:%s",
                                                               uuid, uri));
@@ -828,198 +688,101 @@ public class WorkspaceImporter {
         }
     }
 
-    private void productFacets() {
-        for (FacetContext facet : wsp.getProductFacets()) {
-            classifiedAttributes(facet,
-                                 new ProductNetworkAuthorization(model.getCurrentPrincipal()
-                                                                      .getPrincipal()),
-                                 agency -> new ProductAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                  .getPrincipal()));
-            productNetworkConstraints(facet);
-        }
-    }
-
-    private void productNetworkConstraints(FacetContext facet) {
-        NetworkConstraintsContext networkConstraints = facet.networkConstraints();
-        if (networkConstraints == null) {
-            return;
-        }
-        networkConstraints.constraint()
-                          .forEach(constraint -> {
-                              Class<?> authParentClass = resolveAuthParent(constraint);
-                              if (authParentClass.equals(Product.class)) {
-                                  createNetworkAuth(facet, constraint,
-                                                    new ProductNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                         .getPrincipal()),
-                                                    agency -> new ProductAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                     .getPrincipal()));
-                              } else if (authParentClass.equals(Agency.class)) {
-                                  createProductAgencyAuth(facet, constraint);
-                              } else if (authParentClass.equals(Location.class)) {
-                                  createProductLocationAuth(facet, constraint);
-                              } else if (authParentClass.equals(Relationship.class)) {
-                                  createProductRelationshipAuth(facet,
-                                                                constraint);
-                              }
-                          });
-    }
-
-    private void relationshipFacets() {
-        for (FacetContext facet : wsp.getRelationshipFacets()) {
-            classifiedAttributes(facet,
-                                 new RelationshipNetworkAuthorization(model.getCurrentPrincipal()
-                                                                           .getPrincipal()),
-                                 agency -> new RelationshipAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                       .getPrincipal()));
-            relationshipNetworkConstraints(facet);
-        }
-    }
-
-    private void relationshipNetworkConstraints(FacetContext facet) {
-        NetworkConstraintsContext networkConstraints = facet.networkConstraints();
-        if (networkConstraints == null) {
-            return;
-        }
-        networkConstraints.constraint()
-                          .forEach(constraint -> {
-                              Class<?> authParentClass = resolveAuthParent(constraint);
-                              if (authParentClass.equals(Product.class)) {
-                                  createRelationshipProductAuth(facet,
-                                                                constraint);
-                              } else {
-                                  createNetworkAuth(facet, constraint,
-                                                    new RelationshipNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                              .getPrincipal()),
-                                                    agency -> new RelationshipAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                          .getPrincipal()));
-                              }
-                          });
-    }
-
-    @SuppressWarnings("unchecked")
     private UUID resolve(QualifiedNameContext qualifiedName) {
         if (qualifiedName == null) {
             throw new IllegalArgumentException("Qualified name is null");
         }
-        T ruleform;
+        UUID id;
         if (qualifiedName.namespace != null) {
-            ruleform = (T) scope.lookup(qualifiedName.namespace.getText(),
-                                        qualifiedName.member.getText());
+            return scope.lookupId(qualifiedName.namespace.getText(),
+                                  qualifiedName.member.getText());
         } else if (qualifiedName.member.getText()
                                        .equals(THIS)) {
-            ruleform = (T) workspace.getDefiningProduct();
+            return workspace.getDefiningProduct()
+                            .getId();
         } else {
-            ruleform = (T) scope.lookup(qualifiedName.member.getText());
-        }
-        if (ruleform == null) {
-            if (ruleform == null) {
-                throw new InvalidKeyException(String.format("Cannot resolve %s:%s",
-                                                            qualifiedName.namespace == null ? ""
-                                                                                            : qualifiedName.namespace.getText(),
-                                                            qualifiedName.member.getText()));
+            id = scope.lookupId(qualifiedName.member.getText());
+            if (id != null) {
+                return id;
             }
         }
-        return Ruleform.initializeAndUnproxy(ruleform);
+        throw new InvalidKeyException(String.format("Cannot resolve %s:%s",
+                                                    qualifiedName.namespace == null ? ""
+                                                                                    : qualifiedName.namespace.getText(),
+                                                    qualifiedName.member.getText()));
     }
 
-    private Class<? extends Ruleform> resolveAny(String anyType) {
+    private ExistentialRuleform resolveAnyEntity(String anyType) {
         switch (anyType) {
             case "*Agency":
-                return Agency.class;
+                return model.getKernel()
+                            .getAnyAgency();
             case "*Attribute":
-                return Attribute.class;
+                return model.getKernel()
+                            .getAnyAttribute();
             case "*Interval":
-                return Interval.class;
+                return model.getKernel()
+                            .getAnyInterval();
             case "*Location":
-                return Location.class;
+                return model.getKernel()
+                            .getAnyLocation();
             case "*Product":
-                return Product.class;
+                return model.getKernel()
+                            .getAnyProduct();
             case "*Relationship":
-                return Relationship.class;
+                return model.getKernel()
+                            .getAnyRelationship();
             case "*StatusCode":
-                return StatusCode.class;
+                return model.getKernel()
+                            .getAnyStatusCode();
             case "*Unit":
-                return Unit.class;
+                return model.getKernel()
+                            .getAnyUnit();
             default:
                 throw new IllegalArgumentException(String.format("Invalid *Any type: %s",
                                                                  anyType));
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> T resolveAnyEntity(String anyType) {
-        switch (anyType) {
-            case "*Agency":
-                return (T) model.getKernel()
-                                .getAnyAgency();
-            case "*Attribute":
-                return (T) model.getKernel()
-                                .getAnyAttribute();
-            case "*Interval":
-                return (T) model.getKernel()
-                                .getAnyInterval();
-            case "*Location":
-                return (T) model.getKernel()
-                                .getAnyLocation();
-            case "*Product":
-                return (T) model.getKernel()
-                                .getAnyProduct();
-            case "*Relationship":
-                return (T) model.getKernel()
-                                .getAnyRelationship();
-            case "*StatusCode":
-                return (T) model.getKernel()
-                                .getAnyStatusCode();
-            case "*Unit":
-                return (T) model.getKernel()
-                                .getAnyUnit();
-            default:
-                throw new IllegalArgumentException(String.format("Invalid *Any type: %s",
-                                                                 anyType));
-        }
-    }
-
-    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveAuthorized(ConstraintContext constraint,
-                                                                                                                   NetworkAuthorization<T> authorization) {
+    private void resolveChild(ConstraintContext constraint,
+                              ExistentialNetworkAuthorizationRecord authorization) {
         if (constraint.anyType == null) {
-            authorization.setAuthorizedParent(resolve(constraint.authorizedParent));
-            authorization.setAuthorizedRelationship(resolve(constraint.authorizedRelationship));
+            authorization.setChild(model.getPhantasmModel()
+                                        .getFacetDeclaration(model.records()
+                                                                  .resolve(resolve(constraint.authorizedRelationship)),
+                                                             model.records()
+                                                                  .resolve(resolve(constraint.authorizedParent)))
+                                        .getId());
         } else {
-            authorization.setAuthorizedParent(resolveAnyEntity(constraint.anyType.getText()));
-            authorization.setAuthorizedRelationship(model.getKernel()
-                                                         .getAnyRelationship());
+            authorization.setChild(model.getPhantasmModel()
+                                        .getFacetDeclaration(model.getKernel()
+                                                                  .getAnyRelationship(),
+                                                             model.records()
+                                                                  .resolve(resolveAnyEntity(constraint.anyType.getText()).getId()))
+                                        .getId());
         }
     }
 
-    private Class<? extends Ruleform> resolveAuthParent(ConstraintContext constraint) {
-        return constraint.anyType == null ? resolve(constraint.authorizedParent).getClass()
-                                          : resolveAny(constraint.anyType.getText());
+    private void setValueFromString(ExistentialAttributeAuthorizationRecord auth,
+                                    String value) {
+        // TODO Auto-generated method stub
+
     }
 
-    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveFrom(ConstraintContext constraint,
-                                                                                                             XDomainNetworkAuthorization<T, ?> authorization) {
+    /**
+     * @param ama
+     * @param stripQuotes
+     */
+    private void setValueFromString(ExistentialAttributeRecord ama,
+                                    String stripQuotes) {
+        // TODO Auto-generated method stub
 
-        authorization.setName(WorkspacePresentation.networkAuthNameOf(constraint));
-        if (constraint.anyType == null) {
-            authorization.setFromParent(resolve(constraint.authorizedParent));
-            authorization.setFromRelationship(resolve(constraint.authorizedRelationship));
-        } else {
-            authorization.setFromParent(resolveAnyEntity(constraint.anyType.getText()));
-            authorization.setFromRelationship(model.getKernel()
-                                                   .getAnyRelationship());
-        }
     }
 
-    private <T extends ExistentialRuleform<T, Network>, Network extends NetworkRuleform<T>> void resolveTo(ConstraintContext constraint,
-                                                                                                           XDomainNetworkAuthorization<?, T> authorization) {
-        if (constraint.anyType == null) {
-            authorization.setToParent(resolve(constraint.authorizedParent));
-            authorization.setToRelationship(resolve(constraint.authorizedRelationship));
-        } else {
-            authorization.setToParent(resolveAnyEntity(constraint.anyType.getText()));
-            authorization.setToRelationship(model.getKernel()
-                                                 .getAnyRelationship());
-        }
+    private void setValueFromString(ExistentialNetworkAttributeAuthorizationRecord auth,
+                                    String stripQuotes) {
+        // TODO Auto-generated method stub
+
     }
 
     /**
@@ -1029,22 +792,22 @@ public class WorkspaceImporter {
     private void setValueType(Attribute attr, Token valueType) {
         switch (valueType.getText()) {
             case "int":
-                attr.setValueType(ValueType.INTEGER);
+                attr.setValueType(ValueType.Integer);
                 return;
             case "bool":
-                attr.setValueType(ValueType.BOOLEAN);
+                attr.setValueType(ValueType.Boolean);
                 return;
             case "text":
-                attr.setValueType(ValueType.TEXT);
+                attr.setValueType(ValueType.Text);
                 return;
             case "binary":
-                attr.setValueType(ValueType.BINARY);
+                attr.setValueType(ValueType.Binary);
                 return;
             case "numeric":
-                attr.setValueType(ValueType.NUMERIC);
+                attr.setValueType(ValueType.Numeric);
                 return;
             case "timestamp":
-                attr.setValueType(ValueType.TIMESTAMP);
+                attr.setValueType(ValueType.Timestamp);
                 return;
             case "json":
                 attr.setValueType(ValueType.JSON);
@@ -1054,57 +817,5 @@ public class WorkspaceImporter {
                                                                  valueType.getText(),
                                                                  attr));
         }
-    }
-
-    private void statusCodeFacets() {
-        for (FacetContext facet : wsp.getStatusCodeFacets()) {
-            classifiedAttributes(facet,
-                                 new StatusCodeNetworkAuthorization(model.getCurrentPrincipal()
-                                                                         .getPrincipal()),
-                                 agency -> new StatusCodeAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                     .getPrincipal()));
-            statusCodeNetworkConstraints(facet);
-        }
-    }
-
-    private void statusCodeNetworkConstraints(FacetContext facet) {
-        NetworkConstraintsContext networkConstraints = facet.networkConstraints();
-        if (networkConstraints == null) {
-            return;
-        }
-        networkConstraints.constraint()
-                          .forEach(constraint -> {
-                              createNetworkAuth(facet, constraint,
-                                                new StatusCodeNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                        .getPrincipal()),
-                                                agency -> new StatusCodeAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                    .getPrincipal()));
-                          });
-    }
-
-    private void unitFacets() {
-        for (FacetContext facet : wsp.getUnitFacets()) {
-            classifiedAttributes(facet,
-                                 new UnitNetworkAuthorization(model.getCurrentPrincipal()
-                                                                   .getPrincipal()),
-                                 unit -> new UnitAttributeAuthorization(model.getCurrentPrincipal()
-                                                                             .getPrincipal()));
-            unitNetworkConstraints(facet);
-        }
-    }
-
-    private void unitNetworkConstraints(FacetContext facet) {
-        NetworkConstraintsContext networkConstraints = facet.networkConstraints();
-        if (networkConstraints == null) {
-            return;
-        }
-        networkConstraints.constraint()
-                          .forEach(constraint -> {
-                              createNetworkAuth(facet, constraint,
-                                                new UnitNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                  .getPrincipal()),
-                                                agency -> new UnitAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                              .getPrincipal()));
-                          });
     }
 }

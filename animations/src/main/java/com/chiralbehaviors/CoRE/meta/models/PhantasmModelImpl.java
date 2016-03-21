@@ -961,4 +961,14 @@ public class PhantasmModelImpl implements PhantasmModel {
         // TODO Auto-generated method stub
 
     }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#setValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord, java.lang.String)
+     */
+    @Override
+    public void setValue(ExistentialNetworkAttributeRecord attribute,
+                         String name) {
+        // TODO Auto-generated method stub
+
+    }
 }

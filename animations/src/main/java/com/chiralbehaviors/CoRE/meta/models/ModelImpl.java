@@ -272,7 +272,6 @@ public class ModelImpl implements Model {
         return attributeModel;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public CoreInstance getCoreInstance() {
         return wrap(CoreInstance.class,
@@ -441,13 +440,6 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                         Phantasm<T> ruleform) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public ExistentialRecord lookupExistential(UUID id) {
         // TODO Auto-generated method stub
         return null;
@@ -464,13 +456,38 @@ public class ModelImpl implements Model {
         return factory;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#wrap(java.lang.Class, com.chiralbehaviors.CoRE.domain.ExistentialRuleform)
-     */
     @Override
     public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                         T ruleform) {
+                                                                         ExistentialRuleform ruleform) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#getExistentialModel(com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain)
+     */
+    @Override
+    public ExistentialModel<? extends ExistentialRuleform> getExistentialModel(ExistentialDomain domain) {
+        switch (domain) {
+            case Agency:
+                return getAgencyModel();
+            case Attribute:
+                return getAttributeModel();
+            case Interval:
+                return getIntervalModel();
+            case Location:
+                return getLocationModel();
+            case Product:
+                return getLocationModel();
+            case Relationship:
+                return getRelationshipModel();
+            case StatusCode:
+                return getStatusCodeModel();
+            case Unit:
+                return getUnitModel();
+            default:
+                throw new IllegalArgumentException(String.format("Invalid domain: %s",
+                                                                 domain));
+        }
     }
 }

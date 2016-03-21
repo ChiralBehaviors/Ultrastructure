@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -75,8 +76,8 @@ public class WorkspaceScope {
      * @return the value associated with the key in the reciever scope, or from
      *         an imported scope, or null if this simple name is not defined
      */
-    public Ruleform lookup(String key) {
-        Ruleform ruleform = workspace.get(key);
+    public <T> T lookup(String key) {
+        T ruleform = workspace.get(key);
         if (ruleform != null) {
             return ruleform;
         }
@@ -152,5 +153,46 @@ public class WorkspaceScope {
 
     protected Ruleform localLookup(String key, Model model) {
         return workspace.get(key);
+    }
+
+    /**
+     * Answer the reference id
+     * 
+     */
+    public UUID lookupId(String namespace, String name) {
+        // null and empty string is alias for null scoped lookup in the workspace
+        if (namespace == null || namespace.length() == 0) {
+            return lookupId(name);
+        }
+        WorkspaceAccessor workspace = imports.get(namespace);
+        if (workspace == null) {
+            throw new IllegalArgumentException(String.format("Namespace %s does not exist",
+                                                             namespace));
+        }
+        UUID member = workspace.getId(name);
+        if (member == null) {
+            throw new IllegalArgumentException(String.format("Member %s::%s does not exist",
+                                                             namespace, name));
+        }
+        return member;
+    }
+
+    /**
+     * @param name
+     * @return
+     */
+    public UUID lookupId(String name) {
+        UUID ruleform = workspace.getId(name);
+        if (ruleform != null) {
+            return ruleform;
+        }
+        for (WorkspaceAccessor accessor : sortedImports) {
+            ruleform = accessor.getScope()
+                               .lookupId(name);
+            if (ruleform != null) {
+                return ruleform;
+            }
+        }
+        return null;
     }
 }

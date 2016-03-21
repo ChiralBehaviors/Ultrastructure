@@ -23,7 +23,6 @@ package com.chiralbehaviors.CoRE.meta.workspace;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -32,12 +31,10 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import javax.persistence.EntityManager;
-
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -58,10 +55,8 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         File version1File = new File(TARGET_CLASSES_THING_1_JSON);
         File version2File = new File(TARGET_CLASSES_THING_2_JSON);
         File version2_1File = new File(TARGET_CLASSES_THING_1_2_JSON);
-        try (Model myModel = new ModelImpl(emf)) {
-            EntityManager myEm = myModel.create();
-            myEm.getTransaction()
-                .begin();
+        try (Model myModel = new ModelImpl(create)) {
+            myModel.create();
             WorkspaceImporter importer;
             Product definingProduct;
             WorkspaceSnapshot snapshot;
@@ -69,44 +64,32 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             // load version 1
             importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
                                                   myModel);
-            myEm.flush();
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
-            snapshot = new WorkspaceSnapshot(definingProduct, myEm);
+            snapshot = new WorkspaceSnapshot(definingProduct, create);
             try (FileOutputStream os = new FileOutputStream(version1File)) {
                 snapshot.serializeTo(os);
             }
-            assertTrue(snapshot.validate());
         }
 
-        try (Model myModel = new ModelImpl(emf)) {
-            EntityManager myEm = myModel.create();
-            myEm.getTransaction()
-                .begin();
-            WorkspaceSnapshot.load(myEm, Arrays.asList(version1File.toURI()
-                                                                   .toURL()));
-
-            myEm.flush();
+        try (Model myModel = new ModelImpl(create)) {
+            WorkspaceSnapshot.load(create, Arrays.asList(version1File.toURI()
+                                                                     .toURL()));
 
             // load version 2
 
             WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
                                                                     myModel);
-            myEm.flush();
             Product definingProduct = importer.getWorkspace()
                                               .getDefiningProduct();
             WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
-                                                               myEm);
+                                                               create);
             try (FileOutputStream os = new FileOutputStream(version2File)) {
                 snapshot.serializeTo(os);
             }
-            assertTrue(snapshot.validate());
         }
 
-        try (Model myModel = new ModelImpl(emf)) {
-            EntityManager myEm = myModel.create();
-            myEm.getTransaction()
-                .begin();
+        try (Model myModel = new ModelImpl(create)) {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new CoREModule());
@@ -116,23 +99,16 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                 version1 = mapper.readValue(is, WorkspaceSnapshot.class);
             }
 
-            assertTrue(version1.validate());
-
             try (InputStream is = new FileInputStream(version2File);) {
                 version2 = mapper.readValue(is, WorkspaceSnapshot.class);
             }
 
-            assertTrue(version2.validate());
-
-            WorkspaceSnapshot delta = version2.deltaFrom(version1);
+            WorkspaceSnapshot delta = version2.deltaFrom(create, version1);
             try (FileOutputStream os = new FileOutputStream(version2_1File)) {
                 delta.serializeTo(os);
             }
-            assertEquals(7, delta.getRuleforms()
+            assertEquals(7, delta.getRecords()
                                  .size());
-            assertEquals(7, delta.getFrontier()
-                                 .size());
-            assertTrue(delta.validate());
 
             try {
                 myModel.getWorkspaceModel()
@@ -141,18 +117,15 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             } catch (IllegalArgumentException e) {
                 // expected
             }
-            version1.retarget(myEm);
-            delta.retarget(myEm);
+            version1.load(create);
+            delta.load(create);
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
             Agency theDude = (Agency) scope.lookup("TheDude");
             assertNotNull(theDude);
         }
 
-        try (Model myModel = new ModelImpl(emf)) {
-            EntityManager myEm = myModel.create();
-            myEm.getTransaction()
-                .begin();
+        try (Model myModel = new ModelImpl(create)) {
 
             try {
                 myModel.getWorkspaceModel()
@@ -161,10 +134,10 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             } catch (IllegalArgumentException e) {
                 // expected
             }
-            WorkspaceSnapshot.load(myEm, Arrays.asList(version1File.toURI()
-                                                                   .toURL(),
-                                                       version2_1File.toURI()
-                                                                     .toURL()));
+            WorkspaceSnapshot.load(create, Arrays.asList(version1File.toURI()
+                                                                     .toURL(),
+                                                         version2_1File.toURI()
+                                                                       .toURL()));
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
             Agency theDude = (Agency) scope.lookup("TheDude");
@@ -176,22 +149,13 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
     public void testUnload() throws Exception {
         WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.wsp"),
                                                                 model);
-        em.flush();
         Product definingProduct = importer.getWorkspace()
                                           .getDefiningProduct();
 
         Thing1 thing1 = model.construct(Thing1.class, "Freddy",
                                         "He always comes back");
-        model.create()
-             .flush();
-        model.create()
-             .clear();
         model.getWorkspaceModel()
              .unload(definingProduct);
-        model.create()
-             .flush();
-        model.create()
-             .clear();
         try {
             assertNull(model.wrap(Thing1.class, thing1.getRuleform()));
             fail("Thing ontology not unloaded");

@@ -72,7 +72,6 @@
         <module>animations</module>
         <module>loader</module>
         <module>loader-plugin</module>
-        <module>network-inference-generator</module>
         <module>dsl</module>
         <module>loader-plugin-test</module>
         <module>phantasm-plugin</module>

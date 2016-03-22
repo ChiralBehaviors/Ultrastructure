@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+>
+
+    <changeSet id="2.0.0" author="hhildebrand">
+        <createView viewName="existential_network_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
+			 SELECT  
+                w.name AS workspace,
+                wa.key AS wsp_key,
+                wa.description AS wsp_desc,
+                ba.id, 
+                b.id AS network_rule, 
+                a.name AS attribute, 
+                ba.key AS key,
+    	        ba.numeric_value, 
+                ba.integer_value, 
+                ba.boolean_value, 
+    	        ba.text_value, 
+                ba.json_value, 
+                u.name AS unit,
+                ba.notes, 
+    	        up.name AS updated_by, 
+                ba.updated,
+    	        ba.version
+			   FROM existential_network_attribute ba
+			   JOIN existential_network b ON ba.edge = b.id
+			   JOIN existential a ON ba.attribute = a.id
+			   LEFT JOIN existential u ON ba.unit = u.id
+			   JOIN existential up ON ba.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON ba.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+            ]]>
+        </createView>
+    </changeSet>
+</databaseChangeLog>

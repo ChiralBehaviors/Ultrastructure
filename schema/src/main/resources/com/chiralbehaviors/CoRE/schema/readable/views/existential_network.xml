@@ -6,29 +6,30 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView schemaName="readable" viewName="relationship_network" replaceIfExists="true"><![CDATA[
+        <createView viewName="existential_network" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT 
-                w.name AS workspace,
+                w.name AS workspace, n.id, 
                 wa.key AS wsp_key,
                 wa.description AS wsp_desc,
-                 n.id, 
-                    p.name AS parent, 
+                    p.name AS parent,
+                    p.domain AS parent_domain,
                     rel.name AS relationship, 
                     c.name AS child, 
+                    c.domain AS child_domain,
                     n.inference,
                     n.premise1, 
-                    n.premise2,
+                    n.premise2, 
                     n.notes, 
                     u.name AS updated_by, 
                     n.version
-			   FROM relationship_network n
-			   JOIN relationship p ON n.parent = p.id
-			   JOIN relationship rel ON n.relationship = rel.id
-			   JOIN relationship c ON n.child = c.id
-			   JOIN agency u ON n.updated_by = u.id
-             LEFT JOIN ruleform.workspace_authorization wa ON n.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id 
+			   FROM existential_network n
+			   JOIN existential p ON n.parent = p.id
+			   JOIN existential rel ON n.relationship = rel.id
+			   JOIN existential c ON n.child = c.id
+			   JOIN existential u ON n.updated_by = u.id
+             LEFT JOIN workspace_authorization wa ON n.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
             ]]>
-		</createView>
+        </createView>
     </changeSet>
 </databaseChangeLog>

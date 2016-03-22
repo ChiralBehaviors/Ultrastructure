@@ -13,19 +13,15 @@
                 wa.description AS wsp_desc,
                  b.id, 
 			     b.name, 
-                 b.description, 
-			     b.abbreviation,
-			     b.datatype,
-			     b.min,
-			     b.max,
-			     b.enumerated,
+                 b.description,  
 			     b.notes, 
 			     up.name AS updated_by,
 			     b.version
-			   FROM unit b
-			   JOIN agency up ON b.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON b.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   FROM existential b
+			   JOIN existential up ON b.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON b.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+               WHERE b.domain = 'Unit'
             ]]>
         </createView>
     </changeSet>

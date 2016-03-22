@@ -6,13 +6,14 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView viewName="agency_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
+        <createView viewName="existential_attribute" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT w.name AS workspace,
                  wa.key AS wsp_key,
                  wa.description AS wsp_desc,
                  ra.id, 
-			     r.name AS agency, 
 			     a.name AS attribute, 
+                 r.name AS existential, 
+                 r.domain AS domain,
                  ra.key AS key,
 			     ra.numeric_value, 
 			     ra.integer_value, 
@@ -24,13 +25,13 @@
 			     up.name AS updated_by, 
                  ra.updated,
 			     ra.version
-			   FROM agency_attribute ra
-			   JOIN agency r ON ra.agency = r.id
-			   JOIN attribute a ON ra.attribute = a.id
-			   LEFT JOIN unit u ON ra.unit = u.id
-			   JOIN agency up ON ra.updated_by = up.id
-               LEFT JOIN ruleform.workspace_authorization wa ON ra.workspace = wa.id
-               LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   FROM existential_attribute ra
+			   JOIN existential r ON ra.existential = r.id
+			   JOIN existential a ON ra.attribute = a.id
+			   LEFT JOIN existential u ON ra.unit = u.id
+			   JOIN existential up ON ra.updated_by = up.id
+               LEFT JOIN workspace_authorization wa ON ra.workspace = wa.id
+               LEFT JOIN existential w ON wa.defining_product = w.id
             ]]>
         </createView>
     </changeSet>

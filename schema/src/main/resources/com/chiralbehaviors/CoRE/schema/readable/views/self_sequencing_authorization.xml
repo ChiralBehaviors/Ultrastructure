@@ -6,7 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView schemaName="readable" viewName="product_self_sequencing_authorization" replaceIfExists="true"><![CDATA[ 
+        <createView schemaName="readable" viewName="self_sequencing_authorization" replaceIfExists="true"><![CDATA[ 
            SELECT 
                 w.name AS workspace, 
                 wa.key AS wsp_key,
@@ -18,12 +18,12 @@
                 base_table.notes,
                 up.name AS updated_by, 
                 base_table.version
-               FROM product_self_sequencing_authorization base_table
-               JOIN product s ON base_table.service = s.id
-               JOIN status_code sc ON base_table.status_code = sc.id
-               JOIN agency up ON base_table.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+               FROM self_sequencing_authorization base_table
+               JOIN existential s ON base_table.service = s.id
+               JOIN existential sc ON base_table.status_code = sc.id
+               JOIN existential up ON base_table.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
             ]]></createView>
     </changeSet>
 </databaseChangeLog>

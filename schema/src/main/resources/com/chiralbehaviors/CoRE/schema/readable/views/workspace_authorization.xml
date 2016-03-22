@@ -17,9 +17,9 @@
 			     b.notes, 
 			     up.name AS updated_by,
 			     b.version
-			   FROM ruleform.workspace_authorization b
-			   JOIN ruleform.agency up ON b.updated_by = up.id
-               JOIN ruleform.product dp ON b.defining_product = dp.id 
+			   FROM workspace_authorization b
+			   JOIN existential up ON b.updated_by = up.id
+               JOIN existential dp ON b.defining_product = dp.id 
             ]]>
         </createView>
     </changeSet>

@@ -19,12 +19,12 @@
                 up.name AS updated_by, 
                 c.version
 			   FROM network_inference c
-			   JOIN relationship r1 ON c.premise1 = r1.id
-			   JOIN relationship r2 ON c.premise2 = r2.id
-			   JOIN relationship r3 ON c.inference = r3.id
-			   JOIN agency up ON c.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON c.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   JOIN existential r1 ON c.premise1 = r1.id
+			   JOIN existential r2 ON c.premise2 = r2.id
+			   JOIN existential r3 ON c.inference = r3.id
+			   JOIN existential up ON c.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON c.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
             ]]>
         </createView>
     </changeSet>

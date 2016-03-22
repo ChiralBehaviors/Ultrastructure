@@ -19,10 +19,11 @@
                 base_table.propagate_children, 
                 up.name AS updated_by, 
                 base_table.version
-			   FROM status_code base_table
-			   JOIN agency up ON base_table.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   FROM existential base_table
+			   JOIN existential up ON base_table.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+               WHERE base_table.domain = 'StatusCode'
             ]]>
         </createView>
     </changeSet>

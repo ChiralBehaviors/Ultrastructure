@@ -6,7 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView viewName="product_parent_sequencing_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
+        <createView viewName="parent_sequencing_authorization" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT  
                 w.name AS workspace,
                 wa.key AS wsp_key,
@@ -21,14 +21,14 @@
 			    base_table.notes,
 			    up.name AS updated_by, 
                 base_table.version
-			   FROM product_parent_sequencing_authorization base_table
-			   JOIN product p ON base_table.service = p.id
-			   JOIN status_code sc ON base_table.status_code = sc.id
-			   LEFT JOIN product mp ON base_table.parent = mp.id
-			   LEFT JOIN status_code mps ON base_table.parent_status_to_set = mps.id
-			   JOIN agency up ON base_table.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON base_table.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   FROM parent_sequencing_authorization base_table
+			   JOIN existential p ON base_table.service = p.id
+			   JOIN existential sc ON base_table.status_code = sc.id
+			   LEFT JOIN existential mp ON base_table.parent = mp.id
+			   LEFT JOIN existential mps ON base_table.parent_status_to_set = mps.id
+			   JOIN existential up ON base_table.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON base_table.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
             ]]>
         </createView>
     </changeSet>

@@ -17,10 +17,11 @@
 			     r.notes,
 			     up.name AS updated_by, 
 			     r.version
-			   FROM agency r
-			   JOIN agency up ON r.updated_by = up.id
-             LEFT JOIN ruleform.workspace_authorization wa ON r.workspace = wa.id
-             LEFT JOIN ruleform.product w ON wa.defining_product = w.id
+			   FROM existential r
+			   JOIN existential up ON r.updated_by = up.id
+             LEFT JOIN workspace_authorization wa ON r.workspace = wa.id
+             LEFT JOIN existential w ON wa.defining_product = w.id
+               WHERE r.domain = 'Agency'
             ]]>
         </createView>
     </changeSet>

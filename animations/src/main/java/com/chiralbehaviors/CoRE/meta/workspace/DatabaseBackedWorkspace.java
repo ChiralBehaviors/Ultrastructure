@@ -754,4 +754,13 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                                                           .getPrincipal());
         authorization.insert();
     }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord)
+     */
+    @Override
+    public void add(SiblingSequencingAuthorizationRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
 }

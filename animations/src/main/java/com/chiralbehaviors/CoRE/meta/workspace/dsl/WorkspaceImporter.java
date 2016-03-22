@@ -29,6 +29,8 @@ import java.util.UUID;
 import javax.management.openmbean.InvalidKeyException;
 
 import org.antlr.v4.runtime.Token;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -82,6 +84,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequenci
  *
  */
 public class WorkspaceImporter {
+    private static final Logger log                           = LoggerFactory.getLogger(WorkspaceImporter.class);
     private static final String STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
     private static final String THIS                          = "this";
 
@@ -298,7 +301,7 @@ public class WorkspaceImporter {
                                              List<FacetContext> facets) {
         for (FacetContext facet : facets) {
             if (facet.classification.namespace == null) {
-                if (scope.lookup(facet.classification.member.getText()) == null) {
+                if (scope.lookup(facet.classification.member.getText()) != null) {
                     ExistentialRecord erf = (ExistentialRecord) networkedModel.create(facet.name == null ? facet.classification.member.getText()
                                                                                                          : WorkspacePresentation.stripQuotes(facet.name.getText()),
                                                                                       facet.description == null ? null
@@ -333,6 +336,7 @@ public class WorkspaceImporter {
                                                                                                                : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
                                                             model.getCurrentPrincipal()
                                                                  .getPrincipal());
+            log.info("Inserted\n{}", record);
             record.insert();
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           record);

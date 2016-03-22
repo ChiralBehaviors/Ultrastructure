@@ -99,14 +99,13 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         return (RuleForm) copy;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final RuleForm create(String name, String description) {
-        //        Agency agency = new Agency(name, description,
-        //                                   model.getCurrentPrincipal()
-        //                                        .getPrincipal());
-        //        em.persist(agency);
-        //        return agency;
-        return null;
+        return (RuleForm) model.records()
+                               .newExistential(domain(), name, description,
+                                               model.getCurrentPrincipal()
+                                                    .getPrincipal());
     }
 
     @SafeVarargs

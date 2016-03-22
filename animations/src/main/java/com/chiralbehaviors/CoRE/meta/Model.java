@@ -283,9 +283,6 @@ public interface Model extends AutoCloseable {
 
     ExistentialRecord lookupExistential(UUID id);
 
-    AuthorizedPrincipal principalFrom(ExistentialRecord principal,
-                                      List<UUID> capabilities);
-
     RecordsFactory records();
 
     /**

@@ -427,27 +427,18 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public AuthorizedPrincipal principalFrom(ExistentialRecord principal,
-                                             List<UUID> capabilities) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public PhantasmModel getPhantasmModel() {
         return phantasmModel;
     }
 
     @Override
     public ExistentialRecord lookupExistential(UUID id) {
-        // TODO Auto-generated method stub
-        return null;
+        return records().resolve(id);
     }
 
     @Override
     public Attribute getAttribute(UUID id) {
-        // TODO Auto-generated method stub
-        return null;
+        return records().resolve(id);
     }
 
     @Override

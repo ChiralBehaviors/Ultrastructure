@@ -208,12 +208,23 @@ public class WorkspaceImporter {
         });
     }
 
-    private FacetRecord createFacet(FacetContext facet) {
-        FacetRecord authorization = model.records()
-                                         .newFacet(model.getCurrentPrincipal()
-                                                        .getPrincipal());
-        authorization.setClassifier(resolve(facet.classifier));
-        authorization.setClassification(resolve(facet.classification));
+    private FacetRecord findOrCreateFacet(FacetContext facet) {
+        Relationship classifier = model.records()
+                                       .resolve(resolve(facet.classifier));
+        ExistentialRuleform classification = model.records()
+                                                  .resolve(resolve(facet.classification));
+
+        FacetRecord authorization = model.getPhantasmModel()
+                                         .getFacetDeclaration(classifier,
+                                                              classification);
+        if (authorization != null) {
+            return authorization;
+        }
+        authorization = model.records()
+                             .newFacet(model.getCurrentPrincipal()
+                                            .getPrincipal());
+        authorization.setClassifier(classifier.getId());
+        authorization.setClassification(classification.getId());
         if (facet.name != null) {
             authorization.setName(WorkspacePresentation.stripQuotes(facet.name.getText()));
         } else {
@@ -224,6 +235,7 @@ public class WorkspaceImporter {
         if (facet.description != null) {
             authorization.setNotes(WorkspacePresentation.stripQuotes(facet.name.getText()));
         }
+        log.info("Inserted\n{}", authorization);
         authorization.insert();
         workspace.add(authorization);
         return authorization;
@@ -236,8 +248,8 @@ public class WorkspaceImporter {
         authorization.setParent(facetAuth.getId());
         authorization.setRelationship(resolve(constraint.childRelationship));
         resolveChild(constraint, authorization);
-        authorization.setCardinality(Cardinality.valueOf(constraint.cardinality.getText()
-                                                                               .toUpperCase()));
+        Cardinality cardinality = cardinality(constraint);
+        authorization.setCardinality(cardinality);
         workspace.add(authorization);
         authorization.insert();
         List<ClassifiedAttributeContext> classifiedAttributes = constraint.classifiedAttribute();
@@ -257,6 +269,22 @@ public class WorkspaceImporter {
             attrAuth.insert();
             workspace.add(attrAuth);
         });
+    }
+
+    private Cardinality cardinality(ConstraintContext constraint) {
+        String card = constraint.cardinality.getText()
+                                            .toUpperCase();
+        switch (card) {
+            case "ONE":
+                return Cardinality._1;
+            case "ZERO":
+                return Cardinality.Zero;
+            case "N":
+                return Cardinality.N;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid cardinality: %s",
+                                                                 card));
+        }
     }
 
     private WorkspaceAccessor createWorkspace() {
@@ -297,8 +325,8 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
-    private void defineFacetClassificationss(ExistentialModel<? extends ExistentialRuleform> networkedModel,
-                                             List<FacetContext> facets) {
+    private void defineFacets(ExistentialModel<? extends ExistentialRuleform> networkedModel,
+                              List<FacetContext> facets) {
         for (FacetContext facet : facets) {
             if (facet.classification.namespace == null) {
                 if (scope.lookup(facet.classification.member.getText()) == null) {
@@ -311,12 +339,13 @@ public class WorkspaceImporter {
                     workspace.put(facet.classification.member.getText(), erf);
                 }
             }
+            findOrCreateFacet(facet);
         }
     }
 
-    private void facets(List<FacetContext> facets) {
+    private void loadFacets(List<FacetContext> facets) {
         for (FacetContext facet : facets) {
-            FacetRecord authorization = createFacet(facet);
+            FacetRecord authorization = findOrCreateFacet(facet);
             classifiedAttributes(facet, authorization);
             networkConstraints(facet, authorization);
         }
@@ -419,33 +448,26 @@ public class WorkspaceImporter {
 
     private void loadFacets() {
 
-        defineFacetClassifications();
-        facets(wsp.getAgencyFacets());
-        facets(wsp.getAttributeFacets());
-        facets(wsp.getIntervalFacets());
-        facets(wsp.getLocationFacets());
-        facets(wsp.getProductFacets());
-        facets(wsp.getRelationshipFacets());
-        facets(wsp.getStatusCodeFacets());
-        facets(wsp.getUnitFacets());
+        defineFacets();
+        loadFacets(wsp.getAgencyFacets());
+        loadFacets(wsp.getAttributeFacets());
+        loadFacets(wsp.getIntervalFacets());
+        loadFacets(wsp.getLocationFacets());
+        loadFacets(wsp.getProductFacets());
+        loadFacets(wsp.getRelationshipFacets());
+        loadFacets(wsp.getStatusCodeFacets());
+        loadFacets(wsp.getUnitFacets());
     }
 
-    private void defineFacetClassifications() {
-        defineFacetClassificationss(model.getAgencyModel(),
-                                    wsp.getAgencyFacets());
-        defineFacetClassificationss(model.getAttributeModel(),
-                                    wsp.getAttributeFacets());
-        defineFacetClassificationss(model.getIntervalModel(),
-                                    wsp.getIntervalFacets());
-        defineFacetClassificationss(model.getLocationModel(),
-                                    wsp.getLocationFacets());
-        defineFacetClassificationss(model.getProductModel(),
-                                    wsp.getProductFacets());
-        defineFacetClassificationss(model.getRelationshipModel(),
-                                    wsp.getRelationshipFacets());
-        defineFacetClassificationss(model.getStatusCodeModel(),
-                                    wsp.getStatusCodeFacets());
-        defineFacetClassificationss(model.getUnitModel(), wsp.getUnitFacets());
+    private void defineFacets() {
+        defineFacets(model.getAgencyModel(), wsp.getAgencyFacets());
+        defineFacets(model.getAttributeModel(), wsp.getAttributeFacets());
+        defineFacets(model.getIntervalModel(), wsp.getIntervalFacets());
+        defineFacets(model.getLocationModel(), wsp.getLocationFacets());
+        defineFacets(model.getProductModel(), wsp.getProductFacets());
+        defineFacets(model.getRelationshipModel(), wsp.getRelationshipFacets());
+        defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
+        defineFacets(model.getUnitModel(), wsp.getUnitFacets());
     }
 
     private void loadInferences() {
@@ -489,15 +511,23 @@ public class WorkspaceImporter {
 
     private void loadNetworks(List<EdgeContext> edges) {
         for (EdgeContext edge : edges) {
-            model.getPhantasmModel()
-                 .initialize(model.records()
-                                  .resolve(resolve(edge.parent)),
-                             model.getPhantasmModel()
-                                  .getFacetDeclaration(model.records()
-                                                            .resolve(resolve(edge.relationship)),
-                                                       model.records()
-                                                            .resolve(resolve(edge.child))),
-                             workspace);
+            ExistentialRuleform parent = model.records()
+                                              .resolve(resolve(edge.parent));
+            Relationship relationship = model.records()
+                                             .resolve(resolve(edge.relationship));
+            ExistentialRuleform child = model.records()
+                                             .resolve(resolve(edge.child));
+            FacetRecord facet = model.getPhantasmModel()
+                                     .getFacetDeclaration(relationship, child);
+            if (facet != null) {
+                model.getPhantasmModel()
+                     .initialize(parent, facet, workspace);
+            } else {
+                model.getPhantasmModel()
+                     .link(parent, relationship, child,
+                           model.getCurrentPrincipal()
+                                .getPrincipal());
+            }
         }
     }
 
@@ -568,6 +598,7 @@ public class WorkspaceImporter {
                                                          model.getCurrentPrincipal()
                                                               .getPrincipal());
                 rel.setInverse(rel.getId());
+                rel.insert();
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
                               rel);
             } else {
@@ -582,6 +613,7 @@ public class WorkspaceImporter {
                                                           model.getCurrentPrincipal()
                                                                .getPrincipal());
 
+                relA.insert();
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
                               relA);
                 workspace.put(ctx.inverse.existentialRuleform().workspaceName.getText(),
@@ -638,8 +670,7 @@ public class WorkspaceImporter {
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
         }
-        defineFacetClassificationss(model.getStatusCodeModel(),
-                                    wsp.getStatusCodeFacets());
+        defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
     }
 
     private void loadStatusCodeSequencings() {

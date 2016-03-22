@@ -346,10 +346,10 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                                     boolean includeGrouping) {
 
         SelectOnConditionStep<Record> and = create.selectDistinct(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.fields())
-                                                  .from(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.as("auth"))
+                                                  .from(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION)
                                                   .join(FACET)
                                                   .on(FACET.ID.eq(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET))
-                                                  .join(EXISTENTIAL_NETWORK.as("network"))
+                                                  .join(EXISTENTIAL_NETWORK)
                                                   .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(aspect.getClassifier()))
                                                   .and(EXISTENTIAL_NETWORK.CHILD.equal(aspect.getClassification()))
                                                   .and(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNull());
@@ -459,7 +459,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public List<ExistentialAttributeRecord> getAttributeValues(ExistentialRuleform ruleform,
                                                                Attribute attribute) {
-        return create.selectFrom(EXISTENTIAL_ATTRIBUTE.as("attrValue"))
+        return create.selectFrom(EXISTENTIAL_ATTRIBUTE)
                      .where(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
                      .and(EXISTENTIAL_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
                      .fetch()
@@ -789,13 +789,15 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                           UUID r,
                                                                           UUID child,
                                                                           UUID updatedBy) {
-        ExistentialNetworkRecord forward = create.newRecord(EXISTENTIAL_NETWORK);
+        ExistentialNetworkRecord forward = model.records()
+                                                .newExistentialNetwork();
         forward.setParent(parent);
         forward.setRelationship(r);
         forward.setChild(child);
         forward.setUpdatedBy(updatedBy);
 
-        ExistentialNetworkRecord inverse = create.newRecord(EXISTENTIAL_NETWORK);
+        ExistentialNetworkRecord inverse = model.records()
+                                                .newExistentialNetwork();
         inverse.setParent(child);
         inverse.setRelationship(r);
         inverse.setChild(parent);

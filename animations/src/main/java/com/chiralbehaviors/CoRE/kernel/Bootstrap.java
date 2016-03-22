@@ -155,6 +155,7 @@ public class Bootstrap {
         new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
                               model).initialize()
                                     .load(kernelWorkspace);
+        connection.commit();
         ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
                                                          .getAttributeValue(kernelWorkspace,
                                                                             model.getKernel()

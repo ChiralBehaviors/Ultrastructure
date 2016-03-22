@@ -6,7 +6,7 @@
 >
 
     <changeSet id="2.0.0" author="hhildebrand">
-        <createView viewName="existential_network" schemaName="readable" replaceIfExists="true"><![CDATA[
+        <createView viewName="deductions" schemaName="readable" replaceIfExists="true"><![CDATA[
 			 SELECT 
                 w.name AS workspace, n.id, 
                 wa.key AS wsp_key,
@@ -16,6 +16,9 @@
                     rel.name AS relationship, 
                     c.name AS child, 
                     c.domain AS child_domain,
+                    n.inference,
+                    n.premise1, 
+                    n.premise2, 
                     n.notes, 
                     u.name AS updated_by, 
                     n.version
@@ -26,7 +29,7 @@
 			   JOIN existential u ON n.updated_by = u.id
              LEFT JOIN workspace_authorization wa ON n.workspace = wa.id
              LEFT JOIN existential w ON wa.defining_product = w.id
-             WHERE n.inference IS NULL
+             WHERE n.inference IS NOT NULL
             ]]>
         </createView>
     </changeSet>

@@ -345,15 +345,6 @@ public interface PhantasmModel {
     Object getValue(ExistentialAttributeRecord attributeValue);
 
     /**
-     * @param instance
-     * @param facet
-     * @param principal
-     */
-    void initialize(ExistentialRuleform instance,
-                    ExistentialNetworkAuthorizationRecord facet,
-                    Agency principal);
-
-    /**
      * Initialize the ruleform with the classified attributes for this aspect
      * 
      * @param ruleform
@@ -417,7 +408,12 @@ public interface PhantasmModel {
                            Relationship relationship, ExistentialRuleform child,
                            Agency updatedBy);
 
+    void setValue(ExistentialAttributeAuthorizationRecord auth, Object value);
+
     void setValue(ExistentialAttributeRecord attributeValue, Object value);
+
+    void setValue(ExistentialNetworkAttributeAuthorizationRecord auth,
+                  Object value);
 
     void setValue(ExistentialNetworkAttributeRecord attributeValue,
                   Object value);

@@ -824,22 +824,28 @@ public class WorkspaceImporter {
                                     String value) {
         switch (authorizedAttribute.getValueType()) {
             case Binary:
-                auth.setBinaryValue(value.getBytes());
+                model.getPhantasmModel()
+                     .setValue(auth, value.getBytes());
                 return;
             case Boolean:
-                auth.setBooleanValue(Boolean.valueOf(value));
+                model.getPhantasmModel()
+                     .setValue(auth, Boolean.valueOf(value));
                 return;
             case Integer:
-                auth.setIntegerValue(Integer.parseInt(value));
+                model.getPhantasmModel()
+                     .setValue(auth, Integer.parseInt(value));
                 return;
             case Numeric:
-                auth.setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                model.getPhantasmModel()
+                     .setValue(auth, BigDecimal.valueOf(Long.parseLong(value)));
                 return;
             case Text:
-                auth.setTextValue(value);
+                model.getPhantasmModel()
+                     .setValue(auth, value);
                 return;
             case JSON:
-                auth.setJsonValue(value);
+                model.getPhantasmModel()
+                     .setValue(auth, value);
                 return;
             case Timestamp:
                 throw new UnsupportedOperationException("Timestamps are a PITA");
@@ -854,22 +860,29 @@ public class WorkspaceImporter {
                                     String value) {
         switch (authorizedAttribute.getValueType()) {
             case Binary:
-                attributeValue.setBinaryValue(value.getBytes());
+                model.getPhantasmModel()
+                     .setValue(attributeValue, value.getBytes());
                 return;
             case Boolean:
-                attributeValue.setBooleanValue(Boolean.valueOf(value));
+                model.getPhantasmModel()
+                     .setValue(attributeValue, Boolean.valueOf(value));
                 return;
             case Integer:
-                attributeValue.setIntegerValue(Integer.parseInt(value));
+                model.getPhantasmModel()
+                     .setValue(attributeValue, Integer.parseInt(value));
                 return;
             case Numeric:
-                attributeValue.setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                model.getPhantasmModel()
+                     .setValue(attributeValue,
+                               BigDecimal.valueOf(Long.parseLong(value)));
                 return;
             case Text:
-                attributeValue.setTextValue(value);
+                model.getPhantasmModel()
+                     .setValue(attributeValue, value);
                 return;
             case JSON:
-                attributeValue.setJsonValue(value);
+                model.getPhantasmModel()
+                     .setValue(attributeValue, value);
                 return;
             case Timestamp:
                 throw new UnsupportedOperationException("Timestamps are a PITA");
@@ -885,22 +898,28 @@ public class WorkspaceImporter {
 
         switch (authorizedAttribute.getValueType()) {
             case Binary:
-                auth.setBinaryValue(value.getBytes());
+                model.getPhantasmModel()
+                     .setValue(auth, value.getBytes());
                 return;
             case Boolean:
-                auth.setBooleanValue(Boolean.valueOf(value));
+                model.getPhantasmModel()
+                     .setValue(auth, Boolean.valueOf(value));
                 return;
             case Integer:
-                auth.setIntegerValue(Integer.parseInt(value));
+                model.getPhantasmModel()
+                     .setValue(auth, Integer.parseInt(value));
                 return;
             case Numeric:
-                auth.setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                model.getPhantasmModel()
+                     .setValue(auth, BigDecimal.valueOf(Long.parseLong(value)));
                 return;
             case Text:
-                auth.setTextValue(value);
+                model.getPhantasmModel()
+                     .setValue(auth, value);
                 return;
             case JSON:
-                auth.setJsonValue(value);
+                model.getPhantasmModel()
+                     .setValue(auth, value);
                 return;
             case Timestamp:
                 throw new UnsupportedOperationException("Timestamps are a PITA");

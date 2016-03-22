@@ -81,12 +81,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public void authorize(FacetRecord aspect, Attribute... attributes) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void authorize(ExistentialRuleform ruleform,
                           Relationship relationship,
                           ExistentialRuleform authorized) {
@@ -107,6 +101,12 @@ public class PhantasmModelImpl implements PhantasmModel {
                                   .getPrincipal()
                                   .getId());
         inverse.insert();
+    }
+
+    @Override
+    public void authorize(FacetRecord aspect, Attribute... attributes) {
+        // TODO Auto-generated method stub
+
     }
 
     @Override
@@ -136,6 +136,14 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
+    public boolean checkCapability(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+                                   Relationship capability) {
+        return checkCapability(model.getCurrentPrincipal()
+                                    .getCapabilities(),
+                               stateAuth, capability);
+    }
+
+    @Override
     public boolean checkCapability(ExistentialNetworkAuthorizationRecord auth,
                                    Relationship capability) {
         return checkCapability(model.getCurrentPrincipal()
@@ -149,6 +157,13 @@ public class PhantasmModelImpl implements PhantasmModel {
         return checkCapability(model.getCurrentPrincipal()
                                     .getCapabilities(),
                                instance, capability);
+    }
+
+    @Override
+    public boolean checkCapability(FacetRecord facet, Relationship capability) {
+        return checkCapability(model.getCurrentPrincipal()
+                                    .getCapabilities(),
+                               facet, capability);
     }
 
     /**
@@ -174,6 +189,31 @@ public class PhantasmModelImpl implements PhantasmModel {
                                  .fetchOne()
                                  .value1());
 
+    }
+
+    /**
+     * Check the capability of an agency on an attribute of the authorized
+     * relationship of the facet child relationship.
+     */
+    @Override
+    public boolean checkCapability(List<Agency> agencies,
+                                   ExistentialNetworkAttributeAuthorizationRecord stateAuth,
+                                   Relationship capability) {
+        ExistentialNetworkAttributeAuthorization required = EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.as("required");
+        return ZERO.equals(create.selectCount()
+                                 .from(required)
+                                 .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNotNull())
+                                 .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(stateAuth.getNetworkAuthorization()))
+                                 .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(stateAuth.getAuthorizedAttribute()))
+                                 .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
+                                                     .from(EXISTENTIAL_NETWORK)
+                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
+                                                                                                  .map(a -> a.getId())
+                                                                                                  .collect(Collectors.toList())))
+                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
+                                                     .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
+                                 .fetchOne()
+                                 .value1());
     }
 
     /**
@@ -224,13 +264,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                  .value1());
     }
 
-    @Override
-    public boolean checkCapability(FacetRecord facet, Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
-                                    .getCapabilities(),
-                               facet, capability);
-    }
-
     /**
      * Check the capability of an agency on the facet.
      */
@@ -250,39 +283,6 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                                                   .collect(Collectors.toList())))
                                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
                                                      .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(FACET.AUTHORITY))))
-                                 .fetchOne()
-                                 .value1());
-    }
-
-    @Override
-    public boolean checkCapability(ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
-        return checkCapability(model.getCurrentPrincipal()
-                                    .getCapabilities(),
-                               stateAuth, capability);
-    }
-
-    /**
-     * Check the capability of an agency on an attribute of the authorized
-     * relationship of the facet child relationship.
-     */
-    @Override
-    public boolean checkCapability(List<Agency> agencies,
-                                   ExistentialNetworkAttributeAuthorizationRecord stateAuth,
-                                   Relationship capability) {
-        ExistentialNetworkAttributeAuthorization required = EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.as("required");
-        return ZERO.equals(create.selectCount()
-                                 .from(required)
-                                 .where(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY.isNotNull())
-                                 .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.NETWORK_AUTHORIZATION.equal(stateAuth.getNetworkAuthorization()))
-                                 .and(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORIZED_ATTRIBUTE.equal(stateAuth.getAuthorizedAttribute()))
-                                 .andNotExists(create.select(required.field(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION.AUTHORITY))
-                                                     .from(EXISTENTIAL_NETWORK)
-                                                     .where(EXISTENTIAL_NETWORK.PARENT.in(agencies.stream()
-                                                                                                  .map(a -> a.getId())
-                                                                                                  .collect(Collectors.toList())))
-                                                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(capability.getId()))
-                                                     .and(EXISTENTIAL_NETWORK.CHILD.equal(required.field(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.AUTHORITY))))
                                  .fetchOne()
                                  .value1());
     }
@@ -322,6 +322,27 @@ public class PhantasmModelImpl implements PhantasmModel {
         for (ExistentialRuleform agency : authorized) {
             deauthorize(existential, relationship, agency);
         }
+    }
+
+    @Override
+    public List<? extends ExistentialRuleform> getAllAuthorized(ExistentialRuleform ruleform,
+                                                                Relationship relationship) {
+        return create.selectDistinct()
+                     .from(EXISTENTIAL)
+                     .join(EXISTENTIAL_NETWORK)
+                     .on(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
+                     .fetch()
+                     .into(ExistentialRecord.class)
+                     .stream()
+                     .map(r -> model.records()
+                                    .resolve(r))
+                     .collect(Collectors.toList());
+    }
+
+    @Override
+    public <T extends ExistentialRuleform> List<T> getAllAuthorized(FacetRecord facet) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /*
@@ -471,6 +492,12 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .and(EXISTENTIAL_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
                      .fetch()
                      .into(ExistentialAttributeRecord.class);
+    }
+
+    @Override
+    public <T extends ExistentialRuleform> T getAuthorized(FacetRecord facet) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /* (non-Javadoc)
@@ -757,6 +784,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                                   authorizedAttribute,
                                                                   principal);
                     setValue(authorizedAttribute, attribute, authorization);
+                    attribute.insert();
                     if (workspace != null) {
                         workspace.add(attribute);
                     }
@@ -858,21 +886,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public List<? extends ExistentialRuleform> getAllAuthorized(ExistentialRuleform ruleform,
-                                                                Relationship relationship) {
-        return create.selectDistinct()
-                     .from(EXISTENTIAL)
-                     .join(EXISTENTIAL_NETWORK)
-                     .on(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
-                     .fetch()
-                     .into(ExistentialRecord.class)
-                     .stream()
-                     .map(r -> model.records()
-                                    .resolve(r))
-                     .collect(Collectors.toList());
-    }
-
-    @Override
     public void setImmediateChild(ExistentialRuleform parent,
                                   Relationship relationship,
                                   ExistentialRuleform child, Agency updatedBy) {
@@ -880,6 +893,44 @@ public class PhantasmModelImpl implements PhantasmModel {
         unlink(parent, relationship, child);
         link(parent, relationship, child, updatedBy);
 
+    }
+
+    @Override
+    public void setValue(ExistentialAttributeAuthorizationRecord auth,
+                         Object value) {
+        Attribute attribute = model.records()
+                                   .resolve(auth.getAuthorizedAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                auth.setBinaryValue((byte[]) value);
+                break;
+            case Boolean:
+                auth.setBooleanValue((Boolean) value);
+                break;
+            case Integer:
+                auth.setIntegerValue((Integer) value);
+                break;
+            case Numeric:
+                auth.setNumericValue((BigDecimal) value);
+                break;
+            case Text:
+                auth.setTextValue((String) value);
+                break;
+            case Timestamp:
+                auth.setTimestampValue((Timestamp) value);
+                break;
+            case JSON:
+                auth.setJsonValue(value);
+                break;
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+
+        auth.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal()
+                               .getId());
+        auth.update();
     }
 
     /* (non-Javadoc)
@@ -893,29 +944,111 @@ public class PhantasmModelImpl implements PhantasmModel {
         switch (attribute.getValueType()) {
             case Binary:
                 attributeValue.setBinaryValue((byte[]) value);
-                return;
+                break;
             case Boolean:
                 attributeValue.setBooleanValue((Boolean) value);
-                return;
+                break;
             case Integer:
                 attributeValue.setIntegerValue((Integer) value);
-                return;
+                break;
             case Numeric:
                 attributeValue.setNumericValue((BigDecimal) value);
-                return;
+                break;
             case Text:
                 attributeValue.setTextValue((String) value);
-                return;
+                break;
             case Timestamp:
                 attributeValue.setTimestampValue((Timestamp) value);
-                return;
+                break;
             case JSON:
                 attributeValue.setJsonValue(value);
-                return;
+                break;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
                                                               attribute.getValueType()));
         }
+        attributeValue.setUpdatedBy(model.getCurrentPrincipal()
+                                         .getPrincipal()
+                                         .getId());
+        attributeValue.setUpdated(new Timestamp(System.currentTimeMillis()));
+        attributeValue.update();
+    }
+
+    @Override
+    public void setValue(ExistentialNetworkAttributeAuthorizationRecord auth,
+                         Object value) {
+        Attribute attribute = model.records()
+                                   .resolve(auth.getAuthorizedAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                auth.setBinaryValue((byte[]) value);
+                break;
+            case Boolean:
+                auth.setBooleanValue((Boolean) value);
+                break;
+            case Integer:
+                auth.setIntegerValue((Integer) value);
+                break;
+            case Numeric:
+                auth.setNumericValue((BigDecimal) value);
+                break;
+            case Text:
+                auth.setTextValue((String) value);
+                break;
+            case Timestamp:
+                auth.setTimestampValue((Timestamp) value);
+                break;
+            case JSON:
+                auth.setJsonValue(value);
+                break;
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+
+        auth.setUpdatedBy(model.getCurrentPrincipal()
+                               .getPrincipal()
+                               .getId());
+        auth.update();
+    }
+
+    @Override
+    public void setValue(ExistentialNetworkAttributeRecord attributeValue,
+                         Object value) {
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                attributeValue.setBinaryValue((byte[]) value);
+                break;
+            case Boolean:
+                attributeValue.setBooleanValue((Boolean) value);
+                break;
+            case Integer:
+                attributeValue.setIntegerValue((Integer) value);
+                break;
+            case Numeric:
+                attributeValue.setNumericValue((BigDecimal) value);
+                break;
+            case Text:
+                attributeValue.setTextValue((String) value);
+                break;
+            case Timestamp:
+                attributeValue.setTimestampValue((Timestamp) value);
+                break;
+            case JSON:
+                attributeValue.setJsonValue(value);
+                break;
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
+
+        attributeValue.setUpdatedBy(model.getCurrentPrincipal()
+                                         .getPrincipal()
+                                         .getId());
+        attributeValue.setUpdated(new Timestamp(System.currentTimeMillis()));
+        attributeValue.update();
     }
 
     @Override
@@ -986,63 +1119,11 @@ public class PhantasmModelImpl implements PhantasmModel {
                 break;
             case Timestamp:
                 value.setTimestampValue(authorization.getTimestampValue());
-                break;
             default:
                 throw new IllegalStateException(String.format("Unknown value type %s",
                                                               attribute.getValueType()));
         }
-    }
-
-    @Override
-    public <T extends ExistentialRuleform> List<T> getAllAuthorized(FacetRecord facet) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public <T extends ExistentialRuleform> T getAuthorized(FacetRecord facet) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void initialize(ExistentialRuleform instance,
-                           ExistentialNetworkAuthorizationRecord facet,
-                           Agency principal) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setValue(ExistentialNetworkAttributeRecord attributeValue,
-                         Object value) {
-        Attribute attribute = model.records()
-                                   .resolve(attributeValue.getAttribute());
-        switch (attribute.getValueType()) {
-            case Binary:
-                attributeValue.setBinaryValue((byte[]) value);
-                return;
-            case Boolean:
-                attributeValue.setBooleanValue((Boolean) value);
-                return;
-            case Integer:
-                attributeValue.setIntegerValue((Integer) value);
-                return;
-            case Numeric:
-                attributeValue.setNumericValue((BigDecimal) value);
-                return;
-            case Text:
-                attributeValue.setTextValue((String) value);
-                return;
-            case Timestamp:
-                attributeValue.setTimestampValue((Timestamp) value);
-                return;
-            case JSON:
-                attributeValue.setJsonValue(value);
-                return;
-            default:
-                throw new IllegalStateException(String.format("Invalid value type: %s",
-                                                              attribute.getValueType()));
-        }
+        value.setUpdated(new Timestamp(System.currentTimeMillis()));
+        value.update();
     }
 }

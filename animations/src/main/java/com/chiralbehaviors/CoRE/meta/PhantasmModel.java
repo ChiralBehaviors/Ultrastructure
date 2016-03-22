@@ -419,7 +419,8 @@ public interface PhantasmModel {
 
     void setValue(ExistentialAttributeRecord attributeValue, Object value);
 
-    void setValue(ExistentialNetworkAttributeRecord attribute, String name);
+    void setValue(ExistentialNetworkAttributeRecord attributeValue,
+                  Object value);
 
     void unlink(ExistentialRuleform parent, Relationship r,
                 ExistentialRuleform child);

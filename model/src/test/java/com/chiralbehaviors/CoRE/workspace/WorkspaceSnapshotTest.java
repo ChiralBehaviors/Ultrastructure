@@ -63,11 +63,11 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
                                                      pseudoScientist);
         definingProduct.insert();
         WorkspaceAuthorizationRecord auth;
-        auth = RECORDS.newWorkspaceAuthorization(definingProduct,
+        auth = RECORDS.newWorkspaceAuthorization(null, definingProduct,
                                                  definingProduct,
                                                  pseudoScientist);
         auth.insert();
-        auth = RECORDS.newWorkspaceAuthorization(definingProduct,
+        auth = RECORDS.newWorkspaceAuthorization(null, definingProduct,
                                                  pseudoScientist,
                                                  pseudoScientist);
         auth.insert();

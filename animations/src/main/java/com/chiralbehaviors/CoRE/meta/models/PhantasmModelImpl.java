@@ -30,6 +30,8 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_ATTRIBUTE
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL_NETWORK_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -754,7 +756,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                     ExistentialAttributeRecord attribute = create(ruleform,
                                                                   authorizedAttribute,
                                                                   principal);
-                    setValue(attribute, authorization);
+                    setValue(authorizedAttribute, attribute, authorization);
                     if (workspace != null) {
                         workspace.add(attribute);
                     }
@@ -886,8 +888,34 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public void setValue(ExistentialAttributeRecord attributeValue,
                          Object value) {
-        // TODO Auto-generated method stub
-
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                attributeValue.setBinaryValue((byte[]) value);
+                return;
+            case Boolean:
+                attributeValue.setBooleanValue((Boolean) value);
+                return;
+            case Integer:
+                attributeValue.setIntegerValue((Integer) value);
+                return;
+            case Numeric:
+                attributeValue.setNumericValue((BigDecimal) value);
+                return;
+            case Text:
+                attributeValue.setTextValue((String) value);
+                return;
+            case Timestamp:
+                attributeValue.setTimestampValue((Timestamp) value);
+                return;
+            case JSON:
+                attributeValue.setJsonValue(value);
+                return;
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
     }
 
     @Override
@@ -935,33 +963,48 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .collect(Collectors.toList());
     }
 
-    private void setValue(ExistentialAttributeRecord attribute,
+    private void setValue(Attribute attribute, ExistentialAttributeRecord value,
                           ExistentialAttributeAuthorizationRecord authorization) {
-        // TODO Auto-generated method stub
-
+        switch (attribute.getValueType()) {
+            case Binary:
+                value.setBinaryValue(authorization.getBinaryValue());
+                break;
+            case Boolean:
+                value.setBooleanValue(authorization.getBooleanValue());
+                break;
+            case Integer:
+                value.setIntegerValue(authorization.getIntegerValue());
+                break;
+            case JSON:
+                value.setJsonValue(authorization.getJsonValue());
+                break;
+            case Numeric:
+                value.setNumericValue(authorization.getNumericValue());
+                break;
+            case Text:
+                value.setTextValue(authorization.getTextValue());
+                break;
+            case Timestamp:
+                value.setTimestampValue(authorization.getTimestampValue());
+                break;
+            default:
+                throw new IllegalStateException(String.format("Unknown value type %s",
+                                                              attribute.getValueType()));
+        }
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getAllAuthorized(com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord)
-     */
     @Override
     public <T extends ExistentialRuleform> List<T> getAllAuthorized(FacetRecord facet) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getAuthorized(com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord)
-     */
     @Override
     public <T extends ExistentialRuleform> T getAuthorized(FacetRecord facet) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#initialize(com.chiralbehaviors.CoRE.domain.ExistentialRuleform, com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord, com.chiralbehaviors.CoRE.domain.Agency)
-     */
     @Override
     public void initialize(ExistentialRuleform instance,
                            ExistentialNetworkAuthorizationRecord facet,
@@ -970,13 +1013,36 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     }
 
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#setValue(com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord, java.lang.String)
-     */
     @Override
-    public void setValue(ExistentialNetworkAttributeRecord attribute,
-                         String name) {
-        // TODO Auto-generated method stub
-
+    public void setValue(ExistentialNetworkAttributeRecord attributeValue,
+                         Object value) {
+        Attribute attribute = model.records()
+                                   .resolve(attributeValue.getAttribute());
+        switch (attribute.getValueType()) {
+            case Binary:
+                attributeValue.setBinaryValue((byte[]) value);
+                return;
+            case Boolean:
+                attributeValue.setBooleanValue((Boolean) value);
+                return;
+            case Integer:
+                attributeValue.setIntegerValue((Integer) value);
+                return;
+            case Numeric:
+                attributeValue.setNumericValue((BigDecimal) value);
+                return;
+            case Text:
+                attributeValue.setTextValue((String) value);
+                return;
+            case Timestamp:
+                attributeValue.setTimestampValue((Timestamp) value);
+                return;
+            case JSON:
+                attributeValue.setJsonValue(value);
+                return;
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              attribute.getValueType()));
+        }
     }
 }

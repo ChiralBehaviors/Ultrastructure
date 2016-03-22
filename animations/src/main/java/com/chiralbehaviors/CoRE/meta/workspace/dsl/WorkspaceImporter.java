@@ -29,8 +29,6 @@ import java.util.UUID;
 import javax.management.openmbean.InvalidKeyException;
 
 import org.antlr.v4.runtime.Token;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
@@ -86,7 +84,6 @@ import com.hellblazer.utils.Tuple;
  *
  */
 public class WorkspaceImporter {
-    private static final Logger log                           = LoggerFactory.getLogger(WorkspaceImporter.class);
     private static final String STATUS_CODE_SEQUENCING_FORMAT = "%s: %s -> %s";
     private static final String THIS                          = "this";
 
@@ -188,6 +185,22 @@ public class WorkspaceImporter {
         return load(definingProduct);
     }
 
+    private Cardinality cardinality(ConstraintContext constraint) {
+        String card = constraint.cardinality.getText()
+                                            .toUpperCase();
+        switch (card) {
+            case "ONE":
+                return Cardinality._1;
+            case "ZERO":
+                return Cardinality.Zero;
+            case "N":
+                return Cardinality.N;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid cardinality: %s",
+                                                                 card));
+        }
+    }
+
     private void classifiedAttributes(FacetContext facet,
                                       FacetRecord authorization) {
         List<ClassifiedAttributeContext> classifiedAttributes = facet.classifiedAttribute();
@@ -199,48 +212,17 @@ public class WorkspaceImporter {
                                                                 .newExistentialAttributeAttributeAuthorization(model.getCurrentPrincipal()
                                                                                                                     .getPrincipal());
             auth.setFacet(authorization.getId());
-            auth.setAuthorizedAttribute(resolve(attribute.key));
+            Attribute authorizedAttribute = model.records()
+                                                 .resolve(resolve(attribute.key));
+            auth.setAuthorizedAttribute(authorizedAttribute.getId());
             if (attribute.defaultValue != null) {
-                setValueFromString(auth,
+                setValueFromString(authorizedAttribute, auth,
                                    WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             auth.insert();
             workspace.add(auth);
 
         });
-    }
-
-    private FacetRecord findOrCreateFacet(FacetContext facet) {
-        Relationship classifier = model.records()
-                                       .resolve(resolve(facet.classifier));
-        ExistentialRuleform classification = model.records()
-                                                  .resolve(resolve(facet.classification));
-
-        FacetRecord authorization = model.getPhantasmModel()
-                                         .getFacetDeclaration(classifier,
-                                                              classification);
-        if (authorization != null) {
-            return authorization;
-        }
-        authorization = model.records()
-                             .newFacet(model.getCurrentPrincipal()
-                                            .getPrincipal());
-        authorization.setClassifier(classifier.getId());
-        authorization.setClassification(classification.getId());
-        if (facet.name != null) {
-            authorization.setName(WorkspacePresentation.stripQuotes(facet.name.getText()));
-        } else {
-            authorization.setName(model.records()
-                                       .resolve(authorization.getClassification())
-                                       .getName());
-        }
-        if (facet.description != null) {
-            authorization.setNotes(WorkspacePresentation.stripQuotes(facet.name.getText()));
-        }
-        log.info("Inserted\n{}", authorization);
-        authorization.insert();
-        workspace.add(authorization);
-        return authorization;
     }
 
     private void createNetworkAuth(FacetContext facet, FacetRecord facetAuth,
@@ -262,31 +244,17 @@ public class WorkspaceImporter {
             ExistentialNetworkAttributeAuthorizationRecord attrAuth = model.records()
                                                                            .newExistentialNetworkAttributeAuthorization(model.getCurrentPrincipal()
                                                                                                                              .getPrincipal());
-            attrAuth.setAuthorizedAttribute(resolve(attribute.key));
+            Attribute authorizedAttribute = model.records()
+                                                 .resolve(resolve(attribute.key));
+            attrAuth.setAuthorizedAttribute(authorizedAttribute.getId());
             attrAuth.setNetworkAuthorization(authorization.getId());
             if (attribute.defaultValue != null) {
-                setValueFromString(attrAuth,
+                setValueFromString(authorizedAttribute, attrAuth,
                                    WorkspacePresentation.stripQuotes(attribute.defaultValue.getText()));
             }
             attrAuth.insert();
             workspace.add(attrAuth);
         });
-    }
-
-    private Cardinality cardinality(ConstraintContext constraint) {
-        String card = constraint.cardinality.getText()
-                                            .toUpperCase();
-        switch (card) {
-            case "ONE":
-                return Cardinality._1;
-            case "ZERO":
-                return Cardinality.Zero;
-            case "N":
-                return Cardinality.N;
-            default:
-                throw new IllegalArgumentException(String.format("Invalid cardinality: %s",
-                                                                 card));
-        }
     }
 
     private WorkspaceAccessor createWorkspace() {
@@ -327,6 +295,17 @@ public class WorkspaceImporter {
         return workspaceProduct;
     }
 
+    private void defineFacets() {
+        defineFacets(model.getAgencyModel(), wsp.getAgencyFacets());
+        defineFacets(model.getAttributeModel(), wsp.getAttributeFacets());
+        defineFacets(model.getIntervalModel(), wsp.getIntervalFacets());
+        defineFacets(model.getLocationModel(), wsp.getLocationFacets());
+        defineFacets(model.getProductModel(), wsp.getProductFacets());
+        defineFacets(model.getRelationshipModel(), wsp.getRelationshipFacets());
+        defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
+        defineFacets(model.getUnitModel(), wsp.getUnitFacets());
+    }
+
     private void defineFacets(ExistentialModel<? extends ExistentialRuleform> networkedModel,
                               List<FacetContext> facets) {
         for (FacetContext facet : facets) {
@@ -337,7 +316,6 @@ public class WorkspaceImporter {
                                                                                       facet.description == null ? null
                                                                                                                 : WorkspacePresentation.stripQuotes(facet.description.getText()));
                     erf.insert();
-                    log.info("Inserted\n{}", erf);
                     workspace.put(facet.classification.member.getText(), erf);
                 }
             }
@@ -345,12 +323,36 @@ public class WorkspaceImporter {
         }
     }
 
-    private void loadFacets(List<FacetContext> facets) {
-        for (FacetContext facet : facets) {
-            FacetRecord authorization = findOrCreateFacet(facet);
-            classifiedAttributes(facet, authorization);
-            networkConstraints(facet, authorization);
+    private FacetRecord findOrCreateFacet(FacetContext facet) {
+        Relationship classifier = model.records()
+                                       .resolve(resolve(facet.classifier));
+        ExistentialRuleform classification = model.records()
+                                                  .resolve(resolve(facet.classification));
+
+        FacetRecord authorization = model.getPhantasmModel()
+                                         .getFacetDeclaration(classifier,
+                                                              classification);
+        if (authorization != null) {
+            return authorization;
         }
+        authorization = model.records()
+                             .newFacet(model.getCurrentPrincipal()
+                                            .getPrincipal());
+        authorization.setClassifier(classifier.getId());
+        authorization.setClassification(classification.getId());
+        if (facet.name != null) {
+            authorization.setName(WorkspacePresentation.stripQuotes(facet.name.getText()));
+        } else {
+            authorization.setName(model.records()
+                                       .resolve(authorization.getClassification())
+                                       .getName());
+        }
+        if (facet.description != null) {
+            authorization.setNotes(WorkspacePresentation.stripQuotes(facet.name.getText()));
+        }
+        authorization.insert();
+        workspace.add(authorization);
+        return authorization;
     }
 
     private Product getWorkspaceProduct() {
@@ -368,7 +370,6 @@ public class WorkspaceImporter {
                                                                                                                : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
                                                             model.getCurrentPrincipal()
                                                                  .getPrincipal());
-            log.info("Inserted\n{}", record);
             record.insert();
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           record);
@@ -397,13 +398,14 @@ public class WorkspaceImporter {
                 ExistentialAttributeRecord ama = model.records()
                                                       .newExistentialAttribute();
                 ama.setExistential(attr.getId());
-                UUID metaAttribute = resolve(av.attribute);
-                ama.setAttribute(metaAttribute);
+                Attribute authorizedAttribute = model.records()
+                                                     .resolve(resolve(av.attribute));
+                ama.setAttribute(authorizedAttribute.getId());
                 ama.setUpdatedBy(model.getCurrentPrincipal()
                                       .getPrincipal()
                                       .getId());
                 ama.setSequenceNumber(Integer.parseInt(av.sequenceNumber.getText()));
-                setValueFromString(ama,
+                setValueFromString(authorizedAttribute, ama,
                                    WorkspacePresentation.stripQuotes(av.value.getText()));
                 workspace.add(ama);
                 ama.insert();
@@ -461,15 +463,12 @@ public class WorkspaceImporter {
         loadFacets(wsp.getUnitFacets());
     }
 
-    private void defineFacets() {
-        defineFacets(model.getAgencyModel(), wsp.getAgencyFacets());
-        defineFacets(model.getAttributeModel(), wsp.getAttributeFacets());
-        defineFacets(model.getIntervalModel(), wsp.getIntervalFacets());
-        defineFacets(model.getLocationModel(), wsp.getLocationFacets());
-        defineFacets(model.getProductModel(), wsp.getProductFacets());
-        defineFacets(model.getRelationshipModel(), wsp.getRelationshipFacets());
-        defineFacets(model.getStatusCodeModel(), wsp.getStatusCodeFacets());
-        defineFacets(model.getUnitModel(), wsp.getUnitFacets());
+    private void loadFacets(List<FacetContext> facets) {
+        for (FacetContext facet : facets) {
+            FacetRecord authorization = findOrCreateFacet(facet);
+            classifiedAttributes(facet, authorization);
+            networkConstraints(facet, authorization);
+        }
     }
 
     private void loadInferences() {
@@ -819,26 +818,95 @@ public class WorkspaceImporter {
         }
     }
 
-    private void setValueFromString(ExistentialAttributeAuthorizationRecord auth,
+    private void setValueFromString(Attribute authorizedAttribute,
+                                    ExistentialAttributeAuthorizationRecord auth,
                                     String value) {
-        // TODO Auto-generated method stub
-
+        switch (authorizedAttribute.getValueType()) {
+            case Binary:
+                auth.setBinaryValue(value.getBytes());
+                return;
+            case Boolean:
+                auth.setBooleanValue(Boolean.valueOf(value));
+                return;
+            case Integer:
+                auth.setIntegerValue(Integer.parseInt(value));
+                return;
+            case Numeric:
+                auth.setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                return;
+            case Text:
+                auth.setTextValue(value);
+                return;
+            case JSON:
+                auth.setJsonValue(value);
+                return;
+            case Timestamp:
+                throw new UnsupportedOperationException("Timestamps are a PITA");
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              authorizedAttribute.getValueType()));
+        }
     }
 
-    /**
-     * @param ama
-     * @param stripQuotes
-     */
-    private void setValueFromString(ExistentialAttributeRecord ama,
-                                    String stripQuotes) {
-        // TODO Auto-generated method stub
-
+    private void setValueFromString(Attribute authorizedAttribute,
+                                    ExistentialAttributeRecord attributeValue,
+                                    String value) {
+        switch (authorizedAttribute.getValueType()) {
+            case Binary:
+                attributeValue.setBinaryValue(value.getBytes());
+                return;
+            case Boolean:
+                attributeValue.setBooleanValue(Boolean.valueOf(value));
+                return;
+            case Integer:
+                attributeValue.setIntegerValue(Integer.parseInt(value));
+                return;
+            case Numeric:
+                attributeValue.setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                return;
+            case Text:
+                attributeValue.setTextValue(value);
+                return;
+            case JSON:
+                attributeValue.setJsonValue(value);
+                return;
+            case Timestamp:
+                throw new UnsupportedOperationException("Timestamps are a PITA");
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              authorizedAttribute.getValueType()));
+        }
     }
 
-    private void setValueFromString(ExistentialNetworkAttributeAuthorizationRecord auth,
-                                    String stripQuotes) {
-        // TODO Auto-generated method stub
+    private void setValueFromString(Attribute authorizedAttribute,
+                                    ExistentialNetworkAttributeAuthorizationRecord auth,
+                                    String value) {
 
+        switch (authorizedAttribute.getValueType()) {
+            case Binary:
+                auth.setBinaryValue(value.getBytes());
+                return;
+            case Boolean:
+                auth.setBooleanValue(Boolean.valueOf(value));
+                return;
+            case Integer:
+                auth.setIntegerValue(Integer.parseInt(value));
+                return;
+            case Numeric:
+                auth.setNumericValue(BigDecimal.valueOf(Long.parseLong(value)));
+                return;
+            case Text:
+                auth.setTextValue(value);
+                return;
+            case JSON:
+                auth.setJsonValue(value);
+                return;
+            case Timestamp:
+                throw new UnsupportedOperationException("Timestamps are a PITA");
+            default:
+                throw new IllegalStateException(String.format("Invalid value type: %s",
+                                                              authorizedAttribute.getValueType()));
+        }
     }
 
     /**

@@ -625,11 +625,8 @@ public class JobModelImpl implements JobModel {
         if (parent.equals(kernel.getUnset())) {
             return Arrays.asList(getInitialState(service));
         }
-        return em.createNamedQuery(JobRecord.GET_NEXT_STATUS_CODES,
-                                   StatusCode.class)
-                 .setParameter("service", service)
-                 .setParameter("parent", parent)
-                 .getResultList();
+        return model.create()
+                    .selectDistinct(EXISTENTIAL.fields());
     }
 
     /**
@@ -792,16 +789,21 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public Set<StatusCode> getStatusCodesFor(Product service) {
-        TypedQuery<StatusCode> query = em.createNamedQuery(StatusCodeSequencing.GET_PARENT_STATUS_CODES_SERVICE,
-                                                           StatusCode.class);
-        query.setParameter("service", service);
-        Set<StatusCode> result = new HashSet<StatusCode>(query.getResultList());
-        query = em.createNamedQuery(StatusCodeSequencing.GET_CHILD_STATUS_CODES_SERVICE,
-                                    StatusCode.class);
-        query.setParameter("service", service);
-        result.addAll(query.getResultList());
-        return result;
+    public List<StatusCode> getStatusCodesFor(Product service) {
+        return model.create()
+                    .selectDistinct(EXISTENTIAL.fields())
+                    .from(EXISTENTIAL)
+                    .join(STATUS_CODE_SEQUENCING)
+                    .on(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId())
+                                                      .and(STATUS_CODE_SEQUENCING.PARENT.equal(EXISTENTIAL.ID)
+                                                                                        .or(STATUS_CODE_SEQUENCING.CHILD.equal(EXISTENTIAL.ID))))
+                    .fetch()
+                    .into(ExistentialRecord.class)
+                    .stream()
+                    .map(r -> model.records()
+                                   .resolve(r))
+                    .map(e -> (StatusCode) e)
+                    .collect(Collectors.toList());
     }
 
     @Override
@@ -897,7 +899,7 @@ public class JobModelImpl implements JobModel {
     @Override
     public boolean hasNonTerminalSCCs(Product service) throws SQLException {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        Set<StatusCode> statusCodes = getStatusCodesFor(service);
+        List<StatusCode> statusCodes = getStatusCodesFor(service);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Status codes for %s: %s",
                                     service.getName(), statusCodes));
@@ -911,13 +913,13 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public boolean hasScs(Product service) {
-        return model.create()
-                    .selectCount()
-                    .from(STATUS_CODE_SEQUENCING)
-                    .where(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
-                    .fetchOne()
-                    .value1()
-                    .equals(ZERO);
+        return !model.create()
+                     .selectCount()
+                     .from(STATUS_CODE_SEQUENCING)
+                     .where(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
+                     .fetchOne()
+                     .value1()
+                     .equals(ZERO);
     }
 
     /**

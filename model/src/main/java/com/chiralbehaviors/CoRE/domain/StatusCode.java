@@ -20,6 +20,8 @@
 
 package com.chiralbehaviors.CoRE.domain;
 
+import java.util.UUID;
+
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownStatusCode;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 
@@ -31,6 +33,14 @@ public class StatusCode extends ExistentialRecord
         implements ExistentialRuleform {
 
     private static final long serialVersionUID = 1L;
+
+    public StatusCode() {
+        super();
+    }
+
+    public StatusCode(UUID id) {
+        setId(id);
+    }
 
     @Override
     public StatusCode getRuleform() {

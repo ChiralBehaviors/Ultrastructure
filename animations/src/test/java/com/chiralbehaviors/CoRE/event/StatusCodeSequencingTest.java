@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -128,15 +129,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     @Test
     public void testHasNoTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = StatusCode[] { model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()) };
+        StatusCode[] codes = new StatusCode[] { new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -158,58 +159,54 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         StatusCode startState = model.records()
                                      .newStatusCode("top-level",
                                                     kernel.getCore());
-        em.persist(startState);
+        startState.insert();
 
         StatusCode state1 = model.records()
                                  .newStatusCode("state-1", kernel.getCore());
-        em.persist(state1);
+        state1.insert();
 
         StatusCode state2 = model.records()
                                  .newStatusCode("state-2", kernel.getCore());
-        em.persist(state2);
+        state2.insert();
 
         StatusCode terminalState = model.records()
                                         .newStatusCode("terminal state",
                                                        kernel.getCore());
-        em.persist(terminalState);
+        terminalState.insert();
 
         Product service = model.records()
                                .newProduct("My Service", kernel.getCore());
-        em.persist(service);
-        em.flush();
+        service.insert();
 
         StatusCodeSequencingRecord sequence1 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              startState,
                                                                              state1,
                                                                              kernel.getCore());
-        em.persist(sequence1);
+        sequence1.insert();
 
         StatusCodeSequencingRecord sequence2 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state1,
                                                                              state2,
                                                                              kernel.getCore());
-        em.persist(sequence2);
+        sequence2.insert();
 
         StatusCodeSequencingRecord sequence3 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state2,
                                                                              terminalState,
                                                                              kernel.getCore());
-        em.persist(sequence3);
-
-        em.flush();
+        sequence3.insert();
 
         StatusCodeSequencingRecord loop = model.records()
                                                .newStatusCodeSequencing(service,
                                                                         terminalState,
                                                                         state1,
                                                                         kernel.getCore());
-        em.persist(loop);
+        loop.insert();
 
         assertTrue(jobModel.hasNonTerminalSCCs(service));
-        service = em.merge(service);
 
         assertTrue(jobModel.hasScs(service));
         try {
@@ -225,15 +222,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     @Test
     public void testHasTerminalSCCs() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = StatusCode[] { model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()) };
+        StatusCode[] codes = new StatusCode[] { new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[0], codes[6]));
@@ -245,15 +242,15 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
     @Test
     public void testLoop() {
         Map<StatusCode, List<StatusCode>> graph = new HashMap<StatusCode, List<StatusCode>>();
-        StatusCode[] codes = StatusCode[] { model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()),
-            model.records().newStatusCode(UUID.randomUUID()) };
+        StatusCode[] codes = new StatusCode[] { new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()),
+                                                new StatusCode(UUID.randomUUID()) };
         graph.put(codes[0], asList(codes[1]));
         graph.put(codes[1], asList(codes[2]));
         graph.put(codes[2], asList(codes[3]));
@@ -271,71 +268,78 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         StatusCode startState = model.records()
                                      .newStatusCode("top-level",
                                                     kernel.getCore());
-        em.persist(startState);
+        startState.insert();
 
         StatusCode startState2 = model.records()
                                       .newStatusCode("top-level 2",
                                                      kernel.getCore());
-        em.persist(startState2);
+        startState2.insert();
 
         StatusCode state1 = model.records()
                                  .newStatusCode("state-1", kernel.getCore());
-        em.persist(state1);
+        state1.insert();
 
         StatusCode state2 = model.records()
                                  .newStatusCode("state-2", kernel.getCore());
-        em.persist(state2);
+        state2.insert();
 
         StatusCode terminalState = model.records()
                                         .newStatusCode("terminal state",
                                                        kernel.getCore());
-        em.persist(terminalState);
+        terminalState.insert();
 
         Product service = model.records()
                                .newProduct("My Service", kernel.getCore());
-        em.persist(service);
-        em.flush();
+        service.insert();
 
         StatusCodeSequencingRecord sequence1 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              startState,
                                                                              state1,
                                                                              kernel.getCore());
-        em.persist(sequence1);
+        sequence1.insert();
 
         StatusCodeSequencingRecord sequence1a = model.records()
                                                      .newStatusCodeSequencing(service,
                                                                               startState2,
                                                                               state1,
                                                                               kernel.getCore());
-        em.persist(sequence1a);
+        sequence1a.insert();
 
         StatusCodeSequencingRecord sequence2 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state1,
                                                                              state2,
                                                                              kernel.getCore());
-        em.persist(sequence2);
+        sequence2.insert();
 
         StatusCodeSequencingRecord sequence3 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state2,
                                                                              terminalState,
                                                                              kernel.getCore());
-        em.persist(sequence3);
+        sequence3.insert();
+
+        create.configuration()
+              .connectionProvider()
+              .acquire()
+              .commit();
 
         List<StatusCode> initialStates = jobModel.getInitialStates(service);
-        assertEquals(2, initialStates.size());
+        assertEquals(initialStates.stream()
+                                  .map(s -> s.getName())
+                                  .collect(Collectors.toList())
+                                  .toString(),
+                     2, initialStates.size());
         assertTrue(initialStates.contains(startState));
         assertTrue(initialStates.contains(startState2));
-        service = em.merge(service);
         try {
             jobModel.validateStateGraph(Arrays.asList(service));
             fail("Did not catch event with non terminal loop");
         } catch (SQLException e) {
             // expected
             assertTrue(e.getMessage(), e.getMessage()
-                                        .contains("has multiple initial state defined in its status code graph"));
+                                        .contains("has multiple initial states defined in its status code graph"));
         }
     }
 }

@@ -585,12 +585,12 @@ public class JobModelImpl implements JobModel {
                     .where(seq.field(STATUS_CODE_SEQUENCING.PARENT)
                               .equal(EXISTENTIAL.ID))
                     .andNotExists(model.create()
-                                       .select(seq2.CHILD)
+                                       .select(seq2.field(STATUS_CODE_SEQUENCING.CHILD))
                                        .from(seq2)
                                        .where(seq2.field(STATUS_CODE_SEQUENCING.SERVICE)
                                                   .equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                       .and(seq2.field(STATUS_CODE_SEQUENCING.PARENT)
-                                                .equal(seq.field(STATUS_CODE_SEQUENCING.CHILD))))
+                                       .and(seq2.field(STATUS_CODE_SEQUENCING.CHILD)
+                                                .equal(seq.field(STATUS_CODE_SEQUENCING.PARENT))))
                     .and(seq.field(STATUS_CODE_SEQUENCING.SERVICE)
                             .eq(service.getId()))
                     .fetch()
@@ -1242,12 +1242,6 @@ public class JobModelImpl implements JobModel {
                 log.trace(String.format("Validating state graph for %s",
                                         modifiedService.getName()));
             }
-            if (modifiedService == null) {
-                if (log.isTraceEnabled()) {
-                    log.trace(String.format("null modified service!"));
-                }
-                continue;
-            }
             if (!hasScs(modifiedService)) {
                 if (log.isTraceEnabled()) {
                     log.trace(String.format("No status code sequencing for %s",
@@ -1265,9 +1259,11 @@ public class JobModelImpl implements JobModel {
                                                      modifiedService.getName()));
             }
             if (initialStates.size() > 1) {
-                throw new SQLException(String.format("Event '%s' has multiple initial state defined in its status code graph: %s",
+                throw new SQLException(String.format("Event '%s' has multiple initial states defined in its status code graph: %s",
                                                      modifiedService.getName(),
-                                                     initialStates));
+                                                     initialStates.stream()
+                                                                  .map(s -> s.getName())
+                                                                  .collect(Collectors.toList())));
             }
             if (hasNonTerminalSCCs(modifiedService)) {
                 throw new SQLException(String.format("Event '%s' has at least one non terminal SCC defined in its status code graph",

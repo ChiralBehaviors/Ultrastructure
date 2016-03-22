@@ -219,14 +219,9 @@ public class Bootstrap {
         record.insert();
     }
 
-    /**
-     * @param auth
-     * @param core
-     * @param kernelWorkspace
-     */
     private void populate(FacetRecord auth, Agency core,
                           Product kernelWorkspace) {
-        records.newWorkspaceAuthorization(kernelWorkspace, auth, core)
+        records.newWorkspaceAuthorization(null, kernelWorkspace, auth, core)
                .insert();
     }
 

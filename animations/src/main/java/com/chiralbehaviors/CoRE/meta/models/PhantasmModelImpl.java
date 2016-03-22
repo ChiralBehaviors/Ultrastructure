@@ -513,7 +513,6 @@ public class PhantasmModelImpl implements PhantasmModel {
         return create.selectFrom(FACET)
                      .where(FACET.CLASSIFIER.equal(classifier.getId()))
                      .and(FACET.CLASSIFICATION.equal(classification.getId()))
-                     .and(EXISTENTIAL_NETWORK_AUTHORIZATION.AUTHORITY.isNull())
                      .fetchOne();
     }
 

@@ -246,7 +246,8 @@ public interface RecordsFactory {
     }
 
     default ExistentialAttributeAuthorizationRecord newExistentialAttributeAttributeAuthorization(Agency updatedBy) {
-        ExistentialAttributeAuthorizationRecord record = new ExistentialAttributeAuthorizationRecord();
+        ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
+        record.setId(GENERATOR.generate());
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
@@ -308,7 +309,7 @@ public interface RecordsFactory {
     }
 
     default FacetRecord newFacet(Agency updatedBy) {
-        FacetRecord record = new FacetRecord();
+        FacetRecord record = create().newRecord(FACET);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(updatedBy.getId());
         return record;
@@ -491,7 +492,7 @@ public interface RecordsFactory {
         return record;
     }
 
-    default Relationship newRelationshipy(String name) {
+    default Relationship newRelationship(String name) {
         Relationship record = newRelationship();
         record.setName(name);
         return record;
@@ -596,10 +597,12 @@ public interface RecordsFactory {
         return record;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    AgencyExistentialGroupingRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Agency_Existential_Grouping,
                                                                       updatedBy);
@@ -607,10 +610,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ChildSequencingAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Child_Sequencing_Authorization,
                                                                       updatedBy);
@@ -618,10 +623,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ExistentialAttributeAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Attribute_Authorization,
                                                                       updatedBy);
@@ -629,10 +636,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ExistentialAttributeRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Attribute,
                                                                       updatedBy);
@@ -640,10 +649,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ExistentialNetworkAttributeAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Network_Attribute_Authorization,
                                                                       updatedBy);
@@ -651,10 +662,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ExistentialNetworkAttributeRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Network_Attribute,
                                                                       updatedBy);
@@ -662,10 +675,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ExistentialNetworkAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Network_Authorization,
                                                                       updatedBy);
@@ -673,10 +688,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ExistentialNetworkRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Network,
                                                                       updatedBy);
@@ -684,10 +701,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ExistentialRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Existential,
                                                                       updatedBy);
@@ -695,10 +714,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    FacetRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Facet,
                                                                       updatedBy);
@@ -706,10 +727,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    JobChronologyRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Job_Chronology,
                                                                       updatedBy);
@@ -717,10 +740,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    JobRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Job,
                                                                       updatedBy);
@@ -728,10 +753,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    MetaProtocolRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Meta_Protocol,
                                                                       updatedBy);
@@ -739,10 +766,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    NetworkInferenceRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Network_Inference,
                                                                       updatedBy);
@@ -750,10 +779,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ParentSequencingAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Parent_Sequencing_Authorization,
                                                                       updatedBy);
@@ -761,10 +792,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    ProtocolRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Protocol,
                                                                       updatedBy);
@@ -772,10 +805,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    SelfSequencingAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Self_Sequencing_Authorization,
                                                                       updatedBy);
@@ -783,10 +818,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    SiblingSequencingAuthorizationRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Sibling_Sequencing_Authorization,
                                                                       updatedBy);
@@ -794,10 +831,12 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    StatusCodeSequencingRecord record,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
+                                                                      definingProduct,
                                                                       record.getId(),
                                                                       ReferenceType.Status_Code_Sequencing,
                                                                       updatedBy);
@@ -805,11 +844,13 @@ public interface RecordsFactory {
         return auth;
     }
 
-    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(Product definingProduct,
+    default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
+                                                                   Product definingProduct,
                                                                    UUID reference,
                                                                    ReferenceType referenceType,
                                                                    Agency updatedBy) {
         WorkspaceAuthorizationRecord record = newWorkspaceAuthorization();
+        record.setKey(key);
         record.setId(GENERATOR.generate());
         record.setDefiningProduct(definingProduct.getId());
         record.setReference(reference);
@@ -823,11 +864,11 @@ public interface RecordsFactory {
                                                                    ReferenceType referenceType,
                                                                    Product definingProduct,
                                                                    Agency updatedBy) {
-        WorkspaceAuthorizationRecord record = newWorkspaceAuthorization(definingProduct,
+        WorkspaceAuthorizationRecord record = newWorkspaceAuthorization(key,
+                                                                        definingProduct,
                                                                         referece,
                                                                         referenceType,
                                                                         updatedBy);
-        record.setKey(key);
         return record;
     }
 

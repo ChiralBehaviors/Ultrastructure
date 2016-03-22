@@ -301,12 +301,13 @@ public class WorkspaceImporter {
                                              List<FacetContext> facets) {
         for (FacetContext facet : facets) {
             if (facet.classification.namespace == null) {
-                if (scope.lookup(facet.classification.member.getText()) != null) {
+                if (scope.lookup(facet.classification.member.getText()) == null) {
                     ExistentialRecord erf = (ExistentialRecord) networkedModel.create(facet.name == null ? facet.classification.member.getText()
                                                                                                          : WorkspacePresentation.stripQuotes(facet.name.getText()),
                                                                                       facet.description == null ? null
                                                                                                                 : WorkspacePresentation.stripQuotes(facet.description.getText()));
                     erf.insert();
+                    log.info("Inserted\n{}", erf);
                     workspace.put(facet.classification.member.getText(), erf);
                 }
             }

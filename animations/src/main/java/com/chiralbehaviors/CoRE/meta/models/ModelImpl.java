@@ -435,8 +435,7 @@ public class ModelImpl implements Model {
 
     @Override
     public PhantasmModel getPhantasmModel() {
-        // TODO Auto-generated method stub
-        return null;
+        return phantasmModel;
     }
 
     @Override

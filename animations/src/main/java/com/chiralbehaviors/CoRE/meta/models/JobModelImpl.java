@@ -577,10 +577,29 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<StatusCode> getInitialStates(Product service) {
-        TypedQuery<StatusCode> query = em.createNamedQuery(JobRecord.INITIAL_STATE,
-                                                           StatusCode.class);
-        query.setParameter("service", service);
-        return query.getResultList();
+        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
+        StatusCodeSequencing seq2 = STATUS_CODE_SEQUENCING.as("seq2");
+        return model.create()
+                    .selectDistinct(EXISTENTIAL.fields())
+                    .from(EXISTENTIAL, seq)
+                    .where(seq.field(STATUS_CODE_SEQUENCING.PARENT)
+                              .equal(EXISTENTIAL.ID))
+                    .andNotExists(model.create()
+                                       .select(seq2.CHILD)
+                                       .from(seq2)
+                                       .where(seq2.field(STATUS_CODE_SEQUENCING.SERVICE)
+                                                  .equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
+                                       .and(seq2.field(STATUS_CODE_SEQUENCING.PARENT)
+                                                .equal(seq.field(STATUS_CODE_SEQUENCING.CHILD))))
+                    .and(seq.field(STATUS_CODE_SEQUENCING.SERVICE)
+                            .eq(service.getId()))
+                    .fetch()
+                    .into(ExistentialRecord.class)
+                    .stream()
+                    .map(r -> model.records()
+                                   .resolve(r))
+                    .map(r -> (StatusCode) r)
+                    .collect(Collectors.toList());
     }
 
     @Override
@@ -626,7 +645,18 @@ public class JobModelImpl implements JobModel {
             return Arrays.asList(getInitialState(service));
         }
         return model.create()
-                    .selectDistinct(EXISTENTIAL.fields());
+                    .selectDistinct(EXISTENTIAL.fields())
+                    .from(EXISTENTIAL)
+                    .join(STATUS_CODE_SEQUENCING)
+                    .on(STATUS_CODE_SEQUENCING.PARENT.equal(parent.getId()))
+                    .and(EXISTENTIAL.ID.equal(STATUS_CODE_SEQUENCING.CHILD))
+                    .fetch()
+                    .into(ExistentialRecord.class)
+                    .stream()
+                    .map(r -> model.records()
+                                   .resolve(r))
+                    .map(e -> (StatusCode) e)
+                    .collect(Collectors.toList());
     }
 
     /**

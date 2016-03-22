@@ -20,7 +20,6 @@
 
 package com.chiralbehaviors.CoRE.meta;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -56,11 +55,7 @@ import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
  */
 public interface Model extends AutoCloseable {
 
-    /**
-     * @param phantasm
-     * @return
-     */
-    static Class<?> getExistentialRuleform(Class<?> phantasm) {
+    static ExistentialDomain getExistentialDomain(Class<?> phantasm) {
         if (!phantasm.isInterface()) {
             throw new IllegalArgumentException(String.format("%s is not an interface",
                                                              phantasm));
@@ -71,23 +66,32 @@ public interface Model extends AutoCloseable {
         }
 
         Type type = ((ParameterizedType) phantasm.getGenericInterfaces()[0]).getActualTypeArguments()[0];
-        return (Class<?>) type;
-    }
-
-    /**
-     * @param phantasm
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    static <T extends ExistentialRuleform> Constructor<? super T> getExistentialRuleformConstructor(Class<?> phantasm) {
-        try {
-            return (Constructor<? super T>) getExistentialRuleform(phantasm).getConstructor(String.class,
-                                                                                            String.class,
-                                                                                            Agency.class);
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new IllegalStateException("Cannot access or find constructor for ruleform",
-                                            e);
+        if (type.equals(Agency.class)) {
+            return ExistentialDomain.Agency;
         }
+        if (type.equals(Agency.class)) {
+            return ExistentialDomain.Agency;
+        }
+        if (type.equals(Agency.class)) {
+            return ExistentialDomain.Agency;
+        }
+        if (type.equals(Agency.class)) {
+            return ExistentialDomain.Agency;
+        }
+        if (type.equals(Agency.class)) {
+            return ExistentialDomain.Agency;
+        }
+        if (type.equals(Agency.class)) {
+            return ExistentialDomain.Agency;
+        }
+        if (type.equals(Agency.class)) {
+            return ExistentialDomain.Agency;
+        }
+        if (type.equals(Agency.class)) {
+            return ExistentialDomain.Agency;
+        }
+        throw new IllegalArgumentException(String.format("Unknown domain: %s",
+                                                         type));
     }
 
     /**

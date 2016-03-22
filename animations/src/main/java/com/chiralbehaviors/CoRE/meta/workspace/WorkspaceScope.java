@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.phantasm.java.annotations.Key;
 
@@ -99,7 +98,7 @@ public class WorkspaceScope {
      * @return the value associated with the key in the named scope, or null
      */
     @SuppressWarnings("unchecked")
-    public <T extends Ruleform> T lookup(String namespace, String name) {
+    public <T> T lookup(String namespace, String name) {
         // null and empty string is alias for null scoped lookup in the workspace
         if (namespace == null || namespace.length() == 0) {
             return (T) lookup(name);
@@ -151,7 +150,7 @@ public class WorkspaceScope {
         sortedImports.add(workspace);
     }
 
-    protected Ruleform localLookup(String key, Model model) {
+    protected <T> T localLookup(String key, Model model) {
         return workspace.get(key);
     }
 

@@ -33,6 +33,29 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
  */
 @SuppressWarnings("rawtypes")
 public interface ExistentialRuleform extends Phantasm {
+    /**
+     * Yes, this is really intentional
+     * 
+     * @param record
+     * @return
+     */
+    default boolean equals(ExistentialRecord record) {
+        return record == null ? false : getId().equals(record.getId());
+    }
+
+    /**
+     * Yes, this is really intentional
+     * 
+     * @param record
+     * @return
+     */
+    default boolean equals(Record record) {
+        if (record instanceof ExistentialRecord) {
+            return equals((ExistentialRecord) record);
+        }
+        return false;
+    }
+
     @Override
     String getDescription();
 
@@ -64,27 +87,6 @@ public interface ExistentialRuleform extends Phantasm {
 
     void setNotes(String notes);
 
-    /**
-     * Yes, this is really intentional
-     * 
-     * @param record
-     * @return
-     */
-    default boolean equals(Record record) {
-        if (record instanceof ExistentialRecord) {
-            return equals((ExistentialRecord) record);
-        }
-        return false;
-    }
-
-    /**
-     * Yes, this is really intentional
-     * 
-     * @param record
-     * @return
-     */
-    default boolean equals(ExistentialRecord record) {
-        return record == null ? false : getId().equals(record.getId());
-    }
+    void setUpdatedBy(UUID updatedBy);
 
 }

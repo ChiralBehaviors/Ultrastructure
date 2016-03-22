@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.meta.models;
 
 import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -225,20 +224,13 @@ public class ModelImpl implements Model {
                                                                               String description) throws InstantiationException {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition) cached(phantasm,
                                                                                  this);
-        T ruleform;
-        try {
-            ruleform = (T) Model.getExistentialRuleformConstructor(phantasm)
-                                .newInstance(name, description,
-                                             getCurrentPrincipal().getPrincipal());
-        } catch (IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
-            InstantiationException ex = new InstantiationException(String.format("Cannot construct instance of existential ruleform for %s",
-                                                                                 phantasm));
-            ex.initCause(e);
-            throw ex;
-        }
-        ((ExistentialRecord) ruleform).insert();
-        return (R) definition.construct(ruleform, this,
+        ExistentialRecord record = (ExistentialRecord) records().newExistential(Model.getExistentialDomain(phantasm));
+        record.setName(name);
+        record.setDescription(description);
+        record.setUpdatedBy(getCurrentPrincipal().getPrincipal()
+                                                 .getId());
+        record.insert();
+        return (R) definition.construct((ExistentialRuleform) record, this,
                                         getCurrentPrincipal().getPrincipal());
     }
 

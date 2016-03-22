@@ -51,6 +51,7 @@ import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
 import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
 import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
@@ -228,10 +229,17 @@ public class Bootstrap {
 
     private void populate(String key, WellKnownObject wko, Agency core,
                           Product kernelWorkspace) {
-        records.newWorkspaceAuthorization(key, wko.id(),
-                                          ReferenceType.Existential,
-                                          kernelWorkspace, core)
-               .insert();
+        WorkspaceAuthorizationRecord auth = records.newWorkspaceAuthorization(key,
+                                                                              wko.id(),
+                                                                              ReferenceType.Existential,
+                                                                              kernelWorkspace,
+                                                                              core);
+        auth.insert();
+        ExistentialRecord existential = create.selectFrom(EXISTENTIAL)
+                                              .where(EXISTENTIAL.ID.equal(wko.id()))
+                                              .fetchOne();
+        existential.setWorkspace(auth.getId());
+        existential.update();
     }
 
     private void populateAgencies(Agency core, Product kernelWorkspace) {
@@ -323,6 +331,8 @@ public class Bootstrap {
         populate("NotApplicableAttribute", WellKnownAttribute.NOT_APPLICABLE,
                  core, kernelWorkspace);
         populate("SameAttribute", WellKnownAttribute.SAME, core,
+                 kernelWorkspace);
+        populate("Nullable", WellKnownAttribute.NULLABLE, core,
                  kernelWorkspace);
 
     }
@@ -449,6 +459,7 @@ public class Bootstrap {
                  kernelWorkspace);
         populate("Microseconds", WellKnownUnit.MICROSECONDS, core,
                  kernelWorkspace);
+        populate("Minutes", WellKnownUnit.MINUTES, core, kernelWorkspace);
         populate("Milliseconds", WellKnownUnit.MILLISECONDS, core,
                  kernelWorkspace);
         populate("Seconds", WellKnownUnit.SECONDS, core, kernelWorkspace);

@@ -607,6 +607,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Agency_Existential_Grouping,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -620,6 +621,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Child_Sequencing_Authorization,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -633,6 +635,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Attribute_Authorization,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -646,6 +649,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Attribute,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -659,6 +663,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Network_Attribute_Authorization,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -672,6 +677,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Network_Attribute,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -685,6 +691,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Network_Authorization,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -698,6 +705,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Network,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -711,6 +719,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Existential,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -724,6 +733,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Facet,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -737,6 +747,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Job_Chronology,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -750,6 +761,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Job,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -763,6 +775,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Meta_Protocol,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -776,6 +789,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Network_Inference,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -789,6 +803,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Parent_Sequencing_Authorization,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -802,6 +817,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Protocol,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -815,6 +831,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Self_Sequencing_Authorization,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -828,6 +845,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Sibling_Sequencing_Authorization,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 
@@ -841,6 +859,7 @@ public interface RecordsFactory {
                                                                       ReferenceType.Status_Code_Sequencing,
                                                                       updatedBy);
         record.setWorkspace(auth.getId());
+        record.update();
         return auth;
     }
 

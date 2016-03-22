@@ -151,6 +151,7 @@ public class WorkspaceImporter {
         Token description = wsp.getWorkspaceDefinition().description;
         definingProduct.setDescription(description == null ? null
                                                            : WorkspacePresentation.stripQuotes(description.getText()));
+        definingProduct.update();
         scope = model.getWorkspaceModel()
                      .getScoped(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();

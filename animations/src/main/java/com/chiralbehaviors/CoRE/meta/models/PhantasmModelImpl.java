@@ -286,34 +286,39 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public ExistentialAttributeRecord create(ExistentialRuleform ruleform,
+    public ExistentialAttributeRecord create(ExistentialRuleform existential,
                                              Attribute attribute,
                                              Agency updateBy) {
-        return null;
+        ExistentialAttributeRecord value = model.records()
+                                                .newExistentialAttribute(model.getCurrentPrincipal()
+                                                                              .getPrincipal());
+        value.setAttribute(attribute.getId());
+        value.setExistential(existential.getId());
+        return value;
     }
 
     @Override
-    public void deauthorize(ExistentialRuleform ruleform,
+    public void deauthorize(ExistentialRuleform existential,
                             Relationship relationship,
                             ExistentialRuleform authorized) {
         create.deleteFrom(EXISTENTIAL_NETWORK)
-              .where(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
+              .where(EXISTENTIAL_NETWORK.PARENT.equal(existential.getId()))
               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
               .and(EXISTENTIAL_NETWORK.PARENT.equal(authorized.getId()))
               .execute();
         create.deleteFrom(EXISTENTIAL_NETWORK)
               .where(EXISTENTIAL_NETWORK.PARENT.equal(authorized.getId()))
               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getInverse()))
-              .and(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
+              .and(EXISTENTIAL_NETWORK.PARENT.equal(existential.getId()))
               .execute();
     }
 
     @Override
-    public void deauthorizeAll(ExistentialRuleform ruleform,
+    public void deauthorizeAll(ExistentialRuleform existential,
                                Relationship relationship,
                                List<? extends ExistentialRuleform> authorized) {
         for (ExistentialRuleform agency : authorized) {
-            deauthorize(ruleform, relationship, agency);
+            deauthorize(existential, relationship, agency);
         }
     }
 
@@ -795,6 +800,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         forward.setRelationship(r);
         forward.setChild(child);
         forward.setUpdatedBy(updatedBy);
+        forward.insert();
 
         ExistentialNetworkRecord inverse = model.records()
                                                 .newExistentialNetwork();
@@ -802,6 +808,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         inverse.setRelationship(r);
         inverse.setChild(parent);
         inverse.setUpdatedBy(updatedBy);
+        inverse.insert();
         return new Tuple<>(forward, inverse);
     }
 

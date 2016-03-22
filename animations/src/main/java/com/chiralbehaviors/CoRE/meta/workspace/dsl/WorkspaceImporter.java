@@ -45,6 +45,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthoriz
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
@@ -78,6 +79,7 @@ import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SelfSequencingCont
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SequencePairContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.SiblingSequencingContext;
 import com.chiralbehaviors.CoRE.workspace.dsl.WorkspaceParser.StatusCodeSequencingSetContext;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hparry
@@ -523,10 +525,14 @@ public class WorkspaceImporter {
                 model.getPhantasmModel()
                      .initialize(parent, facet, workspace);
             } else {
-                model.getPhantasmModel()
-                     .link(parent, relationship, child,
-                           model.getCurrentPrincipal()
-                                .getPrincipal());
+                Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link = model.getPhantasmModel()
+                                                                                      .link(parent,
+                                                                                            relationship,
+                                                                                            child,
+                                                                                            model.getCurrentPrincipal()
+                                                                                                 .getPrincipal());
+                workspace.add(link.a);
+                workspace.add(link.b);
             }
         }
     }

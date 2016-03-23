@@ -16,9 +16,6 @@
                 <constraints nullable="false" />
             </column>
             <column name="entity" type="uuid" />
-            <column name="domain" type="char">
-                <constraints nullable="false" />
-            </column>
             <column name="updated_by" defaultValue="'00000000-0000-0000-0000-000000000003'" type="uuid">
                 <constraints nullable="false" />
             </column>

@@ -1035,9 +1035,9 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public JobRecord newInitializedJob(Product service, Agency updatedBy) {
-        JobRecord job = new JobRecord();
+        JobRecord job = model.records()
+                             .newJob(updatedBy);
         job.setService(service.getId());
-        job.setUpdatedBy(updatedBy.getId());
         job.setAssignTo(kernel.getNotApplicableAgency()
                               .getId());
         job.setDeliverFrom(kernel.getNotApplicableLocation()
@@ -1065,7 +1065,8 @@ public class JobModelImpl implements JobModel {
     public MetaProtocolRecord newInitializedMetaProtocol(Product service,
                                                          Agency updatedBy) {
         Relationship any = kernel.getAnyRelationship();
-        MetaProtocolRecord mp = new MetaProtocolRecord();
+        MetaProtocolRecord mp = model.records()
+                                     .newMetaProtocol();
         mp.setUpdatedBy(updatedBy.getId());
         mp.setService(service.getId());
         mp.setAssignTo(any.getId());
@@ -1083,7 +1084,8 @@ public class JobModelImpl implements JobModel {
     @Override
     public ProtocolRecord newInitializedProtocol(Product service,
                                                  Agency updatedBy) {
-        ProtocolRecord protocol = new ProtocolRecord();
+        ProtocolRecord protocol = model.records()
+                                       .newProtocol();
         protocol.setUpdatedBy(updatedBy.getId());
         protocol.setService(service.getId());
         protocol.setAssignTo(kernel.getNotApplicableAgency()

@@ -172,6 +172,16 @@ public interface RecordsFactory {
         return record;
     }
 
+    default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(Product parent,
+                                                                               StatusCode status,
+                                                                               Product child,
+                                                                               StatusCode next,
+                                                                               Agency updatedBy) {
+        return newChildSequencingAuthorization(parent.getId(), status.getId(),
+                                               child.getId(), next.getId(),
+                                               updatedBy);
+    }
+
     default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(UUID parent,
                                                                                UUID status,
                                                                                UUID child,
@@ -247,10 +257,10 @@ public interface RecordsFactory {
         return record;
     }
 
-    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAttributeAuthorization(Agency updatedBy) {
-        ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(updatedBy.getId());
+    default ExistentialAttributeRecord newExistentialAttribute(Attribute attr,
+                                                               Agency updatedBy) {
+        ExistentialAttributeRecord record = newExistentialAttribute(updatedBy);
+        record.setAttribute(attr.getId());
         return record;
     }
 
@@ -260,9 +270,22 @@ public interface RecordsFactory {
         return record;
     }
 
+    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(Agency updatedBy) {
+        ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
+        record.setId(GENERATOR.generate());
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
     default AgencyExistentialGroupingRecord newExistentialGrouping() {
         AgencyExistentialGroupingRecord record = create().newRecord(AGENCY_EXISTENTIAL_GROUPING);
         record.setId(GENERATOR.generate());
+        return record;
+    }
+
+    default AgencyExistentialGroupingRecord newExistentialGrouping(Agency updatedBy) {
+        AgencyExistentialGroupingRecord record = newExistentialGrouping();
+        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -405,6 +428,7 @@ public interface RecordsFactory {
         NetworkInferenceRecord record = newNetworkInferrence();
         record.setPremise1(premise1);
         record.setPremise2(premise2);
+        record.setInference(inference);
         record.setUpdatedBy(updatedBy.getId());
         return record;
     }
@@ -1088,4 +1112,5 @@ public interface RecordsFactory {
                        .where(WORKSPACE_AUTHORIZATION.ID.equal(id))
                        .fetchOne();
     }
+
 }

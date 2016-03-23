@@ -344,6 +344,9 @@ public interface PhantasmModel {
                                        Relationship r,
                                        ExistentialDomain domain);
 
+    List<ExistentialRuleform> getTransitiveRelationships(ExistentialRuleform a,
+                                                         ExistentialDomain damain);
+
     Object getValue(ExistentialAttributeRecord attributeValue);
 
     /**

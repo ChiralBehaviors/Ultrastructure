@@ -15,7 +15,7 @@
                 <constraints nullable="false" />
             </column>
             <column name="sequence_number" remarks="Ordering and uniqueness, for when a service can have multiple meta-protocol rules"
-                type="INT4"
+                type="INT4" defaultValue="0"
             >
                 <constraints nullable="false" />
             </column>

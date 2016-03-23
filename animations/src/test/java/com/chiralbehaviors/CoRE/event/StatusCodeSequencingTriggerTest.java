@@ -41,12 +41,15 @@ public class StatusCodeSequencingTriggerTest extends AbstractModelTest {
     public void test2InitialStates() throws SQLException {
         Agency core = kernel.getCore();
         Product service = kernel.getNotApplicableProduct();
-        StatusCode a = new StatusCode("A", null, core);
-        em.persist(a);
-        StatusCode b = new StatusCode("B", null, core);
-        em.persist(b);
-        StatusCode x = new StatusCode("X", null, core);
-        em.persist(x);
+        StatusCode a = model.records()
+                            .newStatusCode("A", null, core);
+        a.insert();
+        StatusCode b = model.records()
+                            .newStatusCode("B", null, core);
+        b.insert();
+        StatusCode x = model.records()
+                            .newStatusCode("X", null, core);
+        x.insert();
 
         List<Tuple<StatusCode, StatusCode>> codes = new ArrayList<>();
         codes.add(new Tuple<StatusCode, StatusCode>(a, x));
@@ -54,7 +57,6 @@ public class StatusCodeSequencingTriggerTest extends AbstractModelTest {
         model.getJobModel()
              .createStatusCodeSequencings(service, codes, core);
         try {
-            em.flush();
             fail("Insert should not have succeeded");
         } catch (Exception e) {
             // expected

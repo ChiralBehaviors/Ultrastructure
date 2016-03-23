@@ -22,10 +22,11 @@ package com.chiralbehaviors.CoRE.meta.models;
 import java.util.List;
 import java.util.Map;
 
-import com.chiralbehaviors.CoRE.jooq.tables.Job;
-import com.chiralbehaviors.CoRE.jooq.tables.MetaProtocol;
 import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 
 /**
  * A class full of utility methods to aid in debugging.
@@ -35,8 +36,8 @@ import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
  */
 public class TestDebuggingUtil {
 
-    public static void printJobs(List<Job> jobs) {
-        for (Job j : jobs) {
+    public static void printJobs(List<JobRecord> jobs) {
+        for (JobRecord j : jobs) {
             System.out.println(String.format("%s: Status: %s, Parent: %s",
                                              j.getService()
                                               .getName(),
@@ -52,8 +53,8 @@ public class TestDebuggingUtil {
     /**
      * @param findMetaProtocolGaps
      */
-    public static void printMetaProtocolGaps(Map<Protocol, Map<MetaProtocol, List<String>>> gaps) {
-        for (Map.Entry<Protocol, Map<MetaProtocol, List<String>>> e : gaps.entrySet()) {
+    public static void printMetaProtocolGaps(Map<ProtocolRecord, Map<MetaProtocolRecord, List<String>>> gaps) {
+        for (Map.Entry<ProtocolRecord, Map<MetaProtocolRecord, List<String>>> e : gaps.entrySet()) {
             System.out.println(String.format("requested service: %s, service: %s",
                                              e.getKey()
                                               .getService()
@@ -62,8 +63,8 @@ public class TestDebuggingUtil {
                                               .getService()
                                               .getName()));
 
-            for (Map.Entry<MetaProtocol, List<String>> mpe : e.getValue()
-                                                              .entrySet()) {
+            for (Map.Entry<MetaProtocolRecord, List<String>> mpe : e.getValue()
+                                                                    .entrySet()) {
                 System.out.println(String.format("MetaProtocol: %s",
                                                  mpe.getKey()
                                                     .getId()));

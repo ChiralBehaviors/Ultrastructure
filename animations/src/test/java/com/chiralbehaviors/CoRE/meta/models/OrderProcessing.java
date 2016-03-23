@@ -20,6 +20,7 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 

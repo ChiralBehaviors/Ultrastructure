@@ -29,16 +29,15 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
-import com.chiralbehaviors.CoRE.jooq.tables.ChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.Job;
-import com.chiralbehaviors.CoRE.jooq.tables.JobChronology;
-import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.hellblazer.utils.Tuple;
 
@@ -48,36 +47,31 @@ import com.hellblazer.utils.Tuple;
  */
 public class StatusCodeTest extends AbstractModelTest {
 
-    @Before
-    public void before() {
-        if (em.getTransaction()
-              .isActive()) {
-            em.getTransaction()
-              .rollback();
-        }
-        em.getTransaction()
-          .begin();
-    }
-
     @Test
     public void testIsTerminalState() throws Exception {
         // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/test-log-config.xml")));
         JobModel jobModel = model.getJobModel();
-        StatusCode startState = new StatusCode("top-level", kernel.getCore());
-        em.persist(startState);
+        StatusCode startState = model.records()
+                                     .newStatusCode("top-level",
+                                                    kernel.getCore());
+        startState.insert();
 
-        StatusCode state1 = new StatusCode("state-1", kernel.getCore());
-        em.persist(state1);
+        StatusCode state1 = model.records()
+                                 .newStatusCode("state-1", kernel.getCore());
+        state1.insert();
 
-        StatusCode state2 = new StatusCode("state-2", kernel.getCore());
-        em.persist(state2);
+        StatusCode state2 = model.records()
+                                 .newStatusCode("state-2", kernel.getCore());
+        state2.insert();
 
-        StatusCode terminalState = new StatusCode("terminal state",
-                                                  kernel.getCore());
-        em.persist(terminalState);
+        StatusCode terminalState = model.records()
+                                        .newStatusCode("terminal state",
+                                                       kernel.getCore());
+        terminalState.insert();
 
-        Product service = new Product("My Service", kernel.getCore());
-        em.persist(service);
+        Product service = model.records()
+                               .newProduct("My Service", kernel.getCore());
+        service.insert();
 
         List<Tuple<StatusCode, StatusCode>> sequences = new ArrayList<Tuple<StatusCode, StatusCode>>();
         sequences.add(new Tuple<StatusCode, StatusCode>(startState, state1));
@@ -86,8 +80,6 @@ public class StatusCodeTest extends AbstractModelTest {
 
         model.getJobModel()
              .createStatusCodeSequencings(service, sequences, kernel.getCore());
-
-        em.flush();
 
         assertTrue(String.format("%s is not a terminal state", terminalState),
                    jobModel.isTerminalState(terminalState, service));
@@ -100,65 +92,73 @@ public class StatusCodeTest extends AbstractModelTest {
         assertEquals(4, jobModel.getStatusCodesFor(service)
                                 .size());
 
-        StatusCodeSequencing loop = new StatusCodeSequencing(service,
-                                                             terminalState,
-                                                             state1,
-                                                             kernel.getCore());
-        em.persist(loop);
+        StatusCodeSequencingRecord loop = model.records()
+                                               .newStatusCodeSequencing(service,
+                                                                        terminalState,
+                                                                        state1,
+                                                                        kernel.getCore());
+        loop.insert();
         try {
-            em.flush();
             fail("Expected failure due to circularity");
         } catch (Exception e) {
-            em.remove(loop);
+            loop.delete();
         }
-        em.refresh(terminalState);
-        em.refresh(service);
-        em.refresh(state1);
-        em.refresh(state2);
         Agency core = kernel.getCore();
         assertTrue(String.format("%s is not a terminal state", terminalState),
                    jobModel.isTerminalState(terminalState, service));
 
-        StatusCode loopState = new StatusCode("loop-state", core);
-        em.persist(loopState);
+        StatusCode loopState = model.records()
+                                    .newStatusCode("loop-state", core);
+        loopState.insert();
 
-        loop = new StatusCodeSequencing(service, state2, loopState, core);
-        em.persist(loop);
+        loop = model.records()
+                    .newStatusCodeSequencing(service, state2, loopState, core);
+        loop.insert();
 
-        StatusCodeSequencing terminate = new StatusCodeSequencing(service,
-                                                                  loopState,
-                                                                  terminalState,
-                                                                  core);
-        em.persist(terminate);
+        StatusCodeSequencingRecord terminate = model.records()
+                                                    .newStatusCodeSequencing(service,
+                                                                             loopState,
+                                                                             terminalState,
+                                                                             core);
+        terminate.insert();
 
-        StatusCodeSequencing back = new StatusCodeSequencing(service, loopState,
-                                                             state1, core);
-        em.persist(back);
-        em.persist(terminate);
-        em.flush();
+        StatusCodeSequencingRecord back = model.records()
+                                               .newStatusCodeSequencing(service,
+                                                                        loopState,
+                                                                        state1,
+                                                                        core);
+        back.insert();
+        terminate.insert();
     }
 
     @Test
     public void testLogInvalidSequencingTransition() throws Exception {
         // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/test-log-config.xml")));
         JobModel jobModel = model.getJobModel();
-        StatusCode startState = new StatusCode("top-level", kernel.getCore());
-        em.persist(startState);
+        StatusCode startState = model.records()
+                                     .newStatusCode("top-level",
+                                                    kernel.getCore());
+        startState.insert();
 
-        StatusCode state1 = new StatusCode("state-1", kernel.getCore());
-        em.persist(state1);
+        StatusCode state1 = model.records()
+                                 .newStatusCode("state-1", kernel.getCore());
+        state1.insert();
 
-        StatusCode state2 = new StatusCode("state-2", kernel.getCore());
-        em.persist(state2);
+        StatusCode state2 = model.records()
+                                 .newStatusCode("state-2", kernel.getCore());
+        state2.insert();
 
-        StatusCode terminalState = new StatusCode("terminal state",
-                                                  kernel.getCore());
-        em.persist(terminalState);
+        StatusCode terminalState = model.records()
+                                        .newStatusCode("terminal state",
+                                                       kernel.getCore());
+        terminalState.insert();
 
-        Product service = new Product("My Service", kernel.getCore());
-        em.persist(service);
-        Product service2 = new Product("Service 2", kernel.getCore());
-        em.persist(service2);
+        Product service = model.records()
+                               .newProduct("My Service", kernel.getCore());
+        service.insert();
+        Product service2 = model.records()
+                                .newProduct("Service 2", kernel.getCore());
+        service2.insert();
 
         List<Tuple<StatusCode, StatusCode>> sequences = new ArrayList<Tuple<StatusCode, StatusCode>>();
         sequences.add(new Tuple<StatusCode, StatusCode>(startState, state1));
@@ -171,28 +171,27 @@ public class StatusCodeTest extends AbstractModelTest {
              .createStatusCodeSequencings(service2, sequences,
                                           kernel.getCore());
 
-        ChildSequencingAuthorization invalidSeq = new ChildSequencingAuthorization(service,
-                                                                                                 startState,
-                                                                                                 service2,
-                                                                                                 terminalState,
-                                                                                                 kernel.getCore());
-        em.persist(invalidSeq);
-        Job parent = jobModel.newInitializedJob(service, kernel.getCore());
-        Job child = jobModel.newInitializedJob(service2, kernel.getCore());
-        child.setParent(parent);
-        em.flush();
-        em.refresh(parent);
-        em.refresh(child);
+        ChildSequencingAuthorizationRecord invalidSeq = model.records()
+                                                             .newChildSequencingAuthorization(service,
+                                                                                              startState,
+                                                                                              service2,
+                                                                                              terminalState,
+                                                                                              kernel.getCore());
+        invalidSeq.insert();
+        JobRecord parent = jobModel.newInitializedJob(service,
+                                                      kernel.getCore());
+        JobRecord child = jobModel.newInitializedJob(service2,
+                                                     kernel.getCore());
+        child.setParent(parent.getId());
         assertNotNull("Parent is null", child.getParent());
         assertTrue("Child is not considered active", jobModel.isActive(child));
         assertEquals(1, jobModel.getActiveSubJobsOf(parent)
                                 .size());
         jobModel.changeStatus(parent, startState, kernel.getCore(),
                               "transition from test");
-        em.flush();
-        List<JobChronology> chronology = jobModel.getChronologyForJob(child);
+        List<JobChronologyRecord> chronology = jobModel.getChronologyForJob(child);
         assertEquals(chronology.toString(), 2, chronology.size());
-        for (JobChronology crumb : chronology) {
+        for (JobChronologyRecord crumb : chronology) {
             assertEquals(kernel.getUnset(), crumb.getStatus());
         }
     }

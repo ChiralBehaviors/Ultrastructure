@@ -33,6 +33,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.FACET;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -49,7 +50,6 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistentialGrouping;
-import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
@@ -79,7 +79,7 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     public PhantasmModelImpl(Model model) {
         this.model = model;
-        this.create = model.create();
+        create = model.create();
     }
 
     @Override
@@ -748,13 +748,11 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                    Relationship relationship,
                                                    ExistentialDomain domain) {
 
-        Existential e = EXISTENTIAL.as("e");
-        return create.selectFrom(e)
+        return create.selectFrom(EXISTENTIAL)
                      .whereNotExists(create.selectFrom(EXISTENTIAL_NETWORK)
                                            .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                                            .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                           .and(EXISTENTIAL_NETWORK.CHILD.equal(e.field(EXISTENTIAL.ID))))
-                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                                           .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID)))
                      .and(EXISTENTIAL.DOMAIN.equal(domain))
                      .fetch()
                      .into(ExistentialRecord.class)
@@ -782,6 +780,16 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
         return model.records()
                     .resolve(result.into(ExistentialRecord.class));
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.PhantasmModel#getTransitiveRelationships(com.chiralbehaviors.CoRE.domain.ExistentialRuleform, com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain)
+     */
+    @Override
+    public List<ExistentialRuleform> getTransitiveRelationships(ExistentialRuleform a,
+                                                                ExistentialDomain damain) {
+        // TODO Auto-generated method stub
+        return Collections.emptyList();
     }
 
     /* (non-Javadoc)

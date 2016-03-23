@@ -26,14 +26,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
 
 /**
  * @author hhildebrand
@@ -125,15 +127,12 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i, core);
         edgeH.insert();
 
-        a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getPhantasmModel()
-                             .getChildren(a, equals)
+                             .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
-        aEqualsA = em.find(Inference.class, aEqualsA.getId());
         aEqualsA.delete();
-        a = em.find(Agency.class, a.getId());
         assertEquals(1, model.getPhantasmModel()
-                             .getChildren(a, equals)
+                             .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
     }
 
@@ -221,22 +220,19 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i, core);
         edgeH.insert();
 
-        a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getPhantasmModel()
-                             .getChildren(a, equals)
+                             .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
-        edgeA = em.find(ExistentialNetworkRecord.class, edgeA.getId());
         edgeA.delete();
-        a = em.find(Agency.class, a.getId());
-        List<Agency> children = model.getPhantasmModel()
-                                     .getChildren(a, equals);
+        List<ExistentialRuleform> children = model.getPhantasmModel()
+                                                  .getChildren(a, equals,
+                                                               ExistentialDomain.Agency);
         assertEquals(children.toString(), 1, children.size());
         assertEquals(0, model.getPhantasmModel()
-                             .getChildren(a, equals2)
+                             .getChildren(a, equals2, ExistentialDomain.Agency)
                              .size());
-        b = em.find(Agency.class, b.getId());
         assertEquals(1, model.getPhantasmModel()
-                             .getChildren(b, equals2)
+                             .getChildren(b, equals2, ExistentialDomain.Agency)
                              .size());
     }
 
@@ -323,15 +319,12 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i, core);
         edgeH.insert();
 
-        a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getPhantasmModel()
-                             .getChildren(a, equals)
+                             .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
-        edgeB = em.find(ExistentialNetworkRecord.class, edgeB.getId());
         edgeB.delete();
-        a = em.find(Agency.class, a.getId());
         assertEquals(1, model.getPhantasmModel()
-                             .getChildren(a, equals)
+                             .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
     }
 
@@ -341,20 +334,34 @@ public class PhantasmModelTest extends AbstractModelTest {
         Agency core = model.getKernel()
                            .getCore();
 
-        Relationship a = model.getPhantasmModel()
-                              .create("a", "a", "a'", "a'");
-        Relationship b = model.getPhantasmModel()
-                              .create("b", "b", "b'", "b'");
-        Relationship c = model.getPhantasmModel()
-                              .create("c", "c", "c'", "c'");
-        Relationship d = model.getPhantasmModel()
-                              .create("d", "d", "d'", "d'");
-        Relationship e = model.getPhantasmModel()
-                              .create("e", "e", "e'", "e'");
-        Relationship f = model.getPhantasmModel()
-                              .create("f", "f", "f'", "f'");
-        Relationship g = model.getPhantasmModel()
-                              .create("g", "g", "g'", "g'");
+        Relationship a = model.records()
+                              .newRelationship("a", "a", "a'", "a'",
+                                               model.getCurrentPrincipal()
+                                                    .getPrincipal());
+        Relationship b = model.records()
+                              .newRelationship("b", "b", "b'", "b'",
+                                               model.getCurrentPrincipal()
+                                                    .getPrincipal());
+        Relationship c = model.records()
+                              .newRelationship("c", "c", "c'", "c'",
+                                               model.getCurrentPrincipal()
+                                                    .getPrincipal());
+        Relationship d = model.records()
+                              .newRelationship("d", "d", "d'", "d'",
+                                               model.getCurrentPrincipal()
+                                                    .getPrincipal());
+        Relationship e = model.records()
+                              .newRelationship("e", "e", "e'", "e'",
+                                               model.getCurrentPrincipal()
+                                                    .getPrincipal());
+        Relationship f = model.records()
+                              .newRelationship("f", "f", "f'", "f'",
+                                               model.getCurrentPrincipal()
+                                                    .getPrincipal());
+        Relationship g = model.records()
+                              .newRelationship("g", "g", "g'", "g'",
+                                               model.getCurrentPrincipal()
+                                                    .getPrincipal());
 
         NetworkInferenceRecord aIsB = model.records()
                                            .newNetworkInference(a, b, a, core);
@@ -427,10 +434,13 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      core);
         edgeG.insert();
 
-        A = em.find(Agency.class, A.getId());
-        List<Agency> children = model.getPhantasmModel()
-                                     .getChildren(A, a);
-        assertEquals(String.format("%s", children), 7, children.size());
+        List<ExistentialRuleform> children = model.getPhantasmModel()
+                                                  .getChildren(A, a,
+                                                               ExistentialDomain.Agency);
+        assertEquals(String.format("%s", children.stream()
+                                                 .map(r -> r.getName())
+                                                 .collect(Collectors.toList())),
+                     7, children.size());
     }
 
     @Test
@@ -475,7 +485,8 @@ public class PhantasmModelTest extends AbstractModelTest {
         edgeB.insert();
 
         assertEquals(1, model.getPhantasmModel()
-                             .getImmediateRelationships(a)
+                             .getImmediateRelationships(a,
+                                                        ExistentialDomain.Agency)
                              .size());
     }
 
@@ -526,39 +537,9 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      c, core);
         edgeB.insert();
         assertEquals(2, model.getPhantasmModel()
-                             .getTransitiveRelationships(a)
+                             .getTransitiveRelationships(a,
+                                                         ExistentialDomain.Agency)
                              .size());
-    }
-
-    @Test
-    public void testInGroup() {
-        Relationship classifier = model.records()
-                                       .newRelationship("test group classifier",
-                                                        kernel.getCore());
-        classifier.insert();
-        ;
-        Relationship inverse = model.records()
-                                    .newRelationship("inverse test group classifier",
-                                                     kernel.getCore());
-        inverse.insert();
-        classifier.setInverse(inverse.getId());
-        inverse.setInverse(classifier.getId());
-        Agency classification = model.records()
-                                     .newAgency("test in group agency classification",
-                                                kernel.getCore());
-        classification.insert();
-        Aspect<Agency> myAspect = new Aspect<Agency>(classifier,
-                                                     classification);
-        @SuppressWarnings("unchecked")
-        Agency testAgency = model.getPhantasmModel()
-                                 .create("test agency in group", "test",
-                                         myAspect, kernel.getCore());
-        testAgency.insert();
-        List<Agency> inGroup = model.getPhantasmModel()
-                                    .getInGroup(classification, inverse);
-        assertNotNull(inGroup);
-        assertEquals(1, inGroup.size());
-        assertEquals(testAgency, inGroup.get(0));
     }
 
     @Test
@@ -644,9 +625,8 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i, core);
         edgeH.insert();
 
-        a = em.find(Agency.class, a.getId());
         assertEquals(8, model.getPhantasmModel()
-                             .getChildren(a, equals)
+                             .getChildren(a, equals, ExistentialDomain.Agency)
                              .size());
     }
 
@@ -666,9 +646,10 @@ public class PhantasmModelTest extends AbstractModelTest {
                                      .newAgency("test not in group agency classification",
                                                 kernel.getCore());
         classification.insert();
-        em.flush();
-        List<Agency> notInGroup = model.getPhantasmModel()
-                                       .getNotInGroup(classification, inverse);
+        List<ExistentialRuleform> notInGroup = model.getPhantasmModel()
+                                                    .getNotInGroup(classification,
+                                                                   inverse,
+                                                                   ExistentialDomain.Agency);
         assertNotNull(notInGroup);
         assertTrue(!notInGroup.isEmpty());
     }

@@ -37,17 +37,19 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
+import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.jooq.tables.ChildSequencingAuthorization;
-import com.chiralbehaviors.CoRE.jooq.tables.Job;
-import com.chiralbehaviors.CoRE.jooq.tables.JobChronology;
-import com.chiralbehaviors.CoRE.jooq.tables.MetaProtocol;
 import com.chiralbehaviors.CoRE.jooq.tables.ParentSequencingAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.Protocol;
 import com.chiralbehaviors.CoRE.jooq.tables.SelfSequencingAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.hellblazer.utils.Tuple;
@@ -58,7 +60,7 @@ import com.hellblazer.utils.Tuple;
  */
 public class JobModelTest extends AbstractModelTest {
 
-    private static JobModel jobModel;
+    private static JobModel        jobModel;
 
     private static OrderProcessing scenario;
 
@@ -87,57 +89,78 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testDeliverWithoutMetaProtocol() {
-        StatusCode startState = new StatusCode("begin", kernel.getCore());
+        StatusCode startState = model.records()
+                                     .newStatusCode("begin", kernel.getCore());
         // startState.setPropagateChildren(true);
         em.persist(startState);
 
-        StatusCode delivered = new StatusCode("delivered", kernel.getCore());
+        StatusCode delivered = model.records()
+                                    .newStatusCode("delivered",
+                                                   kernel.getCore());
         em.persist(delivered);
 
-        StatusCode shipState = new StatusCode("shipping", kernel.getCore());
+        StatusCode shipState = model.records()
+                                    .newStatusCode("shipping",
+                                                   kernel.getCore());
         em.persist(shipState);
 
-        Product kiki = new Product("Kiki's Delivery Service", kernel.getCore());
+        Product kiki = model.records()
+                            .newProduct("Kiki's Delivery Service",
+                                        kernel.getCore());
         em.persist(kiki);
 
-        Product shipping = new Product("Kiki's Shipping Service",
-                                       kernel.getCore());
+        Product shipping = model.records()
+                                .newProduct("Kiki's Shipping Service",
+                                            kernel.getCore());
         em.persist(shipping);
 
-        Product bento = new Product("Tonkatsu Bento Box", kernel.getCore());
+        Product bento = model.records()
+                             .newProduct("Tonkatsu Bento Box",
+                                         kernel.getCore());
         em.persist(bento);
 
-        StatusCodeSequencing sequence = new StatusCodeSequencing(kiki,
-                                                                 startState,
-                                                                 delivered,
-                                                                 kernel.getCore());
-        em.persist(sequence);
-
-        StatusCodeSequencing childSequence = new StatusCodeSequencing(shipping,
-                                                                      shipState,
+        StatusCodeSequencing sequence = model.records()
+                                             .newStatusCodeSequencing(kiki,
+                                                                      startState,
                                                                       delivered,
                                                                       kernel.getCore());
+        em.persist(sequence);
+
+        StatusCodeSequencing childSequence = model.records()
+                                                  .newStatusCodeSequencing(shipping,
+                                                                           shipState,
+                                                                           delivered,
+                                                                           kernel.getCore());
         em.persist(childSequence);
 
-        Protocol p = jobModel.newInitializedProtocol(kiki, kernel.getCore());
-        p.setProduct(bento);
-        p.setRequester(kernel.getCore());
-        p.setDeliverTo(kernel.getAnyLocation());
-        p.setDeliverFrom(kernel.getAnyLocation());
-        p.setAssignTo(kernel.getCore());
-        p.setChildService(shipping);
-        p.setChildProduct(bento);
+        ProtocolRecord p = jobModel.newInitializedProtocol(kiki,
+                                                           kernel.getCore());
+        p.setProduct(bento.getId());
+        p.setRequester(kernel.getCore()
+                             .getId());
+        p.setDeliverTo(kernel.getAnyLocation()
+                             .getId());
+        p.setDeliverFrom(kernel.getAnyLocation()
+                               .getId());
+        p.setAssignTo(kernel.getCore()
+                            .getId());
+        p.setChildService(shipping.getId());
+        p.setChildProduct(bento.getId());
         em.persist(p);
 
         em.flush();
 
-        Job job = model.getJobModel()
-                       .newInitializedJob(kiki, kernel.getCore());
-        job.setAssignTo(kernel.getCore());
-        job.setProduct(bento);
-        job.setDeliverTo(kernel.getAnyLocation());
-        job.setDeliverFrom(kernel.getAnyLocation());
-        job.setRequester(kernel.getCore());
+        JobRecord job = model.getJobModel()
+                             .newInitializedJob(kiki, kernel.getCore());
+        job.setAssignTo(kernel.getCore()
+                              .getId());
+        job.setProduct(bento.getId());
+        job.setDeliverTo(kernel.getAnyLocation()
+                               .getId());
+        job.setDeliverFrom(kernel.getAnyLocation()
+                                 .getId());
+        job.setRequester(kernel.getCore()
+                               .getId());
         jobModel.changeStatus(job, kernel.getUnset(), kernel.getCore(),
                               "transition during test");
         em.persist(job);
@@ -147,23 +170,28 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         em.flush();
 
-        TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
-                                               Job.class);
+        TypedQuery<JobRecord> query = em.createQuery("select j from JobRecord j where j.service = :service",
+                                                     JobRecord.class);
         query.setParameter("service", shipping);
-        Job j = query.getSingleResult();
+        JobRecord j = query.getSingleResult();
         assertNotNull(j);
     }
 
     @Test
     public void testEuOrder() throws Exception {
-        Job order = model.getJobModel()
-                         .newInitializedJob(scenario.getDeliver(),
-                                            kernel.getCore());
-        order.setAssignTo(scenario.getOrderFullfillment());
-        order.setProduct(scenario.getABC486());
-        order.setDeliverTo(scenario.getRC31());
-        order.setDeliverFrom(scenario.getFactory1());
-        order.setRequester(scenario.getCarfleurBon());
+        JobRecord order = model.getJobModel()
+                               .newInitializedJob(scenario.getDeliver(),
+                                                  kernel.getCore());
+        order.setAssignTo(scenario.getOrderFullfillment()
+                                  .getId());
+        order.setProduct(scenario.getABC486()
+                                 .getId());
+        order.setDeliverTo(scenario.getRC31()
+                                   .getId());
+        order.setDeliverFrom(scenario.getFactory1()
+                                     .getId());
+        order.setRequester(scenario.getCarfleurBon()
+                                   .getId());
         em.persist(order);
         em.flush();
         jobModel.changeStatus(order, scenario.getAvailable(), kernel.getCore(),
@@ -172,37 +200,44 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         em.flush();
-        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
-        List<Job> jobs = jobModel.getAllChildren(order);
+        List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(6, jobs.size());
     }
 
     @Test
     public void testGenerateJobs() throws Exception {
-        Job job = model.getJobModel()
-                       .newInitializedJob(scenario.getDeliver(),
-                                          kernel.getCore());
-        job.setAssignTo(scenario.getOrderFullfillment());
-        job.setProduct(scenario.getABC486());
-        job.setDeliverTo(scenario.getRSB225());
-        job.setDeliverFrom(scenario.getFactory1());
-        job.setRequester(scenario.getGeorgetownUniversity());
+        JobRecord job = model.getJobModel()
+                             .newInitializedJob(scenario.getDeliver(),
+                                                kernel.getCore());
+        job.setAssignTo(scenario.getOrderFullfillment()
+                                .getId());
+        job.setProduct(scenario.getABC486()
+                               .getId());
+        job.setDeliverTo(scenario.getRSB225()
+                                 .getId());
+        job.setDeliverFrom(scenario.getFactory1()
+                                   .getId());
+        job.setRequester(scenario.getGeorgetownUniversity()
+                                 .getId());
         jobModel.changeStatus(job, scenario.getAvailable(), kernel.getCore(),
                               "Test transition");
 
-        List<Job> jobs = jobModel.generateImplicitJobs(job, kernel.getCore());
+        List<JobRecord> jobs = jobModel.generateImplicitJobs(job,
+                                                             kernel.getCore());
         TestDebuggingUtil.printJobs(jobs);
     }
 
     @Test
     public void testGenerateJobsFromProtocols() throws Exception {
-        Product service = new Product("test service", kernel.getCore());
+        Product service = model.records()
+                               .newProduct("test service", kernel.getCore());
         em.persist(service);
-        MetaProtocol mp = jobModel.newInitializedMetaProtocol(service,
-                                                              kernel.getCore());
+        MetaProtocolRecord mp = jobModel.newInitializedMetaProtocol(service,
+                                                                    kernel.getCore());
         mp.setAssignTo(kernel.getDevelopedBy());
         mp.setDeliverTo(kernel.getGreaterThanOrEqual());
         em.persist(mp);
@@ -210,7 +245,7 @@ public class JobModelTest extends AbstractModelTest {
         p.setAssignTo(kernel.getPropagationSoftware());
         em.persist(p);
         em.flush();
-        Job order = jobModel.newInitializedJob(service, kernel.getCore());
+        JobRecord order = jobModel.newInitializedJob(service, kernel.getCore());
         order.setAssignTo(kernel.getCoreUser());
         Location loc = new Location("crap location", null, kernel.getCore());
         em.persist(loc);
@@ -221,9 +256,10 @@ public class JobModelTest extends AbstractModelTest {
         List<Protocol> protocols = model.getJobModel()
                                         .getProtocolsFor(order.getService());
         assertEquals(1, protocols.size());
-        List<Job> jobs = model.getJobModel()
-                              .generateImplicitJobs(order, kernel.getCore());
-        for (Job j : jobs) {
+        List<JobRecord> jobs = model.getJobModel()
+                                    .generateImplicitJobs(order,
+                                                          kernel.getCore());
+        for (JobRecord j : jobs) {
             assertNotNull(j.getAssignTo());
             assertNotNull(j.getService());
             assertNotNull(j.getProduct());
@@ -238,9 +274,9 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testGetActiveJobs() throws Exception {
-        Job order = model.getJobModel()
-                         .newInitializedJob(scenario.getDeliver(),
-                                            kernel.getCore());
+        JobRecord order = model.getJobModel()
+                               .newInitializedJob(scenario.getDeliver(),
+                                                  kernel.getCore());
         order.setAssignTo(scenario.getOrderFullfillment());
         order.setProduct(scenario.getABC486());
         order.setDeliverTo(scenario.getRSB225());
@@ -258,25 +294,31 @@ public class JobModelTest extends AbstractModelTest {
         List<StatusCode> states = Arrays.asList(scenario.getActive(),
                                                 scenario.getAvailable(),
                                                 scenario.getAbandoned());
-        List<Job> active = jobModel.getActiveJobsFor(scenario.getOrderFullfillment(),
-                                                     states);
+        List<JobRecord> active = jobModel.getActiveJobsFor(scenario.getOrderFullfillment(),
+                                                           states);
         assertEquals(1, active.size());
     }
 
     @Test
     public void testIteration() throws Exception {
-        Product service = new Product("test service", kernel.getCore());
+        Product service = model.records()
+                               .newProduct("test service", kernel.getCore());
         em.persist(service);
-        Product childService = new Product("child test service",
-                                           kernel.getCore());
+        Product childService = model.records()
+                                    .newProduct("child test service",
+                                                kernel.getCore());
         em.persist(childService);
-        Product parent = new Product("Parent", kernel.getCore());
+        Product parent = model.records()
+                              .newProduct("Parent", kernel.getCore());
         em.persist(parent);
-        Product child1 = new Product("Child 1", kernel.getCore());
+        Product child1 = model.records()
+                              .newProduct("Child 1", kernel.getCore());
         em.persist(child1);
-        Product child2 = new Product("Child 2", kernel.getCore());
+        Product child2 = model.records()
+                              .newProduct("Child 2", kernel.getCore());
         em.persist(child2);
-        Product child3 = new Product("Child 3", kernel.getCore());
+        Product child3 = model.records()
+                              .newProduct("Child 3", kernel.getCore());
         em.persist(child3);
         Relationship childRelationship = model.getRelationshipModel()
                                               .create("child of",
@@ -301,24 +343,24 @@ public class JobModelTest extends AbstractModelTest {
                                           kernel.getCore());
 
         ChildSequencingAuthorization auth = new ChildSequencingAuthorization(service,
-                                                                                           scenario.getAvailable(),
-                                                                                           childService,
-                                                                                           scenario.getAvailable(),
-                                                                                           kernel.getCore());
+                                                                             scenario.getAvailable(),
+                                                                             childService,
+                                                                             scenario.getAvailable(),
+                                                                             kernel.getCore());
         em.persist(auth);
         Protocol p = jobModel.newInitializedProtocol(service, kernel.getCore());
         p.setChildrenRelationship(childRelationship);
         p.setChildService(childService);
         em.persist(p);
-        Job order = jobModel.newInitializedJob(service, kernel.getCore());
+        JobRecord order = jobModel.newInitializedJob(service, kernel.getCore());
         order.setProduct(parent);
         order.setStatus(kernel.getUnset());
         em.persist(order);
         List<Protocol> protocols = model.getJobModel()
                                         .getProtocolsFor(order.getService());
         assertEquals(1, protocols.size());
-        List<Job> jobs = model.getJobModel()
-                              .insert(order, protocols.get(0));
+        List<JobRecord> jobs = model.getJobModel()
+                                    .insert(order, protocols.get(0));
         assertEquals(3, jobs.size());
         em.flush();
         em.refresh(order);
@@ -326,7 +368,7 @@ public class JobModelTest extends AbstractModelTest {
                               null);
         em.flush();
 
-        for (Job j : jobs) {
+        for (JobRecord j : jobs) {
             em.refresh(j);
             assertEquals(scenario.getAvailable(), j.getStatus());
         }
@@ -334,9 +376,9 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testJobChronologyOnStatusUpdate() throws Exception {
-        Job order = model.getJobModel()
-                         .newInitializedJob(scenario.getDeliver(),
-                                            kernel.getCore());
+        JobRecord order = model.getJobModel()
+                               .newInitializedJob(scenario.getDeliver(),
+                                                  kernel.getCore());
         order.setAssignTo(scenario.getOrderFullfillment());
         order.setProduct(scenario.getABC486());
         order.setDeliverTo(scenario.getRSB225());
@@ -347,8 +389,8 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(order);
         em.flush();
         em.refresh(order);
-        List<JobChronology> chronologies = model.getJobModel()
-                                                .getChronologyForJob(order);
+        List<JobChronologyRecord> chronologies = model.getJobModel()
+                                                      .getChronologyForJob(order);
         assertEquals(String.format("Invalid number of chronologies: %s",
                                    chronologies),
                      2, chronologies.size());
@@ -362,7 +404,7 @@ public class JobModelTest extends AbstractModelTest {
         chronologies = model.getJobModel()
                             .getChronologyForJob(order);
         assertEquals(3, chronologies.size());
-        for (JobChronology c : chronologies) {
+        for (JobChronologyRecord c : chronologies) {
             fieldErrors = verifyChronologyFields(order, c);
             if (fieldErrors == null || fieldErrors.size() == 0) {
                 break;
@@ -373,23 +415,30 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testJobGenerationAndSequencing() throws Exception {
-        Product pushit = new Product("Pushit Service", null, kernel.getCore());
+        Product pushit = model.records()
+                              .newProduct("Pushit Service", null,
+                                          kernel.getCore());
         em.persist(pushit);
 
-        Product shoveit = new Product("Shoveit Service", null,
-                                      kernel.getCore());
+        Product shoveit = model.records()
+                               .newProduct("Shoveit Service", null,
+                                           kernel.getCore());
         em.persist(shoveit);
 
-        Product pullIt = new Product("Pullit Service", null, kernel.getCore());
+        Product pullIt = model.records()
+                              .newProduct("Pullit Service", null,
+                                          kernel.getCore());
         em.persist(pullIt);
 
-        StatusCode pushingMe = new StatusCode("Pushing Me", null,
-                                              kernel.getCore());
+        StatusCode pushingMe = model.records()
+                                    .newStatusCode("Pushing Me", null,
+                                                   kernel.getCore());
         pushingMe.setPropagateChildren(true);
         em.persist(pushingMe);
 
-        StatusCode shovingMe = new StatusCode("Shoving Me", null,
-                                              kernel.getCore());
+        StatusCode shovingMe = model.records()
+                                    .newStatusCode("Shoving Me", null,
+                                                   kernel.getCore());
         em.persist(shovingMe);
 
         Protocol p = model.getJobModel()
@@ -404,19 +453,19 @@ public class JobModelTest extends AbstractModelTest {
                                     kernel.getCore());
 
         SelfSequencingAuthorization auth = new SelfSequencingAuthorization(pushit,
-                                                                                         pushingMe,
-                                                                                         shovingMe,
-                                                                                         kernel.getCore());
+                                                                           pushingMe,
+                                                                           shovingMe,
+                                                                           kernel.getCore());
         em.persist(auth);
         em.flush();
 
-        Job push = model.getJobModel()
-                        .newInitializedJob(pushit, kernel.getCore());
+        JobRecord push = model.getJobModel()
+                              .newInitializedJob(pushit, kernel.getCore());
 
         em.flush();
 
-        List<Job> children = model.getJobModel()
-                                  .getAllChildren(push);
+        List<JobRecord> children = model.getJobModel()
+                                        .getAllChildren(push);
         assertEquals(0, children.size());
 
         model.getJobModel()
@@ -432,9 +481,9 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testMetaProtocols() throws Exception {
-        Job job = model.getJobModel()
-                       .newInitializedJob(scenario.getDeliver(),
-                                          kernel.getCore());
+        JobRecord job = model.getJobModel()
+                             .newInitializedJob(scenario.getDeliver(),
+                                                kernel.getCore());
         job.setAssignTo(scenario.getOrderFullfillment());
         job.setProduct(scenario.getABC486());
         job.setDeliverTo(scenario.getRSB225());
@@ -442,7 +491,7 @@ public class JobModelTest extends AbstractModelTest {
         job.setRequester(scenario.getGeorgetownUniversity());
         jobModel.changeStatus(job, scenario.getAvailable(), kernel.getCore(),
                               "Test transition");
-        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(job);
+        List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(job);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> txfm = jobModel.getProtocols(job);
         assertEquals(2, txfm.size());
@@ -502,9 +551,9 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testNonExemptOrder() throws Exception {
-        Job order = model.getJobModel()
-                         .newInitializedJob(scenario.getDeliver(),
-                                            kernel.getCore());
+        JobRecord order = model.getJobModel()
+                               .newInitializedJob(scenario.getDeliver(),
+                                                  kernel.getCore());
         order.setAssignTo(scenario.getOrderFullfillment());
         order.setProduct(scenario.getABC486());
         order.setDeliverTo(scenario.getBHT37());
@@ -518,19 +567,19 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         em.flush();
-        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
-        List<Job> jobs = jobModel.getAllChildren(order);
+        List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(6, jobs.size());
     }
 
     @Test
     public void testOrder() throws Exception {
-        Job order = model.getJobModel()
-                         .newInitializedJob(scenario.getDeliver(),
-                                            kernel.getCore());
+        JobRecord order = model.getJobModel()
+                               .newInitializedJob(scenario.getDeliver(),
+                                                  kernel.getCore());
         order.setAssignTo(scenario.getOrderFullfillment());
         order.setProduct(scenario.getABC486());
         order.setDeliverTo(scenario.getRSB225());
@@ -544,17 +593,17 @@ public class JobModelTest extends AbstractModelTest {
         jobModel.changeStatus(order, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         em.flush();
-        List<MetaProtocol> metaProtocols = jobModel.getMetaprotocols(order);
+        List<MetaProtocolRecord> metaProtocols = jobModel.getMetaprotocols(order);
         assertEquals(1, metaProtocols.size());
         Map<Protocol, InferenceMap> protocols = jobModel.getProtocols(order);
         assertEquals(2, protocols.size());
-        List<Job> jobs = jobModel.getAllChildren(order);
+        List<JobRecord> jobs = jobModel.getAllChildren(order);
         assertEquals(5, jobs.size());
 
-        TypedQuery<Job> query = em.createQuery("select j from Job j where j.service = :service",
-                                               Job.class);
+        TypedQuery<JobRecord> query = em.createQuery("select j from JobRecord j where j.service = :service",
+                                                     JobRecord.class);
         query.setParameter("service", scenario.getCheckCredit());
-        Job creditCheck = query.getSingleResult();
+        JobRecord creditCheck = query.getSingleResult();
         assertEquals(scenario.getAvailable(), creditCheck.getStatus());
         jobModel.changeStatus(creditCheck, scenario.getActive(),
                               kernel.getCore(), "transition during test");
@@ -563,7 +612,7 @@ public class JobModelTest extends AbstractModelTest {
                               kernel.getCore(), "transition during test");
         em.flush();
         query.setParameter("service", scenario.getPick());
-        Job pick = query.getSingleResult();
+        JobRecord pick = query.getSingleResult();
         assertEquals(scenario.getAvailable(), pick.getStatus());
         jobModel.changeStatus(pick, scenario.getActive(), kernel.getCore(),
                               "transition during test");
@@ -574,13 +623,13 @@ public class JobModelTest extends AbstractModelTest {
         query.setParameter("service", scenario.getPick());
         pick = query.getSingleResult();
         query.setParameter("service", scenario.getShip());
-        Job ship = query.getSingleResult();
-        List<Job> pickSiblings = jobModel.getActiveSubJobsForService(pick.getParent(),
-                                                                     scenario.getShip());
+        JobRecord ship = query.getSingleResult();
+        List<JobRecord> pickSiblings = jobModel.getActiveSubJobsForService(pick.getParent(),
+                                                                           scenario.getShip());
         assertEquals(1, pickSiblings.size());
         assertEquals(scenario.getWaitingOnPurchaseOrder(), ship.getStatus());
         query.setParameter("service", scenario.getFee());
-        Job fee = query.getSingleResult();
+        JobRecord fee = query.getSingleResult();
         jobModel.changeStatus(fee, scenario.getActive(), kernel.getCore(),
                               "transition during test");
         em.flush();
@@ -588,7 +637,7 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         em.flush();
         query.setParameter("service", scenario.getPrintPurchaseOrder());
-        Job printPO = query.getSingleResult();
+        JobRecord printPO = query.getSingleResult();
         assertEquals(scenario.getAvailable(), printPO.getStatus());
         jobModel.changeStatus(printPO, scenario.getActive(), kernel.getCore(),
                               "transition during test");
@@ -606,18 +655,23 @@ public class JobModelTest extends AbstractModelTest {
                               "transition during test");
         em.flush();
         query.setParameter("service", scenario.getDeliver());
-        Job deliver = query.getSingleResult();
+        JobRecord deliver = query.getSingleResult();
         assertEquals(scenario.getCompleted(), deliver.getStatus());
     }
 
     public void testSelfSequencing() {
-        Product service = new Product("My Service", null, kernel.getCore());
+        Product service = model.records()
+                               .newProduct("My Service", null,
+                                           kernel.getCore());
         em.persist(service);
-        StatusCode a = new StatusCode("A", null, kernel.getCore());
+        StatusCode a = model.records()
+                            .newStatusCode("A", null, kernel.getCore());
         em.persist(a);
-        StatusCode b = new StatusCode("B", null, kernel.getCore());
+        StatusCode b = model.records()
+                            .newStatusCode("B", null, kernel.getCore());
         em.persist(b);
-        StatusCode c = new StatusCode("C", null, kernel.getCore());
+        StatusCode c = model.records()
+                            .newStatusCode("C", null, kernel.getCore());
         em.persist(c);
 
         List<Tuple<StatusCode, StatusCode>> sequences = new ArrayList<>();
@@ -634,8 +688,8 @@ public class JobModelTest extends AbstractModelTest {
         em.persist(auth);
 
         em.flush();
-        Job job = model.getJobModel()
-                       .newInitializedJob(service, kernel.getCore());
+        JobRecord job = model.getJobModel()
+                             .newInitializedJob(service, kernel.getCore());
         em.persist(job);
         model.getJobModel()
              .changeStatus(job, a, kernel.getCore(), null);
@@ -652,32 +706,36 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testSelfSequencingAuthorization() {
-        Product service = new Product("Kick ass", null, kernel.getCore());
+        Product service = model.records()
+                               .newProduct("Kick ass", null, kernel.getCore());
         em.persist(service);
 
-        StatusCode kickingAss = new StatusCode("Kicking Ass", null,
-                                               kernel.getCore());
+        StatusCode kickingAss = model.records()
+                                     .newStatusCode("Kicking Ass", null,
+                                                    kernel.getCore());
         em.persist(kickingAss);
 
-        StatusCode takingNames = new StatusCode("Taking Names", null,
-                                                kernel.getCore());
+        StatusCode takingNames = model.records()
+                                      .newStatusCode("Taking Names", null,
+                                                     kernel.getCore());
         em.persist(takingNames);
 
-        StatusCodeSequencing sequence = new StatusCodeSequencing(service,
-                                                                 kickingAss,
-                                                                 takingNames,
-                                                                 kernel.getCore());
+        StatusCodeSequencing sequence = model.records()
+                                             .newStatusCodeSequencing(service,
+                                                                      kickingAss,
+                                                                      takingNames,
+                                                                      kernel.getCore());
         em.persist(sequence);
 
         SelfSequencingAuthorization auth = new SelfSequencingAuthorization(service,
-                                                                                         kickingAss,
-                                                                                         takingNames,
-                                                                                         kernel.getCore());
+                                                                           kickingAss,
+                                                                           takingNames,
+                                                                           kernel.getCore());
         em.persist(auth);
         em.flush();
 
-        Job job = model.getJobModel()
-                       .newInitializedJob(service, kernel.getCore());
+        JobRecord job = model.getJobModel()
+                             .newInitializedJob(service, kernel.getCore());
         em.persist(job);
 
         em.flush();
@@ -692,23 +750,30 @@ public class JobModelTest extends AbstractModelTest {
 
     @Test
     public void testTerminateChildrenParent() throws IOException {
-        Product pushit = new Product("Pushit Service", null, kernel.getCore());
+        Product pushit = model.records()
+                              .newProduct("Pushit Service", null,
+                                          kernel.getCore());
         em.persist(pushit);
 
-        Product shoveit = new Product("shoveit Service", null,
-                                      kernel.getCore());
+        Product shoveit = model.records()
+                               .newProduct("shoveit Service", null,
+                                           kernel.getCore());
         em.persist(shoveit);
 
-        Product pullit = new Product("Pullit Service", null, kernel.getCore());
+        Product pullit = model.records()
+                              .newProduct("Pullit Service", null,
+                                          kernel.getCore());
         em.persist(pullit);
 
-        StatusCode pushingMe = new StatusCode("Pushing Me", null,
-                                              kernel.getCore());
+        StatusCode pushingMe = model.records()
+                                    .newStatusCode("Pushing Me", null,
+                                                   kernel.getCore());
         pushingMe.setPropagateChildren(true);
         em.persist(pushingMe);
 
-        StatusCode shovingMe = new StatusCode("Shoving Me", null,
-                                              kernel.getCore());
+        StatusCode shovingMe = model.records()
+                                    .newStatusCode("Shoving Me", null,
+                                                   kernel.getCore());
         em.persist(shovingMe);
 
         Protocol p = model.getJobModel()
@@ -731,43 +796,45 @@ public class JobModelTest extends AbstractModelTest {
                                     kernel.getCore());
         model.getJobModel()
              .createStatusCodeChain(pullit,
-                                    new StatusCode[] { pushingMe, shovingMe },
+                                    new newStatusCode[] { pushingMe,
+                                                          shovingMe },
                                     kernel.getCore());
 
         ChildSequencingAuthorization auth = new ChildSequencingAuthorization(shoveit,
-                                                                                           shovingMe,
-                                                                                           pullit,
-                                                                                           shovingMe,
-                                                                                           kernel.getCore());
+                                                                             shovingMe,
+                                                                             pullit,
+                                                                             shovingMe,
+                                                                             kernel.getCore());
         em.persist(auth);
         ParentSequencingAuthorization auth2 = new ParentSequencingAuthorization(shoveit,
-                                                                                              shovingMe,
-                                                                                              pushit,
-                                                                                              shovingMe,
-                                                                                              kernel.getCore());
+                                                                                shovingMe,
+                                                                                pushit,
+                                                                                shovingMe,
+                                                                                kernel.getCore());
         em.persist(auth2);
         em.flush();
 
-        Job push = model.getJobModel()
-                        .newInitializedJob(pushit, kernel.getCore());
+        JobRecord push = model.getJobModel()
+                              .newInitializedJob(pushit, kernel.getCore());
 
         em.flush();
         em.refresh(push);
-        List<Job> children = model.getJobModel()
-                                  .getAllChildren(push);
+        List<JobRecord> children = model.getJobModel()
+                                        .getAllChildren(push);
         assertEquals(2, children.size());
 
-        for (Job j : children) {
+        for (JobRecord j : children) {
             model.getJobModel()
                  .changeStatus(j, pushingMe, kernel.getCore(), null);
         }
         model.getJobModel()
              .changeStatus(push, pushingMe, kernel.getCore(), null);
         em.flush();
-        List<Job> active = model.getJobModel()
-                                .getActiveSubJobsForService(push, shoveit);
+        List<JobRecord> active = model.getJobModel()
+                                      .getActiveSubJobsForService(push,
+                                                                  shoveit);
         assertEquals(1, active.size());
-        Job shovingJob = active.get(0);
+        JobRecord shovingJob = active.get(0);
 
         model.getJobModel()
              .changeStatus(shovingJob, shovingMe, null, null);
@@ -789,8 +856,8 @@ public class JobModelTest extends AbstractModelTest {
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      */
-    private List<String> verifyChronologyFields(Job job,
-                                                JobChronology jobChronology) throws Exception {
+    private List<String> verifyChronologyFields(JobRecord job,
+                                                JobChronologyRecord jobChronology) throws Exception {
         String[] fieldsToMatch = new String[] { "status", "requester",
                                                 "assignTo", "deliverFrom",
                                                 "deliverTo" };

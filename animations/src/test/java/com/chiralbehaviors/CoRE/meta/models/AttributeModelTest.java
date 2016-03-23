@@ -20,18 +20,16 @@
 
 package com.chiralbehaviors.CoRE.meta.models;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
-import java.util.List;
 
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
-import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 
 /**
  * @author hhildebrand
@@ -51,14 +49,18 @@ public class AttributeModelTest extends AbstractModelTest {
                                               ValueType.TEXT, core);
         em.persist(validValues);
 
-        AttributeMetaAttribute a = new AttributeMetaAttribute(attr, "a", core);
+        ExistentialAttributeRecord a = model.records()
+                                            .newExistentialAttribute(attr, "a",
+                                                                     core);
         a.setMetaAttribute(validValues);
         em.persist(a);
-        AttributeMetaAttribute b = new AttributeMetaAttribute(attr, "b", core);
+        ExistentialAttributeRecord b = new ExistentialAttribute(attr, "b",
+                                                                core);
         b.setMetaAttribute(validValues);
         b.setSequenceNumber(10);
         em.persist(b);
-        AttributeMetaAttribute c = new AttributeMetaAttribute(attr, "c", core);
+        ExistentialAttributeRecord c = new ExistentialAttribute(attr, "c",
+                                                                core);
         c.setSequenceNumber(100);
         c.setMetaAttribute(validValues);
         em.persist(c);
@@ -92,38 +94,6 @@ public class AttributeModelTest extends AbstractModelTest {
 
         }
 
-    }
-
-    @Test
-    public void testSimpleNetworkPropagation() {
-        Agency core = model.getKernel()
-                           .getCore();
-        Relationship equals = model.getKernel()
-                                   .getEquals();
-
-        Relationship equals2 = new Relationship("equals 2",
-                                                "an alias for equals", core);
-        equals2.setInverse(equals2);
-        em.persist(equals2);
-        Inference aEqualsA = new Inference(equals, equals2, equals, core);
-        em.persist(aEqualsA);
-        Attribute a = new Attribute("A", "A", ValueType.BOOLEAN, core);
-        em.persist(a);
-        Attribute b = new Attribute("B", "B", ValueType.BOOLEAN, core);
-        em.persist(b);
-        Attribute c = new Attribute("C", "C", ValueType.BOOLEAN, core);
-        em.persist(c);
-        AttributeNetwork edgeA = new AttributeNetwork(a, equals, b, core);
-        em.persist(edgeA);
-        AttributeNetwork edgeB = new AttributeNetwork(b, equals2, c, core);
-        em.persist(edgeB);
-
-        em.flush();
-
-        TypedQuery<AttributeNetwork> query = em.createQuery("SELECT edge FROM AttributeNetwork edge WHERE edge.inference IS NOT NULL",
-                                                            AttributeNetwork.class);
-        List<AttributeNetwork> edges = query.getResultList();
-        assertEquals(2, edges.size());
     }
 
 }

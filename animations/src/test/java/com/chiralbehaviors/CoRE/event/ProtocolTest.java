@@ -57,7 +57,7 @@ public class ProtocolTest extends AbstractModelTest {
         infiniteTest.setAssignTo(halIncandenza.getId());
         infiniteTest.setChildAssignTo(michaelPemulous.getId());
         infiniteTest.setChildService(fireFuzzyGreenWarhead.getId());
-        infiniteTest.insert();
+        infiniteTest.update();
 
         ProtocolRecord infiniteTest2 = model.getJobModel()
                                             .newInitializedProtocol(fireFuzzyGreenWarhead,
@@ -65,13 +65,13 @@ public class ProtocolTest extends AbstractModelTest {
         infiniteTest2.setAssignTo(halIncandenza.getId());
         infiniteTest2.setChildAssignTo(michaelPemulous.getId());
         infiniteTest2.setChildService(fireFuzzyGreenWarhead.getId());
-        infiniteTest2.insert();
+        infiniteTest2.update();
 
         JobRecord startWW3 = model.getJobModel()
                                   .newInitializedJob(fireFuzzyGreenWarhead,
                                                      kernel.getCore());
         startWW3.setAssignTo(halIncandenza.getId());
-        startWW3.insert();
+        startWW3.update();
 
         assertEquals(2, model.getJobModel()
                              .getAllChildren(startWW3)

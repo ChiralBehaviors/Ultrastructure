@@ -210,7 +210,7 @@ public class WorkspaceImporter {
         }
         classifiedAttributes.forEach(attribute -> {
             ExistentialAttributeAuthorizationRecord auth = model.records()
-                                                                .newExistentialAttributeAttributeAuthorization(model.getCurrentPrincipal()
+                                                                .newExistentialAttributeAuthorization(model.getCurrentPrincipal()
                                                                                                                     .getPrincipal());
             auth.setFacet(authorization.getId());
             Attribute authorizedAttribute = model.records()

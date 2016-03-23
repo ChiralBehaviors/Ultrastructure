@@ -38,7 +38,6 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
@@ -155,15 +154,6 @@ public interface Model extends AutoCloseable {
      */
     <V> V executeAs(AuthorizedPrincipal principal,
                     Callable<V> function) throws Exception;
-
-    /**
-     * Find the ruleform instances that match the supplied attribute
-     *
-     * @param attributeValue
-     *            - the attribute value to match
-     * @return the collection of ruleform instances that match the attribute
-     */
-    ExistentialRecord find(ExistentialAttribute attributeValue);
 
     /**
      * Flush any caches the workspaces have

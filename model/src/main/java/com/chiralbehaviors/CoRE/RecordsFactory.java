@@ -264,9 +264,11 @@ public interface RecordsFactory {
         return record;
     }
 
-    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization() {
+    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(FacetRecord facet,
+                                                                                         Agency agency) {
         ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        record.setFacet(facet.getId());
         return record;
     }
 
@@ -350,6 +352,15 @@ public interface RecordsFactory {
         FacetRecord record = create().newRecord(FACET);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
+    default FacetRecord newFacet(Relationship classifier,
+                                 ExistentialRuleform classification,
+                                 Agency core) {
+        FacetRecord record = newFacet(core);
+        record.setClassifier(classifier.getId());
+        record.setClassification(classification.getId());
         return record;
     }
 

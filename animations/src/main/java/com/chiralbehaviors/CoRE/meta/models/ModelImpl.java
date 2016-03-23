@@ -43,7 +43,6 @@ import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
@@ -389,12 +388,6 @@ public class ModelImpl implements Model {
                                                          .where(EXISTENTIAL.ID.equal(WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()))
                                                          .fetchOne()
                                                          .into(Agency.class));
-    }
-
-    @Override
-    public ExistentialRecord find(ExistentialAttribute attributeValue) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override

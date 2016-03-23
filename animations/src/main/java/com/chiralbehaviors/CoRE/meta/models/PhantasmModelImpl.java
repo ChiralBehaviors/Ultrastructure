@@ -50,6 +50,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.AgencyExistentialGrouping;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAttributeAuthorization;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetworkAuthorization;
@@ -103,6 +104,21 @@ public class PhantasmModelImpl implements PhantasmModel {
                                   .getPrincipal()
                                   .getId());
         inverse.insert();
+    }
+
+    @Override
+    public void authorize(FacetRecord facet, Attribute attribute) {
+        ExistentialAttributeAuthorizationRecord record = model.records()
+                                                              .newExistentialAttributeAuthorization(facet,
+                                                                                                    model.getCurrentPrincipal()
+                                                                                                         .getPrincipal());
+        record.insert();
+    }
+
+    @Override
+    public ExistentialRecord find(ExistentialAttribute attributeValue) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -1219,5 +1235,12 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
         value.setUpdated(new Timestamp(System.currentTimeMillis()));
         value.update();
+    }
+
+    @Override
+    public List<Agency> findByAttributeValue(Attribute attribute, Object query,
+                                             ExistentialDomain domain) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

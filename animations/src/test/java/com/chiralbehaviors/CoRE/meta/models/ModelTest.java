@@ -30,8 +30,10 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 
 /**
  * @author hhildebrand
@@ -44,34 +46,35 @@ public class ModelTest extends AbstractModelTest {
         Agency classification = model.records()
                                      .newAgency("aspect classifer",
                                                 kernel.getCore());
-        em.persist(classification);
-        Relationship classifier = newRelationship("aspect classifier",
-                                                  kernel.getCore());
-        classifier.setInverse(classifier);
-        em.persist(classifier);
+        classification.insert();
+        Relationship classifier = model.records()
+                                       .newRelationship("aspect classifier",
+                                                        kernel.getCore());
+        classifier.setInverse(classifier.getId());
+        classifier.insert();
 
-        Attribute attribute = new Attribute("aspect attribute",
-                                            kernel.getCore());
-        attribute.setValueType(ValueType.TEXT);
-        em.persist(attribute);
+        Attribute attribute = model.records()
+                                   .newAttribute("aspect attribute", "foo",
+                                                 kernel.getCore());
+        attribute.setValueType(ValueType.Text);
+        attribute.insert();
 
-        Aspect<Agency> aspect = new Aspect<Agency>(classifier, classification);
+        FacetRecord facet = model.records()
+                                 .newFacet(classifier, classification,
+                                           kernel.getCore());
+        facet.insert();
 
-        model.getAgencyModel()
-             .authorize(aspect, attribute);
-        em.flush();
+        model.getPhantasmModel()
+             .authorize(facet, attribute);
 
-        @SuppressWarnings("unchecked")
         Agency agency = model.getAgencyModel()
-                             .create("aspect test", "testy", aspect,
+                             .create("aspect test", "testy", facet,
                                      kernel.getCore());
-        em.flush();
-
         assertNotNull(agency);
 
-        List<AgencyAttribute> attributes = model.getAgencyModel()
-                                                .getAttributesClassifiedBy(agency,
-                                                                           aspect);
+        List<ExistentialAttributeRecord> attributes = model.getPhantasmModel()
+                                                           .getAttributesClassifiedBy(agency,
+                                                                                      facet);
 
         assertEquals(1, attributes.size());
 
@@ -81,21 +84,26 @@ public class ModelTest extends AbstractModelTest {
 
     @Test
     public void testFindAgencyViaAttribute() {
-        Agency agency = new Agency("Test Agency", kernel.getCore());
-        em.persist(agency);
-        Attribute attribute = new Attribute("Test Attribute", kernel.getCore());
-        attribute.setValueType(ValueType.TEXT);
-        em.persist(attribute);
-        AgencyAttribute agencyAttribute = new AgencyAttribute(kernel.getCore());
-        agencyAttribute.setAgency(agency);
-        agencyAttribute.setAttribute(attribute);
-        agencyAttribute.setValue("Hello World");
-        em.persist(agencyAttribute);
-        em.flush();
+        Agency agency = model.records()
+                             .newAgency("Test Agency", kernel.getCore());
+        agency.insert();
+        Attribute attribute = model.records()
+                                   .newAttribute("Test Attribute", "foo",
+                                                 kernel.getCore());
+        attribute.setValueType(ValueType.Text);
+        attribute.insert();
+        ExistentialAttributeRecord agencyAttribute = model.records()
+                                                          .newExistentialAttribute(attribute,
+                                                                                   kernel.getCore());
+        agencyAttribute.setTextValue("Hello World");
+        agencyAttribute.setExistential(agency.getId());
+        agencyAttribute.insert();
 
-        AgencyAttribute queryAttribute = new AgencyAttribute(attribute);
-        queryAttribute.setValue("Hello World");
-        List<Agency> foundAgencies = model.find(queryAttribute);
+        Object queryText = "Hello World";
+        List<Agency> foundAgencies = model.getPhantasmModel()
+                                          .findByAttributeValue(attribute,
+                                                                queryText,
+                                                                ExistentialDomain.Agency);
         assertNotNull(foundAgencies);
         assertEquals(1, foundAgencies.size());
         assertEquals(agency, foundAgencies.get(0));

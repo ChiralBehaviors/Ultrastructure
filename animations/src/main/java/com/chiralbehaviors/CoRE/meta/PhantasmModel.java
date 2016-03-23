@@ -28,12 +28,14 @@ import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
 import com.hellblazer.utils.Tuple;
@@ -49,6 +51,8 @@ public interface PhantasmModel {
 
     void authorize(ExistentialRuleform ruleform, Relationship relationship,
                    ExistentialRuleform authorized);
+
+    void authorize(FacetRecord facet, Attribute attribute);
 
     void authorizeAll(ExistentialRuleform ruleform, Relationship relationship,
                       List<? extends ExistentialRuleform> authorized);
@@ -198,6 +202,24 @@ public interface PhantasmModel {
                                                         Relationship r,
                                                         ExistentialRuleform child,
                                                         Attribute attribute);
+
+    /**
+     * Find the ruleform instances that match the supplied attribute
+     *
+     * @param attributeValue
+     *            - the attribute value to match
+     * @return the collection of ruleform instances that match the attribute
+     */
+    ExistentialRecord find(ExistentialAttribute attributeValue);
+
+    /**
+     * @param attribute
+     * @param query
+     * @param agency
+     * @return
+     */
+    List<Agency> findByAttributeValue(Attribute attribute, Object query,
+                                      ExistentialDomain domain);
 
     /**
      * Answer the list of attribute values of the attribute on the ruleform

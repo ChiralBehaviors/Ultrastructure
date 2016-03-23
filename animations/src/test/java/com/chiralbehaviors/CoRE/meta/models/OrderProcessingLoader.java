@@ -20,6 +20,8 @@
 package com.chiralbehaviors.CoRE.meta.models;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
+import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
@@ -233,45 +235,38 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createNetworkInferences() {
-        Inference areaToRegion = new Inference(areaOf, regionOf,
-                                                             areaOf, core);
+        Inference areaToRegion = new Inference(areaOf, regionOf, areaOf, core);
         em.persist(areaToRegion);
 
-        Inference areaToState = new Inference(areaOf, stateOf,
-                                                            areaOf, core);
+        Inference areaToState = new Inference(areaOf, stateOf, areaOf, core);
         em.persist(areaToState);
 
-        Inference areaToCity = new Inference(areaOf, cityOf,
-                                                           areaOf, core);
+        Inference areaToCity = new Inference(areaOf, cityOf, areaOf, core);
         em.persist(areaToCity);
 
-        Inference areaToStreet = new Inference(areaOf, streetOf,
-                                                             areaOf, core);
+        Inference areaToStreet = new Inference(areaOf, streetOf, areaOf, core);
         em.persist(areaToStreet);
 
-        Inference regionToState = new Inference(regionOf, stateOf,
-                                                              regionOf, core);
+        Inference regionToState = new Inference(regionOf, stateOf, regionOf,
+                                                core);
         em.persist(regionToState);
 
-        Inference regionToCity = new Inference(regionOf, cityOf,
-                                                             regionOf, core);
+        Inference regionToCity = new Inference(regionOf, cityOf, regionOf,
+                                               core);
         em.persist(regionToCity);
 
-        Inference regionToStreet = new Inference(regionOf,
-                                                               streetOf,
-                                                               regionOf, core);
+        Inference regionToStreet = new Inference(regionOf, streetOf, regionOf,
+                                                 core);
         em.persist(regionToStreet);
 
-        Inference stateToCity = new Inference(stateOf, cityOf,
-                                                            stateOf, core);
+        Inference stateToCity = new Inference(stateOf, cityOf, stateOf, core);
         em.persist(stateToCity);
 
-        Inference stateToStreet = new Inference(stateOf, streetOf,
-                                                              stateOf, core);
+        Inference stateToStreet = new Inference(stateOf, streetOf, stateOf,
+                                                core);
         em.persist(stateToStreet);
 
-        Inference cityToStreet = new Inference(cityOf, streetOf,
-                                                             cityOf, core);
+        Inference cityToStreet = new Inference(cityOf, streetOf, cityOf, core);
         em.persist(cityToStreet);
     }
 

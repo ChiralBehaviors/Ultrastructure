@@ -28,6 +28,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
@@ -40,11 +41,12 @@ public class ModelTest extends AbstractModelTest {
     @Test
     public void testCreateFromAspects() {
 
-        Agency classification = new Agency("aspect classifer",
-                                           kernel.getCore());
+        Agency classification = model.records()
+                                     .newAgency("aspect classifer",
+                                                kernel.getCore());
         em.persist(classification);
-        Relationship classifier = new Relationship("aspect classifier",
-                                                   kernel.getCore());
+        Relationship classifier = newRelationship("aspect classifier",
+                                                  kernel.getCore());
         classifier.setInverse(classifier);
         em.persist(classifier);
 

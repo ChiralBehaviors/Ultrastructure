@@ -270,6 +270,18 @@ public interface RecordsFactory {
         return record;
     }
 
+    default ExistentialNetworkRecord newExistentialNetwork(Agency parent,
+                                                           Relationship relationship,
+                                                           Agency child,
+                                                           Agency updatedBy) {
+        ExistentialNetworkRecord record = newExistentialNetwork();
+        record.setParent(parent.getId());
+        record.setRelationship(relationship.getId());
+        record.setChild(child.getId());
+        record.setUpdatedBy(updatedBy.getId());
+        return record;
+    }
+
     default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute() {
         ExistentialNetworkAttributeRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE);
         record.setId(GENERATOR.generate());
@@ -372,6 +384,17 @@ public interface RecordsFactory {
         return record;
     }
 
+    default NetworkInferenceRecord newNetworkInference(Relationship premise1,
+                                                       Relationship premise2,
+                                                       Relationship inference,
+                                                       Agency updatedBy) {
+        NetworkInferenceRecord record = newNetworkInference(premise1.getId(),
+                                                            premise2.getId(),
+                                                            inference.getId(),
+                                                            updatedBy);
+        return record;
+    }
+
     default NetworkInferenceRecord newNetworkInference(UUID premise1,
                                                        UUID premise2,
                                                        UUID inference,
@@ -447,6 +470,12 @@ public interface RecordsFactory {
         return record;
     }
 
+    default Relationship newRelationship(String name) {
+        Relationship record = newRelationship();
+        record.setName(name);
+        return record;
+    }
+
     default Relationship newRelationship(String name, Agency updatedBy) {
         Relationship record = newRelationship();
         record.setName(name);
@@ -489,12 +518,6 @@ public interface RecordsFactory {
         inverse.setInverse(record.getId());
         inverse.insert();
         record.insert();
-        return record;
-    }
-
-    default Relationship newRelationship(String name) {
-        Relationship record = newRelationship();
-        record.setName(name);
         return record;
     }
 

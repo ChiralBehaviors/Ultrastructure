@@ -92,33 +92,47 @@ public class PhantasmModelTest extends AbstractModelTest {
         Agency i = model.records()
                         .newAgency("I", "I", core);
         i.insert();
-        ExistentialNetworkRecord edgeA = model.records().newExistentialNetwork()model.records().newExistentialNetwork(a, equals, b, core);
+        ExistentialNetworkRecord edgeA = model.records()
+                                              .newExistentialNetwork(a, equals,
+                                                                     b, core);
         edgeA.insert();
-        ExistentialNetworkRecord edgeB = model.records().newExistentialNetwork(b, equals2, c, core);
+        ExistentialNetworkRecord edgeB = model.records()
+                                              .newExistentialNetwork(b, equals2,
+                                                                     c, core);
         edgeB.insert();
-        ExistentialNetworkRecord edgeC = model.records().newExistentialNetwork(c, equals2, d, core);
+        ExistentialNetworkRecord edgeC = model.records()
+                                              .newExistentialNetwork(c, equals2,
+                                                                     d, core);
         edgeC.insert();
-        ExistentialNetworkRecord edgeD = model.records().newExistentialNetwork(d, equals2, e, core);
+        ExistentialNetworkRecord edgeD = model.records()
+                                              .newExistentialNetwork(d, equals2,
+                                                                     e, core);
         edgeD.insert();
-        ExistentialNetworkRecord edgeE = model.records().newExistentialNetwork(e, equals2, f, core);
+        ExistentialNetworkRecord edgeE = model.records()
+                                              .newExistentialNetwork(e, equals2,
+                                                                     f, core);
         edgeE.insert();
-        ExistentialNetworkRecord edgeF = model.records().newExistentialNetwork(f, equals2, g, core);
+        ExistentialNetworkRecord edgeF = model.records()
+                                              .newExistentialNetwork(f, equals2,
+                                                                     g, core);
         edgeF.insert();
-        ExistentialNetworkRecord edgeG = model.records().newExistentialNetwork(g, equals2, h, core);
+        ExistentialNetworkRecord edgeG = model.records()
+                                              .newExistentialNetwork(g, equals2,
+                                                                     h, core);
         edgeG.insert();
-        ExistentialNetworkRecord edgeH = model.records().newExistentialNetwork(h, equals2, i, core);
+        ExistentialNetworkRecord edgeH = model.records()
+                                              .newExistentialNetwork(h, equals2,
+                                                                     i, core);
         edgeH.insert();
 
-        em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(8, model.getAgencyModel()
+        assertEquals(8, model.getPhantasmModel()
                              .getChildren(a, equals)
                              .size());
         aEqualsA = em.find(Inference.class, aEqualsA.getId());
-        em.remove(aEqualsA);
-        em.flush();
+        aEqualsA.delete();
         a = em.find(Agency.class, a.getId());
-        assertEquals(1, model.getAgencyModel()
+        assertEquals(1, model.getPhantasmModel()
                              .getChildren(a, equals)
                              .size());
     }
@@ -207,23 +221,21 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i, core);
         edgeH.insert();
 
-        em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(8, model.getAgencyModel()
+        assertEquals(8, model.getPhantasmModel()
                              .getChildren(a, equals)
                              .size());
         edgeA = em.find(ExistentialNetworkRecord.class, edgeA.getId());
-        em.remove(edgeA);
-        em.flush();
+        edgeA.delete();
         a = em.find(Agency.class, a.getId());
-        List<Agency> children = model.getAgencyModel()
+        List<Agency> children = model.getPhantasmModel()
                                      .getChildren(a, equals);
         assertEquals(children.toString(), 1, children.size());
-        assertEquals(0, model.getAgencyModel()
+        assertEquals(0, model.getPhantasmModel()
                              .getChildren(a, equals2)
                              .size());
         b = em.find(Agency.class, b.getId());
-        assertEquals(1, model.getAgencyModel()
+        assertEquals(1, model.getPhantasmModel()
                              .getChildren(b, equals2)
                              .size());
     }
@@ -311,16 +323,14 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i, core);
         edgeH.insert();
 
-        em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(8, model.getAgencyModel()
+        assertEquals(8, model.getPhantasmModel()
                              .getChildren(a, equals)
                              .size());
         edgeB = em.find(ExistentialNetworkRecord.class, edgeB.getId());
-        em.remove(edgeB);
-        em.flush();
+        edgeB.delete();
         a = em.find(Agency.class, a.getId());
-        assertEquals(1, model.getAgencyModel()
+        assertEquals(1, model.getPhantasmModel()
                              .getChildren(a, equals)
                              .size());
     }
@@ -331,32 +341,38 @@ public class PhantasmModelTest extends AbstractModelTest {
         Agency core = model.getKernel()
                            .getCore();
 
-        Relationship a = model.getRelationshipModel()
+        Relationship a = model.getPhantasmModel()
                               .create("a", "a", "a'", "a'");
-        Relationship b = model.getRelationshipModel()
+        Relationship b = model.getPhantasmModel()
                               .create("b", "b", "b'", "b'");
-        Relationship c = model.getRelationshipModel()
+        Relationship c = model.getPhantasmModel()
                               .create("c", "c", "c'", "c'");
-        Relationship d = model.getRelationshipModel()
+        Relationship d = model.getPhantasmModel()
                               .create("d", "d", "d'", "d'");
-        Relationship e = model.getRelationshipModel()
+        Relationship e = model.getPhantasmModel()
                               .create("e", "e", "e'", "e'");
-        Relationship f = model.getRelationshipModel()
+        Relationship f = model.getPhantasmModel()
                               .create("f", "f", "f'", "f'");
-        Relationship g = model.getRelationshipModel()
+        Relationship g = model.getPhantasmModel()
                               .create("g", "g", "g'", "g'");
 
-        NetworkInferenceRecord aIsB = model.records().newNetworkInference(a, b, a, core);
+        NetworkInferenceRecord aIsB = model.records()
+                                           .newNetworkInference(a, b, a, core);
         aIsB.insert();
-        NetworkInferenceRecord aIsC = model.records().newNetworkInference(a, c, a, core);
+        NetworkInferenceRecord aIsC = model.records()
+                                           .newNetworkInference(a, c, a, core);
         aIsC.insert();
-        NetworkInferenceRecord aIsD = model.records().newNetworkInference(a, d, a, core);
+        NetworkInferenceRecord aIsD = model.records()
+                                           .newNetworkInference(a, d, a, core);
         aIsD.insert();
-        NetworkInferenceRecord aIsE = model.records().newNetworkInference(a, e, a, core);
+        NetworkInferenceRecord aIsE = model.records()
+                                           .newNetworkInference(a, e, a, core);
         aIsE.insert();
-        NetworkInferenceRecord aIsF = model.records().newNetworkInference(a, f, a, core);
+        NetworkInferenceRecord aIsF = model.records()
+                                           .newNetworkInference(a, f, a, core);
         aIsF.insert();
-        NetworkInferenceRecord aIsG = model.records().newNetworkInference(a, g, a, core);
+        NetworkInferenceRecord aIsG = model.records()
+                                           .newNetworkInference(a, g, a, core);
         aIsG.insert();
         Agency A = model.records()
                         .newAgency("A", "A", core);
@@ -382,24 +398,37 @@ public class PhantasmModelTest extends AbstractModelTest {
         Agency H = model.records()
                         .newAgency("H", "H", core);
         H.insert();
-        ExistentialNetworkRecord edgeA = model.records().newExistentialNetwork(A, a, B, core);
+        ExistentialNetworkRecord edgeA = model.records()
+                                              .newExistentialNetwork(A, a, B,
+                                                                     core);
         edgeA.insert();
-        ExistentialNetworkRecord edgeB = model.records().newExistentialNetwork(B, b, C, core);
+        ExistentialNetworkRecord edgeB = model.records()
+                                              .newExistentialNetwork(B, b, C,
+                                                                     core);
         edgeB.insert();
-        ExistentialNetworkRecord edgeC = model.records().newExistentialNetwork(C, c, D, core);
+        ExistentialNetworkRecord edgeC = model.records()
+                                              .newExistentialNetwork(C, c, D,
+                                                                     core);
         edgeC.insert();
-        ExistentialNetworkRecord edgeD = model.records().newExistentialNetwork(D, d, E, core);
+        ExistentialNetworkRecord edgeD = model.records()
+                                              .newExistentialNetwork(D, d, E,
+                                                                     core);
         edgeD.insert();
-        ExistentialNetworkRecord edgeE = model.records().newExistentialNetwork(E, e, F, core);
+        ExistentialNetworkRecord edgeE = model.records()
+                                              .newExistentialNetwork(E, e, F,
+                                                                     core);
         edgeE.insert();
-        ExistentialNetworkRecord edgeF = model.records().newExistentialNetwork(F, f, G, core);
+        ExistentialNetworkRecord edgeF = model.records()
+                                              .newExistentialNetwork(F, f, G,
+                                                                     core);
         edgeF.insert();
-        ExistentialNetworkRecord edgeG = model.records().newExistentialNetwork(G, g, H, core);
-        edgeG).insert();
+        ExistentialNetworkRecord edgeG = model.records()
+                                              .newExistentialNetwork(G, g, H,
+                                                                     core);
+        edgeG.insert();
 
-        em.flush();
         A = em.find(Agency.class, A.getId());
-        List<Agency> children = model.getAgencyModel()
+        List<Agency> children = model.getPhantasmModel()
                                      .getChildren(A, a);
         assertEquals(String.format("%s", children), 7, children.size());
     }
@@ -445,9 +474,7 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      c, core);
         edgeB.insert();
 
-        em.flush();
-        em.refresh(a);
-        assertEquals(1, model.getAgencyModel()
+        assertEquals(1, model.getPhantasmModel()
                              .getImmediateRelationships(a)
                              .size());
     }
@@ -498,7 +525,7 @@ public class PhantasmModelTest extends AbstractModelTest {
                                               .newExistentialNetwork(b, equals2,
                                                                      c, core);
         edgeB.insert();
-        assertEquals(2, model.getAgencyModel()
+        assertEquals(2, model.getPhantasmModel()
                              .getTransitiveRelationships(a)
                              .size());
     }
@@ -523,12 +550,11 @@ public class PhantasmModelTest extends AbstractModelTest {
         Aspect<Agency> myAspect = new Aspect<Agency>(classifier,
                                                      classification);
         @SuppressWarnings("unchecked")
-        Agency testAgency = model.getAgencyModel()
+        Agency testAgency = model.getPhantasmModel()
                                  .create("test agency in group", "test",
                                          myAspect, kernel.getCore());
         testAgency.insert();
-        em.flush();
-        List<Agency> inGroup = model.getAgencyModel()
+        List<Agency> inGroup = model.getPhantasmModel()
                                     .getInGroup(classification, inverse);
         assertNotNull(inGroup);
         assertEquals(1, inGroup.size());
@@ -602,9 +628,8 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      e, core);
         edgeD.insert();
         ExistentialNetworkRecord edgeE = model.records()
-                                              .newExistentialNetworkd(e,
-                                                                      equals2,
-                                                                      f, core);
+                                              .newExistentialNetwork(e, equals2,
+                                                                     f, core);
         edgeE.insert();
         ExistentialNetworkRecord edgeF = model.records()
                                               .newExistentialNetwork(f, equals2,
@@ -619,9 +644,8 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                                      i, core);
         edgeH.insert();
 
-        em.flush();
         a = em.find(Agency.class, a.getId());
-        assertEquals(8, model.getAgencyModel()
+        assertEquals(8, model.getPhantasmModel()
                              .getChildren(a, equals)
                              .size());
     }
@@ -643,7 +667,7 @@ public class PhantasmModelTest extends AbstractModelTest {
                                                 kernel.getCore());
         classification.insert();
         em.flush();
-        List<Agency> notInGroup = model.getAgencyModel()
+        List<Agency> notInGroup = model.getPhantasmModel()
                                        .getNotInGroup(classification, inverse);
         assertNotNull(notInGroup);
         assertTrue(!notInGroup.isEmpty());

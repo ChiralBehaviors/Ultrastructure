@@ -42,7 +42,6 @@ import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Unit;
-import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -395,19 +394,6 @@ public class ModelImpl implements Model {
 
     @Override
     public ExistentialRecord find(ExistentialAttribute attributeValue) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(ExistentialRecord updatedBy,
-                                                                    Class<Ruleform> ruleform) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public <RuleForm extends Ruleform> List<RuleForm> findAll(Class<RuleForm> ruleform) {
         // TODO Auto-generated method stub
         return null;
     }

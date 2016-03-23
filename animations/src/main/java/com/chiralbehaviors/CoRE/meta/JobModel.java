@@ -28,7 +28,6 @@ import java.util.Map;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
-import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -37,6 +36,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizatio
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -97,7 +97,8 @@ public interface JobModel {
      * @return
      * @throws SQLException
      */
-    void ensureNextStateIsValid(JobRecord job, StatusCode nextStatus) throws SQLException;
+    void ensureNextStateIsValid(JobRecord job,
+                                StatusCode nextStatus) throws SQLException;
 
     /**
      * @param parent
@@ -409,7 +410,7 @@ public interface JobModel {
      * @param service
      * @return
      */
-    List<StatusCodeSequencing> getStatusCodeSequencingsFor(Product service);
+    List<StatusCodeSequencingRecord> getStatusCodeSequencingsFor(Product service);
 
     /**
      * Answer the collection of status codes for a service

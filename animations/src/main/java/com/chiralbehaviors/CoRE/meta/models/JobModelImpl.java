@@ -24,6 +24,10 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB;
 import static com.chiralbehaviors.CoRE.jooq.Tables.JOB_CHRONOLOGY;
 import static com.chiralbehaviors.CoRE.jooq.Tables.META_PROTOCOL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.PARENT_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.PROTOCOL;
+import static com.chiralbehaviors.CoRE.jooq.Tables.SELF_SEQUENCING_AUTHORIZATION;
+import static com.chiralbehaviors.CoRE.jooq.Tables.SIBLING_SEQUENCING_AUTHORIZATION;
 import static com.chiralbehaviors.CoRE.jooq.Tables.STATUS_CODE_SEQUENCING;
 import static java.lang.String.format;
 
@@ -48,6 +52,7 @@ import java.util.stream.Collectors;
 
 import javax.sql.rowset.Predicate;
 
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +73,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.ParentSequencingAuthorizatio
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SelfSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.meta.InferenceMap;
 import com.chiralbehaviors.CoRE.meta.JobModel;
@@ -560,16 +566,15 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public StatusCode getInitialState(Product service) {
-        TypedQuery<StatusCode> query = em.createNamedQuery(JobRecord.INITIAL_STATE,
-                                                           StatusCode.class);
-        query.setParameter("service", service);
-        try {
-            return query.getSingleResult();
-        } catch (NonUniqueResultException e) {
-            throw new IllegalStateException(String.format("Service %s has multiple initial states: %s",
-                                                          service,
-                                                          query.getResultList()));
+        List<StatusCode> initialStates = getInitialStates(service);
+        if (initialStates.size() > 1) {
+            throw new IllegalStateException(String.format("Service [%s] has more than one initial state: %s",
+                                                          service.getName(),
+                                                          initialStates.stream()
+                                                                       .map(s -> s.getName())
+                                                                       .collect(Collectors.toList())));
         }
+        return initialStates.get(0);
     }
 
     /**
@@ -665,11 +670,11 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<ParentSequencingAuthorizationRecord> getParentActions(JobRecord job) {
-        return em.createNamedQuery(ParentSequencingAuthorizationRecord.GET_PARENT_ACTIONS,
-                                   ParentSequencingAuthorizationRecord.class)
-                 .setParameter("service", job.getService())
-                 .setParameter("status", job.getStatus())
-                 .getResultList();
+        return model.create()
+                    .selectFrom(PARENT_SEQUENCING_AUTHORIZATION)
+                    .where(PARENT_SEQUENCING_AUTHORIZATION.SERVICE.equal(job.getService()))
+                    .and(PARENT_SEQUENCING_AUTHORIZATION.STATUS_CODE.equal(job.getStatus()))
+                    .fetch();
     }
 
     /*
@@ -681,10 +686,10 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<ParentSequencingAuthorizationRecord> getParentActions(Product service) {
-        TypedQuery<ParentSequencingAuthorizationRecord> query = em.createNamedQuery(ParentSequencingAuthorizationRecord.GET_SEQUENCES,
-                                                                                    ParentSequencingAuthorizationRecord.class);
-        query.setParameter("service", service);
-        return query.getResultList();
+        return model.create()
+                    .selectFrom(PARENT_SEQUENCING_AUTHORIZATION)
+                    .where(PARENT_SEQUENCING_AUTHORIZATION.SERVICE.equal(service.getId()))
+                    .fetch();
     }
 
     @Override
@@ -760,10 +765,10 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<ProtocolRecord> getProtocolsFor(Product service) {
-        return em.createNamedQuery(ProtocolRecord.GET_FOR_SERVICE,
-                                   ProtocolRecord.class)
-                 .setParameter("service", service)
-                 .getResultList();
+        return model.create()
+                    .selectFrom(PROTOCOL)
+                    .where(PROTOCOL.SERVICE.equal(service.getId()))
+                    .fetch();
     }
 
     /**
@@ -772,15 +777,11 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<SelfSequencingAuthorizationRecord> getSelfActions(JobRecord job) {
-        TypedQuery<SelfSequencingAuthorizationRecord> query = em.createNamedQuery(SelfSequencingAuthorizationRecord.GET_SELF_ACTIONS,
-                                                                                  SelfSequencingAuthorizationRecord.class);
-        query.setParameter("service", job.getService());
-        query.setParameter("status", job.getStatus());
-        try {
-            return query.getResultList();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return model.create()
+                    .selectFrom(SELF_SEQUENCING_AUTHORIZATION)
+                    .where(SELF_SEQUENCING_AUTHORIZATION.SERVICE.equal(job.getService()))
+                    .and(SELF_SEQUENCING_AUTHORIZATION.STATUS_CODE.equal(job.getStatus()))
+                    .fetch();
     }
 
     /**
@@ -789,11 +790,11 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<SiblingSequencingAuthorizationRecord> getSiblingActions(JobRecord job) {
-        TypedQuery<SiblingSequencingAuthorizationRecord> query = em.createNamedQuery(SiblingSequencingAuthorizationRecord.GET_SIBLING_ACTIONS,
-                                                                                     SiblingSequencingAuthorizationRecord.class);
-        query.setParameter("parent", job.getService());
-        query.setParameter("status", job.getStatus());
-        return query.getResultList();
+        return model.create()
+                    .selectFrom(SIBLING_SEQUENCING_AUTHORIZATION)
+                    .where(SIBLING_SEQUENCING_AUTHORIZATION.PARENT.equal(job.getService()))
+                    .and(SIBLING_SEQUENCING_AUTHORIZATION.STATUS_CODE.equal(job.getStatus()))
+                    .fetch();
     }
 
     /*
@@ -805,16 +806,18 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<SiblingSequencingAuthorizationRecord> getSiblingActions(Product parent) {
-        return null;
+        return model.create()
+                    .selectFrom(SIBLING_SEQUENCING_AUTHORIZATION)
+                    .where(SIBLING_SEQUENCING_AUTHORIZATION.PARENT.equal(parent.getId()))
+                    .fetch();
     }
 
     @Override
-    public List<StatusCodeSequencing> getStatusCodeSequencingsFor(Product service) {
-        TypedQuery<StatusCodeSequencing> query = em.createNamedQuery(StatusCodeSequencing.GET_ALL_STATUS_CODE_SEQUENCING,
-                                                                     StatusCodeSequencing.class);
-        query.setParameter("service", service);
-
-        return query.getResultList();
+    public Result<StatusCodeSequencingRecord> getStatusCodeSequencingsFor(Product service) {
+        return model.create()
+                    .selectFrom(STATUS_CODE_SEQUENCING)
+                    .where(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
+                    .fetch();
 
     }
 
@@ -890,7 +893,7 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<JobRecord> getUnsetSiblings(JobRecord parent, Product service) {
-        return model.getDSLContext()
+        return model.create()
                     .selectFrom(JOB)
                     .where(JOB.SERVICE.equal(service.getId()))
                     .and(JOB.STATUS.equal(kernel.getUnset()

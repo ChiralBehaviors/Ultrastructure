@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.meta;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -37,7 +36,6 @@ import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.Unit;
-import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -165,26 +163,6 @@ public interface Model extends AutoCloseable {
      * @return the collection of ruleform instances that match the attribute
      */
     ExistentialRecord find(ExistentialAttribute attributeValue);
-
-    /**
-     * Find all rows of a ruleform. not a smart thing to do, really. will need
-     * to be paged n' probably removed. eventually
-     * 
-     * @param ruleform
-     * @return
-     */
-    <RuleForm extends Ruleform> List<RuleForm> findAll(Class<RuleForm> ruleform);
-
-    /**
-     * Find all the instances of the RuleForm that have been updated by the
-     * agency
-     *
-     * @param updatedBy
-     * @param ruleform
-     * @return
-     */
-    <RuleForm extends Ruleform> List<RuleForm> findUpdatedBy(ExistentialRecord updatedBy,
-                                                             Class<Ruleform> ruleform);
 
     /**
      * Flush any caches the workspaces have

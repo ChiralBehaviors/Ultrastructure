@@ -31,7 +31,6 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.SIBLING_SEQUENCING_AUTHORIZAT
 import static com.chiralbehaviors.CoRE.jooq.Tables.STATUS_CODE_SEQUENCING;
 import static java.lang.String.format;
 
-import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -50,8 +49,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.sql.rowset.Predicate;
-
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +61,6 @@ import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobChronologyRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
@@ -216,14 +212,14 @@ public class JobModelImpl implements JobModel {
     @Override
     public void ensureValidServiceAndStatus(Product service,
                                             StatusCode status) throws SQLException {
-        TypedQuery<Long> query = em.createNamedQuery(StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS,
-                                                     Long.class);
-        query.setParameter("service", service);
-        query.setParameter("code", status);
-        if (query.getSingleResult() == 0) {
-            throw new SQLException(String.format("'service and status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!'",
-                                                 service, status));
-        }
+        //        TypedQuery<Long> query = em.createNamedQuery(StatusCodeSequencing.ENSURE_VALID_SERVICE_STATUS,
+        //                                                     Long.class);
+        //        query.setParameter("service", service);
+        //        query.setParameter("code", status);
+        //        if (query.getSingleResult() == 0) {
+        //            throw new SQLException(String.format("'service and status must refer to valid combination in StatusCodeSequencing!  %s -> %s is not valid!'",
+        //                                                 service, status));
+        //        } 
     }
 
     @Override
@@ -364,17 +360,19 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public List<JobRecord> getActiveExplicitJobs() {
-        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.TOP_LEVEL_ACTIVE_JOBS,
-                                                          JobRecord.class);
-        return query.getResultList();
+        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.TOP_LEVEL_ACTIVE_JOBS,
+        //                                                          JobRecord.class);
+        //        return query.getResultList();
+        return null;
     }
 
     @Override
     public List<JobRecord> getActiveJobsFor(Agency agency) {
-        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_ASSIGNED_TO,
-                                                          JobRecord.class);
-        query.setParameter("agency", agency);
-        return query.getResultList();
+        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_ASSIGNED_TO,
+        //                                                          JobRecord.class);
+        //        query.setParameter("agency", agency);
+        //        return query.getResultList();
+        return null;
     }
 
     @Override
@@ -394,29 +392,32 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<JobRecord> getActiveJobsFor(Agency agency,
                                             StatusCode desiredState) {
-        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS,
-                                                          JobRecord.class);
-        query.setParameter("agency", agency);
-        query.setParameter("status", desiredState);
-        return query.getResultList();
+        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_JOBS_FOR_AGENCY_IN_STATUS,
+        //                                                          JobRecord.class);
+        //        query.setParameter("agency", agency);
+        //        query.setParameter("status", desiredState);
+        //        return query.getResultList();
+        return null;
     }
 
     @Override
     public List<JobRecord> getActiveSubJobsForService(JobRecord job,
                                                       Product service) {
-        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_CHILD_JOBS_FOR_SERVICE,
-                                                          JobRecord.class);
-        query.setParameter("parent", job);
-        query.setParameter("service", service);
-        return query.getResultList();
+        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_CHILD_JOBS_FOR_SERVICE,
+        //                                                          JobRecord.class);
+        //        query.setParameter("parent", job);
+        //        query.setParameter("service", service);
+        //        return query.getResultList();
+        return null;
     }
 
     @Override
     public List<JobRecord> getActiveSubJobsOf(JobRecord job) {
-        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_CHILD_JOBS,
-                                                          JobRecord.class);
-        query.setParameter("parent", job);
-        return query.getResultList();
+        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_CHILD_JOBS,
+        //                                                          JobRecord.class);
+        //        query.setParameter("parent", job);
+        //        return query.getResultList();
+        return null;
     }
 
     /**
@@ -440,28 +441,28 @@ public class JobModelImpl implements JobModel {
     public List<JobRecord> getAllActiveSubJobsOf(JobRecord parent,
                                                  Agency agency) {
         List<JobRecord> jobs = new ArrayList<JobRecord>();
-        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
-                                                          JobRecord.class);
-        query.setParameter("parent", parent);
-        query.setParameter("agency", agency);
-        for (JobRecord subJob : query.getResultList()) {
-            jobs.add(subJob);
-            getAllActiveSubJobsOf(subJob, agency);
-        }
+        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
+        //                                                          JobRecord.class);
+        //        query.setParameter("parent", parent);
+        //        query.setParameter("agency", agency);
+        //        for (JobRecord subJob : query.getResultList()) {
+        //            jobs.add(subJob);
+        //            getAllActiveSubJobsOf(subJob, agency);
+        //        }
         return jobs;
     }
 
     @Override
     public void getAllActiveSubJobsOf(JobRecord parent, Agency agency,
                                       List<JobRecord> jobs) {
-        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
-                                                          JobRecord.class);
-        query.setParameter("parent", parent);
-        query.setParameter("agency", agency);
-        for (JobRecord subJob : query.getResultList()) {
-            jobs.add(subJob);
-            getAllActiveSubJobsOf(parent, agency, jobs);
-        }
+        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
+        //                                                          JobRecord.class);
+        //        query.setParameter("parent", parent);
+        //        query.setParameter("agency", agency);
+        //        for (JobRecord subJob : query.getResultList()) {
+        //            jobs.add(subJob);
+        //            getAllActiveSubJobsOf(parent, agency, jobs);
+        //        }
     }
 
     @Override
@@ -500,12 +501,13 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<ChildSequencingAuthorizationRecord> getChildActions(JobRecord job) {
-        TypedQuery<ChildSequencingAuthorizationRecord> query = em.createNamedQuery(ChildSequencingAuthorizationRecord.GET_CHILD_ACTIONS,
-                                                                                   ChildSequencingAuthorizationRecord.class);
-        query.setParameter("service", job.getService());
-        query.setParameter("status", job.getStatus());
-        List<ChildSequencingAuthorizationRecord> childActions = query.getResultList();
-        return childActions;
+        //        TypedQuery<ChildSequencingAuthorizationRecord> query = em.createNamedQuery(ChildSequencingAuthorizationRecord.GET_CHILD_ACTIONS,
+        //                                                                                   ChildSequencingAuthorizationRecord.class);
+        //        query.setParameter("service", job.getService());
+        //        query.setParameter("status", job.getStatus());
+        //        List<ChildSequencingAuthorizationRecord> childActions = query.getResultList();
+        //        return childActions;
+        return null;
     }
 
     /*
@@ -517,10 +519,11 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<ChildSequencingAuthorizationRecord> getChildActions(Product parent) {
-        TypedQuery<ChildSequencingAuthorizationRecord> query = em.createNamedQuery(ChildSequencingAuthorizationRecord.GET_SEQUENCES,
-                                                                                   ChildSequencingAuthorizationRecord.class);
-        query.setParameter("parent", parent);
-        return query.getResultList();
+        //        TypedQuery<ChildSequencingAuthorizationRecord> query = em.createNamedQuery(ChildSequencingAuthorizationRecord.GET_SEQUENCES,
+        //                                                                                   ChildSequencingAuthorizationRecord.class);
+        //        query.setParameter("parent", parent);
+        //        return query.getResultList();
+        return null;
     }
 
     @Override
@@ -556,12 +559,13 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<JobRecord> getDirectActiveOrTerminalSubJobsOf(JobRecord job) {
-        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_OR_TERMINATED_SUB_JOBS,
-                                                          JobRecord.class);
-        query.setParameter("parent", job);
-        query.setParameter("unset", kernel.getUnset());
-
-        return query.getResultList();
+        //        TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_ACTIVE_OR_TERMINATED_SUB_JOBS,
+        //                                                          JobRecord.class);
+        //        query.setParameter("parent", job);
+        //        query.setParameter("unset", kernel.getUnset());
+        //
+        //        return query.getResultList();
+        return null;
     }
 
     @Override
@@ -746,14 +750,15 @@ public class JobModelImpl implements JobModel {
     @Override
     public Map<ProtocolRecord, InferenceMap> getProtocols(JobRecord job,
                                                           MetaProtocolRecord metaProtocol) {
-        Map<ProtocolRecord, InferenceMap> protocols = new LinkedHashMap<>();
-        for (ProtocolRecord protocol : createMaskQuery(metaProtocol,
-                                                       job).getResultList()) {
-            if (!protocols.containsKey(protocol)) {
-                protocols.put(protocol, map(protocol, metaProtocol));
-            }
-        }
-        return protocols;
+        //        Map<ProtocolRecord, InferenceMap> protocols = new LinkedHashMap<>();
+        //        for (ProtocolRecord protocol : createMaskQuery(metaProtocol,
+        //                                                       job).getResultList()) {
+        //            if (!protocols.containsKey(protocol)) {
+        //                protocols.put(protocol, map(protocol, metaProtocol));
+        //            }
+        //        }
+        //        return protocols;
+        return null;
     }
 
     /*
@@ -871,18 +876,18 @@ public class JobModelImpl implements JobModel {
     @Override
     public List<JobRecord> getTopLevelJobsWithSubJobsAssignedToAgency(Agency agency) {
         List<JobRecord> jobs = new ArrayList<JobRecord>();
-        for (JobRecord job : getActiveExplicitJobs()) {
-            TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
-                                                              JobRecord.class);
-            query.setParameter("parent", job);
-            query.setParameter("agency", agency);
-            for (JobRecord subJob : query.getResultList()) {
-                if (isActive(subJob)) {
-                    jobs.add(job);
-                    break;
-                }
-            }
-        }
+        //        for (JobRecord job : getActiveExplicitJobs()) {
+        //            TypedQuery<JobRecord> query = em.createNamedQuery(JobRecord.GET_SUB_JOBS_ASSIGNED_TO,
+        //                                                              JobRecord.class);
+        //            query.setParameter("parent", job);
+        //            query.setParameter("agency", agency);
+        //            for (JobRecord subJob : query.getResultList()) {
+        //                if (isActive(subJob)) {
+        //                    jobs.add(job);
+        //                    break;
+        //                }
+        //            }
+        //        }
         return jobs;
     }
 
@@ -908,21 +913,17 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public boolean hasActiveSiblings(JobRecord job) {
-        TypedQuery<Long> query = em.createNamedQuery(JobRecord.HAS_ACTIVE_CHILD_JOBS,
-                                                     Long.class);
-        query.setParameter("parent", job.getParent());
-
-        return query.getSingleResult() > 0;
+        //        TypedQuery<Long> query = em.createNamedQuery(JobRecord.HAS_ACTIVE_CHILD_JOBS,
+        //                                                     Long.class);
+        //        query.setParameter("parent", job.getParent());
+        //
+        //        return query.getSingleResult() > 0;
+        return false;
     }
 
     @Override
     public boolean hasInitialState(Product service) {
-        TypedQuery<StatusCode> query = em.createNamedQuery(JobRecord.INITIAL_STATE,
-                                                           StatusCode.class);
-        query.setParameter("service", service);
-        query.setMaxResults(1);
-        return !query.getResultList()
-                     .isEmpty();
+        return getInitialState(service).size() == 1;
     }
 
     /**
@@ -1338,62 +1339,62 @@ public class JobModelImpl implements JobModel {
      * @param job
      * @return
      */
-    private TypedQuery<ProtocolRecord> createMaskQuery(MetaProtocolRecord metaprotocol,
-                                                       JobRecord job) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<ProtocolRecord> query = cb.createQuery(ProtocolRecord.class);
-
-        Root<ProtocolRecord> protocol = query.from(ProtocolRecord.class);
-
-        List<Predicate> masks = new ArrayList<>();
-
-        // Service gets special handling.  we don't want infinite jobs due to ANY
-        if (metaprotocol.getServiceType()
-                        .getId()
-                        .equals(WellKnownRelationship.SAME.id())) {
-            masks.add(cb.equal(protocol.get(AbstractProtocol_.service),
-                               job.getService()));
-        } else {
-            masks.add(protocol.get(AbstractProtocol_.service)
-                              .in(inferenceSubquery(job.getService(),
-                                                    metaprotocol.getServiceType(),
-                                                    Product.class,
-                                                    ProductNetwork.class,
-                                                    ProductNetwork_.parent,
-                                                    ProductNetwork_.child, cb,
-                                                    query)));
-        }
-
-        // Deliver From
-        addMask(job.getDeliverFrom(), metaprotocol.getDeliverFrom(),
-                AbstractProtocol_.deliverFrom, cb, query, protocol, masks);
-
-        // Deliver To
-        addMask(job.getDeliverTo(), metaprotocol.getDeliverTo(),
-                AbstractProtocol_.deliverTo, cb, query, protocol, masks);
-
-        // Product
-        addMask(job.getProduct(), metaprotocol.getProduct(),
-                AbstractProtocol_.product, cb, query, protocol, masks);
-
-        // Requester
-        addMask(job.getRequester(), metaprotocol.getRequester(),
-                AbstractProtocol_.requester, cb, query, protocol, masks);
-
-        // Assign To
-        addMask(job.getAssignTo(), metaprotocol.getAssignTo(),
-                AbstractProtocol_.assignTo, cb, query, protocol, masks);
-
-        // Quqntity Unit
-        addMask(job.getQuantityUnit(), metaprotocol.getQuantityUnit(),
-                AbstractProtocol_.quantityUnit, cb, query, protocol, masks);
-
-        query.where(masks.toArray(new Predicate[masks.size()]));
-        query.select(protocol)
-             .distinct(true);
-        TypedQuery<ProtocolRecord> tq = em.createQuery(query);
-        return tq;
-    }
+    //    private TypedQuery<ProtocolRecord> createMaskQuery(MetaProtocolRecord metaprotocol,
+    //                                                       JobRecord job) {
+    ////        CriteriaBuilder cb = em.getCriteriaBuilder();
+    ////        CriteriaQuery<ProtocolRecord> query = cb.createQuery(ProtocolRecord.class);
+    ////
+    ////        Root<ProtocolRecord> protocol = query.from(ProtocolRecord.class);
+    ////
+    ////        List<Predicate> masks = new ArrayList<>();
+    ////
+    ////        // Service gets special handling.  we don't want infinite jobs due to ANY
+    ////        if (metaprotocol.getServiceType()
+    ////                        .getId()
+    ////                        .equals(WellKnownRelationship.SAME.id())) {
+    ////            masks.add(cb.equal(protocol.get(AbstractProtocol_.service),
+    ////                               job.getService()));
+    ////        } else {
+    ////            masks.add(protocol.get(AbstractProtocol_.service)
+    ////                              .in(inferenceSubquery(job.getService(),
+    ////                                                    metaprotocol.getServiceType(),
+    ////                                                    Product.class,
+    ////                                                    ProductNetwork.class,
+    ////                                                    ProductNetwork_.parent,
+    ////                                                    ProductNetwork_.child, cb,
+    ////                                                    query)));
+    ////        }
+    ////
+    ////        // Deliver From
+    ////        addMask(job.getDeliverFrom(), metaprotocol.getDeliverFrom(),
+    ////                AbstractProtocol_.deliverFrom, cb, query, protocol, masks);
+    ////
+    ////        // Deliver To
+    ////        addMask(job.getDeliverTo(), metaprotocol.getDeliverTo(),
+    ////                AbstractProtocol_.deliverTo, cb, query, protocol, masks);
+    ////
+    ////        // Product
+    ////        addMask(job.getProduct(), metaprotocol.getProduct(),
+    ////                AbstractProtocol_.product, cb, query, protocol, masks);
+    ////
+    ////        // Requester
+    ////        addMask(job.getRequester(), metaprotocol.getRequester(),
+    ////                AbstractProtocol_.requester, cb, query, protocol, masks);
+    ////
+    ////        // Assign To
+    ////        addMask(job.getAssignTo(), metaprotocol.getAssignTo(),
+    ////                AbstractProtocol_.assignTo, cb, query, protocol, masks);
+    ////
+    ////        // Quqntity Unit
+    ////        addMask(job.getQuantityUnit(), metaprotocol.getQuantityUnit(),
+    ////                AbstractProtocol_.quantityUnit, cb, query, protocol, masks);
+    ////
+    ////        query.where(masks.toArray(new Predicate[masks.size()]));
+    ////        query.select(protocol)
+    ////             .distinct(true);
+    ////        TypedQuery<ProtocolRecord> tq = em.createQuery(query);
+    ////        return tq;
+    //    }
 
     /**
      * @param job
@@ -1423,31 +1424,32 @@ public class JobModelImpl implements JobModel {
     }
 
     private List<ProtocolRecord> getProtocolsMatching(JobRecord job) {
-        TypedQuery<ProtocolRecord> query = em.createNamedQuery(ProtocolRecord.GET,
-                                                               ProtocolRecord.class);
-        query.setParameter("service", job.getService());
-        query.setParameter("requester", job.getRequester());
-        query.setParameter("product", job.getProduct());
-        query.setParameter("deliverTo", job.getDeliverTo());
-        query.setParameter("deliverFrom", job.getDeliverFrom());
-        query.setParameter("assignTo", job.getAssignTo());
-        return query.getResultList();
+        //        TypedQuery<ProtocolRecord> query = em.createNamedQuery(ProtocolRecord.GET,
+        //                                                               ProtocolRecord.class);
+        //        query.setParameter("service", job.getService());
+        //        query.setParameter("requester", job.getRequester());
+        //        query.setParameter("product", job.getProduct());
+        //        query.setParameter("deliverTo", job.getDeliverTo());
+        //        query.setParameter("deliverFrom", job.getDeliverFrom());
+        //        query.setParameter("assignTo", job.getAssignTo());
+        //        return query.getResultList();
+        return null;
     }
 
-    private Subquery<RuleForm> inferenceSubquery(ExistentialAttributeRecord attribute,
-                                                 Relationship relationship,
-                                                 SingularAttribute<Network, RuleForm> parent,
-                                                 SingularAttribute<Network, RuleForm> child,
-                                                 CriteriaBuilder cb,
-                                                 CriteriaQuery<ProtocolRecord> query) {
-        Subquery<RuleForm> inference = query.subquery(ruleformClass);
-        Root<Network> root = inference.from(networkClass);
-        inference.select(root.get(child));
-        inference.where(cb.and(cb.equal(root.get(parent), attribute),
-                               cb.equal(root.get(NetworkRuleform_.relationship),
-                                        relationship)));
-        return inference;
-    }
+    //    private Subquery<RuleForm> inferenceSubquery(ExistentialAttributeRecord attribute,
+    //                                                 Relationship relationship,
+    //                                                 SingularAttribute<Network, RuleForm> parent,
+    //                                                 SingularAttribute<Network, RuleForm> child,
+    //                                                 CriteriaBuilder cb,
+    //                                                 CriteriaQuery<ProtocolRecord> query) {
+    //        Subquery<RuleForm> inference = query.subquery(ruleformClass);
+    //        Root<Network> root = inference.from(networkClass);
+    //        inference.select(root.get(child));
+    //        inference.where(cb.and(cb.equal(root.get(parent), attribute),
+    //                               cb.equal(root.get(NetworkRuleform_.relationship),
+    //                                        relationship)));
+    //        return inference;
+    //    }
 
     private boolean isTerminalState(UUID status, UUID service) {
         StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
@@ -1478,6 +1480,7 @@ public class JobModelImpl implements JobModel {
      * @param metaProtocol
      * @return
      */
+    @SuppressWarnings("unused")
     private InferenceMap map(ProtocolRecord protocol,
                              MetaProtocolRecord metaProtocol) {
         return new InferenceMap(isTxfm(model.records()
@@ -1734,18 +1737,18 @@ public class JobModelImpl implements JobModel {
         return child;
     }
 
-    protected void addMask(RuleForm ruleform, Relationship relationship,
-                           SingularAttribute<AbstractProtocol, RuleForm> column,
-                           CriteriaBuilder cb,
-                           CriteriaQuery<ProtocolRecord> query,
-                           Root<ProtocolRecord> protocol,
-                           List<Predicate> masks) {
-        Predicate mask = mask(ruleform, relationship, column, cb, query,
-                              protocol);
-        if (mask != null) {
-            masks.add(mask);
-        }
-    }
+    //    protected void addMask(RuleForm ruleform, Relationship relationship,
+    //                           SingularAttribute<AbstractProtocol, RuleForm> column,
+    //                           CriteriaBuilder cb,
+    //                           CriteriaQuery<ProtocolRecord> query,
+    //                           Root<ProtocolRecord> protocol,
+    //                           List<Predicate> masks) {
+    //        Predicate mask = mask(ruleform, relationship, column, cb, query,
+    //                              protocol);
+    //        if (mask != null) {
+    //            masks.add(mask);
+    //        }
+    //    }
 
     protected void insert(JobRecord child, JobRecord parent,
                           ProtocolRecord protocol, InferenceMap txfm,
@@ -1765,34 +1768,34 @@ public class JobModelImpl implements JobModel {
         }
     }
 
-    protected Predicate mask(RuleForm ruleform, Relationship relationship,
-                             SingularAttribute<AbstractProtocol, RuleForm> column,
-                             CriteriaBuilder cb,
-                             CriteriaQuery<ProtocolRecord> query,
-                             Root<ProtocolRecord> protocol) {
-        if (!relationship.getId()
-                         .equals(WellKnownRelationship.ANY.id())) {
-            Predicate mask;
-            Path<RuleForm> columnPath = protocol.get(column);
-            if (relationship.getId()
-                            .equals(WellKnownRelationship.SAME.id())) {
-                mask = cb.equal(columnPath, ruleform);
-            } else {
-                mask = columnPath.in(inferenceSubquery(ruleform, relationship,
-                                                       ruleform.getRuleformClass(),
-                                                       ruleform.getNetworkClass(),
-                                                       ruleform.getNetworkParentAttribute(),
-                                                       ruleform.getNetworkChildAttribute(),
-                                                       cb, query));
-            }
-            return cb.or(cb.equal(columnPath.get(Ruleform_.id),
-                                  ruleform.getAnyId()),
-                         cb.equal(columnPath.get(Ruleform_.id),
-                                  ruleform.getSameId()),
-                         cb.equal(columnPath.get(Ruleform_.id),
-                                  ruleform.getNotApplicableId()),
-                         mask);
-        }
-        return null;
-    }
+    //    protected Predicate mask(RuleForm ruleform, Relationship relationship,
+    //                             SingularAttribute<AbstractProtocol, RuleForm> column,
+    //                             CriteriaBuilder cb,
+    //                             CriteriaQuery<ProtocolRecord> query,
+    //                             Root<ProtocolRecord> protocol) {
+    //        if (!relationship.getId()
+    //                         .equals(WellKnownRelationship.ANY.id())) {
+    //            Predicate mask;
+    //            Path<RuleForm> columnPath = protocol.get(column);
+    //            if (relationship.getId()
+    //                            .equals(WellKnownRelationship.SAME.id())) {
+    //                mask = cb.equal(columnPath, ruleform);
+    //            } else {
+    //                mask = columnPath.in(inferenceSubquery(ruleform, relationship,
+    //                                                       ruleform.getRuleformClass(),
+    //                                                       ruleform.getNetworkClass(),
+    //                                                       ruleform.getNetworkParentAttribute(),
+    //                                                       ruleform.getNetworkChildAttribute(),
+    //                                                       cb, query));
+    //            }
+    //            return cb.or(cb.equal(columnPath.get(Ruleform_.id),
+    //                                  ruleform.getAnyId()),
+    //                         cb.equal(columnPath.get(Ruleform_.id),
+    //                                  ruleform.getSameId()),
+    //                         cb.equal(columnPath.get(Ruleform_.id),
+    //                                  ruleform.getNotApplicableId()),
+    //                         mask);
+    //        }
+    //        return null;
+    //    }
 }

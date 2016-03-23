@@ -38,6 +38,7 @@ import org.jooq.Record2;
 import com.chiralbehaviors.CoRE.WellKnownObject.WellKnownProduct;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.enums.ReferenceType;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
@@ -396,7 +397,8 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
         for (ExistentialNetworkRecord link : model.getPhantasmModel()
                                                   .getImmediateChildrenLinks(getDefiningProduct(),
                                                                              model.getKernel()
-                                                                                  .getImports())) {
+                                                                                  .getImports(),
+                                                                             ExistentialDomain.Product)) {
             ExistentialNetworkAttributeRecord namespace = model.getPhantasmModel()
                                                                .getAttributeValue(link,
                                                                                   model.getKernel()

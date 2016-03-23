@@ -59,6 +59,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -993,7 +994,8 @@ public class JobModelImpl implements JobModel {
                                                   .getChildren(model.records()
                                                                     .resolve(parent.getProduct()),
                                                                model.records()
-                                                                    .resolve(protocol.getChildrenRelationship()))) {
+                                                                    .resolve(protocol.getChildrenRelationship()),
+                                                               ExistentialDomain.Product)) {
                 JobRecord job = model.records()
                                      .newJob(model.getCurrentPrincipal()
                                                   .getPrincipal());

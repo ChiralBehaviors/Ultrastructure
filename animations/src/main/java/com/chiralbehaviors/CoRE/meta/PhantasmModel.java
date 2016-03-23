@@ -50,14 +50,6 @@ public interface PhantasmModel {
     void authorize(ExistentialRuleform ruleform, Relationship relationship,
                    ExistentialRuleform authorized);
 
-    /**
-     * Assign the attributes as authorized atrributes of the aspect
-     *
-     * @param aspect
-     * @param attributes
-     */
-    void authorize(FacetRecord aspect, Attribute... attributes);
-
     void authorizeAll(ExistentialRuleform ruleform, Relationship relationship,
                       List<? extends ExistentialRuleform> authorized);
 
@@ -142,9 +134,8 @@ public interface PhantasmModel {
                         List<? extends ExistentialRuleform> authorized);
 
     List<? extends ExistentialRuleform> getAllAuthorized(ExistentialRuleform ruleform,
-                                                         Relationship relationship);
-
-    <T extends ExistentialRuleform> List<T> getAllAuthorized(FacetRecord facet);
+                                                         Relationship relationship,
+                                                         ExistentialDomain domain);
 
     /**
      * Answer the list of attribute authorizations that are classified by an
@@ -225,7 +216,8 @@ public interface PhantasmModel {
      * @return the child that is connected to the parent via the relationship
      */
     ExistentialRuleform getChild(ExistentialRuleform parent,
-                                 Relationship relationship);
+                                 Relationship relationship,
+                                 ExistentialDomain domain);
 
     /**
      *
@@ -234,7 +226,8 @@ public interface PhantasmModel {
      * @return
      */
     List<ExistentialRuleform> getChildren(ExistentialRuleform parent,
-                                          Relationship relationship);
+                                          Relationship relationship,
+                                          ExistentialDomain domain);
 
     FacetRecord getFacetDeclaration(Relationship classifier,
                                     ExistentialRuleform classification);
@@ -249,7 +242,8 @@ public interface PhantasmModel {
      *         relationship
      */
     ExistentialRuleform getImmediateChild(ExistentialRuleform parent,
-                                          Relationship relationship);
+                                          Relationship relationship,
+                                          ExistentialDomain domain);
 
     /**
      * 
@@ -280,7 +274,8 @@ public interface PhantasmModel {
      * @return
      */
     List<ExistentialNetworkRecord> getImmediateChildrenLinks(ExistentialRuleform parent,
-                                                             Relationship relationship);
+                                                             Relationship relationship,
+                                                             ExistentialDomain domain);
 
     ExistentialNetworkRecord getImmediateLink(ExistentialRuleform parent,
                                               Relationship relationship,
@@ -291,14 +286,16 @@ public interface PhantasmModel {
      * @param parent
      * @return
      */
-    Collection<ExistentialNetworkRecord> getImmediateNetworkEdges(ExistentialRuleform parent);
+    Collection<ExistentialNetworkRecord> getImmediateNetworkEdges(ExistentialRuleform parent,
+                                                                  ExistentialDomain domain);
 
     /**
      *
      * @param parent
      * @return
      */
-    Collection<Relationship> getImmediateRelationships(ExistentialRuleform parent);
+    Collection<Relationship> getImmediateRelationships(ExistentialRuleform parent,
+                                                       ExistentialDomain domain);
 
     /**
      * 
@@ -308,7 +305,8 @@ public interface PhantasmModel {
      * @return
      */
     List<ExistentialRuleform> getInferredChildren(ExistentialRuleform parent,
-                                                  Relationship relationship);
+                                                  Relationship relationship,
+                                                  ExistentialDomain domain);
 
     /**
      * @param parent
@@ -316,7 +314,8 @@ public interface PhantasmModel {
      * @return
      */
     List<ExistentialRuleform> getInGroup(ExistentialRuleform parent,
-                                         Relationship relationship);
+                                         Relationship relationship,
+                                         ExistentialDomain domain);
 
     List<ExistentialNetworkRecord> getInterconnections(Collection<ExistentialRuleform> parents,
                                                        Collection<Relationship> relationships,
@@ -338,10 +337,12 @@ public interface PhantasmModel {
      * @return
      */
     List<ExistentialRuleform> getNotInGroup(ExistentialRuleform parent,
-                                            Relationship relationship);
+                                            Relationship relationship,
+                                            ExistentialDomain domain);
 
     ExistentialRuleform getSingleChild(ExistentialRuleform parent,
-                                       Relationship r);
+                                       Relationship r,
+                                       ExistentialDomain domain);
 
     Object getValue(ExistentialAttributeRecord attributeValue);
 
@@ -393,7 +394,8 @@ public interface PhantasmModel {
     void setAttributeValue(ExistentialAttributeRecord value);
 
     void setAuthorized(ExistentialRuleform ruleform, Relationship relationship,
-                       List<? extends ExistentialRuleform> authorized);
+                       List<? extends ExistentialRuleform> authorized,
+                       ExistentialDomain domain);
 
     /**
      * Sets the child of the immediate relationship defined by the parent and

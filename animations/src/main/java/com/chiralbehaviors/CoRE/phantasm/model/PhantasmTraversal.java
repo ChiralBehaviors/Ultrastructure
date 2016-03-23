@@ -32,6 +32,7 @@ import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.Cardinality;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -46,6 +47,50 @@ import com.chiralbehaviors.CoRE.utils.English;
  *
  */
 public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
+
+    public static class Aspect {
+        private final ExistentialRuleform classification;
+        private final Relationship        classifier;
+        private final FacetRecord         facet;
+
+        public Aspect(DSLContext create, FacetRecord record) {
+            this(record, resolve(create, record.getClassifier()),
+                 resolveExistential(create, record.getClassification()));
+        }
+
+        public Aspect(DSLContext create, UUID id) {
+            this(create, resolveFacet(create, id));
+        }
+
+        public Aspect(FacetRecord facet, Relationship classifier,
+                      ExistentialRuleform classification) {
+            this.facet = facet;
+            this.classifier = classifier;
+            this.classification = classification;
+        }
+
+        public ExistentialRuleform getClassification() {
+            return classification;
+        }
+
+        public Relationship getClassifier() {
+            return classifier;
+        }
+
+        public ExistentialDomain getDomain() {
+            return classification.getDomain();
+        }
+
+        public FacetRecord getFacet() {
+            return facet;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Aspact[%s:%s]", classifier.getName(),
+                                 classification.getName());
+        }
+    }
 
     public static class AttributeAuthorization {
         private final Attribute                               attribute;
@@ -75,70 +120,17 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
         public ExistentialAttributeAuthorizationRecord getAuth() {
             return auth;
         }
-    }
 
-    public static class Aspect {
-        private final ExistentialRuleform classification;
-        private final Relationship        classifier;
-        private final FacetRecord         facet;
-
-        public Aspect(FacetRecord facet, Relationship classifier,
-                     ExistentialRuleform classification) {
-            this.facet = facet;
-            this.classifier = classifier;
-            this.classification = classification;
+        @Override
+        public String toString() {
+            return String.format("Attribute auth[%s]", attribute.getName());
         }
-
-        public Aspect(DSLContext create, UUID id) {
-            this(create, resolveFacet(create, id));
-        }
-
-        public Aspect(DSLContext create, FacetRecord record) {
-            this(record, resolve(create, record.getClassifier()),
-                 resolveExistential(create, record.getClassification()));
-        }
-
-        public ExistentialRuleform getClassification() {
-            return classification;
-        }
-
-        public Relationship getClassifier() {
-            return classifier;
-        }
-
-        public FacetRecord getFacet() {
-            return facet;
-        }
-    }
-
-    private static Relationship resolve(DSLContext create, UUID id) {
-        return create.selectFrom(EXISTENTIAL)
-                     .where(EXISTENTIAL.ID.equal(id))
-                     .fetchOne()
-                     .into(Relationship.class);
-    }
-
-    private static FacetRecord resolveFacet(DSLContext create, UUID id) {
-        return create.selectFrom(FACET)
-                     .where(FACET.ID.equal(id))
-                     .fetchOne();
-    }
-
-    private static ExistentialRuleform resolveExistential(DSLContext create,
-                                                          UUID id) {
-        return new RecordsFactory() {
-            @Override
-            public DSLContext create() {
-                return create;
-            }
-        }.resolve(id);
     }
 
     public static class NetworkAuthorization {
-
         private final ExistentialNetworkAuthorizationRecord auth;
-        private final Aspect                                 child;
 
+        private final Aspect                                child;
         private final FacetRecord                           parent;
 
         private final Relationship                          relationship;
@@ -168,12 +160,22 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
             return child;
         }
 
+        public ExistentialDomain getDomain() {
+            return child.getDomain();
+        }
+
         public FacetRecord getParent() {
             return parent;
         }
 
         public Relationship getRelationship() {
             return relationship;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Network Auth[%s->%s]", relationship.getName(),
+                                 child);
         }
     }
 
@@ -222,6 +224,29 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
 
     }
 
+    private static Relationship resolve(DSLContext create, UUID id) {
+        return create.selectFrom(EXISTENTIAL)
+                     .where(EXISTENTIAL.ID.equal(id))
+                     .fetchOne()
+                     .into(Relationship.class);
+    }
+
+    private static ExistentialRuleform resolveExistential(DSLContext create,
+                                                          UUID id) {
+        return new RecordsFactory() {
+            @Override
+            public DSLContext create() {
+                return create;
+            }
+        }.resolve(id);
+    }
+
+    private static FacetRecord resolveFacet(DSLContext create, UUID id) {
+        return create.selectFrom(FACET)
+                     .where(FACET.ID.equal(id))
+                     .fetchOne();
+    }
+
     private final Model model;
 
     public PhantasmTraversal(Model model) {
@@ -241,8 +266,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
                                                                  .getAttributeAuthorizations(facet.facet,
                                                                                              false)) {
             visitor.visit(facet,
-                          new AttributeAuthorization(model.create(),
-                                                     auth),
+                          new AttributeAuthorization(model.create(), auth),
                           WorkspacePresentation.toFieldName(model.getAttribute(auth.getAuthorizedAttribute())
                                                                  .getName()));
         }

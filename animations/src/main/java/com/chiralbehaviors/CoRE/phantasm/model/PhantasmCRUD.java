@@ -273,7 +273,8 @@ public class PhantasmCRUD {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
-                    .getChildren(instance, auth.getRelationship())
+                    .getChildren(instance, auth.getRelationship(),
+                                 auth.getDomain())
                     .stream()
                     .filter(child -> model.getPhantasmModel()
                                           .checkCapability(child, getREAD()))
@@ -309,9 +310,7 @@ public class PhantasmCRUD {
         }
         return model.getPhantasmModel()
                     .getImmediateChildren(instance, auth.getRelationship(),
-                                          auth.getChild()
-                                              .getClassification()
-                                              .getDomain())
+                                          auth.getDomain())
                     .stream()
                     .map(r -> (ExistentialRuleform) r)
                     .filter(child -> model.getPhantasmModel()
@@ -332,7 +331,7 @@ public class PhantasmCRUD {
         }
         return model.getPhantasmModel()
                     .getChildren(facet.getClassification(),
-                                 facet.getClassifier())
+                                 facet.getClassifier(), facet.getDomain())
                     .stream()
                     .map(e -> (ExistentialRuleform) e)
                     .filter(instance -> checkREAD(instance))
@@ -375,7 +374,8 @@ public class PhantasmCRUD {
         }
         ExistentialRuleform child = (ExistentialRuleform) model.getPhantasmModel()
                                                                .getImmediateChild(instance,
-                                                                                  auth.getRelationship());
+                                                                                  auth.getRelationship(),
+                                                                                  auth.getDomain());
         return checkREAD(child) ? child : null;
     }
 
@@ -553,7 +553,8 @@ public class PhantasmCRUD {
 
         for (ExistentialNetworkRecord childLink : model.getPhantasmModel()
                                                        .getImmediateChildrenLinks(instance,
-                                                                                  auth.getRelationship())) {
+                                                                                  auth.getRelationship(),
+                                                                                  auth.getDomain())) {
             childLink.delete();
         }
         children.stream()

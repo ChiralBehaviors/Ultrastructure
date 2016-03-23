@@ -266,7 +266,8 @@ public class ModelImpl implements Model {
         return wrap(CoreInstance.class,
                     phantasmModel.getChild(getKernel().getCore(),
                                            factory.resolve(getKernel().getSingletonOf()
-                                                                      .getInverse())));
+                                                                      .getInverse()),
+                                           ExistentialDomain.Agency));
     }
 
     @Override

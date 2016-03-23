@@ -106,12 +106,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public void authorize(FacetRecord aspect, Attribute... attributes) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void authorizeAll(ExistentialRuleform ruleform,
                              Relationship relationship,
                              List<? extends ExistentialRuleform> authorized) {
@@ -125,7 +119,8 @@ public class PhantasmModelImpl implements PhantasmModel {
                                   Relationship relationship,
                                   ExistentialRuleform authorized) {
         deauthorize(ruleform, relationship,
-                    getImmediateChild(ruleform, relationship));
+                    getImmediateChild(ruleform, relationship,
+                                      authorized.getDomain()));
         authorize(ruleform, relationship, authorized);
     }
 
@@ -334,30 +329,28 @@ public class PhantasmModelImpl implements PhantasmModel {
     public void deauthorizeAll(ExistentialRuleform existential,
                                Relationship relationship,
                                List<? extends ExistentialRuleform> authorized) {
-        for (ExistentialRuleform agency : authorized) {
-            deauthorize(existential, relationship, agency);
+        for (ExistentialRuleform e : authorized) {
+            deauthorize(existential, relationship, e);
         }
     }
 
     @Override
     public List<? extends ExistentialRuleform> getAllAuthorized(ExistentialRuleform ruleform,
-                                                                Relationship relationship) {
-        return create.selectDistinct()
+                                                                Relationship relationship,
+                                                                ExistentialDomain domain) {
+        return create.selectDistinct(EXISTENTIAL.fields())
                      .from(EXISTENTIAL)
                      .join(EXISTENTIAL_NETWORK)
                      .on(EXISTENTIAL_NETWORK.PARENT.equal(ruleform.getId()))
+                     .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                     .where(EXISTENTIAL.DOMAIN.equal(domain))
+                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
                      .map(r -> model.records()
                                     .resolve(r))
                      .collect(Collectors.toList());
-    }
-
-    @Override
-    public <T extends ExistentialRuleform> List<T> getAllAuthorized(FacetRecord facet) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /*
@@ -509,7 +502,8 @@ public class PhantasmModelImpl implements PhantasmModel {
      */
     @Override
     public ExistentialRuleform getChild(ExistentialRuleform parent,
-                                        Relationship relationship) {
+                                        Relationship relationship,
+                                        ExistentialDomain domain) {
         return model.records()
                     .resolve(create.selectDistinct(EXISTENTIAL.fields())
                                    .from(EXISTENTIAL)
@@ -517,6 +511,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                                    .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                                    .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
                                    .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                                   .and(EXISTENTIAL.DOMAIN.equal(domain))
                                    .fetchOne()
                                    .into(ExistentialRecord.class));
     }
@@ -530,13 +525,15 @@ public class PhantasmModelImpl implements PhantasmModel {
      */
     @Override
     public List<ExistentialRuleform> getChildren(ExistentialRuleform parent,
-                                                 Relationship relationship) {
+                                                 Relationship relationship,
+                                                 ExistentialDomain domain) {
         return create.selectDistinct(EXISTENTIAL.fields())
                      .from(EXISTENTIAL)
                      .join(EXISTENTIAL_NETWORK)
                      .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
                      .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                     .and(EXISTENTIAL.DOMAIN.equal(domain))
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
@@ -556,13 +553,15 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public ExistentialRuleform getImmediateChild(ExistentialRuleform parent,
-                                                 Relationship relationship) {
+                                                 Relationship relationship,
+                                                 ExistentialDomain domain) {
         Record result = create.selectDistinct(EXISTENTIAL.fields())
                               .from(EXISTENTIAL)
                               .join(EXISTENTIAL_NETWORK)
                               .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
                               .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                              .and(EXISTENTIAL.DOMAIN.equal(domain))
                               .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
                               .fetchOne();
         if (result == null) {
@@ -598,12 +597,17 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public List<ExistentialNetworkRecord> getImmediateChildrenLinks(ExistentialRuleform parent,
-                                                                    Relationship relationship) {
-        Result<ExistentialNetworkRecord> result = create.selectFrom(EXISTENTIAL_NETWORK)
-                                                        .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                                        .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                                        .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
-                                                        .fetch();
+                                                                    Relationship relationship,
+                                                                    ExistentialDomain domain) {
+        Result<Record> result = create.selectDistinct(EXISTENTIAL_NETWORK.fields())
+                                      .from(EXISTENTIAL_NETWORK)
+                                      .join(EXISTENTIAL)
+                                      .on(EXISTENTIAL.DOMAIN.equal(domain))
+                                      .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                                      .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                                      .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
+                                      .fetch();
         if (result == null) {
             return null;
         }
@@ -632,8 +636,13 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public Collection<ExistentialNetworkRecord> getImmediateNetworkEdges(ExistentialRuleform parent) {
-        return create.selectFrom(EXISTENTIAL_NETWORK)
+    public Collection<ExistentialNetworkRecord> getImmediateNetworkEdges(ExistentialRuleform parent,
+                                                                         ExistentialDomain domain) {
+        return create.selectDistinct(EXISTENTIAL_NETWORK.fields())
+                     .from(EXISTENTIAL_NETWORK)
+                     .join(EXISTENTIAL)
+                     .on(EXISTENTIAL.DOMAIN.equal(domain))
+                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
                      .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                      .and(EXISTENTIAL_NETWORK.INFERENCE.isNull())
                      .fetch()
@@ -648,25 +657,31 @@ public class PhantasmModelImpl implements PhantasmModel {
      * .hellblazer.CoRE.ExistentialRuleform)
      */
     @Override
-    public Collection<Relationship> getImmediateRelationships(ExistentialRuleform parent) {
+    public Collection<Relationship> getImmediateRelationships(ExistentialRuleform parent,
+                                                              ExistentialDomain domain) {
         return create.selectDistinct(EXISTENTIAL.fields())
                      .from(EXISTENTIAL)
                      .join(EXISTENTIAL_NETWORK)
                      .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(EXISTENTIAL_NETWORK.ID))
+                     .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                     .and(EXISTENTIAL.DOMAIN.equal(domain))
                      .fetch()
                      .into(Relationship.class);
     }
 
     @Override
     public List<ExistentialRuleform> getInferredChildren(ExistentialRuleform parent,
-                                                         Relationship relationship) {
+                                                         Relationship relationship,
+                                                         ExistentialDomain domain) {
         return create.selectDistinct(EXISTENTIAL.fields())
                      .from(EXISTENTIAL)
                      .join(EXISTENTIAL_NETWORK)
                      .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
                      .and(EXISTENTIAL_NETWORK.INFERENCE.isNotNull())
+                     .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                     .and(EXISTENTIAL.DOMAIN.equal(domain))
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
@@ -677,7 +692,8 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public List<ExistentialRuleform> getInGroup(ExistentialRuleform parent,
-                                                Relationship relationship) {
+                                                Relationship relationship,
+                                                ExistentialDomain domain) {
         return create.selectDistinct(EXISTENTIAL.fields())
                      .from(EXISTENTIAL)
                      .join(EXISTENTIAL_NETWORK)
@@ -685,6 +701,8 @@ public class PhantasmModelImpl implements PhantasmModel {
                      .and(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                      .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
                      .and(EXISTENTIAL_NETWORK.CHILD.notEqual(parent.getId()))
+                     .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                     .and(EXISTENTIAL.DOMAIN.equal(domain))
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
@@ -727,7 +745,8 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public List<ExistentialRuleform> getNotInGroup(ExistentialRuleform parent,
-                                                   Relationship relationship) {
+                                                   Relationship relationship,
+                                                   ExistentialDomain domain) {
 
         Existential e = EXISTENTIAL.as("e");
         return create.selectFrom(e)
@@ -735,6 +754,8 @@ public class PhantasmModelImpl implements PhantasmModel {
                                            .where(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                                            .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
                                            .and(EXISTENTIAL_NETWORK.CHILD.equal(e.field(EXISTENTIAL.ID))))
+                     .and(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                     .and(EXISTENTIAL.DOMAIN.equal(domain))
                      .fetch()
                      .into(ExistentialRecord.class)
                      .stream()
@@ -745,13 +766,16 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public ExistentialRuleform getSingleChild(ExistentialRuleform parent,
-                                              Relationship relationship) {
+                                              Relationship relationship,
+                                              ExistentialDomain domain) {
         Record result = create.selectDistinct(EXISTENTIAL.fields())
                               .from(EXISTENTIAL)
                               .join(EXISTENTIAL_NETWORK)
                               .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
                               .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
                               .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                              .where(EXISTENTIAL.ID.equal(EXISTENTIAL_NETWORK.CHILD))
+                              .and(EXISTENTIAL.DOMAIN.equal(domain))
                               .fetchOne();
         if (result == null) {
             return null;
@@ -921,9 +945,10 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public void setAuthorized(ExistentialRuleform ruleform,
                               Relationship relationship,
-                              List<? extends ExistentialRuleform> authorized) {
+                              List<? extends ExistentialRuleform> authorized,
+                              ExistentialDomain domain) {
         deauthorizeAll(ruleform, relationship,
-                       getAllAuthorized(ruleform, relationship));
+                       getAllAuthorized(ruleform, relationship, domain));
         authorizeAll(ruleform, relationship, authorized);
     }
 

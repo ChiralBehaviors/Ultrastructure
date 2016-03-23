@@ -422,11 +422,16 @@ public class ModelImpl implements Model {
         return factory;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
                                                                          ExistentialRuleform ruleform) {
-        // TODO Auto-generated method stub
-        return null;
+        if (ruleform == null) {
+            return null;
+        }
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
+                                                                                              this);
+        return (R) definition.wrap(ruleform.getRuleform(), this);
     }
 
     /* (non-Javadoc)

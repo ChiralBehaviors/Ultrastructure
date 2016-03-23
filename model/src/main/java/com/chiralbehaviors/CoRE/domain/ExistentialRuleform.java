@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import org.jooq.Record;
 
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 
@@ -33,6 +34,9 @@ import com.chiralbehaviors.CoRE.phantasm.Phantasm;
  */
 @SuppressWarnings("rawtypes")
 public interface ExistentialRuleform extends Phantasm {
+
+    public ExistentialDomain getDomain();
+
     /**
      * Yes, this is really intentional
      * 

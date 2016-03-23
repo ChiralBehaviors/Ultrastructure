@@ -41,6 +41,7 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.SIBLING_SEQUENCING_AUTHORIZAT
 import static com.chiralbehaviors.CoRE.jooq.Tables.STATUS_CODE_SEQUENCING;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 import org.jooq.DSLContext;
@@ -236,6 +237,7 @@ public interface RecordsFactory {
     default ExistentialAttributeRecord newExistentialAttribute() {
         ExistentialAttributeRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE);
         record.setId(GENERATOR.generate());
+        record.setUpdated(new Timestamp(System.currentTimeMillis()));
         return record;
     }
 
@@ -285,12 +287,13 @@ public interface RecordsFactory {
     default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute() {
         ExistentialNetworkAttributeRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE);
         record.setId(GENERATOR.generate());
+        record.setUpdated(new Timestamp(System.currentTimeMillis()));
         return record;
     }
 
     default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(Attribute attribute,
                                                                              Agency updatedBy) {
-        ExistentialNetworkAttributeRecord record = new ExistentialNetworkAttributeRecord();
+        ExistentialNetworkAttributeRecord record = newExistentialNetworkAttribute();
         record.setAttribute(attribute.getId());
         record.setUpdatedBy(updatedBy.getId());
         return record;

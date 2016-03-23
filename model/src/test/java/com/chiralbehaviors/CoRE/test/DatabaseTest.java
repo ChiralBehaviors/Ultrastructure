@@ -22,6 +22,7 @@ package com.chiralbehaviors.CoRE.test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -39,7 +40,9 @@ import com.chiralbehaviors.CoRE.RecordsFactory;
  * 
  */
 abstract public class DatabaseTest {
-    private static boolean          initialized = false;
+    public static final String      SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+
+    private static boolean          initialized  = false;
     protected static Connection     connection;
     protected static DSLContext     create;
     protected static RecordsFactory RECORDS;
@@ -50,8 +53,33 @@ abstract public class DatabaseTest {
               .connectionProvider()
               .acquire()
               .rollback();
-        ;
         create.close();
+    }
+
+    public static void clear(DSLContext em) throws SQLException {
+        boolean committed = false;
+        Connection connection = em.configuration()
+                                  .connectionProvider()
+                                  .acquire();
+        try {
+            connection.setAutoCommit(false);
+            ResultSet r = connection.createStatement()
+                                    .executeQuery(SELECT_TABLE);
+            while (r.next()) {
+                String table = r.getString("name");
+                String query = String.format("TRUNCATE TABLE %s CASCADE",
+                                             table);
+                connection.createStatement()
+                          .execute(query);
+            }
+            r.close();
+            connection.commit();
+            committed = true;
+        } finally {
+            if (!committed) {
+                connection.rollback();
+            }
+        }
     }
 
     @BeforeClass
@@ -73,6 +101,7 @@ abstract public class DatabaseTest {
                     return create;
                 }
             };
+            clear(create);
         }
     }
 

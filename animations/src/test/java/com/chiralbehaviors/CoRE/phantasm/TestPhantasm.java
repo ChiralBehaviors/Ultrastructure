@@ -61,18 +61,17 @@ public class TestPhantasm extends AbstractModelTest {
 
     @BeforeClass
     public static void before() throws Exception {
-        em.getTransaction()
-          .begin();
-        try {
-            WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
-                                       model);
-            em.getTransaction()
-              .commit();
-        } catch (IllegalStateException e) {
-            LoggerFactory.getLogger(TestPhantasm.class)
-                         .warn(String.format("Not loading thing workspace: %s",
-                                             e.getMessage()));
-        }
+        create.transaction(c -> {
+            try {
+                WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),
+                                           model);
+            } catch (IllegalStateException e) {
+                LoggerFactory.getLogger(TestPhantasm.class)
+                             .warn(String.format("Not loading thing workspace: %s",
+                                                 e.getMessage()));
+            }
+        });
+
     }
 
     @Test
@@ -227,7 +226,6 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(BigDecimal.ONE, thing1.getPercentage());
         String[] aliases = new String[] { "foo", "bar", "baz" };
         thing1.setAliases(aliases);
-        em.flush();
         String[] alsoKnownAs = thing1.getAliases();
         assertNotNull(alsoKnownAs);
         assertArrayEquals(aliases, alsoKnownAs);
@@ -239,7 +237,6 @@ public class TestPhantasm extends AbstractModelTest {
         assertEquals(0, thing1.getProperties()
                               .size());
         thing1.setProperties(properties);
-        em.flush();
         Map<String, String> newProps = thing1.getProperties();
         assertEquals(String.format("got: %s", newProps), properties.size(),
                      newProps.size());
@@ -275,9 +272,7 @@ public class TestPhantasm extends AbstractModelTest {
                                                  "myartifact", "artifact");
         artifact.setType("jar");
         assertEquals("jar", artifact.getType());
-        em.flush();
         thing1.setDerivedFrom(artifact);
-        em.flush();
         assertNotNull(thing1.getDerivedFrom());
 
         assertEquals(0, thing2.getDerivedFroms()

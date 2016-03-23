@@ -79,8 +79,9 @@ public class AbstractModelTest {
             conn.setAutoCommit(false);
 
             create = PostgresDSL.using(conn);
-            model = new ModelImpl(create);
+            KernelUtil.clearAndLoadKernel(create);
             create.transaction(config -> {
+                model = new ModelImpl(create);
                 KernelUtil.initializeInstance(model,
                                               "Abstract Model Test CoRE Instance",
                                               "CoRE instance for an Abstract Model Test");

@@ -35,6 +35,7 @@ import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
@@ -67,26 +68,26 @@ public interface Model extends AutoCloseable {
         if (type.equals(Agency.class)) {
             return ExistentialDomain.Agency;
         }
-        if (type.equals(Agency.class)) {
-            return ExistentialDomain.Agency;
+        if (type.equals(Attribute.class)) {
+            return ExistentialDomain.Attribute;
         }
-        if (type.equals(Agency.class)) {
-            return ExistentialDomain.Agency;
+        if (type.equals(Interval.class)) {
+            return ExistentialDomain.Interval;
         }
-        if (type.equals(Agency.class)) {
-            return ExistentialDomain.Agency;
+        if (type.equals(Location.class)) {
+            return ExistentialDomain.Location;
         }
-        if (type.equals(Agency.class)) {
-            return ExistentialDomain.Agency;
+        if (type.equals(Product.class)) {
+            return ExistentialDomain.Product;
         }
-        if (type.equals(Agency.class)) {
-            return ExistentialDomain.Agency;
+        if (type.equals(Relationship.class)) {
+            return ExistentialDomain.Relationship;
         }
-        if (type.equals(Agency.class)) {
-            return ExistentialDomain.Agency;
+        if (type.equals(StatusCode.class)) {
+            return ExistentialDomain.StatusCode;
         }
-        if (type.equals(Agency.class)) {
-            return ExistentialDomain.Agency;
+        if (type.equals(Unit.class)) {
+            return ExistentialDomain.Unit;
         }
         throw new IllegalArgumentException(String.format("Unknown domain: %s",
                                                          type));

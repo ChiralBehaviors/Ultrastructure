@@ -156,7 +156,6 @@ public class Bootstrap {
         new WorkspaceImporter(getClass().getResourceAsStream("/kernel.2.wsp"),
                               model).initialize()
                                     .load(kernelWorkspace);
-        connection.commit();
         ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
                                                          .getAttributeValue(kernelWorkspace,
                                                                             model.getKernel()
@@ -273,12 +272,14 @@ public class Bootstrap {
         anyAgency.setName("AnyAgency");
         anyAgency.setNotes("The facet that represents any agency");
         populate(anyAgency, core, kernelWorkspace);
+        anyAgency.insert();
 
         FacetRecord anyAttribute = records.newFacet(core);
         anyAttribute.setClassifier(WellKnownRelationship.ANY.id());
         anyAttribute.setClassification(WellKnownAttribute.ANY.id());
         anyAttribute.setName("AnyAttribute");
         anyAttribute.setNotes("The facet that represents any attribute");
+        anyAttribute.insert();
         populate(anyAttribute, core, kernelWorkspace);
 
         FacetRecord anyInterval = records.newFacet(core);
@@ -286,6 +287,7 @@ public class Bootstrap {
         anyInterval.setClassification(WellKnownInterval.ANY.id());
         anyInterval.setName("AnyInterval");
         anyInterval.setNotes("The facet that represents any interval");
+        anyInterval.insert();
         populate(anyInterval, core, kernelWorkspace);
 
         FacetRecord anyLocation = records.newFacet(core);
@@ -293,6 +295,7 @@ public class Bootstrap {
         anyLocation.setClassification(WellKnownLocation.ANY.id());
         anyLocation.setName("AnyLocation");
         anyLocation.setNotes("The facet that represents any location");
+        anyLocation.insert();
         populate(anyLocation, core, kernelWorkspace);
 
         FacetRecord anyProduct = records.newFacet(core);
@@ -300,20 +303,23 @@ public class Bootstrap {
         anyProduct.setClassification(WellKnownProduct.ANY.id());
         anyProduct.setName("AnyProduct");
         anyProduct.setNotes("The facet that represents any product");
+        anyProduct.insert();
         populate(anyProduct, core, kernelWorkspace);
 
         FacetRecord anyRelationship = records.newFacet(core);
         anyRelationship.setClassifier(WellKnownRelationship.ANY.id());
         anyRelationship.setClassification(WellKnownRelationship.ANY.id());
-        populate(anyRelationship, core, kernelWorkspace);
         anyRelationship.setName("AnyRelationship");
         anyRelationship.setNotes("The facet that represents any relationship");
+        anyRelationship.insert();
+        populate(anyRelationship, core, kernelWorkspace);
 
         FacetRecord anyStatusCode = records.newFacet(core);
         anyStatusCode.setClassifier(WellKnownRelationship.ANY.id());
         anyStatusCode.setClassification(WellKnownStatusCode.ANY.id());
         anyStatusCode.setName("AnyStatusCode");
-        anyAgency.setNotes("The facet that represents any statusCode");
+        anyStatusCode.setNotes("The facet that represents any statusCode");
+        anyStatusCode.insert();
         populate(anyStatusCode, core, kernelWorkspace);
 
         FacetRecord anyUnit = records.newFacet(core);
@@ -321,6 +327,7 @@ public class Bootstrap {
         anyUnit.setClassification(WellKnownUnit.ANY.id());
         anyUnit.setName("AnyUnit");
         anyUnit.setNotes("The facet that represents any unit");
+        anyUnit.insert();
         populate(anyUnit, core, kernelWorkspace);
     }
 

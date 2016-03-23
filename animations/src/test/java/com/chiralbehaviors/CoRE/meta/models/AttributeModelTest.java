@@ -28,6 +28,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
@@ -104,8 +105,7 @@ public class AttributeModelTest extends AbstractModelTest {
                                                 "an alias for equals", core);
         equals2.setInverse(equals2);
         em.persist(equals2);
-        Inference aEqualsA = new Inference(equals, equals2,
-                                                         equals, core);
+        Inference aEqualsA = new Inference(equals, equals2, equals, core);
         em.persist(aEqualsA);
         Attribute a = new Attribute("A", "A", ValueType.BOOLEAN, core);
         em.persist(a);

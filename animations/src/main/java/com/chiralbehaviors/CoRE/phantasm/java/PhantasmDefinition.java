@@ -84,8 +84,8 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                                                           facet.workspace()));
         }
         return new Aspect(model.create(), model.getPhantasmModel()
-                                                      .getFacetDeclaration(classifier,
-                                                                           classification));
+                                               .getFacetDeclaration(classifier,
+                                                                    classification));
     }
 
     public static String factString(Model model, FacetRecord aspect) {
@@ -139,7 +139,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
                   .isAccessible(ruleform, facet.getClassifier(),
                                 facet.getClassification())) {
             throw new ClassCastException(String.format("%s does not have required facet %s of state %s",
-                                                       ruleform,
+                                                       ruleform.getName(),
                                                        factString(model,
                                                                   facet.getFacet()),
                                                        phantasm));

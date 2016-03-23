@@ -206,13 +206,13 @@ public class PhantasmCRUD {
             return null;
         }
         ExistentialRuleform instance;
-        instance = (ExistentialRuleform) model.records()
-                                              .createExistential(facet.getFacet()
-                                                                      .getClassification(),
-                                                                 name,
-                                                                 description,
-                                                                 model.getCurrentPrincipal()
-                                                                      .getPrincipal());
+        instance = model.records()
+                        .createExistential(facet.getFacet()
+                                                .getClassification(),
+                                           name, description,
+                                           model.getCurrentPrincipal()
+                                                .getPrincipal());
+        ((ExistentialRecord) instance).insert();
         model.getPhantasmModel()
              .initialize(instance, facet.getFacet());
         if (!checkInvoke(facet, instance)) {
@@ -308,7 +308,10 @@ public class PhantasmCRUD {
             return Collections.emptyList();
         }
         return model.getPhantasmModel()
-                    .getImmediateChildren(instance, auth.getRelationship())
+                    .getImmediateChildren(instance, auth.getRelationship(),
+                                          auth.getChild()
+                                              .getClassification()
+                                              .getDomain())
                     .stream()
                     .map(r -> (ExistentialRuleform) r)
                     .filter(child -> model.getPhantasmModel()
@@ -428,7 +431,8 @@ public class PhantasmCRUD {
             return instance;
         }
         model.getPhantasmModel()
-             .initialize(instance, facet.getFacet());
+             .unlink(instance, facet.getClassifier(),
+                     facet.getClassification());
         return instance;
     }
 

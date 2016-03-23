@@ -27,6 +27,7 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
@@ -216,8 +217,6 @@ public interface PhantasmModel {
     List<ExistentialAttributeRecord> getAttributeValues(ExistentialRuleform ruleform,
                                                         Attribute attribute);
 
-    <T extends ExistentialRuleform> T getAuthorized(FacetRecord facet);
-
     /**
      * Answer the child that is connected to the parent via the relationship
      *
@@ -267,10 +266,12 @@ public interface PhantasmModel {
      *
      * @param parent
      * @param relationship
+     * @param existentialDomain
      * @return
      */
     List<ExistentialRuleform> getImmediateChildren(ExistentialRuleform parent,
-                                                   Relationship relationship);
+                                                   Relationship relationship,
+                                                   ExistentialDomain existentialDomain);
 
     /**
      *

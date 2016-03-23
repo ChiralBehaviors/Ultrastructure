@@ -293,6 +293,7 @@ public class WorkspaceImporter {
                                                     model.getCurrentPrincipal()
                                                          .getPrincipal());
         workspaceProduct.setId(uuid);
+        workspaceProduct.insert();
         return workspaceProduct;
     }
 

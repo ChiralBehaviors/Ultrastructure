@@ -290,9 +290,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                                                            model.getCurrentPrincipal()
                                                                                                 .getPrincipal());
         attribute.setEdge(links.a.getId());
+        attribute.insert();
         model.getPhantasmModel()
              .setValue(attribute, name);
-        attribute.insert();
         add(links.a);
         add(links.b);
         add(attribute);

@@ -19,13 +19,14 @@
  */
 package com.chiralbehaviors.CoRE.workspace.dsl;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.existential.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.DatabaseBackedWorkspace;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
@@ -50,13 +51,15 @@ public class TestImport extends AbstractModelTest {
             LoggerFactory.getLogger(TestImport.class)
                          .info("Not loading thing ontology version 1: {}",
                                e.getMessage());
-            definingProduct = em.find(Product.class,
-                                      WorkspaceAccessor.uuidOf(THING_URI));
+            definingProduct = model.create()
+                                   .selectFrom(EXISTENTIAL)
+                                   .where(EXISTENTIAL.ID.equal(WorkspaceAccessor.uuidOf(THING_URI)))
+                                   .fetchOne()
+                                   .map(r -> (Product) r);
         }
 
-        em.flush();
         EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
-                                                                        model);
+                                                                  model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
                                .lookup("kernel", "IsA"));
@@ -72,19 +75,19 @@ public class TestImport extends AbstractModelTest {
                          .info("Not loading thing ontology version 1: {}",
                                e.getMessage());
         }
-        em.flush();
         // load version 2
 
         WorkspaceImporter importer = WorkspaceImporter.manifest(getClass().getResourceAsStream("/thing.2.wsp"),
                                                                 model);
         EditableWorkspace workspace = new DatabaseBackedWorkspace(importer.getWorkspace()
-                                                                                .getDefiningProduct(),
-                                                                        model);
+                                                                          .getDefiningProduct(),
+                                                                  model);
         assertNotNull(workspace);
         assertNotNull(workspace.getScope()
                                .lookup("TheDude"));
         Product definingProduct = workspace.getDefiningProduct();
-        assertEquals(2, definingProduct.getVersion());
+        assertEquals(2, definingProduct.getVersion()
+                                       .intValue());
         assertEquals("Phantasm Demo V2", definingProduct.getName());
         assertEquals("Test of Workspace versioning",
                      definingProduct.getDescription());

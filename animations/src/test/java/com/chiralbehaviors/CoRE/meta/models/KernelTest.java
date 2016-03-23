@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.existential.attribute.ValueType;
+import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 
 /**
  * @author hhildebrand
@@ -78,9 +78,9 @@ public class KernelTest extends AbstractModelTest {
         assertNotNull(kernel.getUnset());
         assertNotNull(kernel.getInverseSoftware());
 
-        assertEquals(ValueType.TEXT, kernel.getPasswordHash()
+        assertEquals(ValueType.Text, kernel.getPasswordHash()
                                            .getValueType());
-        assertEquals(ValueType.TEXT, kernel.getLogin()
+        assertEquals(ValueType.Text, kernel.getLogin()
                                            .getValueType());
     }
 }

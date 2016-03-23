@@ -23,14 +23,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import javax.persistence.TypedQuery;
-
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
-import com.chiralbehaviors.CoRE.existential.network.NetworkInference;
-import com.chiralbehaviors.CoRE.relationship.RelationshipNetwork;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Relationship;
 
 /**
  * @author hhildebrand

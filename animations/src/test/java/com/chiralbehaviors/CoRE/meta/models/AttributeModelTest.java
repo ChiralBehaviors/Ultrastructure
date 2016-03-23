@@ -25,19 +25,12 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import javax.persistence.TypedQuery;
-
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.existential.attribute.ValueType;
-import com.chiralbehaviors.CoRE.existential.domain.Agency;
-import com.chiralbehaviors.CoRE.existential.domain.Attribute;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeMetaAttribute;
-import com.chiralbehaviors.CoRE.existential.domain.AttributeNetwork;
-import com.chiralbehaviors.CoRE.existential.domain.Product;
-import com.chiralbehaviors.CoRE.existential.domain.Relationship;
-import com.chiralbehaviors.CoRE.existential.network.NetworkInference;
-import com.chiralbehaviors.CoRE.product.ProductAttribute;
+import com.chiralbehaviors.CoRE.domain.Agency;
+import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
 
 /**
  * @author hhildebrand

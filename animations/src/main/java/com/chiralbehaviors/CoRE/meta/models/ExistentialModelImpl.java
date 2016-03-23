@@ -140,15 +140,6 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
                                 .into(domainClass());
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<RuleForm> findAll() {
-        return (List<RuleForm>) create.selectFrom(EXISTENTIAL)
-                                      .where(EXISTENTIAL.DOMAIN.equal(domain()))
-                                      .fetch()
-                                      .into(domainClass());
-    }
-
     @Override
     public List<FacetRecord> getAllFacets() {
         return create.selectDistinct(FACET.fields())

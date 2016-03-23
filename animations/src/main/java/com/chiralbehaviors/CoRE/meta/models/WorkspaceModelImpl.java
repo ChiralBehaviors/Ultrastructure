@@ -52,7 +52,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     public WorkspaceScope createWorkspace(Product definingProduct,
                                           Agency updatedBy) {
         EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
-                                                                        model);
+                                                                  model);
         workspace.add(definingProduct);
         Kernel kernel = model.getKernel();
         FacetRecord aspect = model.getPhantasmModel()
@@ -108,6 +108,9 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     public WorkspaceScope getScoped(UUID definingProduct) {
         Product product = model.records()
                                .resolve(definingProduct);
+        if (product == null) {
+            return null;
+        }
         return getScoped(product);
     }
 

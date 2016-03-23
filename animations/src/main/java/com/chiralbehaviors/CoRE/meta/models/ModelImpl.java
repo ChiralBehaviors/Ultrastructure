@@ -86,7 +86,6 @@ public class ModelImpl implements Model {
     }
 
     private final ExistentialModel<Agency>    agencyModel;
-    private final Animations                  animations;
     private final ExistentialModel<Attribute> attributeModel;
     private AuthorizedPrincipal               currentPrincipal;
     private final DSLContext                  create;
@@ -103,7 +102,6 @@ public class ModelImpl implements Model {
     private final RecordsFactory              factory;
 
     public ModelImpl(DSLContext create) {
-        animations = null;
         this.create = create;
         factory = new RecordsFactory() {
 
@@ -355,7 +353,7 @@ public class ModelImpl implements Model {
 
     @Override
     public void inferNetworks() {
-        animations.inferNetworks();
+        //        animations.inferNetworks();
     }
 
     @SuppressWarnings("unchecked")

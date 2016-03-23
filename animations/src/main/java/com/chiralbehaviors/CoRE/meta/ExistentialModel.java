@@ -76,12 +76,6 @@ public interface ExistentialModel<RuleForm extends ExistentialRuleform> {
     RuleForm find(UUID id);
 
     /**
-     *
-     * @return all existential ruleforms that exist for this model
-     */
-    List<RuleForm> findAll();
-
-    /**
      * @return the list of aspects representing all facets for the RuleForm
      */
     List<FacetRecord> getAllFacets();

@@ -1,5 +1,5 @@
 /**
- * Generated Phantasm
+ *  Hand crafted, artisinal phantasm
  */
 package com.chiralbehaviors.CoRE.phantasm.test.product;
 

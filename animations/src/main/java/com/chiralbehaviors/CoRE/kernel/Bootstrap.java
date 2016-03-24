@@ -137,7 +137,7 @@ public class Bootstrap {
     }
 
     public void clear() throws SQLException {
-        KernelUtil.clear(create);
+        RecordsFactory.clear(create);
     }
 
     private void constructKernelWorkspace() throws IOException, SQLException {

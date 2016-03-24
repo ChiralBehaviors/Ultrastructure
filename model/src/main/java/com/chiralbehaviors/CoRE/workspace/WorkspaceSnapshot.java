@@ -27,15 +27,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.TableRecord;
+import org.jooq.UpdatableRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,9 +128,14 @@ public class WorkspaceSnapshot {
     }
 
     public WorkspaceSnapshot(Product definingProduct, DSLContext create) {
+        this(definingProduct, create, Collections.emptyList());
+    }
+
+    public WorkspaceSnapshot(Product definingProduct, DSLContext create,
+                             Collection<UUID> exlude) {
         this.definingProduct = definingProduct;
         records = new ArrayList<>();
-        loadFromDb(create);
+        loadFromDb(create, exlude);
     }
 
     /**
@@ -185,7 +193,10 @@ public class WorkspaceSnapshot {
         records.forEach(r -> {
             @SuppressWarnings("rawtypes")
             TableRecord r2 = (TableRecord) r;
-            create.executeInsert(r2);
+            @SuppressWarnings("rawtypes")
+            UpdatableRecord r3 = (UpdatableRecord) create.newRecord(r2.getTable(),
+                                                                    r2);
+            r3.store();
         });
     }
 
@@ -197,19 +208,33 @@ public class WorkspaceSnapshot {
                  .writeValue(os, this);
     }
 
-    private void loadFromDb(DSLContext create) {
+    @SuppressWarnings("unchecked")
+    private void loadFromDb(DSLContext create, Collection<UUID> exlude) {
         Ruleform.RULEFORM.getTables()
                          .forEach(t -> {
                              if (!t.equals(WORKSPACE_AUTHORIZATION)) {
-                                 records.addAll(create.selectDistinct(t.fields())
-                                                      .from(t)
-                                                      .join(WORKSPACE_AUTHORIZATION)
-                                                      .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
-                                                      .fetchInto(t.getRecordType()));
+                                 if (definingProduct != null) {
+                                     records.addAll(create.selectDistinct(t.fields())
+                                                          .from(t)
+                                                          .join(WORKSPACE_AUTHORIZATION)
+                                                          .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
+                                                          .and(WORKSPACE_AUTHORIZATION.ID.equal((Field<UUID>) t.field("workspace")))
+                                                          .fetchInto(t.getRecordType()));
+                                 } else {
+                                     records.addAll(create.selectDistinct(t.fields())
+                                                          .from(t)
+                                                          .where(t.field("workspace")
+                                                                  .isNull())
+                                                          .and(t.field("id")
+                                                                .notIn(exlude))
+                                                          .fetchInto(t.getRecordType()));
+                                 }
                              }
                          });
-        records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)
-                             .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct.getId()))
-                             .fetch());
+        if (definingProduct != null) {
+            records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)
+                                 .where(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.eq(definingProduct.getId()))
+                                 .fetch());
+        }
     }
 }

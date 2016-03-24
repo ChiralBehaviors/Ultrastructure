@@ -22,8 +22,6 @@ package com.chiralbehaviors.CoRE.kernel;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +30,7 @@ import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 
+import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.ThisCoreInstance;
 import com.chiralbehaviors.CoRE.meta.Model;
@@ -46,8 +45,6 @@ import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 public class KernelUtil {
 
     public static final List<URL> KERNEL_LOADS;
-    public static final String    SELECT_TABLE    = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-
     private static final String[] KERNEL_VERSIONS = { "/kernel.2.json" };
 
     static {
@@ -57,35 +54,9 @@ public class KernelUtil {
                                                           .collect(Collectors.toList()));
     }
 
-    public static void clear(DSLContext em) throws SQLException {
-        boolean committed = false;
-        Connection connection = em.configuration()
-                                  .connectionProvider()
-                                  .acquire();
-        try {
-            connection.setAutoCommit(false);
-            ResultSet r = connection.createStatement()
-                                    .executeQuery(KernelUtil.SELECT_TABLE);
-            while (r.next()) {
-                String table = r.getString("name");
-                String query = String.format("TRUNCATE TABLE %s CASCADE",
-                                             table);
-                connection.createStatement()
-                          .execute(query);
-            }
-            r.close();
-            connection.commit();
-            committed = true;
-        } finally {
-            if (!committed) {
-                connection.rollback();
-            }
-        }
-    }
-
     public static void clearAndLoadKernel(DSLContext em) throws SQLException,
                                                          IOException {
-        clear(em);
+        RecordsFactory.clear(em);
         loadKernel(em);
     }
 

@@ -44,6 +44,7 @@ import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * The meta model for the CoRE
@@ -257,6 +258,8 @@ public interface Model extends AutoCloseable {
     ExistentialRecord lookupExistential(UUID id);
 
     RecordsFactory records();
+
+    WorkspaceSnapshot snapshot();
 
     /**
      * Wrap the ruleform with an instance of a phantasm using the model

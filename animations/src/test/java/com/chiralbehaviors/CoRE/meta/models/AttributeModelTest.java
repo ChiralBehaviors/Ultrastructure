@@ -40,12 +40,12 @@ public class AttributeModelTest extends AbstractModelTest {
     public void testEnumValues() {
         Agency core = model.getKernel()
                            .getCore();
-        Attribute attr = new Attribute("Attribute", "A", ValueType.TEXT, core);
+        Attribute attr = new Attribute("Attribute", "A", ValueType.Text, core);
         em.persist(attr);
 
         Attribute validValues = new Attribute("ValidValues",
                                               "Valid enumeration values for this attribute",
-                                              ValueType.TEXT, core);
+                                              ValueType.Text, core);
         em.persist(validValues);
 
         ExistentialAttributeRecord a = model.records()

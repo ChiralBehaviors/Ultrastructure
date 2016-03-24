@@ -101,18 +101,16 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     @Override
     public final RuleForm create(String name, String description,
                                  FacetRecord aspect, FacetRecord... aspects) {
-        //        RuleForm agency = new Agency(name, description,
-        //                                     model.getCurrentPrincipal()
-        //                                          .getPrincipal());
-        //        em.persist(agency);
-        //        initialize(agency, aspect);
-        //        if (aspects != null) {
-        //            for (Aspect<Agency> a : aspects) {
-        //                initialize(agency, a);
-        //            }
-        //        }
-        //        return agency;
-        return null;
+        @SuppressWarnings("unchecked")
+        RuleForm instance = (RuleForm) model.records()
+                                            .newExistential(domain());
+        model.getPhantasmModel()
+             .initialize(instance, aspect);
+        for (FacetRecord additional : aspects) {
+            model.getPhantasmModel()
+                 .initialize(instance, additional);
+        }
+        return instance;
     }
 
     /* (non-Javadoc)

@@ -22,7 +22,6 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.List;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -38,10 +37,9 @@ public interface WorkspaceModel {
      * workspace
      * 
      * @param definingProduct
-     * @param updatedBy
      * @return
      */
-    WorkspaceScope createWorkspace(Product definingProduct, Agency updatedBy);
+    WorkspaceScope createWorkspace(Product definingProduct);
 
     void flush();
 

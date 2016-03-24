@@ -71,23 +71,24 @@ public class AbstractModelTest {
                                             InstantiationException {
         if (initialized == false) {
             initialized = true;
-            Properties properties = new Properties();
-            properties.load(AbstractModelTest.class.getResourceAsStream("/db.properties"));
-            Connection conn = DriverManager.getConnection((String) properties.get("url"),
-                                                          (String) properties.get("user"),
-                                                          (String) properties.get("password"));
-            conn.setAutoCommit(false);
-
-            create = PostgresDSL.using(conn);
+            create = newCreate();
             KernelUtil.clearAndLoadKernel(create);
-            create.transaction(config -> {
-                model = new ModelImpl(create);
-                KernelUtil.initializeInstance(model,
-                                              "Abstract Model Test CoRE Instance",
-                                              "CoRE instance for an Abstract Model Test");
-            });
+            model = new ModelImpl(create);
         }
         kernel = model.getKernel();
+    }
+
+    public static DSLContext newCreate() throws IOException, SQLException {
+        Properties properties = new Properties();
+        properties.load(AbstractModelTest.class.getResourceAsStream("/db.properties"));
+        System.out.println(String.format(" ---------> Connecting to DB: %s",
+                                         properties.get("url")));
+        Connection conn = DriverManager.getConnection((String) properties.get("url"),
+                                                      (String) properties.get("user"),
+                                                      (String) properties.get("password"));
+        conn.setAutoCommit(false);
+
+        return PostgresDSL.using(conn);
     }
 
     public AbstractModelTest() {
@@ -104,10 +105,14 @@ public class AbstractModelTest {
     }
 
     @Before
-    public void beginTxnBefore() throws DataAccessException, SQLException {
+    public void before() throws DataAccessException, SQLException,
+                         InstantiationException {
         create.configuration()
               .connectionProvider()
               .acquire()
               .rollback();
+        KernelUtil.initializeInstance(model,
+                                      "Abstract Model Test CoRE Instance",
+                                      "CoRE instance for an Abstract Model Test");
     }
 }

@@ -34,9 +34,8 @@ import org.junit.Test;
 import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreUser;
-import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
-import com.chiralbehaviors.CoRE.meta.models.ModelImpl;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -48,41 +47,38 @@ public class StateSnapshotTest extends AbstractModelTest {
     @Test
     public void testSnap() throws Exception {
         UUID id;
-        try (Model myModel = new ModelImpl(emf)) {
-            myModel.create()
-                   .getTransaction()
-                   .begin();
-            CoreUser frank = myModel.construct(CoreUser.class, "frank",
-                                               "he's frank");
-            id = frank.getRuleform()
-                      .getId();
-            StateSnapshot snap = myModel.snapshot();
-            try (OutputStream os = new FileOutputStream(TARGET_THINGS_JSON)) {
-                new ObjectMapper().registerModule(new CoREModule())
-                                  .writeValue(os, snap);
-            }
+        CoreUser frank = model.construct(CoreUser.class, "frank", "TV's frank");
+        id = frank.getRuleform()
+                  .getId();
+        WorkspaceSnapshot snap = model.snapshot();
+        try (OutputStream os = new FileOutputStream(TARGET_THINGS_JSON)) {
+            new ObjectMapper().registerModule(new CoREModule())
+                              .writeValue(os, snap);
         }
-        Agency frankenstein = em.find(Agency.class, id);
+        create.configuration()
+              .connectionProvider()
+              .acquire()
+              .rollback();
+        Agency frankenstein = model.records()
+                                   .resolve(id);
         assertNull("Shouldn't be alive", frankenstein);
 
-        try (Model myModel = new ModelImpl(emf)) {
-            myModel.create()
-                   .getTransaction()
-                   .begin();
-            StateSnapshot snapshot;
-            try (InputStream os = new FileInputStream(TARGET_THINGS_JSON)) {
-                snapshot = new ObjectMapper().registerModule(new CoREModule())
-                                             .readValue(os,
-                                                        StateSnapshot.class);
-            }
-            snapshot.retarget(myModel.create());
-            myModel.create()
-                   .flush();
-            frankenstein = myModel.create()
-                                  .find(Agency.class, id);
-            assertNotNull("Should be found", frankenstein);
+        WorkspaceSnapshot snapshot;
+        try (InputStream os = new FileInputStream(TARGET_THINGS_JSON)) {
+            snapshot = new ObjectMapper().registerModule(new CoREModule())
+                                         .readValue(os,
+                                                    WorkspaceSnapshot.class);
         }
-        frankenstein = em.find(Agency.class, id);
+        snapshot.load(model.create());
+        frankenstein = model.records()
+                            .resolve(id);
+        assertNotNull("Should be found", frankenstein);
+        create.configuration()
+              .connectionProvider()
+              .acquire()
+              .rollback();
+        frankenstein = model.records()
+                            .resolve(id);
         assertNull("Shouldn't be alive", frankenstein);
     }
 }

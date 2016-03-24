@@ -265,9 +265,7 @@ public class WorkspaceImporter {
         }
         Product definingProduct = createWorkspaceProduct();
         scope = model.getWorkspaceModel()
-                     .createWorkspace(definingProduct,
-                                      model.getCurrentPrincipal()
-                                           .getPrincipal());
+                     .createWorkspace(definingProduct);
         workspace = (EditableWorkspace) scope.getWorkspace();
         ExistentialAttributeRecord attributeValue = model.getPhantasmModel()
                                                          .getAttributeValue(definingProduct,
@@ -587,21 +585,21 @@ public class WorkspaceImporter {
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
                               rel);
             } else {
-                Relationship relA = model.records()
-                                         .newRelationship(WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().name.getText()),
-                                                          ctx.primary.existentialRuleform().description == null ? null
-                                                                                                                : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()),
+                Tuple<Relationship, Relationship> relationships = model.records()
+                                                                       .newRelationship(WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().name.getText()),
+                                                                                        ctx.primary.existentialRuleform().description == null ? null
+                                                                                                                                              : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()),
 
-                                                          WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
-                                                          ctx.inverse.existentialRuleform().description == null ? null
-                                                                                                                : WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
+                                                                                        WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
+                                                                                        ctx.inverse.existentialRuleform().description == null ? null
+                                                                                                                                              : WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
 
-                relA.insert();
+                relationships.a.insert();
+                relationships.b.insert();
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
-                              relA);
+                              relationships.a);
                 workspace.put(ctx.inverse.existentialRuleform().workspaceName.getText(),
-                              (Relationship) model.records()
-                                                  .resolve(relA.getInverse()));
+                              relationships.b);
             }
         }
     }

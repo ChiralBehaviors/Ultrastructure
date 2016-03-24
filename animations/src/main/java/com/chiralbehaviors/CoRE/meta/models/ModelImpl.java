@@ -56,6 +56,7 @@ import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
+import com.chiralbehaviors.CoRE.workspace.WorkspaceSnapshot;
 
 /**
  * @author hhildebrand
@@ -239,8 +240,6 @@ public class ModelImpl implements Model {
         ExistentialRecord record = (ExistentialRecord) records().newExistential(Model.getExistentialDomain(phantasm));
         record.setName(name);
         record.setDescription(description);
-        record.setUpdatedBy(getCurrentPrincipal().getPrincipal()
-                                                 .getId());
         record.insert();
         return (R) definition.construct((ExistentialRuleform) record, this,
                                         getCurrentPrincipal().getPrincipal());
@@ -385,17 +384,18 @@ public class ModelImpl implements Model {
         return (R) definition.wrap(ruleform, this);
     }
 
-    @SuppressWarnings("unused")
-    private Collection<?> excludeThisSingleton() {
-        List<Object> excluded = new ArrayList<>();
+    private Collection<UUID> excludeThisSingleton() {
+        List<UUID> excluded = new ArrayList<>();
         Agency instance = getCoreInstance().getRuleform();
         excluded.add(phantasmModel.getImmediateLink(instance,
                                                     kernel.getSingletonOf(),
-                                                    kernel.getCore()));
+                                                    kernel.getCore())
+                                  .getId());
         excluded.add(phantasmModel.getImmediateLink(kernel.getCore(),
                                                     factory.resolve(kernel.getSingletonOf()
                                                                           .getInverse()),
-                                                    instance));
+                                                    instance)
+                                  .getId());
         return excluded;
     }
 
@@ -470,5 +470,13 @@ public class ModelImpl implements Model {
                 throw new IllegalArgumentException(String.format("Invalid domain: %s",
                                                                  domain));
         }
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#snapshot()
+     */
+    @Override
+    public WorkspaceSnapshot snapshot() {
+        return new WorkspaceSnapshot(null, create, excludeThisSingleton());
     }
 }

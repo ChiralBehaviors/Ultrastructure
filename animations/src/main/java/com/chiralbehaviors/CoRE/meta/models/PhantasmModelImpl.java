@@ -66,6 +66,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.hellblazer.utils.Tuple;
 
 /**
@@ -109,7 +110,8 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public void authorize(FacetRecord facet, Attribute attribute) {
         ExistentialAttributeAuthorizationRecord record = model.records()
-                                                              .newExistentialAttributeAuthorization(facet);
+                                                              .newExistentialAttributeAuthorization(facet,
+                                                                                                    attribute);
         record.insert();
     }
 
@@ -508,6 +510,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         return create.selectFrom(EXISTENTIAL_ATTRIBUTE)
                      .where(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
                      .and(EXISTENTIAL_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
+                     .orderBy(EXISTENTIAL_ATTRIBUTE.SEQUENCE_NUMBER)
                      .fetch()
                      .into(ExistentialAttributeRecord.class);
     }
@@ -519,16 +522,19 @@ public class PhantasmModelImpl implements PhantasmModel {
     public ExistentialRuleform getChild(ExistentialRuleform parent,
                                         Relationship relationship,
                                         ExistentialDomain domain) {
+        Record result = create.selectDistinct(EXISTENTIAL.fields())
+                              .from(EXISTENTIAL)
+                              .join(EXISTENTIAL_NETWORK)
+                              .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
+                              .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
+                              .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
+                              .and(EXISTENTIAL.DOMAIN.equal(domain))
+                              .fetchOne();
+        if (result == null) {
+            return null;
+        }
         return model.records()
-                    .resolve(create.selectDistinct(EXISTENTIAL.fields())
-                                   .from(EXISTENTIAL)
-                                   .join(EXISTENTIAL_NETWORK)
-                                   .on(EXISTENTIAL_NETWORK.PARENT.equal(parent.getId()))
-                                   .and(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(relationship.getId()))
-                                   .and(EXISTENTIAL_NETWORK.CHILD.equal(EXISTENTIAL.ID))
-                                   .and(EXISTENTIAL.DOMAIN.equal(domain))
-                                   .fetchOne()
-                                   .into(ExistentialRecord.class));
+                    .resolve(result.into(ExistentialRecord.class));
     }
 
     /*
@@ -849,9 +855,12 @@ public class PhantasmModelImpl implements PhantasmModel {
                                                 .resolve(aspect.getClassification());
         if (getImmediateChildren(ruleform.getId(), aspect.getClassifier(),
                                  classification.getDomain()).isEmpty()) {
+            UUID inverseRelationship = ((Relationship) model.records()
+                                                            .resolve(aspect.getClassifier())).getInverse();
             Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = link(ruleform.getId(),
                                                                                    aspect.getClassifier(),
-                                                                                   aspect.getClassification());
+                                                                                   aspect.getClassification(),
+                                                                                   inverseRelationship);
             if (workspace != null) {
                 workspace.add(links.a);
                 workspace.add(links.b);
@@ -868,8 +877,8 @@ public class PhantasmModelImpl implements PhantasmModel {
                 if (getAttributeValue(ruleform, authorizedAttribute) == null) {
                     ExistentialAttributeRecord attribute = create(ruleform,
                                                                   authorizedAttribute);
-                    setValue(authorizedAttribute, attribute, authorization);
                     attribute.insert();
+                    setValue(authorizedAttribute, attribute, authorization);
                     if (workspace != null) {
                         workspace.add(attribute);
                     }
@@ -900,12 +909,13 @@ public class PhantasmModelImpl implements PhantasmModel {
     public Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(ExistentialRuleform parent,
                                                                           Relationship r,
                                                                           ExistentialRuleform child) {
-        return link(parent.getId(), r.getId(), child.getId());
+        return link(parent.getId(), r.getId(), child.getId(), r.getInverse());
     }
 
     public Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(UUID parent,
                                                                           UUID r,
-                                                                          UUID child) {
+                                                                          UUID child,
+                                                                          UUID inverseR) {
         ExistentialNetworkRecord forward = model.records()
                                                 .newExistentialNetwork();
         forward.setParent(parent);
@@ -916,7 +926,7 @@ public class PhantasmModelImpl implements PhantasmModel {
         ExistentialNetworkRecord inverse = model.records()
                                                 .newExistentialNetwork();
         inverse.setParent(child);
-        inverse.setRelationship(r);
+        inverse.setRelationship(inverseR);
         inverse.setChild(parent);
         inverse.insert();
         return new Tuple<>(forward, inverse);
@@ -1001,7 +1011,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 auth.setTimestampValue((Timestamp) value);
                 break;
             case JSON:
-                auth.setJsonValue(value);
+                auth.setJsonValue((JsonNode) value);
                 break;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
@@ -1042,7 +1052,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 attributeValue.setTimestampValue((Timestamp) value);
                 break;
             case JSON:
-                attributeValue.setJsonValue(value);
+                attributeValue.setJsonValue((JsonNode) value);
                 break;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
@@ -1080,7 +1090,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 auth.setTimestampValue((Timestamp) value);
                 break;
             case JSON:
-                auth.setJsonValue(value);
+                auth.setJsonValue((JsonNode) value);
                 break;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",
@@ -1118,7 +1128,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 attributeValue.setTimestampValue((Timestamp) value);
                 break;
             case JSON:
-                attributeValue.setJsonValue(value);
+                attributeValue.setJsonValue((JsonNode) value);
                 break;
             default:
                 throw new IllegalStateException(String.format("Invalid value type: %s",

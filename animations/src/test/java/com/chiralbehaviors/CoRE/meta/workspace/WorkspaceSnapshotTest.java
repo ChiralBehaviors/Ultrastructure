@@ -55,7 +55,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
         File version1File = new File(TARGET_CLASSES_THING_1_JSON);
         File version2File = new File(TARGET_CLASSES_THING_2_JSON);
         File version2_1File = new File(TARGET_CLASSES_THING_1_2_JSON);
-        try (Model myModel = new ModelImpl(create)) {
+        try (Model myModel = new ModelImpl(newCreate())) {
             myModel.create();
             WorkspaceImporter importer;
             Product definingProduct;
@@ -66,15 +66,16 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                                                   myModel);
             definingProduct = importer.getWorkspace()
                                       .getDefiningProduct();
-            snapshot = new WorkspaceSnapshot(definingProduct, create);
+            snapshot = new WorkspaceSnapshot(definingProduct, myModel.create());
             try (FileOutputStream os = new FileOutputStream(version1File)) {
                 snapshot.serializeTo(os);
             }
         }
 
-        try (Model myModel = new ModelImpl(create)) {
-            WorkspaceSnapshot.load(create, Arrays.asList(version1File.toURI()
-                                                                     .toURL()));
+        try (Model myModel = new ModelImpl(newCreate())) {
+            WorkspaceSnapshot.load(myModel.create(),
+                                   Arrays.asList(version1File.toURI()
+                                                             .toURL()));
 
             // load version 2
 
@@ -83,13 +84,13 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             Product definingProduct = importer.getWorkspace()
                                               .getDefiningProduct();
             WorkspaceSnapshot snapshot = new WorkspaceSnapshot(definingProduct,
-                                                               create);
+                                                               myModel.create());
             try (FileOutputStream os = new FileOutputStream(version2File)) {
                 snapshot.serializeTo(os);
             }
         }
 
-        try (Model myModel = new ModelImpl(create)) {
+        try (Model myModel = new ModelImpl(newCreate())) {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new CoREModule());
@@ -103,7 +104,8 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
                 version2 = mapper.readValue(is, WorkspaceSnapshot.class);
             }
 
-            WorkspaceSnapshot delta = version2.deltaFrom(create, version1);
+            WorkspaceSnapshot delta = version2.deltaFrom(myModel.create(),
+                                                         version1);
             try (FileOutputStream os = new FileOutputStream(version2_1File)) {
                 delta.serializeTo(os);
             }
@@ -125,7 +127,7 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             assertNotNull(theDude);
         }
 
-        try (Model myModel = new ModelImpl(create)) {
+        try (Model myModel = new ModelImpl(newCreate())) {
 
             try {
                 myModel.getWorkspaceModel()

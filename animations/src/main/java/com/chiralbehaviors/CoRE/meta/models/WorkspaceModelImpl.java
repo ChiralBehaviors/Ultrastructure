@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
@@ -49,8 +48,7 @@ public class WorkspaceModelImpl implements WorkspaceModel {
     }
 
     @Override
-    public WorkspaceScope createWorkspace(Product definingProduct,
-                                          Agency updatedBy) {
+    public WorkspaceScope createWorkspace(Product definingProduct) {
         EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
                                                                   model);
         workspace.add(definingProduct);
@@ -60,7 +58,6 @@ public class WorkspaceModelImpl implements WorkspaceModel {
                                                        kernel.getWorkspace());
         model.getPhantasmModel()
              .initialize(definingProduct, aspect, workspace);
-        definingProduct.insert();
         WorkspaceScope scope = workspace.getScope();
         scopes.put(definingProduct.getId(), scope);
         return scope;

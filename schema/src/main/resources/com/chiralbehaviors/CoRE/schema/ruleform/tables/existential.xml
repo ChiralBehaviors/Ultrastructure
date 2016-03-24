@@ -27,9 +27,9 @@
             <column name="inverse" type="uuid" />
 
             <!-- Attribute columns -->
-            <column name="value_type" type="value_type" />
-            <column name="keyed" type="boolean" />
-            <column name="indexed" type="boolean" />
+            <column name="value_type" type="value_type" defaultValue = "Text"/>
+            <column name="keyed" type="boolean" defaultValue="false"/>
+            <column name="indexed" type="boolean" defaultValue="false"/>
 
             <!-- Status Code columns -->
             <column name="fail_parent" type="boolean" />

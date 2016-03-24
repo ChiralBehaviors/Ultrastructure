@@ -24,7 +24,6 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.UUID;
@@ -44,10 +43,8 @@ import com.chiralbehaviors.CoRE.domain.Agency;
  * 
  */
 abstract public class DatabaseTest {
-    public static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
-
-    protected DSLContext       create;
-    protected RecordsFactory   RECORDS;
+    protected DSLContext     create;
+    protected RecordsFactory RECORDS;
 
     @After
     public void after() throws DataAccessException, SQLException {
@@ -82,30 +79,13 @@ abstract public class DatabaseTest {
                 return core.get();
             }
         };
-        clear(create);
+        RecordsFactory.clear(create);
         Agency c = RECORDS.newAgency("Ye CoRE");
         c.setUpdatedBy(c.getId());
         create.insertInto(EXISTENTIAL)
               .set(c);
         core.set(c.getId());
 
-    }
-
-    private void clear(DSLContext em) throws SQLException {
-        em.transaction(c -> {
-            Connection connection = c.connectionProvider()
-                                     .acquire();
-            ResultSet r = connection.createStatement()
-                                    .executeQuery(SELECT_TABLE);
-            while (r.next()) {
-                String table = r.getString("name");
-                String query = String.format("TRUNCATE TABLE %s CASCADE",
-                                             table);
-                connection.createStatement()
-                          .execute(query);
-            }
-            r.close();
-        });
     }
 
     protected final void commitTransaction() throws DataAccessException,

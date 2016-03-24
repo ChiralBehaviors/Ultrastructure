@@ -197,6 +197,11 @@ public interface WellKnownObject {
 
         };
 
+        @Override
+        public ExistentialDomain domain() {
+            return ExistentialDomain.Agency;
+        }
+
         /* (non-Javadoc)
          * @see com.chiralbehaviors.CoRE.kernel.WellKnownObject#id()
          */
@@ -211,11 +216,6 @@ public interface WellKnownObject {
         @Override
         public String tableName() {
             return "ruleform.agency";
-        }
-
-        @Override
-        public ExistentialDomain domain() {
-            return ExistentialDomain.Agency;
         }
     }
 

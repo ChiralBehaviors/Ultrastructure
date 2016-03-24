@@ -9,7 +9,7 @@
         <createTable schemaName="ruleform" tableName="existential_network_attribute_authorization">
             <column name="workspace" type="uuid" />
             <column name="id" type="uuid">
-                <constraints primaryKey="true" primaryKeyName="existential_network_attribute_authorization_pkey" />
+                <constraints primaryKey="true" primaryKeyName="e_n_a_a_pkey" />
             </column>
             <column name="network_authorization" remarks="The network relationship that authorizes the attributes" type="uuid">
                 <constraints nullable="false" />

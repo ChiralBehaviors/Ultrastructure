@@ -55,7 +55,7 @@ public class TestImport extends AbstractModelTest {
                                    .selectFrom(EXISTENTIAL)
                                    .where(EXISTENTIAL.ID.equal(WorkspaceAccessor.uuidOf(THING_URI)))
                                    .fetchOne()
-                                   .map(r -> (Product) r);
+                                   .into(Product.class);
         }
 
         EditableWorkspace workspace = new DatabaseBackedWorkspace(definingProduct,
@@ -91,5 +91,8 @@ public class TestImport extends AbstractModelTest {
         assertEquals("Phantasm Demo V2", definingProduct.getName());
         assertEquals("Test of Workspace versioning",
                      definingProduct.getDescription());
+        assertNotNull(workspace);
+        assertNotNull(workspace.getScope()
+                               .lookup("kernel", "IsA"));
     }
 }

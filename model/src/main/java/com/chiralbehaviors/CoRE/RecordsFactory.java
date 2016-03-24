@@ -41,6 +41,9 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.SIBLING_SEQUENCING_AUTHORIZAT
 import static com.chiralbehaviors.CoRE.jooq.Tables.STATUS_CODE_SEQUENCING;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -79,14 +82,32 @@ import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.NoArgGenerator;
+import com.hellblazer.utils.Tuple;
 
 /**
  * @author hhildebrand
  *
  */
 public interface RecordsFactory {
+    static NoArgGenerator GENERATOR    = Generators.timeBasedGenerator();
+    static String         SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    static final NoArgGenerator GENERATOR = Generators.timeBasedGenerator();
+    static void clear(DSLContext em) throws SQLException {
+        em.transaction(c -> {
+            Connection connection = c.connectionProvider()
+                                     .acquire();
+            ResultSet r = connection.createStatement()
+                                    .executeQuery(SELECT_TABLE);
+            while (r.next()) {
+                String table = r.getString("name");
+                String query = String.format("TRUNCATE TABLE %s CASCADE",
+                                             table);
+                connection.createStatement()
+                          .execute(query);
+            }
+            r.close();
+        });
+    }
 
     default ExistentialRecord copy(ExistentialRecord rf) {
         ExistentialRecord copy = rf.copy();
@@ -256,10 +277,10 @@ public interface RecordsFactory {
         return record;
     }
 
-    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(FacetRecord facet) {
-        ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
-        record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipalId());
+    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(FacetRecord facet,
+                                                                                         Attribute attribute) {
+        ExistentialAttributeAuthorizationRecord record = newExistentialAttributeAuthorization();
+        record.setAuthorizedAttribute(attribute.getId());
         record.setFacet(facet.getId());
         return record;
     }
@@ -506,16 +527,15 @@ public interface RecordsFactory {
         return record;
     }
 
-    default Relationship newRelationship(String name, String description,
-                                         String inverseName,
-                                         String inverseDescription) {
-        Relationship record = newRelationship(inverseName, inverseDescription);
+    default Tuple<Relationship, Relationship> newRelationship(String name,
+                                                              String description,
+                                                              String inverseName,
+                                                              String inverseDescription) {
+        Relationship record = newRelationship(name, description);
         Relationship inverse = newRelationship(inverseName, inverseDescription);
         record.setInverse(inverse.getId());
         inverse.setInverse(record.getId());
-        inverse.insert();
-        record.insert();
-        return record;
+        return new Tuple<>(record, inverse);
     }
 
     default SelfSequencingAuthorizationRecord newSelfSequencingAuthorization() {

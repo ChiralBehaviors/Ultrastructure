@@ -203,22 +203,20 @@
                                     <includes>.*</includes>
                                     <excludes></excludes>
                                     <inputSchema>ruleform</inputSchema>
+                                    <recordVersionFields>version</recordVersionFields>
                                     <customTypes>
                                         <customType>
-                                            <name>Map</name>
-                                            <type>java.util.Map</type>
-                                            <binding>com.chiralbehaviors.CoRE.attribute.json</binding>
+                                            <name>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</name>
+                                            <type>com.fasterxml.jackson.databind.JsonNode</type>
+                                            <binding>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</binding>
                                         </customType>
                                     </customTypes>
-
                                     <forcedTypes>
                                         <forcedType>
-                                            <name>Map</name>
-                                            <expression>.*JSONB.*</expression>
-                                            <types>.*</types>
+                                            <name>com.chiralbehaviors.CoRE.postgres.PostgresJSONJacksonJsonNodeBinding</name>
+                                            <expression>.*json_value.*</expression>
                                         </forcedType>
                                     </forcedTypes>
-                                    <recordVersionFields>version</recordVersionFields>
                                 </database>
                                 <target>
                                     <packageName>com.chiralbehaviors.CoRE.jooq</packageName>

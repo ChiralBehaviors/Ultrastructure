@@ -1030,7 +1030,7 @@ public class JobModelImpl implements JobModel {
                                 .getId()); // Prophylactic against recursive error disease
         }
         model.records()
-             .newJobChronologyRecord(job, notes);
+             .newJobChronology(job, notes);
     }
 
     @Override

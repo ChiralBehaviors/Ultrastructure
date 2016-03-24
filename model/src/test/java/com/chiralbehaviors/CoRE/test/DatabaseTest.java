@@ -20,35 +20,36 @@
 
 package com.chiralbehaviors.CoRE.test;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.jooq.DSLContext;
 import org.jooq.exception.DataAccessException;
 import org.jooq.util.postgres.PostgresDSL;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
+import com.chiralbehaviors.CoRE.domain.Agency;
 
 /**
  * @author hhildebrand
  * 
  */
 abstract public class DatabaseTest {
-    public static final String      SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
+    public static final String SELECT_TABLE = "SELECT table_schema || '.' || table_name AS name FROM information_schema.tables WHERE table_schema='ruleform' AND table_type='BASE TABLE' ORDER BY table_name";
 
-    private static boolean          initialized  = false;
-    protected static Connection     connection;
-    protected static DSLContext     create;
-    protected static RecordsFactory RECORDS;
+    protected DSLContext       create;
+    protected RecordsFactory   RECORDS;
 
-    @AfterClass
-    public static void afterClass() throws DataAccessException, SQLException {
+    @After
+    public void after() throws DataAccessException, SQLException {
         create.configuration()
               .connectionProvider()
               .acquire()
@@ -56,13 +57,43 @@ abstract public class DatabaseTest {
         create.close();
     }
 
-    public static void clear(DSLContext em) throws SQLException {
-        boolean committed = false;
-        Connection connection = em.configuration()
-                                  .connectionProvider()
-                                  .acquire();
-        try {
-            connection.setAutoCommit(false);
+    @Before
+    public void setup() throws Exception {
+        Properties properties = new Properties();
+        properties.load(DatabaseTest.class.getResourceAsStream("/db.properties"));
+        Connection conn = DriverManager.getConnection((String) properties.get("url"),
+                                                      (String) properties.get("user"),
+                                                      (String) properties.get("password"));
+        conn.setAutoCommit(false);
+
+        create = PostgresDSL.using(conn);
+
+        AtomicReference<Agency> core = new AtomicReference<>();
+        RECORDS = new RecordsFactory() {
+
+            @Override
+            public DSLContext create() {
+                return create;
+            }
+
+            @Override
+            public Agency currentPrincipal() {
+                return core.get();
+            }
+        };
+        clear(create);
+        Agency c = RECORDS.newAgency("Ye CoRE");
+        c.setUpdatedBy(c.getId());
+        create.insertInto(EXISTENTIAL)
+              .set(c);
+        core.set(c);
+
+    }
+
+    private void clear(DSLContext em) throws SQLException {
+        em.transaction(c -> {
+            Connection connection = c.connectionProvider()
+                                     .acquire();
             ResultSet r = connection.createStatement()
                                     .executeQuery(SELECT_TABLE);
             while (r.next()) {
@@ -73,51 +104,14 @@ abstract public class DatabaseTest {
                           .execute(query);
             }
             r.close();
-            connection.commit();
-            committed = true;
-        } finally {
-            if (!committed) {
-                connection.rollback();
-            }
-        }
+        });
     }
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        Properties properties = new Properties();
-        properties.load(DatabaseTest.class.getResourceAsStream("/db.properties"));
-        if (!initialized) {
-            initialized = true;
-            Connection conn = DriverManager.getConnection((String) properties.get("url"),
-                                                          (String) properties.get("user"),
-                                                          (String) properties.get("password"));
-            conn.setAutoCommit(false);
-
-            create = PostgresDSL.using(conn);
-            RECORDS = new RecordsFactory() {
-
-                @Override
-                public DSLContext create() {
-                    return create;
-                }
-            };
-            clear(create);
-        }
-    }
-
-    protected static final void commitTransaction() throws DataAccessException,
-                                                    SQLException {
+    protected final void commitTransaction() throws DataAccessException,
+                                             SQLException {
         create.configuration()
               .connectionProvider()
               .acquire()
               .commit();
-    }
-
-    @After
-    public void after() throws DataAccessException, SQLException {
-        create.configuration()
-              .connectionProvider()
-              .acquire()
-              .rollback();
     }
 }

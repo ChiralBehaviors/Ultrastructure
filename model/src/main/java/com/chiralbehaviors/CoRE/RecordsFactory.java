@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ public interface RecordsFactory {
     static final NoArgGenerator GENERATOR = Generators.timeBasedGenerator();
 
     default ExistentialRecord copy(ExistentialRecord rf) {
-        ExistentialRecord copy = ((ExistentialRecord) rf).copy();
+        ExistentialRecord copy = rf.copy();
         copy.setId(GENERATOR.generate());
         return copy;
 
@@ -99,8 +99,7 @@ public interface RecordsFactory {
 
     default ExistentialRuleform createExistential(UUID classification,
                                                   String name,
-                                                  String description,
-                                                  Agency updatedBy) {
+                                                  String description) {
         ExistentialRecord clazz = create().selectFrom(EXISTENTIAL)
                                           .where(EXISTENTIAL.ID.equal(classification))
                                           .fetchOne();
@@ -108,10 +107,12 @@ public interface RecordsFactory {
         record.setId(GENERATOR.generate());
         record.setName(name);
         record.setDescription(description);
-        record.setUpdatedBy(updatedBy.getId());
+        record.setUpdatedBy(currentPrincipal().getId());
         record.setDomain(clazz.getDomain());
         return resolve(record);
     }
+
+    Agency currentPrincipal();
 
     default FacetRecord findFacetRecord(UUID id) {
         return create().selectFrom(FACET)
@@ -122,6 +123,9 @@ public interface RecordsFactory {
     default Agency newAgency() {
         Agency record = create().newRecord(EXISTENTIAL)
                                 .into(Agency.class);
+        // special case the circularity issue with Core
+        Agency p = currentPrincipal();
+        record.setUpdatedBy(p == null ? null : p.getId());
         record.setDomain(ExistentialDomain.Agency);
         record.setId(GENERATOR.generate());
         return record;
@@ -133,66 +137,53 @@ public interface RecordsFactory {
         return record;
     }
 
-    default Agency newAgency(String name, Agency updatedBy) {
-        Agency record = newAgency();
-        record.setName(name);
-        record.setUpdatedBy(updatedBy.getId());
-        return record;
-    }
-
-    default Agency newAgency(String name, String description,
-                             Agency updatedBy) {
+    default Agency newAgency(String name, String description) {
         Agency record = newAgency();
         record.setName(name);
         record.setDescription(description);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
     default Attribute newAttribute() {
         Attribute record = create().newRecord(EXISTENTIAL)
                                    .into(Attribute.class);
+        record.setUpdatedBy(currentPrincipal().getId());
         record.setDomain(ExistentialDomain.Attribute);
         record.setId(GENERATOR.generate());
         return record;
     }
 
-    default Attribute newAttribute(String name, String description,
-                                   Agency updatedBy) {
+    default Attribute newAttribute(String name, String description) {
         Attribute record = newAttribute();
         record.setName(name);
         record.setDescription(description);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
     default ChildSequencingAuthorizationRecord newChildSequencingAuthorization() {
         ChildSequencingAuthorizationRecord record = create().newRecord(CHILD_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(Product parent,
                                                                                StatusCode status,
                                                                                Product child,
-                                                                               StatusCode next,
-                                                                               Agency updatedBy) {
+                                                                               StatusCode next) {
         return newChildSequencingAuthorization(parent.getId(), status.getId(),
-                                               child.getId(), next.getId(),
-                                               updatedBy);
+                                               child.getId(), next.getId());
     }
 
     default ChildSequencingAuthorizationRecord newChildSequencingAuthorization(UUID parent,
                                                                                UUID status,
                                                                                UUID child,
-                                                                               UUID next,
-                                                                               Agency updatedBy) {
+                                                                               UUID next) {
         ChildSequencingAuthorizationRecord record = newChildSequencingAuthorization();
         record.setParent(parent);
         record.setStatusCode(status);
         record.setNextChild(child);
         record.setNextChildStatus(next);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -229,83 +220,71 @@ public interface RecordsFactory {
         }
         ExistentialRecord record = create().newRecord(EXISTENTIAL)
                                            .into(existential);
+        record.setUpdatedBy(currentPrincipal().getId());
         record.setDomain(domain);
         record.setId(GENERATOR.generate());
         return (ExistentialRuleform) record;
     }
 
     default ExistentialRecord newExistential(ExistentialDomain domain,
-                                             String name, String description,
-                                             Agency updatedBy) {
+                                             String name, String description) {
         ExistentialRecord record = (ExistentialRecord) newExistential(domain);
+        record.setUpdatedBy(currentPrincipal().getId());
         record.setName(name);
         record.setDescription(description);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
     default ExistentialAttributeRecord newExistentialAttribute() {
         ExistentialAttributeRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         record.setUpdated(new Timestamp(System.currentTimeMillis()));
         return record;
     }
 
-    default ExistentialAttributeRecord newExistentialAttribute(Agency updatedBy) {
+    default ExistentialAttributeRecord newExistentialAttribute(Attribute attr) {
         ExistentialAttributeRecord record = newExistentialAttribute();
-        record.setUpdatedBy(updatedBy.getId());
-        return record;
-    }
-
-    default ExistentialAttributeRecord newExistentialAttribute(Attribute attr,
-                                                               Agency updatedBy) {
-        ExistentialAttributeRecord record = newExistentialAttribute(updatedBy);
         record.setAttribute(attr.getId());
         return record;
     }
 
-    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(FacetRecord facet,
-                                                                                         Agency agency) {
+    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization() {
         ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setFacet(facet.getId());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
-    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(Agency updatedBy) {
+    default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(FacetRecord facet) {
         ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(updatedBy.getId());
+        record.setUpdatedBy(currentPrincipal().getId());
+        record.setFacet(facet.getId());
         return record;
     }
 
     default AgencyExistentialGroupingRecord newExistentialGrouping() {
         AgencyExistentialGroupingRecord record = create().newRecord(AGENCY_EXISTENTIAL_GROUPING);
         record.setId(GENERATOR.generate());
-        return record;
-    }
-
-    default AgencyExistentialGroupingRecord newExistentialGrouping(Agency updatedBy) {
-        AgencyExistentialGroupingRecord record = newExistentialGrouping();
-        record.setUpdatedBy(updatedBy.getId());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default ExistentialNetworkRecord newExistentialNetwork() {
         ExistentialNetworkRecord record = create().newRecord(EXISTENTIAL_NETWORK);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
-    default ExistentialNetworkRecord newExistentialNetwork(Agency parent,
+    default ExistentialNetworkRecord newExistentialNetwork(ExistentialRuleform parent,
                                                            Relationship relationship,
-                                                           Agency child,
-                                                           Agency updatedBy) {
+                                                           ExistentialRuleform child) {
         ExistentialNetworkRecord record = newExistentialNetwork();
         record.setParent(parent.getId());
         record.setRelationship(relationship.getId());
         record.setChild(child.getId());
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -316,49 +295,36 @@ public interface RecordsFactory {
         return record;
     }
 
-    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(Attribute attribute,
-                                                                             Agency updatedBy) {
+    default ExistentialNetworkAttributeRecord newExistentialNetworkAttribute(Attribute attribute) {
         ExistentialNetworkAttributeRecord record = newExistentialNetworkAttribute();
         record.setAttribute(attribute.getId());
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
     default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization() {
         ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        return record;
-    }
-
-    default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization(Agency updatedBy) {
-        ExistentialNetworkAttributeAuthorizationRecord record = newExistentialNetworkAttributeAuthorization();
-        record.setUpdatedBy(updatedBy.getId());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization() {
         ExistentialNetworkAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
-    default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization(Agency updatedBy) {
-        ExistentialNetworkAuthorizationRecord record = newExistentialNetworkAuthorization();
-        record.setUpdatedBy(updatedBy.getId());
-        return record;
-    }
-
-    default FacetRecord newFacet(Agency updatedBy) {
+    default FacetRecord newFacet() {
         FacetRecord record = create().newRecord(FACET);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(updatedBy.getId());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default FacetRecord newFacet(Relationship classifier,
-                                 ExistentialRuleform classification,
-                                 Agency core) {
-        FacetRecord record = newFacet(core);
+                                 ExistentialRuleform classification) {
+        FacetRecord record = newFacet();
         record.setClassifier(classifier.getId());
         record.setClassification(classification.getId());
         return record;
@@ -368,29 +334,25 @@ public interface RecordsFactory {
         ExistentialRecord record = create().newRecord(EXISTENTIAL);
         record.setDomain(ExistentialDomain.Interval);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default JobRecord newJob() {
         JobRecord record = create().newRecord(JOB);
         record.setId(GENERATOR.generate());
-        return record;
-    }
-
-    default JobRecord newJob(Agency updatedBy) {
-        JobRecord record = newJob();
-        record.setUpdatedBy(updatedBy.getId());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default JobChronologyRecord newJobChronology() {
         JobChronologyRecord record = create().newRecord(JOB_CHRONOLOGY);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
-    default JobChronologyRecord newJobChronologyRecord(JobRecord job,
-                                                       String notes) {
+    default JobChronologyRecord newJobChronology(JobRecord job, String notes) {
         JobChronologyRecord record = newJobChronology();
         record.setNotes(notes);
         record.setAssignTo(job.getAssignTo());
@@ -408,11 +370,19 @@ public interface RecordsFactory {
 
     }
 
-    default ExistentialRecord newLocation() {
-        ExistentialRecord record = create().newRecord(EXISTENTIAL);
+    default Location newLocation() {
+        Location record = create().newRecord(EXISTENTIAL)
+                                  .into(Location.class);
         record.setDomain(ExistentialDomain.Location);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
+    }
+
+    default Location newLocation(String string) {
+        Location l = newLocation();
+        l.setName(string);
+        return l;
     }
 
     default MetaProtocolRecord newMetaProtocol() {
@@ -423,50 +393,54 @@ public interface RecordsFactory {
 
     default NetworkInferenceRecord newNetworkInference(Relationship premise1,
                                                        Relationship premise2,
-                                                       Relationship inference,
-                                                       Agency updatedBy) {
+                                                       Relationship inference) {
         NetworkInferenceRecord record = newNetworkInference(premise1.getId(),
                                                             premise2.getId(),
-                                                            inference.getId(),
-                                                            updatedBy);
+                                                            inference.getId());
         return record;
     }
 
     default NetworkInferenceRecord newNetworkInference(UUID premise1,
                                                        UUID premise2,
-                                                       UUID inference,
-                                                       Agency updatedBy) {
+                                                       UUID inference) {
         NetworkInferenceRecord record = newNetworkInferrence();
         record.setPremise1(premise1);
         record.setPremise2(premise2);
         record.setInference(inference);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
     default NetworkInferenceRecord newNetworkInferrence() {
         NetworkInferenceRecord record = create().newRecord(NETWORK_INFERENCE);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default ParentSequencingAuthorizationRecord newParentSequencingAuthorization() {
         ParentSequencingAuthorizationRecord record = create().newRecord(PARENT_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
+    }
+
+    default ParentSequencingAuthorizationRecord newParentSequencingAuthorization(Product service,
+                                                                                 StatusCode status,
+                                                                                 Product parent,
+                                                                                 StatusCode next) {
+        return newParentSequencingAuthorization(service.getId(), status.getId(),
+                                                parent.getId(), next.getId());
     }
 
     default ParentSequencingAuthorizationRecord newParentSequencingAuthorization(UUID service,
                                                                                  UUID status,
                                                                                  UUID parent,
-                                                                                 UUID next,
-                                                                                 Agency updatedBy) {
+                                                                                 UUID next) {
         ParentSequencingAuthorizationRecord record = newParentSequencingAuthorization();
         record.setService(service);
         record.setStatusCode(status);
         record.setParent(parent);
         record.setParentStatusToSet(next);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -475,28 +449,26 @@ public interface RecordsFactory {
                                  .into(Product.class);
         record.setDomain(ExistentialDomain.Product);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
-    default Product newProduct(String name, Agency updatedBy) {
+    default Product newProduct(String name) {
         Product record = newProduct();
         record.setName(name);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
-    default Product newProduct(String name, String description,
-                               Agency updatedBy) {
-        Product record = newProduct().into(Product.class);
-        record.setName(name);
+    default Product newProduct(String name, String description) {
+        Product record = newProduct(name);
         record.setDescription(description);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
     default ProtocolRecord newProtocol() {
         ProtocolRecord record = create().newRecord(PROTOCOL);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
@@ -504,6 +476,7 @@ public interface RecordsFactory {
         Relationship record = create().newRecord(EXISTENTIAL)
                                       .into(Relationship.class);
         record.setDomain(ExistentialDomain.Relationship);
+        record.setUpdatedBy(currentPrincipal().getId());
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -514,31 +487,20 @@ public interface RecordsFactory {
         return record;
     }
 
-    default Relationship newRelationship(String name, Agency updatedBy) {
-        Relationship record = newRelationship();
-        record.setName(name);
-        record.setUpdatedBy(updatedBy.getId());
-        return record;
+    default Relationship newRelationship(String name, Relationship inverse) {
+        return newRelationship(name, null, inverse);
     }
 
-    default Relationship newRelationship(String name, Agency updatedBy,
-                                         Relationship inverse) {
-        return newRelationship(name, null, updatedBy, inverse);
-    }
-
-    default Relationship newRelationship(String name, String description,
-                                         Agency updatedBy) {
+    default Relationship newRelationship(String name, String description) {
         Relationship record = newRelationship();
         record.setName(name);
         record.setDescription(description);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
     default Relationship newRelationship(String name, String description,
-                                         Agency updatedBy,
                                          Relationship inverse) {
-        Relationship record = newRelationship(name, description, updatedBy);
+        Relationship record = newRelationship(name, description);
         record.setInverse(inverse.getId());
         inverse.setInverse(record.getId());
         return record;
@@ -546,12 +508,9 @@ public interface RecordsFactory {
 
     default Relationship newRelationship(String name, String description,
                                          String inverseName,
-                                         String inverseDescription,
-                                         Agency updatedBy) {
-        Relationship record = newRelationship(inverseName, inverseDescription,
-                                              updatedBy);
-        Relationship inverse = newRelationship(inverseName, inverseDescription,
-                                               updatedBy);
+                                         String inverseDescription) {
+        Relationship record = newRelationship(inverseName, inverseDescription);
+        Relationship inverse = newRelationship(inverseName, inverseDescription);
         record.setInverse(inverse.getId());
         inverse.setInverse(record.getId());
         inverse.insert();
@@ -562,38 +521,43 @@ public interface RecordsFactory {
     default SelfSequencingAuthorizationRecord newSelfSequencingAuthorization() {
         SelfSequencingAuthorizationRecord record = create().newRecord(SELF_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
+    }
+
+    default SelfSequencingAuthorizationRecord newSelfSequencingAuthorization(Product service,
+                                                                             StatusCode status,
+                                                                             StatusCode next) {
+        return newSelfSequencingAuthorization(service.getId(), status.getId(),
+                                              next.getId());
     }
 
     default SelfSequencingAuthorizationRecord newSelfSequencingAuthorization(UUID service,
                                                                              UUID status,
-                                                                             UUID next,
-                                                                             Agency updatedBy) {
+                                                                             UUID next) {
         SelfSequencingAuthorizationRecord record = newSelfSequencingAuthorization();
         record.setService(service);
         record.setStatusCode(status);
         record.setStatusToSet(next);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
     default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization() {
         SiblingSequencingAuthorizationRecord record = create().newRecord(SIBLING_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization(UUID parent,
                                                                                    UUID status,
                                                                                    UUID sibling,
-                                                                                   UUID next,
-                                                                                   Agency updatedBy) {
+                                                                                   UUID next) {
         SiblingSequencingAuthorizationRecord record = newSiblingSequencingAuthorization();
         record.setParent(parent);
         record.setStatusCode(status);
         record.setNextSibling(sibling);
         record.setNextSiblingStatus(next);
-        record.setUpdatedBy(updatedBy.getId());
         return record;
     }
 
@@ -602,19 +566,18 @@ public interface RecordsFactory {
                                     .into(StatusCode.class);
         record.setDomain(ExistentialDomain.StatusCode);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
-    default StatusCode newStatusCode(String name, Agency updatedBy) {
+    default StatusCode newStatusCode(String name) {
         StatusCode code = newStatusCode();
         code.setName(name);
-        code.setUpdatedBy(updatedBy.getId());
         return code;
     }
 
-    default StatusCode newStatusCode(String name, String description,
-                                     Agency updatedBy) {
-        StatusCode record = newStatusCode(name, updatedBy);
+    default StatusCode newStatusCode(String name, String description) {
+        StatusCode record = newStatusCode(name);
         record.setDescription(description);
         return record;
     }
@@ -622,13 +585,13 @@ public interface RecordsFactory {
     default StatusCodeSequencingRecord newStatusCodeSequencing() {
         StatusCodeSequencingRecord record = create().newRecord(STATUS_CODE_SEQUENCING);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default StatusCodeSequencingRecord newStatusCodeSequencing(Product service,
                                                                StatusCode parent,
-                                                               StatusCode child,
-                                                               Agency core) {
+                                                               StatusCode child) {
         StatusCodeSequencingRecord record = newStatusCodeSequencing();
         record.setService(service.getId());
         record.setParent(parent.getId());
@@ -641,32 +604,31 @@ public interface RecordsFactory {
                               .into(Unit.class);
         record.setDomain(ExistentialDomain.Unit);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
-    default Unit newUnit(String name, String description, Agency updatedBy) {
+    default Unit newUnit(String name, String description) {
         Unit unit = newUnit();
         unit.setName(name);
         unit.setDescription(description);
-        unit.setUpdatedBy(updatedBy.getId());
         return unit;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization() {
         WorkspaceAuthorizationRecord record = create().newRecord(WORKSPACE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
+        record.setUpdatedBy(currentPrincipal().getId());
         return record;
     }
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   AgencyExistentialGroupingRecord record,
-                                                                   Agency updatedBy) {
+                                                                   AgencyExistentialGroupingRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Agency_Existential_Grouping,
-                                                                      updatedBy);
+                                                                      ReferenceType.Agency_Existential_Grouping);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -674,13 +636,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ChildSequencingAuthorizationRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ChildSequencingAuthorizationRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Child_Sequencing_Authorization,
-                                                                      updatedBy);
+                                                                      ReferenceType.Child_Sequencing_Authorization);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -688,13 +648,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ExistentialAttributeAuthorizationRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ExistentialAttributeAuthorizationRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Attribute_Authorization,
-                                                                      updatedBy);
+                                                                      ReferenceType.Attribute_Authorization);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -702,13 +660,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ExistentialAttributeRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ExistentialAttributeRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Attribute,
-                                                                      updatedBy);
+                                                                      ReferenceType.Attribute);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -716,13 +672,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ExistentialNetworkAttributeAuthorizationRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ExistentialNetworkAttributeAuthorizationRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Network_Attribute_Authorization,
-                                                                      updatedBy);
+                                                                      ReferenceType.Network_Attribute_Authorization);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -730,13 +684,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ExistentialNetworkAttributeRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ExistentialNetworkAttributeRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Network_Attribute,
-                                                                      updatedBy);
+                                                                      ReferenceType.Network_Attribute);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -744,13 +696,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ExistentialNetworkAuthorizationRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ExistentialNetworkAuthorizationRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Network_Authorization,
-                                                                      updatedBy);
+                                                                      ReferenceType.Network_Authorization);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -758,13 +708,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ExistentialNetworkRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ExistentialNetworkRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Network,
-                                                                      updatedBy);
+                                                                      ReferenceType.Network);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -772,13 +720,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ExistentialRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ExistentialRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Existential,
-                                                                      updatedBy);
+                                                                      ReferenceType.Existential);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -786,13 +732,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   FacetRecord record,
-                                                                   Agency updatedBy) {
+                                                                   FacetRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Facet,
-                                                                      updatedBy);
+                                                                      ReferenceType.Facet);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -800,13 +744,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   JobChronologyRecord record,
-                                                                   Agency updatedBy) {
+                                                                   JobChronologyRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Job_Chronology,
-                                                                      updatedBy);
+                                                                      ReferenceType.Job_Chronology);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -814,13 +756,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   JobRecord record,
-                                                                   Agency updatedBy) {
+                                                                   JobRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Job,
-                                                                      updatedBy);
+                                                                      ReferenceType.Job);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -828,13 +768,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   MetaProtocolRecord record,
-                                                                   Agency updatedBy) {
+                                                                   MetaProtocolRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Meta_Protocol,
-                                                                      updatedBy);
+                                                                      ReferenceType.Meta_Protocol);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -842,13 +780,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   NetworkInferenceRecord record,
-                                                                   Agency updatedBy) {
+                                                                   NetworkInferenceRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Network_Inference,
-                                                                      updatedBy);
+                                                                      ReferenceType.Network_Inference);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -856,13 +792,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ParentSequencingAuthorizationRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ParentSequencingAuthorizationRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Parent_Sequencing_Authorization,
-                                                                      updatedBy);
+                                                                      ReferenceType.Parent_Sequencing_Authorization);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -870,13 +804,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   ProtocolRecord record,
-                                                                   Agency updatedBy) {
+                                                                   ProtocolRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Protocol,
-                                                                      updatedBy);
+                                                                      ReferenceType.Protocol);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -884,13 +816,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   SelfSequencingAuthorizationRecord record,
-                                                                   Agency updatedBy) {
+                                                                   SelfSequencingAuthorizationRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Self_Sequencing_Authorization,
-                                                                      updatedBy);
+                                                                      ReferenceType.Self_Sequencing_Authorization);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -898,13 +828,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   SiblingSequencingAuthorizationRecord record,
-                                                                   Agency updatedBy) {
+                                                                   SiblingSequencingAuthorizationRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Sibling_Sequencing_Authorization,
-                                                                      updatedBy);
+                                                                      ReferenceType.Sibling_Sequencing_Authorization);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -912,13 +840,11 @@ public interface RecordsFactory {
 
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
-                                                                   StatusCodeSequencingRecord record,
-                                                                   Agency updatedBy) {
+                                                                   StatusCodeSequencingRecord record) {
         WorkspaceAuthorizationRecord auth = newWorkspaceAuthorization(key,
                                                                       definingProduct,
                                                                       record.getId(),
-                                                                      ReferenceType.Status_Code_Sequencing,
-                                                                      updatedBy);
+                                                                      ReferenceType.Status_Code_Sequencing);
         record.setWorkspace(auth.getId());
         record.update();
         return auth;
@@ -927,14 +853,12 @@ public interface RecordsFactory {
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    Product definingProduct,
                                                                    UUID reference,
-                                                                   ReferenceType referenceType,
-                                                                   Agency updatedBy) {
+                                                                   ReferenceType referenceType) {
         WorkspaceAuthorizationRecord record = newWorkspaceAuthorization();
         record.setKey(key);
         record.setId(GENERATOR.generate());
         record.setDefiningProduct(definingProduct.getId());
         record.setReference(reference);
-        record.setUpdatedBy(updatedBy.getId());
         record.setType(referenceType);
         return record;
     }
@@ -942,13 +866,11 @@ public interface RecordsFactory {
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization(String key,
                                                                    UUID referece,
                                                                    ReferenceType referenceType,
-                                                                   Product definingProduct,
-                                                                   Agency updatedBy) {
+                                                                   Product definingProduct) {
         WorkspaceAuthorizationRecord record = newWorkspaceAuthorization(key,
                                                                         definingProduct,
                                                                         referece,
-                                                                        referenceType,
-                                                                        updatedBy);
+                                                                        referenceType);
         return record;
     }
 
@@ -1123,5 +1045,4 @@ public interface RecordsFactory {
                        .where(WORKSPACE_AUTHORIZATION.ID.equal(id))
                        .fetchOne();
     }
-
 }

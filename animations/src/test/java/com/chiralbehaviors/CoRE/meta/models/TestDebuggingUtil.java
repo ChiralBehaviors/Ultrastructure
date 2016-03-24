@@ -27,6 +27,7 @@ import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.jooq.tables.records.JobRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.MetaProtocolRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ProtocolRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 
 /**
  * A class full of utility methods to aid in debugging.
@@ -80,7 +81,7 @@ public class TestDebuggingUtil {
     /**
      * @param findProtocolGaps
      */
-    public static void printProtocolGaps(Map<Protocol, List<String>> gaps) {
+    public static void printProtocolGaps(Map<ProtocolRecord, List<String>> gaps) {
         for (Map.Entry<Protocol, List<String>> e : gaps.entrySet()) {
             System.out.println(String.format("childService: %s, service: %s",
                                              e.getKey()
@@ -97,7 +98,7 @@ public class TestDebuggingUtil {
 
     }
 
-    public static void printProtocols(List<Protocol> protocols) {
+    public static void printProtocols(List<ProtocolRecord> protocols) {
         for (Protocol p : protocols) {
             System.out.println(String.format("Requested Service: %s, Service: %s",
                                              p.getChildService()
@@ -106,7 +107,7 @@ public class TestDebuggingUtil {
         }
     }
 
-    public static void printSequencings(List<StatusCodeSequencing> seqs) {
+    public static void printSequencings(List<StatusCodeSequencingRecord> seqs) {
         for (StatusCodeSequencing s : seqs) {
             System.out.println(String.format("%s: %s -> %s", s.getService()
                                                               .getName(),

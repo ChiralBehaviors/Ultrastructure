@@ -28,7 +28,6 @@ import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ValueType;
-import com.chiralbehaviors.CoRE.jooq.tables.ExistentialAttribute;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeRecord;
 
 /**
@@ -52,15 +51,17 @@ public class AttributeModelTest extends AbstractModelTest {
         ExistentialAttributeRecord a = model.records()
                                             .newExistentialAttribute(attr, "a",
                                                                      core);
-        a.setMetaAttribute(validValues);
-        em.persist(a);
-        ExistentialAttributeRecord b = new ExistentialAttribute(attr, "b",
-                                                                core);
+        a.setAttribute(validValues.getId());
+        a.insert();
+        ExistentialAttributeRecord b = model.records()
+                                            .newExistentialAttribute(attr, "b",
+                                                                     core);
         b.setMetaAttribute(validValues);
         b.setSequenceNumber(10);
         em.persist(b);
-        ExistentialAttributeRecord c = new ExistentialAttribute(attr, "c",
-                                                                core);
+        ExistentialAttributeRecord c = model.records()
+                                            .newExistentialAttribute(attr, "c",
+                                                                     core);
         c.setSequenceNumber(100);
         c.setMetaAttribute(validValues);
         em.persist(c);

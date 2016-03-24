@@ -41,18 +41,16 @@ import com.chiralbehaviors.CoRE.meta.Model;
  */
 public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
-    private Agency              anyAgency;
-    private Location            anyLocation;
-    private Product             anyProduct;
-    private Relationship        anyRelationship;
-    private Agency              core;
-    private final EntityManager em;
-    private final Kernel        kernel;
-    private final Model         model;
-    private Product             sameProduct;
+    private Agency       anyAgency;
+    private Location     anyLocation;
+    private Product      anyProduct;
+    private Relationship anyRelationship;
+    private Agency       core;
+    private final Kernel kernel;
+    private final Model  model;
+    private Product      sameProduct;
 
     public OrderProcessingLoader(Model model) throws Exception {
-        this.em = model.create();
         this.model = model;
         kernel = model.getKernel();
         core = kernel.getCore();
@@ -529,9 +527,10 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createRelationships() {
-        area = new Relationship("Area",
-                                "A is a member of the economic community B",
-                                core);
+        area = model.records()
+                    .newRelationship("Area",
+                                     "A is a member of the economic community B",
+                                     core);
         em.persist(area);
         areaOf = new Relationship("Area Of", "A is economic community of B",
                                   core, area);

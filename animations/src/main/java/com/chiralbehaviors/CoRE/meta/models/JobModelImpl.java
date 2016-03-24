@@ -132,7 +132,7 @@ public class JobModelImpl implements JobModel {
 
     @Override
     public JobRecord changeStatus(JobRecord job, StatusCode newStatus,
-                                  Agency updatedBy, String notes) {
+                                  String notes) {
         UUID oldStatus = job.getStatus();
         if (oldStatus != null && oldStatus.equals(newStatus.getId())) {
             if (log.isTraceEnabled()) {
@@ -151,23 +151,20 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void createStatusCodeChain(Product service, StatusCode[] codes,
-                                      Agency updatedBy) {
+    public void createStatusCodeChain(Product service, StatusCode[] codes) {
         for (int i = 0; i < codes.length - 1; i++) {
             model.records()
-                 .newStatusCodeSequencing(service, codes[i], codes[i + 1],
-                                          updatedBy)
+                 .newStatusCodeSequencing(service, codes[i], codes[i + 1])
                  .insert();
         }
     }
 
     @Override
     public void createStatusCodeSequencings(Product service,
-                                            List<Tuple<StatusCode, StatusCode>> codes,
-                                            Agency updatedBy) {
+                                            List<Tuple<StatusCode, StatusCode>> codes) {
         for (Tuple<StatusCode, StatusCode> p : codes) {
             model.records()
-                 .newStatusCodeSequencing(service, p.a, p.b, updatedBy)
+                 .newStatusCodeSequencing(service, p.a, p.b)
                  .insert();
         }
     }
@@ -311,8 +308,7 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public List<JobRecord> generateImplicitJobs(JobRecord job,
-                                                Agency updatedBy) {
+    public List<JobRecord> generateImplicitJobs(JobRecord job) {
         Map<ProtocolRecord, InferenceMap> protocols = getProtocols(job);
         if (log.isTraceEnabled()) {
             log.trace(String.format("Found %s protocols for %s",
@@ -342,15 +338,14 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public void generateImplicitJobsForExplicitJobs(JobRecord job,
-                                                    Agency updatedBy) {
+    public void generateImplicitJobsForExplicitJobs(JobRecord job) {
         if (((StatusCode) model.records()
                                .resolve(job.getStatus())).getPropagateChildren()) {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Generating implicit jobs for %s",
                                         job));
             }
-            generateImplicitJobs(job, updatedBy);
+            generateImplicitJobs(job);
         } else {
             if (log.isTraceEnabled()) {
                 log.trace(String.format("Not generating implicit jobs for: %s",
@@ -979,8 +974,7 @@ public class JobModelImpl implements JobModel {
         if (protocol.getChildrenRelationship()
                     .equals(kernel.getNotApplicableRelationship())) {
             JobRecord job = model.records()
-                                 .newJob(model.getCurrentPrincipal()
-                                              .getPrincipal());
+                                 .newJob();
             insert(job, parent, protocol, txfm,
                    resolve(txfm.product, model.records()
                                               .resolve(protocol.getProduct()),
@@ -997,8 +991,7 @@ public class JobModelImpl implements JobModel {
                                                                     .resolve(protocol.getChildrenRelationship()),
                                                                ExistentialDomain.Product)) {
                 JobRecord job = model.records()
-                                     .newJob(model.getCurrentPrincipal()
-                                                  .getPrincipal());
+                                     .newJob();
                 insert(job, parent, protocol, txfm, (Product) child);
                 jobs.add(job);
             }
@@ -1034,9 +1027,9 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public JobRecord newInitializedJob(Product service, Agency updatedBy) {
+    public JobRecord newInitializedJob(Product service) {
         JobRecord job = model.records()
-                             .newJob(updatedBy);
+                             .newJob();
         job.setService(service.getId());
         job.setAssignTo(kernel.getNotApplicableAgency()
                               .getId());
@@ -1062,12 +1055,10 @@ public class JobModelImpl implements JobModel {
      * @see com.chiralbehaviors.CoRE.meta.JobModel#newInitializedMetaProtocol()
      */
     @Override
-    public MetaProtocolRecord newInitializedMetaProtocol(Product service,
-                                                         Agency updatedBy) {
+    public MetaProtocolRecord newInitializedMetaProtocol(Product service) {
         Relationship any = kernel.getAnyRelationship();
         MetaProtocolRecord mp = model.records()
                                      .newMetaProtocol();
-        mp.setUpdatedBy(updatedBy.getId());
         mp.setService(service.getId());
         mp.setAssignTo(any.getId());
         mp.setDeliverTo(any.getId());
@@ -1082,11 +1073,9 @@ public class JobModelImpl implements JobModel {
     }
 
     @Override
-    public ProtocolRecord newInitializedProtocol(Product service,
-                                                 Agency updatedBy) {
+    public ProtocolRecord newInitializedProtocol(Product service) {
         ProtocolRecord protocol = model.records()
                                        .newProtocol();
-        protocol.setUpdatedBy(updatedBy.getId());
         protocol.setService(service.getId());
         protocol.setAssignTo(kernel.getNotApplicableAgency()
                                    .getId());
@@ -1192,8 +1181,6 @@ public class JobModelImpl implements JobModel {
                                                  .resolve(seq.getStatusToSet()));
                 changeStatus(job, model.records()
                                        .resolve(seq.getStatusToSet()),
-                             model.getCurrentPrincipal()
-                                  .getPrincipal(),
                              "Automatically switching staus via direct communication from sibling jobs");
             } catch (Throwable e) {
                 if (log.isTraceEnabled()) {
@@ -1548,8 +1535,6 @@ public class JobModelImpl implements JobModel {
                                                        .resolve(seq.getNextChildStatus()));
                     changeStatus(child, model.records()
                                              .resolve(seq.getNextChildStatus()),
-                                 model.getCurrentPrincipal()
-                                      .getPrincipal(),
                                  "Automatically switching status via direct communication from parent job");
                     if (seq.getReplaceProduct()) {
                         child.setProduct(job.getProduct());
@@ -1595,8 +1580,6 @@ public class JobModelImpl implements JobModel {
                                                             .resolve(seq.getParentStatusToSet()));
                         changeStatus(parent, model.records()
                                                   .resolve(seq.getParentStatusToSet()),
-                                     model.getCurrentPrincipal()
-                                          .getPrincipal(),
                                      "Automatically switching status via direct communication from child job");
                         if (seq.getReplaceProduct()) {
                             parent.setProduct(job.getProduct());
@@ -1622,8 +1605,6 @@ public class JobModelImpl implements JobModel {
                                                             .resolve(seq.getParentStatusToSet()));
                         changeStatus(parent, model.records()
                                                   .resolve(seq.getParentStatusToSet()),
-                                     model.getCurrentPrincipal()
-                                          .getPrincipal(),
                                      "Automatically switching status via direct communication from child job");
                         if (seq.getReplaceProduct()) {
                             parent.setProduct(job.getProduct());
@@ -1686,8 +1667,6 @@ public class JobModelImpl implements JobModel {
                                                          .resolve(seq.getNextSiblingStatus()));
                     changeStatus(sibling, model.records()
                                                .resolve(seq.getNextSiblingStatus()),
-                                 model.getCurrentPrincipal()
-                                      .getPrincipal(),
                                  "Automatically switching staus via direct communication from sibling jobs");
                     if (seq.getReplaceProduct()) {
                         sibling.setProduct(job.getProduct());

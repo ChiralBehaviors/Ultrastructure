@@ -238,6 +238,11 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
             public DSLContext create() {
                 return create;
             }
+
+            @Override
+            public UUID currentPrincipalId() {
+                return null;
+            }
         }.resolve(id);
     }
 

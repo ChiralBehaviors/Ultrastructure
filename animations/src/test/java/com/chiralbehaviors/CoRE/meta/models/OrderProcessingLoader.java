@@ -63,15 +63,15 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
 
     public void createAgencyNetworks() {
         model.getAgencyModel()
-             .link(georgeTownUniversity, customerType, externalCust, core);
+             .link(georgeTownUniversity, customerType, externalCust);
         model.getAgencyModel()
-             .link(georgeTownUniversity, salesTaxStatus, exempt, core);
+             .link(georgeTownUniversity, salesTaxStatus, exempt);
         model.getAgencyModel()
-             .link(orgA, customerType, externalCust, core);
+             .link(orgA, customerType, externalCust);
         model.getAgencyModel()
-             .link(cafleurBon, customerType, externalCust, core);
+             .link(cafleurBon, customerType, externalCust);
         model.getAgencyModel()
-             .link(orgA, salesTaxStatus, nonExemptAgency, core);
+             .link(orgA, salesTaxStatus, nonExemptAgency);
     }
 
     public void createAgencys() {
@@ -79,113 +79,112 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                      core);
         em.persist(billingComputer);
 
-        cpu = new Agency("CPU", "Computer", core);
+        cpu = new Agency("CPU", "Computer");
         em.persist(cpu);
 
-        creditDept = new Agency("Credit", "Credit Department", core);
+        creditDept = new Agency("Credit", "Credit Department");
         em.persist(creditDept);
 
-        exempt = new Agency("Exempt", "Exempt from sales taxes", core);
+        exempt = new Agency("Exempt", "Exempt from sales taxes");
         em.persist(exempt);
 
         externalCust = new Agency("Ext Customer", "External (Paying) Customer",
                                   core);
         em.persist(externalCust);
 
-        factory1Agency = new Agency("Factory1Agency", "Factory #1", core);
+        factory1Agency = new Agency("Factory1Agency", "Factory #1");
         em.persist(factory1Agency);
 
         georgeTownUniversity = new Agency("GeorgetownUniversity",
-                                          "Georgetown University", core);
+                                          "Georgetown University");
         em.persist(georgeTownUniversity);
 
-        cafleurBon = new Agency("CarfleurBon", "Carfleur Bon", core);
+        cafleurBon = new Agency("CarfleurBon", "Carfleur Bon");
         em.persist(cafleurBon);
 
-        manufacturer = new Agency("MNFR", "Manufacturer", core);
+        manufacturer = new Agency("MNFR", "Manufacturer");
         em.persist(manufacturer);
 
         nonExemptAgency = new Agency("NonExemptAgency",
-                                     "Subject to sales taxes", core);
+                                     "Subject to sales taxes");
         em.persist(nonExemptAgency);
 
-        orgA = new Agency("OrgA", "Organization A", core);
+        orgA = new Agency("OrgA", "Organization A");
         em.persist(orgA);
 
         orderFullfillment = new Agency("OrderFullfillment",
-                                       "Order Fullfillment", core);
+                                       "Order Fullfillment");
         em.persist(orderFullfillment);
     }
 
     public void createAttributes() {
-        priceAttribute = new Attribute("price", "price", core,
-                                       ValueType.INTEGER);
+        priceAttribute = new Attribute("price", "price", ValueType.INTEGER);
         em.persist(priceAttribute);
 
-        taxRateAttribute = new Attribute("tax rate", "tax rate", core,
+        taxRateAttribute = new Attribute("tax rate", "tax rate",
                                          ValueType.INTEGER);
         em.persist(taxRateAttribute);
 
-        discountAttribute = new Attribute("discount", "discount", core,
+        discountAttribute = new Attribute("discount", "discount",
                                           ValueType.INTEGER);
         em.persist(discountAttribute);
     }
 
     public void createLocationNetworks() {
         model.getLocationModel()
-             .link(bin1, area, factory1, core);
+             .link(bin1, area, factory1);
         model.getLocationModel()
-             .link(bin15, area, factory1, core);
+             .link(bin15, area, factory1);
         model.getLocationModel()
-             .link(factory1, street, bht37, core);
+             .link(factory1, street, bht37);
         model.getLocationModel()
-             .link(rsb225, city, dc, core);
+             .link(rsb225, city, dc);
         model.getLocationModel()
-             .link(bht37, city, dc, core);
+             .link(bht37, city, dc);
         model.getLocationModel()
-             .link(rc31, city, paris, core);
+             .link(rc31, city, paris);
         model.getLocationModel()
-             .link(dc, region, east_coast, core);
+             .link(dc, region, east_coast);
         model.getLocationModel()
-             .link(east_coast, area, us, core);
+             .link(east_coast, area, us);
         model.getLocationModel()
-             .link(paris, region, france, core);
+             .link(paris, region, france);
         model.getLocationModel()
-             .link(france, area, euro, core);
+             .link(france, area, euro);
     }
 
     public void createLocations() {
-        rsb225 = new Location("RSB225", "225 Reiss Science Bldg", core);
+        rsb225 = new Location("RSB225", "225 Reiss Science Bldg");
         em.persist(rsb225);
-        bht37 = new Location("BHT37", "37 Bret Harte Terrace", core);
+        bht37 = new Location("BHT37", "37 Bret Harte Terrace");
         em.persist(bht37);
 
-        rc31 = new Location("RC31", "31 Rue Cambon", core);
+        rc31 = new Location("RC31", "31 Rue Cambon");
         em.persist(rc31);
 
-        bin1 = new Location("BIN01", "Bin #1", core);
+        bin1 = new Location("BIN01", "Bin #1");
         em.persist(bin1);
-        bin15 = new Location("BIN15", "Bin #15", core);
+        bin15 = new Location("BIN15", "Bin #15");
         em.persist(bin15);
-        dc = new Location("DC", "District of Columbia", core);
+        dc = new Location("DC", "District of Columbia");
         em.persist(dc);
-        east_coast = new Location("EAST_COAST", "East Coast", core);
+        east_coast = new Location("EAST_COAST", "East Coast");
         em.persist(east_coast);
-        factory1 = new Location("Factory1", "Factory 1", core);
+        factory1 = new Location("Factory1", "Factory 1");
         em.persist(factory1);
-        france = new Location("FRANCE", "France", core);
+        france = new Location("FRANCE", "France");
         em.persist(france);
-        paris = new Location("PARIS", "Paris", core);
+        paris = new Location("PARIS", "Paris");
         em.persist(paris);
-        us = new Location("US", "U.S. Locations", core);
+        us = new Location("US", "U.S. Locations");
         em.persist(us);
-        euro = new Location("Euro", "European locations", core);
+        euro = new Location("Euro", "European locations");
         em.persist(euro);
     }
 
     public void createMetaProtocols() {
         MetaProtocol m1 = model.getJobModel()
-                               .newInitializedMetaProtocol(deliver, core);
+                               .newInitializedMetaProtocol(deliver);
         m1.setSequenceNumber(1);
         m1.setProduct(anyRelationship);
         m1.setDeliverTo(state);
@@ -194,7 +193,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(m1);
 
         MetaProtocol m2 = model.getJobModel()
-                               .newInitializedMetaProtocol(pick, core);
+                               .newInitializedMetaProtocol(pick);
         m2.setSequenceNumber(1);
         m2.setProduct(anyRelationship);
         m2.setRequester(customerType);
@@ -204,7 +203,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(m2);
 
         MetaProtocol m3 = model.getJobModel()
-                               .newInitializedMetaProtocol(ship, core);
+                               .newInitializedMetaProtocol(ship);
         m3.setSequenceNumber(1);
         m3.setProduct(anyRelationship);
         m3.setRequester(customerType);
@@ -212,7 +211,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         m3.setDeliverFrom(area);
 
         MetaProtocol m5 = model.getJobModel()
-                               .newInitializedMetaProtocol(fee, core);
+                               .newInitializedMetaProtocol(fee);
         m5.setSequenceNumber(1);
         m5.setProduct(anyRelationship);
         m5.setRequester(salesTaxStatus);
@@ -233,16 +232,16 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     }
 
     public void createNetworkInferences() {
-        Inference areaToRegion = new Inference(areaOf, regionOf, areaOf, core);
+        Inference areaToRegion = new Inference(areaOf, regionOf, areaOf);
         em.persist(areaToRegion);
 
-        Inference areaToState = new Inference(areaOf, stateOf, areaOf, core);
+        Inference areaToState = new Inference(areaOf, stateOf, areaOf);
         em.persist(areaToState);
 
-        Inference areaToCity = new Inference(areaOf, cityOf, areaOf, core);
+        Inference areaToCity = new Inference(areaOf, cityOf, areaOf);
         em.persist(areaToCity);
 
-        Inference areaToStreet = new Inference(areaOf, streetOf, areaOf, core);
+        Inference areaToStreet = new Inference(areaOf, streetOf, areaOf);
         em.persist(areaToStreet);
 
         Inference regionToState = new Inference(regionOf, stateOf, regionOf,
@@ -257,36 +256,36 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                                  core);
         em.persist(regionToStreet);
 
-        Inference stateToCity = new Inference(stateOf, cityOf, stateOf, core);
+        Inference stateToCity = new Inference(stateOf, cityOf, stateOf);
         em.persist(stateToCity);
 
         Inference stateToStreet = new Inference(stateOf, streetOf, stateOf,
                                                 core);
         em.persist(stateToStreet);
 
-        Inference cityToStreet = new Inference(cityOf, streetOf, cityOf, core);
+        Inference cityToStreet = new Inference(cityOf, streetOf, cityOf);
         em.persist(cityToStreet);
     }
 
     public void createProductNetworks() {
         model.getProductModel()
-             .link(abc486, storageType, roomTemp, core);
+             .link(abc486, storageType, roomTemp);
         model.getProductModel()
-             .link(abc486, salesTaxStatus, nonExempt, core);
+             .link(abc486, salesTaxStatus, nonExempt);
         model.getProductModel()
-             .link(chemB, storageType, frozen, core);
+             .link(chemB, storageType, frozen);
     }
 
     public void createProducts() {
-        abc486 = new Product("ABC486", "Laptop Computer", core);
+        abc486 = new Product("ABC486", "Laptop Computer");
         em.persist(abc486);
-        frozen = new Product("Frozen", "Frozen products", core);
+        frozen = new Product("Frozen", "Frozen products");
         em.persist(frozen);
-        nonExempt = new Product("NonExempt", "Subject to sales tax", core);
+        nonExempt = new Product("NonExempt", "Subject to sales tax");
         em.persist(nonExempt);
-        chemB = new Product("ChemB", "Chemical B", core);
+        chemB = new Product("ChemB", "Chemical B");
         em.persist(chemB);
-        roomTemp = new Product("RoomTemp", "Room temperature products", core);
+        roomTemp = new Product("RoomTemp", "Room temperature products");
         em.persist(roomTemp);
         orderEntryWorkspace = new Product("defining product for order entry",
                                           core);
@@ -403,7 +402,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     public void createProtocols() {
 
         Protocol pickProtocol = model.getJobModel()
-                                     .newInitializedProtocol(deliver, core);
+                                     .newInitializedProtocol(deliver);
         pickProtocol.setService(deliver);
         pickProtocol.setRequester(anyAgency);
         pickProtocol.setProduct(anyProduct);
@@ -415,7 +414,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(pickProtocol);
 
         Protocol chkCreditProtocol = model.getJobModel()
-                                          .newInitializedProtocol(pick, core);
+                                          .newInitializedProtocol(pick);
         chkCreditProtocol.setService(pick);
         chkCreditProtocol.setRequester(externalCust);
         chkCreditProtocol.setProduct(anyProduct);
@@ -427,7 +426,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(chkCreditProtocol);
 
         Protocol chkLtrCrdtProtocol = model.getJobModel()
-                                           .newInitializedProtocol(pick, core);
+                                           .newInitializedProtocol(pick);
         chkLtrCrdtProtocol.setService(pick);
         chkLtrCrdtProtocol.setRequester(externalCust);
         chkLtrCrdtProtocol.setProduct(anyProduct);
@@ -439,7 +438,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(chkLtrCrdtProtocol);
 
         Protocol shipProtocol = model.getJobModel()
-                                     .newInitializedProtocol(deliver, core);
+                                     .newInitializedProtocol(deliver);
         shipProtocol.setService(deliver);
         shipProtocol.setRequester(anyAgency);
         shipProtocol.setProduct(anyProduct);
@@ -464,7 +463,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(printCustDeclProtocol);
 
         Protocol printPoProtocol = model.getJobModel()
-                                        .newInitializedProtocol(ship, core);
+                                        .newInitializedProtocol(ship);
         printPoProtocol.setService(ship);
         printPoProtocol.setRequester(externalCust);
         printPoProtocol.setProduct(abc486);
@@ -489,7 +488,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(feeProtocol);
 
         Protocol salesTaxProtocol = model.getJobModel()
-                                         .newInitializedProtocol(fee, core);
+                                         .newInitializedProtocol(fee);
         salesTaxProtocol.setService(fee);
         salesTaxProtocol.setRequester(nonExemptAgency);
         salesTaxProtocol.setProduct(nonExempt);
@@ -501,7 +500,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(salesTaxProtocol);
 
         Protocol discountProtocol = model.getJobModel()
-                                         .newInitializedProtocol(fee, core);
+                                         .newInitializedProtocol(fee);
         discountProtocol.setService(fee);
         discountProtocol.setRequester(externalCust);
         discountProtocol.setProduct(abc486);
@@ -537,32 +536,31 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         area.setInverse(areaOf);
         em.persist(areaOf);
 
-        city = new Relationship("City", "A is located in the City B", core);
+        city = new Relationship("City", "A is located in the City B");
         em.persist(city);
-        cityOf = new Relationship("City Of", "A is the city of B", core, city);
+        cityOf = new Relationship("City Of", "A is the city of B", city);
         city.setInverse(cityOf);
         em.persist(cityOf);
 
         customerType = new Relationship("Customer Type",
-                                        "A has customer type of B", core);
+                                        "A has customer type of B");
         em.persist(customerType);
         customerTypeOf = new Relationship("Customer Type Of",
-                                          "A is the customer type of B", core,
+                                          "A is the customer type of B",
                                           customerType);
         customerType.setInverse(customerTypeOf);
         em.persist(customerTypeOf);
 
-        region = new Relationship("Region", "A's general region is B", core);
+        region = new Relationship("Region", "A's general region is B");
         em.persist(region);
-        regionOf = new Relationship("Region Of", "A is the region of B", core,
+        regionOf = new Relationship("Region Of", "A is the region of B",
                                     region);
         region.setInverse(regionOf);
         em.persist(regionOf);
 
-        state = new Relationship("State", "The State of A is B", core);
+        state = new Relationship("State", "The State of A is B");
         em.persist(state);
-        stateOf = new Relationship("State Of", "A is the state of B", core,
-                                   state);
+        stateOf = new Relationship("State Of", "A is the state of B", state);
         state.setInverse(stateOf);
         em.persist(stateOf);
 
@@ -581,31 +579,31 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                        core);
         em.persist(storageType);
         storageTypeOf = new Relationship("StorageType Of",
-                                         "A is the storage type of B", core,
+                                         "A is the storage type of B",
                                          storageType);
         storageType.setInverse(storageTypeOf);
         em.persist(storageTypeOf);
 
-        street = new Relationship("Street", "The street of A is B", core);
+        street = new Relationship("Street", "The street of A is B");
         em.persist(street);
-        streetOf = new Relationship("Street of", "A is the street of B", core,
+        streetOf = new Relationship("Street of", "A is the street of B",
                                     street);
         street.setInverse(streetOf);
         em.persist(streetOf);
     }
 
     public void createServices() {
-        deliver = new Product("Deliver", "Deliver product", core);
+        deliver = new Product("Deliver", "Deliver product");
         em.persist(deliver);
 
-        pick = new Product("Pick", "Pick inventory", core);
+        pick = new Product("Pick", "Pick inventory");
         em.persist(pick);
 
-        ship = new Product("Ship", "Ship inventory", core);
+        ship = new Product("Ship", "Ship inventory");
         em.persist(ship);
 
         checkCredit = new Product("CheckCredit",
-                                  "Check customer inhouse credit", core);
+                                  "Check customer inhouse credit");
         em.persist(checkCredit);
 
         checkLetterOfCredit = new Product("CheckLetterOfCredit",
@@ -613,10 +611,10 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                           core);
         em.persist(checkLetterOfCredit);
 
-        discount = new Product("Discount", "Compute fee discount ", core);
+        discount = new Product("Discount", "Compute fee discount ");
         em.persist(discount);
 
-        fee = new Product("Fee", "Compute fee", core);
+        fee = new Product("Fee", "Compute fee");
         em.persist(fee);
 
         printCustomsDeclaration = new Product("PrintCustomsDeclaration",
@@ -625,19 +623,19 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(printCustomsDeclaration);
 
         printPurchaseOrder = new Product("PrintPurchaseOrder",
-                                         "Print the purchase order", core);
+                                         "Print the purchase order");
         em.persist(printPurchaseOrder);
 
-        salesTax = new Product("SalesTax", "Compute sales tax", core);
+        salesTax = new Product("SalesTax", "Compute sales tax");
         em.persist(salesTax);
     }
 
     public void createStatusCodes() {
         available = new StatusCode("Available",
-                                   "The job is available for execution", core);
+                                   "The job is available for execution");
         em.persist(available);
 
-        active = new StatusCode("Active", "Working on it now", core);
+        active = new StatusCode("Active", "Working on it now");
         em.persist(active);
 
         waitingOnCreditCheck = new StatusCode("Waiting on Credit Check",
@@ -645,16 +643,16 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                               core);
         em.persist(waitingOnCreditCheck);
 
-        completed = new StatusCode("Completed", "Completed Job", core);
+        completed = new StatusCode("Completed", "Completed Job");
         completed.setPropagateChildren(true); // This is done to test the dup logic in the job animation
         em.persist(completed);
 
-        failure = new StatusCode("Failure", "Something went wrong", core);
+        failure = new StatusCode("Failure", "Something went wrong");
         failure.setFailParent(true);
         em.persist(failure);
 
         pickCompleted = new StatusCode("Pick Completed",
-                                       "Pick product has been completed", core);
+                                       "Pick product has been completed");
         em.persist(pickCompleted);
 
         waitingOnPurchaseOrder = new StatusCode("WaitingOnPurchaseOrder",
@@ -681,35 +679,35 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
     public void createStatusCodeSequencing() {
         StatusCodeSequencing s = new StatusCodeSequencing(pick,
                                                           waitingOnCreditCheck,
-                                                          available, core);
+                                                          available);
         em.persist(s);
 
-        s = new StatusCodeSequencing(pick, available, active, core);
+        s = new StatusCodeSequencing(pick, available, active);
         em.persist(s);
 
-        s = new StatusCodeSequencing(pick, active, completed, core);
+        s = new StatusCodeSequencing(pick, active, completed);
         em.persist(s);
 
         s = new StatusCodeSequencing(ship, waitingOnPurchaseOrder, available,
                                      core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(ship, available, active, core);
+        s = new StatusCodeSequencing(ship, available, active);
         em.persist(s);
 
-        s = new StatusCodeSequencing(ship, active, completed, core);
+        s = new StatusCodeSequencing(ship, active, completed);
         em.persist(s);
 
-        s = new StatusCodeSequencing(deliver, available, active, core);
+        s = new StatusCodeSequencing(deliver, available, active);
         em.persist(s);
 
-        s = new StatusCodeSequencing(deliver, active, completed, core);
+        s = new StatusCodeSequencing(deliver, active, completed);
         em.persist(s);
 
-        s = new StatusCodeSequencing(checkCredit, available, active, core);
+        s = new StatusCodeSequencing(checkCredit, available, active);
         em.persist(s);
 
-        s = new StatusCodeSequencing(checkCredit, active, completed, core);
+        s = new StatusCodeSequencing(checkCredit, active, completed);
         em.persist(s);
 
         s = new StatusCodeSequencing(checkLetterOfCredit, available, active,
@@ -720,26 +718,26 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                      core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(discount, available, active, core);
+        s = new StatusCodeSequencing(discount, available, active);
         em.persist(s);
 
-        s = new StatusCodeSequencing(discount, active, completed, core);
+        s = new StatusCodeSequencing(discount, active, completed);
         em.persist(s);
 
-        s = new StatusCodeSequencing(fee, available, active, core);
+        s = new StatusCodeSequencing(fee, available, active);
         em.persist(s);
 
-        s = new StatusCodeSequencing(fee, available, waitingOnPricing, core);
+        s = new StatusCodeSequencing(fee, available, waitingOnPricing);
         em.persist(s);
 
-        s = new StatusCodeSequencing(fee, waitingOnPricing, active, core);
+        s = new StatusCodeSequencing(fee, waitingOnPricing, active);
         em.persist(s);
 
-        s = new StatusCodeSequencing(fee, active, completed, core);
+        s = new StatusCodeSequencing(fee, active, completed);
         em.persist(s);
 
         s = new StatusCodeSequencing(printCustomsDeclaration, waitingOnFee,
-                                     available, core);
+                                     available);
         em.persist(s);
 
         s = new StatusCodeSequencing(printCustomsDeclaration, available, active,
@@ -751,7 +749,7 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
         em.persist(s);
 
         s = new StatusCodeSequencing(printPurchaseOrder, waitingOnFee,
-                                     available, core);
+                                     available);
         em.persist(s);
 
         s = new StatusCodeSequencing(printPurchaseOrder, available, active,
@@ -762,10 +760,10 @@ public class OrderProcessingLoader extends OrderProcessingWorkspace {
                                      core);
         em.persist(s);
 
-        s = new StatusCodeSequencing(salesTax, available, active, core);
+        s = new StatusCodeSequencing(salesTax, available, active);
         em.persist(s);
 
-        s = new StatusCodeSequencing(salesTax, active, completed, core);
+        s = new StatusCodeSequencing(salesTax, active, completed);
         em.persist(s);
     }
 

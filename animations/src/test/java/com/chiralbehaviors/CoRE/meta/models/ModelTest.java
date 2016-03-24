@@ -44,32 +44,27 @@ public class ModelTest extends AbstractModelTest {
     public void testCreateFromAspects() {
 
         Agency classification = model.records()
-                                     .newAgency("aspect classifer",
-                                                kernel.getCore());
+                                     .newAgency("aspect classifer");
         classification.insert();
         Relationship classifier = model.records()
-                                       .newRelationship("aspect classifier",
-                                                        kernel.getCore());
+                                       .newRelationship("aspect classifier");
         classifier.setInverse(classifier.getId());
         classifier.insert();
 
         Attribute attribute = model.records()
-                                   .newAttribute("aspect attribute", "foo",
-                                                 kernel.getCore());
+                                   .newAttribute("aspect attribute", "foo");
         attribute.setValueType(ValueType.Text);
         attribute.insert();
 
         FacetRecord facet = model.records()
-                                 .newFacet(classifier, classification,
-                                           kernel.getCore());
+                                 .newFacet(classifier, classification);
         facet.insert();
 
         model.getPhantasmModel()
              .authorize(facet, attribute);
 
         Agency agency = model.getAgencyModel()
-                             .create("aspect test", "testy", facet,
-                                     kernel.getCore());
+                             .create("aspect test", "testy", facet);
         assertNotNull(agency);
 
         List<ExistentialAttributeRecord> attributes = model.getPhantasmModel()
@@ -85,16 +80,14 @@ public class ModelTest extends AbstractModelTest {
     @Test
     public void testFindAgencyViaAttribute() {
         Agency agency = model.records()
-                             .newAgency("Test Agency", kernel.getCore());
+                             .newAgency("Test Agency");
         agency.insert();
         Attribute attribute = model.records()
-                                   .newAttribute("Test Attribute", "foo",
-                                                 kernel.getCore());
+                                   .newAttribute("Test Attribute", "foo");
         attribute.setValueType(ValueType.Text);
         attribute.insert();
         ExistentialAttributeRecord agencyAttribute = model.records()
-                                                          .newExistentialAttribute(attribute,
-                                                                                   kernel.getCore());
+                                                          .newExistentialAttribute(attribute);
         agencyAttribute.setTextValue("Hello World");
         agencyAttribute.setExistential(agency.getId());
         agencyAttribute.insert();

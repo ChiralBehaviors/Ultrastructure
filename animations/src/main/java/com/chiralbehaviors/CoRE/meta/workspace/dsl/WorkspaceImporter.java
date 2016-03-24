@@ -182,7 +182,7 @@ public class WorkspaceImporter {
                                                           definingProduct.getVersion(),
                                                           version));
         }
-        definingProduct.setVersion(version);
+        // definingProduct.setVersion(version);
         return load(definingProduct);
     }
 
@@ -210,8 +210,7 @@ public class WorkspaceImporter {
         }
         classifiedAttributes.forEach(attribute -> {
             ExistentialAttributeAuthorizationRecord auth = model.records()
-                                                                .newExistentialAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                    .getPrincipal());
+                                                                .newExistentialAttributeAuthorization();
             auth.setFacet(authorization.getId());
             Attribute authorizedAttribute = model.records()
                                                  .resolve(resolve(attribute.key));
@@ -243,8 +242,7 @@ public class WorkspaceImporter {
         }
         classifiedAttributes.forEach(attribute -> {
             ExistentialNetworkAttributeAuthorizationRecord attrAuth = model.records()
-                                                                           .newExistentialNetworkAttributeAuthorization(model.getCurrentPrincipal()
-                                                                                                                             .getPrincipal());
+                                                                           .newExistentialNetworkAttributeAuthorization();
             Attribute authorizedAttribute = model.records()
                                                  .resolve(resolve(attribute.key));
             attrAuth.setAuthorizedAttribute(authorizedAttribute.getId());
@@ -289,10 +287,9 @@ public class WorkspaceImporter {
         Product workspaceProduct = model.records()
                                         .newProduct(WorkspacePresentation.stripQuotes(wsp.getWorkspaceDefinition().name.getText()),
                                                     description == null ? null
-                                                                        : WorkspacePresentation.stripQuotes(description.getText()),
-                                                    model.getCurrentPrincipal()
-                                                         .getPrincipal());
+                                                                        : WorkspacePresentation.stripQuotes(description.getText()));
         workspaceProduct.setId(uuid);
+        workspaceProduct.setVersion(-1);
         workspaceProduct.insert();
         return workspaceProduct;
     }
@@ -338,8 +335,7 @@ public class WorkspaceImporter {
             return authorization;
         }
         authorization = model.records()
-                             .newFacet(model.getCurrentPrincipal()
-                                            .getPrincipal());
+                             .newFacet();
         authorization.setClassifier(classifier.getId());
         authorization.setClassification(classification.getId());
         if (facet.name != null) {
@@ -369,9 +365,7 @@ public class WorkspaceImporter {
                                             .newExistential(domain,
                                                             WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
                                                             ruleform.existentialRuleform().description == null ? null
-                                                                                                               : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
-                                                            model.getCurrentPrincipal()
-                                                                 .getPrincipal());
+                                                                                                               : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()));
             record.insert();
             workspace.put(ruleform.existentialRuleform().workspaceName.getText(),
                           record);
@@ -383,9 +377,7 @@ public class WorkspaceImporter {
             Attribute attr = model.records()
                                   .newAttribute(WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().name.getText()),
                                                 ruleform.existentialRuleform().description == null ? null
-                                                                                                   : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()),
-                                                model.getCurrentPrincipal()
-                                                     .getPrincipal());
+                                                                                                   : WorkspacePresentation.stripQuotes(ruleform.existentialRuleform().description.getText()));
             setValueType(attr, ruleform.valueType);
             attr.setIndexed(ruleform.indexed == null ? false
                                                      : ruleform.indexed.getText()
@@ -421,9 +413,7 @@ public class WorkspaceImporter {
                                                            .newChildSequencingAuthorization(resolve(seq.parent),
                                                                                             resolve(seq.status),
                                                                                             resolve(seq.child),
-                                                                                            resolve(seq.next),
-                                                                                            model.getCurrentPrincipal()
-                                                                                                 .getPrincipal());
+                                                                                            resolve(seq.next));
             auth.insert();
             workspace.add(auth);
         }
@@ -478,9 +468,7 @@ public class WorkspaceImporter {
             NetworkInferenceRecord inference = model.records()
                                                     .newNetworkInference(resolve(edge.parent),
                                                                          resolve(edge.relationship),
-                                                                         resolve(edge.child),
-                                                                         model.getCurrentPrincipal()
-                                                                              .getPrincipal());
+                                                                         resolve(edge.child));
             inference.insert();
             workspace.add(inference);
         }
@@ -490,9 +478,7 @@ public class WorkspaceImporter {
         for (MetaProtocolContext mpc : wsp.getMetaProtocols()) {
             MetaProtocolRecord metaProtocol = model.getJobModel()
                                                    .newInitializedMetaProtocol(model.records()
-                                                                                    .resolve(resolve(mpc.service)),
-                                                                               model.getCurrentPrincipal()
-                                                                                    .getPrincipal());
+                                                                                    .resolve(resolve(mpc.service)));
             if (mpc.product != null)
                 metaProtocol.setProduct(resolve(mpc.product));
             if (mpc.from != null)
@@ -529,9 +515,7 @@ public class WorkspaceImporter {
                 Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link = model.getPhantasmModel()
                                                                                       .link(parent,
                                                                                             relationship,
-                                                                                            child,
-                                                                                            model.getCurrentPrincipal()
-                                                                                                 .getPrincipal());
+                                                                                            child);
                 workspace.add(link.a);
                 workspace.add(link.b);
             }
@@ -544,9 +528,7 @@ public class WorkspaceImporter {
                                                             .newParentSequencingAuthorization(resolve(seq.service),
                                                                                               resolve(seq.status),
                                                                                               resolve(seq.parent),
-                                                                                              resolve(seq.next),
-                                                                                              model.getCurrentPrincipal()
-                                                                                                   .getPrincipal());
+                                                                                              resolve(seq.next));
             auth.insert();
             workspace.add(auth);
         }
@@ -556,9 +538,7 @@ public class WorkspaceImporter {
         for (ProtocolContext pc : wsp.getProtocols()) {
             ProtocolRecord protocol = model.getJobModel()
                                            .newInitializedProtocol(model.records()
-                                                                        .resolve(resolve(pc.matchJob().service)),
-                                                                   model.getCurrentPrincipal()
-                                                                        .getPrincipal());
+                                                                        .resolve(resolve(pc.matchJob().service)));
             if (pc.matchJob().product != null)
                 protocol.setProduct(resolve(pc.matchJob().product));
             if (pc.matchJob().from != null)
@@ -601,9 +581,7 @@ public class WorkspaceImporter {
                 Relationship rel = model.records()
                                         .newRelationship(WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().name.getText()),
                                                          ctx.primary.existentialRuleform().description == null ? null
-                                                                                                               : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()),
-                                                         model.getCurrentPrincipal()
-                                                              .getPrincipal());
+                                                                                                               : WorkspacePresentation.stripQuotes(ctx.primary.existentialRuleform().description.getText()));
                 rel.setInverse(rel.getId());
                 rel.insert();
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
@@ -616,9 +594,7 @@ public class WorkspaceImporter {
 
                                                           WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().name.getText()),
                                                           ctx.inverse.existentialRuleform().description == null ? null
-                                                                                                                : WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().description.getText()),
-                                                          model.getCurrentPrincipal()
-                                                               .getPrincipal());
+                                                                                                                : WorkspacePresentation.stripQuotes(ctx.inverse.existentialRuleform().description.getText()));
 
                 relA.insert();
                 workspace.put(ctx.primary.existentialRuleform().workspaceName.getText(),
@@ -635,9 +611,7 @@ public class WorkspaceImporter {
             SelfSequencingAuthorizationRecord auth = model.records()
                                                           .newSelfSequencingAuthorization(resolve(seq.service),
                                                                                           resolve(seq.status),
-                                                                                          resolve(seq.next),
-                                                                                          model.getCurrentPrincipal()
-                                                                                               .getPrincipal());
+                                                                                          resolve(seq.next));
             auth.insert();
             workspace.add(auth);
         }
@@ -656,9 +630,7 @@ public class WorkspaceImporter {
                                                              .newSiblingSequencingAuthorization(resolve(seq.parent),
                                                                                                 resolve(seq.status),
                                                                                                 resolve(seq.sibling),
-                                                                                                resolve(seq.next),
-                                                                                                model.getCurrentPrincipal()
-                                                                                                     .getPrincipal());
+                                                                                                resolve(seq.next));
             auth.insert();
             workspace.add(auth);
         }
@@ -670,9 +642,7 @@ public class WorkspaceImporter {
             StatusCode ruleform = model.records()
                                        .newStatusCode(WorkspacePresentation.stripQuotes(rf.existentialRuleform().name.getText()),
                                                       rf.existentialRuleform().description == null ? null
-                                                                                                   : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()),
-                                                      model.getCurrentPrincipal()
-                                                           .getPrincipal());
+                                                                                                   : WorkspacePresentation.stripQuotes(rf.existentialRuleform().description.getText()));
             ruleform.insert();
             workspace.put(rf.existentialRuleform().workspaceName.getText(),
                           ruleform);
@@ -692,9 +662,7 @@ public class WorkspaceImporter {
                 StatusCodeSequencingRecord sequence = model.records()
                                                            .newStatusCodeSequencing(service,
                                                                                     parent,
-                                                                                    child,
-                                                                                    model.getCurrentPrincipal()
-                                                                                         .getPrincipal());
+                                                                                    child);
                 sequence.insert();
                 String key = String.format(STATUS_CODE_SEQUENCING_FORMAT,
                                            service.getName(), parent.getName(),
@@ -726,8 +694,7 @@ public class WorkspaceImporter {
                           .forEach(constraint -> {
                               createNetworkAuth(facet, authorization,
                                                 constraint, model.records()
-                                                                 .newExistentialNetworkAuthorization(model.getCurrentPrincipal()
-                                                                                                          .getPrincipal()));
+                                                                 .newExistentialNetworkAuthorization());
                           });
     }
 

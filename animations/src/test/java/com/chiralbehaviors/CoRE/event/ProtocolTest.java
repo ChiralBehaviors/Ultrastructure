@@ -37,39 +37,33 @@ public class ProtocolTest extends AbstractModelTest {
     public void testMatchOnAssignTo() {
         Product fireFuzzyGreenWarhead = model.records()
                                              .newProduct("FireFuzzyGreenWarheadService",
-                                                         null,
-                                                         kernel.getCore());
+                                                         null);
         fireFuzzyGreenWarhead.insert();
 
         Agency halIncandenza = model.records()
-                                    .newAgency("HalIncandenza", null,
-                                               kernel.getCore());
+                                    .newAgency("HalIncandenza", null);
         halIncandenza.insert();
 
         Agency michaelPemulous = model.records()
-                                      .newAgency("MichaelPemulous", null,
-                                                 kernel.getCore());
+                                      .newAgency("MichaelPemulous", null);
         michaelPemulous.insert();
 
         ProtocolRecord infiniteTest = model.getJobModel()
-                                           .newInitializedProtocol(fireFuzzyGreenWarhead,
-                                                                   kernel.getCore());
+                                           .newInitializedProtocol(fireFuzzyGreenWarhead);
         infiniteTest.setAssignTo(halIncandenza.getId());
         infiniteTest.setChildAssignTo(michaelPemulous.getId());
         infiniteTest.setChildService(fireFuzzyGreenWarhead.getId());
         infiniteTest.update();
 
         ProtocolRecord infiniteTest2 = model.getJobModel()
-                                            .newInitializedProtocol(fireFuzzyGreenWarhead,
-                                                                    kernel.getCore());
+                                            .newInitializedProtocol(fireFuzzyGreenWarhead);
         infiniteTest2.setAssignTo(halIncandenza.getId());
         infiniteTest2.setChildAssignTo(michaelPemulous.getId());
         infiniteTest2.setChildService(fireFuzzyGreenWarhead.getId());
         infiniteTest2.update();
 
         JobRecord startWW3 = model.getJobModel()
-                                  .newInitializedJob(fireFuzzyGreenWarhead,
-                                                     kernel.getCore());
+                                  .newInitializedJob(fireFuzzyGreenWarhead);
         startWW3.setAssignTo(halIncandenza.getId());
         startWW3.update();
 

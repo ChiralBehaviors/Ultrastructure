@@ -23,7 +23,6 @@ package com.chiralbehaviors.CoRE.meta;
 import java.util.List;
 import java.util.UUID;
 
-import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
@@ -61,13 +60,12 @@ public interface ExistentialModel<RuleForm extends ExistentialRuleform> {
      *            The name of the new instance
      * @param description
      *            the description of the new instance
-     * @param updatedBy
      * @param aspects
      *            - the initial aspects of the instance
      * @return the new instance
      */
     RuleForm create(String name, String description, FacetRecord aspect,
-                    Agency updatedBy, FacetRecord... aspects);
+                    FacetRecord... aspects);
 
     /**
      * @param id

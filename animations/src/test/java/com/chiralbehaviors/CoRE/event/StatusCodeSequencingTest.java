@@ -55,72 +55,63 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         JobModel jobModel = model.getJobModel();
 
         StatusCode startState = model.records()
-                                     .newStatusCode("top-level",
-                                                    kernel.getCore());
+                                     .newStatusCode("top-level");
         startState.insert();
 
         StatusCode state1 = model.records()
-                                 .newStatusCode("state-1", kernel.getCore());
+                                 .newStatusCode("state-1");
         state1.insert();
 
         StatusCode state2 = model.records()
-                                 .newStatusCode("state-2", kernel.getCore());
+                                 .newStatusCode("state-2");
         state2.insert();
 
         StatusCode terminalState = model.records()
-                                        .newStatusCode("terminal state",
-                                                       kernel.getCore());
+                                        .newStatusCode("terminal state");
         terminalState.insert();
 
         Product service = model.records()
-                               .newProduct("My Service", kernel.getCore());
+                               .newProduct("My Service");
         service.insert();
 
         StatusCodeSequencingRecord sequence1 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              startState,
-                                                                             state1,
-                                                                             kernel.getCore());
+                                                                             state1);
         sequence1.insert();
 
         StatusCodeSequencingRecord sequence2 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state1,
-                                                                             state2,
-                                                                             kernel.getCore());
+                                                                             state2);
         sequence2.insert();
 
         StatusCodeSequencingRecord sequence3 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state2,
-                                                                             terminalState,
-                                                                             kernel.getCore());
+                                                                             terminalState);
         sequence3.insert();
 
         StatusCode loopState = model.records()
-                                    .newStatusCode("loop-state",
-                                                   kernel.getCore());
+                                    .newStatusCode("loop-state");
         loopState.insert();
 
         StatusCodeSequencingRecord loop = model.records()
                                                .newStatusCodeSequencing(service,
                                                                         state2,
-                                                                        loopState,
-                                                                        kernel.getCore());
+                                                                        loopState);
         loop.insert();
 
         StatusCodeSequencingRecord terminate = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              loopState,
-                                                                             terminalState,
-                                                                             kernel.getCore());
+                                                                             terminalState);
         terminate.insert();
 
         StatusCodeSequencingRecord back = model.records()
                                                .newStatusCodeSequencing(service,
                                                                         loopState,
-                                                                        state1,
-                                                                        kernel.getCore());
+                                                                        state1);
         back.insert();
         assertTrue(jobModel.hasScs(service));
         jobModel.validateStateGraph(Arrays.asList(service));
@@ -157,53 +148,47 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         JobModel jobModel = model.getJobModel();
 
         StatusCode startState = model.records()
-                                     .newStatusCode("top-level",
-                                                    kernel.getCore());
+                                     .newStatusCode("top-level");
         startState.insert();
 
         StatusCode state1 = model.records()
-                                 .newStatusCode("state-1", kernel.getCore());
+                                 .newStatusCode("state-1");
         state1.insert();
 
         StatusCode state2 = model.records()
-                                 .newStatusCode("state-2", kernel.getCore());
+                                 .newStatusCode("state-2");
         state2.insert();
 
         StatusCode terminalState = model.records()
-                                        .newStatusCode("terminal state",
-                                                       kernel.getCore());
+                                        .newStatusCode("terminal state");
         terminalState.insert();
 
         Product service = model.records()
-                               .newProduct("My Service", kernel.getCore());
+                               .newProduct("My Service");
         service.insert();
 
         StatusCodeSequencingRecord sequence1 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              startState,
-                                                                             state1,
-                                                                             kernel.getCore());
+                                                                             state1);
         sequence1.insert();
 
         StatusCodeSequencingRecord sequence2 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state1,
-                                                                             state2,
-                                                                             kernel.getCore());
+                                                                             state2);
         sequence2.insert();
 
         StatusCodeSequencingRecord sequence3 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state2,
-                                                                             terminalState,
-                                                                             kernel.getCore());
+                                                                             terminalState);
         sequence3.insert();
 
         StatusCodeSequencingRecord loop = model.records()
                                                .newStatusCodeSequencing(service,
                                                                         terminalState,
-                                                                        state1,
-                                                                        kernel.getCore());
+                                                                        state1);
         loop.insert();
 
         assertTrue(jobModel.hasNonTerminalSCCs(service));
@@ -266,58 +251,51 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
         JobModel jobModel = model.getJobModel();
 
         StatusCode startState = model.records()
-                                     .newStatusCode("top-level",
-                                                    kernel.getCore());
+                                     .newStatusCode("top-level");
         startState.insert();
 
         StatusCode startState2 = model.records()
-                                      .newStatusCode("top-level 2",
-                                                     kernel.getCore());
+                                      .newStatusCode("top-level 2");
         startState2.insert();
 
         StatusCode state1 = model.records()
-                                 .newStatusCode("state-1", kernel.getCore());
+                                 .newStatusCode("state-1");
         state1.insert();
 
         StatusCode state2 = model.records()
-                                 .newStatusCode("state-2", kernel.getCore());
+                                 .newStatusCode("state-2");
         state2.insert();
 
         StatusCode terminalState = model.records()
-                                        .newStatusCode("terminal state",
-                                                       kernel.getCore());
+                                        .newStatusCode("terminal state");
         terminalState.insert();
 
         Product service = model.records()
-                               .newProduct("My Service", kernel.getCore());
+                               .newProduct("My Service");
         service.insert();
 
         StatusCodeSequencingRecord sequence1 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              startState,
-                                                                             state1,
-                                                                             kernel.getCore());
+                                                                             state1);
         sequence1.insert();
 
         StatusCodeSequencingRecord sequence1a = model.records()
                                                      .newStatusCodeSequencing(service,
                                                                               startState2,
-                                                                              state1,
-                                                                              kernel.getCore());
+                                                                              state1);
         sequence1a.insert();
 
         StatusCodeSequencingRecord sequence2 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state1,
-                                                                             state2,
-                                                                             kernel.getCore());
+                                                                             state2);
         sequence2.insert();
 
         StatusCodeSequencingRecord sequence3 = model.records()
                                                     .newStatusCodeSequencing(service,
                                                                              state2,
-                                                                             terminalState,
-                                                                             kernel.getCore());
+                                                                             terminalState);
         sequence3.insert();
 
         create.configuration()

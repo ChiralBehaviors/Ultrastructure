@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
@@ -39,23 +38,22 @@ public class StatusCodeSequencingTriggerTest extends AbstractModelTest {
 
     @Test
     public void test2InitialStates() throws SQLException {
-        Agency core = kernel.getCore();
         Product service = kernel.getNotApplicableProduct();
         StatusCode a = model.records()
-                            .newStatusCode("A", null, core);
+                            .newStatusCode("A", null);
         a.insert();
         StatusCode b = model.records()
-                            .newStatusCode("B", null, core);
+                            .newStatusCode("B", null);
         b.insert();
         StatusCode x = model.records()
-                            .newStatusCode("X", null, core);
+                            .newStatusCode("X", null);
         x.insert();
 
         List<Tuple<StatusCode, StatusCode>> codes = new ArrayList<>();
         codes.add(new Tuple<StatusCode, StatusCode>(a, x));
         codes.add(new Tuple<StatusCode, StatusCode>(b, x));
         model.getJobModel()
-             .createStatusCodeSequencings(service, codes, core);
+             .createStatusCodeSequencings(service, codes);
         try {
             fail("Insert should not have succeeded");
         } catch (Exception e) {

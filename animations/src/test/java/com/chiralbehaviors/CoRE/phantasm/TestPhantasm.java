@@ -104,7 +104,7 @@ public class TestPhantasm extends AbstractModelTest {
                                          kernel.getHadMember()));
 
         ExistentialAttributeAuthorizationRecord accessAuth = model.records()
-                                                                  .newExistentialAttributeAuthorization(kernel.getCore());
+                                                                  .newExistentialAttributeAuthorization();
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setFacet(stateAuth.getFacet());
         accessAuth.setAuthority(kernel.getAnyAgency()
@@ -117,14 +117,14 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+                   kernel.getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         accessAuth = model.records()
-                          .newExistentialAttributeAuthorization(kernel.getCore());
+                          .newExistentialAttributeAuthorization();
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setFacet(stateAuth.getFacet());
         accessAuth.setAuthority(kernel.getSameAgency()
@@ -137,7 +137,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+                   kernel.getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), stateAuth,
@@ -173,13 +173,14 @@ public class TestPhantasm extends AbstractModelTest {
                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
-        ExistentialNetworkAuthorizationRecord accessAuth = new ExistentialNetworkAuthorization(kernel.getCore());
+        ExistentialNetworkAuthorizationRecord accessAuth = model.records()
+                                                                .newExistentialNetworkAuthorization();
         accessAuth.setParent(stateAuth.getParent());
         accessAuth.setRelationship(stateAuth.getRelationship());
         accessAuth.setChild(stateAuth.getChild());
         accessAuth.setAuthority(kernel.getAnyAgency()
                                       .getId());
-        em.persist(accessAuth);
+        accessAuth.insert();
 
         assertFalse(model.getPhantasmModel()
                          .checkCapability(asList(kernel.getCore()), stateAuth,
@@ -187,13 +188,14 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+                   kernel.getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
-        accessAuth = new ExistentialNetworkAuthorization(kernel.getCore());
+        accessAuth = model.records()
+                          .newExistentialNetworkAuthorization();
         accessAuth.setParent(stateAuth.getParent());
         accessAuth.setRelationship(stateAuth.getRelationship());
         accessAuth.setChild(stateAuth.getChild());
@@ -207,7 +209,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+                   kernel.getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), stateAuth,
@@ -337,7 +339,7 @@ public class TestPhantasm extends AbstractModelTest {
                                          kernel.getHadMember()));
 
         FacetRecord accessAuth = model.records()
-                                      .newFacet(kernel.getCore());
+                                      .newFacet();
         accessAuth.setClassifier(facet.getClassifier());
         accessAuth.setClassification(facet.getClassification());
         accessAuth.setAuthority(kernel.getAnyAgency()
@@ -350,14 +352,14 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+                   kernel.getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), facet,
                                          kernel.getHadMember()));
 
         accessAuth = model.records()
-                          .newFacet(kernel.getCore());
+                          .newFacet();
         accessAuth.setClassifier(facet.getClassifier());
         accessAuth.setClassification(facet.getClassification());
         accessAuth.setAuthority(kernel.getSameAgency()
@@ -370,7 +372,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+                   kernel.getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), facet,
@@ -387,7 +389,7 @@ public class TestPhantasm extends AbstractModelTest {
                                          kernel.getHadMember()));
 
         AgencyExistentialGroupingRecord accessAuth = model.records()
-                                                          .newExistentialGrouping(kernel.getCore());
+                                                          .newExistentialGrouping();
         accessAuth.setUpdatedBy(kernel.getCore()
                                       .getId());
         accessAuth.setAuthority(kernel.getAnyAgency()
@@ -401,14 +403,14 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+                   kernel.getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), instance,
                                          kernel.getHadMember()));
 
         accessAuth = model.records()
-                          .newExistentialGrouping(kernel.getCore());
+                          .newExistentialGrouping();
         accessAuth.setUpdatedBy(kernel.getCore()
                                       .getId());
         accessAuth.setAuthority(kernel.getSameAgency()
@@ -422,7 +424,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+                   kernel.getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), instance,
@@ -468,7 +470,7 @@ public class TestPhantasm extends AbstractModelTest {
                                          kernel.getHadMember()));
 
         ExistentialAttributeAuthorizationRecord accessAuth = model.records()
-                                                                  .newExistentialAttributeAuthorization(kernel.getCore());
+                                                                  .newExistentialAttributeAuthorization();
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setFacet(stateAuth.getFacet());
         accessAuth.setAuthority(kernel.getAnyAgency()
@@ -481,14 +483,14 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getAnyAgency(), kernel.getCore());
+                   kernel.getAnyAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), stateAuth,
                                          kernel.getHadMember()));
 
         accessAuth = model.records()
-                          .newExistentialAttributeAuthorization(kernel.getCore());
+                          .newExistentialAttributeAuthorization();
         accessAuth.setAuthorizedAttribute(stateAuth.getAuthorizedAttribute());
         accessAuth.setFacet(stateAuth.getFacet());
         accessAuth.setAuthority(kernel.getSameAgency()
@@ -501,7 +503,7 @@ public class TestPhantasm extends AbstractModelTest {
 
         model.getPhantasmModel()
              .link(kernel.getCore(), kernel.getHadMember(),
-                   kernel.getSameAgency(), kernel.getCore());
+                   kernel.getSameAgency());
 
         assertTrue(model.getPhantasmModel()
                         .checkCapability(asList(kernel.getCore()), stateAuth,

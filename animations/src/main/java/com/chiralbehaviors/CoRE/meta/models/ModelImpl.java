@@ -41,6 +41,7 @@ import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -50,7 +51,6 @@ import com.chiralbehaviors.CoRE.meta.ExistentialModel;
 import com.chiralbehaviors.CoRE.meta.JobModel;
 import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
-import com.chiralbehaviors.CoRE.meta.RelationshipModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
@@ -84,21 +84,21 @@ public class ModelImpl implements Model {
         return builder.toString();
     }
 
-    private final ExistentialModel<Agency>    agencyModel;
-    private final ExistentialModel<Attribute> attributeModel;
-    private AuthorizedPrincipal               currentPrincipal;
-    private final DSLContext                  create;
-    private final ExistentialModel<Interval>  intervalModel;
-    private final JobModel                    jobModel;
-    private final PhantasmModel               phantasmModel;
-    private final Kernel                      kernel;
-    private final ExistentialModel<Location>  locationModel;
-    private final ExistentialModel<Product>   productModel;
-    private final RelationshipModel           relationshipModel;
-    private final StatusCodeModel             statusCodeModel;
-    private final ExistentialModel<Unit>      unitModel;
-    private final WorkspaceModel              workspaceModel;
-    private final RecordsFactory              factory;
+    private final ExistentialModel<Agency>       agencyModel;
+    private final ExistentialModel<Attribute>    attributeModel;
+    private AuthorizedPrincipal                  currentPrincipal;
+    private final DSLContext                     create;
+    private final ExistentialModel<Interval>     intervalModel;
+    private final JobModel                       jobModel;
+    private final PhantasmModel                  phantasmModel;
+    private final Kernel                         kernel;
+    private final ExistentialModel<Location>     locationModel;
+    private final ExistentialModel<Product>      productModel;
+    private final ExistentialModel<Relationship> relationshipModel;
+    private final StatusCodeModel                statusCodeModel;
+    private final ExistentialModel<Unit>         unitModel;
+    private final WorkspaceModel                 workspaceModel;
+    private final RecordsFactory                 factory;
 
     public ModelImpl(DSLContext create) {
         this.create = create;
@@ -107,6 +107,12 @@ public class ModelImpl implements Model {
             @Override
             public DSLContext create() {
                 return create;
+            }
+
+            @Override
+            public UUID currentPrincipalId() {
+                return getCurrentPrincipal().getPrincipal()
+                                            .getId();
             }
 
         };
@@ -170,7 +176,17 @@ public class ModelImpl implements Model {
             }
         };
         jobModel = new JobModelImpl(this);
-        relationshipModel = new RelationshipModelImpl(this);
+        relationshipModel = new ExistentialModelImpl<Relationship>(this) {
+            @Override
+            protected ExistentialDomain domain() {
+                return ExistentialDomain.Relationship;
+            }
+
+            @Override
+            protected Class<Agency> domainClass() {
+                return Agency.class;
+            }
+        };
         statusCodeModel = new StatusCodeModelImpl(this);
         unitModel = new ExistentialModelImpl<Unit>(this) {
             @Override
@@ -307,7 +323,7 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public RelationshipModel getRelationshipModel() {
+    public ExistentialModel<Relationship> getRelationshipModel() {
         return relationshipModel;
     }
 

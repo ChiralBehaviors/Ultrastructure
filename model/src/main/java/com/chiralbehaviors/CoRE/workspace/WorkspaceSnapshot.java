@@ -40,7 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
-import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
@@ -86,7 +85,7 @@ public class WorkspaceSnapshot {
                 }
 
                 @Override
-                public Agency currentPrincipal() {
+                public UUID currentPrincipalId() {
                     return null;
                 }
             }.resolve(definingProduct.getId());

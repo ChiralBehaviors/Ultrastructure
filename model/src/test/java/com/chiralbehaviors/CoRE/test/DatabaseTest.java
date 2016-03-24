@@ -27,6 +27,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.jooq.DSLContext;
@@ -68,7 +69,7 @@ abstract public class DatabaseTest {
 
         create = PostgresDSL.using(conn);
 
-        AtomicReference<Agency> core = new AtomicReference<>();
+        AtomicReference<UUID> core = new AtomicReference<>();
         RECORDS = new RecordsFactory() {
 
             @Override
@@ -77,7 +78,7 @@ abstract public class DatabaseTest {
             }
 
             @Override
-            public Agency currentPrincipal() {
+            public UUID currentPrincipalId() {
                 return core.get();
             }
         };
@@ -86,7 +87,7 @@ abstract public class DatabaseTest {
         c.setUpdatedBy(c.getId());
         create.insertInto(EXISTENTIAL)
               .set(c);
-        core.set(c);
+        core.set(c.getId());
 
     }
 

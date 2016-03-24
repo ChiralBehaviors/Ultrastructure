@@ -107,12 +107,12 @@ public interface RecordsFactory {
         record.setId(GENERATOR.generate());
         record.setName(name);
         record.setDescription(description);
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         record.setDomain(clazz.getDomain());
         return resolve(record);
     }
 
-    Agency currentPrincipal();
+    UUID currentPrincipalId();
 
     default FacetRecord findFacetRecord(UUID id) {
         return create().selectFrom(FACET)
@@ -124,8 +124,8 @@ public interface RecordsFactory {
         Agency record = create().newRecord(EXISTENTIAL)
                                 .into(Agency.class);
         // special case the circularity issue with Core
-        Agency p = currentPrincipal();
-        record.setUpdatedBy(p == null ? null : p.getId());
+        UUID p = currentPrincipalId();
+        record.setUpdatedBy(p == null ? null : p);
         record.setDomain(ExistentialDomain.Agency);
         record.setId(GENERATOR.generate());
         return record;
@@ -147,7 +147,7 @@ public interface RecordsFactory {
     default Attribute newAttribute() {
         Attribute record = create().newRecord(EXISTENTIAL)
                                    .into(Attribute.class);
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         record.setDomain(ExistentialDomain.Attribute);
         record.setId(GENERATOR.generate());
         return record;
@@ -163,7 +163,7 @@ public interface RecordsFactory {
     default ChildSequencingAuthorizationRecord newChildSequencingAuthorization() {
         ChildSequencingAuthorizationRecord record = create().newRecord(CHILD_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -220,7 +220,7 @@ public interface RecordsFactory {
         }
         ExistentialRecord record = create().newRecord(EXISTENTIAL)
                                            .into(existential);
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         record.setDomain(domain);
         record.setId(GENERATOR.generate());
         return (ExistentialRuleform) record;
@@ -229,7 +229,7 @@ public interface RecordsFactory {
     default ExistentialRecord newExistential(ExistentialDomain domain,
                                              String name, String description) {
         ExistentialRecord record = (ExistentialRecord) newExistential(domain);
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         record.setName(name);
         record.setDescription(description);
         return record;
@@ -238,7 +238,7 @@ public interface RecordsFactory {
     default ExistentialAttributeRecord newExistentialAttribute() {
         ExistentialAttributeRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         record.setUpdated(new Timestamp(System.currentTimeMillis()));
         return record;
     }
@@ -252,14 +252,14 @@ public interface RecordsFactory {
     default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization() {
         ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
     default ExistentialAttributeAuthorizationRecord newExistentialAttributeAuthorization(FacetRecord facet) {
         ExistentialAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         record.setFacet(facet.getId());
         return record;
     }
@@ -267,14 +267,14 @@ public interface RecordsFactory {
     default AgencyExistentialGroupingRecord newExistentialGrouping() {
         AgencyExistentialGroupingRecord record = create().newRecord(AGENCY_EXISTENTIAL_GROUPING);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
     default ExistentialNetworkRecord newExistentialNetwork() {
         ExistentialNetworkRecord record = create().newRecord(EXISTENTIAL_NETWORK);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -304,21 +304,21 @@ public interface RecordsFactory {
     default ExistentialNetworkAttributeAuthorizationRecord newExistentialNetworkAttributeAuthorization() {
         ExistentialNetworkAttributeAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_ATTRIBUTE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
     default ExistentialNetworkAuthorizationRecord newExistentialNetworkAuthorization() {
         ExistentialNetworkAuthorizationRecord record = create().newRecord(EXISTENTIAL_NETWORK_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
     default FacetRecord newFacet() {
         FacetRecord record = create().newRecord(FACET);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -334,21 +334,21 @@ public interface RecordsFactory {
         ExistentialRecord record = create().newRecord(EXISTENTIAL);
         record.setDomain(ExistentialDomain.Interval);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
     default JobRecord newJob() {
         JobRecord record = create().newRecord(JOB);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
     default JobChronologyRecord newJobChronology() {
         JobChronologyRecord record = create().newRecord(JOB_CHRONOLOGY);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -375,7 +375,7 @@ public interface RecordsFactory {
                                   .into(Location.class);
         record.setDomain(ExistentialDomain.Location);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -413,14 +413,14 @@ public interface RecordsFactory {
     default NetworkInferenceRecord newNetworkInferrence() {
         NetworkInferenceRecord record = create().newRecord(NETWORK_INFERENCE);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
     default ParentSequencingAuthorizationRecord newParentSequencingAuthorization() {
         ParentSequencingAuthorizationRecord record = create().newRecord(PARENT_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -449,7 +449,7 @@ public interface RecordsFactory {
                                  .into(Product.class);
         record.setDomain(ExistentialDomain.Product);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -468,7 +468,7 @@ public interface RecordsFactory {
     default ProtocolRecord newProtocol() {
         ProtocolRecord record = create().newRecord(PROTOCOL);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -476,7 +476,7 @@ public interface RecordsFactory {
         Relationship record = create().newRecord(EXISTENTIAL)
                                       .into(Relationship.class);
         record.setDomain(ExistentialDomain.Relationship);
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         record.setId(GENERATOR.generate());
         return record;
     }
@@ -521,7 +521,7 @@ public interface RecordsFactory {
     default SelfSequencingAuthorizationRecord newSelfSequencingAuthorization() {
         SelfSequencingAuthorizationRecord record = create().newRecord(SELF_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -545,7 +545,7 @@ public interface RecordsFactory {
     default SiblingSequencingAuthorizationRecord newSiblingSequencingAuthorization() {
         SiblingSequencingAuthorizationRecord record = create().newRecord(SIBLING_SEQUENCING_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -566,7 +566,7 @@ public interface RecordsFactory {
                                     .into(StatusCode.class);
         record.setDomain(ExistentialDomain.StatusCode);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -585,7 +585,7 @@ public interface RecordsFactory {
     default StatusCodeSequencingRecord newStatusCodeSequencing() {
         StatusCodeSequencingRecord record = create().newRecord(STATUS_CODE_SEQUENCING);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -604,7 +604,7 @@ public interface RecordsFactory {
                               .into(Unit.class);
         record.setDomain(ExistentialDomain.Unit);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 
@@ -618,7 +618,7 @@ public interface RecordsFactory {
     default WorkspaceAuthorizationRecord newWorkspaceAuthorization() {
         WorkspaceAuthorizationRecord record = create().newRecord(WORKSPACE_AUTHORIZATION);
         record.setId(GENERATOR.generate());
-        record.setUpdatedBy(currentPrincipal().getId());
+        record.setUpdatedBy(currentPrincipalId());
         return record;
     }
 

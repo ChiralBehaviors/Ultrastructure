@@ -282,14 +282,14 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                                                .link(getDefiningProduct(),
                                                                                      model.getKernel()
                                                                                           .getImports(),
-                                                                                     workspace,
-                                                                                     model.getCurrentPrincipal()
-                                                                                          .getPrincipal());
+                                                                                     workspace
+
+        );
         ExistentialNetworkAttributeRecord attribute = model.records()
                                                            .newExistentialNetworkAttribute(model.getKernel()
-                                                                                                .getNamespace(),
-                                                                                           model.getCurrentPrincipal()
-                                                                                                .getPrincipal());
+                                                                                                .getNamespace()
+
+        );
         attribute.setEdge(links.a.getId());
         attribute.insert();
         model.getPhantasmModel()
@@ -481,9 +481,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, AgencyExistentialGroupingRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -494,9 +492,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, ChildSequencingAuthorizationRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -508,9 +504,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                     ExistentialAttributeAuthorizationRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
 
     }
@@ -522,9 +516,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, ExistentialAttributeRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -536,9 +528,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                     ExistentialNetworkAttributeAuthorizationRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -549,9 +539,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, ExistentialNetworkAttributeRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -560,9 +548,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                     ExistentialNetworkAuthorizationRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -573,9 +559,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, ExistentialNetworkRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform
+
+             )
              .insert();
     }
 
@@ -583,9 +569,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, ExistentialRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -596,9 +580,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, FacetRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -609,9 +591,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, JobChronologyRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -622,9 +602,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, JobRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -635,9 +613,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, MetaProtocolRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -648,9 +624,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, NetworkInferenceRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -661,9 +635,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, ParentSequencingAuthorizationRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -674,9 +646,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, ProtocolRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -687,9 +657,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, SelfSequencingAuthorizationRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -700,9 +668,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, SiblingSequencingAuthorizationRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -713,9 +679,7 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     public void put(String key, StatusCodeSequencingRecord ruleform) {
         cache.put(key, ruleform);
         model.records()
-             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform,
-                                        model.getCurrentPrincipal()
-                                             .getPrincipal())
+             .newWorkspaceAuthorization(key, getDefiningProduct(), ruleform)
              .insert();
     }
 
@@ -752,9 +716,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
                                                           .newWorkspaceAuthorization(null,
                                                                                      getDefiningProduct(),
                                                                                      reference,
-                                                                                     type,
-                                                                                     model.getCurrentPrincipal()
-                                                                                          .getPrincipal());
+                                                                                     type
+
+        );
         authorization.insert();
     }
 

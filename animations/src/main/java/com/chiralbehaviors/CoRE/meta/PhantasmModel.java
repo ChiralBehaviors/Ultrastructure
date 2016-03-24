@@ -129,7 +129,7 @@ public interface PhantasmModel {
                             Relationship capability);
 
     ExistentialAttributeRecord create(ExistentialRuleform ruleform,
-                                      Attribute attribute, Agency updatedBy);
+                                      Attribute attribute);
 
     void deauthorize(ExistentialRuleform ruleform, Relationship relationship,
                      ExistentialRuleform authorized);
@@ -404,12 +404,10 @@ public interface PhantasmModel {
      * @param parent
      * @param r
      * @param child
-     * @param updatedBy
      */
     Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(ExistentialRuleform parent,
                                                                    Relationship r,
-                                                                   ExistentialRuleform child,
-                                                                   Agency updatedBy);
+                                                                   ExistentialRuleform child);
 
     /**
      * Sets a value for an attribute after validating it first
@@ -430,11 +428,10 @@ public interface PhantasmModel {
      * @param parent
      * @param relationship
      * @param child
-     * @param updatedBy
      */
     void setImmediateChild(ExistentialRuleform parent,
-                           Relationship relationship, ExistentialRuleform child,
-                           Agency updatedBy);
+                           Relationship relationship,
+                           ExistentialRuleform child);
 
     void setValue(ExistentialAttributeAuthorizationRecord auth, Object value);
 

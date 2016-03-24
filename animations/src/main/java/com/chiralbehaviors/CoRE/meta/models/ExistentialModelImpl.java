@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 
-import com.chiralbehaviors.CoRE.RecordsFactory;
-import com.chiralbehaviors.CoRE.domain.Agency;
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
@@ -48,21 +46,14 @@ import com.chiralbehaviors.CoRE.meta.Model;
  */
 abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
         implements ExistentialModel<RuleForm> {
-    protected final DSLContext     create;
-    protected final Kernel         kernel;
-    protected final Model          model;
-    protected final RecordsFactory factory;
+    protected final DSLContext create;
+    protected final Kernel     kernel;
+    protected final Model      model;
 
     public ExistentialModelImpl(Model model) {
         this.model = model;
         this.create = model.create();
         this.kernel = model.getKernel();
-        factory = new RecordsFactory() {
-            @Override
-            public DSLContext create() {
-                return create;
-            }
-        };
     }
 
     /*
@@ -103,16 +94,13 @@ abstract public class ExistentialModelImpl<RuleForm extends ExistentialRuleform>
     @Override
     public final RuleForm create(String name, String description) {
         return (RuleForm) model.records()
-                               .newExistential(domain(), name, description,
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
+                               .newExistential(domain(), name, description);
     }
 
     @SafeVarargs
     @Override
     public final RuleForm create(String name, String description,
-                                 FacetRecord aspect, Agency updatedBy,
-                                 FacetRecord... aspects) {
+                                 FacetRecord aspect, FacetRecord... aspects) {
         //        RuleForm agency = new Agency(name, description,
         //                                     model.getCurrentPrincipal()
         //                                          .getPrincipal());

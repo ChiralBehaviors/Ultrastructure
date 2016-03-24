@@ -62,8 +62,7 @@ public interface JobModel {
      *            circumstances surrounding the change, etc.
      * @return the merged job
      */
-    JobRecord changeStatus(JobRecord job, StatusCode newStatus,
-                           Agency updagedBy, String notes);
+    JobRecord changeStatus(JobRecord job, StatusCode newStatus, String notes);
 
     /**
      * Creates and persist a StatusCodeSequencing object for each sequential
@@ -74,19 +73,15 @@ public interface JobModel {
      *            the service with which these status codes are associated
      * @param codes
      *            the ordered list of codes to be sequenced
-     * @param updatedBy
      */
-    void createStatusCodeChain(Product service, StatusCode[] codes,
-                               Agency updatedBy);
+    void createStatusCodeChain(Product service, StatusCode[] codes);
 
     /**
      * @param service
      * @param codes
-     * @param updatedBy
      */
     void createStatusCodeSequencings(Product service,
-                                     List<Tuple<StatusCode, StatusCode>> codes,
-                                     Agency updatedBy);
+                                     List<Tuple<StatusCode, StatusCode>> codes);
 
     /**
      * Ensure that the nextStatus is a valid status transition from the
@@ -123,22 +118,20 @@ public interface JobModel {
      * For a given job, generates all the implicit jobs that need to be done
      *
      * This is the jesus nut of the the event cluster animation.
-     *
-     * @param updatedBy
+     * 
      * @param jobId
      *
      * @return the list of jobs generated
      * @throws SQLException
      */
-    List<JobRecord> generateImplicitJobs(JobRecord job, Agency updatedBy);
+    List<JobRecord> generateImplicitJobs(JobRecord job);
 
     /**
      * Generate all the implicit sub jobs for the job
      *
      * @param job
-     * @param updatedBy
      */
-    void generateImplicitJobsForExplicitJobs(JobRecord job, Agency updatedBy);
+    void generateImplicitJobsForExplicitJobs(JobRecord job);
 
     /**
      * Retrieve a list of all currently active "explicit" (top level) Jobs.
@@ -525,28 +518,24 @@ public interface JobModel {
 
     /**
      * @param service
-     * @param updatedBy
      * @return a job in which every field has the appropriate NotApplicable
      *         ruleform. Status is set to UNSET
      */
-    JobRecord newInitializedJob(Product service, Agency updatedBy);
+    JobRecord newInitializedJob(Product service);
 
     /**
      * @param service
-     * @param updatedBy
      * @return a metaprotocol in which every unspecified field is initialized to
      *         Same
      */
-    MetaProtocolRecord newInitializedMetaProtocol(Product service,
-                                                  Agency updatedBy);
+    MetaProtocolRecord newInitializedMetaProtocol(Product service);
 
     /**
      * @param service
-     * @param updatedBy
      * @return a protocol in which every field has the appropriate NotApplicable
      *         ruleform.
      */
-    ProtocolRecord newInitializedProtocol(Product service, Agency updatedBy);
+    ProtocolRecord newInitializedProtocol(Product service);
 
     /**
      * Process all the implicit status changes of the children of a job

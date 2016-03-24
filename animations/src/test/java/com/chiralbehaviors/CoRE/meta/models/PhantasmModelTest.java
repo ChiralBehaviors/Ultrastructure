@@ -45,86 +45,80 @@ public class PhantasmModelTest extends AbstractModelTest {
 
     @Test
     public void testCascadedDeleteInference() throws Exception {
-        Agency core = model.getKernel()
-                           .getCore();
-
         Relationship equals = model.records()
                                    .newRelationship("= a",
-                                                    "an alias for equals",
-                                                    core);
+                                                    "an alias for equals");
         equals.setInverse(equals.getId());
         equals.insert();
 
         Relationship equals2 = model.records()
                                     .newRelationship("equals, also",
-                                                     "an alias for equals",
-                                                     core);
+                                                     "an alias for equals");
         equals2.setInverse(equals2.getId());
         equals2.insert();
         NetworkInferenceRecord aEqualsA = model.records()
                                                .newNetworkInference(equals,
                                                                     equals2,
-                                                                    equals,
-                                                                    core);
+                                                                    equals);
         aEqualsA.insert();
         Agency a = model.records()
-                        .newAgency("A", "A", core);
+                        .newAgency("A", "A");
         a.insert();
         Agency b = model.records()
-                        .newAgency("B", "B", core);
+                        .newAgency("B", "B");
         b.insert();
         Agency c = model.records()
-                        .newAgency("C", "C", core);
+                        .newAgency("C", "C");
         c.insert();
         Agency d = model.records()
-                        .newAgency("D", "D", core);
+                        .newAgency("D", "D");
         d.insert();
         Agency e = model.records()
-                        .newAgency("E", "E", core);
+                        .newAgency("E", "E");
         e.insert();
         Agency f = model.records()
-                        .newAgency("F", "F", core);
+                        .newAgency("F", "F");
         f.insert();
         Agency g = model.records()
-                        .newAgency("G", "G", core);
+                        .newAgency("G", "G");
         g.insert();
         Agency h = model.records()
-                        .newAgency("H", "H", core);
+                        .newAgency("H", "H");
         h.insert();
         Agency i = model.records()
-                        .newAgency("I", "I", core);
+                        .newAgency("I", "I");
         i.insert();
         ExistentialNetworkRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
-                                                                     b, core);
+                                                                     b);
         edgeA.insert();
         ExistentialNetworkRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
-                                                                     c, core);
+                                                                     c);
         edgeB.insert();
         ExistentialNetworkRecord edgeC = model.records()
                                               .newExistentialNetwork(c, equals2,
-                                                                     d, core);
+                                                                     d);
         edgeC.insert();
         ExistentialNetworkRecord edgeD = model.records()
                                               .newExistentialNetwork(d, equals2,
-                                                                     e, core);
+                                                                     e);
         edgeD.insert();
         ExistentialNetworkRecord edgeE = model.records()
                                               .newExistentialNetwork(e, equals2,
-                                                                     f, core);
+                                                                     f);
         edgeE.insert();
         ExistentialNetworkRecord edgeF = model.records()
                                               .newExistentialNetwork(f, equals2,
-                                                                     g, core);
+                                                                     g);
         edgeF.insert();
         ExistentialNetworkRecord edgeG = model.records()
                                               .newExistentialNetwork(g, equals2,
-                                                                     h, core);
+                                                                     h);
         edgeG.insert();
         ExistentialNetworkRecord edgeH = model.records()
                                               .newExistentialNetwork(h, equals2,
-                                                                     i, core);
+                                                                     i);
         edgeH.insert();
 
         assertEquals(8, model.getPhantasmModel()
@@ -138,86 +132,80 @@ public class PhantasmModelTest extends AbstractModelTest {
 
     @Test
     public void testCascadedDeletePremise() throws Exception {
-        Agency core = model.getKernel()
-                           .getCore();
-
         Relationship equals = model.records()
                                    .newRelationship("= again",
-                                                    "an alias for equals",
-                                                    core);
+                                                    "an alias for equals");
         equals.setInverse(equals.getId());
         equals.insert();
 
         Relationship equals2 = model.records()
                                     .newRelationship("also, too, equals",
-                                                     "an alias for equals",
-                                                     core);
+                                                     "an alias for equals");
         equals2.setInverse(equals2.getId());
         equals2.insert();
         NetworkInferenceRecord aEqualsA = model.records()
                                                .newNetworkInference(equals,
                                                                     equals2,
-                                                                    equals,
-                                                                    core);
+                                                                    equals);
         aEqualsA.insert();
         Agency a = model.records()
-                        .newAgency("A", "A", core);
+                        .newAgency("A", "A");
         a.insert();
         Agency b = model.records()
-                        .newAgency("B", "B", core);
+                        .newAgency("B", "B");
         b.insert();
         Agency c = model.records()
-                        .newAgency("C", "C", core);
+                        .newAgency("C", "C");
         c.insert();
         Agency d = model.records()
-                        .newAgency("D", "D", core);
+                        .newAgency("D", "D");
         d.insert();
         Agency e = model.records()
-                        .newAgency("E", "E", core);
+                        .newAgency("E", "E");
         e.insert();
         Agency f = model.records()
-                        .newAgency("F", "F", core);
+                        .newAgency("F", "F");
         f.insert();
         Agency g = model.records()
-                        .newAgency("G", "G", core);
+                        .newAgency("G", "G");
         g.insert();
         Agency h = model.records()
-                        .newAgency("H", "H", core);
+                        .newAgency("H", "H");
         h.insert();
         Agency i = model.records()
-                        .newAgency("I", "I", core);
+                        .newAgency("I", "I");
         i.insert();
         ExistentialNetworkRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
-                                                                     b, core);
+                                                                     b);
         edgeA.insert();
         ExistentialNetworkRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
-                                                                     c, core);
+                                                                     c);
         edgeB.insert();
         ExistentialNetworkRecord edgeC = model.records()
                                               .newExistentialNetwork(c, equals2,
-                                                                     d, core);
+                                                                     d);
         edgeC.insert();
         ExistentialNetworkRecord edgeD = model.records()
                                               .newExistentialNetwork(d, equals2,
-                                                                     e, core);
+                                                                     e);
         edgeD.insert();
         ExistentialNetworkRecord edgeE = model.records()
                                               .newExistentialNetwork(e, equals2,
-                                                                     f, core);
+                                                                     f);
         edgeE.insert();
         ExistentialNetworkRecord edgeF = model.records()
                                               .newExistentialNetwork(f, equals2,
-                                                                     g, core);
+                                                                     g);
         edgeF.insert();
         ExistentialNetworkRecord edgeG = model.records()
                                               .newExistentialNetwork(g, equals2,
-                                                                     h, core);
+                                                                     h);
         edgeG.insert();
         ExistentialNetworkRecord edgeH = model.records()
                                               .newExistentialNetwork(h, equals2,
-                                                                     i, core);
+                                                                     i);
         edgeH.insert();
 
         assertEquals(8, model.getPhantasmModel()
@@ -238,85 +226,80 @@ public class PhantasmModelTest extends AbstractModelTest {
 
     @Test
     public void testCascadedDeletePremise2() throws Exception {
-        Agency core = model.getKernel()
-                           .getCore();
         Relationship equals = model.records()
                                    .newRelationship("= d",
-                                                    "an alias for equals",
-                                                    core);
+                                                    "an alias for equals");
         equals.setInverse(equals.getId());
         equals.insert();
 
         Relationship equals2 = model.records()
                                     .newRelationship("also equals",
-                                                     "an alias for equals",
-                                                     core);
+                                                     "an alias for equals");
         equals2.setInverse(equals2.getId());
         equals2.insert();
         NetworkInferenceRecord aEqualsA = model.records()
                                                .newNetworkInference(equals,
                                                                     equals2,
-                                                                    equals,
-                                                                    core);
+                                                                    equals);
         aEqualsA.insert();
         Agency a = model.records()
-                        .newAgency("A", "A", core);
+                        .newAgency("A", "A");
         a.insert();
         Agency b = model.records()
-                        .newAgency("B", "B", core);
+                        .newAgency("B", "B");
         b.insert();
         Agency c = model.records()
-                        .newAgency("C", "C", core);
+                        .newAgency("C", "C");
         c.insert();
         Agency d = model.records()
-                        .newAgency("D", "D", core);
+                        .newAgency("D", "D");
         d.insert();
         Agency e = model.records()
-                        .newAgency("E", "E", core);
+                        .newAgency("E", "E");
         e.insert();
         Agency f = model.records()
-                        .newAgency("F", "F", core);
+                        .newAgency("F", "F");
         f.insert();
         Agency g = model.records()
-                        .newAgency("G", "G", core);
+                        .newAgency("G", "G");
         g.insert();
         Agency h = model.records()
-                        .newAgency("H", "H", core);
+                        .newAgency("H", "H");
         h.insert();
         Agency i = model.records()
-                        .newAgency("I", "I", core);
+                        .newAgency("I", "I");
         i.insert();
         ExistentialNetworkRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
-                                                                     b, core);
+                                                                     b);
         edgeA.insert();
         ExistentialNetworkRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
-                                                                     c, core);
+                                                                     c);
         edgeB.insert();
         ExistentialNetworkRecord edgeC = model.records()
                                               .newExistentialNetwork(c, equals2,
-                                                                     d, core);
+                                                                     d);
         edgeC.insert();
         ExistentialNetworkRecord edgeD = model.records()
                                               .newExistentialNetwork(d, equals2,
-                                                                     e, core);
+                                                                     e);
         edgeD.insert();
         ExistentialNetworkRecord edgeE = model.records()
                                               .newExistentialNetwork(e, equals2,
-                                                                     f, core);
+                                                                     f);
         edgeE.insert();
         ExistentialNetworkRecord edgeF = model.records()
                                               .newExistentialNetwork(f, equals2,
-                                                                     g, core);
+                                                                     g);
         edgeF.insert();
         ExistentialNetworkRecord edgeG = model.records()
                                               .newExistentialNetwork(g, equals2,
-                                                                     h, core);
+                                                                     h);
         edgeG.insert();
         ExistentialNetworkRecord edgeH = model.records()
                                               .newExistentialNetwork(h, equals2,
-                                                                     i, core);
+                                                                     i);
         edgeH.insert();
 
         assertEquals(8, model.getPhantasmModel()
@@ -330,108 +313,84 @@ public class PhantasmModelTest extends AbstractModelTest {
 
     @Test
     public void testDeduction() throws Exception {
-        // model.setLogConfiguration(Utils.getDocument(getClass().getResourceAsStream("/logback-db.xml")));
-        Agency core = model.getKernel()
-                           .getCore();
 
         Relationship a = model.records()
-                              .newRelationship("a", "a", "a'", "a'",
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
+                              .newRelationship("a", "a", "a'", "a'");
         Relationship b = model.records()
-                              .newRelationship("b", "b", "b'", "b'",
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
+                              .newRelationship("b", "b", "b'", "b'");
         Relationship c = model.records()
-                              .newRelationship("c", "c", "c'", "c'",
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
+                              .newRelationship("c", "c", "c'", "c'");
         Relationship d = model.records()
-                              .newRelationship("d", "d", "d'", "d'",
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
+                              .newRelationship("d", "d", "d'", "d'");
         Relationship e = model.records()
-                              .newRelationship("e", "e", "e'", "e'",
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
+                              .newRelationship("e", "e", "e'", "e'");
         Relationship f = model.records()
-                              .newRelationship("f", "f", "f'", "f'",
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
+                              .newRelationship("f", "f", "f'", "f'");
         Relationship g = model.records()
-                              .newRelationship("g", "g", "g'", "g'",
-                                               model.getCurrentPrincipal()
-                                                    .getPrincipal());
+                              .newRelationship("g", "g", "g'", "g'");
 
         NetworkInferenceRecord aIsB = model.records()
-                                           .newNetworkInference(a, b, a, core);
+                                           .newNetworkInference(a, b, a);
         aIsB.insert();
         NetworkInferenceRecord aIsC = model.records()
-                                           .newNetworkInference(a, c, a, core);
+                                           .newNetworkInference(a, c, a);
         aIsC.insert();
         NetworkInferenceRecord aIsD = model.records()
-                                           .newNetworkInference(a, d, a, core);
+                                           .newNetworkInference(a, d, a);
         aIsD.insert();
         NetworkInferenceRecord aIsE = model.records()
-                                           .newNetworkInference(a, e, a, core);
+                                           .newNetworkInference(a, e, a);
         aIsE.insert();
         NetworkInferenceRecord aIsF = model.records()
-                                           .newNetworkInference(a, f, a, core);
+                                           .newNetworkInference(a, f, a);
         aIsF.insert();
         NetworkInferenceRecord aIsG = model.records()
-                                           .newNetworkInference(a, g, a, core);
+                                           .newNetworkInference(a, g, a);
         aIsG.insert();
         Agency A = model.records()
-                        .newAgency("A", "A", core);
+                        .newAgency("A", "A");
         A.insert();
         Agency B = model.records()
-                        .newAgency("B", "B", core);
+                        .newAgency("B", "B");
         B.insert();
         Agency C = model.records()
-                        .newAgency("C", "C", core);
+                        .newAgency("C", "C");
         C.insert();
         Agency D = model.records()
-                        .newAgency("D", "D", core);
+                        .newAgency("D", "D");
         D.insert();
         Agency E = model.records()
-                        .newAgency("E", "E", core);
+                        .newAgency("E", "E");
         E.insert();
         Agency F = model.records()
-                        .newAgency("F", "F", core);
+                        .newAgency("F", "F");
         F.insert();
         Agency G = model.records()
-                        .newAgency("G", "G", core);
+                        .newAgency("G", "G");
         G.insert();
         Agency H = model.records()
-                        .newAgency("H", "H", core);
+                        .newAgency("H", "H");
         H.insert();
         ExistentialNetworkRecord edgeA = model.records()
-                                              .newExistentialNetwork(A, a, B,
-                                                                     core);
+                                              .newExistentialNetwork(A, a, B);
         edgeA.insert();
         ExistentialNetworkRecord edgeB = model.records()
-                                              .newExistentialNetwork(B, b, C,
-                                                                     core);
+                                              .newExistentialNetwork(B, b, C);
         edgeB.insert();
         ExistentialNetworkRecord edgeC = model.records()
-                                              .newExistentialNetwork(C, c, D,
-                                                                     core);
+                                              .newExistentialNetwork(C, c, D);
         edgeC.insert();
         ExistentialNetworkRecord edgeD = model.records()
-                                              .newExistentialNetwork(D, d, E,
-                                                                     core);
+                                              .newExistentialNetwork(D, d, E);
         edgeD.insert();
         ExistentialNetworkRecord edgeE = model.records()
-                                              .newExistentialNetwork(E, e, F,
-                                                                     core);
+                                              .newExistentialNetwork(E, e, F);
         edgeE.insert();
         ExistentialNetworkRecord edgeF = model.records()
-                                              .newExistentialNetwork(F, f, G,
-                                                                     core);
+                                              .newExistentialNetwork(F, f, G);
         edgeF.insert();
         ExistentialNetworkRecord edgeG = model.records()
-                                              .newExistentialNetwork(G, g, H,
-                                                                     core);
+                                              .newExistentialNetwork(G, g, H);
         edgeG.insert();
 
         List<ExistentialRuleform> children = model.getPhantasmModel()
@@ -445,17 +404,13 @@ public class PhantasmModelTest extends AbstractModelTest {
 
     @Test
     public void testGetImmediateRelationships() throws Exception {
-        Agency core = model.getKernel()
-                           .getCore();
         Relationship equals2 = model.records()
                                     .newRelationship("equals 2",
-                                                     "an alias for equals",
-                                                     core);
+                                                     "an alias for equals");
 
         Relationship equals = model.records()
                                    .newRelationship("equals on another level",
-                                                    "an alias for equals",
-                                                    core);
+                                                    "an alias for equals");
         equals.setInverse(equals.getId());
         equals.insert();
         equals2.setInverse(equals2.getId());
@@ -463,25 +418,24 @@ public class PhantasmModelTest extends AbstractModelTest {
         NetworkInferenceRecord aEqualsA = model.records()
                                                .newNetworkInference(equals,
                                                                     equals2,
-                                                                    equals,
-                                                                    core);
+                                                                    equals);
         aEqualsA.insert();
         Agency a = model.records()
-                        .newAgency("A", "A", core);
+                        .newAgency("A", "A");
         a.insert();
         Agency b = model.records()
-                        .newAgency("B", "B", core);
+                        .newAgency("B", "B");
         b.insert();
         Agency c = model.records()
-                        .newAgency("C", "C", core);
+                        .newAgency("C", "C");
         c.insert();
         ExistentialNetworkRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
-                                                                     b, core);
+                                                                     b);
         edgeA.insert();
         ExistentialNetworkRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
-                                                                     c, core);
+                                                                     c);
         edgeB.insert();
 
         assertEquals(1, model.getPhantasmModel()
@@ -492,49 +446,44 @@ public class PhantasmModelTest extends AbstractModelTest {
 
     @Test
     public void testGetTransitiveRelationships() throws SQLException {
-        Agency core = model.getKernel()
-                           .getCore();
         Relationship equals = model.records()
                                    .newRelationship("so equals so",
-                                                    "an alias for equals",
-                                                    core);
+                                                    "an alias for equals");
         equals.setInverse(equals.getId());
         equals.insert();
         ;
 
         Relationship equals2 = model.records()
                                     .newRelationship("so equals",
-                                                     "an alias for equals",
-                                                     core);
+                                                     "an alias for equals");
         equals2.setInverse(equals2.getId());
         equals2.insert();
         ;
         NetworkInferenceRecord aEqualsA = model.records()
                                                .newNetworkInference(equals,
                                                                     equals2,
-                                                                    equals,
-                                                                    core);
+                                                                    equals);
         aEqualsA.insert();
 
         Agency a = model.records()
-                        .newAgency("A", "A", core);
+                        .newAgency("A", "A");
         a.insert();
         ;
         Agency b = model.records()
-                        .newAgency("B", "B", core);
+                        .newAgency("B", "B");
         b.insert();
         ;
         Agency c = model.records()
-                        .newAgency("C", "C", core);
+                        .newAgency("C", "C");
         c.insert();
         ;
         ExistentialNetworkRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
-                                                                     b, core);
+                                                                     b);
         edgeA.insert();
         ExistentialNetworkRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
-                                                                     c, core);
+                                                                     c);
         edgeB.insert();
         assertEquals(2, model.getPhantasmModel()
                              .getTransitiveRelationships(a,
@@ -544,85 +493,80 @@ public class PhantasmModelTest extends AbstractModelTest {
 
     @Test
     public void testIterativeInference() throws Exception {
-        Agency core = model.getKernel()
-                           .getCore();
         Relationship equals = model.records()
                                    .newRelationship("= c",
-                                                    "an alias for equals",
-                                                    core);
+                                                    "an alias for equals");
         equals.setInverse(equals.getId());
         equals.insert();
 
         Relationship equals2 = model.records()
                                     .newRelationship("equals too",
-                                                     "an alias for equals",
-                                                     core);
+                                                     "an alias for equals");
         equals2.setInverse(equals2.getId());
         equals2.insert();
         NetworkInferenceRecord aEqualsA = model.records()
                                                .newNetworkInference(equals,
                                                                     equals2,
-                                                                    equals,
-                                                                    core);
+                                                                    equals);
         aEqualsA.insert();
         Agency a = model.records()
-                        .newAgency("A", "A", core);
+                        .newAgency("A", "A");
         a.insert();
         Agency b = model.records()
-                        .newAgency("B", "B", core);
+                        .newAgency("B", "B");
         b.insert();
         Agency c = model.records()
-                        .newAgency("C", "C", core);
+                        .newAgency("C", "C");
         c.insert();
         Agency d = model.records()
-                        .newAgency("D", "D", core);
+                        .newAgency("D", "D");
         d.insert();
         Agency e = model.records()
-                        .newAgency("E", "E", core);
+                        .newAgency("E", "E");
         e.insert();
         Agency f = model.records()
-                        .newAgency("F", "F", core);
+                        .newAgency("F", "F");
         f.insert();
         Agency g = model.records()
-                        .newAgency("G", "G", core);
+                        .newAgency("G", "G");
         g.insert();
         Agency h = model.records()
-                        .newAgency("H", "H", core);
+                        .newAgency("H", "H");
         h.insert();
         Agency i = model.records()
-                        .newAgency("I", "I", core);
+                        .newAgency("I", "I");
         i.insert();
         ExistentialNetworkRecord edgeA = model.records()
                                               .newExistentialNetwork(a, equals,
-                                                                     b, core);
+                                                                     b);
         edgeA.insert();
         ExistentialNetworkRecord edgeB = model.records()
                                               .newExistentialNetwork(b, equals2,
-                                                                     c, core);
+                                                                     c);
         edgeB.insert();
         ExistentialNetworkRecord edgeC = model.records()
                                               .newExistentialNetwork(c, equals2,
-                                                                     d, core);
+                                                                     d);
         edgeC.insert();
         ExistentialNetworkRecord edgeD = model.records()
                                               .newExistentialNetwork(d, equals2,
-                                                                     e, core);
+                                                                     e);
         edgeD.insert();
         ExistentialNetworkRecord edgeE = model.records()
                                               .newExistentialNetwork(e, equals2,
-                                                                     f, core);
+                                                                     f);
         edgeE.insert();
         ExistentialNetworkRecord edgeF = model.records()
                                               .newExistentialNetwork(f, equals2,
-                                                                     g, core);
+                                                                     g);
         edgeF.insert();
         ExistentialNetworkRecord edgeG = model.records()
                                               .newExistentialNetwork(g, equals2,
-                                                                     h, core);
+                                                                     h);
         edgeG.insert();
         ExistentialNetworkRecord edgeH = model.records()
                                               .newExistentialNetwork(h, equals2,
-                                                                     i, core);
+                                                                     i);
         edgeH.insert();
 
         assertEquals(8, model.getPhantasmModel()
@@ -633,18 +577,15 @@ public class PhantasmModelTest extends AbstractModelTest {
     @Test
     public void testNotInGroup() {
         Relationship classifier = model.records()
-                                       .newRelationship("test not in group classifier",
-                                                        kernel.getCore());
+                                       .newRelationship("test not in group classifier");
         classifier.insert();
         Relationship inverse = model.records()
-                                    .newRelationship("inverse test not in group classifier",
-                                                     kernel.getCore());
+                                    .newRelationship("inverse test not in group classifier");
         inverse.insert();
         classifier.setInverse(inverse.getId());
         inverse.setInverse(classifier.getId());
         Agency classification = model.records()
-                                     .newAgency("test not in group agency classification",
-                                                kernel.getCore());
+                                     .newAgency("test not in group agency classification");
         classification.insert();
         List<ExistentialRuleform> notInGroup = model.getPhantasmModel()
                                                     .getNotInGroup(classification,

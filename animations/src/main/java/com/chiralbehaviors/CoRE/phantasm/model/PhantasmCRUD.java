@@ -103,9 +103,7 @@ public class PhantasmCRUD {
         }
 
         model.getPhantasmModel()
-             .link(instance, auth.getRelationship(), child,
-                   model.getCurrentPrincipal()
-                        .getPrincipal());
+             .link(instance, auth.getRelationship(), child);
         return instance;
     }
 
@@ -132,8 +130,7 @@ public class PhantasmCRUD {
                 .peek(child -> cast(child, auth.getChild()))
                 .forEach(child -> model.getPhantasmModel()
                                        .link(instance, auth.getRelationship(),
-                                             child, model.getCurrentPrincipal()
-                                                         .getPrincipal()));
+                                             child));
         return instance;
     }
 
@@ -209,9 +206,7 @@ public class PhantasmCRUD {
         instance = model.records()
                         .createExistential(facet.getFacet()
                                                 .getClassification(),
-                                           name, description,
-                                           model.getCurrentPrincipal()
-                                                .getPrincipal());
+                                           name, description);
         ((ExistentialRecord) instance).insert();
         model.getPhantasmModel()
              .initialize(instance, facet.getFacet());
@@ -562,8 +557,7 @@ public class PhantasmCRUD {
                 .peek(child -> cast(child, auth.getChild()))
                 .forEach(child -> model.getPhantasmModel()
                                        .link(instance, auth.getRelationship(),
-                                             child, model.getCurrentPrincipal()
-                                                         .getPrincipal()));
+                                             child));
         return instance;
     }
 
@@ -622,9 +616,7 @@ public class PhantasmCRUD {
         } else {
             cast(child, auth.getChild());
             model.getPhantasmModel()
-                 .setImmediateChild(instance, auth.getRelationship(), child,
-                                    model.getCurrentPrincipal()
-                                         .getPrincipal());
+                 .setImmediateChild(instance, auth.getRelationship(), child);
         }
         return instance;
     }
@@ -734,9 +726,7 @@ public class PhantasmCRUD {
                                                          Attribute attribute,
                                                          int i) {
         ExistentialAttributeRecord value = model.getPhantasmModel()
-                                                .create(instance, attribute,
-                                                        model.getCurrentPrincipal()
-                                                             .getPrincipal());
+                                                .create(instance, attribute);
         value.setSequenceNumber(i);
         return value;
     }

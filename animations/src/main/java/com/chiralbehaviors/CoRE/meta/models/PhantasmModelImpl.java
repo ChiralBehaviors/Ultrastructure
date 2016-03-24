@@ -109,9 +109,7 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public void authorize(FacetRecord facet, Attribute attribute) {
         ExistentialAttributeAuthorizationRecord record = model.records()
-                                                              .newExistentialAttributeAuthorization(facet,
-                                                                                                    model.getCurrentPrincipal()
-                                                                                                         .getPrincipal());
+                                                              .newExistentialAttributeAuthorization(facet);
         record.insert();
     }
 
@@ -315,11 +313,9 @@ public class PhantasmModelImpl implements PhantasmModel {
 
     @Override
     public ExistentialAttributeRecord create(ExistentialRuleform existential,
-                                             Attribute attribute,
-                                             Agency updateBy) {
+                                             Attribute attribute) {
         ExistentialAttributeRecord value = model.records()
-                                                .newExistentialAttribute(model.getCurrentPrincipal()
-                                                                              .getPrincipal());
+                                                .newExistentialAttribute();
         value.setAttribute(attribute.getId());
         value.setExistential(existential.getId());
         return value;
@@ -452,12 +448,12 @@ public class PhantasmModelImpl implements PhantasmModel {
     public List<ExistentialAttributeRecord> getAttributesGroupedBy(ExistentialRuleform ruleform,
                                                                    Agency groupingAgency) {
         return create.selectDistinct(EXISTENTIAL_ATTRIBUTE.fields())
-                     .from(EXISTENTIAL_ATTRIBUTE.as("attrValue"))
-                     .join(FACET.as("auth"))
+                     .from(EXISTENTIAL_ATTRIBUTE)
+                     .join(FACET)
                      .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(FACET.CLASSIFIER))
-                     .join(FACET.as("na"))
+                     .join(FACET)
                      .on(EXISTENTIAL_ATTRIBUTE_AUTHORIZATION.FACET.eq(FACET.ID))
-                     .join(EXISTENTIAL_NETWORK.as("network"))
+                     .join(EXISTENTIAL_NETWORK)
                      .on(EXISTENTIAL_NETWORK.RELATIONSHIP.equal(FACET.CLASSIFIER))
                      .and(EXISTENTIAL_NETWORK.CHILD.equal(FACET.CLASSIFICATION))
                      .and(EXISTENTIAL_ATTRIBUTE.EXISTENTIAL.eq(ruleform.getId()))
@@ -469,11 +465,14 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public ExistentialNetworkAttributeRecord getAttributeValue(ExistentialNetworkRecord edge,
                                                                Attribute attribute) {
-        return create.selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE.as("attrValue"))
-                     .where(EXISTENTIAL_NETWORK_ATTRIBUTE.EDGE.eq(edge.getId()))
-                     .and(EXISTENTIAL_NETWORK_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
-                     .fetchOne()
-                     .into(ExistentialNetworkAttributeRecord.class);
+        ExistentialNetworkAttributeRecord result = create.selectFrom(EXISTENTIAL_NETWORK_ATTRIBUTE)
+                                                         .where(EXISTENTIAL_NETWORK_ATTRIBUTE.EDGE.eq(edge.getId()))
+                                                         .and(EXISTENTIAL_NETWORK_ATTRIBUTE.ATTRIBUTE.eq(attribute.getId()))
+                                                         .fetchOne();
+        if (result == null) {
+            return null;
+        }
+        return result.into(ExistentialNetworkAttributeRecord.class);
     }
 
     @Override
@@ -846,16 +845,13 @@ public class PhantasmModelImpl implements PhantasmModel {
     public final void initialize(ExistentialRuleform ruleform,
                                  FacetRecord aspect,
                                  EditableWorkspace workspace) {
-        Agency principal = model.getCurrentPrincipal()
-                                .getPrincipal();
         ExistentialRecord classification = model.records()
                                                 .resolve(aspect.getClassification());
         if (getImmediateChildren(ruleform.getId(), aspect.getClassifier(),
                                  classification.getDomain()).isEmpty()) {
             Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> links = link(ruleform.getId(),
                                                                                    aspect.getClassifier(),
-                                                                                   aspect.getClassification(),
-                                                                                   principal.getId());
+                                                                                   aspect.getClassification());
             if (workspace != null) {
                 workspace.add(links.a);
                 workspace.add(links.b);
@@ -871,8 +867,7 @@ public class PhantasmModelImpl implements PhantasmModel {
                 && !authorizedAttribute.getIndexed()) {
                 if (getAttributeValue(ruleform, authorizedAttribute) == null) {
                     ExistentialAttributeRecord attribute = create(ruleform,
-                                                                  authorizedAttribute,
-                                                                  principal);
+                                                                  authorizedAttribute);
                     setValue(authorizedAttribute, attribute, authorization);
                     attribute.insert();
                     if (workspace != null) {
@@ -904,22 +899,18 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(ExistentialRuleform parent,
                                                                           Relationship r,
-                                                                          ExistentialRuleform child,
-                                                                          Agency updatedBy) {
-        return link(parent.getId(), r.getId(), child.getId(),
-                    updatedBy.getId());
+                                                                          ExistentialRuleform child) {
+        return link(parent.getId(), r.getId(), child.getId());
     }
 
     public Tuple<ExistentialNetworkRecord, ExistentialNetworkRecord> link(UUID parent,
                                                                           UUID r,
-                                                                          UUID child,
-                                                                          UUID updatedBy) {
+                                                                          UUID child) {
         ExistentialNetworkRecord forward = model.records()
                                                 .newExistentialNetwork();
         forward.setParent(parent);
         forward.setRelationship(r);
         forward.setChild(child);
-        forward.setUpdatedBy(updatedBy);
         forward.insert();
 
         ExistentialNetworkRecord inverse = model.records()
@@ -927,7 +918,6 @@ public class PhantasmModelImpl implements PhantasmModel {
         inverse.setParent(child);
         inverse.setRelationship(r);
         inverse.setChild(parent);
-        inverse.setUpdatedBy(updatedBy);
         inverse.insert();
         return new Tuple<>(forward, inverse);
     }
@@ -979,10 +969,10 @@ public class PhantasmModelImpl implements PhantasmModel {
     @Override
     public void setImmediateChild(ExistentialRuleform parent,
                                   Relationship relationship,
-                                  ExistentialRuleform child, Agency updatedBy) {
+                                  ExistentialRuleform child) {
 
         unlink(parent, relationship, child);
-        link(parent, relationship, child, updatedBy);
+        link(parent, relationship, child);
 
     }
 

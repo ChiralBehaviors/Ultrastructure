@@ -113,36 +113,29 @@ public class WorkspaceSnapshotTest extends AbstractModelTest {
             assertEquals(12, delta.getRecords()
                                   .size());
 
-            try {
-                myModel.getWorkspaceModel()
-                       .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-                fail("Should not exist");
-            } catch (IllegalArgumentException e) {
-                // expected
-            }
-            version1.load(create);
-            delta.load(create);
+            assertNull(myModel.getWorkspaceModel()
+                              .getScoped(WorkspaceAccessor.uuidOf(THING_URI)));
+            version1.load(myModel.create());
+            delta.load(myModel.create());
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+            assertNotNull(scope);
             Agency theDude = (Agency) scope.lookup("TheDude");
             assertNotNull(theDude);
         }
 
         try (Model myModel = new ModelImpl(newCreate())) {
 
-            try {
-                myModel.getWorkspaceModel()
-                       .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
-                fail("Should not exist");
-            } catch (IllegalArgumentException e) {
-                // expected
-            }
-            WorkspaceSnapshot.load(create, Arrays.asList(version1File.toURI()
-                                                                     .toURL(),
-                                                         version2_1File.toURI()
-                                                                       .toURL()));
+            assertNull(myModel.getWorkspaceModel()
+                              .getScoped(WorkspaceAccessor.uuidOf(THING_URI)));
+            WorkspaceSnapshot.load(myModel.create(),
+                                   Arrays.asList(version1File.toURI()
+                                                             .toURL(),
+                                                 version2_1File.toURI()
+                                                               .toURL()));
             WorkspaceScope scope = myModel.getWorkspaceModel()
                                           .getScoped(WorkspaceAccessor.uuidOf(THING_URI));
+            assertNotNull(scope);
             Agency theDude = (Agency) scope.lookup("TheDude");
             assertNotNull(theDude);
         }

@@ -20,6 +20,7 @@
 
 package com.chiralbehaviors.CoRE.workspace;
 
+import static com.chiralbehaviors.CoRE.jooq.Tables.EXISTENTIAL;
 import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 
 import java.io.IOException;
@@ -41,9 +42,9 @@ import org.jooq.TableRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.WorkspaceAuthorizationRecord;
 import com.chiralbehaviors.CoRE.json.CoREModule;
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -78,37 +79,8 @@ public class WorkspaceSnapshot {
                          resource.toExternalForm(), e);
                 throw e;
             }
-            Product definingProduct = workspace.getDefiningProduct();
-            Product existing = new RecordsFactory() {
-
-                @Override
-                public DSLContext create() {
-                    return create;
-                }
-
-                @Override
-                public UUID currentPrincipalId() {
-                    return null;
-                }
-            }.resolve(definingProduct.getId());
-            if (existing == null) {
-                log.info("Creating workspace [{}] version: {} from: {}",
-                         definingProduct.getName(),
-                         definingProduct.getVersion(),
-                         resource.toExternalForm());
-                workspace.load(create);
-            } else if (existing.getVersion() < definingProduct.getVersion()) {
-                log.info("Updating workspace [{}] from version:{} to version: {} from: {}",
-                         definingProduct.getName(), existing.getVersion(),
-                         definingProduct.getVersion(),
-                         resource.toExternalForm());
-                workspace.load(create);
-            } else {
-                log.info("Not updating workspace [{}] existing version: {} is higher than version: {} from: {}",
-                         definingProduct.getName(), existing.getVersion(),
-                         definingProduct.getVersion(),
-                         resource.toExternalForm());
-            }
+            log.info("Loading workspace from: {}", resource.toExternalForm());
+            workspace.load(create);
         }
     }
 
@@ -188,12 +160,31 @@ public class WorkspaceSnapshot {
     }
 
     @SuppressWarnings("unchecked")
-    public void load(DSLContext create) {
+    public boolean load(DSLContext create) {
+        ExistentialRecord existing = create.selectFrom(EXISTENTIAL)
+                                           .where(EXISTENTIAL.ID.equal(definingProduct.getId()))
+                                           .fetchOne();
+        if (existing == null) {
+            log.info("Creating workspace [{}] version: {}",
+                     definingProduct.getName(), definingProduct.getVersion());
+            create.executeInsert(definingProduct);
+        } else if (existing.getVersion() < definingProduct.getVersion()) {
+            log.info("Updating workspace [{}] from version:{} to version: {} from: {}",
+                     definingProduct.getName(), existing.getVersion(),
+                     definingProduct.getVersion());
+            create.executeUpdate(definingProduct);
+        } else {
+            log.info("Not updating workspace [{}] existing version: {} is higher than version: {}",
+                     definingProduct.getName(), existing.getVersion(),
+                     definingProduct.getVersion());
+            return false;
+        }
         records.forEach(r -> {
             @SuppressWarnings("rawtypes")
             TableRecord r2 = (TableRecord) r;
             create.executeInsert(r2);
         });
+        return true;
     }
 
     public void serializeTo(OutputStream os) throws JsonGenerationException,
@@ -214,6 +205,7 @@ public class WorkspaceSnapshot {
                                                           .from(t)
                                                           .join(WORKSPACE_AUTHORIZATION)
                                                           .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
+                                                          .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
                                                           .and(WORKSPACE_AUTHORIZATION.ID.equal((Field<UUID>) t.field("workspace")))
                                                           .fetchInto(t.getRecordType()));
                                  } else {

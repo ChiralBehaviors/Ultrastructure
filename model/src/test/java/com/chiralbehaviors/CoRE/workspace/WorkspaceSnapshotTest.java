@@ -21,6 +21,7 @@
 package com.chiralbehaviors.CoRE.workspace;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -57,7 +58,7 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
 
         WorkspaceSnapshot retrieved = new WorkspaceSnapshot(definingProduct,
                                                             create);
-        assertEquals(4, retrieved.getRecords()
+        assertEquals(3, retrieved.getRecords()
                                  .size());
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ObjectMapper mapper = new ObjectMapper();
@@ -66,15 +67,15 @@ public class WorkspaceSnapshotTest extends DatabaseTest {
         ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
         WorkspaceSnapshot deserialized = mapper.readValue(is,
                                                           WorkspaceSnapshot.class);
-        assertEquals(4, deserialized.getRecords()
+        assertEquals(3, deserialized.getRecords()
                                     .size());
 
         assertTrue(deserialized.getRecords()
                                .stream()
                                .anyMatch(r -> pseudoScientist.equals(r)));
-        assertTrue(deserialized.getRecords()
-                               .stream()
-                               .anyMatch(r -> definingProduct.equals(r)));
+        assertFalse(deserialized.getRecords()
+                                .stream()
+                                .anyMatch(r -> definingProduct.equals(r)));
 
     }
 }

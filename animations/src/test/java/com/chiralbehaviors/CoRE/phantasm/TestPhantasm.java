@@ -64,7 +64,7 @@ import com.chiralbehaviors.CoRE.phantasm.test.product.Thing3;
 public class TestPhantasm extends AbstractModelTest {
 
     @BeforeClass
-    public static void before() throws Exception {
+    public static void loadThingOntology() throws Exception {
         create.transaction(c -> {
             try {
                 WorkspaceImporter.manifest(TestPhantasm.class.getResourceAsStream("/thing.wsp"),

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -45,9 +45,13 @@ import com.chiralbehaviors.CoRE.domain.Interval;
 import com.chiralbehaviors.CoRE.domain.Location;
 import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
+import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.domain.Unit;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.NetworkInferenceRecord;
+import com.chiralbehaviors.CoRE.jooq.tables.records.StatusCodeSequencingRecord;
 import com.chiralbehaviors.CoRE.kernel.Kernel;
 import com.chiralbehaviors.CoRE.kernel.phantasm.agency.CoreInstance;
 import com.chiralbehaviors.CoRE.meta.ExistentialModel;
@@ -56,6 +60,17 @@ import com.chiralbehaviors.CoRE.meta.Model;
 import com.chiralbehaviors.CoRE.meta.PhantasmModel;
 import com.chiralbehaviors.CoRE.meta.StatusCodeModel;
 import com.chiralbehaviors.CoRE.meta.WorkspaceModel;
+import com.chiralbehaviors.CoRE.meta.models.triggers.AgencyTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.AttributeTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.ExistentialNetworkTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.IntervalTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.LocationTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.NetworkInferenceTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.ProductTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.RelationshipTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.StatusCodeSequencingTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.StatusCodeTrigger;
+import com.chiralbehaviors.CoRE.meta.models.triggers.UnitTrigger;
 import com.chiralbehaviors.CoRE.phantasm.Phantasm;
 import com.chiralbehaviors.CoRE.phantasm.java.PhantasmDefinition;
 import com.chiralbehaviors.CoRE.security.AuthorizedPrincipal;
@@ -91,36 +106,23 @@ public class ModelImpl implements Model {
 
     private final ExistentialModel<Agency>       agencyModel;
     private final ExistentialModel<Attribute>    attributeModel;
-    private AuthorizedPrincipal                  currentPrincipal;
     private final DSLContext                     create;
+    private AuthorizedPrincipal                  currentPrincipal;
+    private final RecordsFactory                 factory;
     private final ExistentialModel<Interval>     intervalModel;
     private final JobModel                       jobModel;
-    private final PhantasmModel                  phantasmModel;
     private final Kernel                         kernel;
     private final ExistentialModel<Location>     locationModel;
+    private final PhantasmModel                  phantasmModel;
     private final ExistentialModel<Product>      productModel;
     private final ExistentialModel<Relationship> relationshipModel;
     private final StatusCodeModel                statusCodeModel;
     private final ExistentialModel<Unit>         unitModel;
     private final WorkspaceModel                 workspaceModel;
-    private final RecordsFactory                 factory;
 
     public ModelImpl(DSLContext create) {
         this.create = create;
-        factory = new RecordsFactory() {
-
-            @Override
-            public DSLContext create() {
-                return create;
-            }
-
-            @Override
-            public UUID currentPrincipalId() {
-                return getCurrentPrincipal().getPrincipal()
-                                            .getId();
-            }
-
-        };
+        factory = createTriggers();
         workspaceModel = new WorkspaceModelImpl(this);
         kernel = workspaceModel.getScoped(WellKnownProduct.KERNEL_WORKSPACE.id())
                                .getWorkspace()
@@ -260,6 +262,11 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public DSLContext create() {
+        return create;
+    }
+
+    @Override
     public <V> V executeAs(AuthorizedPrincipal principal,
                            Callable<V> function) throws Exception {
         V value = null;
@@ -285,6 +292,11 @@ public class ModelImpl implements Model {
     }
 
     @Override
+    public Attribute getAttribute(UUID id) {
+        return records().resolve(id);
+    }
+
+    @Override
     public ExistentialModel<Attribute> getAttributeModel() {
         return attributeModel;
     }
@@ -305,9 +317,32 @@ public class ModelImpl implements Model {
                                            : authorizedPrincipal;
     }
 
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#getExistentialModel(com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain)
+     */
     @Override
-    public DSLContext create() {
-        return create;
+    public ExistentialModel<? extends ExistentialRuleform> getExistentialModel(ExistentialDomain domain) {
+        switch (domain) {
+            case Agency:
+                return getAgencyModel();
+            case Attribute:
+                return getAttributeModel();
+            case Interval:
+                return getIntervalModel();
+            case Location:
+                return getLocationModel();
+            case Product:
+                return getLocationModel();
+            case Relationship:
+                return getRelationshipModel();
+            case StatusCode:
+                return getStatusCodeModel();
+            case Unit:
+                return getUnitModel();
+            default:
+                throw new IllegalArgumentException(String.format("Invalid domain: %s",
+                                                                 domain));
+        }
     }
 
     @Override
@@ -328,6 +363,11 @@ public class ModelImpl implements Model {
     @Override
     public ExistentialModel<Location> getLocationModel() {
         return locationModel;
+    }
+
+    @Override
+    public PhantasmModel getPhantasmModel() {
+        return phantasmModel;
     }
 
     @Override
@@ -385,6 +425,12 @@ public class ModelImpl implements Model {
         //        animations.inferNetworks();
     }
 
+    @Override
+    public void inferNetworks(ExistentialRecord ruleform) {
+        // TODO Auto-generated method stub
+
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T extends ExistentialRuleform, R extends Phantasm<T>> R lookup(Class<R> phantasm,
@@ -396,6 +442,133 @@ public class ModelImpl implements Model {
         PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
                                                                                               this);
         return (R) definition.wrap(ruleform, this);
+    }
+
+    @Override
+    public ExistentialRecord lookupExistential(UUID id) {
+        return records().resolve(id);
+    }
+
+    @Override
+    public RecordsFactory records() {
+        return factory;
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.Model#snapshot()
+     */
+    @Override
+    public WorkspaceSnapshot snapshot() {
+        return new StateSnapshot(create, excludeThisSingleton());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
+                                                                         ExistentialRuleform ruleform) {
+        if (ruleform == null) {
+            return null;
+        }
+        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
+                                                                                              this);
+        return (R) definition.wrap(ruleform.getRuleform(), this);
+    }
+
+    private RecordsFactory createTriggers() {
+        Animations animations = new Animations(this, new Inference() {
+            @Override
+            public Model model() {
+                return ModelImpl.this;
+            }
+        });
+        return new RecordsFactory() {
+
+            @Override
+            public DSLContext create() {
+                return create;
+            }
+
+            @Override
+            public UUID currentPrincipalId() {
+                return getCurrentPrincipal().getPrincipal()
+                                            .getId();
+            }
+
+            @Override
+            public Agency newAgency() {
+                AgencyTrigger agency = RecordsFactory.super.newAgency().into(AgencyTrigger.class);
+                agency.set(animations);
+                return agency;
+            }
+
+            @Override
+            public Attribute newAttribute() {
+                AttributeTrigger attribute = RecordsFactory.super.newAttribute().into(AttributeTrigger.class);
+                attribute.set(animations);
+                return attribute;
+            }
+
+            @Override
+            public ExistentialNetworkRecord newExistentialNetwork() {
+                ExistentialNetworkTrigger edge = RecordsFactory.super.newExistentialNetwork().into(ExistentialNetworkTrigger.class);
+                edge.set(animations);
+                return edge;
+            }
+
+            @Override
+            public Interval newInterval() {
+                IntervalTrigger interval = RecordsFactory.super.newInterval().into(IntervalTrigger.class);
+                interval.set(animations);
+                return interval;
+            }
+
+            @Override
+            public Location newLocation() {
+                LocationTrigger location = RecordsFactory.super.newLocation().into(LocationTrigger.class);
+                return location;
+            }
+
+            @Override
+            public NetworkInferenceRecord newNetworkInferrence() {
+                NetworkInferenceTrigger inference = RecordsFactory.super.newNetworkInferrence().into(NetworkInferenceTrigger.class);
+                inference.set(animations);
+                return inference;
+
+            }
+
+            @Override
+            public Product newProduct() {
+                ProductTrigger product = RecordsFactory.super.newProduct().into(ProductTrigger.class);
+                return product;
+            }
+
+            @Override
+            public Relationship newRelationship() {
+                RelationshipTrigger relationship = RecordsFactory.super.newRelationship().into(RelationshipTrigger.class);
+                return relationship;
+            }
+
+            @Override
+            public StatusCode newStatusCode() {
+                StatusCodeTrigger statusCode = RecordsFactory.super.newStatusCode().into(StatusCodeTrigger.class);
+                statusCode.set(animations);
+                return statusCode;
+            }
+
+            @Override
+            public StatusCodeSequencingRecord newStatusCodeSequencing() {
+                StatusCodeSequencingTrigger seq = RecordsFactory.super.newStatusCodeSequencing().into(StatusCodeSequencingTrigger.class);
+                seq.set(animations);
+                return seq;
+            }
+
+            @Override
+            public Unit newUnit() {
+                UnitTrigger unit = RecordsFactory.super.newUnit().into(UnitTrigger.class);
+                unit.set(animations);
+                return unit;
+            }
+        };
     }
 
     private Collection<UUID> excludeThisSingleton() {
@@ -418,79 +591,5 @@ public class ModelImpl implements Model {
                                                          .where(EXISTENTIAL.ID.equal(WellKnownAgency.CORE_ANIMATION_SOFTWARE.id()))
                                                          .fetchOne()
                                                          .into(Agency.class));
-    }
-
-    @Override
-    public void inferNetworks(ExistentialRecord ruleform) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public PhantasmModel getPhantasmModel() {
-        return phantasmModel;
-    }
-
-    @Override
-    public ExistentialRecord lookupExistential(UUID id) {
-        return records().resolve(id);
-    }
-
-    @Override
-    public Attribute getAttribute(UUID id) {
-        return records().resolve(id);
-    }
-
-    @Override
-    public RecordsFactory records() {
-        return factory;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends ExistentialRuleform, R extends Phantasm<T>> R wrap(Class<R> phantasm,
-                                                                         ExistentialRuleform ruleform) {
-        if (ruleform == null) {
-            return null;
-        }
-        PhantasmDefinition<? extends T> definition = (PhantasmDefinition<? extends T>) cached(phantasm,
-                                                                                              this);
-        return (R) definition.wrap(ruleform.getRuleform(), this);
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#getExistentialModel(com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain)
-     */
-    @Override
-    public ExistentialModel<? extends ExistentialRuleform> getExistentialModel(ExistentialDomain domain) {
-        switch (domain) {
-            case Agency:
-                return getAgencyModel();
-            case Attribute:
-                return getAttributeModel();
-            case Interval:
-                return getIntervalModel();
-            case Location:
-                return getLocationModel();
-            case Product:
-                return getLocationModel();
-            case Relationship:
-                return getRelationshipModel();
-            case StatusCode:
-                return getStatusCodeModel();
-            case Unit:
-                return getUnitModel();
-            default:
-                throw new IllegalArgumentException(String.format("Invalid domain: %s",
-                                                                 domain));
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.Model#snapshot()
-     */
-    @Override
-    public WorkspaceSnapshot snapshot() {
-        return new StateSnapshot(create, excludeThisSingleton());
     }
 }

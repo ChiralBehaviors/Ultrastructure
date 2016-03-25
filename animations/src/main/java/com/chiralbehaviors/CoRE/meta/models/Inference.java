@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -34,14 +34,13 @@ import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.ExistentialNetwork;
 import com.chiralbehaviors.CoRE.jooq.tables.NetworkInference;
 import com.chiralbehaviors.CoRE.meta.Model;
 
 /**
  * Network inference logic
- * 
+ *
  * @author hhildebrand
  *
  */
@@ -148,7 +147,9 @@ public interface Inference {
                 .execute();
     }
 
-    DSLContext create();
+    default DSLContext create() {
+        return model().create();
+    }
 
     default void createCurrentPassRules() {
         create().execute("CREATE TEMPORARY TABLE IF NOT EXISTS current_pass_rules ("
@@ -159,18 +160,10 @@ public interface Inference {
                          + "inference uuid NOT NULL )");
     }
 
-    default void createDeductionTemporaryTables(boolean initial) {
-        if (initial) {
-            createWorkingMemory();
-            createCurrentPassRules();
-            createLastPassRules();
-        }
-        create().truncate(WORKING_MEMORY_TABLE)
-                .execute();
-        create().truncate(CURRENT_PASS_RULES_TABLE)
-                .execute();
-        create().truncate(LAST_PASS_RULES_TABLE)
-                .execute();
+    default void createDeductionTemporaryTables() {
+        createWorkingMemory();
+        createCurrentPassRules();
+        createLastPassRules();
     }
 
     default void createLastPassRules() {
@@ -210,31 +203,29 @@ public interface Inference {
             log.trace(String.format("deduced %s rules", deductions));
 
         }
-        //        INSERT INTO current_pass_rules(id, 
-        //                                       parent, 
-        //                                       relationship, 
-        //                                       child, 
-        //                                       premise1, 
+        //        INSERT INTO current_pass_rules(id,
+        //                                       parent,
+        //                                       relationship,
+        //                                       child,
+        //                                       premise1,
         //                                       premise2,
         //                                       inference)
         //         SELECT uuid_generate_v1mc() as id,
-        //                wm.parent as parent, 
-        //                wm.relationship as relationship, 
-        //                wm.child as child, 
-        //                wm.premise1 as premise1, 
+        //                wm.parent as parent,
+        //                wm.relationship as relationship,
+        //                wm.child as child,
+        //                wm.premise1 as premise1,
         //                wm.premise2 as premise2,
         //                wm.inference as inference
-        //         FROM working_memory AS wm        
+        //         FROM working_memory AS wm
     }
-
-    ExistentialDomain domain();
 
     default void generateInverses() {
         long then = System.currentTimeMillis();
         int inverses = 0;
         if (log.isTraceEnabled()) {
-            log.trace(String.format("created %s inverse rules of %s in %s ms",
-                                    inverses, domain(),
+            log.trace(String.format("created %s inverse rules in %s ms",
+                                    inverses,
                                     System.currentTimeMillis() - then));
         }
     }
@@ -268,13 +259,13 @@ public interface Inference {
                                        .where(exist.ID.isNull()))
                        .execute();
 
-        //    INSERT INTO working_memory(parent, 
-        //                               relationship, 
-        //                               child, 
-        //                               premise1, 
+        //    INSERT INTO working_memory(parent,
+        //                               relationship,
+        //                               child,
+        //                               premise1,
         //                               premise2,
         //                               inference)
-        //         SELECT 
+        //         SELECT
         //            p1.parent as parent,
         //            deduction.inference as relationship,
         //            p2.child as child,
@@ -340,10 +331,10 @@ public interface Inference {
                                        .and(exist.CHILD.equal(p2.CHILD))
                                        .where(exist.ID.isNull()))
                        .execute();
-        //        INSERT INTO working_memory(parent, 
-        //                                   relationship, 
-        //                                   child, 
-        //                                   premise1, 
+        //        INSERT INTO working_memory(parent,
+        //                                   relationship,
+        //                                   child,
+        //                                   premise1,
         //                                   premise2,
         //                                   inference)
         //            SELECT p1.parent as parent,
@@ -367,8 +358,6 @@ public interface Inference {
         //             WHERE exist.id IS NULL
 
     }
-
-    Model model();
 
     default int insert() {
         return create().insertInto(EXISTENTIAL_NETWORK,
@@ -398,22 +387,22 @@ public interface Inference {
                                        .and(CurentPassRules.CHILD.equal(CurentPassRules.CHILD)))
                        .execute();
 
-        //        INSERT INTO ruleform.%tableName%(id, 
-        //                parent, 
-        //                relationship, 
-        //                child, 
+        //        INSERT INTO ruleform.%tableName%(id,
+        //                parent,
+        //                relationship,
+        //                child,
         //                inference,
-        //                premise1, 
+        //                premise1,
         //                premise2,
         //                updated_by,
         //                version)
-        //            SELECT cpr.id as id, 
+        //            SELECT cpr.id as id,
         //                cpr.parent as parent,
         //                cpr.relationship as relationship,
         //                cpr.child as child,
         //                cpr.inference as inference,
-        //                cpr.premise1 as premise1, 
-        //                cpr.premise2 as premise2, 
+        //                cpr.premise1 as premise1,
+        //                cpr.premise2 as premise2,
         //                '00000000-0000-0000-0000-000000000009' as updated_by,
         //                1 as version
         //            FROM current_pass_rules cpr
@@ -425,8 +414,10 @@ public interface Inference {
 
     }
 
-    default void propagate(boolean initial) {
-        createDeductionTemporaryTables(initial);
+    Model model();
+
+    default void propagate() {
+        createDeductionTemporaryTables();
         boolean firstPass = true;
         do {
             if (infer(firstPass) == 0) {

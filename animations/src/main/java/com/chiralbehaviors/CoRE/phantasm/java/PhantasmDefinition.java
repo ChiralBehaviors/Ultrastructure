@@ -118,7 +118,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
 
     /**
      * Constrain the ruleform to have the required facets.
-     * 
+     *
      * @param model
      * @param ruleform
      * @throws ClassCastException
@@ -262,21 +262,21 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
      * @SuppressWarnings({ "rawtypes", "unchecked" }) public Phantasm
      * construct(ExistentialRuleform ruleform, Model model, Agency updatedBy) {
      * RuleForm form = (RuleForm) ruleform;
-     * 
+     *
      * model.getNetworkedModel(ruleform) .initialize(form, new
      * Aspect(facet.getClassifier(), facet.getClassification())); return
      * wrap(form, model); }
-     * 
+     *
      * public PhantasmDefinition<?> getCached(Class<? extends Phantasm<?>>
      * returnPhantasm) { return CACHE.get(returnPhantasm); }
-     * 
+     *
      * public Map<Method, StateFunction<RuleForm>> getMethods() { return
      * methods; }
-     * 
+     *
      * public Class<Phantasm<RuleForm>> getPhantasm() { return phantasm; }
-     * 
+     *
      * public UUID getWorkspace() { return workspace; }
-     * 
+     *
      * public Phantasm<?> wrap(@SuppressWarnings("rawtypes") ExistentialRuleform
      * ruleform, Model model) { @SuppressWarnings("unchecked") RuleForm form =
      * (RuleForm) ruleform; constrain(model, form); PhantasmTwo
@@ -284,15 +284,15 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
      * Phantasm<?> proxy = (Phantasm<?>)
      * Proxy.newProxyInstance(phantasm.getClassLoader(), new Class[] { phantasm
      * }, doppelgänger); return proxy;
-     * 
+     *
      * }
-     * 
+     *
      * private void construct() { for (Method method :
      * this.phantasm.getDeclaredMethods()) { if (!method.isDefault()) {
      * process(method); } } for (Class<?> iFace : this.phantasm.getInterfaces())
      * { for (Method method : iFace.getDeclaredMethods()) { process(method); } }
      * }
-     * 
+     *
      * private void getInferred(Class<Phantasm<ExistentialRuleform>> phantasm,
      * Method method, String fieldName, Class<ExistentialRuleform> rulformClass)
      * { if (!rulformClass.equals(getRuleformClass())) { throw new
@@ -306,10 +306,10 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
      * fieldName, phantasm.getSimpleName())); } return state.getChildren(facet,
      * state.getRuleform(), auth) .stream() .map(r -> state.wrap(phantasm, r));
      * }); }
-     * 
+     *
      * @SuppressWarnings("unchecked") private Class<RuleForm> getRuleformClass()
      * { return (Class<RuleForm>) Model.getExistentialRuleform(phantasm); }
-     * 
+     *
      * private void process(Edge edge, Method method) { if (method.getName()
      * .startsWith("add")) { processAdd(edge, method); } else if
      * (method.getName() .startsWith("remove")) { processRemove(edge, method); }
@@ -319,7 +319,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
      * (method.getParameterTypes().length == 1 &&
      * List.class.isAssignableFrom(method.getParameterTypes()[0])) {
      * processSetList(edge, method); } else { processSingular(edge, method); } }
-     * 
+     *
      * private void process(Method method) { if (method.getName()
      * .equals("getScope") && method.getDeclaringClass()
      * .equals(ScopedPhantasm.class)) { methods.put(method, (PhantasmTwo
@@ -328,7 +328,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
      * null) { process(method.getAnnotation(Edge.class), method); } else if
      * (method.getAnnotation(PrimitiveState.class) != null) {
      * process(method.getAnnotation(PrimitiveState.class), method); } }
-     * 
+     *
      * private void process(PrimitiveState annotation, Method method) { if
      * (method.getName() .startsWith(GET)) { processPrimitiveGetter(annotation,
      * method); } else if (method.getName() .startsWith(SET)) {
@@ -336,9 +336,9 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
      * IllegalStateException(String.format(
      * "The method is neither a primitive setter/getter: %s",
      * method.toGenericString())); } }
-     * 
+     *
      * /**
-     * 
+     *
      * @param edge
      * @param method
      */
@@ -447,7 +447,7 @@ public class PhantasmDefinition<RuleForm extends ExistentialRuleform>
             }
             if (arguments[0] instanceof List) {
                 return state.setAttributeValue(facet, state.getRuleform(), auth,
-                                               (List<?>) arguments[0]);
+                                               arguments[0]);
             } else if (arguments[0] instanceof Object[]) {
                 return state.setAttributeValue(facet, state.getRuleform(), auth,
                                                (Object[]) arguments[0]);

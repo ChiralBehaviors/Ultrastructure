@@ -116,12 +116,6 @@ public class PhantasmModelImpl implements PhantasmModel {
     }
 
     @Override
-    public ExistentialRecord find(ExistentialAttribute attributeValue) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void authorizeAll(ExistentialRuleform ruleform,
                              Relationship relationship,
                              List<? extends ExistentialRuleform> authorized) {
@@ -349,6 +343,19 @@ public class PhantasmModelImpl implements PhantasmModel {
         for (ExistentialRuleform e : authorized) {
             deauthorize(existential, relationship, e);
         }
+    }
+
+    @Override
+    public ExistentialRecord find(ExistentialAttribute attributeValue) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Agency> findByAttributeValue(Attribute attribute, Object query,
+                                             ExistentialDomain domain) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -1236,12 +1243,5 @@ public class PhantasmModelImpl implements PhantasmModel {
         }
         value.setUpdated(new Timestamp(System.currentTimeMillis()));
         value.update();
-    }
-
-    @Override
-    public List<Agency> findByAttributeValue(Attribute attribute, Object query,
-                                             ExistentialDomain domain) {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ import com.google.common.base.Function;
  * mediates the Phantasm/Facet constructs in Ultrastructure. It's a bit
  * unwieldy, because of the type signatures required for erasure. Provides a
  * centralized implementation of Phantasm CRUD and the security model for such.
- * 
+ *
  * @author hhildebrand
  *
  */
@@ -84,7 +84,7 @@ public class PhantasmCRUD {
 
     /**
      * Add the child to the list of children of the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @param auth
@@ -109,7 +109,7 @@ public class PhantasmCRUD {
 
     /**
      * Add the list of children to the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @param auth
@@ -136,7 +136,7 @@ public class PhantasmCRUD {
 
     /**
      * Apply the facet to the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @return
@@ -161,7 +161,7 @@ public class PhantasmCRUD {
 
     /**
      * Throws ClassCastException if not an instance of the authorized facet type
-     * 
+     *
      * @param ruleform
      * @param facet
      */
@@ -186,7 +186,7 @@ public class PhantasmCRUD {
 
     /**
      * Create a new instance of the facet
-     * 
+     *
      * @param facet
      * @param name
      * @param description
@@ -222,11 +222,11 @@ public class PhantasmCRUD {
 
     /**
      * Answer the attribute value of the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @param stateAuth
-     * 
+     *
      * @return
      */
     public Object getAttributeValue(Aspect facet, ExistentialRuleform instance,
@@ -251,11 +251,11 @@ public class PhantasmCRUD {
 
     /**
      * Answer the inferred and immediate network children of the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @param auth
-     * 
+     *
      * @return
      */
     public List<ExistentialRuleform> getChildren(Aspect facet,
@@ -287,11 +287,11 @@ public class PhantasmCRUD {
 
     /**
      * Answer the immediate, non inferred children of the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @param auth
-     * 
+     *
      * @return
      */
     public List<ExistentialRuleform> getImmediateChildren(Aspect facet,
@@ -307,7 +307,7 @@ public class PhantasmCRUD {
                     .getImmediateChildren(instance, auth.getRelationship(),
                                           auth.getDomain())
                     .stream()
-                    .map(r -> (ExistentialRuleform) r)
+                    .map(r -> r)
                     .filter(child -> model.getPhantasmModel()
                                           .checkCapability(child, getREAD()))
                     .collect(Collectors.toList());
@@ -315,7 +315,7 @@ public class PhantasmCRUD {
 
     /**
      * Answer the list of instances of this facet.
-     * 
+     *
      * @param facet
      * @return
      */
@@ -328,7 +328,7 @@ public class PhantasmCRUD {
                     .getChildren(facet.getClassification(),
                                  facet.getClassifier(), facet.getDomain())
                     .stream()
-                    .map(e -> (ExistentialRuleform) e)
+                    .map(e -> e)
                     .filter(instance -> checkREAD(instance))
                     .collect(Collectors.toList());
     }
@@ -351,11 +351,11 @@ public class PhantasmCRUD {
 
     /**
      * Answer the singular network child of the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @param auth
-     * 
+     *
      * @return
      */
     public ExistentialRuleform getSingularChild(Aspect facet,
@@ -367,10 +367,10 @@ public class PhantasmCRUD {
         if (!checkREAD(facet) || !checkREAD(auth)) {
             return null;
         }
-        ExistentialRuleform child = (ExistentialRuleform) model.getPhantasmModel()
-                                                               .getImmediateChild(instance,
-                                                                                  auth.getRelationship(),
-                                                                                  auth.getDomain());
+        ExistentialRuleform child = model.getPhantasmModel()
+                                         .getImmediateChild(instance,
+                                                            auth.getRelationship(),
+                                                            auth.getDomain());
         return checkREAD(child) ? child : null;
     }
 
@@ -403,13 +403,13 @@ public class PhantasmCRUD {
                   .map(id -> existential(id))
                   .map(r -> model.records()
                                  .resolve(r))
-                  .map(r -> (ExistentialRuleform) r)
+                  .map(r -> r)
                   .collect(Collectors.toList());
     }
 
     /**
      * Remove the facet from the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @return
@@ -433,7 +433,7 @@ public class PhantasmCRUD {
 
     /**
      * Remove a child from the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @param auth
@@ -456,7 +456,7 @@ public class PhantasmCRUD {
 
     /**
      * Remove the immediate child links from the instance
-     * 
+     *
      * @param facet
      * @param instance
      * @param auth
@@ -529,7 +529,7 @@ public class PhantasmCRUD {
     /**
      * Set the immediate children of the instance to be the list of supplied
      * children. No inferred links will be explicitly added or deleted.
-     * 
+     *
      * @param facet
      * @param instance
      * @param auth
@@ -592,7 +592,7 @@ public class PhantasmCRUD {
 
     /**
      * Set the singular child of the instance.
-     * 
+     *
      * @param facet
      * @param instance
      * @param auth
@@ -621,6 +621,11 @@ public class PhantasmCRUD {
         return instance;
     }
 
+    private boolean checkREAD(Aspect auth) {
+        return model.getPhantasmModel()
+                    .checkCapability(auth.getFacet(), getREAD());
+    }
+
     private boolean checkREAD(AttributeAuthorization stateAuth) {
         return model.getPhantasmModel()
                     .checkCapability(stateAuth.getAuth(), getREAD());
@@ -631,24 +636,19 @@ public class PhantasmCRUD {
                     .checkCapability(child, getREAD());
     }
 
-    private boolean checkREAD(Aspect auth) {
-        return model.getPhantasmModel()
-                    .checkCapability(auth.getFacet(), getREAD());
-    }
-
     private boolean checkREAD(NetworkAuthorization stateAuth) {
         return model.getPhantasmModel()
                     .checkCapability(stateAuth.getAuth(), getREAD());
     }
 
-    private boolean checkUPDATE(AttributeAuthorization stateAuth) {
-        return model.getPhantasmModel()
-                    .checkCapability(stateAuth.getAuth(), getUPDATE());
-    }
-
     private boolean checkUPDATE(Aspect stateAuth) {
         return model.getPhantasmModel()
                     .checkCapability(stateAuth.getFacet(), getUPDATE());
+    }
+
+    private boolean checkUPDATE(AttributeAuthorization stateAuth) {
+        return model.getPhantasmModel()
+                    .checkCapability(stateAuth.getAuth(), getUPDATE());
     }
 
     private boolean checkUPDATE(ExistentialRuleform child) {

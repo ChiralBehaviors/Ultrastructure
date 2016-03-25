@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ import com.chiralbehaviors.CoRE.utils.English;
 
 /**
  * A programmable traversal mechanism for phantasm metadata
- * 
+ *
  * @author hhildebrand
  *
  */
@@ -183,7 +183,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
 
         /**
          * Visit the attribute authorization
-         * 
+         *
          * @param facet
          *            - the facet
          * @param auth
@@ -195,7 +195,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
 
         /**
          * Visit the multiple child authorization
-         * 
+         *
          * @param auth
          *            - the authorization
          * @param fieldName
@@ -211,7 +211,7 @@ public class PhantasmTraversal<RuleForm extends ExistentialRuleform> {
 
         /**
          * Visit the singular child network authorization
-         * 
+         *
          * @param auth
          *            - the network authorization
          * @param fieldName

@@ -137,6 +137,24 @@ public interface PhantasmModel {
     void deauthorizeAll(ExistentialRuleform ruleform, Relationship relationship,
                         List<? extends ExistentialRuleform> authorized);
 
+    /**
+     * Find the ruleform instances that match the supplied attribute
+     *
+     * @param attributeValue
+     *            - the attribute value to match
+     * @return the collection of ruleform instances that match the attribute
+     */
+    ExistentialRecord find(ExistentialAttribute attributeValue);
+
+    /**
+     * @param attribute
+     * @param query
+     * @param agency
+     * @return
+     */
+    List<Agency> findByAttributeValue(Attribute attribute, Object query,
+                                      ExistentialDomain domain);
+
     List<? extends ExistentialRuleform> getAllAuthorized(ExistentialRuleform ruleform,
                                                          Relationship relationship,
                                                          ExistentialDomain domain);
@@ -204,24 +222,6 @@ public interface PhantasmModel {
                                                         Attribute attribute);
 
     /**
-     * Find the ruleform instances that match the supplied attribute
-     *
-     * @param attributeValue
-     *            - the attribute value to match
-     * @return the collection of ruleform instances that match the attribute
-     */
-    ExistentialRecord find(ExistentialAttribute attributeValue);
-
-    /**
-     * @param attribute
-     * @param query
-     * @param agency
-     * @return
-     */
-    List<Agency> findByAttributeValue(Attribute attribute, Object query,
-                                      ExistentialDomain domain);
-
-    /**
      * Answer the list of attribute values of the attribute on the ruleform
      *
      * @param attribute
@@ -268,7 +268,7 @@ public interface PhantasmModel {
                                           ExistentialDomain domain);
 
     /**
-     * 
+     *
      * @param parent
      * @param relationship
      * @param child
@@ -320,7 +320,7 @@ public interface PhantasmModel {
                                                        ExistentialDomain domain);
 
     /**
-     * 
+     *
      * @param parent
      * @param relationship
      * @param child
@@ -344,7 +344,7 @@ public interface PhantasmModel {
                                                        Collection<ExistentialRuleform> children);
 
     /**
-     * 
+     *
      * @param aspect
      * @param includeGrouping
      * @return the list of network authorizations for this aspect
@@ -373,7 +373,7 @@ public interface PhantasmModel {
 
     /**
      * Initialize the ruleform with the classified attributes for this aspect
-     * 
+     *
      * @param ruleform
      * @param aspect
      */
@@ -382,7 +382,7 @@ public interface PhantasmModel {
     /**
      * Initialize the ruleform with the classified attributes for this aspect,
      * record new objects in workspace
-     * 
+     *
      * @param ruleform
      * @param aspect
      */
@@ -411,7 +411,7 @@ public interface PhantasmModel {
 
     /**
      * Sets a value for an attribute after validating it first
-     * 
+     *
      * @param value
      */
     void setAttributeValue(ExistentialAttributeRecord value);
@@ -424,7 +424,7 @@ public interface PhantasmModel {
      * Sets the child of the immediate relationship defined by the parent and
      * relationship. This is done by first deleting the edge, and then inserting
      * the edge with the new child
-     * 
+     *
      * @param parent
      * @param relationship
      * @param child

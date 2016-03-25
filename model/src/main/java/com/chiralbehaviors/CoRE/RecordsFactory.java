@@ -359,8 +359,9 @@ public interface RecordsFactory {
         return record;
     }
 
-    default ExistentialRecord newInterval() {
-        ExistentialRecord record = create().newRecord(EXISTENTIAL);
+    default Interval newInterval() {
+        Interval record = create().newRecord(EXISTENTIAL)
+                                  .into(Interval.class);
         record.setDomain(ExistentialDomain.Interval);
         record.setId(GENERATOR.generate());
         record.setUpdatedBy(currentPrincipalId());

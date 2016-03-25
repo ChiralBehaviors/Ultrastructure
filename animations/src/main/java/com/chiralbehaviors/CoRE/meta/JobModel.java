@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -118,7 +118,7 @@ public interface JobModel {
      * For a given job, generates all the implicit jobs that need to be done
      *
      * This is the jesus nut of the the event cluster animation.
-     * 
+     *
      * @param jobId
      *
      * @return the list of jobs generated

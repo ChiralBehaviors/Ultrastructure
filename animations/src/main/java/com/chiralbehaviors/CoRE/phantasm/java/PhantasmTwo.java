@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -130,8 +130,8 @@ public class PhantasmTwo<RuleForm extends ExistentialRuleform> extends
                   .equals("equals")
             && args.length == 1
             && method.getParameterTypes()[0].equals(Object.class)) {
-            return (args[0] instanceof Phantasm) ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
-                                                 : false;
+            return args[0] instanceof Phantasm ? ruleform.equals(((Phantasm<?>) args[0]).getRuleform())
+                                               : false;
         } else if (method.getName()
                          .equals("hashCode")
                    && (args == null || args.length == 0)) {

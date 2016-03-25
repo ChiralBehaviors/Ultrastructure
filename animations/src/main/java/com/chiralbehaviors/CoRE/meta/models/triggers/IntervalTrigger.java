@@ -1,13 +1,13 @@
 /**
- * (C) Copyright 2015 Chiral Behaviors, LLC. All Rights Reserved
+ * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
  *
 
- * This file is part of Ultrastructure.
+ *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  (at your option) any later version.
  *
  *  ULtrastructure is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,18 +18,20 @@
  *  along with Ultrastructure.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.chiralbehaviors.CoRE.meta;
+package com.chiralbehaviors.CoRE.meta.models.triggers;
+
+import com.chiralbehaviors.CoRE.domain.Interval;
+import com.chiralbehaviors.CoRE.meta.models.Animations;
 
 /**
  * @author hhildebrand
  *
  */
-public class TriggerException extends RuntimeException {
-
+public class IntervalTrigger extends Interval {
     private static final long serialVersionUID = 1L;
+    private Animations        animations;
 
-    public TriggerException(String message, Throwable cause) {
-        super(message, cause);
+    public void set(Animations animations) {
+        this.animations = animations;
     }
-
 }

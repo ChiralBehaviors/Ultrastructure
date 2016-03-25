@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -53,11 +53,11 @@ public class AuthorizedPrincipal implements Cloneable {
         capabilities.add(0, this.principal);
     }
 
-    public Agency getPrincipal() {
-        return principal;
-    }
-
     public List<Agency> getCapabilities() {
         return capabilities;
+    }
+
+    public Agency getPrincipal() {
+        return principal;
     }
 }

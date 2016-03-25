@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ public interface WorkspaceModel {
     /**
      * Create the workspace and return the Workspace scope defined by that
      * workspace
-     * 
+     *
      * @param definingProduct
      * @return
      */

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2014 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -102,9 +102,9 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
     public DatabaseBackedWorkspace(Product definingProduct, Model model) {
         assert definingProduct != null;
-        this.definingProductId = definingProduct.getId();
+        definingProductId = definingProduct.getId();
         this.model = model;
-        this.scope = new WorkspaceScope(this);
+        scope = new WorkspaceScope(this);
         // We need the kernel workspace to lookup workspaces, so special case the kernel
         if (!definingProduct.getId()
                             .equals(WellKnownProduct.KERNEL_WORKSPACE.id())) {
@@ -251,6 +251,15 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
     @Override
     public void add(SelfSequencingAuthorizationRecord ruleform) {
         put(null, ruleform);
+    }
+
+    /* (non-Javadoc)
+     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord)
+     */
+    @Override
+    public void add(SiblingSequencingAuthorizationRecord ruleform) {
+        // TODO Auto-generated method stub
+
     }
 
     /* (non-Javadoc)
@@ -720,14 +729,5 @@ public class DatabaseBackedWorkspace implements EditableWorkspace {
 
         );
         authorization.insert();
-    }
-
-    /* (non-Javadoc)
-     * @see com.chiralbehaviors.CoRE.meta.workspace.EditableWorkspace#add(com.chiralbehaviors.CoRE.jooq.tables.records.SiblingSequencingAuthorizationRecord)
-     */
-    @Override
-    public void add(SiblingSequencingAuthorizationRecord ruleform) {
-        // TODO Auto-generated method stub
-
     }
 }

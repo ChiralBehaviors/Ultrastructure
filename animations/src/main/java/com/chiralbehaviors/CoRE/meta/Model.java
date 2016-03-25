@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ public interface Model extends AutoCloseable {
 
     /**
      * Apply the phantasm to the target.
-     * 
+     *
      * @param phantasm
      * @param target
      * @return
@@ -105,7 +105,7 @@ public interface Model extends AutoCloseable {
 
     /**
      * Answer the cached facet definition for a phantasm class
-     * 
+     *
      * @param phantasm
      * @return
      */
@@ -113,7 +113,7 @@ public interface Model extends AutoCloseable {
 
     /**
      * Cast the phantasm to another facet
-     * 
+     *
      * @param targetPhantasm
      * @param ruleform
      * @return
@@ -127,7 +127,7 @@ public interface Model extends AutoCloseable {
     /**
      * Create a new instance of the phantasm's existential ruleform type using
      * the model
-     * 
+     *
      * @param phantasm
      * @param ruleform
      * @return
@@ -147,7 +147,7 @@ public interface Model extends AutoCloseable {
     /**
      * Execute the function within in the context of the authenticated
      * principal.
-     * 
+     *
      * @param principal
      * @param function
      *            -
@@ -179,7 +179,7 @@ public interface Model extends AutoCloseable {
     CoreInstance getCoreInstance();
 
     /**
-     * 
+     *
      * @return the current thread's authorized principal
      */
     AuthorizedPrincipal getCurrentPrincipal();
@@ -239,7 +239,7 @@ public interface Model extends AutoCloseable {
 
     /**
      * Infer networks for the existential ruleform
-     * 
+     *
      * @param ruleform
      */
     void inferNetworks(ExistentialRecord ruleform);
@@ -247,7 +247,7 @@ public interface Model extends AutoCloseable {
     /**
      * Lookup the ruleform using the UUID and wrap an instance of a phantasm
      * using the model
-     * 
+     *
      * @param phantasm
      * @param uuid
      * @return
@@ -263,7 +263,7 @@ public interface Model extends AutoCloseable {
 
     /**
      * Wrap the ruleform with an instance of a phantasm using the model
-     * 
+     *
      * @param phantasm
      * @param ruleform
      * @return

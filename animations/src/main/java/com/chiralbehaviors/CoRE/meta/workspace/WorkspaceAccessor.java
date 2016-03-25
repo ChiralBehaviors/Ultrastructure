@@ -56,6 +56,8 @@ public interface WorkspaceAccessor {
 
     Product getDefiningProduct();
 
+    UUID getId(String name);
+
     Map<String, Tuple<Product, Integer>> getImports();
 
     List<String> getKeys();
@@ -63,6 +65,4 @@ public interface WorkspaceAccessor {
     WorkspaceScope getScope();
 
     WorkspaceSnapshot getSnapshot();
-
-    UUID getId(String name);
 }

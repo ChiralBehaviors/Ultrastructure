@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2016 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  *  This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ public interface ExistentialModel<RuleForm extends ExistentialRuleform> {
     /**
      * Answer the list of network authorizations that represent a facet defined
      * in the workspace.
-     * 
+     *
      * @param workspace
      * @return the list of facet authorizations in the workspace
      */

@@ -1,7 +1,7 @@
 /**
  * (C) Copyright 2012 Chiral Behaviors, LLC. All Rights Reserved
  *
- 
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.jooq.DSLContext;
-import org.jooq.util.postgres.PostgresDSL;
+import org.jooq.impl.DSL;
 
 import com.chiralbehaviors.CoRE.RecordsFactory;
 import com.chiralbehaviors.CoRE.WellKnownObject;
@@ -77,7 +77,7 @@ public class Bootstrap {
                                                       (String) properties.get("password"));
         conn.setAutoCommit(false);
 
-        DSLContext create = PostgresDSL.using(conn);
+        DSLContext create = DSL.using(conn);
         Bootstrap bootstrap = new Bootstrap(create);
         bootstrap.clear();
         create.transaction(config -> bootstrap.bootstrap());
@@ -144,7 +144,7 @@ public class Bootstrap {
         Agency core = records.resolve(WellKnownAgency.CORE.id());
         Product kernelWorkspace = find(WellKnownProduct.KERNEL_WORKSPACE);
 
-        // Ain 
+        // Ain
         populateAgencies(core, kernelWorkspace);
         populateAttributes(core, kernelWorkspace);
         populateIntervals(core, kernelWorkspace);

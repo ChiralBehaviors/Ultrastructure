@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -142,7 +142,7 @@ public class WorkspaceImporter {
 
     /**
      * Used only to bootstrap the kernel. Public because of packaging, not API.
-     * 
+     *
      * @param definingProduct
      * @return
      */
@@ -478,18 +478,24 @@ public class WorkspaceImporter {
             MetaProtocolRecord metaProtocol = model.getJobModel()
                                                    .newInitializedMetaProtocol(model.records()
                                                                                     .resolve(resolve(mpc.service)));
-            if (mpc.product != null)
+            if (mpc.product != null) {
                 metaProtocol.setProduct(resolve(mpc.product));
-            if (mpc.from != null)
+            }
+            if (mpc.from != null) {
                 metaProtocol.setDeliverFrom(resolve(mpc.from));
-            if (mpc.to != null)
+            }
+            if (mpc.to != null) {
                 metaProtocol.setDeliverTo(resolve(mpc.to));
-            if (mpc.quantityUnit != null)
+            }
+            if (mpc.quantityUnit != null) {
                 metaProtocol.setQuantityUnit(resolve(mpc.quantityUnit));
-            if (mpc.requester != null)
+            }
+            if (mpc.requester != null) {
                 metaProtocol.setRequester(resolve(mpc.requester));
-            if (mpc.assignTo != null)
+            }
+            if (mpc.assignTo != null) {
                 metaProtocol.setAssignTo(resolve(mpc.assignTo));
+            }
             if (mpc.match != null && mpc.match.getText()
                                               .equals("stop")) {
                 metaProtocol.setStopOnMatch(true);
@@ -538,37 +544,52 @@ public class WorkspaceImporter {
             ProtocolRecord protocol = model.getJobModel()
                                            .newInitializedProtocol(model.records()
                                                                         .resolve(resolve(pc.matchJob().service)));
-            if (pc.matchJob().product != null)
+            if (pc.matchJob().product != null) {
                 protocol.setProduct(resolve(pc.matchJob().product));
-            if (pc.matchJob().from != null)
+            }
+            if (pc.matchJob().from != null) {
                 protocol.setDeliverFrom(resolve(pc.matchJob().from));
-            if (pc.matchJob().to != null)
+            }
+            if (pc.matchJob().to != null) {
                 protocol.setDeliverTo(resolve(pc.matchJob().to));
-            if (pc.matchJob().quantity != null)
+            }
+            if (pc.matchJob().quantity != null) {
                 protocol.setQuantity(BigDecimal.valueOf(Long.parseLong(pc.matchJob().quantity.getText())));
-            if (pc.matchJob().quantityUnit != null)
+            }
+            if (pc.matchJob().quantityUnit != null) {
                 protocol.setQuantityUnit(resolve(pc.matchJob().quantityUnit));
-            if (pc.matchJob().requester != null)
+            }
+            if (pc.matchJob().requester != null) {
                 protocol.setRequester(resolve(pc.matchJob().requester));
-            if (pc.matchJob().assignTo != null)
+            }
+            if (pc.matchJob().assignTo != null) {
                 protocol.setAssignTo(resolve(pc.matchJob().assignTo));
-            if (pc.matchJob().sequence != null)
+            }
+            if (pc.matchJob().sequence != null) {
                 protocol.setSequenceNumber(Integer.parseInt(pc.matchJob().sequence.getText()));
+            }
 
-            if (pc.childJob().service != null)
+            if (pc.childJob().service != null) {
                 protocol.setChildService(resolve(pc.childJob().service));
-            if (pc.childJob().product != null)
+            }
+            if (pc.childJob().product != null) {
                 protocol.setChildProduct(resolve(pc.childJob().product));
-            if (pc.childJob().from != null)
+            }
+            if (pc.childJob().from != null) {
                 protocol.setChildDeliverFrom(resolve(pc.childJob().from));
-            if (pc.childJob().to != null)
+            }
+            if (pc.childJob().to != null) {
                 protocol.setChildDeliverTo(resolve(pc.childJob().to));
-            if (pc.childJob().quantity != null)
+            }
+            if (pc.childJob().quantity != null) {
                 protocol.setChildQuantity(BigDecimal.valueOf(Long.parseLong(pc.childJob().quantity.getText())));
-            if (pc.childJob().quantityUnit != null)
+            }
+            if (pc.childJob().quantityUnit != null) {
                 protocol.setChildQuantityUnit(resolve(pc.childJob().quantityUnit));
-            if (pc.childJob().assignTo != null)
+            }
+            if (pc.childJob().assignTo != null) {
                 protocol.setChildAssignTo(resolve(pc.childJob().assignTo));
+            }
             workspace.add(protocol);
         }
 

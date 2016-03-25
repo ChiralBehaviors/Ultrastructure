@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015 Chiral Behaviors, LLC, all rights reserved.
- * 
- 
+ *
+
  * This file is part of Ultrastructure.
  *
  *  Ultrastructure is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.chiralbehaviors.CoRE.domain.ExistentialRuleform;
-import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.Aspect;
+import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.AttributeAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.NetworkAuthorization;
 import com.chiralbehaviors.CoRE.phantasm.model.PhantasmTraversal.PhantasmVisitor;
 
 /**
  * Bare bones metadata representation of a Phantasm facet in Java
- * 
+ *
  * @author hhildebrand
  *
  */
@@ -40,7 +40,7 @@ public class Phantasmagoria<RuleForm extends ExistentialRuleform>
 
     public final Map<String, AttributeAuthorization> attributes          = new HashMap<>();
     public final Map<String, NetworkAuthorization>   childAuthorizations = new HashMap<>();
-    public final Aspect                               facet;
+    public final Aspect                              facet;
 
     public Phantasmagoria(Aspect facet) {
         this.facet = facet;

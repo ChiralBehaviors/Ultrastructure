@@ -165,7 +165,7 @@
                 <groupId>com.bazaarvoice.dropwizard</groupId>
                 <artifactId>dropwizard-configurable-assets-bundle</artifactId>
                 <version>0.2.2</version>
-            </dependency> 
+            </dependency>
             <dependency>
                 <groupId>javax.ws.rs</groupId>
                 <artifactId>javax.ws.rs-api</artifactId>
@@ -545,8 +545,8 @@
                     <execution>
                         <id>attach-sources</id>
                         <goals>
-                            <goal>jar</goal>
-                            <goal>test-jar</goal>
+                            <goal>jar-no-fork</goal>
+                            <goal>test-jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>

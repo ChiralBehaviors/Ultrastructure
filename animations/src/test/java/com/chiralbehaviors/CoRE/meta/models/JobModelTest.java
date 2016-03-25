@@ -743,7 +743,7 @@ public class JobModelTest extends AbstractModelTest {
         model.getJobModel()
              .changeStatus(job, kickingAss, "taking names");
 
-        assertEquals(takingNames, job.getStatus());
+        assertEquals("invalid status", takingNames, job.getStatus());
     }
 
     @Test

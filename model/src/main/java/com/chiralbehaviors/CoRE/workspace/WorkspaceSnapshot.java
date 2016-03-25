@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -68,7 +69,7 @@ public class WorkspaceSnapshot {
     public static void load(DSLContext create,
                             List<URL> resources) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new CoREModule());
+        mapper.registerModule(new CoREModule(create));
         for (URL resource : resources) {
             WorkspaceSnapshot workspace;
             try (InputStream is = resource.openStream();) {
@@ -88,9 +89,9 @@ public class WorkspaceSnapshot {
         load(create, Collections.singletonList(resource));
     }
 
-    protected Product      definingProduct;
+    protected Product                                     definingProduct;
 
-    protected List<Record> records;
+    protected List<TableRecord<? extends TableRecord<?>>> records;
 
     public WorkspaceSnapshot() {
         records = new ArrayList<>();
@@ -128,15 +129,12 @@ public class WorkspaceSnapshot {
         WorkspaceSnapshot delta = new WorkspaceSnapshot();
         delta.definingProduct = definingProduct;
 
-        Set<UUID> exclude = new OaHashSet<UUID>(1024);
+        Set<UUID> exclude = new OaHashSet<>(otherVersion.records.size());
         for (Record record : otherVersion.records) {
-            UUID id = (UUID) record.getValue("id");
-            if (!definingProduct.equals(id)) {
-                exclude.add(id);
-            }
+            exclude.add((UUID) record.getValue("id"));
         }
 
-        for (Record record : records) {
+        for (TableRecord<? extends TableRecord<?>> record : records) {
             UUID id = (UUID) record.getValue("id");
             if (!exclude.contains(id)) {
                 delta.records.add(record);
@@ -149,19 +147,14 @@ public class WorkspaceSnapshot {
         return definingProduct;
     }
 
-    public List<Record> getRecords() {
+    public List<TableRecord<? extends TableRecord<?>>> getRecords() {
         return records;
     }
 
-    @SuppressWarnings("unchecked")
-    public boolean load(DSLContext create) {
+    public void load(DSLContext create) {
         loadDefiningProduct(create);
-        records.forEach(r -> {
-            @SuppressWarnings("rawtypes")
-            TableRecord r2 = (TableRecord) r;
-            create.executeInsert(r2);
-        });
-        return true;
+        create.batchInsert(records)
+              .execute();
     }
 
     protected void loadDefiningProduct(DSLContext create) {
@@ -200,7 +193,10 @@ public class WorkspaceSnapshot {
                                                       .on(WORKSPACE_AUTHORIZATION.DEFINING_PRODUCT.equal(definingProduct.getId()))
                                                       .and(((Field<UUID>) t.field("id")).notEqual(definingProduct.getId()))
                                                       .and(WORKSPACE_AUTHORIZATION.ID.equal((Field<UUID>) t.field("workspace")))
-                                                      .fetchInto(t.getRecordType()));
+                                                      .fetchInto(t.getRecordType())
+                                                      .stream()
+                                                      .map(r -> (TableRecord<?>) r)
+                                                      .collect(Collectors.toList()));
                              }
                          });
         records.addAll(create.selectFrom(WORKSPACE_AUTHORIZATION)

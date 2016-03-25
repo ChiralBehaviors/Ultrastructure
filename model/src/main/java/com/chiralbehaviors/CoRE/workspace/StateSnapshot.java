@@ -25,8 +25,10 @@ import static com.chiralbehaviors.CoRE.jooq.Tables.WORKSPACE_AUTHORIZATION;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
+import org.jooq.TableRecord;
 
 import com.chiralbehaviors.CoRE.jooq.Ruleform;
 
@@ -56,7 +58,10 @@ public class StateSnapshot extends WorkspaceSnapshot {
                                                               .isNull())
                                                       .and(t.field("id")
                                                             .notIn(exlude))
-                                                      .fetchInto(t.getRecordType()));
+                                                      .fetchInto(t.getRecordType())
+                                                      .stream()
+                                                      .map(r -> (TableRecord<?>) r)
+                                                      .collect(Collectors.toList()));
                              }
                          });
     }

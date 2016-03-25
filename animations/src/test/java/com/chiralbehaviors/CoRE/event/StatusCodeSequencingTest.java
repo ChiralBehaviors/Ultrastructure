@@ -310,8 +310,10 @@ public class StatusCodeSequencingTest extends AbstractModelTest {
                                   .collect(Collectors.toList())
                                   .toString(),
                      2, initialStates.size());
-        assertTrue(initialStates.contains(startState));
-        assertTrue(initialStates.contains(startState2));
+        assertTrue(initialStates.stream()
+                                .anyMatch(s -> startState.equals(s)));
+        assertTrue(initialStates.stream()
+                                .anyMatch(s -> startState2.equals(s)));
         try {
             jobModel.validateStateGraph(Arrays.asList(service));
             fail("Did not catch event with non terminal loop");

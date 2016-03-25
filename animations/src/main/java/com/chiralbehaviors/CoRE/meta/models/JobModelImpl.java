@@ -60,6 +60,7 @@ import com.chiralbehaviors.CoRE.domain.Product;
 import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.domain.StatusCode;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
+import com.chiralbehaviors.CoRE.jooq.tables.Existential;
 import com.chiralbehaviors.CoRE.jooq.tables.StatusCodeSequencing;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ChildSequencingAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
@@ -582,22 +583,17 @@ public class JobModelImpl implements JobModel {
      */
     @Override
     public List<StatusCode> getInitialStates(Product service) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        StatusCodeSequencing seq2 = STATUS_CODE_SEQUENCING.as("seq2");
+        Existential sc = EXISTENTIAL;
         return model.create()
-                    .selectDistinct(EXISTENTIAL.fields())
-                    .from(EXISTENTIAL, seq)
-                    .where(seq.field(STATUS_CODE_SEQUENCING.PARENT)
-                              .equal(EXISTENTIAL.ID))
+                    .selectDistinct(sc.fields())
+                    .from(sc)
+                    .join(STATUS_CODE_SEQUENCING)
+                    .on(STATUS_CODE_SEQUENCING.SERVICE.equal(service.getId()))
+                    .and(STATUS_CODE_SEQUENCING.PARENT.equal(sc.field(EXISTENTIAL.ID)))
                     .andNotExists(model.create()
-                                       .select(seq2.field(STATUS_CODE_SEQUENCING.CHILD))
-                                       .from(seq2)
-                                       .where(seq2.field(STATUS_CODE_SEQUENCING.SERVICE)
-                                                  .equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                       .and(seq2.field(STATUS_CODE_SEQUENCING.CHILD)
-                                                .equal(seq.field(STATUS_CODE_SEQUENCING.PARENT))))
-                    .and(seq.field(STATUS_CODE_SEQUENCING.SERVICE)
-                            .eq(service.getId()))
+                                       .select(STATUS_CODE_SEQUENCING.CHILD)
+                                       .from(STATUS_CODE_SEQUENCING)
+                                       .where(STATUS_CODE_SEQUENCING.CHILD.equal(EXISTENTIAL.ID)))
                     .fetch()
                     .into(ExistentialRecord.class)
                     .stream()
@@ -1445,16 +1441,13 @@ public class JobModelImpl implements JobModel {
     //    }
 
     private boolean isTerminalState(UUID status, UUID service) {
-        StatusCodeSequencing seq = STATUS_CODE_SEQUENCING.as("seq");
-        return !ZERO.equals(model.create()
-                                 .selectCount()
-                                 .from(Arrays.asList(seq))
-                                 .where(seq.CHILD.equal(status))
-                                 .andNotExists(model.create()
-                                                    .selectFrom(STATUS_CODE_SEQUENCING)
-                                                    .where(STATUS_CODE_SEQUENCING.SERVICE.equal(seq.field(STATUS_CODE_SEQUENCING.SERVICE)))
-                                                    .and(STATUS_CODE_SEQUENCING.PARENT.equal(seq.field(STATUS_CODE_SEQUENCING.CHILD))))
-                                 .and(STATUS_CODE_SEQUENCING.SERVICE.equal(service)));
+        return ZERO.equals(model.create()
+                                .selectCount()
+                                .from(STATUS_CODE_SEQUENCING)
+                                .where(STATUS_CODE_SEQUENCING.PARENT.equal(status))
+                                .and(STATUS_CODE_SEQUENCING.SERVICE.equal(service))
+                                .fetchOne()
+                                .value1());
     }
 
     /**

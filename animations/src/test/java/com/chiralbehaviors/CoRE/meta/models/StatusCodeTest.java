@@ -78,13 +78,15 @@ public class StatusCodeTest extends AbstractModelTest {
         model.getJobModel()
              .createStatusCodeSequencings(service, sequences);
 
-        assertTrue(String.format("%s is not a terminal state", terminalState),
+        assertTrue(String.format("%s is not a terminal state",
+                                 terminalState.getName()),
                    jobModel.isTerminalState(terminalState, service));
-        assertFalse(String.format("%s is a terminal state", startState),
+        assertFalse(String.format("%s is a terminal state",
+                                  startState.getName()),
                     jobModel.isTerminalState(startState, service));
-        assertFalse(String.format("%s is a terminal state", state1),
+        assertFalse(String.format("%s is a terminal state", state1.getName()),
                     jobModel.isTerminalState(state1, service));
-        assertFalse(String.format("%s is a terminal state", state2),
+        assertFalse(String.format("%s is a terminal state", state2.getName()),
                     jobModel.isTerminalState(state2, service));
         assertEquals(4, jobModel.getStatusCodesFor(service)
                                 .size());

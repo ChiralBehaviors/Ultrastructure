@@ -45,12 +45,12 @@ import org.junit.Test;
 
 import com.chiralbehaviors.CoRE.domain.Attribute;
 import com.chiralbehaviors.CoRE.domain.Product;
+import com.chiralbehaviors.CoRE.domain.Relationship;
 import com.chiralbehaviors.CoRE.jooq.enums.ExistentialDomain;
 import com.chiralbehaviors.CoRE.jooq.tables.records.AgencyExistentialGroupingRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAttributeAuthorizationRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialNetworkAuthorizationRecord;
-import com.chiralbehaviors.CoRE.jooq.tables.records.ExistentialRecord;
 import com.chiralbehaviors.CoRE.jooq.tables.records.FacetRecord;
 import com.chiralbehaviors.CoRE.meta.models.AbstractModelTest;
 import com.chiralbehaviors.CoRE.meta.workspace.WorkspaceScope;
@@ -168,10 +168,12 @@ public class TestPhantasm extends AbstractModelTest {
                                                       scope.lookup("Thing1"));
         assertNotNull(facet);
 
+        Relationship relationship = scope.lookup("thing1Of");
+        assertNotNull(relationship);
         ExistentialNetworkAuthorizationRecord stateAuth = model.create()
                                                                .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
                                                                .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
-                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD.equal(((ExistentialRecord) scope.lookup("thing1Of")).getId()))
+                                                               .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
                                                                .fetchOne();
 
         assertNotNull(stateAuth);
@@ -504,6 +506,11 @@ public class TestPhantasm extends AbstractModelTest {
     @Test
     public void testNetworkAttributeCapabilities() throws Exception {
         Thing1 thing1 = model.construct(Thing1.class, "testy", "test");
+        model.create()
+             .configuration()
+             .connectionProvider()
+             .acquire()
+             .commit();
 
         WorkspaceScope scope = thing1.getScope();
 
@@ -515,10 +522,13 @@ public class TestPhantasm extends AbstractModelTest {
         Attribute aliases = (Attribute) scope.lookup("aliases");
         assertNotNull(aliases);
 
+        Relationship relationship = scope.lookup("thing1Of");
+        assertNotNull(relationship);
+
         ExistentialNetworkAuthorizationRecord auth = model.create()
                                                           .selectFrom(EXISTENTIAL_NETWORK_AUTHORIZATION)
                                                           .where(EXISTENTIAL_NETWORK_AUTHORIZATION.PARENT.equal(facet.getId()))
-                                                          .and(EXISTENTIAL_NETWORK_AUTHORIZATION.CHILD.equal(aliases.getId()))
+                                                          .and(EXISTENTIAL_NETWORK_AUTHORIZATION.RELATIONSHIP.equal(relationship.getId()))
                                                           .fetchOne();
 
         assertNotNull(auth);

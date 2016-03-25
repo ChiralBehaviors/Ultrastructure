@@ -12,7 +12,6 @@
                 wa.key AS wsp_key,
                 wa.description AS wsp_desc,
                 base_table.id,
-                res.name AS authority, 
                 att.name AS attribute, 
                 cls.name AS classifier, 
 			    b.name AS classification, 
@@ -22,6 +21,7 @@
                 base_table.json_value, 
 			    base_table.notes, 
 			    up.name AS updated_by, 
+                res.name AS authority, 
 			    base_table.version
 			 FROM existential_attribute_authorization base_table
              LEFT JOIN facet na ON base_table.facet = na.id

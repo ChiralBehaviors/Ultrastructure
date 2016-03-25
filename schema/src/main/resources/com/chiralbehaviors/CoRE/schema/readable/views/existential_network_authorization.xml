@@ -12,21 +12,22 @@
                 wa.key AS wsp_key,
                 wa.description AS wsp_desc,
                 auth.id, 
+                auth.name,
                 classifier.name as classifier,
                 classification.name as classification,
-                classification.domain as classification_domain,
                 bridge.name as relationship,
                 authorized_rel.name as child_classifier,
                 authorized_parent.name as child_classification,
+                classification.domain as classification_domain,
                 authorized_parent.domain as child_classification_domain,
                 res.name as authority
                 
                 from existential_network_authorization auth
                 join facet parent on auth.parent = parent.id
-                join facet child on auth.child = parent.id
+                join facet child on auth.child = child.id
                 join existential classification on parent.classification = classification.id
                 join existential classifier on parent.classifier = classifier.id
-                left join existential bridge on auth.child = bridge.id
+                left join existential bridge on auth.relationship = bridge.id
                 left join existential authorized_parent on child.classification = authorized_parent.id
                 left join existential authorized_rel on child.classifier = authorized_rel.id
                 left join existential res on auth.authority = res.id

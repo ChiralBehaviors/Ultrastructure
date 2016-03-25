@@ -11,12 +11,12 @@
                 w.name AS workspace, n.id, 
                 wa.key AS wsp_key,
                 wa.description AS wsp_desc,
-                    n.name AS name,
-                    classifier.name AS classifer, 
-                    classification.name AS classification,  
-                    n.notes, 
-                    u.name AS updated_by, 
-                    n.version
+                n.name AS name,
+                classifier.name AS classifer, 
+                classification.name AS classification,  
+                n.notes, 
+                u.name AS updated_by, 
+                n.version
                FROM facet n
                JOIN existential classification ON n.classification = classification.id
                JOIN existential classifier ON n.classifier = classifier.id

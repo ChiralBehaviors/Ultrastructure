@@ -29,7 +29,7 @@
 			 FROM existential_network_attribute_authorization base_table
              LEFT JOIN existential_network_authorization auth ON base_table.network_authorization = auth.id
              JOIN facet parent ON auth.parent = parent.id
-             JOIN facet child ON auth.child = parent.id
+             JOIN facet child ON auth.child = child.id
              JOIN existential classification ON parent.classification = classification.id
              JOIN existential classifier ON parent.classifier = classifier.id
              LEFT JOIN existential bridge ON auth.relationship = bridge.id
